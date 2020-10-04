@@ -1,0 +1,524 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.core._get_readers &mdash; MDAnalysis 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.core._get_readers</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.core._get_readers</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- http://www.MDAnalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2015 Naveen Michaud-Agrawal, Elizabeth J. Denning, Oliver Beckstein</span>
+<span class="c1"># and contributors (see AUTHORS for the full list)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+<span class="sd">&quot;&quot;&quot;Functions for fetching Readers</span>
+
+<span class="sd">These functions officially live in in topology/core (parsers) and</span>
+<span class="sd">coordinates/core (all others).  They are declared here to avoid</span>
+<span class="sd">circular imports.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">raise_from</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="p">(</span><span class="n">_READERS</span><span class="p">,</span> <span class="n">_READER_HINTS</span><span class="p">,</span>
+                <span class="n">_PARSERS</span><span class="p">,</span> <span class="n">_PARSER_HINTS</span><span class="p">,</span>
+                <span class="n">_MULTIFRAME_WRITERS</span><span class="p">,</span> <span class="n">_SINGLEFRAME_WRITERS</span><span class="p">,</span> <span class="n">_CONVERTERS</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
+
+
+<div class="viewcode-block" id="get_reader_for"><a class="viewcode-back" href="../../../documentation_pages/coordinates/core.html#MDAnalysis.coordinates.core.get_reader_for">[docs]</a><span class="k">def</span> <span class="nf">get_reader_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the appropriate trajectory reader class for `filename`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename</span>
+<span class="sd">        filename of the input trajectory or coordinate file.  Also can</span>
+<span class="sd">        handle a few special cases, see notes below.</span>
+<span class="sd">    format : str or :class:`Reader` (optional)</span>
+<span class="sd">        Define the desired format.  Can be a string to request a given</span>
+<span class="sd">        Reader.</span>
+<span class="sd">        If a class is passed, it will be assumed that this is</span>
+<span class="sd">        a Reader and will be returned.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    :class:`Reader`</span>
+<span class="sd">        A Reader object</span>
+
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If no appropriate Reader is found</span>
+
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    There are a number of special cases that can be handled:</span>
+
+<span class="sd">    - If `filename` is a numpy array,</span>
+<span class="sd">      :class:`~MDAnalysis.coordinates.memory.MemoryReader` is returned.</span>
+<span class="sd">    - If `filename` is an MMTF object,</span>
+<span class="sd">      :class:`~MDAnalysis.coordinates.MMTF.MMTFReader` is returned.</span>
+<span class="sd">    - If `filename` is a ParmEd Structure,</span>
+<span class="sd">      :class:`~MDAnalysis.coordinates.ParmEd.ParmEdReader` is returned.</span>
+<span class="sd">    - If `filename` is an iterable of filenames,</span>
+<span class="sd">      :class:`~MDAnalysis.coordinates.chain.ChainReader` is returned.</span>
+
+<span class="sd">    Automatic detection is disabled when an explicit `format` is provided,</span>
+<span class="sd">    unless a list of filenames is given, in which case</span>
+<span class="sd">    :class:`~MDAnalysis.coordinates.chain.ChainReader` is returned and `format`</span>
+<span class="sd">    passed to the :class:`~MDAnalysis.coordinates.chain.ChainReader`.</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Added format_hint functionalityx</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># check if format is actually a Reader</span>
+    <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="nb">format</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">format</span>
+
+    <span class="c1"># ChainReader gets returned even if format is specified</span>
+    <span class="k">if</span> <span class="n">_READER_HINTS</span><span class="p">[</span><span class="s1">&#39;CHAIN&#39;</span><span class="p">](</span><span class="n">filename</span><span class="p">):</span>
+        <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;CHAIN&#39;</span>
+    <span class="c1"># Only guess if format is not specified</span>
+    <span class="k">if</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">fmt_name</span><span class="p">,</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">_READER_HINTS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">test</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                <span class="nb">format</span> <span class="o">=</span> <span class="n">fmt_name</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># hits else if for loop completes</span>
+            <span class="c1"># else let the guessing begin!</span>
+            <span class="nb">format</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="nb">format</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_READERS</span><span class="p">[</span><span class="nb">format</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Unknown coordinate trajectory format &#39;</span><span class="si">{0}</span><span class="s2">&#39; for &#39;</span><span class="si">{1}</span><span class="s2">&#39;. The FORMATs </span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;           </span><span class="si">{2}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;           are implemented in MDAnalysis.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;           See https://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;           Use the format keyword to explicitly set the format: &#39;Universe(...,format=FORMAT)&#39;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;           For missing formats, raise an issue at &quot;</span>
+            <span class="s2">&quot;http://issues.mdanalysis.org&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="nb">format</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">_READERS</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span>
+                   <span class="kc">None</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_writer_for"><a class="viewcode-back" href="../../../documentation_pages/coordinates/core.html#MDAnalysis.coordinates.core.get_writer_for">[docs]</a><span class="k">def</span> <span class="nf">get_writer_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return an appropriate trajectory or frame writer class for `filename`.</span>
+
+<span class="sd">    The format is determined by the `format` argument or the extension of</span>
+<span class="sd">    `filename`. If `format` is provided, it takes precedence over the</span>
+<span class="sd">    extension of `filename`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str or ``None``</span>
+<span class="sd">        If no *format* is supplied, then the filename for the trajectory is</span>
+<span class="sd">        examined for its extension and the Writer is chosen accordingly.</span>
+<span class="sd">        If ``None`` is provided, then</span>
+<span class="sd">        :class:`~MDAnalysis.coordinates.null.NullWriter` is selected (and</span>
+<span class="sd">        all output is discarded silently).</span>
+<span class="sd">    format : str (optional)</span>
+<span class="sd">        Explicitly set a format.</span>
+<span class="sd">    multiframe : bool (optional)</span>
+<span class="sd">        ``True``: write multiple frames to the trajectory; ``False``: only</span>
+<span class="sd">        write a single coordinate frame; ``None``: first try trajectory (multi</span>
+<span class="sd">        frame writers), then the single frame ones. Default is ``None``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    :class:`Writer`</span>
+<span class="sd">        A Writer object</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError:</span>
+<span class="sd">        The format could not be deduced from `filename` or an unexpected value</span>
+<span class="sd">        was provided for the `multiframe` argument.</span>
+<span class="sd">    TypeError:</span>
+<span class="sd">        No writer was found for the required format or the required `filename`</span>
+<span class="sd">        argument was omitted.</span>
+
+
+<span class="sd">    .. versionchanged:: 0.7.6</span>
+<span class="sd">       Added `multiframe` keyword; the default ``None`` reflects the previous</span>
+<span class="sd">       behaviour.</span>
+
+<span class="sd">    .. versionchanged:: 0.14.0</span>
+<span class="sd">       Removed the default value for the `format` argument. Now, the value</span>
+<span class="sd">       provided with the `format` parameter takes precedence over the extension</span>
+<span class="sd">       of `filename`. A :exc:`ValueError` is raised if the format cannot be</span>
+<span class="sd">       deduced from `filename`.</span>
+
+<span class="sd">    .. versionchanged:: 0.16.0</span>
+<span class="sd">       The `filename` argument has been made mandatory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;NULL&#39;</span>
+    <span class="k">elif</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">get_ext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
+            <span class="c1"># An AttributeError is raised if filename cannot</span>
+            <span class="c1"># be manipulated as a string.</span>
+            <span class="c1"># A TypeError is raised in py3.6</span>
+            <span class="c1"># &quot;TypeError: expected str, bytes or os.PathLike object&quot;</span>
+            <span class="n">raise_from</span><span class="p">(</span>
+                <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;File format could not be guessed from &quot;</span><span class="si">{0}</span><span class="s1">&quot;&#39;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">)),</span>
+                <span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">format</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">check_compressed_format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span>
+            <span class="s1">&#39;File format could not be guessed from </span><span class="si">{}</span><span class="s1">, &#39;</span>
+            <span class="s1">&#39;resulting in empty string - &#39;</span>
+            <span class="s1">&#39;only None or valid formats are supported.&#39;</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="nb">format</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">multiframe</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Multiframe takes priority, else use singleframe</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">_SINGLEFRAME_WRITERS</span><span class="p">)</span>  <span class="c1"># do copy to avoid changing in place</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_MULTIFRAME_WRITERS</span><span class="p">)</span>  <span class="c1"># update overwrites existing entries</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;No trajectory or frame writer for format &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span>
+    <span class="k">elif</span> <span class="n">multiframe</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">_MULTIFRAME_WRITERS</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;No trajectory writer for format &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span>
+    <span class="k">elif</span> <span class="n">multiframe</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">_SINGLEFRAME_WRITERS</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;No single frame writer for format &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown value &#39;</span><span class="si">{0}</span><span class="s2">&#39; for multiframe,&quot;</span>
+                         <span class="s2">&quot; only True, False, None allowed&quot;</span>
+                         <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">multiframe</span><span class="p">))</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">options</span><span class="p">[</span><span class="nb">format</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">raise_from</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">format</span><span class="p">)),</span> <span class="kc">None</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">get_parser_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the appropriate topology parser for `filename`.</span>
+
+<span class="sd">    Automatic detection is disabled when an explicit `format` is</span>
+<span class="sd">    provided.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str or mmtf.MMTFDecoder</span>
+<span class="sd">        name of the topology file; if this is an instance of</span>
+<span class="sd">        :class:`mmtf.MMTFDecoder` then directly use the MMTF format.</span>
+<span class="sd">    format : str</span>
+<span class="sd">        description of the file format</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If no appropriate parser could be found.</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Added format_hint functionality</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="nb">format</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">format</span>
+
+    <span class="c1"># Only guess if format is not provided</span>
+    <span class="k">if</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">fmt_name</span><span class="p">,</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">_PARSER_HINTS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">test</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                <span class="nb">format</span> <span class="o">=</span> <span class="n">fmt_name</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">format</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="nb">format</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_PARSERS</span><span class="p">[</span><span class="nb">format</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">rdr</span> <span class="o">=</span> <span class="n">get_reader_for</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">raise_from</span><span class="p">(</span>
+                <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;</span><span class="si">{0}</span><span class="s2">&#39; isn&#39;t a valid topology format, nor a coordinate format</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;   from which a topology can be minimally inferred.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;   You can use &#39;Universe(topology, ..., topology_format=FORMAT)&#39;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;   to explicitly specify the format and</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;   override automatic detection. Known FORMATs are:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;   </span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;   See https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;   For missing formats, raise an issue at </span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;   http://issues.mdanalysis.org&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="n">_PARSERS</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span>
+                <span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_PARSERS</span><span class="p">[</span><span class="s1">&#39;MINIMAL&#39;</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">get_converter_for</span><span class="p">(</span><span class="nb">format</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the appropriate topology converter for ``format``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    format : str</span>
+<span class="sd">        description of the file format</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        If no appropriate parser could be found.</span>
+
+
+<span class="sd">    .. versionadded:: 1.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">_CONVERTERS</span><span class="p">[</span><span class="nb">format</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="s1">&#39;No converter found for </span><span class="si">{}</span><span class="s1"> format&#39;</span>
+        <span class="n">raise_from</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">format</span><span class="p">)),</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">writer</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

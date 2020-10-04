@@ -1,0 +1,571 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>15. Constants and unit conversion — MDAnalysis.units &mdash; MDAnalysis 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.0 documentation"
+          href="../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="16. Custom exceptions and warnings — MDAnalysis.exceptions" href="exceptions.html" />
+    <link rel="prev" title="14. Version information for MDAnalysis - MDAnalysis.version" href="version.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#implementation-notes">15.1. Implementation notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#conversions">15.1.1. Conversions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#functions">15.2. Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data">15.3. Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references-and-footnotes">15.4. References and footnotes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/documentation_pages/units.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-MDAnalysis.units"></span><div class="section" id="constants-and-unit-conversion-mdanalysis-units">
+<h1>15. Constants and unit conversion — <a class="reference internal" href="#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a><a class="headerlink" href="#constants-and-unit-conversion-mdanalysis-units" title="Permalink to this headline">¶</a></h1>
+<p>The base units of MDAnalysis trajectories are the <strong>Å</strong> (<strong>ångström</strong>) for
+<strong>length</strong> and <strong>ps</strong> (<strong>pico second</strong>) for <strong>time</strong>. By default, all positions
+are in Å and all times are in ps, regardless of how the MD code stored
+trajectory data. By default, MDAnalysis converts automatically to the
+MDAnalysis units when reading trajectories and converts back when writing. This
+makes it possible to write scripts that can be agnostic of the specifics of how
+a particular MD code stores trajectory data. Other base units are listed in the
+table on <a class="reference internal" href="#table-baseunits"><span class="std std-ref">Base units in MDAnalysis</span></a>.</p>
+<span id="table-baseunits"></span><table border="1" class="docutils" id="id4">
+<caption><span class="caption-text">Base units in MDAnalysis</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="15%" />
+<col width="19%" />
+<col width="65%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">quantity</th>
+<th class="head">unit</th>
+<th class="head">SI units</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>length</td>
+<td>Å</td>
+<td><span class="math notranslate nohighlight">\(10^{-10}\)</span> m</td>
+</tr>
+<tr class="row-odd"><td>time</td>
+<td>ps</td>
+<td><span class="math notranslate nohighlight">\(10^{-12}\)</span> s</td>
+</tr>
+<tr class="row-even"><td>energy</td>
+<td>kJ/mol</td>
+<td><span class="math notranslate nohighlight">\(1.66053892103219 \times 10^{-21}\)</span> J</td>
+</tr>
+<tr class="row-odd"><td>charge</td>
+<td><span class="math notranslate nohighlight">\(e\)</span></td>
+<td><span class="math notranslate nohighlight">\(1.602176565 \times 10^{-19}\)</span> As</td>
+</tr>
+<tr class="row-even"><td>force</td>
+<td>kJ/(mol·Å)</td>
+<td><span class="math notranslate nohighlight">\(1.66053892103219 \times 10^{-11}\)</span> J/m</td>
+</tr>
+<tr class="row-odd"><td>speed</td>
+<td>Å/ps</td>
+<td><span class="math notranslate nohighlight">\(100\)</span> m/s</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="implementation-notes">
+<h2>15.1. Implementation notes<a class="headerlink" href="#implementation-notes" title="Permalink to this headline">¶</a></h2>
+<p>All conversions with <a class="reference internal" href="#MDAnalysis.units.convert" title="MDAnalysis.units.convert"><code class="xref py py-func docutils literal notranslate"><span class="pre">convert()</span></code></a> are carried out in a simple fashion: the
+conversion factor <span class="math notranslate nohighlight">\(f_{b,b'}\)</span> from the base unit <span class="math notranslate nohighlight">\(b\)</span> to another unit
+<span class="math notranslate nohighlight">\(b'\)</span> is precomputed and stored (see <a class="reference internal" href="#data"><span class="std std-ref">Data</span></a>). The numerical value of
+a quantity in unit <span class="math notranslate nohighlight">\(b\)</span> is <span class="math notranslate nohighlight">\(X/b\)</span> (e.g. for <span class="math notranslate nohighlight">\(X =
+1.23\,\mathrm{ps}\)</span> the numerical value is <span class="math notranslate nohighlight">\(X/\mathrm{ps} =
+1.23\)</span>). <a class="footnote-reference" href="#funits" id="id1">[1]</a></p>
+<p>The new numerical value <span class="math notranslate nohighlight">\(X'/b'\)</span> of the quantity (in units of <span class="math notranslate nohighlight">\(b'\)</span>)
+is then</p>
+<div class="math notranslate nohighlight">
+\[X'/b' = f_{b,b'} X/b\]</div>
+<p>The function <a class="reference internal" href="#MDAnalysis.units.get_conversion_factor" title="MDAnalysis.units.get_conversion_factor"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_conversion_factor()</span></code></a> returns the appropriate factor
+<span class="math notranslate nohighlight">\(f_{b,b'}\)</span>.</p>
+<p>Conversion between different units is always carried out via the base unit as
+an intermediate step:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="ow">is</span> <span class="ow">in</span> <span class="n">u1</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">u1</span> <span class="n">to</span> <span class="n">b</span><span class="p">:</span>  <span class="n">x</span><span class="s1">&#39;  = x  / factor[u1]</span>
+            <span class="kn">from</span> <span class="nn">b</span>  <span class="n">to</span> <span class="n">u2</span><span class="p">:</span> <span class="n">x</span><span class="s1">&#39;&#39;</span> <span class="o">=</span> <span class="n">x</span><span class="s1">&#39; * factor[u2]</span>
+<span class="n">so</span> <span class="n">f</span><span class="p">[</span><span class="n">u1</span><span class="p">,</span><span class="n">u2</span><span class="p">]</span> <span class="o">=</span> <span class="n">factor</span><span class="p">[</span><span class="n">u2</span><span class="p">]</span><span class="o">/</span><span class="n">factor</span><span class="p">[</span><span class="n">u1</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="section" id="conversions">
+<h3>15.1.1. Conversions<a class="headerlink" href="#conversions" title="Permalink to this headline">¶</a></h3>
+<p>Examples for how to calculate some of the conversion factors that are
+hard-coded in <a class="reference internal" href="#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal notranslate"><span class="pre">units</span></code></a> (see <a class="reference internal" href="#data"><span class="std std-ref">Data</span></a>).</p>
+<dl class="docutils">
+<dt>density:</dt>
+<dd><p class="first">Base unit is <span class="math notranslate nohighlight">\(\mathrm{Å}^{-3}\)</span>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">n</span><span class="o">/</span><span class="n">x</span> <span class="o">=</span> <span class="n">n</span><span class="o">/</span><span class="n">A</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span> <span class="n">densityUnit_factor</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Example for how to calculate the conversion factor
+<span class="math notranslate nohighlight">\(f_{\mathrm{Å}^{-3},\mathrm{nm}^{-3}}\)</span> from <span class="math notranslate nohighlight">\(\mathrm{Å^-3}\)</span> to
+<span class="math notranslate nohighlight">\(\mathrm{nm}^{-3}\)</span>:</p>
+<div class="last math notranslate nohighlight">
+\[f_{\mathrm{Å}^{-3},\mathrm{nm}^{-3}}
+      = \frac{1\,\mathrm{nm}^{-3}}{1\,\mathrm{Å}^{-3}}
+      = \frac{(10\,\mathrm{Å})^{-3}}{1\,\mathrm{Å}^{-3}}
+      = 10^{-3}\]</div>
+</dd>
+<dt>concentration:</dt>
+<dd><p class="first">Example for how to convert the conversion factor to Molar (mol/l):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">factor</span> <span class="o">=</span> <span class="mi">1</span> <span class="n">A</span><span class="o">**-</span><span class="mi">3</span> <span class="o">/</span> <span class="p">(</span><span class="n">N_Avogadro</span> <span class="o">*</span> <span class="p">(</span><span class="mi">10</span><span class="o">**-</span><span class="mi">9</span> <span class="n">dm</span><span class="p">)</span><span class="o">**-</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>relative to a density rho0 in g/cm^3:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">M</span><span class="p">(</span><span class="n">H2O</span><span class="p">)</span> <span class="o">=</span> <span class="mi">18</span> <span class="n">g</span><span class="o">/</span><span class="n">mol</span>   <span class="n">Molar</span> <span class="n">mass</span> <span class="n">of</span> <span class="n">water</span>
+
+<span class="n">factor</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mf">1e-24</span> <span class="o">*</span> <span class="n">N_Avogadro</span> <span class="o">/</span> <span class="n">M</span><span class="p">(</span><span class="n">H2O</span><span class="p">))</span>
+</pre></div>
+</div>
+<p class="last">from <cite>rho/rho0 = n/(N_A * M**-1) / rho0</cite>  where <cite>[n] = 1/Volume</cite>, <cite>[rho] = mass/Volume</cite></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In the future me might move towards using the <a class="reference external" href="http://packages.python.org/quantities/">Quantities</a> package or
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/constants.html#module-scipy.constants" title="(in SciPy v1.5.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.constants</span></code></a>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="functions">
+<h2>15.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MDAnalysis.units.get_conversion_factor">
+<code class="descclassname">MDAnalysis.units.</code><code class="descname">get_conversion_factor</code><span class="sig-paren">(</span><em>unit_type</em>, <em>u1</em>, <em>u2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MDAnalysis/units.html#get_conversion_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.units.get_conversion_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>generate the conversion factor u1 -&gt; u2 by using the base unit as an intermediate</p>
+<p>f[u1 -&gt; u2] = factor[u2]/factor[u1]</p>
+<p>Conversion of X (in u1) to X’ (in u2):</p>
+<blockquote>
+<div>X’ = conversion_factor * X</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.units.convert">
+<code class="descclassname">MDAnalysis.units.</code><code class="descname">convert</code><span class="sig-paren">(</span><em>x</em>, <em>u1</em>, <em>u2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MDAnalysis/units.html#convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.units.convert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert value <em>x</em> in unit <em>u1</em> to new value in <em>u2</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Converted value.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – The units are not known or if one attempts to convert between
+incompatible units.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="data">
+<span id="id2"></span><h2>15.3. Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+<dl class="data">
+<dt id="MDAnalysis.units.constants">
+<code class="descclassname">MDAnalysis.units.</code><code class="descname">constants</code><em class="property"> = {'N_Avogadro': 6.02214129e+23, 'calorie': 4.184, 'elementary_charge': 1.602176565e-19}</em><a class="headerlink" href="#MDAnalysis.units.constants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Values of physical constants are taken from <a class="reference external" href="http://physics.nist.gov/cuu/Constants/">CODATA 2010 at NIST</a>. The
+thermochemical calorie is defined in the <a class="reference external" href="http://www.iso.org/iso/catalogue_detail?csnumber=31890">ISO 80000-5:2007</a> standard
+and is also listed in the <a class="reference external" href="http://physics.nist.gov/Pubs/SP811/appenB8.html#C">NIST Guide to SI: Appendix B.8: Factors for Units</a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.units.lengthUnit_factor">
+<code class="descclassname">MDAnalysis.units.</code><code class="descname">lengthUnit_factor</code><em class="property"> = {'A': 1.0, 'Angstrom': 1.0, 'angstrom': 1.0, 'femtometer': 100000.0, 'fm': 100000.0, 'nanometer': 0.1, 'nm': 0.1, 'picometer': 100.0, 'pm': 100.0, 'Å': 1.0}</em><a class="headerlink" href="#MDAnalysis.units.lengthUnit_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>The basic unit of <em>length</em> in MDAnalysis is the Angstrom.
+Conversion factors between the base unit and other lengthUnits <em>x</em> are stored.
+Conversions follow <cite>L/x = L/Angstrom * lengthUnit_factor[x]</cite>.
+<em>x</em> can be <em>nm</em>/<em>nanometer</em> or <em>fm</em>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.units.N_Avogadro">
+<code class="descclassname">MDAnalysis.units.</code><code class="descname">N_Avogadro</code><em class="property"> = 6.02214129e+23</em><a class="headerlink" href="#MDAnalysis.units.N_Avogadro" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="http://physics.nist.gov/cgi-bin/cuu/Value?na">Avogadro’s constant</a> in mol**-1.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.9.0: </span>Use <em>N_Avogadro</em> in dict <a class="reference internal" href="#MDAnalysis.units.constants" title="MDAnalysis.units.constants"><code class="xref py py-data docutils literal notranslate"><span class="pre">constants</span></code></a> instead.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.9.0: </span>Use CODATA 2010 value, which differs from the previously used value
+6.02214179e+23 mol**-1 by -5.00000000e+16 mol**-1.</p>
+</div>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.units.water">
+<code class="descclassname">MDAnalysis.units.</code><code class="descname">water</code><em class="property"> = {'MolarMass': 18.016, 'SPC': 0.985, 'TIP3P': 1.002, 'TIP4P': 1.001, 'exp': 0.997}</em><a class="headerlink" href="#MDAnalysis.units.water" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>water density values at T=298K, P=1atm <a class="reference internal" href="#jorgensen1998" id="id3">[Jorgensen1998]</a></dt>
+<dd><table border="1" class="first last docutils">
+<colgroup>
+<col width="47%" />
+<col width="53%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">model</th>
+<th class="head">g cm**-3</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>SPC</td>
+<td>0.985(1)</td>
+</tr>
+<tr class="row-odd"><td>TIP3P</td>
+<td>1.002(1)</td>
+</tr>
+<tr class="row-even"><td>TIP4P</td>
+<td>1.001(1)</td>
+</tr>
+<tr class="row-odd"><td>exp</td>
+<td>0.997</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<p>and molar mass 18.016 g mol**-1.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.units.densityUnit_factor">
+<code class="descclassname">MDAnalysis.units.</code><code class="descname">densityUnit_factor</code><em class="property"> = {'A^{-3}': 1.0, 'Angstrom^{-3}': 1.0, 'Molar': 1660.5389210321898, 'SPC': 30.37184690488927, 'TIP3P': 29.85655608913766, 'TIP4P': 29.886382818497438, 'nanometer^{-3}': 1000.0, 'nm^{-3}': 1000.0, 'water': 30.00628806551247, 'Å^{-3}': 1.0}</em><a class="headerlink" href="#MDAnalysis.units.densityUnit_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>The basic unit for <em>densities</em> is Angstroem**(-3), i.e.
+the volume per molecule in A**3. Especially for water
+it can be convenient to measure the density relative to bulk, and
+hence a number of values are pre-stored in <a class="reference internal" href="#MDAnalysis.units.water" title="MDAnalysis.units.water"><code class="xref py py-data docutils literal notranslate"><span class="pre">water</span></code></a>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.units.timeUnit_factor">
+<code class="descclassname">MDAnalysis.units.</code><code class="descname">timeUnit_factor</code><em class="property"> = {'AKMA': 20.45482949774598, 'femtosecond': 1000.0, 'fs': 1000.0, 'nanosecond': 0.001, 'ns': 0.001, 'picosecond': 1.0, 'ps': 1.0, 's': 1e-12, 'sec': 1e-12, 'second': 1e-12}</em><a class="headerlink" href="#MDAnalysis.units.timeUnit_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>For <em>time</em>, the basic unit is ps; in particular CHARMM’s
+1 <a class="reference external" href="http://www.charmm.org/documentation/c37b1/usage.html#%20AKMA">AKMA</a> time unit = 4.888821E-14 sec is supported.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.units.speedUnit_factor">
+<code class="descclassname">MDAnalysis.units.</code><code class="descname">speedUnit_factor</code><em class="property"> = {'A/ps': 1.0, 'Angstrom/AKMA': 0.04888821, 'Angstrom/femtosecond': 1000.0, 'Angstrom/fs': 1000.0, 'Angstrom/picosecond': 1.0, 'Angstrom/ps': 1.0, 'angstrom/femtosecond': 1000.0, 'angstrom/fs': 1000.0, 'angstrom/picosecond': 1.0, 'm/s': 100.0, 'nanometer/picosecond': 0.1, 'nanometer/ps': 0.1, 'nm/ns': 100.0, 'nm/ps': 0.1, 'pm/ps': 100.0, 'Å/ps': 1.0}</em><a class="headerlink" href="#MDAnalysis.units.speedUnit_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>For <em>speed</em>, the basic unit is Angstrom/ps.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.units.forceUnit_factor">
+<code class="descclassname">MDAnalysis.units.</code><code class="descname">forceUnit_factor</code><em class="property"> = {'J/m': 1.66053892103219e-11, 'N': 1.66053892103219e-11, 'Newton': 1.66053892103219e-11, 'kJ/(mol*A)': 1.0, 'kJ/(mol*Angstrom)': 1.0, 'kJ/(mol*nm)': 10.0, 'kJ/(mol*Å)': 1.0, 'kcal/(mol*Angstrom)': 0.2390057361376673}</em><a class="headerlink" href="#MDAnalysis.units.forceUnit_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>For <em>force</em> the basic unit is kJ/(mol*Angstrom).</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.units.chargeUnit_factor">
+<code class="descclassname">MDAnalysis.units.</code><code class="descname">chargeUnit_factor</code><em class="property"> = {'Amber': 18.2223, 'As': 1.602176565e-19, 'C': 1.602176565e-19, 'e': 1.0}</em><a class="headerlink" href="#MDAnalysis.units.chargeUnit_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Charge</em> is measured in multiples of the <a class="reference external" href="http://physics.nist.gov/cgi-bin/cuu/Value?e">electron charge</a> <em>e</em>, with the value
+<em>elementary_charge</em> in <a class="reference internal" href="#MDAnalysis.units.constants" title="MDAnalysis.units.constants"><code class="xref py py-data docutils literal notranslate"><span class="pre">constants</span></code></a>.
+The <a class="reference external" href="http://ambermd.org/formats.html#parm">conversion factor to Amber charge units</a> is 18.2223.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.9.0: </span>Use CODATA 2010 value for <em>elementary charge</em>, which differs from the previously used value
+<em>e</em> =  1.602176487 x 10**(-19) C by 7.8000000e-27 C.</p>
+</div>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.units.conversion_factor">
+<code class="descclassname">MDAnalysis.units.</code><code class="descname">conversion_factor</code><em class="property"> = {'charge': {'Amber': 18.2223, 'As': 1.602176565e-19, 'C': 1.602176565e-19, 'e': 1.0}, 'density': {'A^{-3}': 1.0, 'Angstrom^{-3}': 1.0, 'Molar': 1660.5389210321898, 'SPC': 30.37184690488927, 'TIP3P': 29.85655608913766, 'TIP4P': 29.886382818497438, 'nanometer^{-3}': 1000.0, 'nm^{-3}': 1000.0, 'water': 30.00628806551247, 'Å^{-3}': 1.0}, 'energy': {'J': 1.66053892103219e-21, 'eV': 0.01036426919046959, 'kJ/mol': 1.0, 'kcal/mol': 0.2390057361376673}, 'force': {'J/m': 1.66053892103219e-11, 'N': 1.66053892103219e-11, 'Newton': 1.66053892103219e-11, 'kJ/(mol*A)': 1.0, 'kJ/(mol*Angstrom)': 1.0, 'kJ/(mol*nm)': 10.0, 'kJ/(mol*Å)': 1.0, 'kcal/(mol*Angstrom)': 0.2390057361376673}, 'length': {'A': 1.0, 'Angstrom': 1.0, 'angstrom': 1.0, 'femtometer': 100000.0, 'fm': 100000.0, 'nanometer': 0.1, 'nm': 0.1, 'picometer': 100.0, 'pm': 100.0, 'Å': 1.0}, 'speed': {'A/ps': 1.0, 'Angstrom/AKMA': 0.04888821, 'Angstrom/femtosecond': 1000.0, 'Angstrom/fs': 1000.0, 'Angstrom/picosecond': 1.0, 'Angstrom/ps': 1.0, 'angstrom/femtosecond': 1000.0, 'angstrom/fs': 1000.0, 'angstrom/picosecond': 1.0, 'm/s': 100.0, 'nanometer/picosecond': 0.1, 'nanometer/ps': 0.1, 'nm/ns': 100.0, 'nm/ps': 0.1, 'pm/ps': 100.0, 'Å/ps': 1.0}, 'time': {'AKMA': 20.45482949774598, 'femtosecond': 1000.0, 'fs': 1000.0, 'nanosecond': 0.001, 'ns': 0.001, 'picosecond': 1.0, 'ps': 1.0, 's': 1e-12, 'sec': 1e-12, 'second': 1e-12}}</em><a class="headerlink" href="#MDAnalysis.units.conversion_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>any observable with a unit (i.e. one with an entry in
+the <code class="xref py py-attr docutils literal notranslate"><span class="pre">unit</span></code> attribute) needs an entry in <a class="reference internal" href="#MDAnalysis.units.conversion_factor" title="MDAnalysis.units.conversion_factor"><code class="xref py py-data docutils literal notranslate"><span class="pre">conversion_factor</span></code></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.units.conversion_factor" title="MDAnalysis.units.conversion_factor"><code class="xref py py-data docutils literal notranslate"><span class="pre">conversion_factor</span></code></a> is used by <a class="reference internal" href="#MDAnalysis.units.get_conversion_factor" title="MDAnalysis.units.get_conversion_factor"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_conversion_factor()</span></code></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">Note</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.units.unit_types">
+<code class="descclassname">MDAnalysis.units.</code><code class="descname">unit_types</code><em class="property"> = {'A': 'length', 'A/ps': 'speed', 'AKMA': 'time', 'A^{-3}': 'density', 'Amber': 'charge', 'Angstrom': 'length', 'Angstrom/AKMA': 'speed', 'Angstrom/femtosecond': 'speed', 'Angstrom/fs': 'speed', 'Angstrom/picosecond': 'speed', 'Angstrom/ps': 'speed', 'Angstrom^{-3}': 'density', 'As': 'charge', 'C': 'charge', 'J': 'energy', 'J/m': 'force', 'Molar': 'density', 'N': 'force', 'Newton': 'force', 'SPC': 'density', 'TIP3P': 'density', 'TIP4P': 'density', 'angstrom': 'length', 'angstrom/femtosecond': 'speed', 'angstrom/fs': 'speed', 'angstrom/picosecond': 'speed', 'e': 'charge', 'eV': 'energy', 'femtometer': 'length', 'femtosecond': 'time', 'fm': 'length', 'fs': 'time', 'kJ/(mol*A)': 'force', 'kJ/(mol*Angstrom)': 'force', 'kJ/(mol*nm)': 'force', 'kJ/(mol*Å)': 'force', 'kJ/mol': 'energy', 'kcal/(mol*Angstrom)': 'force', 'kcal/mol': 'energy', 'm/s': 'speed', 'nanometer': 'length', 'nanometer/picosecond': 'speed', 'nanometer/ps': 'speed', 'nanometer^{-3}': 'density', 'nanosecond': 'time', 'nm': 'length', 'nm/ns': 'speed', 'nm/ps': 'speed', 'nm^{-3}': 'density', 'ns': 'time', 'picometer': 'length', 'picosecond': 'time', 'pm': 'length', 'pm/ps': 'speed', 'ps': 'time', 's': 'time', 'sec': 'time', 'second': 'time', 'water': 'density', 'Å': 'length', 'Å/ps': 'speed', 'Å^{-3}': 'density'}</em><a class="headerlink" href="#MDAnalysis.units.unit_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the type of unit for a known input unit.
+Note: Any unit must be <em>unique</em> because this dict is used to guess the
+unit type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">Generated lookup table (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a>)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="references-and-footnotes">
+<h2>15.4. References and footnotes<a class="headerlink" href="#references-and-footnotes" title="Permalink to this headline">¶</a></h2>
+<table class="docutils citation" frame="void" id="jorgensen1998" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[Jorgensen1998]</a></td><td><ol class="first last upperalpha simple" start="23">
+<li>Jorgensen, C. Jenson, J Comp Chem 19 (1998), 1179-1186</li>
+</ol>
+</td></tr>
+</tbody>
+</table>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="funits" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td><p class="first">One can also consider the conversion factor to carry
+units <span class="math notranslate nohighlight">\(b'/b\)</span>, in which case the conversion formula would
+become</p>
+<div class="last math notranslate nohighlight">
+\[X' = f_{b,b'} X\]</div>
+</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="exceptions.html" class="btn btn-neutral float-right" title="16. Custom exceptions and warnings — MDAnalysis.exceptions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="version.html" class="btn btn-neutral float-left" title="14. Version information for MDAnalysis - MDAnalysis.version" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

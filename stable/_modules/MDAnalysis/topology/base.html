@@ -1,0 +1,471 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.topology.base &mdash; MDAnalysis 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.topology.base</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.topology.base</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Base topology reader classes --- :mod:`MDAnalysis.topology.base`</span>
+<span class="sd">================================================================</span>
+
+<span class="sd">Derive topology reader classes from the base class in this module. All</span>
+<span class="sd">topology readers raise :exc:`IOError` upon failing to read a topology</span>
+<span class="sd">file and :exc:`ValueError` upon failing to make sense of the read data.</span>
+
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+
+<span class="sd">.. autoclass:: TopologyReaderBase</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">zip</span>
+<span class="c1"># While reduce is a built-in in python 2, it is not in python 3</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">_PARSERS</span><span class="p">,</span> <span class="n">_PARSER_HINTS</span>
+<span class="kn">from</span> <span class="nn">..coordinates.base</span> <span class="kn">import</span> <span class="n">IOBase</span>
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
+
+
+<span class="k">class</span> <span class="nc">_Topologymeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Internal: Topology Parser registration voodoo</span>
+
+<span class="sd">    When classes which inherit from TopologyReaderBase are *defined*</span>
+<span class="sd">    this metaclass makes it known to MDAnalysis.  The optional `format`</span>
+<span class="sd">    attribute and `_format_hint` staticmethod are read:</span>
+<span class="sd">     - `format` defines the file extension this Parser targets.</span>
+<span class="sd">     - `_format_hint` defines a function which returns a boolean if the</span>
+<span class="sd">       Parser can process a particular object</span>
+
+<span class="sd">    Eg::</span>
+
+<span class="sd">      class ThingParser(TopologyReaderBase):</span>
+<span class="sd">          format = [&#39;foo&#39;, &#39;bar&#39;]</span>
+
+<span class="sd">          @staticmethod</span>
+<span class="sd">          _format_hint(thing):</span>
+<span class="sd">              try:</span>
+<span class="sd">                  import WeirdPackage</span>
+<span class="sd">              except ImportError:</span>
+<span class="sd">                  return False</span>
+<span class="sd">              return isinstance(thing, WeirdPackage.Thing)</span>
+
+<span class="sd">    This way there is no strict dependency on &quot;WeirdPackage&quot;, but if</span>
+<span class="sd">    a user supplies a WeirdPackage.Thing the &quot;ThingParser&#39; will be able</span>
+<span class="sd">    to step up and read it.</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Added format_hint functionality</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
+        <span class="nb">type</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">asiterable</span><span class="p">(</span><span class="n">classdict</span><span class="p">[</span><span class="s1">&#39;format&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">fmt_name</span> <span class="ow">in</span> <span class="n">fmt</span><span class="p">:</span>
+                <span class="n">fmt_name</span> <span class="o">=</span> <span class="n">fmt_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                <span class="n">_PARSERS</span><span class="p">[</span><span class="n">fmt_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
+
+                <span class="k">if</span> <span class="s1">&#39;_format_hint&#39;</span> <span class="ow">in</span> <span class="n">classdict</span><span class="p">:</span>
+                    <span class="n">_PARSER_HINTS</span><span class="p">[</span><span class="n">fmt_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">classdict</span><span class="p">[</span><span class="s1">&#39;_format_hint&#39;</span><span class="p">]</span><span class="o">.</span><span class="vm">__func__</span>
+
+<div class="viewcode-block" id="TopologyReaderBase"><a class="viewcode-back" href="../../../documentation_pages/topology/base.html#MDAnalysis.topology.base.TopologyReaderBase">[docs]</a><span class="k">class</span> <span class="nc">TopologyReaderBase</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">_Topologymeta</span><span class="p">,</span> <span class="n">IOBase</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for topology readers</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        name of the topology file</span>
+<span class="sd">    universe : Universe, optional</span>
+<span class="sd">        Supply a Universe to the Parser.  This then passes it to the</span>
+<span class="sd">        atom instances that are created within parsers.</span>
+
+<span class="sd">    All topology readers must define a `parse` method which</span>
+<span class="sd">    returns a Topology object</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    * :exc:`IOError` upon failing to read a topology file</span>
+<span class="sd">    * :exc:`ValueError` upon failing to make sense of the read data</span>
+
+<span class="sd">    .. versionadded:: 0.9.0</span>
+<span class="sd">    .. versionchanged:: 0.9.2</span>
+<span class="sd">       Added keyword &#39;universe&#39; to pass to Atom creation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Override this in each subclass&quot;</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">squash_by</span><span class="p">(</span><span class="n">child_parent_ids</span><span class="p">,</span> <span class="o">*</span><span class="n">attributes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Squash a child-parent relationship</span>
+
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    child_parent_ids - array of ids (unique values that identify the parent)</span>
+<span class="sd">    *attributes - other arrays that need to follow the sorting of ids</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    child_parents_idx - an array of len(child) which points to the index of</span>
+<span class="sd">                        parent</span>
+<span class="sd">    parent_ids - len(parent) of the ids</span>
+<span class="sd">    *parent_attrs - len(parent) of the other attributes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">unique_resids</span><span class="p">,</span> <span class="n">sort_mask</span><span class="p">,</span> <span class="n">atom_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
+        <span class="n">child_parent_ids</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">atom_idx</span><span class="p">,</span> <span class="n">unique_resids</span><span class="p">,</span> <span class="p">[</span><span class="n">attr</span><span class="p">[</span><span class="n">sort_mask</span><span class="p">]</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">change_squash</span><span class="p">(</span><span class="n">criteria</span><span class="p">,</span> <span class="n">to_squash</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Squash per atom data to per residue according to changes in resid</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    criteria : list of numpy ndarray</span>
+<span class="sd">      Arrays which when changing indicate a new residue</span>
+<span class="sd">    to_squash : list of numpy arrays</span>
+<span class="sd">      Arrays which get squashed according to the criteria arrays</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    residx : numpy array</span>
+<span class="sd">      The Residue *index* that each Atom gets assigned to. [len(resids)]</span>
+<span class="sd">    squashed : numpy array</span>
+<span class="sd">      The to_squash arrays reduced down to per Residue values</span>
+
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    resids = np.array([2, 2, 3, 3, 2, 2])</span>
+<span class="sd">    resnames = np.array([&#39;RsA&#39;, &#39;RsA&#39;, &#39;RsB&#39;, &#39;RsB&#39;, &#39;RsC&#39;, &#39;RsC&#39;])</span>
+<span class="sd">    segids = np.array([&#39;A&#39;, &#39;A&#39;, &#39;A&#39;, &#39;A&#39;, &#39;B&#39;, &#39;B&#39;])</span>
+
+<span class="sd">    residx, (new_resids, new_resnames, new_segids) = resid_change_squash(</span>
+<span class="sd">                                                      (resids,), (resids, resnames, segids))</span>
+
+<span class="sd">    # Per atom res index</span>
+<span class="sd">    residx: [0, 0, 1, 1, 2, 2]</span>
+<span class="sd">    # Per residue record of each attribute</span>
+<span class="sd">    new_resids: [2, 3, 2]</span>
+<span class="sd">    new_resnames: [&#39;RsA&#39;, &#39;RsB&#39;, &#39;RsC&#39;]</span>
+<span class="sd">    new_segids: [&#39;A&#39;, &#39;A&#39;, &#39;B&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">get_borders</span><span class="p">(</span><span class="o">*</span><span class="n">arrays</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generator of indices to slice arrays when they change&quot;&quot;&quot;</span>
+        <span class="n">borders</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">reduce</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">,</span>
+                                    <span class="p">(</span><span class="n">a</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">)))</span>
+        <span class="c1"># Add Nones so we can slice from start to end</span>
+        <span class="k">return</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">borders</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
+
+    <span class="n">l0</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">criteria</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="o">==</span> <span class="n">l0</span>
+               <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">criteria</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">to_squash</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;All arrays must be equally sized&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 1) Detect where resids change</span>
+    <span class="n">borders</span> <span class="o">=</span> <span class="n">get_borders</span><span class="p">(</span><span class="o">*</span><span class="n">criteria</span><span class="p">)</span>
+    <span class="c1"># Number of groups = number of changes + 1</span>
+    <span class="c1"># 2 `None`s have been added, so -1</span>
+    <span class="n">nres</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">borders</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="c1"># 2) Allocate new arrays</span>
+    <span class="c1"># Per atom record of what residue they belong to</span>
+    <span class="n">residx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">criteria</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+    <span class="c1"># Per residue record of various attributes</span>
+    <span class="n">new_others</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nres</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">o</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">to_squash</span><span class="p">]</span>
+
+    <span class="c1"># 3) Slice through resids and others to find values</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">borders</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">borders</span><span class="p">[</span><span class="mi">1</span><span class="p">:])):</span>
+        <span class="n">residx</span><span class="p">[</span><span class="n">x</span><span class="p">:</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>  <span class="c1"># atoms between x &amp; y are in the i&#39;th residue</span>
+        <span class="k">for</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">to_squash</span><span class="p">,</span> <span class="n">new_others</span><span class="p">):</span>
+            <span class="n">new</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">old</span><span class="p">[</span><span class="n">x</span><span class="p">:</span><span class="n">y</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># TODO: Check that x:y is the same</span>
+            <span class="c1"># Should be the same for self consistency...</span>
+
+    <span class="k">return</span> <span class="n">residx</span><span class="p">,</span> <span class="n">new_others</span>
+
+
+<span class="k">def</span> <span class="nf">reduce_singular</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the value in an array of length 1, or</span>
+<span class="sd">    the tuple of an array with a longer lengh.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    values: array-like</span>
+<span class="sd">        Array to squash</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    values: tuple or single value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

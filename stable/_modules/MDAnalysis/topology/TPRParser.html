@@ -1,0 +1,510 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.topology.TPRParser &mdash; MDAnalysis 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.topology.TPRParser</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.topology.TPRParser</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+<span class="c1"># TPR parser and tpr support module</span>
+<span class="c1"># Copyright (c) 2011 Zhuyi Xue</span>
+<span class="c1"># Released under the  GNU Public Licence, v2</span>
+
+
+<span class="sd">&quot;&quot;&quot;Gromacs portable run input TPR format parser</span>
+<span class="sd">============================================</span>
+
+<span class="sd">The :mod:`~MDAnalysis.topology.TPRParser` module allows reading of a</span>
+<span class="sd">Gromacs_ portable run input file (a `TPR file`_). Because</span>
+<span class="sd">the file format of the TPR file is changing rapidly, not all versions</span>
+<span class="sd">are currently supported. The known working versions and the</span>
+<span class="sd">approximate Gromacs release numbers are listed in the table</span>
+<span class="sd">:ref:`TPR format versions &lt;TPR-format-table&gt;`.</span>
+
+<span class="sd">.. _`TPR-format-table`:</span>
+
+<span class="sd">.. table:: TPR format versions and generations read by :func:`MDAnalysis.topology.TPRParser.parse`.</span>
+
+<span class="sd">   ========== ============== ==================== =====</span>
+<span class="sd">   TPX format TPX generation Gromacs release      read</span>
+<span class="sd">   ========== ============== ==================== =====</span>
+<span class="sd">   ??         ??             3.3, 3.3.1           no</span>
+
+<span class="sd">   58         17             4.0, 4.0.2, 4.0.3,   yes</span>
+<span class="sd">                             4.0.4, 4.0.5, 4.0.6,</span>
+<span class="sd">                             4.0.7</span>
+
+<span class="sd">   73         23             4.5.0, 4.5.1, 4.5.2, yes</span>
+<span class="sd">                             4.5.3, 4.5.4, 4.5.5</span>
+
+<span class="sd">   83         24             4.6, 4.6.1           yes</span>
+
+<span class="sd">   100        26             5.0, 5.0.1, 5.0.2,   yes</span>
+<span class="sd">                             5.0.3,5.0.4, 5.0.5</span>
+
+<span class="sd">   103        26             5.1                  yes</span>
+
+<span class="sd">   110        26             2016                 yes</span>
+<span class="sd">   112        26             2018                 yes</span>
+<span class="sd">   116        26             2019                 yes</span>
+<span class="sd">   119        27             2020[*]_             yes</span>
+<span class="sd">   ========== ============== ==================== =====</span>
+
+<span class="sd">.. [*] Files generated by the beta versions of Gromacs 2020 are NOT supported.</span>
+<span class="sd">   See `Issue 2428`_ for more details.</span>
+
+<span class="sd">For further discussion and notes see `Issue 2`_. Please *open a new issue* in</span>
+<span class="sd">the `Issue Tracker`_ when a new or different TPR file format version should be</span>
+<span class="sd">supported.</span>
+
+<span class="sd">Bonded interactions available in Gromacs are described in table 5.5 of the</span>
+<span class="sd">`Gromacs manual`_. The following ones are used to build the topology (see</span>
+<span class="sd">`Issue 463`_):</span>
+
+<span class="sd">* bonds: regular bonds (type 1), G96 bonds (type 2), Morse (type 3),</span>
+<span class="sd">  cubic bonds (type 4), connections (type 5), harmonic potentials (type 6),</span>
+<span class="sd">  FENE bonds (type 7), restraint potentials (type 10),</span>
+<span class="sd">  tabulated potential with exclusion/connection (type 8),</span>
+<span class="sd">  tabulated potential without exclusion/connection (type 9), constraints with</span>
+<span class="sd">  exclusion/connection (type 1), constraints without exclusion/connection (type</span>
+<span class="sd">  2), SETTLE constraints</span>
+<span class="sd">* angles: regular angles (type 1), G96 angles (type 2), cross bond-bond</span>
+<span class="sd">  (type3), cross-bond-angle (type 4), Urey-Bradley (type 5), quartic angles</span>
+<span class="sd">  (type 6), restricted bending potential (type 10), tabulated angles (type 8)</span>
+<span class="sd">* dihedrals: proper dihedrals (type 1 and type 9), Ryckaert-Bellemans dihedrals</span>
+<span class="sd">  (type 3), Fourier dihedrals (type 5), restricted dihedrals (type 10),</span>
+<span class="sd">  combined bending-torsion potentials (type 11), tabulated dihedral (type 8)</span>
+<span class="sd">* impropers: improper dihedrals (type 2), periodic improper dihedrals (type 4)</span>
+
+
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+
+<span class="sd">.. autoclass:: TPRParser</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">See Also</span>
+<span class="sd">--------</span>
+<span class="sd">:mod:`MDAnalysis.topology.tpr`</span>
+
+
+<span class="sd">Development notes</span>
+<span class="sd">-----------------</span>
+
+<span class="sd">The TPR reader is a pure-python implementation of a basic TPR</span>
+<span class="sd">parser. Currently the following sections of the topology are parsed:</span>
+
+<span class="sd">* Atoms: number, name, type, resname, resid, segid, mass, charge,</span>
+<span class="sd">  [residue, segment, radius, bfactor, resnum, moltype]</span>
+<span class="sd">* Bonds</span>
+<span class="sd">* Angels</span>
+<span class="sd">* Dihedrals</span>
+<span class="sd">* Impropers</span>
+
+<span class="sd">This tpr parser is written according to the following files</span>
+
+<span class="sd">- :file:`{gromacs_dir}/src/kernel/gmxdump.c`</span>
+<span class="sd">- :file:`{gromacs_dir}/src/gmxlib/tpxio.c` (the most important one)</span>
+<span class="sd">- :file:`{gromacs_dir}/src/gmxlib/gmxfio_rw.c`</span>
+<span class="sd">- :file:`{gromacs_dir}/src/gmxlib/gmxfio_xdr.c`</span>
+<span class="sd">- :file:`{gromacs_dir}/include/gmxfiofio.h`</span>
+
+<span class="sd">or their equivalent in more recent versions of Gromacs.</span>
+
+<span class="sd">The function :func:`read_tpxheader` is based on the</span>
+<span class="sd">`TPRReaderDevelopment`_ notes.  Functions with names starting with</span>
+<span class="sd">``read_`` or ``do_`` are trying to be similar to those in</span>
+<span class="sd">:file:`gmxdump.c` or :file:`tpxio.c`, those with ``extract_`` are new.</span>
+
+<span class="sd">Wherever ``fver_err(fver)`` is used, it means the tpx version problem</span>
+<span class="sd">has not been solved. Versions prior to Gromacs 4.0.x are not supported.</span>
+
+<span class="sd">.. Links</span>
+<span class="sd">.. _Gromacs: http://www.gromacs.org</span>
+<span class="sd">.. _`Gromacs manual`: http://manual.gromacs.org/documentation/5.1/manual-5.1.pdf</span>
+<span class="sd">.. _TPR file: http://manual.gromacs.org/current/online/tpr.html</span>
+<span class="sd">.. _`Issue Tracker`: https://github.com/MDAnalysis/mdanalysis/issues</span>
+<span class="sd">.. _`Issue 2`: https://github.com/MDAnalysis/mdanalysis/issues/2</span>
+<span class="sd">.. _`Issue 463`: https://github.com/MDAnalysis/mdanalysis/pull/463</span>
+<span class="sd">.. _TPRReaderDevelopment: https://github.com/MDAnalysis/mdanalysis/wiki/TPRReaderDevelopment</span>
+<span class="sd">.. _`Issue 2428`: https://github.com/MDAnalysis/mdanalysis/issues/2428</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Zhuyi Xue&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;GNU Public Licence, v2&quot;</span>
+
+<span class="kn">import</span> <span class="nn">xdrlib</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">guessers</span>
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">openany</span>
+<span class="kn">from</span> <span class="nn">.tpr</span> <span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">tpr_utils</span>
+<span class="kn">from</span> <span class="nn">.tpr</span> <span class="kn">import</span> <span class="n">setting</span> <span class="k">as</span> <span class="n">S</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span>
+<span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="n">Resnums</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.topology.TPRparser&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="TPRParser"><a class="viewcode-back" href="../../../documentation_pages/topology/TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser">[docs]</a><span class="k">class</span> <span class="nc">TPRParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Read topology information from a Gromacs_ `TPR file`_.</span>
+
+<span class="sd">    .. _Gromacs: http://www.gromacs.org</span>
+<span class="sd">    .. _TPR file: http://manual.gromacs.org/current/online/tpr.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;TPR&#39;</span>
+
+<div class="viewcode-block" id="TPRParser.parse"><a class="viewcode-back" href="../../../documentation_pages/topology/TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parse a Gromacs TPR file into a MDAnalysis internal topology structure.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        structure : dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">infile</span><span class="p">:</span>
+            <span class="n">tprf</span> <span class="o">=</span> <span class="n">infile</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">tpr_utils</span><span class="o">.</span><span class="n">TPXUnpacker</span><span class="p">(</span><span class="n">tprf</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">th</span> <span class="o">=</span> <span class="n">tpr_utils</span><span class="o">.</span><span class="n">read_tpxheader</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>                    <span class="c1"># tpxheader</span>
+        <span class="k">except</span> <span class="ne">EOFError</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">: Invalid tpr file or cannot be recognized&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_header</span><span class="p">(</span><span class="n">th</span><span class="p">)</span>
+
+        <span class="n">V</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">fver</span>                                    <span class="c1"># since it&#39;s used very often</span>
+
+        <span class="c1"># Starting with gromacs 2020 (tpx version 119), the body of the file</span>
+        <span class="c1"># is encoded differently. We change the unpacker accordingly.</span>
+        <span class="k">if</span> <span class="n">V</span> <span class="o">&gt;=</span> <span class="n">S</span><span class="o">.</span><span class="n">tpxv_AddSizeField</span> <span class="ow">and</span> <span class="n">th</span><span class="o">.</span><span class="n">fgen</span> <span class="o">&gt;=</span> <span class="mi">27</span><span class="p">:</span>
+            <span class="n">actual_body_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get_buffer</span><span class="p">())</span> <span class="o">-</span> <span class="n">data</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">actual_body_size</span> <span class="o">==</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">th</span><span class="o">.</span><span class="n">sizeOfTprBody</span><span class="p">:</span>
+                <span class="c1"># See issue #2428.</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="s2">&quot;TPR files produced with beta versions of gromacs 2020 &quot;</span>
+                    <span class="s2">&quot;are not supported.&quot;</span>
+                <span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">tpr_utils</span><span class="o">.</span><span class="n">TPXUnpacker2020</span><span class="o">.</span><span class="n">from_unpacker</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">state_ngtc</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">ngtc</span>         <span class="c1"># done init_state() in src/gmxlib/tpxio.c</span>
+        <span class="k">if</span> <span class="n">th</span><span class="o">.</span><span class="n">bBox</span><span class="p">:</span>
+            <span class="n">tpr_utils</span><span class="o">.</span><span class="n">extract_box_info</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">state_ngtc</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">V</span> <span class="o">&gt;=</span> <span class="mi">28</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">V</span> <span class="o">&lt;</span> <span class="mi">69</span><span class="p">:</span>                      <span class="c1"># redundancy due to  different versions</span>
+                <span class="n">tpr_utils</span><span class="o">.</span><span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">state_ngtc</span><span class="p">)</span>
+            <span class="n">tpr_utils</span><span class="o">.</span><span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">state_ngtc</span><span class="p">)</span>        <span class="c1"># relevant to Berendsen tcoupl_lambda</span>
+
+        <span class="k">if</span> <span class="n">V</span> <span class="o">&lt;</span> <span class="mi">26</span><span class="p">:</span>
+            <span class="n">tpr_utils</span><span class="o">.</span><span class="n">fileVersion_err</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">th</span><span class="o">.</span><span class="n">bTop</span><span class="p">:</span>
+            <span class="n">tpr_top</span> <span class="o">=</span> <span class="n">tpr_utils</span><span class="o">.</span><span class="n">do_mtop</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">: No topology found in tpr file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="n">tpr_top</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">Resnums</span><span class="p">(</span><span class="n">tpr_top</span><span class="o">.</span><span class="n">resids</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">copy</span><span class="p">()))</span>
+
+        <span class="k">return</span> <span class="n">tpr_top</span></div>
+
+    <span class="c1"># THE FOLLOWING CODE IS WORKING FOR TPX VERSION 58, BUT SINCE THESE INFO IS</span>
+    <span class="c1"># NOT INTERESTED, SO IT&#39;S NOT COVERED IN ALL VERSIONS. PARSING STOPS HERE.</span>
+
+    <span class="c1"># if th.bX:</span>
+    <span class="c1">#     ndo_rvec(data, th.natoms)</span>
+
+    <span class="c1"># if th.bV:</span>
+    <span class="c1">#     ndo_rvec(data, th.natoms)</span>
+
+    <span class="c1"># if th.bF:</span>
+    <span class="c1">#     ndo_rvec(data, th.natoms)</span>
+
+    <span class="c1"># not useful at the moment</span>
+    <span class="c1"># ePBC = -1;</span>
+    <span class="c1"># bPeriodicMols = False</span>
+    <span class="c1"># if th.bIr:</span>
+    <span class="c1">#     # update</span>
+    <span class="c1">#     data.unpack_int()                                # ePBC</span>
+    <span class="c1">#     data.unpack_bool()                               # bPeriodicMols</span>
+    <span class="c1">#     # 17 &lt; 23. and ir (ir is from the c code, seems not apply here</span>
+    <span class="c1">#     if th.fgen &lt; setting.tpx_generation:</span>
+    <span class="c1">#         # a crazily long (670 lines) function in c, slightly better here</span>
+    <span class="c1">#         # (240 lines), so put it in setting.py</span>
+    <span class="c1">#         utils.do_inputrec(data)</span>
+
+    <span class="k">def</span> <span class="nf">_log_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">th</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Gromacs version   : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">ver_str</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;tpx version       : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">fver</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;tpx generation    : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">fgen</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;tpx precision     : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">precision</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;tpx file_tag      : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">file_tag</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;tpx natoms        : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">natoms</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;tpx ngtc          : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">ngtc</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;tpx fep_state     : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">fep_state</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;tpx lambda        : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">lamb</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;tpx bIr (input record): </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">bIr</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;tpx bTop         : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">bTop</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;tpx bX           : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">bX</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;tpx bV           : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">bV</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;tpx bF           : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">bF</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;tpx bBox         : </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">th</span><span class="o">.</span><span class="n">bBox</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

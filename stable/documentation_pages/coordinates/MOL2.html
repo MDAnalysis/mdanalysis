@@ -1,0 +1,450 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>6.12. MOL2 file format — MDAnalysis.coordinates.MOL2 &mdash; MDAnalysis 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.0 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="6.13. NAMDBIN files format — MDAnalysis.coordinates.NAMDBIN" href="NAMDBIN.html" />
+    <link rel="prev" title="6.11. MMTF trajectory reader — MDAnalysis.coordinates.MMTF" href="MMTF.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="init.html">6.1. Trajectory Readers and Writers  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="CRD.html">6.2. CRD structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.CRD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DCD.html">6.3. DCD trajectory I/O  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DCD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DLPoly.html">6.4. DL_Poly format reader <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DLPoly</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DMS.html">6.5. DESRES file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GMS.html">6.6. GAMESS trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GSD.html">6.7. GSD trajectory reader  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GSD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GRO.html">6.8. GRO file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="INPCRD.html">6.9. INPCRD structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.INPCRD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="LAMMPS.html">6.10. LAMMPS DCD trajectory and DATA I/O  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="MMTF.html">6.11. MMTF trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MMTF</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">6.12. MOL2 file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-for-working-with-mol2-files">6.12.1. Example for working with mol2 files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#classes">6.12.2. Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mol2-format-notes">6.12.3. MOL2 format notes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="NAMDBIN.html">6.13. NAMDBIN files format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.NAMDBIN</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDB.html">6.14. PDB structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBQT.html">6.15. PDBQT structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PQR.html">6.16. PQR file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRJ.html">6.17. AMBER trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRR.html">6.18. TRR trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRZ.html">6.19. TRZ trajectory I/O  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TXYZ.html">6.20. TXYZ file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TXYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XTC.html">6.21. XTC trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XYZ.html">6.22. XYZ trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="FHIAIMS.html">6.23. FHI-AIMS file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.FHIAIMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory.html">6.24. Reading trajectories from memory — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chemfiles.html">6.25. Reading trajectory with Chemfiles — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="null.html">6.26. Null output — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">6.27. Base classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">6.28. Common functions for coordinate reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">6.29. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.30. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../coordinates_modules.html">6. Coordinates modules</a> &raquo;</li>
+        
+      <li>6.12. MOL2 file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/documentation_pages/coordinates/MOL2.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-MDAnalysis.coordinates.MOL2"></span><div class="section" id="mol2-file-format-mdanalysis-coordinates-mol2">
+<h1>6.12. MOL2 file format — <a class="reference internal" href="#module-MDAnalysis.coordinates.MOL2" title="MDAnalysis.coordinates.MOL2"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a><a class="headerlink" href="#mol2-file-format-mdanalysis-coordinates-mol2" title="Permalink to this headline">¶</a></h1>
+<p>Classes to work with <a class="reference external" href="http://www.tripos.com/">Tripos</a> molecule structure format (<a class="reference external" href="http://www.tripos.com/data/support/mol2.pdf">MOL2</a>) coordinate and
+topology files. Used, for instance, by the <a class="reference external" href="http://dock.compbio.ucsf.edu/">DOCK</a> docking code.</p>
+<div class="section" id="example-for-working-with-mol2-files">
+<h2>6.12.1. Example for working with mol2 files<a class="headerlink" href="#example-for-working-with-mol2-files" title="Permalink to this headline">¶</a></h2>
+<p>To open a mol2, remove all hydrogens and save as a new file, use the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;Molecule.mol2&quot;</span><span class="p">)</span>
+<span class="n">gr</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;not name H*&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">gr</span><span class="p">))</span>
+<span class="n">gr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Molecule_noh.mol2&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="docutils">
+<dt><code class="xref py py-mod docutils literal notranslate"><span class="pre">rdkit</span></code></dt>
+<dd><a class="reference external" href="http://www.rdkit.org/docs/GettingStartedInPython.html">rdkit</a> is an open source cheminformatics toolkit with more mol2 functionality</dd>
+</dl>
+<p class="last"><code class="xref py py-mod docutils literal notranslate"></code></p>
+</div>
+</div>
+<div class="section" id="classes">
+<h2>6.12.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MDAnalysis.coordinates.MOL2.MOL2Reader">
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.MOL2.</code><code class="descname">MOL2Reader</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/MOL2.html#MOL2Reader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.MOL2.MOL2Reader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reader for MOL2 structure format.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based.
+MOL2 now reuses the same Timestep object for every frame,
+previously created a new instance of Timestep each frame.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Allows for comments at top of file.
+Ignores status bit strings</p>
+</div>
+<p>Read coordinates from <cite>filename</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> or </em><a class="reference internal" href="../lib/util.html#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><em>NamedStream</em></a>) – name of the mol2 file or stream</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.MOL2.MOL2Writer">
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.MOL2.</code><code class="descname">MOL2Writer</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms=None</em>, <em>convert_units=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/MOL2.html#MOL2Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.MOL2.MOL2Writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>mol2 format writer</p>
+<p>Write a file in the <a class="reference external" href="http://www.tripos.com/">Tripos</a> molecule structure format (<a class="reference external" href="http://www.tripos.com/data/support/mol2.pdf">MOL2</a>).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p><a class="reference internal" href="#MDAnalysis.coordinates.MOL2.MOL2Writer" title="MDAnalysis.coordinates.MOL2.MOL2Writer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MOL2Writer</span></code></a> can only be used to write out previously loaded MOL2 files.
+If you’re trying to convert, for example, a PDB file to MOL you should
+use other tools, like <a class="reference external" href="http://www.rdkit.org/docs/GettingStartedInPython.html">rdkit</a>.</p>
+<p>Here is an example how to use <a class="reference external" href="http://www.rdkit.org/docs/GettingStartedInPython.html">rdkit</a> to convert a PDB to MOL:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
+<span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromPDBFile</span><span class="p">(</span><span class="s2">&quot;molecule.pdb&quot;</span><span class="p">,</span> <span class="n">removeHs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">Chem</span><span class="o">.</span><span class="n">MolToMolFile</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="s2">&quot;molecule.mol&quot;</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p class="last">MOL2 writer is currently not available for rdkit master. It requires SYBYL
+atomtype generation.
+See page 7 for list of SYBYL atomtypes
+(<a class="reference external" href="http://tripos.com/tripos_resources/fileroot/pdfs/mol2_format2.pdf">http://tripos.com/tripos_resources/fileroot/pdfs/mol2_format2.pdf</a>).</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based</p>
+</div>
+<p>Create a new MOL2Writer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of output file</li>
+<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.MOL2.MOL2Writer.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/MOL2.html#MOL2Writer.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.MOL2.MOL2Writer.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the trajectory file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.MOL2.MOL2Writer.encode_block">
+<code class="descname">encode_block</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/MOL2.html#MOL2Writer.encode_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.MOL2.MOL2Writer.encode_block" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="mol2-format-notes">
+<h2>6.12.3. MOL2 format notes<a class="headerlink" href="#mol2-format-notes" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">MOL2 Format Specification:  (<a class="reference external" href="http://www.tripos.com/data/support/mol2.pdf">http://www.tripos.com/data/support/mol2.pdf</a>)</p>
+</li>
+<li><p class="first">Example file (<a class="reference external" href="http://www.tripos.com/mol2/mol2_format3.html">http://www.tripos.com/mol2/mol2_format3.html</a>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="c1">#    Name: benzene</span>
+ <span class="c1">#    Creating user name: tom</span>
+ <span class="c1">#    Creation time: Wed Dec 28 00:18:30 1988</span>
+
+ <span class="c1">#    Modifying user name: tom</span>
+ <span class="c1">#    Modification time: Wed Dec 28 00:18:30 1988</span>
+
+ <span class="o">@&lt;</span><span class="n">TRIPOS</span><span class="o">&gt;</span><span class="n">MOLECULE</span>
+ <span class="n">benzene</span>
+ <span class="mi">12</span> <span class="mi">12</span> <span class="mi">1</span>  <span class="mi">0</span>   <span class="mi">0</span>
+ <span class="n">SMALL</span>
+ <span class="n">NO_CHARGES</span>
+
+
+ <span class="o">@&lt;</span><span class="n">TRIPOS</span><span class="o">&gt;</span><span class="n">ATOM</span>
+ <span class="mi">1</span>   <span class="n">C1</span>  <span class="mf">1.207</span>   <span class="mf">2.091</span>   <span class="mf">0.000</span>   <span class="n">C</span><span class="o">.</span><span class="n">ar</span>    <span class="mi">1</span>   <span class="n">BENZENE</span> <span class="mf">0.000</span>
+ <span class="mi">2</span>   <span class="n">C2</span>  <span class="mf">2.414</span>   <span class="mf">1.394</span>   <span class="mf">0.000</span>   <span class="n">C</span><span class="o">.</span><span class="n">ar</span>    <span class="mi">1</span>   <span class="n">BENZENE</span> <span class="mf">0.000</span>
+ <span class="mi">3</span>   <span class="n">C3</span>  <span class="mf">2.414</span>   <span class="mf">0.000</span>   <span class="mf">0.000</span>   <span class="n">C</span><span class="o">.</span><span class="n">ar</span>    <span class="mi">1</span>   <span class="n">BENZENE</span> <span class="mf">0.000</span>
+ <span class="mi">4</span>   <span class="n">C4</span>  <span class="mf">1.207</span>   <span class="o">-</span><span class="mf">0.697</span>  <span class="mf">0.000</span>   <span class="n">C</span><span class="o">.</span><span class="n">ar</span>    <span class="mi">1</span>   <span class="n">BENZENE</span> <span class="mf">0.000</span>
+ <span class="mi">5</span>   <span class="n">C5</span>  <span class="mf">0.000</span>   <span class="mf">0.000</span>   <span class="mf">0.000</span>   <span class="n">C</span><span class="o">.</span><span class="n">ar</span>    <span class="mi">1</span>   <span class="n">BENZENE</span> <span class="mf">0.000</span>
+ <span class="mi">6</span>   <span class="n">C6</span>  <span class="mf">0.000</span>   <span class="mf">1.394</span>   <span class="mf">0.000</span>   <span class="n">C</span><span class="o">.</span><span class="n">ar</span>    <span class="mi">1</span>   <span class="n">BENZENE</span> <span class="mf">0.000</span>
+ <span class="mi">7</span>   <span class="n">H1</span>  <span class="mf">1.207</span>   <span class="mf">3.175</span>   <span class="mf">0.000</span>   <span class="n">H</span>   <span class="mi">1</span>   <span class="n">BENZENE</span> <span class="mf">0.000</span>
+ <span class="mi">8</span>   <span class="n">H2</span>  <span class="mf">3.353</span>   <span class="mf">1.936</span>   <span class="mf">0.000</span>   <span class="n">H</span>   <span class="mi">1</span>   <span class="n">BENZENE</span> <span class="mf">0.000</span>
+ <span class="mi">9</span>   <span class="n">H3</span>  <span class="mf">3.353</span>   <span class="o">-</span><span class="mf">0.542</span>  <span class="mf">0.000</span>   <span class="n">H</span>   <span class="mi">1</span>   <span class="n">BENZENE</span> <span class="mf">0.000</span>
+ <span class="mi">10</span>  <span class="n">H4</span>  <span class="mf">1.207</span>   <span class="o">-</span><span class="mf">1.781</span>  <span class="mf">0.000</span>   <span class="n">H</span>   <span class="mi">1</span>   <span class="n">BENZENE</span> <span class="mf">0.000</span>
+ <span class="mi">11</span>  <span class="n">H5</span>  <span class="o">-</span><span class="mf">0.939</span>  <span class="o">-</span><span class="mf">0.542</span>  <span class="mf">0.000</span>   <span class="n">H</span>   <span class="mi">1</span>   <span class="n">BENZENE</span> <span class="mf">0.000</span>
+ <span class="mi">12</span>  <span class="n">H6</span>  <span class="o">-</span><span class="mf">0.939</span>  <span class="mf">1.936</span>   <span class="mf">0.000</span>   <span class="n">H</span>   <span class="mi">1</span>   <span class="n">BENZENE</span> <span class="mf">0.000</span>
+ <span class="o">@&lt;</span><span class="n">TRIPOS</span><span class="o">&gt;</span><span class="n">BOND</span>
+ <span class="mi">1</span>   <span class="mi">1</span>   <span class="mi">2</span>   <span class="n">ar</span>
+ <span class="mi">2</span>   <span class="mi">1</span>   <span class="mi">6</span>   <span class="n">ar</span>
+ <span class="mi">3</span>   <span class="mi">2</span>   <span class="mi">3</span>   <span class="n">ar</span>
+ <span class="mi">4</span>   <span class="mi">3</span>   <span class="mi">4</span>   <span class="n">ar</span>
+ <span class="mi">5</span>   <span class="mi">4</span>   <span class="mi">5</span>   <span class="n">ar</span>
+ <span class="mi">6</span>   <span class="mi">5</span>   <span class="mi">6</span>   <span class="n">ar</span>
+ <span class="mi">7</span>   <span class="mi">1</span>   <span class="mi">7</span>   <span class="mi">1</span>
+ <span class="mi">8</span>   <span class="mi">2</span>   <span class="mi">8</span>   <span class="mi">1</span>
+ <span class="mi">9</span>   <span class="mi">3</span>   <span class="mi">9</span>   <span class="mi">1</span>
+ <span class="mi">10</span>  <span class="mi">4</span>   <span class="mi">10</span>  <span class="mi">1</span>
+ <span class="mi">11</span>  <span class="mi">5</span>   <span class="mi">11</span>  <span class="mi">1</span>
+ <span class="mi">12</span>  <span class="mi">6</span>   <span class="mi">12</span>  <span class="mi">1</span>
+<span class="o">@&lt;</span><span class="n">TRIPOS</span><span class="o">&gt;</span><span class="n">SUBSTRUCTURE</span>
+ <span class="mi">1</span>   <span class="n">BENZENE</span> <span class="mi">1</span>   <span class="n">PERM</span>    <span class="mi">0</span>   <span class="o">****</span>    <span class="o">****</span>    <span class="mi">0</span>   <span class="n">ROOT</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="NAMDBIN.html" class="btn btn-neutral float-right" title="6.13. NAMDBIN files format — MDAnalysis.coordinates.NAMDBIN" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="MMTF.html" class="btn btn-neutral float-left" title="6.11. MMTF trajectory reader — MDAnalysis.coordinates.MMTF" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
