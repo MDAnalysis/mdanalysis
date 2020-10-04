@@ -16,5 +16,11 @@
     "display": "2.0.0-dev0",
     "url": "https://docs.mdanalysis.org/2.0.0-dev0",
     "latest": false
+  },
+  {
+    "version": "stable",
+    "display": "stable",
+    "url": "https://docs.mdanalysis.org/stable",
+    "latest": false
   }
 ]
