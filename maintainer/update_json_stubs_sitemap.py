@@ -132,7 +132,7 @@ if latest:
                     raise
 
         write_redirect(file, '', outfile)
-    
+
 
 
 if latest_version:
