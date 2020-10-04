@@ -477,7 +477,8 @@ the group.</li>
 attribute values to accumulate as its only positional argument and
 accept an (optional) keyword argument <code class="docutils literal notranslate"><span class="pre">axis</span></code> allowing to specify
 the axis along which the accumulation is performed.</li>
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the accumulation of all attributes associated with
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the accumulation of all attributes associated with
 atoms in the group will be returned as a single value. Otherwise,
 the accumulation of the attributes per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>,
 <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment will be returned as a 1d
@@ -2102,7 +2103,8 @@ operations such as calculating the center of mass of the molecule.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>,                     </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to unwrap. Note that, in any case, all
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+Which type of component to unwrap. Note that, in any case, all
 atoms within each compound must be interconnected by bonds, i.e.,
 compounds must correspond to (parts of) molecules.</li>
 <li><strong>reference</strong> (<em>{'com'</em><em>, </em><em>'cog'</em><em>, </em><em>None}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'com'</span></code> (center of mass) or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> (center of geometry), the
@@ -2135,8 +2137,8 @@ zero.</li>
 <p class="first admonition-title">Note</p>
 <p>Be aware of the fact that only atoms <em>belonging to the group</em> will
 be unwrapped! If you want entire molecules to be unwrapped, make sure
-that all atoms of these molecules are part of the group.</p>
-<p>An AtomGroup containing all atoms of all fragments in the group <code class="docutils literal notranslate"><span class="pre">ag</span></code>
+that all atoms of these molecules are part of the group.
+An AtomGroup containing all atoms of all fragments in the group <code class="docutils literal notranslate"><span class="pre">ag</span></code>
 can be created with:</p>
 <div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">all_frag_atoms</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">fragments</span><span class="p">)</span>
 </pre></div>
@@ -2210,18 +2212,18 @@ compound together during the process. If <cite>compound</cite> is different from
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>compound</strong> (<em>{'atoms'</em><em>, </em><em>'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>,                     </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to keep together during wrapping. Note that,
+<li><strong>compound</strong> (<em>{'atoms'</em><em>, </em><em>'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+Which type of component to keep together during wrapping. Note that,
 in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
 <li><strong>center</strong> (<em>{'com'</em><em>, </em><em>'cog'}</em>) – How to define the center of a given group of atoms. If <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'atoms'</span></code>, this parameter is meaningless and therefore ignored.</li>
-<li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>The unitcell dimensions of the system, which can be orthogonal or
+<li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
-<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the
-dimensions of the current time step.</p>
-</li>
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the
+dimensions of the current time step.</li>
 <li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, coordinates will be changed in place.</li>
 </ul>
 </td>
@@ -2262,8 +2264,8 @@ each compound. The same translation is applied to all atoms
 within this compound, meaning it will not be broken by the shift.
 This might however mean that not all atoms of a compound will be
 inside the unit cell after wrapping, but rather will be the center of
-the compound.</p>
-<p>Be aware of the fact that only atoms <em>belonging to the group</em> will be
+the compound.
+Be aware of the fact that only atoms <em>belonging to the group</em> will be
 taken into account!</p>
 <p><cite>center</cite> allows to define how the center of each group is computed.
 This can be either <code class="docutils literal notranslate"><span class="pre">'com'</span></code> for center of mass, or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> for center
@@ -2386,7 +2388,8 @@ the group.</li>
 attribute values to accumulate as its only positional argument and
 accept an (optional) keyword argument <code class="docutils literal notranslate"><span class="pre">axis</span></code> allowing to specify
 the axis along which the accumulation is performed.</li>
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the accumulation of all attributes associated with
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the accumulation of all attributes associated with
 atoms in the group will be returned as a single value. Otherwise,
 the accumulation of the attributes per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>,
 <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment will be returned as a 1d
@@ -3463,7 +3466,8 @@ operations such as calculating the center of mass of the molecule.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>,                     </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to unwrap. Note that, in any case, all
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+Which type of component to unwrap. Note that, in any case, all
 atoms within each compound must be interconnected by bonds, i.e.,
 compounds must correspond to (parts of) molecules.</li>
 <li><strong>reference</strong> (<em>{'com'</em><em>, </em><em>'cog'</em><em>, </em><em>None}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'com'</span></code> (center of mass) or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> (center of geometry), the
@@ -3496,8 +3500,8 @@ zero.</li>
 <p class="first admonition-title">Note</p>
 <p>Be aware of the fact that only atoms <em>belonging to the group</em> will
 be unwrapped! If you want entire molecules to be unwrapped, make sure
-that all atoms of these molecules are part of the group.</p>
-<p>An AtomGroup containing all atoms of all fragments in the group <code class="docutils literal notranslate"><span class="pre">ag</span></code>
+that all atoms of these molecules are part of the group.
+An AtomGroup containing all atoms of all fragments in the group <code class="docutils literal notranslate"><span class="pre">ag</span></code>
 can be created with:</p>
 <div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">all_frag_atoms</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">fragments</span><span class="p">)</span>
 </pre></div>
@@ -3529,18 +3533,18 @@ compound together during the process. If <cite>compound</cite> is different from
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>compound</strong> (<em>{'atoms'</em><em>, </em><em>'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>,                     </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to keep together during wrapping. Note that,
+<li><strong>compound</strong> (<em>{'atoms'</em><em>, </em><em>'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+Which type of component to keep together during wrapping. Note that,
 in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
 <li><strong>center</strong> (<em>{'com'</em><em>, </em><em>'cog'}</em>) – How to define the center of a given group of atoms. If <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'atoms'</span></code>, this parameter is meaningless and therefore ignored.</li>
-<li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>The unitcell dimensions of the system, which can be orthogonal or
+<li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
-<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the
-dimensions of the current time step.</p>
-</li>
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the
+dimensions of the current time step.</li>
 <li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, coordinates will be changed in place.</li>
 </ul>
 </td>
@@ -3581,8 +3585,8 @@ each compound. The same translation is applied to all atoms
 within this compound, meaning it will not be broken by the shift.
 This might however mean that not all atoms of a compound will be
 inside the unit cell after wrapping, but rather will be the center of
-the compound.</p>
-<p>Be aware of the fact that only atoms <em>belonging to the group</em> will be
+the compound.
+Be aware of the fact that only atoms <em>belonging to the group</em> will be
 taken into account!</p>
 <p><cite>center</cite> allows to define how the center of each group is computed.
 This can be either <code class="docutils literal notranslate"><span class="pre">'com'</span></code> for center of mass, or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> for center
@@ -3653,7 +3657,8 @@ the group.</li>
 attribute values to accumulate as its only positional argument and
 accept an (optional) keyword argument <code class="docutils literal notranslate"><span class="pre">axis</span></code> allowing to specify
 the axis along which the accumulation is performed.</li>
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the accumulation of all attributes associated with
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the accumulation of all attributes associated with
 atoms in the group will be returned as a single value. Otherwise,
 the accumulation of the attributes per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>,
 <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment will be returned as a 1d
@@ -4735,7 +4740,8 @@ operations such as calculating the center of mass of the molecule.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>,                     </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to unwrap. Note that, in any case, all
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+Which type of component to unwrap. Note that, in any case, all
 atoms within each compound must be interconnected by bonds, i.e.,
 compounds must correspond to (parts of) molecules.</li>
 <li><strong>reference</strong> (<em>{'com'</em><em>, </em><em>'cog'</em><em>, </em><em>None}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'com'</span></code> (center of mass) or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> (center of geometry), the
@@ -4768,8 +4774,8 @@ zero.</li>
 <p class="first admonition-title">Note</p>
 <p>Be aware of the fact that only atoms <em>belonging to the group</em> will
 be unwrapped! If you want entire molecules to be unwrapped, make sure
-that all atoms of these molecules are part of the group.</p>
-<p>An AtomGroup containing all atoms of all fragments in the group <code class="docutils literal notranslate"><span class="pre">ag</span></code>
+that all atoms of these molecules are part of the group.
+An AtomGroup containing all atoms of all fragments in the group <code class="docutils literal notranslate"><span class="pre">ag</span></code>
 can be created with:</p>
 <div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">all_frag_atoms</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">fragments</span><span class="p">)</span>
 </pre></div>
@@ -4801,18 +4807,18 @@ compound together during the process. If <cite>compound</cite> is different from
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>compound</strong> (<em>{'atoms'</em><em>, </em><em>'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>,                     </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to keep together during wrapping. Note that,
+<li><strong>compound</strong> (<em>{'atoms'</em><em>, </em><em>'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+Which type of component to keep together during wrapping. Note that,
 in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
 <li><strong>center</strong> (<em>{'com'</em><em>, </em><em>'cog'}</em>) – How to define the center of a given group of atoms. If <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'atoms'</span></code>, this parameter is meaningless and therefore ignored.</li>
-<li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>The unitcell dimensions of the system, which can be orthogonal or
+<li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
-<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the
-dimensions of the current time step.</p>
-</li>
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the
+dimensions of the current time step.</li>
 <li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, coordinates will be changed in place.</li>
 </ul>
 </td>
@@ -4853,8 +4859,8 @@ each compound. The same translation is applied to all atoms
 within this compound, meaning it will not be broken by the shift.
 This might however mean that not all atoms of a compound will be
 inside the unit cell after wrapping, but rather will be the center of
-the compound.</p>
-<p>Be aware of the fact that only atoms <em>belonging to the group</em> will be
+the compound.
+Be aware of the fact that only atoms <em>belonging to the group</em> will be
 taken into account!</p>
 <p><cite>center</cite> allows to define how the center of each group is computed.
 This can be either <code class="docutils literal notranslate"><span class="pre">'com'</span></code> for center of mass, or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> for center

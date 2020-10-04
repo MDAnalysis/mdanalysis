@@ -201,8 +201,9 @@
 <span class="c1">#</span>
 
 
-<span class="sd">&quot;&quot;&quot;HOLE Analysis --- :mod:`MDAnalysis.analysis.hole2.helper`</span>
-<span class="sd">=====================================================================================</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">HOLE Analysis --- :mod:`MDAnalysis.analysis.hole2.helper`</span>
+<span class="sd">=========================================================</span>
 
 <span class="sd">:Author: Lily Wang</span>
 <span class="sd">:Year: 2020</span>
@@ -309,10 +310,10 @@
             <span class="n">fd</span><span class="p">,</span> <span class="n">newname</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="n">ext</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">dirname</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">newname</span><span class="p">)</span>
-        
+
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">newname</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_length</span><span class="p">:</span>
             <span class="n">newname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">newname</span><span class="p">)</span>
-        
+
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">newname</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_length</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">symlink</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">newname</span><span class="p">)</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Using symlink: </span><span class="si">{}</span><span class="s1"> -&gt; </span><span class="si">{}</span><span class="s1">&#39;</span>
@@ -352,13 +353,13 @@
 <span class="sd">        are read.</span>
 
 <span class="sd">    infile_text: str, optional</span>
-<span class="sd">        HOLE input text or template. If set to ``None``, the function will </span>
+<span class="sd">        HOLE input text or template. If set to ``None``, the function will</span>
 <span class="sd">        create the input text from the other parameters.</span>
 <span class="sd">        Default: ``None``</span>
 
 <span class="sd">    infile: str, optional</span>
-<span class="sd">        File to write the HOLE input text for later inspection. If set to </span>
-<span class="sd">        ``None``, the input text is not written out. </span>
+<span class="sd">        File to write the HOLE input text for later inspection. If set to</span>
+<span class="sd">        ``None``, the input text is not written out.</span>
 <span class="sd">        Default: ``None``</span>
 
 <span class="sd">    sphpdb_file : str, optional</span>
@@ -373,7 +374,7 @@
 <span class="sd">        distance of particular atoms from the sphere-centre line.</span>
 <span class="sd">        .sph files can be used to produce molecular graphical</span>
 <span class="sd">        output from a hole run, by using the</span>
-<span class="sd">        :program:`sph_process` program to read the .sph file. </span>
+<span class="sd">        :program:`sph_process` program to read the .sph file.</span>
 <span class="sd">        Default: &#39;hole.sph&#39;</span>
 
 <span class="sd">    vdwradii_file: str, optional</span>
@@ -383,7 +384,7 @@
 <span class="sd">        the HOLE distribution). Default: ``None``</span>
 
 <span class="sd">    tmpdir: str, optional</span>
-<span class="sd">        The temporary directory that files can be symlinked to, to shorten </span>
+<span class="sd">        The temporary directory that files can be symlinked to, to shorten</span>
 <span class="sd">        the path name. HOLE can only read filenames up to a certain length.</span>
 <span class="sd">        Default: current working directory</span>
 
@@ -394,13 +395,13 @@
 <span class="sd">        purposes. However, if you wish to visualize a very tight</span>
 <span class="sd">        constriction then specify a smaller value.</span>
 <span class="sd">        This value determines how many points in the pore profile are</span>
-<span class="sd">        calculated. Default: 0.2 </span>
+<span class="sd">        calculated. Default: 0.2</span>
 
 <span class="sd">    end_radius : float, optional</span>
 <span class="sd">        Radius in Å, which is considered to be the end of the pore. This</span>
 <span class="sd">        keyword can be used to specify the radius above which the</span>
 <span class="sd">        program regards a result as indicating that the end of the pore</span>
-<span class="sd">        has been reached. This may need to be increased for large channels, </span>
+<span class="sd">        has been reached. This may need to be increased for large channels,</span>
 <span class="sd">        or reduced for small channels. Default: 22.0</span>
 
 <span class="sd">    cpoint : array_like, &#39;center_of_geometry&#39; or None, optional</span>
@@ -428,7 +429,7 @@
 
 <span class="sd">    cvect : array_like, optional</span>
 <span class="sd">        Search direction, should be parallel to the pore axis,</span>
-<span class="sd">        e.g. ``[0,0,1]`` for the z-axis. </span>
+<span class="sd">        e.g. ``[0,0,1]`` for the z-axis.</span>
 <span class="sd">        If this keyword is ``None`` (the default), then HOLE attempts to guess</span>
 <span class="sd">        where the channel will be. The procedure assumes that the channel is</span>
 <span class="sd">        reasonably symmetric. The guess will be either along the X axis</span>
@@ -440,15 +441,15 @@
 <span class="sd">    random_seed : int, optional</span>
 <span class="sd">        integer number to start the random number generator.</span>
 <span class="sd">        By default,</span>
-<span class="sd">        :program:`hole` will use the time of the day. </span>
-<span class="sd">        For reproducible runs (e.g., for testing) set ``random_seed`` </span>
+<span class="sd">        :program:`hole` will use the time of the day.</span>
+<span class="sd">        For reproducible runs (e.g., for testing) set ``random_seed``</span>
 <span class="sd">        to an integer. Default: ``None``</span>
 
 <span class="sd">    ignore_residues : array_like, optional</span>
 <span class="sd">        sequence of three-letter residues that are not taken into</span>
 <span class="sd">        account during the calculation; wildcards are *not*</span>
-<span class="sd">        supported. Note that all residues must have 3 letters. Pad </span>
-<span class="sd">        with space on the right-hand side if necessary. </span>
+<span class="sd">        supported. Note that all residues must have 3 letters. Pad</span>
+<span class="sd">        with space on the right-hand side if necessary.</span>
 <span class="sd">        Default: {}.</span>
 
 <span class="sd">    output_level : int, optional</span>
@@ -460,7 +461,7 @@
 <span class="sd">        2: Ditto plus no graph type output - only leaving minimum</span>
 <span class="sd">        radius and conductance calculations.</span>
 <span class="sd">        3: All text output other than input card mirroring and error messages</span>
-<span class="sd">        turned off. </span>
+<span class="sd">        turned off.</span>
 <span class="sd">        Default: 0</span>
 
 <span class="sd">    dcd : str, optional</span>
@@ -559,7 +560,7 @@
 <span class="sd">    outfile: str</span>
 <span class="sd">        Output file name</span>
 <span class="sd">    infile_text: str</span>
-<span class="sd">        HOLE input text </span>
+<span class="sd">        HOLE input text</span>
 <span class="sd">        (typically generated by :func:`set_up_hole_input`)</span>
 <span class="sd">    executable: str</span>
 <span class="sd">        HOLE executable</span>
@@ -666,19 +667,19 @@
 <span class="sd">    sphpdb: str, optional</span>
 <span class="sd">        sphpdb file to read. Default: &#39;hole.sph&#39;</span>
 <span class="sd">    filename: str, optional</span>
-<span class="sd">        output VMD surface file. If ``None``, a temporary file </span>
+<span class="sd">        output VMD surface file. If ``None``, a temporary file</span>
 <span class="sd">        is generated. Default: ``None``</span>
 <span class="sd">    sph_process: str, optional</span>
 <span class="sd">        Executable for ``sph_process`` program. Default: &#39;sph_process&#39;</span>
 <span class="sd">    sos_triangle: str, optional</span>
-<span class="sd">        Executable for ``sos_triangle`` program. Default: &#39;sos_triangle&#39; </span>
+<span class="sd">        Executable for ``sos_triangle`` program. Default: &#39;sos_triangle&#39;</span>
 <span class="sd">    dot_density: int, optional</span>
 <span class="sd">        density of facets for generating a 3D pore representation.</span>
 <span class="sd">        The number controls the density of dots that will be used.</span>
-<span class="sd">        A sphere of dots is placed on each centre determined in the </span>
-<span class="sd">        Monte Carlo procedure. The actual number of dots written is </span>
-<span class="sd">        controlled by ``dot_density`` and the ``sample`` level of the </span>
-<span class="sd">        original analysis. ``dot_density`` should be set between 5 </span>
+<span class="sd">        A sphere of dots is placed on each centre determined in the</span>
+<span class="sd">        Monte Carlo procedure. The actual number of dots written is</span>
+<span class="sd">        controlled by ``dot_density`` and the ``sample`` level of the</span>
+<span class="sd">        original analysis. ``dot_density`` should be set between 5</span>
 <span class="sd">        (few dots per sphere) and 35 (many dots per sphere).</span>
 <span class="sd">        Default: 15</span>
 

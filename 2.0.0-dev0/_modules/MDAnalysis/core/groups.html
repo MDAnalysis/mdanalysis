@@ -300,7 +300,7 @@
 
 
 <span class="k">def</span> <span class="nf">make_classes</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Make a fresh copy of all classes</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Make a fresh copy of all classes</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -308,7 +308,6 @@
 <span class="sd">    to serve as bases for :class:`~MDAnalysis.core.universe.Universe`\ -specific</span>
 <span class="sd">    MDA container classes. Another with the final merged versions of those</span>
 <span class="sd">    classes. The classes themselves are used as hashing keys.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">bases</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">classes</span> <span class="o">=</span> <span class="p">{}</span>
@@ -535,7 +534,7 @@
                 <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">selfcls</span><span class="o">=</span><span class="n">selfcls</span><span class="p">,</span>
                                              <span class="n">attrname</span><span class="o">=</span><span class="n">attrname</span><span class="p">,</span>
                                              <span class="n">topattr</span><span class="o">=</span><span class="n">topattr</span><span class="p">))</span>
-        
+
         <span class="k">else</span><span class="p">:</span>
             <span class="n">clean</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
             <span class="n">err</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{selfcls}</span><span class="s1"> has no attribute </span><span class="si">{attr}</span><span class="s1">. &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">selfcls</span><span class="o">=</span><span class="n">selfcls</span><span class="p">,</span>
@@ -589,7 +588,7 @@
 
 
 <span class="k">class</span> <span class="nc">GroupBase</span><span class="p">(</span><span class="n">_MutableBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class from which a :class:`&lt;~MDAnalysis.core.universe.Universe`\ &#39;s</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class from which a :class:`&lt;~MDAnalysis.core.universe.Universe`\ &#39;s</span>
 <span class="sd">    Group class is built.</span>
 
 <span class="sd">    Instances of :class:`GroupBase` provide the following operations that</span>
@@ -704,7 +703,7 @@
             <span class="c1"># subclasses, such as UpdatingAtomGroup, to control the class</span>
             <span class="c1"># resulting from slicing.</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_derived_class</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">item</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
-    
+
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="n">selfcls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
         <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">_TOPOLOGY_ATTRS</span><span class="p">:</span>
@@ -1100,7 +1099,7 @@
 
     <span class="nd">@warn_if_not_unique</span>
     <span class="k">def</span> <span class="nf">accumulate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Accumulates the attribute associated with (compounds of) the group.</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Accumulates the attribute associated with (compounds of) the group.</span>
 
 <span class="sd">        Accumulates the attribute of :class:`Atoms&lt;Atom&gt;` in the group.</span>
 <span class="sd">        The accumulation per :class:`Residue`, :class:`Segment`, molecule,</span>
@@ -1526,7 +1525,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="n">inplace</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="s2">&quot;com&quot;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Shift the contents of this group back into the primary unit cell</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Shift the contents of this group back into the primary unit cell</span>
 <span class="sd">        according to periodic boundary conditions.</span>
 
 <span class="sd">        Specifying a `compound` will keep the :class:`Atoms&lt;Atom&gt;` in each</span>
@@ -1547,8 +1546,8 @@
 <span class="sd">        box : array_like, optional</span>
 <span class="sd">            The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">            triclinic and must be provided in the same format as returned by</span>
-<span class="sd">            :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n</span>
-<span class="sd">            ``[lx, ly, lz, alpha, beta, gamma]``.\n</span>
+<span class="sd">            :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">            ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 <span class="sd">            If ``None``, uses the</span>
 <span class="sd">            dimensions of the current time step.</span>
 <span class="sd">        inplace: bool, optional</span>
@@ -1585,14 +1584,14 @@
 
 <span class="sd">        .. math::</span>
 
-<span class="sd">           x_i&#39; = x_i - \left\lfloor\\frac{x_i}{L_i}\\right\\rfloor\,.</span>
+<span class="sd">           x_i&#39; = x_i - \left\lfloor\frac{x_i}{L_i}\right\rfloor\,.</span>
 
 <span class="sd">        When specifying a `compound`, the translation is calculated based on</span>
 <span class="sd">        each compound. The same translation is applied to all atoms</span>
 <span class="sd">        within this compound, meaning it will not be broken by the shift.</span>
 <span class="sd">        This might however mean that not all atoms of a compound will be</span>
 <span class="sd">        inside the unit cell after wrapping, but rather will be the center of</span>
-<span class="sd">        the compound.\n</span>
+<span class="sd">        the compound.</span>
 <span class="sd">        Be aware of the fact that only atoms *belonging to the group* will be</span>
 <span class="sd">        taken into account!</span>
 
@@ -1727,7 +1726,7 @@
         <span class="k">return</span> <span class="n">positions</span>
 
     <span class="k">def</span> <span class="nf">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;fragments&#39;</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="s1">&#39;com&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Move atoms of this group so that bonds within the</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Move atoms of this group so that bonds within the</span>
 <span class="sd">        group&#39;s compounds aren&#39;t split across periodic boundaries.</span>
 
 <span class="sd">        This function is most useful when atoms have been packed into the</span>
@@ -1780,7 +1779,7 @@
 <span class="sd">        ----</span>
 <span class="sd">        Be aware of the fact that only atoms *belonging to the group* will</span>
 <span class="sd">        be unwrapped! If you want entire molecules to be unwrapped, make sure</span>
-<span class="sd">        that all atoms of these molecules are part of the group.\n</span>
+<span class="sd">        that all atoms of these molecules are part of the group.</span>
 <span class="sd">        An AtomGroup containing all atoms of all fragments in the group ``ag``</span>
 <span class="sd">        can be created with::</span>
 
@@ -2665,7 +2664,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">positions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Coordinates of the :class:`Atoms&lt;Atom&gt;` in the :class:`AtomGroup`.</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Coordinates of the :class:`Atoms&lt;Atom&gt;` in the :class:`AtomGroup`.</span>
 
 <span class="sd">        A :class:`numpy.ndarray` with</span>
 <span class="sd">        :attr:`~numpy.ndarray.shape`\ ``=(``\ :attr:`~AtomGroup.n_atoms`\ ``, 3)``</span>
@@ -2703,7 +2702,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Velocities of the :class:`Atoms&lt;Atom&gt;` in the :class:`AtomGroup`.</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Velocities of the :class:`Atoms&lt;Atom&gt;` in the :class:`AtomGroup`.</span>
 
 <span class="sd">        A :class:`numpy.ndarray` with</span>
 <span class="sd">        :attr:`~numpy.ndarray.shape`\ ``=(``\ :attr:`~AtomGroup.n_atoms`\ ``, 3)``</span>
@@ -2732,7 +2731,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">forces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Forces on each :class:`Atom` in the :class:`AtomGroup`.</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Forces on each :class:`Atom` in the :class:`AtomGroup`.</span>
 
 <span class="sd">        A :class:`numpy.ndarray` with</span>
 <span class="sd">        :attr:`~numpy.ndarray.shape`\ ``=(``\ :attr:`~AtomGroup.n_atoms`\ ``, 3)``</span>
@@ -3770,7 +3769,7 @@
 
 <span class="nd">@functools</span><span class="o">.</span><span class="n">total_ordering</span>
 <span class="k">class</span> <span class="nc">ComponentBase</span><span class="p">(</span><span class="n">_MutableBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class from which a :class:`~MDAnalysis.core.universe.Universe`\ &#39;s</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class from which a :class:`~MDAnalysis.core.universe.Universe`\ &#39;s</span>
 <span class="sd">    Component class is built.</span>
 
 <span class="sd">    Components are the individual objects that are found in Groups.</span>

@@ -374,12 +374,12 @@
          <span class="n">dcd_iniskip</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
          <span class="n">dcd_step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
          <span class="n">keep_files</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Run :program:`hole` on a single frame or a DCD trajectory.</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Run :program:`hole` on a single frame or a DCD trajectory.</span>
 
 <span class="sd">    :program:`hole` is part of the HOLE_ suite of programs. It is used to</span>
 <span class="sd">    analyze channels and cavities in proteins, especially ion channels.</span>
 
-<span class="sd">    Only a subset of all `HOLE control parameters &lt;http://www.holeprogram.org/doc/old/hole_d03.html&gt;`_ </span>
+<span class="sd">    Only a subset of all `HOLE control parameters &lt;http://www.holeprogram.org/doc/old/hole_d03.html&gt;`_</span>
 <span class="sd">    is supported and can be set with keyword arguments.</span>
 
 <span class="sd">    Parameters</span>
@@ -417,7 +417,7 @@
 <span class="sd">        path to the file specifying van der Waals radii for each atom. If</span>
 <span class="sd">        set to ``None``, then a set of default radii,</span>
 <span class="sd">        :data:`SIMPLE2_RAD`, is used (an extension of ``simple.rad`` from</span>
-<span class="sd">        the HOLE distribution). </span>
+<span class="sd">        the HOLE distribution).</span>
 <span class="sd">    executable: str, optional</span>
 <span class="sd">        Path to the :program:`hole` executable.</span>
 <span class="sd">        (e.g. ``~/hole2/exe/hole``). If</span>
@@ -470,13 +470,13 @@
 <span class="sd">        (1,0,0), Y axis (0,1,0) or Z axis (0,0,1). If the structure is not</span>
 <span class="sd">        aligned on one of these axis the results will clearly be</span>
 <span class="sd">        approximate. If a guess is used then results should be carefully</span>
-<span class="sd">        checked. </span>
+<span class="sd">        checked.</span>
 <span class="sd">    random_seed : int, optional</span>
 <span class="sd">        integer number to start the random number generator.</span>
 <span class="sd">        By default,</span>
 <span class="sd">        :program:`hole` will use the time of the day.</span>
 <span class="sd">        For reproducible runs (e.g., for testing) set ``random_seed``</span>
-<span class="sd">        to an integer. </span>
+<span class="sd">        to an integer.</span>
 <span class="sd">    ignore_residues : array_like, optional</span>
 <span class="sd">        sequence of three-letter residues that are not taken into</span>
 <span class="sd">        account during the calculation; wildcards are *not*</span>
@@ -505,7 +505,7 @@
 <span class="sd">        initially.</span>
 <span class="sd">    dcd_step : int, optional</span>
 <span class="sd">        step size for going through the trajectory (skips ``dcd_step-1``</span>
-<span class="sd">        frames). </span>
+<span class="sd">        frames).</span>
 <span class="sd">    keep_files : bool, optional</span>
 <span class="sd">        Whether to keep the HOLE output files and possible temporary</span>
 <span class="sd">        symlinks after running the function. Default: ``True``</span>
@@ -586,14 +586,13 @@
 
 
 <div class="viewcode-block" id="HoleAnalysis"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole.HoleAnalysis">[docs]</a><span class="k">class</span> <span class="nc">HoleAnalysis</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
-
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Run :program:`hole` on a trajectory.</span>
 
 <span class="sd">    :program:`hole` is part of the HOLE_ suite of programs. It is used to</span>
 <span class="sd">    analyze channels and cavities in proteins, especially ion channels.</span>
 
-<span class="sd">    Only a subset of all `HOLE control parameters &lt;http://www.holeprogram.org/doc/old/hole_d03.html&gt;`_ </span>
+<span class="sd">    Only a subset of all `HOLE control parameters &lt;http://www.holeprogram.org/doc/old/hole_d03.html&gt;`_</span>
 <span class="sd">    is supported and can be set with keyword arguments.</span>
 
 <span class="sd">    This class creates temporary PDB files for each frame and runs HOLE on</span>
@@ -656,7 +655,7 @@
 <span class="sd">        (1,0,0), Y axis (0,1,0) or Z axis (0,0,1). If the structure is not</span>
 <span class="sd">        aligned on one of these axis the results will clearly be</span>
 <span class="sd">        approximate. If a guess is used then results should be carefully</span>
-<span class="sd">        checked. </span>
+<span class="sd">        checked.</span>
 <span class="sd">    sample : float, optional</span>
 <span class="sd">        distance of sample points in Å.</span>
 <span class="sd">        Specifies the distance between the planes used in the HOLE</span>
@@ -664,13 +663,13 @@
 <span class="sd">        purposes. However, if you wish to visualize a very tight</span>
 <span class="sd">        constriction then specify a smaller value.</span>
 <span class="sd">        This value determines how many points in the pore profile are</span>
-<span class="sd">        calculated. </span>
+<span class="sd">        calculated.</span>
 <span class="sd">    end_radius : float, optional</span>
 <span class="sd">        Radius in Å, which is considered to be the end of the pore. This</span>
 <span class="sd">        keyword can be used to specify the radius above which the</span>
 <span class="sd">        program regards a result as indicating that the end of the pore</span>
 <span class="sd">        has been reached. This may need to be increased for large channels,</span>
-<span class="sd">        or reduced for small channels. </span>
+<span class="sd">        or reduced for small channels.</span>
 <span class="sd">    output_level : int, optional</span>
 <span class="sd">        Determines the output of output in the ``outfile``.</span>
 <span class="sd">        For automated processing, this must be &lt; 3.</span>
@@ -687,10 +686,10 @@
 <span class="sd">        supported. Note that all residues must have 3 letters. Pad</span>
 <span class="sd">        with space on the right-hand side if necessary.</span>
 <span class="sd">    prefix: str, optional</span>
-<span class="sd">        Prefix for HOLE output files. </span>
+<span class="sd">        Prefix for HOLE output files.</span>
 <span class="sd">    write_input_files: bool, optional</span>
 <span class="sd">        Whether to write out the input HOLE text as files.</span>
-<span class="sd">        Files are called `hole.inp`. </span>
+<span class="sd">        Files are called `hole.inp`.</span>
 
 
 <span class="sd">    Returns</span>
@@ -962,7 +961,7 @@
 <span class="sd">           source hole.vmd</span>
 
 <span class="sd">        The level of detail is determined by ``dot_density``.</span>
-<span class="sd">        The surface will be colored by ``no_water_color``, ``one_water_color``, and </span>
+<span class="sd">        The surface will be colored by ``no_water_color``, ``one_water_color``, and</span>
 <span class="sd">        ``double_water_color``. You can change these in the</span>
 <span class="sd">        Tk Console::</span>
 
@@ -984,14 +983,14 @@
 <span class="sd">            (few dots per sphere) and 35 (many dots per sphere).</span>
 
 <span class="sd">        no_water_color: str, optional</span>
-<span class="sd">            Color of the surface where the pore radius is too tight for a </span>
+<span class="sd">            Color of the surface where the pore radius is too tight for a</span>
 <span class="sd">            water molecule.</span>
 
 <span class="sd">        one_water_color: str, optional</span>
 <span class="sd">            Color of the surface where the pore can fit one water molecule.</span>
 
 <span class="sd">        double_water_color: str, optional</span>
-<span class="sd">            Color of the surface where the radius is at least double the </span>
+<span class="sd">            Color of the surface where the radius is at least double the</span>
 <span class="sd">            minimum radius for one water molecule.</span>
 
 
@@ -1038,7 +1037,7 @@
             <span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;set triangles(</span><span class="si">{i}</span><span class="s1">) &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="n">tri</span><span class="p">)</span>
 
         <span class="n">trinorms</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
-        <span class="n">vmd_1</span> <span class="o">=</span> <span class="n">vmd_script_array</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">no_water_color</span><span class="o">=</span><span class="n">no_water_color</span><span class="p">,</span> 
+        <span class="n">vmd_1</span> <span class="o">=</span> <span class="n">vmd_script_array</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">no_water_color</span><span class="o">=</span><span class="n">no_water_color</span><span class="p">,</span>
                                         <span class="n">one_water_color</span><span class="o">=</span><span class="n">one_water_color</span><span class="p">,</span>
                                         <span class="n">double_water_color</span><span class="o">=</span><span class="n">double_water_color</span><span class="p">)</span>
         <span class="n">vmd_text</span> <span class="o">=</span> <span class="n">vmd_1</span> <span class="o">+</span> <span class="n">trinorms</span> <span class="o">+</span> <span class="n">vmd_script_function</span>
@@ -1047,7 +1046,7 @@
             <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">vmd_text</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">filename</span></div>
-    
+
     <span class="k">def</span> <span class="nf">min_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the minimum radius over all profiles as a function of q&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">:</span>
@@ -1127,7 +1126,7 @@
              <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">y_shift</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
              <span class="n">label</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
              <span class="n">legend_loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Plot HOLE profiles :math:`R(\zeta)` in a 1D graph.</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Plot HOLE profiles :math:`R(\zeta)` in a 1D graph.</span>
 
 <span class="sd">        Lines are colored according to the specified ``color`` or</span>
 <span class="sd">        drawn from the color map ``cmap``. One line is</span>
@@ -1195,7 +1194,7 @@
                <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">,</span>
                <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">r_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Frames&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Stacked 3D graph of profiles :math:`R(\zeta)`.</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Stacked 3D graph of profiles :math:`R(\zeta)`.</span>
 
 <span class="sd">        Lines are colored according to the specified ``color`` or</span>
 <span class="sd">        drawn from the color map ``cmap``. One line is</span>
@@ -1301,7 +1300,7 @@
                        <span class="s1">&#39;or a filename with array data &#39;</span>
                        <span class="s1">&#39;that can be read by np.loadtxt&#39;</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">order_parameters</span><span class="p">))</span>
-            
+
 
         <span class="n">order_parameters</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">order_parameters</span><span class="p">)</span>
 
@@ -1477,13 +1476,13 @@
 <div class="viewcode-block" id="HoleAnalysis.histogram_radii"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole.HoleAnalysis.histogram_radii">[docs]</a>    <span class="k">def</span> <span class="nf">histogram_radii</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aggregator</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Histograms the pore radii into bins by reaction coordinate,</span>
-<span class="sd">        aggregate the radii with an `aggregator` function, and returns the </span>
+<span class="sd">        aggregate the radii with an `aggregator` function, and returns the</span>
 <span class="sd">        aggregated radii and bin edges.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        aggregator: callable, optional</span>
-<span class="sd">            this function must take an iterable of floats and return a </span>
+<span class="sd">            this function must take an iterable of floats and return a</span>
 <span class="sd">            single value. Default: np.mean</span>
 
 <span class="sd">        frames: int or iterable of ints, optional</span>
@@ -1597,7 +1596,7 @@
                                 <span class="n">r_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                 <span class="n">ylabel</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;Order parameter&#39;</span><span class="p">,</span>
                                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Plot HOLE radii over order parameters as a 3D graph.</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Plot HOLE radii over order parameters as a 3D graph.</span>
 
 <span class="sd">        Lines are colored according to the specified ``color`` or</span>
 <span class="sd">        drawn from the color map ``cmap``. One line is</span>
