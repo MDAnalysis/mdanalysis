@@ -53,7 +53,11 @@ git remote add upstream "https://${GH_TOKEN}@${GH_REPOSITORY}"
 git fetch --depth 50 upstream ${GH_DOC_BRANCH} gh-pages
 git reset upstream/gh-pages
 
-# for dev, latest, home redirects
+# === REDIRECTS AND COPIES ====
+# home (index.html) redirects to stable/
+# latest (latest/index.html) redirects to most recent release
+# dev/ is a copy of the dev docs with the highest number (so 2.0.0-dev instead of 1.0.1-dev)
+# stable/ is a copy of the release docs with the highest number
 mkdir latest
 export URL="https://docs.mdanalysis.org"
 python ${MAINTAIN_DIR}/update_json_stubs_sitemap.py
