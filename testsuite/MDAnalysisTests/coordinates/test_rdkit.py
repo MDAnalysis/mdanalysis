@@ -490,6 +490,8 @@ class TestRDKitFunctions(object):
         "O=C([C@H](CC1=CNC=N1)N)O",
         "O=C([C@H](CC1=CN=CN1)N)O",
         "O=C([C@H](CC1=C[NH1+]=CN1)[NH3+])[O-]",
+        # fix conjugated carbonyl/carboxyl
+        "CCOC(=O)c1cc2cc(C(=O)O)ccc2[nH]1",
     ])
     def test_order_independant(self, smi_in):
         # generate mol with hydrogens but without bond orders

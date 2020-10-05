@@ -735,7 +735,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
     """
     mol.UpdatePropertyCache(strict=False)
     Chem.Kekulize(mol)
-    pattern = Chem.MolFromSmarts("[*-;!O]-[*+0]=[*+0]")
+    pattern = Chem.MolFromSmarts("[*-]-[*+0]=[*+0;!O]")
     # number of unique matches with the pattern
     n_matches = len(set([match[0]
                          for match in mol.GetSubstructMatches(pattern)]))
@@ -744,13 +744,13 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
         return
     # check if there's an even number of anion-*=* patterns
     elif n_matches % 2 == 0:
-        end_pattern = Chem.MolFromSmarts("[*-;!O]-[*+0]=[*+0]-[*-]")
+        end_pattern = Chem.MolFromSmarts("[*-]-[*+0]=[*+0]-[*-]")
     else:
         # as a last resort, the only way to standardize is to find a nitrogen
         # that can accept a double bond and a positive charge
         # or a carbonyl that will become an enolate
         end_pattern = Chem.MolFromSmarts(
-            "[*-;!O]-[*+0]=[*+0]-[$([#7;X3;v3]),$([#6+0]=O)]")
+            "[*-]-[*+0]=[*+0]-[*-,$([#7;X3;v3]),$([#6+0]=O)]")
     backtrack = []
     for _ in range(max_iter):
         # simplest case where n=1
