@@ -111,17 +111,20 @@ else:
 
 versions.sort(key=lambda x: x["version"])
 
-# ========= WRITE HTML STUBS =========
+# ========= WRITE HTML STUBS AND COPY DOCS =========
 # Add HTML files to redirect:
-# index.html -> latest release
-# latest/index.html -> latest release
-# dev/index.html -> dev docs
+# index.html -> stable/ docs
+# latest/index.html -> latest release (not dev docs)
+# stable/ : a copy of the release docs with the highest number (2.0.0 instead of 1.0.0)
+# dev/ : a copy of the develop docs with the highest number (2.0.0-dev instead of 1.0.1-dev)
 
 if latest:
     shutil.copytree(VERSION, "stable")
     print(f"Copied {VERSION} to stable/")
     html_files = glob.glob(f'stable/**/*.html', recursive=True)
     for file in html_files:
+        # below should be true because we only globbed stable/* paths
+        assert file.startswith("stable/")
         outfile = file[7:]  # strip "stable/"
         dirname = os.path.dirname(outfile)
         if dirname and not os.path.exists(dirname):
