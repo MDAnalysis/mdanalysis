@@ -1,0 +1,587 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.lib.log &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0-dev0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.lib.log</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.lib.log</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+
+<span class="sd">&quot;&quot;&quot;Setting up logging --- :mod:`MDAnalysis.lib.log`</span>
+<span class="sd">====================================================</span>
+
+<span class="sd">Configure logging for MDAnalysis. Import this module if logging is</span>
+<span class="sd">desired in application code.</span>
+
+<span class="sd">Logging to a file and the console is set up by default as described</span>
+<span class="sd">under `logging to multiple destinations`_.</span>
+
+<span class="sd">The top level logger of the library is named *MDAnalysis* by</span>
+<span class="sd">convention; a simple logger that writes to the console and logfile can</span>
+<span class="sd">be created with the :func:`create` function. This only has to be done</span>
+<span class="sd">*once*. For convenience, the default MDAnalysis logger can be created</span>
+<span class="sd">with :func:`MDAnalysis.start_logging`::</span>
+
+<span class="sd"> import MDAnalysis</span>
+<span class="sd"> MDAnalysis.start_logging()</span>
+
+<span class="sd">Once this has been done, MDAnalysis will write messages to the logfile</span>
+<span class="sd">(named `MDAnalysis.log` by default but this can be changed with the</span>
+<span class="sd">optional argument to :func:`~MDAnalysis.start_logging`).</span>
+
+<span class="sd">Any code can log to the MDAnalysis logger by using ::</span>
+
+<span class="sd"> import logging</span>
+<span class="sd"> logger = logging.getLogger(&#39;MDAnalysis.MODULENAME&#39;)</span>
+
+<span class="sd"> # use the logger, for example at info level:</span>
+<span class="sd"> logger.info(&quot;Starting task ...&quot;)</span>
+
+<span class="sd">The important point is that the name of the logger begins with</span>
+<span class="sd">&quot;MDAnalysis.&quot;.</span>
+
+<span class="sd">.. _logging to multiple destinations:</span>
+<span class="sd">   http://docs.python.org/library/logging.html?#logging-to-multiple-destinations</span>
+
+<span class="sd">Note</span>
+<span class="sd">----</span>
+<span class="sd">The :mod:`logging` module in the standard library contains in depth</span>
+<span class="sd">documentation about using logging.</span>
+
+
+<span class="sd">Convenience functions</span>
+<span class="sd">---------------------</span>
+
+<span class="sd">Two convenience functions at the top level make it easy to start and</span>
+<span class="sd">stop the default *MDAnalysis* logger.</span>
+
+<span class="sd">.. autofunction:: MDAnalysis.start_logging</span>
+<span class="sd">.. autofunction:: MDAnalysis.stop_logging</span>
+
+
+<span class="sd">Other functions and classes for logging purposes</span>
+<span class="sd">------------------------------------------------</span>
+
+
+<span class="sd">.. versionchanged:: 2.0.0</span>
+<span class="sd">   Deprecated :class:`MDAnalysis.lib.log.ProgressMeter` has now been removed.</span>
+
+<span class="sd">.. autogenerated, see Online Docs</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">tqdm.auto</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">version</span>
+
+
+<div class="viewcode-block" id="start_logging"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.start_logging">[docs]</a><span class="k">def</span> <span class="nf">start_logging</span><span class="p">(</span><span class="n">logfile</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.log&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="o">.</span><span class="n">__version__</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Start logging of messages to file and console.</span>
+
+<span class="sd">    The default logfile is named `MDAnalysis.log` and messages are</span>
+<span class="sd">    logged with the tag *MDAnalysis*.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">create</span><span class="p">(</span><span class="s2">&quot;MDAnalysis&quot;</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="n">logfile</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s2">&quot;MDAnalysis </span><span class="si">%s</span><span class="s2"> STARTED logging to </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">logfile</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="stop_logging"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.stop_logging">[docs]</a><span class="k">def</span> <span class="nf">stop_logging</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Stop logging to logfile and console.&quot;&quot;&quot;</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;MDAnalysis STOPPED logging&quot;</span><span class="p">)</span>
+    <span class="n">clear_handlers</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>  <span class="c1"># this _should_ do the job...</span></div>
+
+
+<div class="viewcode-block" id="create"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.create">[docs]</a><span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">logger_name</span><span class="o">=</span><span class="s2">&quot;MDAnalysis&quot;</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.log&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a top level logger.</span>
+
+<span class="sd">    - The file logger logs everything (including DEBUG).</span>
+<span class="sd">    - The console logger only logs INFO and above.</span>
+
+<span class="sd">    Logging to a file and the console as described under `logging to</span>
+<span class="sd">    multiple destinations`_.</span>
+
+<span class="sd">    The top level logger of MDAnalysis is named *MDAnalysis*.  Note</span>
+<span class="sd">    that we are configuring this logger with console output. If a root</span>
+<span class="sd">    logger also does this then we will get two output lines to the</span>
+<span class="sd">    console.</span>
+
+<span class="sd">    .. _logging to multiple destinations:</span>
+<span class="sd">       http://docs.python.org/library/logging.html?#logging-to-multiple-destinations</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">logger_name</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+    <span class="c1"># handler that writes to logfile</span>
+    <span class="n">logfile_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">logfile</span><span class="p">)</span>
+    <span class="n">logfile_formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(name)-12s</span><span class="s1"> </span><span class="si">%(levelname)-8s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">logfile_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">logfile_formatter</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">logfile_handler</span><span class="p">)</span>
+
+    <span class="c1"># define a Handler which writes INFO messages or higher to the sys.stderr</span>
+    <span class="n">console_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+    <span class="n">console_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+    <span class="c1"># set a format which is simpler for console use</span>
+    <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%(name)-12s</span><span class="s1">: </span><span class="si">%(levelname)-8s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">console_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">console_handler</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">logger</span></div>
+
+
+<div class="viewcode-block" id="clear_handlers"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.clear_handlers">[docs]</a><span class="k">def</span> <span class="nf">clear_handlers</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;clean out handlers in the library top level logger</span>
+
+<span class="sd">    (only important for reload/debug cycles...)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">h</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NullHandler"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.NullHandler">[docs]</a><span class="k">class</span> <span class="nc">NullHandler</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Handler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Silent Handler.</span>
+
+<span class="sd">    Useful as a default::</span>
+
+<span class="sd">      h = NullHandler()</span>
+<span class="sd">      logging.getLogger(&quot;MDAnalysis&quot;).addHandler(h)</span>
+<span class="sd">      del h</span>
+
+<span class="sd">    see the advice on logging and libraries in</span>
+<span class="sd">    http://docs.python.org/library/logging.html?#configuring-logging-for-a-library</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="NullHandler.emit"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.NullHandler.emit">[docs]</a>    <span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="ProgressBar"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.ProgressBar">[docs]</a><span class="k">class</span> <span class="nc">ProgressBar</span><span class="p">(</span><span class="n">tqdm</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Display a visual progress bar and time estimate.</span>
+
+<span class="sd">    The :class:`ProgressBar` decorates an iterable object, returning an</span>
+<span class="sd">    iterator which acts exactly like the original iterable, but prints a</span>
+<span class="sd">    dynamically updating progressbar every time a value is requested. See the</span>
+<span class="sd">    example below for how to use it when iterating over the frames of a</span>
+<span class="sd">    trajectory.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    iterable  : iterable, optional</span>
+<span class="sd">        Iterable to decorate with a progressbar.</span>
+<span class="sd">        Leave blank to manually manage the updates.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        If ``True`` (the default) then show the progress bar, *unless* the</span>
+<span class="sd">        `disable` keyword is set to ``True`` (`disable` takes precedence over</span>
+<span class="sd">        `verbose`). If `verbose` is set to ``None`` then the progress bar is</span>
+<span class="sd">        displayed (like ``True``), *unless* this is a non-TTY output device</span>
+<span class="sd">        (see `disable`).</span>
+<span class="sd">    desc  : str, optional</span>
+<span class="sd">        Prefix for the progressbar.</span>
+<span class="sd">    total  : int or float, optional</span>
+<span class="sd">        The number of expected iterations. If unspecified,</span>
+<span class="sd">        ``len(iterable)`` is used if possible. If ``float(&quot;inf&quot;)`` or as a last</span>
+<span class="sd">        resort, only basic progress statistics are displayed</span>
+<span class="sd">        (no ETA, no progressbar).</span>
+<span class="sd">    leave  : bool, optional</span>
+<span class="sd">        If [default: ``True``], keeps all traces of the progressbar</span>
+<span class="sd">        upon termination of iteration.</span>
+<span class="sd">        If ``None``, will leave only if `position` is 0.</span>
+<span class="sd">    file  : :class:`io.TextIOWrapper` or :class:`io.StringIO`, optional</span>
+<span class="sd">        Specifies where to output the progress messages (default:</span>
+<span class="sd">        :data:`sys.stderr`). Uses :meth:`file.write` and :meth:`file.flush`</span>
+<span class="sd">        methods.  For encoding, see `write_bytes`.</span>
+<span class="sd">    ncols  : int, optional</span>
+<span class="sd">        The width of the entire output message. If specified,</span>
+<span class="sd">        dynamically resizes the progressbar to stay within this bound.</span>
+<span class="sd">        If unspecified, attempts to use environment width. The</span>
+<span class="sd">        fallback is a meter width of 10 and no limit for the counter and</span>
+<span class="sd">        statistics. If 0, will not print any meter (only stats).</span>
+<span class="sd">    mininterval  : float, optional</span>
+<span class="sd">        Minimum progress display update interval [default: 0.1] seconds.</span>
+<span class="sd">    maxinterval  : float, optional</span>
+<span class="sd">        Maximum progress display update interval [default: 10] seconds.</span>
+<span class="sd">        Automatically adjusts `miniters` to correspond to `mininterval`</span>
+<span class="sd">        after long display update lag. Only works if `dynamic_miniters`</span>
+<span class="sd">        or monitor thread is enabled.</span>
+<span class="sd">    miniters  : int or float, optional</span>
+<span class="sd">        Minimum progress display update interval, in iterations.</span>
+<span class="sd">        If 0 and `dynamic_miniters`, will automatically adjust to equal</span>
+<span class="sd">        `mininterval` (more CPU efficient, good for tight loops).</span>
+<span class="sd">        If &gt; 0, will skip display of specified number of iterations.</span>
+<span class="sd">        Tweak this and `mininterval` to get very efficient loops.</span>
+<span class="sd">        If your progress is erratic with both fast and slow iterations</span>
+<span class="sd">        (network, skipping items, etc) you should set miniters=1.</span>
+<span class="sd">    ascii  : bool or str, optional</span>
+<span class="sd">        If unspecified or ``False``, use unicode (smooth blocks) to fill</span>
+<span class="sd">        the meter. The fallback is to use ASCII characters &quot; 123456789#&quot;.</span>
+<span class="sd">    disable  : bool, optional</span>
+<span class="sd">        Whether to disable the entire progressbar wrapper</span>
+<span class="sd">        [default: ``False``]. If set to None, disable on non-TTY.</span>
+<span class="sd">    unit  : str, optional</span>
+<span class="sd">        String that will be used to define the unit of each iteration</span>
+<span class="sd">        [default: it].</span>
+<span class="sd">    unit_scale  : bool or int or float, optional</span>
+<span class="sd">        If 1 or True, the number of iterations will be reduced/scaled</span>
+<span class="sd">        automatically and a metric prefix following the</span>
+<span class="sd">        International System of Units standard will be added</span>
+<span class="sd">        (kilo, mega, etc.) [default: ``False``]. If any other non-zero</span>
+<span class="sd">        number, will scale `total` and `n`.</span>
+<span class="sd">    dynamic_ncols  : bool, optional</span>
+<span class="sd">        If set, constantly alters `ncols` and `nrows` to the</span>
+<span class="sd">        environment (allowing for window resizes) [default: ``False``].</span>
+<span class="sd">    smoothing  : float, optional</span>
+<span class="sd">        Exponential moving average smoothing factor for speed estimates</span>
+<span class="sd">        (ignored in GUI mode). Ranges from 0 (average speed) to 1</span>
+<span class="sd">        (current/instantaneous speed) [default: 0.3].</span>
+<span class="sd">    bar_format  : str, optional</span>
+<span class="sd">        Specify a custom bar string formatting. May impact performance.</span>
+<span class="sd">        [default: ``&#39;{l_bar}{bar}{r_bar}&#39;``], where ``l_bar=&#39;{desc}:</span>
+<span class="sd">        {percentage:3.0f}%|&#39;`` and ``r_bar=&#39;| {n_fmt}/{total_fmt}</span>
+<span class="sd">        [{elapsed}&lt;{remaining}, {rate_fmt}{postfix}]&#39;``</span>
+
+<span class="sd">        Possible vars: l_bar, bar, r_bar, n, n_fmt, total, total_fmt,</span>
+<span class="sd">        percentage, elapsed, elapsed_s, ncols, nrows, desc, unit,</span>
+<span class="sd">        rate, rate_fmt, rate_noinv, rate_noinv_fmt,</span>
+<span class="sd">        rate_inv, rate_inv_fmt, postfix, unit_divisor,</span>
+<span class="sd">        remaining, remaining_s.</span>
+
+<span class="sd">        Note that a trailing &quot;: &quot; is automatically removed after {desc}</span>
+<span class="sd">        if the latter is empty.</span>
+<span class="sd">    initial  : int or float, optional</span>
+<span class="sd">        The initial counter value. Useful when restarting a progress bar</span>
+<span class="sd">        [default: 0]. If using :class:`float`, consider specifying ``{n:.3f}``</span>
+<span class="sd">        or similar in `bar_format`, or specifying `unit_scale`.</span>
+<span class="sd">    position  : int, optional</span>
+<span class="sd">        Specify the line offset to print this bar (starting from 0)</span>
+<span class="sd">        Automatic if unspecified.</span>
+<span class="sd">        Useful to manage multiple bars at once (e.g., from threads).</span>
+<span class="sd">    postfix  : dict or \*, optional</span>
+<span class="sd">        Specify additional stats to display at the end of the bar.</span>
+<span class="sd">        Calls ``set_postfix(**postfix)`` if possible (:class:`dict`).</span>
+<span class="sd">    unit_divisor  : float, optional</span>
+<span class="sd">        [default: 1000], ignored unless `unit_scale` is ``True``.</span>
+<span class="sd">    write_bytes  : bool, optional</span>
+<span class="sd">        If (default: ``None``) and `file` is unspecified,</span>
+<span class="sd">        bytes will be written in Python 2. If `True` will also write</span>
+<span class="sd">        bytes. In all other cases will default to unicode.</span>
+<span class="sd">    lock_args  : tuple, optional</span>
+<span class="sd">        Passed to `refresh` for intermediate output</span>
+<span class="sd">        (initialisation, iterating, and updating).</span>
+<span class="sd">    nrows  : int, optional</span>
+<span class="sd">        The screen height. If specified, hides nested bars outside this</span>
+<span class="sd">        bound. If unspecified, attempts to use environment height.</span>
+<span class="sd">        The fallback is 20.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    out  : decorated iterator.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    To get a progress bar when analyzing a trajectory::</span>
+
+<span class="sd">      from MDAnalysis.lib.log import ProgressBar</span>
+
+<span class="sd">      ...</span>
+
+<span class="sd">      for ts in ProgressBar(u.trajectory):</span>
+<span class="sd">         # perform analysis</span>
+
+
+<span class="sd">    will produce something similar to ::</span>
+
+<span class="sd">       30%|███████████                       | 3/10 [00:13&lt;00:30,  4.42s/it]</span>
+
+<span class="sd">    in a terminal or Jupyter notebook.</span>
+
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    The :class:`ProgressBar` is derived from :class:`tqdm.auto.tqdm`; see the</span>
+<span class="sd">    `tqdm documentation`_ for further details on how to use it.</span>
+
+
+
+<span class="sd">    .. _`tqdm documentation`: https://tqdm.github.io/</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="c1"># ^^^^ keep the empty doc string to avoid Sphinx doc errors with the</span>
+        <span class="c1"># original doc string from tqdm.auto.tqdm</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;verbose&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># disable: Whether to disable the entire progressbar wrapper [default: False].</span>
+        <span class="c1"># If set to None, disable on non-TTY.</span>
+        <span class="c1"># disable should be the opposite of verbose unless it&#39;s None</span>
+        <span class="n">disable</span> <span class="o">=</span> <span class="n">verbose</span> <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="ow">not</span> <span class="n">verbose</span>
+        <span class="c1"># disable should take precedence over verbose if both are set</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;disable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;disable&#39;</span><span class="p">,</span> <span class="n">disable</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ProgressBar</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.0.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

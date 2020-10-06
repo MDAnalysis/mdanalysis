@@ -1,0 +1,800 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.lib.picklable_file_io &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0-dev0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.lib.picklable_file_io</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.lib.picklable_file_io</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Picklable read-only I/O classes --- :mod:`MDAnalysis.lib.picklable_file_io`</span>
+<span class="sd">===========================================================================</span>
+
+<span class="sd">Provide with an interface for pickling read-only IO file object.</span>
+<span class="sd">These classes are used for further pickling :class:`MDAnalysis.core.universe`</span>
+<span class="sd">in a object composition approach.</span>
+
+<span class="sd">.. autoclass:: FileIOPicklable</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">.. autoclass:: BufferIOPicklable</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">.. autoclass:: TextIOPicklable</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">.. autoclass:: BZ2Picklable</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">.. autoclass:: GzipPicklable</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">.. autofunction:: pickle_open</span>
+
+<span class="sd">.. autofunction:: bz2_pickle_open</span>
+
+<span class="sd">.. autofunction:: gzip_pickle_open</span>
+
+
+<span class="sd">.. versionadded:: 2.0.0</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">bz2</span>
+<span class="kn">import</span> <span class="nn">gzip</span>
+
+
+<div class="viewcode-block" id="FileIOPicklable"><a class="viewcode-back" href="../../../documentation_pages/lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.FileIOPicklable">[docs]</a><span class="k">class</span> <span class="nc">FileIOPicklable</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">FileIO</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;File object (read-only) that can be pickled.</span>
+
+<span class="sd">    This class provides a file-like object (as returned by :func:`open`,</span>
+<span class="sd">    namely :class:`io.FileIO`) that, unlike standard Python file objects,</span>
+<span class="sd">    can be pickled. Only read mode is supported.</span>
+
+<span class="sd">    When the file is pickled, filename and position of the open file handle in</span>
+<span class="sd">    the file are saved. On unpickling, the file is opened by filename,</span>
+<span class="sd">    and the file is seeked to the saved position.</span>
+<span class="sd">    This means that for a successful unpickle, the original file still has to</span>
+<span class="sd">    be accessible with its filename.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    This class only supports reading files in binary mode. If you need to open</span>
+<span class="sd">    a file in text mode, use the :func:`pickle_open`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        either a text or byte string giving the name (and the path</span>
+<span class="sd">        if the file isn&#39;t in the current working directory) of the file to</span>
+<span class="sd">        be opened.</span>
+<span class="sd">    mode : str</span>
+<span class="sd">        only reading (&#39;r&#39;) mode works. It exists to be consistent</span>
+<span class="sd">        with a wider API.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        &gt;&gt;&gt; file = FileIOPicklable(PDB)</span>
+<span class="sd">        &gt;&gt;&gt; file.readline()</span>
+<span class="sd">        &gt;&gt;&gt; file_pickled = pickle.loads(pickle.dumps(file))</span>
+<span class="sd">        &gt;&gt;&gt; print(file.tell(), file_pickled.tell())</span>
+<span class="sd">            55 55</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    ---------</span>
+<span class="sd">    TextIOPicklable</span>
+<span class="sd">    BufferIOPicklable</span>
+
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">=</span> <span class="n">mode</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">!=</span> <span class="s1">&#39;r&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Can only pickle files that were opened &quot;</span>
+                               <span class="s2">&quot;in read mode, not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="BufferIOPicklable"><a class="viewcode-back" href="../../../documentation_pages/lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.BufferIOPicklable">[docs]</a><span class="k">class</span> <span class="nc">BufferIOPicklable</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BufferedReader</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A picklable buffer object for read-only FileIO object.</span>
+
+<span class="sd">    This class provides a buffered :class:`io.BufferedReader`</span>
+<span class="sd">    that can be pickled.</span>
+<span class="sd">    Note that this only works in read mode.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    raw : FileIO object</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        file = FileIOPicklable(&#39;filename&#39;)</span>
+<span class="sd">        buffer_wrapped = BufferIOPicklable(file)</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    ---------</span>
+<span class="sd">    FileIOPicklable</span>
+<span class="sd">    TextIOPicklable</span>
+
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw_class</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="vm">__class__</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_class</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="n">raw_class</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="n">raw_class</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="TextIOPicklable"><a class="viewcode-back" href="../../../documentation_pages/lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.TextIOPicklable">[docs]</a><span class="k">class</span> <span class="nc">TextIOPicklable</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">TextIOWrapper</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Character and line based picklable file-like object.</span>
+
+<span class="sd">    This class provides a file-like :class:`io.TextIOWrapper` object that can</span>
+<span class="sd">    be pickled. Note that this only works in read mode.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    After pickling, the current position is reset. `universe.trajectory[i]` has</span>
+<span class="sd">    to be used to return to its original frame.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    raw : FileIO object</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        file = FileIOPicklable(&#39;filename&#39;)</span>
+<span class="sd">        text_wrapped = TextIOPicklable(file)</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    ---------</span>
+<span class="sd">    FileIOPicklable</span>
+<span class="sd">    BufferIOPicklable</span>
+
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw_class</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="vm">__class__</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="c1"># This is kind of ugly--BZ2File does not save its name.</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">_fp</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_class</span><span class="p">,</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="n">raw_class</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># raw_class is used for further expansion this functionality to</span>
+        <span class="c1"># Gzip files, which also requires a text wrapper.</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="n">raw_class</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BZ2Picklable"><a class="viewcode-back" href="../../../documentation_pages/lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.BZ2Picklable">[docs]</a><span class="k">class</span> <span class="nc">BZ2Picklable</span><span class="p">(</span><span class="n">bz2</span><span class="o">.</span><span class="n">BZ2File</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;File object (read-only) for bzip2 (de)compression that can be pickled.</span>
+
+<span class="sd">    This class provides a file-like object (as returned by :func:`bz2.open`,</span>
+<span class="sd">    namely :class:`bz2.BZ2File`) that, unlike standard Python file objects,</span>
+<span class="sd">    can be pickled. Only read mode is supported.</span>
+
+<span class="sd">    When the file is pickled, filename and position of the open file handle in</span>
+<span class="sd">    the file are saved. On unpickling, the file is opened by filename,</span>
+<span class="sd">    and the file is seeked to the saved position.</span>
+<span class="sd">    This means that for a successful unpickle, the original file still has to</span>
+<span class="sd">    be accessible with its filename.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    This class only supports reading files in binary mode. If you need to open</span>
+<span class="sd">    to open a compressed file in text mode, use :func:`bz2_pickle_open`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        either a text or byte string giving the name (and the path</span>
+<span class="sd">        if the file isn&#39;t in the current working directory) of the file to</span>
+<span class="sd">        be opened.</span>
+<span class="sd">    mode : str</span>
+<span class="sd">        can only be &#39;r&#39;, &#39;rb&#39; to make pickle work.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        &gt;&gt;&gt; file = BZ2Picklable(XYZ_bz2)</span>
+<span class="sd">        &gt;&gt;&gt; file.readline()</span>
+<span class="sd">        &gt;&gt;&gt; file_pickled = pickle.loads(pickle.dumps(file))</span>
+<span class="sd">        &gt;&gt;&gt; print(file.tell(), file_pickled.tell())</span>
+<span class="sd">            5 5</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    ---------</span>
+<span class="sd">    FileIOPicklable</span>
+<span class="sd">    BufferIOPicklable</span>
+<span class="sd">    TextIOPicklable</span>
+<span class="sd">    GzipPicklable</span>
+
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rb&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bz_mode</span> <span class="o">=</span> <span class="n">mode</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bz_mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Can only pickle files that were opened &quot;</span>
+                               <span class="s2">&quot;in read mode, not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bz_mode</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fp</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="GzipPicklable"><a class="viewcode-back" href="../../../documentation_pages/lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.GzipPicklable">[docs]</a><span class="k">class</span> <span class="nc">GzipPicklable</span><span class="p">(</span><span class="n">gzip</span><span class="o">.</span><span class="n">GzipFile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gzip file object (read-only) that can be pickled.</span>
+
+<span class="sd">    This class provides a file-like object (as returned by :func:`gzip.open`,</span>
+<span class="sd">    namely :class:`gzip.GzipFile`) that, unlike standard Python file objects,</span>
+<span class="sd">    can be pickled. Only read mode is supported.</span>
+
+<span class="sd">    When the file is pickled, filename and position of the open file handle in</span>
+<span class="sd">    the file are saved. On unpickling, the file is opened by filename,</span>
+<span class="sd">    and the file is seeked to the saved position.</span>
+<span class="sd">    This means that for a successful unpickle, the original file still has to</span>
+<span class="sd">    be accessible with its filename.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    This class only supports reading files in binary mode. If you need to open</span>
+<span class="sd">    to open a compressed file in text mode, use the :func:`gzip_pickle_open`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        either a text or byte string giving the name (and the path</span>
+<span class="sd">        if the file isn&#39;t in the current working directory) of the file to</span>
+<span class="sd">        be opened.</span>
+<span class="sd">    mode : str</span>
+<span class="sd">        can only be &#39;r&#39;, &#39;rb&#39; to make pickle work.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        &gt;&gt;&gt; file = GzipPicklable(MMTF_gz)</span>
+<span class="sd">        &gt;&gt;&gt; file.readline()</span>
+<span class="sd">        &gt;&gt;&gt; file_pickled = pickle.loads(pickle.dumps(file))</span>
+<span class="sd">        &gt;&gt;&gt; print(file.tell(), file_pickled.tell())</span>
+<span class="sd">            1218 1218</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    ---------</span>
+<span class="sd">    FileIOPicklable</span>
+<span class="sd">    BufferIOPicklable</span>
+<span class="sd">    TextIOPicklable</span>
+<span class="sd">    BZ2Picklable</span>
+
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rb&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gz_mode</span> <span class="o">=</span> <span class="n">mode</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gz_mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Can only pickle files that were opened &quot;</span>
+                               <span class="s2">&quot;in read mode, not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gz_mode</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="pickle_open"><a class="viewcode-back" href="../../../documentation_pages/lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.pickle_open">[docs]</a><span class="k">def</span> <span class="nf">pickle_open</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rt&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Open file and return a stream with pickle function implemented.</span>
+
+<span class="sd">    This function returns a FileIOPicklable object wrapped in a</span>
+<span class="sd">    BufferIOPicklable class when given the &quot;rb&quot; reading mode,</span>
+<span class="sd">    or a FileIOPicklable object wrapped in a TextIOPicklable class with the &quot;r&quot;</span>
+<span class="sd">    or &quot;rt&quot; reading mode. It can be used as a context manager, and replace the</span>
+<span class="sd">    built-in :func:`open` function in read mode that only returns an</span>
+<span class="sd">    unpicklable file object.</span>
+<span class="sd">    In order to serialize a :class:`MDAnalysis.core.Universe`, this function</span>
+<span class="sd">    can used to open trajectory/topology files. This object composition is more</span>
+<span class="sd">    flexible and easier than class inheritance to implement pickling</span>
+<span class="sd">    for new readers.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    Can be only used with read mode.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        either a text or byte string giving the name (and the path</span>
+<span class="sd">        if the file isn&#39;t in the current working directory) of the file to</span>
+<span class="sd">        be opened.</span>
+<span class="sd">    mode: {&#39;r&#39;, &#39;rt&#39;, &#39;rb&#39;} (optional)</span>
+<span class="sd">        &#39;r&#39;:  open for reading in text mode;</span>
+<span class="sd">        &#39;rt&#39;: read in text mode (default);</span>
+<span class="sd">        &#39;rb&#39;: read in binary mode;</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    stream-like object: BufferIOPicklable or TextIOPicklable</span>
+<span class="sd">        when mode is &#39;r&#39; or &#39;rt&#39;, returns TextIOPicklable;</span>
+<span class="sd">        when mode is &#39;rb&#39;, returns BufferIOPicklable</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        if `mode` is not one of the allowed read modes</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    -------</span>
+<span class="sd">    open as context manager::</span>
+
+<span class="sd">        with pickle_open(&#39;filename&#39;) as f:</span>
+<span class="sd">            line = f.readline()</span>
+
+<span class="sd">    open as function::</span>
+
+<span class="sd">        f = pickle_open(&#39;filename&#39;)</span>
+<span class="sd">        line = f.readline()</span>
+<span class="sd">        f.close()</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`MDAnalysis.lib.util.anyopen`</span>
+<span class="sd">    :func:`io.open`</span>
+
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;rt&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">}:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only read mode (&#39;r&#39;, &#39;rt&#39;, &#39;rb&#39;) &quot;</span>
+                         <span class="s2">&quot;files can be pickled.&quot;</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">fspath</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">raw</span> <span class="o">=</span> <span class="n">FileIOPicklable</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;rb&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">BufferIOPicklable</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;rt&#39;</span><span class="p">}:</span>
+        <span class="k">return</span> <span class="n">TextIOPicklable</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="bz2_pickle_open"><a class="viewcode-back" href="../../../documentation_pages/lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.bz2_pickle_open">[docs]</a><span class="k">def</span> <span class="nf">bz2_pickle_open</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rb&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Open a bzip2-compressed file in binary or text mode</span>
+<span class="sd">    with pickle function implemented.</span>
+
+<span class="sd">    This function returns a BZ2Picklable object when given the &quot;rb&quot; or &quot;r&quot;</span>
+<span class="sd">    reading mode, or a BZ2Picklable object wrapped in a TextIOPicklable class</span>
+<span class="sd">    with the &quot;rt&quot; reading mode.</span>
+<span class="sd">    It can be used as a context manager, and replace the built-in</span>
+<span class="sd">    :func:`bz2.open` function in read mode that only returns an</span>
+<span class="sd">    unpicklable file object.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    Can be only used with read mode.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        either a text or byte string giving the name (and the path</span>
+<span class="sd">        if the file isn&#39;t in the current working directory) of the file to</span>
+<span class="sd">        be opened.</span>
+<span class="sd">    mode: {&#39;r&#39;, &#39;rt&#39;, &#39;rb&#39;} (optional)</span>
+<span class="sd">        &#39;r&#39;:  open for reading in binary mode;</span>
+<span class="sd">        &#39;rt&#39;: read in text mode;</span>
+<span class="sd">        &#39;rb&#39;: read in binary mode; (default)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    stream-like object: BZ2Picklable or TextIOPicklable</span>
+<span class="sd">        when mode is &#39;rt&#39;, returns TextIOPicklable;</span>
+<span class="sd">        when mode is &#39;r&#39; or &#39;rb&#39;, returns BZ2Picklable</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        if `mode` is not one of the allowed read modes</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    -------</span>
+<span class="sd">    open as context manager::</span>
+
+<span class="sd">        with bz2_pickle_open(&#39;filename&#39;) as f:</span>
+<span class="sd">            line = f.readline()</span>
+
+<span class="sd">    open as function::</span>
+
+<span class="sd">        f = bz2_pickle_open(&#39;filename&#39;)</span>
+<span class="sd">        line = f.readline()</span>
+<span class="sd">        f.close()</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`io.open`</span>
+<span class="sd">    :func:`bz2.open`</span>
+<span class="sd">    :func:`MDAnalysis.lib.util.anyopen`</span>
+<span class="sd">    :func:`MDAnalysis.lib.picklable_file_io.pickle_open`</span>
+<span class="sd">    :func:`MDAnalysis.lib.picklable_file_io.gzip_pickle_open`</span>
+
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;rt&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">}:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only read mode (&#39;r&#39;, &#39;rt&#39;, &#39;rb&#39;) &quot;</span>
+                         <span class="s2">&quot;files can be pickled.&quot;</span><span class="p">)</span>
+    <span class="n">bz_mode</span> <span class="o">=</span> <span class="n">mode</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">binary_file</span> <span class="o">=</span> <span class="n">BZ2Picklable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">bz_mode</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;t&quot;</span> <span class="ow">in</span> <span class="n">mode</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">TextIOPicklable</span><span class="p">(</span><span class="n">binary_file</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">binary_file</span></div>
+
+
+<div class="viewcode-block" id="gzip_pickle_open"><a class="viewcode-back" href="../../../documentation_pages/lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.gzip_pickle_open">[docs]</a><span class="k">def</span> <span class="nf">gzip_pickle_open</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rb&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Open a gzip-compressed file in binary or text mode</span>
+<span class="sd">    with pickle function implemented.</span>
+
+<span class="sd">    This function returns a GzipPicklable object when given the &quot;rb&quot; or &quot;r&quot;</span>
+<span class="sd">    reading mode, or a GzipPicklable object wrapped in a TextIOPicklable class</span>
+<span class="sd">    with the &quot;rt&quot; reading mode.</span>
+<span class="sd">    It can be used as a context manager, and replace the built-in</span>
+<span class="sd">    :func:`gzip.open` function in read mode that only returns an</span>
+<span class="sd">    unpicklable file object.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    Can be only used with read mode.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        either a text or byte string giving the name (and the path</span>
+<span class="sd">        if the file isn&#39;t in the current working directory) of the file to</span>
+<span class="sd">        be opened.</span>
+<span class="sd">    mode: {&#39;r&#39;, &#39;rt&#39;, &#39;rb&#39;} (optional)</span>
+<span class="sd">        &#39;r&#39;:  open for reading in binary mode;</span>
+<span class="sd">        &#39;rt&#39;: read in text mode;</span>
+<span class="sd">        &#39;rb&#39;: read in binary mode; (default)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    stream-like object: GzipPicklable or TextIOPicklable</span>
+<span class="sd">        when mode is &#39;rt&#39;, returns TextIOPicklable;</span>
+<span class="sd">        when mode is &#39;r&#39; or &#39;rb&#39;, returns GzipPicklable</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        if `mode` is not one of the allowed read modes</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    -------</span>
+<span class="sd">    open as context manager::</span>
+
+<span class="sd">        with gzip_pickle_open(&#39;filename&#39;) as f:</span>
+<span class="sd">            line = f.readline()</span>
+
+<span class="sd">    open as function::</span>
+
+<span class="sd">        f = gzip_pickle_open(&#39;filename&#39;)</span>
+<span class="sd">        line = f.readline()</span>
+<span class="sd">        f.close()</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`io.open`</span>
+<span class="sd">    :func:`gzip.open`</span>
+<span class="sd">    :func:`MDAnalysis.lib.util.anyopen`</span>
+<span class="sd">    :func:`MDAnalysis.lib.picklable_file_io.pickle_open`</span>
+<span class="sd">    :func:`MDAnalysis.lib.picklable_file_io.bz2_pickle_open`</span>
+
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;rt&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">}:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only read mode (&#39;r&#39;, &#39;rt&#39;, &#39;rb&#39;) &quot;</span>
+                         <span class="s2">&quot;files can be pickled.&quot;</span><span class="p">)</span>
+    <span class="n">gz_mode</span> <span class="o">=</span> <span class="n">mode</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">binary_file</span> <span class="o">=</span> <span class="n">GzipPicklable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">gz_mode</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;t&quot;</span> <span class="ow">in</span> <span class="n">mode</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">TextIOPicklable</span><span class="p">(</span><span class="n">binary_file</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">binary_file</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.0.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

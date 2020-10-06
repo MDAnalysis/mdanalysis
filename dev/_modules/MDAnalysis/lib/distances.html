@@ -1,0 +1,1769 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.lib.distances &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0-dev0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.lib.distances</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.lib.distances</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+
+<span class="sd">&quot;&quot;&quot;Fast distance array computation --- :mod:`MDAnalysis.lib.distances`</span>
+<span class="sd">===================================================================</span>
+
+<span class="sd">Fast C-routines to calculate arrays of distances or angles from coordinate</span>
+<span class="sd">arrays. Many of the functions also exist in parallel versions, which typically</span>
+<span class="sd">provide higher performance than the serial code.</span>
+<span class="sd">The boolean attribute `MDAnalysis.lib.distances.USED_OPENMP` can be checked to</span>
+<span class="sd">see if OpenMP was used in the compilation of MDAnalysis.</span>
+
+<span class="sd">Selection of acceleration (&quot;backend&quot;)</span>
+<span class="sd">-------------------------------------</span>
+
+<span class="sd">All functions take the optional keyword `backend`, which determines the type of</span>
+<span class="sd">acceleration. Currently, the following choices are implemented (`backend` is</span>
+<span class="sd">case-insensitive):</span>
+
+<span class="sd">.. Table:: Available *backends* for accelerated distance functions.</span>
+
+<span class="sd">   ========== ========================= ======================================</span>
+<span class="sd">   *backend*  module                    description</span>
+<span class="sd">   ========== ========================= ======================================</span>
+<span class="sd">   &quot;serial&quot;   :mod:`c_distances`        serial implementation in C/Cython</span>
+
+<span class="sd">   &quot;OpenMP&quot;   :mod:`c_distances_openmp` parallel implementation in C/Cython</span>
+<span class="sd">                                        with OpenMP</span>
+<span class="sd">   ========== ========================= ======================================</span>
+
+<span class="sd">.. versionadded:: 0.13.0</span>
+
+<span class="sd">Functions</span>
+<span class="sd">---------</span>
+<span class="sd">.. autofunction:: distance_array</span>
+<span class="sd">.. autofunction:: self_distance_array</span>
+<span class="sd">.. autofunction:: capped_distance</span>
+<span class="sd">.. autofunction:: self_capped_distance</span>
+<span class="sd">.. autofunction:: calc_bonds</span>
+<span class="sd">.. autofunction:: calc_angles</span>
+<span class="sd">.. autofunction:: calc_dihedrals</span>
+<span class="sd">.. autofunction:: apply_PBC</span>
+<span class="sd">.. autofunction:: transform_RtoS</span>
+<span class="sd">.. autofunction:: transform_StoR</span>
+<span class="sd">.. autofunction:: augment_coordinates(coordinates, box, r)</span>
+<span class="sd">.. autofunction:: undo_augment(results, translation, nreal)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy.lib.utils</span> <span class="kn">import</span> <span class="n">deprecate</span>
+
+<span class="kn">from</span> <span class="nn">.util</span> <span class="kn">import</span> <span class="n">check_coords</span><span class="p">,</span> <span class="n">check_box</span>
+<span class="kn">from</span> <span class="nn">.mdamath</span> <span class="kn">import</span> <span class="n">triclinic_vectors</span>
+<span class="kn">from</span> <span class="nn">._augment</span> <span class="kn">import</span> <span class="n">augment_coordinates</span><span class="p">,</span> <span class="n">undo_augment</span>
+<span class="kn">from</span> <span class="nn">.nsgrid</span> <span class="kn">import</span> <span class="n">FastNS</span>
+
+<span class="c1"># hack to select backend with backend=&lt;backend&gt; kwarg. Note that</span>
+<span class="c1"># the cython parallel code (prange) in parallel.distances is</span>
+<span class="c1"># independent from the OpenMP code</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="n">_distances</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">_distances</span><span class="p">[</span><span class="s1">&#39;serial&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;.c_distances&quot;</span><span class="p">,</span>
+                                         <span class="n">package</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.lib&quot;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">_distances</span><span class="p">[</span><span class="s1">&#39;openmp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;.c_distances_openmp&quot;</span><span class="p">,</span>
+                                          <span class="n">package</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.lib&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="k">del</span> <span class="n">importlib</span>
+
+<span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="n">funcname</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Helper function to select a backend function `funcname`.&quot;&quot;&quot;</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">args</span> <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">()</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span> <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">_distances</span><span class="p">[</span><span class="n">backend</span><span class="p">],</span> <span class="n">funcname</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Function </span><span class="si">{</span><span class="n">funcname</span><span class="si">}</span><span class="s2"> not available with backend </span><span class="si">{</span><span class="n">backend</span><span class="si">}</span><span class="s2"> &quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot;try one of: </span><span class="si">{</span><span class="n">_distances</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+    <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="c1"># serial versions are always available (and are typically used within</span>
+<span class="c1"># the core and topology modules)</span>
+<span class="kn">from</span> <span class="nn">.c_distances</span> <span class="kn">import</span> <span class="p">(</span><span class="n">calc_distance_array</span><span class="p">,</span>
+                          <span class="n">calc_distance_array_ortho</span><span class="p">,</span>
+                          <span class="n">calc_distance_array_triclinic</span><span class="p">,</span>
+                          <span class="n">calc_self_distance_array</span><span class="p">,</span>
+                          <span class="n">calc_self_distance_array_ortho</span><span class="p">,</span>
+                          <span class="n">calc_self_distance_array_triclinic</span><span class="p">,</span>
+                          <span class="n">coord_transform</span><span class="p">,</span>
+                          <span class="n">calc_bond_distance</span><span class="p">,</span>
+                          <span class="n">calc_bond_distance_ortho</span><span class="p">,</span>
+                          <span class="n">calc_bond_distance_triclinic</span><span class="p">,</span>
+                          <span class="n">calc_angle</span><span class="p">,</span>
+                          <span class="n">calc_angle_ortho</span><span class="p">,</span>
+                          <span class="n">calc_angle_triclinic</span><span class="p">,</span>
+                          <span class="n">calc_dihedral</span><span class="p">,</span>
+                          <span class="n">calc_dihedral_ortho</span><span class="p">,</span>
+                          <span class="n">calc_dihedral_triclinic</span><span class="p">,</span>
+                          <span class="n">ortho_pbc</span><span class="p">,</span>
+                          <span class="n">triclinic_pbc</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">.c_distances_openmp</span> <span class="kn">import</span> <span class="n">OPENMP_ENABLED</span> <span class="k">as</span> <span class="n">USED_OPENMP</span>
+
+
+<span class="k">def</span> <span class="nf">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if the result array is ok to use.</span>
+
+<span class="sd">    The `result` array must meet the following requirements:</span>
+<span class="sd">      * Must have a shape equal to `shape`.</span>
+<span class="sd">      * Its dtype must be ``numpy.float64``.</span>
+
+<span class="sd">    Paramaters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    result : numpy.ndarray or None</span>
+<span class="sd">        The result array to check. If `result` is `None``, a newly created</span>
+<span class="sd">        array of correct shape and dtype ``numpy.float64`` will be returned.</span>
+<span class="sd">    shape : tuple</span>
+<span class="sd">        The shape expected for the `result` array.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    result : numpy.ndarray (``dtype=numpy.float64``, ``shape=shape``)</span>
+<span class="sd">        The input array or a newly created array if the input was ``None``.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If `result` is of incorrect shape.</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        If the dtype of `result` is not ``numpy.float64``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">shape</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Result array has incorrect shape, should be </span><span class="si">{0}</span><span class="s2">, got &quot;</span>
+                         <span class="s2">&quot;</span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Result array must be of type numpy.float64, got </span><span class="si">{}</span><span class="s2">.&quot;</span>
+                        <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+<span class="c1"># The following two lines would break a lot of tests. WHY?!</span>
+<span class="c1">#    if not coords.flags[&#39;C_CONTIGUOUS&#39;]:</span>
+<span class="c1">#        raise ValueError(&quot;{0} is not C-contiguous.&quot;.format(desc))</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<div class="viewcode-block" id="distance_array"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.distance_array">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="s1">&#39;configuration&#39;</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate all possible distances between a reference set and another</span>
+<span class="sd">    configuration.</span>
+
+<span class="sd">    If there are ``n`` positions in `reference` and ``m`` positions in</span>
+<span class="sd">    `configuration`, a distance array of shape ``(n, m)`` will be computed.</span>
+
+<span class="sd">    If the optional argument `box` is supplied, the minimum image convention is</span>
+<span class="sd">    applied when calculating distances. Either orthogonal or triclinic boxes are</span>
+<span class="sd">    supported.</span>
+
+<span class="sd">    If a 2D numpy array of dtype ``numpy.float64`` with the shape ``(n, m)``</span>
+<span class="sd">    is provided in `result`, then this preallocated array is filled. This can</span>
+<span class="sd">    speed up calculations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">        Reference coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is</span>
+<span class="sd">        arbitrary, will be converted to ``numpy.float32`` internally).</span>
+<span class="sd">    configuration : numpy.ndarray</span>
+<span class="sd">        Configuration coordinate array of shape ``(3,)`` or ``(m, 3)`` (dtype is</span>
+<span class="sd">        arbitrary, will be converted to ``numpy.float32`` internally).</span>
+<span class="sd">    box : array_like, optional</span>
+<span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">        triclinic and must be provided in the same format as returned by</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
+<span class="sd">    result : numpy.ndarray, optional</span>
+<span class="sd">        Preallocated result array which must have the shape ``(n, m)`` and dtype</span>
+<span class="sd">        ``numpy.float64``.</span>
+<span class="sd">        Avoids creating the array which saves time when the function</span>
+<span class="sd">        is called repeatedly.</span>
+<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;}, optional</span>
+<span class="sd">        Keyword selecting the type of acceleration.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    d : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n, m)``)</span>
+<span class="sd">        Array containing the distances ``d[i,j]`` between reference coordinates</span>
+<span class="sd">        ``i`` and configuration coordinates ``j``.</span>
+
+
+<span class="sd">    .. versionchanged:: 0.13.0</span>
+<span class="sd">       Added *backend* keyword.</span>
+<span class="sd">    .. versionchanged:: 0.19.0</span>
+<span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
+<span class="sd">       Now also accepts single coordinates as input.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">confnum</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">refnum</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">distances</span> <span class="o">=</span> <span class="n">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">refnum</span><span class="p">,</span> <span class="n">confnum</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">distances</span>
+
+    <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
+            <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_distance_array_ortho&quot;</span><span class="p">,</span>
+                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">distances</span><span class="p">),</span>
+                 <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_distance_array_triclinic&quot;</span><span class="p">,</span>
+                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">distances</span><span class="p">),</span>
+                 <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_distance_array&quot;</span><span class="p">,</span>
+             <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">distances</span><span class="p">),</span>
+             <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">distances</span></div>
+
+
+<div class="viewcode-block" id="self_distance_array"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.self_distance_array">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">self_distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate all possible distances within a configuration `reference`.</span>
+
+<span class="sd">    If the optional argument `box` is supplied, the minimum image convention is</span>
+<span class="sd">    applied when calculating distances. Either orthogonal or triclinic boxes are</span>
+<span class="sd">    supported.</span>
+
+<span class="sd">    If a 1D numpy array of dtype ``numpy.float64`` with the shape</span>
+<span class="sd">    ``(n*(n-1)/2,)`` is provided in `result`, then this preallocated array is</span>
+<span class="sd">    filled. This can speed up calculations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">        Reference coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is</span>
+<span class="sd">        arbitrary, will be converted to ``numpy.float32`` internally).</span>
+<span class="sd">    box : array_like, optional</span>
+<span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">        triclinic and must be provided in the same format as returned by</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
+<span class="sd">    result : numpy.ndarray, optional</span>
+<span class="sd">        Preallocated result array which must have the shape ``(n*(n-1)/2,)`` and</span>
+<span class="sd">        dtype ``numpy.float64``. Avoids creating the array which saves time when</span>
+<span class="sd">        the function is called repeatedly.</span>
+<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;}, optional</span>
+<span class="sd">        Keyword selecting the type of acceleration.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    d : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n*(n-1)/2,)``)</span>
+<span class="sd">        Array containing the distances ``dist[i,j]`` between reference</span>
+<span class="sd">        coordinates ``i`` and ``j`` at position ``d[k]``. Loop through ``d``:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            for i in range(n):</span>
+<span class="sd">                for j in range(i + 1, n):</span>
+<span class="sd">                    k += 1</span>
+<span class="sd">                    dist[i, j] = d[k]</span>
+
+
+<span class="sd">    .. versionchanged:: 0.13.0</span>
+<span class="sd">       Added *backend* keyword.</span>
+<span class="sd">    .. versionchanged:: 0.19.0</span>
+<span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">refnum</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">distnum</span> <span class="o">=</span> <span class="n">refnum</span> <span class="o">*</span> <span class="p">(</span><span class="n">refnum</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+
+    <span class="n">distances</span> <span class="o">=</span> <span class="n">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">distnum</span><span class="p">,))</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">distances</span>
+
+    <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
+            <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_self_distance_array_ortho&quot;</span><span class="p">,</span>
+                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">distances</span><span class="p">),</span>
+                 <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_self_distance_array_triclinic&quot;</span><span class="p">,</span>
+                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">distances</span><span class="p">),</span>
+                 <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_self_distance_array&quot;</span><span class="p">,</span>
+             <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">distances</span><span class="p">),</span>
+             <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">distances</span></div>
+
+
+<div class="viewcode-block" id="capped_distance"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.capped_distance">[docs]</a><span class="k">def</span> <span class="nf">capped_distance</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculates pairs of indices corresponding to entries in the `reference`</span>
+<span class="sd">    and `configuration` arrays which are separated by a distance lying within</span>
+<span class="sd">    the specified cutoff(s). Optionally, these distances can be returned as</span>
+<span class="sd">    well.</span>
+
+<span class="sd">    If the optional argument `box` is supplied, the minimum image convention is</span>
+<span class="sd">    applied when calculating distances. Either orthogonal or triclinic boxes are</span>
+<span class="sd">    supported.</span>
+
+<span class="sd">    An automatic guessing of the optimal method to calculate the distances is</span>
+<span class="sd">    included in the function. An optional keyword for the method is also</span>
+<span class="sd">    provided. Users can enforce a particular method with this functionality.</span>
+<span class="sd">    Currently brute force, grid search, and periodic KDtree methods are</span>
+<span class="sd">    implemented.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">        Reference coordinate array with shape ``(3,)`` or ``(n, 3)``.</span>
+<span class="sd">    configuration : numpy.ndarray</span>
+<span class="sd">        Configuration coordinate array with shape ``(3,)`` or ``(m, 3)``.</span>
+<span class="sd">    max_cutoff : float</span>
+<span class="sd">        Maximum cutoff distance between the reference and configuration.</span>
+<span class="sd">    min_cutoff : float, optional</span>
+<span class="sd">        Minimum cutoff distance between reference and configuration.</span>
+<span class="sd">    box : array_like, optional</span>
+<span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">        triclinic and must be provided in the same format as returned by</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
+<span class="sd">    method : {&#39;bruteforce&#39;, &#39;nsgrid&#39;, &#39;pkdtree&#39;}, optional</span>
+<span class="sd">        Keyword to override the automatic guessing of the employed search</span>
+<span class="sd">        method.</span>
+<span class="sd">    return_distances : bool, optional</span>
+<span class="sd">        If set to ``True``, distances will also be returned.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)</span>
+<span class="sd">        Pairs of indices, corresponding to coordinates in the `reference` and</span>
+<span class="sd">        `configuration` arrays such that the distance between them lies within</span>
+<span class="sd">        the interval (`min_cutoff`, `max_cutoff`].</span>
+<span class="sd">        Each row in `pairs` is an index pair ``[i, j]`` corresponding to the</span>
+<span class="sd">        ``i``-th coordinate in `reference` and the ``j``-th coordinate in</span>
+<span class="sd">        `configuration`.</span>
+<span class="sd">    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``), optional</span>
+<span class="sd">        Distances corresponding to each pair of indices. Only returned if</span>
+<span class="sd">        `return_distances` is ``True``. ``distances[k]`` corresponds to the</span>
+<span class="sd">        ``k``-th pair returned in `pairs` and gives the distance between the</span>
+<span class="sd">        coordinates ``reference[pairs[k, 0]]`` and</span>
+<span class="sd">        ``configuration[pairs[k, 1]]``.</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            pairs, distances = capped_distances(reference, configuration,</span>
+<span class="sd">                                                max_cutoff, return_distances=True)</span>
+<span class="sd">            for k, [i, j] in enumerate(pairs):</span>
+<span class="sd">                coord1 = reference[i]</span>
+<span class="sd">                coord2 = configuration[j]</span>
+<span class="sd">                distance = distances[k]</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    -----</span>
+<span class="sd">    Currently supports brute force, grid-based, and periodic KDtree search</span>
+<span class="sd">    methods.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    distance_array</span>
+<span class="sd">    MDAnalysis.lib.pkdtree.PeriodicKDTree.search</span>
+<span class="sd">    MDAnalysis.lib.nsgrid.FastNS.search</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">box</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Box Argument is of incompatible type. The &quot;</span>
+                             <span class="s2">&quot;dimension should be either None or of the form &quot;</span>
+                             <span class="s2">&quot;[lx, ly, lz, alpha, beta, gamma]&quot;</span><span class="p">)</span>
+    <span class="n">method</span> <span class="o">=</span> <span class="n">_determine_method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span>
+                               <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span>
+                  <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="n">return_distances</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_determine_method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Guesses the fastest method for capped distance calculations based on the</span>
+<span class="sd">    size of the coordinate sets and the relative size of the target volume.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">        Reference coordinate array with shape ``(3,)`` or ``(n, 3)``.</span>
+<span class="sd">    configuration : numpy.ndarray</span>
+<span class="sd">        Configuration coordinate array with shape ``(3,)`` or ``(m, 3)``.</span>
+<span class="sd">    max_cutoff : float</span>
+<span class="sd">        Maximum cutoff distance between `reference` and `configuration`</span>
+<span class="sd">        coordinates.</span>
+<span class="sd">    min_cutoff : float, optional</span>
+<span class="sd">        Minimum cutoff distance between `reference` and `configuration`</span>
+<span class="sd">        coordinates.</span>
+<span class="sd">    box : numpy.ndarray</span>
+<span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">        triclinic and must be provided in the same format as returned by</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
+<span class="sd">    method : {&#39;bruteforce&#39;, &#39;nsgrid&#39;, &#39;pkdtree&#39;}, optional</span>
+<span class="sd">        Keyword to override the automatic guessing of the employed search</span>
+<span class="sd">        method.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    function : callable</span>
+<span class="sd">        The function implementing the guessed (or deliberatly chosen) method.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">methods</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bruteforce&#39;</span><span class="p">:</span> <span class="n">_bruteforce_capped</span><span class="p">,</span>
+               <span class="s1">&#39;pkdtree&#39;</span><span class="p">:</span> <span class="n">_pkdtree_capped</span><span class="p">,</span>
+               <span class="s1">&#39;nsgrid&#39;</span><span class="p">:</span> <span class="n">_nsgrid_capped</span><span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;bruteforce&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mf">1e8</span><span class="p">:</span>
+        <span class="c1"># CAUTION : for large datasets, shouldnt go into &#39;bruteforce&#39;</span>
+        <span class="c1"># in any case. Arbitrary number, but can be characterized</span>
+        <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;nsgrid&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">min_dim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">reference</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                                <span class="n">configuration</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)])</span>
+            <span class="n">max_dim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">reference</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                                <span class="n">configuration</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)])</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">max_dim</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">min_dim</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">==</span> <span class="mf">90.0</span><span class="p">):</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">box</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tribox</span> <span class="o">=</span> <span class="n">triclinic_vectors</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">tribox</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">tribox</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">max_cutoff</span> <span class="o">&gt;</span> <span class="mf">0.3</span><span class="o">*</span><span class="n">size</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;bruteforce&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;nsgrid&#39;</span><span class="p">]</span>
+
+
+<span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="s1">&#39;configuration&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_bruteforce_capped</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Capped distance evaluations using a brute force method.</span>
+
+<span class="sd">    Computes and returns an array containing pairs of indices corresponding to</span>
+<span class="sd">    entries in the `reference` and `configuration` arrays which are separated by</span>
+<span class="sd">    a distance lying within the specified cutoff(s). Employs naive distance</span>
+<span class="sd">    computations (brute force) to find relevant distances.</span>
+
+<span class="sd">    Optionally, these distances can be returned as well.</span>
+
+<span class="sd">    If the optional argument `box` is supplied, the minimum image convention is</span>
+<span class="sd">    applied when calculating distances. Either orthogonal or triclinic boxes are</span>
+<span class="sd">    supported.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">        Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will</span>
+<span class="sd">        be converted to ``numpy.float32`` internally).</span>
+<span class="sd">    configuration : array</span>
+<span class="sd">        Configuration coordinate array with shape ``(3,)`` or ``(m, 3)`` (dtype</span>
+<span class="sd">        will be converted to ``numpy.float32`` internally).</span>
+<span class="sd">    max_cutoff : float</span>
+<span class="sd">        Maximum cutoff distance between `reference` and `configuration`</span>
+<span class="sd">        coordinates.</span>
+<span class="sd">    min_cutoff : float, optional</span>
+<span class="sd">        Minimum cutoff distance between `reference` and `configuration`</span>
+<span class="sd">        coordinates.</span>
+<span class="sd">    box : numpy.ndarray, optional</span>
+<span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">        triclinic and must be provided in the same format as returned by</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
+<span class="sd">    return_distances : bool, optional</span>
+<span class="sd">        If set to ``True``, distances will also be returned.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)</span>
+<span class="sd">        Pairs of indices, corresponding to coordinates in the `reference` and</span>
+<span class="sd">        `configuration` arrays such that the distance between them lies within</span>
+<span class="sd">        the interval (`min_cutoff`, `max_cutoff`].</span>
+<span class="sd">        Each row in `pairs` is an index pair ``[i, j]`` corresponding to the</span>
+<span class="sd">        ``i``-th coordinate in `reference` and the ``j``-th coordinate in</span>
+<span class="sd">        `configuration`.</span>
+<span class="sd">    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``), optional</span>
+<span class="sd">        Distances corresponding to each pair of indices. Only returned if</span>
+<span class="sd">        `return_distances` is ``True``. ``distances[k]`` corresponds to the</span>
+<span class="sd">        ``k``-th pair returned in `pairs` and gives the distance between the</span>
+<span class="sd">        coordinates ``reference[pairs[k, 0]]`` and</span>
+<span class="sd">        ``configuration[pairs[k, 1]]``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Default return values (will be overwritten only if pairs are found):</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">_distances</span> <span class="o">=</span> <span class="n">distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">_distances</span> <span class="o">&lt;=</span> <span class="n">max_cutoff</span><span class="p">)</span> <span class="o">&amp;</span> \
+                            <span class="p">(</span><span class="n">_distances</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">_distances</span> <span class="o">&lt;=</span> <span class="n">max_cutoff</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mask</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="n">return_distances</span><span class="p">:</span>
+                <span class="n">distances</span> <span class="o">=</span> <span class="n">_distances</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">return_distances</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pairs</span>
+
+
+<span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="s1">&#39;configuration&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_pkdtree_capped</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Capped distance evaluations using a KDtree method.</span>
+
+<span class="sd">    Computes and returns an array containing pairs of indices corresponding to</span>
+<span class="sd">    entries in the `reference` and `configuration` arrays which are separated by</span>
+<span class="sd">    a distance lying within the specified cutoff(s). Employs a (periodic) KDtree</span>
+<span class="sd">    algorithm to find relevant distances.</span>
+
+<span class="sd">    Optionally, these distances can be returned as well.</span>
+
+<span class="sd">    If the optional argument `box` is supplied, the minimum image convention is</span>
+<span class="sd">    applied when calculating distances. Either orthogonal or triclinic boxes are</span>
+<span class="sd">    supported.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">        Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will</span>
+<span class="sd">        be converted to ``numpy.float32`` internally).</span>
+<span class="sd">    configuration : array</span>
+<span class="sd">        Configuration coordinate array with shape ``(3,)`` or ``(m, 3)`` (dtype</span>
+<span class="sd">        will be converted to ``numpy.float32`` internally).</span>
+<span class="sd">    max_cutoff : float</span>
+<span class="sd">        Maximum cutoff distance between `reference` and `configuration`</span>
+<span class="sd">        coordinates.</span>
+<span class="sd">    min_cutoff : float, optional</span>
+<span class="sd">        Minimum cutoff distance between `reference` and `configuration`</span>
+<span class="sd">        coordinates.</span>
+<span class="sd">    box : numpy.ndarray, optional</span>
+<span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">        triclinic and must be provided in the same format as returned by</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
+<span class="sd">    return_distances : bool, optional</span>
+<span class="sd">        If set to ``True``, distances will also be returned.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)</span>
+<span class="sd">        Pairs of indices, corresponding to coordinates in the `reference` and</span>
+<span class="sd">        `configuration` arrays such that the distance between them lies within</span>
+<span class="sd">        the interval (`min_cutoff`, `max_cutoff`].</span>
+<span class="sd">        Each row in `pairs` is an index pair ``[i, j]`` corresponding to the</span>
+<span class="sd">        ``i``-th coordinate in `reference` and the ``j``-th coordinate in</span>
+<span class="sd">        `configuration`.</span>
+<span class="sd">    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``), optional</span>
+<span class="sd">        Distances corresponding to each pair of indices. Only returned if</span>
+<span class="sd">        `return_distances` is ``True``. ``distances[k]`` corresponds to the</span>
+<span class="sd">        ``k``-th pair returned in `pairs` and gives the distance between the</span>
+<span class="sd">        coordinates ``reference[pairs[k, 0]]`` and</span>
+<span class="sd">        ``configuration[pairs[k, 1]]``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">.pkdtree</span> <span class="kn">import</span> <span class="n">PeriodicKDTree</span>  <span class="c1"># must be here to avoid circular import</span>
+
+    <span class="c1"># Default return values (will be overwritten only if pairs are found):</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">kdtree</span> <span class="o">=</span> <span class="n">PeriodicKDTree</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+        <span class="n">cut</span> <span class="o">=</span> <span class="n">max_cutoff</span> <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">kdtree</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">configuration</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">cut</span><span class="p">)</span>
+        <span class="n">_pairs</span> <span class="o">=</span> <span class="n">kdtree</span><span class="o">.</span><span class="n">search_tree</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_pairs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pairs</span> <span class="o">=</span> <span class="n">_pairs</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">return_distances</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)):</span>
+                <span class="n">refA</span><span class="p">,</span> <span class="n">refB</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">distances</span> <span class="o">=</span> <span class="n">calc_bonds</span><span class="p">(</span><span class="n">reference</span><span class="p">[</span><span class="n">refA</span><span class="p">],</span> <span class="n">configuration</span><span class="p">[</span><span class="n">refB</span><span class="p">],</span>
+                                       <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">distances</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span><span class="p">)</span>
+                    <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">distances</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">return_distances</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pairs</span>
+
+
+<span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="s1">&#39;configuration&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_lengths_match</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_nsgrid_capped</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Capped distance evaluations using a grid-based search method.</span>
+
+<span class="sd">    Computes and returns an array containing pairs of indices corresponding to</span>
+<span class="sd">    entries in the `reference` and `configuration` arrays which are separated by</span>
+<span class="sd">    a distance lying within the specified cutoff(s). Employs a grid-based search</span>
+<span class="sd">    algorithm to find relevant distances.</span>
+
+<span class="sd">    Optionally, these distances can be returned as well.</span>
+
+<span class="sd">    If the optional argument `box` is supplied, the minimum image convention is</span>
+<span class="sd">    applied when calculating distances. Either orthogonal or triclinic boxes are</span>
+<span class="sd">    supported.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">        Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will</span>
+<span class="sd">        be converted to ``numpy.float32`` internally).</span>
+<span class="sd">    configuration : array</span>
+<span class="sd">        Configuration coordinate array with shape ``(3,)`` or ``(m, 3)`` (dtype</span>
+<span class="sd">        will be converted to ``numpy.float32`` internally).</span>
+<span class="sd">    max_cutoff : float</span>
+<span class="sd">        Maximum cutoff distance between `reference` and `configuration`</span>
+<span class="sd">        coordinates.</span>
+<span class="sd">    min_cutoff : float, optional</span>
+<span class="sd">        Minimum cutoff distance between `reference` and `configuration`</span>
+<span class="sd">        coordinates.</span>
+<span class="sd">    box : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``), optional</span>
+<span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">        triclinic and must be provided in the same format as returned by</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
+<span class="sd">    return_distances : bool, optional</span>
+<span class="sd">        If set to ``True``, distances will also be returned.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)</span>
+<span class="sd">        Pairs of indices, corresponding to coordinates in the `reference` and</span>
+<span class="sd">        `configuration` arrays such that the distance between them lies within</span>
+<span class="sd">        the interval (`min_cutoff`, `max_cutoff`].</span>
+<span class="sd">        Each row in `pairs` is an index pair ``[i, j]`` corresponding to the</span>
+<span class="sd">        ``i``-th coordinate in `reference` and the ``j``-th coordinate in</span>
+<span class="sd">        `configuration`.</span>
+<span class="sd">    distances : numpy.ndarray, optional</span>
+<span class="sd">        Distances corresponding to each pair of indices. Only returned if</span>
+<span class="sd">        `return_distances` is ``True``. ``distances[k]`` corresponds to the</span>
+<span class="sd">        ``k``-th pair returned in `pairs` and gives the distance between the</span>
+<span class="sd">        coordinates ``reference[pairs[k, 0]]`` and</span>
+<span class="sd">        ``configuration[pairs[k, 1]]``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Default return values (will be overwritten only if pairs are found):</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># create a pseudobox</span>
+            <span class="c1"># define the max range</span>
+            <span class="c1"># and supply the pseudobox</span>
+            <span class="c1"># along with only one set of coordinates</span>
+            <span class="n">pseudobox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">all_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">reference</span><span class="p">,</span> <span class="n">configuration</span><span class="p">])</span>
+            <span class="n">lmax</span> <span class="o">=</span> <span class="n">all_coords</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">lmin</span> <span class="o">=</span> <span class="n">all_coords</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c1"># Using maximum dimension as the box size</span>
+            <span class="n">boxsize</span> <span class="o">=</span> <span class="p">(</span><span class="n">lmax</span><span class="o">-</span><span class="n">lmin</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="c1"># to avoid failures for very close particles but with</span>
+            <span class="c1"># larger cutoff</span>
+            <span class="n">boxsize</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">boxsize</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">max_cutoff</span><span class="p">)</span>
+            <span class="n">pseudobox</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">boxsize</span> <span class="o">+</span> <span class="mf">2.2</span><span class="o">*</span><span class="n">max_cutoff</span>
+            <span class="n">pseudobox</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="mf">90.</span>
+            <span class="n">shiftref</span><span class="p">,</span> <span class="n">shiftconf</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">configuration</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="c1"># Extra padding near the origin</span>
+            <span class="n">shiftref</span> <span class="o">-=</span> <span class="n">lmin</span> <span class="o">-</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">max_cutoff</span>
+            <span class="n">shiftconf</span> <span class="o">-=</span> <span class="n">lmin</span> <span class="o">-</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">max_cutoff</span>
+            <span class="n">gridsearch</span> <span class="o">=</span> <span class="n">FastNS</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">,</span> <span class="n">shiftconf</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">pseudobox</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">gridsearch</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">shiftref</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">gridsearch</span> <span class="o">=</span> <span class="n">FastNS</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">gridsearch</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span>
+
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pairs</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">return_distances</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">distances</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pair_distances</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">distances</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span>
+                <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">distances</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">return_distances</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pairs</span>
+
+
+<div class="viewcode-block" id="self_capped_distance"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.self_capped_distance">[docs]</a><span class="k">def</span> <span class="nf">self_capped_distance</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculates pairs of indices corresponding to entries in the `reference`</span>
+<span class="sd">    array which are separated by a distance lying within the specified</span>
+<span class="sd">    cutoff(s). Optionally, these distances can be returned as well.</span>
+
+<span class="sd">    If the optional argument `box` is supplied, the minimum image convention is</span>
+<span class="sd">    applied when calculating distances. Either orthogonal or triclinic boxes are</span>
+<span class="sd">    supported.</span>
+
+<span class="sd">    An automatic guessing of the optimal method to calculate the distances is</span>
+<span class="sd">    included in the function. An optional keyword for the method is also</span>
+<span class="sd">    provided. Users can enforce a particular method with this functionality.</span>
+<span class="sd">    Currently brute force, grid search, and periodic KDtree methods are</span>
+<span class="sd">    implemented.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">        Reference coordinate array with shape ``(3,)`` or ``(n, 3)``.</span>
+<span class="sd">    max_cutoff : float</span>
+<span class="sd">        Maximum cutoff distance between `reference` coordinates.</span>
+<span class="sd">    min_cutoff : float, optional</span>
+<span class="sd">        Minimum cutoff distance between `reference` coordinates.</span>
+<span class="sd">    box : array_like, optional</span>
+<span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">        triclinic and must be provided in the same format as returned by</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
+<span class="sd">    method : {&#39;bruteforce&#39;, &#39;nsgrid&#39;, &#39;pkdtree&#39;}, optional</span>
+<span class="sd">        Keyword to override the automatic guessing of the employed search</span>
+<span class="sd">        method.</span>
+<span class="sd">    return_distances : bool, optional</span>
+<span class="sd">        If set to ``True``, distances will also be returned.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)</span>
+<span class="sd">        Pairs of indices, corresponding to coordinates in the `reference` array</span>
+<span class="sd">        such that the distance between them lies within the interval</span>
+<span class="sd">        (`min_cutoff`, `max_cutoff`].</span>
+<span class="sd">        Each row in `pairs` is an index pair ``[i, j]`` corresponding to the</span>
+<span class="sd">        ``i``-th and the ``j``-th coordinate in `reference`.</span>
+<span class="sd">    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``)</span>
+<span class="sd">        Distances corresponding to each pair of indices. Only returned if</span>
+<span class="sd">        `return_distances` is ``True``. ``distances[k]`` corresponds to the</span>
+<span class="sd">        ``k``-th pair returned in `pairs` and gives the distance between the</span>
+<span class="sd">        coordinates ``reference[pairs[k, 0]]`` and ``reference[pairs[k, 1]]``.</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            pairs, distances = self_capped_distances(reference, max_cutoff,</span>
+<span class="sd">                                                     return_distances=True)</span>
+<span class="sd">            for k, [i, j] in enumerate(pairs):</span>
+<span class="sd">                coord1 = reference[i]</span>
+<span class="sd">                coord2 = reference[j]</span>
+<span class="sd">                distance = distances[k]</span>
+
+
+<span class="sd">    Note</span>
+<span class="sd">    -----</span>
+<span class="sd">    Currently supports brute force, grid-based, and periodic KDtree search</span>
+<span class="sd">    methods.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    self_distance_array</span>
+<span class="sd">    MDAnalysis.lib.pkdtree.PeriodicKDTree.search</span>
+<span class="sd">    MDAnalysis.lib.nsgrid.FastNS.self_search</span>
+
+<span class="sd">    .. versionchanged:: 0.20.0</span>
+<span class="sd">       Added `return_distances` keyword.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">box</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Box Argument is of incompatible type. The &quot;</span>
+                             <span class="s2">&quot;dimension should be either None or of the form &quot;</span>
+                             <span class="s2">&quot;[lx, ly, lz, alpha, beta, gamma]&quot;</span><span class="p">)</span>
+    <span class="n">method</span> <span class="o">=</span> <span class="n">_determine_method_self</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span>
+                                    <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span>
+                                    <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">method</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span>  <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="n">min_cutoff</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
+                  <span class="n">return_distances</span><span class="o">=</span><span class="n">return_distances</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_determine_method_self</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Guesses the fastest method for capped distance calculations based on the</span>
+<span class="sd">    size of the `reference` coordinate set and the relative size of the target</span>
+<span class="sd">    volume.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">        Reference coordinate array with shape ``(3,)`` or ``(n, 3)``.</span>
+<span class="sd">    max_cutoff : float</span>
+<span class="sd">        Maximum cutoff distance between `reference` coordinates.</span>
+<span class="sd">    min_cutoff : float, optional</span>
+<span class="sd">        Minimum cutoff distance between `reference` coordinates.</span>
+<span class="sd">    box : numpy.ndarray</span>
+<span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">        triclinic and must be provided in the same format as returned by</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
+<span class="sd">    method : {&#39;bruteforce&#39;, &#39;nsgrid&#39;, &#39;pkdtree&#39;}, optional</span>
+<span class="sd">        Keyword to override the automatic guessing of the employed search</span>
+<span class="sd">        method.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    function : callable</span>
+<span class="sd">        The function implementing the guessed (or deliberatly chosen) method.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">methods</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bruteforce&#39;</span><span class="p">:</span> <span class="n">_bruteforce_capped_self</span><span class="p">,</span>
+               <span class="s1">&#39;pkdtree&#39;</span><span class="p">:</span> <span class="n">_pkdtree_capped_self</span><span class="p">,</span>
+               <span class="s1">&#39;nsgrid&#39;</span><span class="p">:</span> <span class="n">_nsgrid_capped_self</span><span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;bruteforce&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">min_dim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">reference</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)])</span>
+        <span class="n">max_dim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">reference</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)])</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">max_dim</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">min_dim</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">==</span> <span class="mf">90.0</span><span class="p">):</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">box</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tribox</span> <span class="o">=</span> <span class="n">triclinic_vectors</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">tribox</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">tribox</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">max_cutoff</span> <span class="o">&lt;</span> <span class="mf">0.03</span><span class="o">*</span><span class="n">size</span><span class="o">.</span><span class="n">min</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;pkdtree&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;nsgrid&#39;</span><span class="p">]</span>
+
+
+<span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_bruteforce_capped_self</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Capped distance evaluations using a brute force method.</span>
+
+<span class="sd">    Computes and returns an array containing pairs of indices corresponding to</span>
+<span class="sd">    entries in the `reference` array which are separated by a distance lying</span>
+<span class="sd">    within the specified cutoff(s). Employs naive distance computations (brute</span>
+<span class="sd">    force) to find relevant distances. Optionally, these distances can be</span>
+<span class="sd">    returned as well.</span>
+
+<span class="sd">    If the optional argument `box` is supplied, the minimum image convention is</span>
+<span class="sd">    applied when calculating distances. Either orthogonal or triclinic boxes are</span>
+<span class="sd">    supported.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">        Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will</span>
+<span class="sd">        be converted to ``numpy.float32`` internally).</span>
+<span class="sd">    max_cutoff : float</span>
+<span class="sd">        Maximum cutoff distance between `reference` coordinates.</span>
+<span class="sd">    min_cutoff : float, optional</span>
+<span class="sd">        Minimum cutoff distance between `reference` coordinates.</span>
+<span class="sd">    box : numpy.ndarray, optional</span>
+<span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">        triclinic and must be provided in the same format as returned by</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
+<span class="sd">    return_distances : bool, optional</span>
+<span class="sd">        If set to ``True``, distances will also be returned.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)</span>
+<span class="sd">        Pairs of indices, corresponding to coordinates in the `reference` array</span>
+<span class="sd">        such that the distance between them lies within the interval</span>
+<span class="sd">        (`min_cutoff`, `max_cutoff`].</span>
+<span class="sd">        Each row in `pairs` is an index pair ``[i, j]`` corresponding to the</span>
+<span class="sd">        ``i``-th and the ``j``-th coordinate in `reference`.</span>
+<span class="sd">    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``), optional</span>
+<span class="sd">        Distances corresponding to each pair of indices. Only returned if</span>
+<span class="sd">        `return_distances` is ``True``. ``distances[k]`` corresponds to the</span>
+<span class="sd">        ``k``-th pair returned in `pairs` and gives the distance between the</span>
+<span class="sd">        coordinates ``reference[pairs[k, 0]]`` and</span>
+<span class="sd">        ``configuration[pairs[k, 1]]``.</span>
+
+<span class="sd">    .. versionchanged:: 0.20.0</span>
+<span class="sd">       Added `return_distances` keyword.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Default return values (will be overwritten only if pairs are found):</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span>
+    <span class="c1"># We&#39;re searching within a single coordinate set, so we need at least two</span>
+    <span class="c1"># coordinates to find distances between them.</span>
+    <span class="k">if</span> <span class="n">N</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">distvec</span> <span class="o">=</span> <span class="n">self_distance_array</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">dist</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">triu_indices</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">distvec</span>
+
+        <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dist</span> <span class="o">&lt;=</span> <span class="n">max_cutoff</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dist</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">dist</span> <span class="o">&lt;=</span> <span class="n">max_cutoff</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mask</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">distances</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">return_distances</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span>
+    <span class="k">return</span> <span class="n">pairs</span>
+
+
+<span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_pkdtree_capped_self</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Capped distance evaluations using a KDtree method.</span>
+
+<span class="sd">    Computes and returns an array containing pairs of indices corresponding to</span>
+<span class="sd">    entries in the `reference` array which are separated by a distance lying</span>
+<span class="sd">    within the specified cutoff(s). Employs a (periodic) KDtree algorithm to</span>
+<span class="sd">    find relevant distances. Optionally, these distances can be returned as</span>
+<span class="sd">    well.</span>
+
+<span class="sd">    If the optional argument `box` is supplied, the minimum image convention is</span>
+<span class="sd">    applied when calculating distances. Either orthogonal or triclinic boxes are</span>
+<span class="sd">    supported.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">        Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will</span>
+<span class="sd">        be converted to ``numpy.float32`` internally).</span>
+<span class="sd">    max_cutoff : float</span>
+<span class="sd">        Maximum cutoff distance between `reference` coordinates.</span>
+<span class="sd">    min_cutoff : float, optional</span>
+<span class="sd">        Minimum cutoff distance between `reference` coordinates.</span>
+<span class="sd">    box : numpy.ndarray, optional</span>
+<span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">        triclinic and must be provided in the same format as returned by</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
+<span class="sd">    return_distances : bool, optional</span>
+<span class="sd">        If set to ``True``, distances will also be returned.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)</span>
+<span class="sd">        Pairs of indices, corresponding to coordinates in the `reference` array</span>
+<span class="sd">        such that the distance between them lies within the interval</span>
+<span class="sd">        (`min_cutoff`, `max_cutoff`].</span>
+<span class="sd">        Each row in `pairs` is an index pair ``[i, j]`` corresponding to the</span>
+<span class="sd">        ``i``-th and the ``j``-th coordinate in `reference`.</span>
+<span class="sd">    distances : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n_pairs,)``)</span>
+<span class="sd">        Distances corresponding to each pair of indices. Only returned if</span>
+<span class="sd">        `return_distances` is ``True``. ``distances[k]`` corresponds to the</span>
+<span class="sd">        ``k``-th pair returned in `pairs` and gives the distance between</span>
+<span class="sd">        the coordinates ``reference[pairs[k, 0]]`` and</span>
+<span class="sd">        ``reference[pairs[k, 1]]``.</span>
+
+<span class="sd">    .. versionchanged:: 0.20.0</span>
+<span class="sd">       Added `return_distances` keyword.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">.pkdtree</span> <span class="kn">import</span> <span class="n">PeriodicKDTree</span>  <span class="c1"># must be here to avoid circular import</span>
+
+    <span class="c1"># Default return values (will be overwritten only if pairs are found):</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="c1"># We&#39;re searching within a single coordinate set, so we need at least two</span>
+    <span class="c1"># coordinates to find distances between them.</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">kdtree</span> <span class="o">=</span> <span class="n">PeriodicKDTree</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+        <span class="n">cut</span> <span class="o">=</span> <span class="n">max_cutoff</span> <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">kdtree</span><span class="o">.</span><span class="n">set_coords</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">cut</span><span class="p">)</span>
+        <span class="n">_pairs</span> <span class="o">=</span> <span class="n">kdtree</span><span class="o">.</span><span class="n">search_pairs</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_pairs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pairs</span> <span class="o">=</span> <span class="n">_pairs</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">return_distances</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)):</span>
+                <span class="n">refA</span><span class="p">,</span> <span class="n">refB</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">distances</span> <span class="o">=</span> <span class="n">calc_bonds</span><span class="p">(</span><span class="n">reference</span><span class="p">[</span><span class="n">refA</span><span class="p">],</span> <span class="n">reference</span><span class="p">[</span><span class="n">refB</span><span class="p">],</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="n">distances</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span>
+                    <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">distances</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">return_distances</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span>
+    <span class="k">return</span> <span class="n">pairs</span>
+
+
+<span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_nsgrid_capped_self</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="p">,</span> <span class="n">min_cutoff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">return_distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Capped distance evaluations using a grid-based search method.</span>
+
+<span class="sd">    Computes and returns an array containing pairs of indices corresponding to</span>
+<span class="sd">    entries in the `reference` array which are separated by a distance lying</span>
+<span class="sd">    within the specified cutoff(s). Employs a grid-based search algorithm to</span>
+<span class="sd">    find relevant distances. Optionally, these distances can be returned as</span>
+<span class="sd">    well.</span>
+
+<span class="sd">    If the optional argument `box` is supplied, the minimum image convention is</span>
+<span class="sd">    applied when calculating distances. Either orthogonal or triclinic boxes are</span>
+<span class="sd">    supported.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    reference : numpy.ndarray</span>
+<span class="sd">        Reference coordinate array with shape ``(3,)`` or ``(n, 3)`` (dtype will</span>
+<span class="sd">        be converted to ``numpy.float32`` internally).</span>
+<span class="sd">    max_cutoff : float</span>
+<span class="sd">        Maximum cutoff distance between `reference` coordinates.</span>
+<span class="sd">    min_cutoff : float, optional</span>
+<span class="sd">        Minimum cutoff distance between `reference` coordinates.</span>
+<span class="sd">    box : numpy.ndarray, optional</span>
+<span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">        triclinic and must be provided in the same format as returned by</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(n_pairs, 2)``)</span>
+<span class="sd">        Pairs of indices, corresponding to coordinates in the `reference` array</span>
+<span class="sd">        such that the distance between them lies within the interval</span>
+<span class="sd">        (`min_cutoff`, `max_cutoff`].</span>
+<span class="sd">        Each row in `pairs` is an index pair ``[i, j]`` corresponding to the</span>
+<span class="sd">        ``i``-th and the ``j``-th coordinate in `reference`.</span>
+<span class="sd">    distances : numpy.ndarray, optional</span>
+<span class="sd">        Distances corresponding to each pair of indices. Only returned if</span>
+<span class="sd">        `return_distances` is ``True``. ``distances[k]`` corresponds to the</span>
+<span class="sd">        ``k``-th pair returned in `pairs` and gives the distance between the</span>
+<span class="sd">        coordinates ``reference[pairs[k, 0]]`` and</span>
+<span class="sd">        ``configuration[pairs[k, 1]]``.</span>
+
+<span class="sd">    .. versionchanged:: 0.20.0</span>
+<span class="sd">       Added `return_distances` keyword.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Default return values (will be overwritten only if pairs are found):</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
+    <span class="n">distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="c1"># We&#39;re searching within a single coordinate set, so we need at least two</span>
+    <span class="c1"># coordinates to find distances between them.</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># create a pseudobox</span>
+            <span class="c1"># define the max range</span>
+            <span class="c1"># and supply the pseudobox</span>
+            <span class="c1"># along with only one set of coordinates</span>
+            <span class="n">pseudobox</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">lmax</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">lmin</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c1"># Using maximum dimension as the box size</span>
+            <span class="n">boxsize</span> <span class="o">=</span> <span class="p">(</span><span class="n">lmax</span><span class="o">-</span><span class="n">lmin</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="c1"># to avoid failures of very close particles</span>
+            <span class="c1"># but with larger cutoff</span>
+            <span class="k">if</span> <span class="n">boxsize</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">*</span><span class="n">max_cutoff</span><span class="p">:</span>
+                <span class="c1"># just enough box size so that NSGrid doesnot fails</span>
+                <span class="n">sizefactor</span> <span class="o">=</span> <span class="mf">2.2</span><span class="o">*</span><span class="n">max_cutoff</span><span class="o">/</span><span class="n">boxsize</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sizefactor</span> <span class="o">=</span> <span class="mf">1.2</span>
+            <span class="n">pseudobox</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">sizefactor</span><span class="o">*</span><span class="n">boxsize</span>
+            <span class="n">pseudobox</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="mf">90.</span>
+            <span class="n">shiftref</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="c1"># Extra padding near the origin</span>
+            <span class="n">shiftref</span> <span class="o">-=</span> <span class="n">lmin</span> <span class="o">-</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">boxsize</span>
+            <span class="n">gridsearch</span> <span class="o">=</span> <span class="n">FastNS</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">,</span> <span class="n">shiftref</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">pseudobox</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">gridsearch</span><span class="o">.</span><span class="n">self_search</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">gridsearch</span> <span class="o">=</span> <span class="n">FastNS</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">gridsearch</span><span class="o">.</span><span class="n">self_search</span><span class="p">()</span>
+
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pairs</span><span class="p">()[::</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">if</span> <span class="n">return_distances</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">distances</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pair_distances</span><span class="p">()[::</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">distances</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span>
+                <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">distances</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">return_distances</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span>
+    <span class="k">return</span> <span class="n">pairs</span>
+
+
+<div class="viewcode-block" id="transform_RtoS"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.transform_RtoS">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">transform_RtoS</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transform an array of coordinates from real space to S space (a.k.a.</span>
+<span class="sd">    lambda space)</span>
+
+<span class="sd">    S space represents fractional space within the unit cell for this system.</span>
+
+<span class="sd">    Reciprocal operation to :meth:`transform_StoR`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coords : numpy.ndarray</span>
+<span class="sd">        A ``(3,)`` or ``(n, 3)`` array of coordinates (dtype is arbitrary, will</span>
+<span class="sd">        be converted to ``numpy.float32`` internally).</span>
+<span class="sd">    box : numpy.ndarray</span>
+<span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">        triclinic and must be provided in the same format as returned by</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
+<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;}, optional</span>
+<span class="sd">        Keyword selecting the type of acceleration.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    newcoords : numpy.ndarray (``dtype=numpy.float32``, ``shape=coords.shape``)</span>
+<span class="sd">        An array containing fractional coordiantes.</span>
+
+
+<span class="sd">    .. versionchanged:: 0.13.0</span>
+<span class="sd">       Added *backend* keyword.</span>
+<span class="sd">    .. versionchanged:: 0.19.0</span>
+<span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
+<span class="sd">       Now also accepts (and, likewise, returns) a single coordinate.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">coords</span>
+    <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+    <span class="n">box</span> <span class="o">=</span> <span class="n">box</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="c1"># Create inverse matrix of box</span>
+    <span class="c1"># need order C here</span>
+    <span class="n">inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">box</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+
+    <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;coord_transform&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">inv</span><span class="p">),</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">coords</span></div>
+
+
+<div class="viewcode-block" id="transform_StoR"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.transform_StoR">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">transform_StoR</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transform an array of coordinates from S space into real space.</span>
+
+<span class="sd">    S space represents fractional space within the unit cell for this system.</span>
+
+<span class="sd">    Reciprocal operation to :meth:`transform_RtoS`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coords : numpy.ndarray</span>
+<span class="sd">        A ``(3,)`` or ``(n, 3)`` array of coordinates (dtype is arbitrary, will</span>
+<span class="sd">        be converted to ``numpy.float32`` internally).</span>
+<span class="sd">    box : numpy.ndarray</span>
+<span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">        triclinic and must be provided in the same format as returned by</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
+<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;}, optional</span>
+<span class="sd">        Keyword selecting the type of acceleration.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    newcoords : numpy.ndarray (``dtype=numpy.float32``, ``shape=coords.shape``)</span>
+<span class="sd">        An array containing real space coordiantes.</span>
+
+
+<span class="sd">    .. versionchanged:: 0.13.0</span>
+<span class="sd">       Added *backend* keyword.</span>
+<span class="sd">    .. versionchanged:: 0.19.0</span>
+<span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
+<span class="sd">       Now also accepts (and, likewise, returns) a single coordinate.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">coords</span>
+    <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+    <span class="n">box</span> <span class="o">=</span> <span class="n">box</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+    <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;coord_transform&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">),</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">coords</span></div>
+
+
+<div class="viewcode-block" id="calc_bonds"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_bonds">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords1&#39;</span><span class="p">,</span> <span class="s1">&#39;coords2&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">calc_bonds</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculates the bond lengths between pairs of atom positions from the two</span>
+<span class="sd">    coordinate arrays `coords1` and `coords2`, which must contain the same</span>
+<span class="sd">    number of coordinates. ``coords1[i]`` and ``coords2[i]`` represent the</span>
+<span class="sd">    positions of atoms connected by the ``i``-th bond. If single coordinates are</span>
+<span class="sd">    supplied, a single distance will be returned.</span>
+
+<span class="sd">    In comparison to :meth:`distance_array` and :meth:`self_distance_array`,</span>
+<span class="sd">    which calculate distances between all possible combinations of coordinates,</span>
+<span class="sd">    :meth:`calc_bonds` only calculates distances between pairs of coordinates,</span>
+<span class="sd">    similar to::</span>
+
+<span class="sd">       numpy.linalg.norm(a - b) for a, b in zip(coords1, coords2)</span>
+
+<span class="sd">    If the optional argument `box` is supplied, the minimum image convention is</span>
+<span class="sd">    applied when calculating distances. Either orthogonal or triclinic boxes are</span>
+<span class="sd">    supported.</span>
+
+<span class="sd">    If a numpy array of dtype ``numpy.float64`` with shape ``(n,)`` (for ``n``</span>
+<span class="sd">    coordinate pairs) is provided in `result`, then this preallocated array is</span>
+<span class="sd">    filled. This can speed up calculations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coords1 : numpy.ndarray</span>
+<span class="sd">        Coordinate array of shape ``(3,)`` or ``(n, 3)`` for one half of a</span>
+<span class="sd">        single or ``n`` bonds, respectively (dtype is arbitrary, will be</span>
+<span class="sd">        converted to ``numpy.float32`` internally).</span>
+<span class="sd">    coords2 : numpy.ndarray</span>
+<span class="sd">        Coordinate array of shape ``(3,)`` or ``(n, 3)`` for the other half of</span>
+<span class="sd">        a single or ``n`` bonds, respectively (dtype is arbitrary, will be</span>
+<span class="sd">        converted to ``numpy.float32`` internally).</span>
+<span class="sd">    box : numpy.ndarray, optional</span>
+<span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">        triclinic and must be provided in the same format as returned by</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
+<span class="sd">    result : numpy.ndarray, optional</span>
+<span class="sd">        Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``</span>
+<span class="sd">        (for ``n`` coordinate pairs). Avoids recreating the array in repeated</span>
+<span class="sd">        function calls.</span>
+<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;}, optional</span>
+<span class="sd">        Keyword selecting the type of acceleration.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bondlengths : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n,)``) or numpy.float64</span>
+<span class="sd">        Array containing the bond lengths between each pair of coordinates. If</span>
+<span class="sd">        two single coordinates were supplied, their distance is returned as a</span>
+<span class="sd">        single number instead of an array.</span>
+
+
+<span class="sd">    .. versionadded:: 0.8</span>
+<span class="sd">    .. versionchanged:: 0.13.0</span>
+<span class="sd">       Added *backend* keyword.</span>
+<span class="sd">    .. versionchanged:: 0.19.0</span>
+<span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
+<span class="sd">       Now also accepts single coordinates as input.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">numatom</span> <span class="o">=</span> <span class="n">coords1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">bondlengths</span> <span class="o">=</span> <span class="n">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">numatom</span><span class="p">,))</span>
+
+    <span class="k">if</span> <span class="n">numatom</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
+                <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_bond_distance_ortho&quot;</span><span class="p">,</span>
+                     <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">bondlengths</span><span class="p">),</span>
+                     <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_bond_distance_triclinic&quot;</span><span class="p">,</span>
+                     <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">bondlengths</span><span class="p">),</span>
+                     <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_bond_distance&quot;</span><span class="p">,</span>
+                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">bondlengths</span><span class="p">),</span>
+                 <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">bondlengths</span></div>
+
+
+<div class="viewcode-block" id="calc_angles"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_angles">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords1&#39;</span><span class="p">,</span> <span class="s1">&#39;coords2&#39;</span><span class="p">,</span> <span class="s1">&#39;coords3&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">calc_angles</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculates the angles formed between triplets of atom positions from the</span>
+<span class="sd">    three coordinate arrays `coords1`, `coords2`, and `coords3`. All coordinate</span>
+<span class="sd">    arrays must contain the same number of coordinates.</span>
+
+<span class="sd">    The coordinates in `coords2` represent the apices of the angles::</span>
+
+<span class="sd">            2---3</span>
+<span class="sd">           /</span>
+<span class="sd">          1</span>
+
+<span class="sd">    Configurations where the angle is undefined (e.g., when coordinates 1 or 3</span>
+<span class="sd">    of a triplet coincide with coordinate 2) result in a value of **zero** for</span>
+<span class="sd">    that angle.</span>
+
+<span class="sd">    If the optional argument `box` is supplied, periodic boundaries are taken</span>
+<span class="sd">    into account when constructing the connecting vectors between coordinates,</span>
+<span class="sd">    i.e., the minimum image convention is applied for the vectors forming the</span>
+<span class="sd">    angles. Either orthogonal or triclinic boxes are supported.</span>
+
+<span class="sd">    If a numpy array of dtype ``numpy.float64`` with shape ``(n,)`` (for ``n``</span>
+<span class="sd">    coordinate triplets) is provided in `result`, then this preallocated array</span>
+<span class="sd">    is filled. This can speed up calculations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coords1 : numpy.ndarray</span>
+<span class="sd">        Array of shape ``(3,)`` or ``(n, 3)`` containing the coordinates of one</span>
+<span class="sd">        side of a single or ``n`` angles, respectively (dtype is arbitrary, will</span>
+<span class="sd">        be converted to ``numpy.float32`` internally)</span>
+<span class="sd">    coords2 : numpy.ndarray</span>
+<span class="sd">        Array of shape ``(3,)`` or ``(n, 3)`` containing the coordinates of the</span>
+<span class="sd">        apices of a single or ``n`` angles, respectively (dtype is arbitrary,</span>
+<span class="sd">        will be converted to ``numpy.float32`` internally)</span>
+<span class="sd">    coords3 : numpy.ndarray</span>
+<span class="sd">        Array of shape ``(3,)`` or ``(n, 3)`` containing the coordinates of the</span>
+<span class="sd">        other side of a single or ``n`` angles, respectively (dtype is</span>
+<span class="sd">        arbitrary, will be converted to ``numpy.float32`` internally)</span>
+<span class="sd">    box : numpy.ndarray, optional</span>
+<span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">        triclinic and must be provided in the same format as returned by</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
+<span class="sd">    result : numpy.ndarray, optional</span>
+<span class="sd">        Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``</span>
+<span class="sd">        (for ``n`` coordinate triplets). Avoids recreating the array in repeated</span>
+<span class="sd">        function calls.</span>
+<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;}, optional</span>
+<span class="sd">        Keyword selecting the type of acceleration.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    angles : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n,)``) or numpy.float64</span>
+<span class="sd">        Array containing the angles between each triplet of coordinates. Values</span>
+<span class="sd">        are returned in radians (rad). If three single coordinates were</span>
+<span class="sd">        supplied, the angle is returned as a single number instead of an array.</span>
+
+
+<span class="sd">    .. versionadded:: 0.8</span>
+<span class="sd">    .. versionchanged:: 0.9.0</span>
+<span class="sd">       Added optional box argument to account for periodic boundaries in</span>
+<span class="sd">       calculation</span>
+<span class="sd">    .. versionchanged:: 0.13.0</span>
+<span class="sd">       Added *backend* keyword.</span>
+<span class="sd">    .. versionchanged:: 0.19.0</span>
+<span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
+<span class="sd">       Now also accepts single coordinates as input.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">numatom</span> <span class="o">=</span> <span class="n">coords1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">numatom</span><span class="p">,))</span>
+
+    <span class="k">if</span> <span class="n">numatom</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
+                <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_angle_ortho&quot;</span><span class="p">,</span>
+                       <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">angles</span><span class="p">),</span>
+                       <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_angle_triclinic&quot;</span><span class="p">,</span>
+                       <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">angles</span><span class="p">),</span>
+                       <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_angle&quot;</span><span class="p">,</span>
+                   <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">angles</span><span class="p">),</span>
+                   <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">angles</span></div>
+
+
+<div class="viewcode-block" id="calc_dihedrals"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.calc_dihedrals">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords1&#39;</span><span class="p">,</span> <span class="s1">&#39;coords2&#39;</span><span class="p">,</span> <span class="s1">&#39;coords3&#39;</span><span class="p">,</span> <span class="s1">&#39;coords4&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">calc_dihedrals</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">coords4</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculates the dihedral angles formed between quadruplets of positions</span>
+<span class="sd">    from the four coordinate arrays `coords1`, `coords2`, `coords3`, and</span>
+<span class="sd">    `coords4`, which must contain the same number of coordinates.</span>
+
+<span class="sd">    The dihedral angle formed by a quadruplet of positions (1,2,3,4) is</span>
+<span class="sd">    calculated around the axis connecting positions 2 and 3 (i.e., the angle</span>
+<span class="sd">    between the planes spanned by positions (1,2,3) and (2,3,4))::</span>
+
+<span class="sd">                  4</span>
+<span class="sd">                  |</span>
+<span class="sd">            2-----3</span>
+<span class="sd">           /</span>
+<span class="sd">          1</span>
+
+<span class="sd">    If all coordinates lie in the same plane, the cis configuration corresponds</span>
+<span class="sd">    to a dihedral angle of zero, and the trans configuration to :math:`\pi`</span>
+<span class="sd">    radians (180 degrees). Configurations where the dihedral angle is undefined</span>
+<span class="sd">    (e.g., when all coordinates lie on the same straight line) result in a value</span>
+<span class="sd">    of ``nan`` (not a number) for that dihedral.</span>
+
+<span class="sd">    If the optional argument `box` is supplied, periodic boundaries are taken</span>
+<span class="sd">    into account when constructing the connecting vectors between coordinates,</span>
+<span class="sd">    i.e., the minimum image convention is applied for the vectors forming the</span>
+<span class="sd">    dihedral angles. Either orthogonal or triclinic boxes are supported.</span>
+
+<span class="sd">    If a numpy array of dtype ``numpy.float64`` with shape ``(n,)`` (for ``n``</span>
+<span class="sd">    coordinate quadruplets) is provided in `result` then this preallocated array</span>
+<span class="sd">    is filled. This can speed up calculations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coords1 : numpy.ndarray</span>
+<span class="sd">        Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 1st</span>
+<span class="sd">        positions in dihedrals (dtype is arbitrary, will be converted to</span>
+<span class="sd">        ``numpy.float32`` internally)</span>
+<span class="sd">    coords2 : numpy.ndarray</span>
+<span class="sd">        Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 2nd</span>
+<span class="sd">        positions in dihedrals (dtype is arbitrary, will be converted to</span>
+<span class="sd">        ``numpy.float32`` internally)</span>
+<span class="sd">    coords3 : numpy.ndarray</span>
+<span class="sd">        Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 3rd</span>
+<span class="sd">        positions in dihedrals (dtype is arbitrary, will be converted to</span>
+<span class="sd">        ``numpy.float32`` internally)</span>
+<span class="sd">    coords4 : numpy.ndarray</span>
+<span class="sd">        Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the 4th</span>
+<span class="sd">        positions in dihedrals (dtype is arbitrary, will be converted to</span>
+<span class="sd">        ``numpy.float32`` internally)</span>
+<span class="sd">    box : numpy.ndarray, optional</span>
+<span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">        triclinic and must be provided in the same format as returned by</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
+<span class="sd">    result : numpy.ndarray, optional</span>
+<span class="sd">        Preallocated result array of dtype ``numpy.float64`` and shape ``(n,)``</span>
+<span class="sd">        (for ``n`` coordinate quadruplets). Avoids recreating the array in</span>
+<span class="sd">        repeated function calls.</span>
+<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;}, optional</span>
+<span class="sd">        Keyword selecting the type of acceleration.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dihedrals : numpy.ndarray (``dtype=numpy.float64``, ``shape=(n,)``) or numpy.float64</span>
+<span class="sd">        Array containing the dihedral angles formed by each quadruplet of</span>
+<span class="sd">        coordinates. Values are returned in radians (rad). If four single</span>
+<span class="sd">        coordinates were supplied, the dihedral angle is returned as a single</span>
+<span class="sd">        number instead of an array.</span>
+
+
+<span class="sd">    .. versionadded:: 0.8</span>
+<span class="sd">    .. versionchanged:: 0.9.0</span>
+<span class="sd">       Added optional box argument to account for periodic boundaries in</span>
+<span class="sd">       calculation</span>
+<span class="sd">    .. versionchanged:: 0.11.0</span>
+<span class="sd">       Renamed from calc_torsions to calc_dihedrals</span>
+<span class="sd">    .. versionchanged:: 0.13.0</span>
+<span class="sd">       Added *backend* keyword.</span>
+<span class="sd">    .. versionchanged:: 0.19.0</span>
+<span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
+<span class="sd">       Now also accepts single coordinates as input.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">numatom</span> <span class="o">=</span> <span class="n">coords1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">dihedrals</span> <span class="o">=</span> <span class="n">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">numatom</span><span class="p">,))</span>
+
+    <span class="k">if</span> <span class="n">numatom</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
+                <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_dihedral_ortho&quot;</span><span class="p">,</span>
+                     <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">coords4</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">dihedrals</span><span class="p">),</span>
+                     <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_dihedral_triclinic&quot;</span><span class="p">,</span>
+                     <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">coords4</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">dihedrals</span><span class="p">),</span>
+                     <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;calc_dihedral&quot;</span><span class="p">,</span>
+                 <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords1</span><span class="p">,</span> <span class="n">coords2</span><span class="p">,</span> <span class="n">coords3</span><span class="p">,</span> <span class="n">coords4</span><span class="p">,</span> <span class="n">dihedrals</span><span class="p">),</span>
+                 <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">dihedrals</span></div>
+
+
+<div class="viewcode-block" id="apply_PBC"><a class="viewcode-back" href="../../../documentation_pages/lib/distances.html#MDAnalysis.analysis.distances.apply_PBC">[docs]</a><span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;coords&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">apply_PBC</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;serial&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Moves coordinates into the primary unit cell.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coords : numpy.ndarray</span>
+<span class="sd">        Coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is arbitrary,</span>
+<span class="sd">        will be converted to ``numpy.float32`` internally).</span>
+<span class="sd">    box : numpy.ndarray</span>
+<span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">        triclinic and must be provided in the same format as returned by</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
+<span class="sd">    backend : {&#39;serial&#39;, &#39;OpenMP&#39;}, optional</span>
+<span class="sd">        Keyword selecting the type of acceleration.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    newcoords : numpy.ndarray  (``dtype=numpy.float32``, ``shape=coords.shape``)</span>
+<span class="sd">        Array containing coordinates that all lie within the primary unit cell</span>
+<span class="sd">        as defined by `box`.</span>
+
+
+<span class="sd">    .. versionadded:: 0.8</span>
+<span class="sd">    .. versionchanged:: 0.13.0</span>
+<span class="sd">       Added *backend* keyword.</span>
+<span class="sd">    .. versionchanged:: 0.19.0</span>
+<span class="sd">       Internal dtype conversion of input coordinates to ``numpy.float32``.</span>
+<span class="sd">       Now also accepts (and, likewise, returns) single coordinates.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">coords</span>
+    <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
+        <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;ortho_pbc&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">),</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;triclinic_pbc&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">),</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">coords</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.0.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

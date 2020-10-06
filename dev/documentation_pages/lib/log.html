@@ -1,0 +1,530 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>13.2.6. Setting up logging — MDAnalysis.lib.log &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="13.2.7. Mathematical helper functions — MDAnalysis.lib.mdamath" href="mdamath.html" />
+    <link rel="prev" title="13.2.5. PeriodicKDTree — MDAnalysis.lib.pkdtree" href="pkdtree.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0-dev0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#overview">13.1. Overview</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../lib_modules.html#list-of-modules">13.2. List of modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="distances.html">13.2.1. Fast distance array computation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="distances.html#low-level-modules-for-mdanalysis-lib-distances">13.2.2. Low-level modules for <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">13.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nsgrid.html">13.2.4. Neighbor search library — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pkdtree.html">13.2.5. PeriodicKDTree — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">13.2.6. Setting up logging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#convenience-functions">13.2.6.1. Convenience functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#other-functions-and-classes-for-logging-purposes">13.2.6.2. Other functions and classes for logging purposes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="mdamath.html">13.2.7. Mathematical helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transformations.html">13.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcprot.html">13.2.9. Fast QCP RMSD structure alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="util.html">13.2.10. Helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="correlations.html">13.2.11. Correlations utilities — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="picklable_file_io.html">13.2.12. Picklable read-only I/O classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">13.3. Low level file formats</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a> &raquo;</li>
+        
+      <li>13.2.6. Setting up logging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/documentation_pages/lib/log.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-MDAnalysis.lib.log"></span><div class="section" id="setting-up-logging-mdanalysis-lib-log">
+<h1>13.2.6. Setting up logging — <a class="reference internal" href="#module-MDAnalysis.lib.log" title="MDAnalysis.lib.log"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a><a class="headerlink" href="#setting-up-logging-mdanalysis-lib-log" title="Permalink to this headline">¶</a></h1>
+<p>Configure logging for MDAnalysis. Import this module if logging is
+desired in application code.</p>
+<p>Logging to a file and the console is set up by default as described
+under <a class="reference external" href="http://docs.python.org/library/logging.html?#logging-to-multiple-destinations">logging to multiple destinations</a>.</p>
+<p>The top level logger of the library is named <em>MDAnalysis</em> by
+convention; a simple logger that writes to the console and logfile can
+be created with the <a class="reference internal" href="#MDAnalysis.lib.log.create" title="MDAnalysis.lib.log.create"><code class="xref py py-func docutils literal notranslate"><span class="pre">create()</span></code></a> function. This only has to be done
+<em>once</em>. For convenience, the default MDAnalysis logger can be created
+with <a class="reference internal" href="#MDAnalysis.start_logging" title="MDAnalysis.start_logging"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.start_logging()</span></code></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
+<span class="n">MDAnalysis</span><span class="o">.</span><span class="n">start_logging</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Once this has been done, MDAnalysis will write messages to the logfile
+(named <cite>MDAnalysis.log</cite> by default but this can be changed with the
+optional argument to <a class="reference internal" href="#MDAnalysis.start_logging" title="MDAnalysis.start_logging"><code class="xref py py-func docutils literal notranslate"><span class="pre">start_logging()</span></code></a>).</p>
+<p>Any code can log to the MDAnalysis logger by using</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.MODULENAME&#39;</span><span class="p">)</span>
+
+<span class="c1"># use the logger, for example at info level:</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting task ...&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The important point is that the name of the logger begins with
+“MDAnalysis.”.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> module in the standard library contains in depth
+documentation about using logging.</p>
+</div>
+<div class="section" id="convenience-functions">
+<h2>13.2.6.1. Convenience functions<a class="headerlink" href="#convenience-functions" title="Permalink to this headline">¶</a></h2>
+<p>Two convenience functions at the top level make it easy to start and
+stop the default <em>MDAnalysis</em> logger.</p>
+<dl class="function">
+<dt id="MDAnalysis.start_logging">
+<code class="descclassname">MDAnalysis.</code><code class="descname">start_logging</code><span class="sig-paren">(</span><em>logfile='MDAnalysis.log'</em>, <em>version='2.0.0-dev0'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#start_logging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.start_logging" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start logging of messages to file and console.</p>
+<p>The default logfile is named <cite>MDAnalysis.log</cite> and messages are
+logged with the tag <em>MDAnalysis</em>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.stop_logging">
+<code class="descclassname">MDAnalysis.</code><code class="descname">stop_logging</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#stop_logging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.stop_logging" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop logging to logfile and console.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="other-functions-and-classes-for-logging-purposes">
+<h2>13.2.6.2. Other functions and classes for logging purposes<a class="headerlink" href="#other-functions-and-classes-for-logging-purposes" title="Permalink to this headline">¶</a></h2>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Deprecated <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.log.ProgressMeter</span></code> has now been removed.</p>
+</div>
+<dl class="class">
+<dt id="MDAnalysis.lib.log.NullHandler">
+<em class="property">class </em><code class="descclassname">MDAnalysis.lib.log.</code><code class="descname">NullHandler</code><span class="sig-paren">(</span><em>level=0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#NullHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.log.NullHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Silent Handler.</p>
+<p>Useful as a default:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">h</span> <span class="o">=</span> <span class="n">NullHandler</span><span class="p">()</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+<span class="k">del</span> <span class="n">h</span>
+</pre></div>
+</div>
+<p>see the advice on logging and libraries in
+<a class="reference external" href="http://docs.python.org/library/logging.html">http://docs.python.org/library/logging.html</a>?#configuring-logging-for-a-library</p>
+<p>Initializes the instance - basically setting the formatter to None
+and the filter list to empty.</p>
+<dl class="method">
+<dt id="MDAnalysis.lib.log.NullHandler.emit">
+<code class="descname">emit</code><span class="sig-paren">(</span><em>record</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#NullHandler.emit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.log.NullHandler.emit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do whatever it takes to actually log the specified logging record.</p>
+<p>This version is intended to be implemented by subclasses and so
+raises a NotImplementedError.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.lib.log.ProgressBar">
+<em class="property">class </em><code class="descclassname">MDAnalysis.lib.log.</code><code class="descname">ProgressBar</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#ProgressBar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.log.ProgressBar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display a visual progress bar and time estimate.</p>
+<p>The <a class="reference internal" href="#MDAnalysis.lib.log.ProgressBar" title="MDAnalysis.lib.log.ProgressBar"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressBar</span></code></a> decorates an iterable object, returning an
+iterator which acts exactly like the original iterable, but prints a
+dynamically updating progressbar every time a value is requested. See the
+example below for how to use it when iterating over the frames of a
+trajectory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>iterable</strong> (<em>iterable</em><em>, </em><em>optional</em>) – Iterable to decorate with a progressbar.
+Leave blank to manually manage the updates.</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> (the default) then show the progress bar, <em>unless</em> the
+<cite>disable</cite> keyword is set to <code class="docutils literal notranslate"><span class="pre">True</span></code> (<cite>disable</cite> takes precedence over
+<cite>verbose</cite>). If <cite>verbose</cite> is set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the progress bar is
+displayed (like <code class="docutils literal notranslate"><span class="pre">True</span></code>), <em>unless</em> this is a non-TTY output device
+(see <cite>disable</cite>).</li>
+<li><strong>desc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Prefix for the progressbar.</li>
+<li><strong>total</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – The number of expected iterations. If unspecified,
+<code class="docutils literal notranslate"><span class="pre">len(iterable)</span></code> is used if possible. If <code class="docutils literal notranslate"><span class="pre">float(&quot;inf&quot;)</span></code> or as a last
+resort, only basic progress statistics are displayed
+(no ETA, no progressbar).</li>
+<li><strong>leave</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If [default: <code class="docutils literal notranslate"><span class="pre">True</span></code>], keeps all traces of the progressbar
+upon termination of iteration.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, will leave only if <cite>position</cite> is 0.</li>
+<li><strong>file</strong> (<a class="reference external" href="https://docs.python.org/3/library/io.html#io.TextIOWrapper" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.TextIOWrapper</span></code></a> or <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.StringIO</span></code></a>, optional) – Specifies where to output the progress messages (default:
+<a class="reference external" href="https://docs.python.org/3/library/sys.html#sys.stderr" title="(in Python v3.8)"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.stderr</span></code></a>). Uses <code class="xref py py-meth docutils literal notranslate"><span class="pre">file.write()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">file.flush()</span></code>
+methods.  For encoding, see <cite>write_bytes</cite>.</li>
+<li><strong>ncols</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – The width of the entire output message. If specified,
+dynamically resizes the progressbar to stay within this bound.
+If unspecified, attempts to use environment width. The
+fallback is a meter width of 10 and no limit for the counter and
+statistics. If 0, will not print any meter (only stats).</li>
+<li><strong>mininterval</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – Minimum progress display update interval [default: 0.1] seconds.</li>
+<li><strong>maxinterval</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – Maximum progress display update interval [default: 10] seconds.
+Automatically adjusts <cite>miniters</cite> to correspond to <cite>mininterval</cite>
+after long display update lag. Only works if <cite>dynamic_miniters</cite>
+or monitor thread is enabled.</li>
+<li><strong>miniters</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – Minimum progress display update interval, in iterations.
+If 0 and <cite>dynamic_miniters</cite>, will automatically adjust to equal
+<cite>mininterval</cite> (more CPU efficient, good for tight loops).
+If &gt; 0, will skip display of specified number of iterations.
+Tweak this and <cite>mininterval</cite> to get very efficient loops.
+If your progress is erratic with both fast and slow iterations
+(network, skipping items, etc) you should set miniters=1.</li>
+<li><strong>ascii</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – If unspecified or <code class="docutils literal notranslate"><span class="pre">False</span></code>, use unicode (smooth blocks) to fill
+the meter. The fallback is to use ASCII characters ” 123456789#”.</li>
+<li><strong>disable</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to disable the entire progressbar wrapper
+[default: <code class="docutils literal notranslate"><span class="pre">False</span></code>]. If set to None, disable on non-TTY.</li>
+<li><strong>unit</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – String that will be used to define the unit of each iteration
+[default: it].</li>
+<li><strong>unit_scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – If 1 or True, the number of iterations will be reduced/scaled
+automatically and a metric prefix following the
+International System of Units standard will be added
+(kilo, mega, etc.) [default: <code class="docutils literal notranslate"><span class="pre">False</span></code>]. If any other non-zero
+number, will scale <cite>total</cite> and <cite>n</cite>.</li>
+<li><strong>dynamic_ncols</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If set, constantly alters <cite>ncols</cite> and <cite>nrows</cite> to the
+environment (allowing for window resizes) [default: <code class="docutils literal notranslate"><span class="pre">False</span></code>].</li>
+<li><strong>smoothing</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – Exponential moving average smoothing factor for speed estimates
+(ignored in GUI mode). Ranges from 0 (average speed) to 1
+(current/instantaneous speed) [default: 0.3].</li>
+<li><strong>bar_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – <p>Specify a custom bar string formatting. May impact performance.
+[default: <code class="docutils literal notranslate"><span class="pre">'{l_bar}{bar}{r_bar}'</span></code>], where <code class="docutils literal notranslate"><span class="pre">l_bar='{desc}:</span>
+<span class="pre">{percentage:3.0f}%|'</span></code> and <code class="docutils literal notranslate"><span class="pre">r_bar='|</span> <span class="pre">{n_fmt}/{total_fmt}</span>
+<span class="pre">[{elapsed}&lt;{remaining},</span> <span class="pre">{rate_fmt}{postfix}]'</span></code></p>
+<p>Possible vars: l_bar, bar, r_bar, n, n_fmt, total, total_fmt,
+percentage, elapsed, elapsed_s, ncols, nrows, desc, unit,
+rate, rate_fmt, rate_noinv, rate_noinv_fmt,
+rate_inv, rate_inv_fmt, postfix, unit_divisor,
+remaining, remaining_s.</p>
+<p>Note that a trailing “: ” is automatically removed after {desc}
+if the latter is empty.</p>
+</li>
+<li><strong>initial</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – The initial counter value. Useful when restarting a progress bar
+[default: 0]. If using <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, consider specifying <code class="docutils literal notranslate"><span class="pre">{n:.3f}</span></code>
+or similar in <cite>bar_format</cite>, or specifying <cite>unit_scale</cite>.</li>
+<li><strong>position</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Specify the line offset to print this bar (starting from 0)
+Automatic if unspecified.
+Useful to manage multiple bars at once (e.g., from threads).</li>
+<li><strong>postfix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em> or </em><em>*</em><em>, </em><em>optional</em>) – Specify additional stats to display at the end of the bar.
+Calls <code class="docutils literal notranslate"><span class="pre">set_postfix(**postfix)</span></code> if possible (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>).</li>
+<li><strong>unit_divisor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – [default: 1000], ignored unless <cite>unit_scale</cite> is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
+<li><strong>write_bytes</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>) and <cite>file</cite> is unspecified,
+bytes will be written in Python 2. If <cite>True</cite> will also write
+bytes. In all other cases will default to unicode.</li>
+<li><strong>lock_args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>, </em><em>optional</em>) – Passed to <cite>refresh</cite> for intermediate output
+(initialisation, iterating, and updating).</li>
+<li><strong>nrows</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – The screen height. If specified, hides nested bars outside this
+bound. If unspecified, attempts to use environment height.
+The fallback is 20.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">decorated iterator.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<p>To get a progress bar when analyzing a trajectory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="kn">import</span> <span class="n">ProgressBar</span>
+
+<span class="o">...</span>
+
+<span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">):</span>
+   <span class="c1"># perform analysis</span>
+</pre></div>
+</div>
+<p>will produce something similar to</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>30%|███████████                       | 3/10 [00:13&lt;00:30,  4.42s/it]
+</pre></div>
+</div>
+<p>in a terminal or Jupyter notebook.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">The <a class="reference internal" href="#MDAnalysis.lib.log.ProgressBar" title="MDAnalysis.lib.log.ProgressBar"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressBar</span></code></a> is derived from <code class="xref py py-class docutils literal notranslate"><span class="pre">tqdm.auto.tqdm</span></code>; see the
+<a class="reference external" href="https://tqdm.github.io/">tqdm documentation</a> for further details on how to use it.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.log.clear_handlers">
+<code class="descclassname">MDAnalysis.lib.log.</code><code class="descname">clear_handlers</code><span class="sig-paren">(</span><em>logger</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#clear_handlers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.log.clear_handlers" title="Permalink to this definition">¶</a></dt>
+<dd><p>clean out handlers in the library top level logger</p>
+<p>(only important for reload/debug cycles…)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.log.create">
+<code class="descclassname">MDAnalysis.lib.log.</code><code class="descname">create</code><span class="sig-paren">(</span><em>logger_name='MDAnalysis'</em>, <em>logfile='MDAnalysis.log'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.log.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a top level logger.</p>
+<ul class="simple">
+<li>The file logger logs everything (including DEBUG).</li>
+<li>The console logger only logs INFO and above.</li>
+</ul>
+<p>Logging to a file and the console as described under <a class="reference external" href="http://docs.python.org/library/logging.html?#logging-to-multiple-destinations">logging to
+multiple destinations</a>.</p>
+<p>The top level logger of MDAnalysis is named <em>MDAnalysis</em>.  Note
+that we are configuring this logger with console output. If a root
+logger also does this then we will get two output lines to the
+console.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.log.start_logging">
+<code class="descclassname">MDAnalysis.lib.log.</code><code class="descname">start_logging</code><span class="sig-paren">(</span><em>logfile='MDAnalysis.log'</em>, <em>version='2.0.0-dev0'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#start_logging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.log.start_logging" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start logging of messages to file and console.</p>
+<p>The default logfile is named <cite>MDAnalysis.log</cite> and messages are
+logged with the tag <em>MDAnalysis</em>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.log.stop_logging">
+<code class="descclassname">MDAnalysis.lib.log.</code><code class="descname">stop_logging</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/log.html#stop_logging"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.log.stop_logging" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop logging to logfile and console.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="mdamath.html" class="btn btn-neutral float-right" title="13.2.7. Mathematical helper functions — MDAnalysis.lib.mdamath" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="pkdtree.html" class="btn btn-neutral float-left" title="13.2.5. PeriodicKDTree — MDAnalysis.lib.pkdtree" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.0.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

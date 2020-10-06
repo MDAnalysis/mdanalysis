@@ -1,0 +1,359 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>5.27. MDAnalysis topology tables &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="5.28. Utility functions for the TPR topology parser" href="tpr_util.html" />
+    <link rel="prev" title="5.26. Guessing unknown Topology information — MDAnalysis.topology.guessers" href="guessers.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0-dev0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="init.html">5.1. Topology readers — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="CRDParser.html">5.2. CRD topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DLPolyParser.html">5.3. DL Poly format Topology Readers — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.DLPolyParser</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DMSParser.html">5.4. DESRES Molecular Structure file format topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="FHIAIMSParser.html">5.5. FHI-AIMS Topology Parser — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topolgy.FHIAIMSParser</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GMSParser.html">5.6. GAMESS Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GROParser.html">5.7. GRO topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GSDParser.html">5.8. GSD topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HoomdXMLParser.html">5.9. HOOMD XML topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ITPParser.html">5.10. ITP topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LAMMPSParser.html">5.11. LAMMPSParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MinimalParser.html">5.12. Minimal topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MMTFParser.html">5.13. MMTF Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MOL2Parser.html">5.14. MOL2 file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBParser.html">5.15. PDB Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExtendedPDBParser.html">5.16. Extended PDB topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBQTParser.html">5.17. PDBQT topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PQRParser.html">5.18. PQR topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PSFParser.html">5.19. PSF topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TOPParser.html">5.20. AMBER PRMTOP topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TPRParser.html">5.21. Gromacs portable run input TPR format parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TXYZParser.html">5.22. TXYZ topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="XYZParser.html">5.23. XYZ Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">5.24. Base topology reader classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">5.25. Common functions for topology building — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html">5.26. Guessing unknown Topology information — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.27. MDAnalysis topology tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tpr_util.html">5.28. Utility functions for the TPR topology parser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../topology_modules.html">5. Topology modules</a> &raquo;</li>
+        
+      <li>5.27. MDAnalysis topology tables</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/documentation_pages/topology/tables.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-MDAnalysis.topology.tables"></span><div class="section" id="mdanalysis-topology-tables">
+<h1>5.27. MDAnalysis topology tables<a class="headerlink" href="#mdanalysis-topology-tables" title="Permalink to this headline">¶</a></h1>
+<p>The module contains static lookup tables for atom typing etc. The
+tables are dictionaries that are indexed by the element.</p>
+<dl class="data">
+<dt id="MDAnalysis.topology.tables.atomelements">
+<code class="descclassname">MDAnalysis.topology.tables.</code><code class="descname">atomelements</code><em class="property"> = {'AC': 'C', 'BC': 'C', 'BR': 'BR', 'C0': 'CA', 'CA2+': 'CA', 'CAL': 'CA', 'CES': 'CS', 'CL': 'CL', 'CL-': 'CL', 'CLA': 'CL', 'CLAL': 'CL', 'CS': 'CS', 'CS+': 'CS', 'CU': 'CU', 'FE': 'FE', 'FE2': 'FE', 'IOD': 'I', 'K': 'K', 'K+': 'K', 'LI': 'LI', 'LI+': 'LI', 'LIT': 'LI', 'MG': 'MG', 'MG2+': 'MG', 'MW': 'DUMMY', 'NA': 'NA', 'NA+': 'NA', 'POT': 'K', 'QC': 'CE', 'QK': 'K', 'QL': 'LI', 'QN': 'NA', 'QR': 'RB', 'RB': 'RB', 'SOD': 'NA', 'ZN': 'ZN'}</em><a class="headerlink" href="#MDAnalysis.topology.tables.atomelements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary with hard-coded special atom names, used for guessing atom types
+with <code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.topology.core.guess_atom_type()</span></code>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tables.masses">
+<code class="descclassname">MDAnalysis.topology.tables.</code><code class="descname">masses</code><em class="property"> = {'Ac': 227.028, 'Ag': 107.8682, 'Al': 26.981539, 'Am': 243.0, 'Ar': 39.948, 'As': 74.92159, 'At': 210.0, 'Au': 196.96654, 'B': 10.811, 'BR': 79.904, 'Ba': 137.327, 'Be': 9.012182, 'Bh': 262.0, 'Bi': 208.98037, 'Bk': 247.0, 'C': 12.011, 'CA': 40.08, 'CL': 35.45, 'CS': 132.9, 'CU': 63.546, 'Cd': 112.411, 'Ce': 140.116, 'Cf': 251.0, 'Cm': 247.0, 'Co': 58.9332, 'Cr': 51.9961, 'DUMMY': 0.0, 'Db': 262.0, 'Dy': 162.5, 'Er': 167.26, 'Es': 252.0, 'Eu': 151.965, 'F': 18.998, 'FE': 55.847, 'Fm': 257.0, 'Fr': 223.0, 'Ga': 69.723, 'Gd': 157.25, 'Ge': 72.61, 'H': 1.008, 'HE': 4.0026, 'Hf': 178.49, 'Hg': 200.59, 'Ho': 164.93032, 'Hs': 265.0, 'I': 126.9045, 'In': 114.82, 'Ir': 192.22, 'K': 39.102, 'Kr': 83.8, 'La': 138.9055, 'Li': 6.941, 'Lr': 262.0, 'Lu': 174.967, 'MG': 24.305, 'Md': 258.0, 'Mn': 54.93805, 'Mo': 95.94, 'Mt': 266.0, 'N': 14.007, 'NA': 22.98977, 'NE': 20.1797, 'Na': 22.989768, 'Nb': 92.90638, 'Nd': 144.24, 'Ni': 58.6934, 'No': 259.0, 'Np': 237.048, 'O': 15.999, 'Os': 190.2, 'P': 30.974, 'Pa': 231.0359, 'Pb': 207.2, 'Pd': 106.42, 'Pm': 145.0, 'Po': 209.0, 'Pr': 140.90765, 'Pt': 195.08, 'Pu': 244.0, 'RB': 85.4678, 'Ra': 226.025, 'Re': 186.207, 'Rf': 261.0, 'Rh': 102.9055, 'Rn': 222.0, 'Ru': 101.07, 'S': 32.06, 'Sb': 121.757, 'Sc': 44.95591, 'Se': 78.96, 'Sg': 263.0, 'Si': 28.0855, 'Sm': 150.36, 'Sn': 118.71, 'Sr': 87.62, 'Ta': 180.9479, 'Tb': 158.92534, 'Tc': 98.0, 'Te': 127.6, 'Th': 232.0381, 'Ti': 47.88, 'Tl': 204.3833, 'Tm': 168.93421, 'U': 238.0289, 'V': 50.9415, 'W': 183.85, 'Xe': 131.29, 'Y': 88.90585, 'Yb': 173.04, 'ZN': 65.37, 'Zr': 91.224}</em><a class="headerlink" href="#MDAnalysis.topology.tables.masses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary table with atomic masses in u, indexed by the element from
+<a class="reference internal" href="#MDAnalysis.topology.tables.atomelements" title="MDAnalysis.topology.tables.atomelements"><code class="xref py py-data docutils literal notranslate"><span class="pre">atomelements</span></code></a>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tables.vdwradii">
+<code class="descclassname">MDAnalysis.topology.tables.</code><code class="descname">vdwradii</code><em class="property"> = {'AA': 1.85, 'AG': 1.72, 'AL': 1.84, 'AR': 1.88, 'AT': 2.02, 'AU': 1.66, 'B': 1.92, 'BA': 2.68, 'BE': 1.53, 'BI': 2.07, 'BR': 1.85, 'C': 1.7, 'CA': 2.31, 'CD': 1.58, 'CL': 1.75, 'CS': 3.43, 'CU': 1.4, 'F': 1.47, 'FR': 3.48, 'GA': 1.87, 'GE': 2.11, 'H': 1.1, 'HE': 1.4, 'HH': 1.55, 'I': 1.98, 'IN': 1.93, 'K': 2.75, 'KR': 2.02, 'LI': 1.82, 'MG': 1.73, 'N': 1.55, 'NA': 2.27, 'NE': 1.54, 'NI': 1.63, 'O': 1.52, 'P': 1.8, 'PB': 2.02, 'PD': 1.63, 'PO': 1.97, 'PT': 1.75, 'RA': 2.83, 'RN': 2.2, 'RR': 3.03, 'S': 1.8, 'SB': 2.06, 'SE': 1.9, 'SI': 2.1, 'SN': 2.17, 'SR': 2.49, 'TE': 2.06, 'TL': 1.96, 'U': 1.86, 'XE': 2.16, 'ZN': 1.39}</em><a class="headerlink" href="#MDAnalysis.topology.tables.vdwradii" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary table with vdw radii, indexed by the element from
+<a class="reference internal" href="#MDAnalysis.topology.tables.atomelements" title="MDAnalysis.topology.tables.atomelements"><code class="xref py py-data docutils literal notranslate"><span class="pre">atomelements</span></code></a>.
+.. SeeAlso:: <code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.topology.core.guess_bonds()</span></code></p>
+</dd></dl>
+
+<p>The original raw data are stored as multi-line strings that are
+translated into dictionaries with <a class="reference internal" href="#MDAnalysis.topology.tables.kv2dict" title="MDAnalysis.topology.tables.kv2dict"><code class="xref py py-func docutils literal notranslate"><span class="pre">kv2dict()</span></code></a>. In the future,
+these tables might be moved into external data files; see
+<a class="reference internal" href="#MDAnalysis.topology.tables.kv2dict" title="MDAnalysis.topology.tables.kv2dict"><code class="xref py py-func docutils literal notranslate"><span class="pre">kv2dict()</span></code></a> for explanation of the file format.</p>
+<dl class="function">
+<dt id="MDAnalysis.topology.tables.kv2dict">
+<code class="descclassname">MDAnalysis.topology.tables.</code><code class="descname">kv2dict</code><span class="sig-paren">(</span><em>s</em>, <em>convertor=&lt;class 'str'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tables.html#kv2dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tables.kv2dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Primitive ad-hoc parser of a key-value record list.</p>
+<ul class="simple">
+<li>The string <em>s</em> should contain each key-value pair on a separate
+line (separated by newline). The first white space after the key
+separates key and value.</li>
+<li>Empty lines are allowed.</li>
+<li>Comment lines (starting with #) are allowed.</li>
+<li>Leading whitespace is ignored.</li>
+</ul>
+<p>The <em>convertor</em> is a function that converts its single argument to
+a valid Python type. The default is <code class="xref py py-func docutils literal notranslate"><span class="pre">str()</span></code> but other
+possibilities are <code class="xref py py-func docutils literal notranslate"><span class="pre">int()</span></code> (for integers) or <code class="xref py py-func docutils literal notranslate"><span class="pre">float()</span></code> for
+floating point numbers.</p>
+</dd></dl>
+
+<p>The raw tables are stored in the strings</p>
+<dl class="data">
+<dt id="MDAnalysis.topology.tables.TABLE_ATOMELEMENTS">
+<code class="descclassname">MDAnalysis.topology.tables.</code><code class="descname">TABLE_ATOMELEMENTS</code><em class="property"> = '\n# translation of atomnames to types/element\n# based on CHARMM and AMBER usage with a little bit of GROMOS (and PROPKA)\n# NOTE: CL might be ambiguous and is interpreted as chloride!\n\n# --------- ------------------\n# atomname   element\n# --------- ------------------\n\n# Bromide\nBR           BR\n\n# Calcium\nCAL          CA\nC0           CA\nCA2+         CA\n\n# Cesium\nCES          CS\n\n# Chloride\nCLA          CL\nCLAL         CL\nCL           CL\nCL-          CL\n\n# Iodide\nIOD          I\n\n# Iron\nFE           FE\nFE2          FE\n\n# Lithium\nLIT          LI\nLI           LI\nLI+          LI\nQL           LI\n\n# Magnesium\nMG           MG\nMG2+         MG\n\n# Noble gases\n## XXX collides with NE, HE in Arg  XXX\n## XXX so we remove the noble gases XXX\n##HE           HE\n##NE           NE\n\n# Potassium\nK            K\nPOT          K\nK+           K\nQK           K\n\n# Sodium\nSOD          NA\nNA           NA\nNA+          NA\nQN           NA\n\n# Zink\nZN           ZN\n\n# Copper\nCU           CU\n\n# Cesium\nCS           CS\nCS+          CS\nCES          CS\n\n# Cerium??\nQC           CE\n\n# Rubidium\nRB           RB\nQR           RB\n\n# special carbons (Amber?)\nBC           C\nAC           C\n\n# dummy atom types\nMW           DUMMY\n\n# other types are guessed from the name; see\n# topology.core.guess_atom_elements()\n'</em><a class="headerlink" href="#MDAnalysis.topology.tables.TABLE_ATOMELEMENTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table with hard-coded special atom names, used for guessing atom types
+with <code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.topology.core.guess_atom_element()</span></code>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tables.TABLE_MASSES">
+<code class="descclassname">MDAnalysis.topology.tables.</code><code class="descname">TABLE_MASSES</code><em class="property"> = '\n# masses for elements in atomic units (u)\n# (taken from CHARMM and Gromacs atommass.dat)\n\n#------------ -----------\n# atomtype    mass\n#------------ -----------\nAc    227.028\nAl    26.981539\nAm    243\nSb    121.757\nAr    39.948\nAs    74.92159\nAt    210\nBa    137.327\nBk    247\nBe    9.012182\nBi    208.98037\nBh    262\nB     10.811\nBR    79.90400\nCd    112.411\nCA    40.08000\nCf    251\nC     12.01100\nCe    140.11600\nCS    132.90000\nCL    35.45000\nCr    51.9961\nCo    58.9332\nCU    63.54600\nCm    247\nDb    262\nDy    162.5\nEs    252\nEr    167.26\nEu    151.965\nFm    257\nF     18.99800\nFr    223\nGd    157.25\nGa    69.723\nGe    72.61\nAu    196.96654\nHf    178.49\nHs    265\nHE    4.00260\nHo    164.93032\nH     1.00800\nIn    114.82\nI     126.90450\nIr    192.22\nFE    55.84700\nKr    83.8\nLa    138.9055\nLr    262\nPb    207.2\nLi    6.941\nLu    174.967\nMG    24.30500\nMn    54.93805\nMt    266\nMd    258\nHg    200.59\nMo    95.94\nN     14.00700\nNA    22.98977\nNd    144.24\nNE    20.17970\nNp    237.048\nNi    58.6934\nNb    92.90638\nNo    259\nOs    190.2\nO     15.99900\nPd    106.42\nP     30.97400\nPt    195.08\nPu    244\nPo    209\nK     39.10200\nPr    140.90765\nPm    145\nPa    231.0359\nRa    226.025\nRn    222\nRe    186.207\nRh    102.9055\nRB    85.46780\nRu    101.07\nRf    261\nSm    150.36\nSc    44.95591\nSg    263\nSe    78.96\nSi    28.0855\nAg    107.8682\nNa    22.989768\nSr    87.62\nS     32.06000\nTa    180.9479\nTc    98\nTe    127.6\nTb    158.92534\nTl    204.3833\nTh    232.0381\nTm    168.93421\nSn    118.71\nTi    47.88\nW     183.85\nU     238.0289\nV     50.9415\nXe    131.29\nYb    173.04\nY     88.90585\nZN    65.37000\nZr    91.224\nDUMMY 0.0\n'</em><a class="headerlink" href="#MDAnalysis.topology.tables.TABLE_MASSES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plain-text table with atomic masses in u.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tables.TABLE_VDWRADII">
+<code class="descclassname">MDAnalysis.topology.tables.</code><code class="descname">TABLE_VDWRADII</code><em class="property"> = '\n# Van der Waals radii taken from\n# [1] Bondi, A. (1964). &quot;Van der Waals Volumes and Radii&quot;.\n#     J. Phys. Chem. 68 (3): 441-451. doi:10.1021/j100785a001.\n# [2] Rowland and Taylor (1996). &quot;Intermolecular Nonbonded Contact Distances in Organic Crystal Structures:\n#                                 Comparison with Distances Expected from van der Waals Radii&quot;.\n#     J. Phys. Chem., 1996, 100 (18), 7384.7391. doi:10.1021/jp953141+.\n# [3] Mantina, et al. (2009). &quot;Consistent van der Waals Radii for the Whole Main Group&quot;.\n#     J. Phys. Chem. A, 2009, 113 (19), 5806-5812. doi:10.1021/jp8111556.\n#------------ -----------\n# atomtype    r_vdw\n#------------ -----------\nH    1.10\nHE   1.40\nLI   1.82\nBE   1.53\nB    1.92\nC    1.70\nN    1.55\nO    1.52\nF    1.47\nNE   1.54\nNA   2.27\nMG   1.73\nAL   1.84\nSI   2.10\nP    1.80\nS    1.80\nCL   1.75\nAR   1.88\nK    2.75\nCA   2.31\nNI   1.63\nCU   1.40\nZN   1.39\nGA   1.87\nGE   2.11\nAA   1.85\nSE   1.90\nBR   1.85\nKR   2.02\nRR   3.03\nSR   2.49\nPD   1.63\nAG   1.72\nCD   1.58\nIN   1.93\nSN   2.17\nSB   2.06\nTE   2.06\nI    1.98\nXE   2.16\nCS   3.43\nBA   2.68\nPT   1.75\nAU   1.66\nHH   1.55\nTL   1.96\nPB   2.02\nBI   2.07\nPO   1.97\nAT   2.02\nRN   2.20\nFR   3.48\nRA   2.83\nU    1.86\n'</em><a class="headerlink" href="#MDAnalysis.topology.tables.TABLE_VDWRADII" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plain-text table with vdw radii.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tpr_util.html" class="btn btn-neutral float-right" title="5.28. Utility functions for the TPR topology parser" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="guessers.html" class="btn btn-neutral float-left" title="5.26. Guessing unknown Topology information — MDAnalysis.topology.guessers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.0.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

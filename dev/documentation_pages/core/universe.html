@@ -1,0 +1,1074 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>11.1.1. Core object: Universe — MDAnalysis.core.universe &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="11.1.2. Core objects: Containers — MDAnalysis.core.groups" href="groups.html" />
+    <link rel="prev" title="11. Core modules" href="../core_modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0-dev0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../core_modules.html">11. Core modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../core_modules.html#important-objects-for-users">11.1. Important objects for users</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">11.1.1. Core object: Universe — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#classes">11.1.1.1. Classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#functions">11.1.1.2. Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">11.1.2. Core objects: Containers — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.groups</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#topology-system">11.2. Topology system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#selection-system">11.3. Selection system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#flag-system">11.4. Flag system</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../core_modules.html">11. Core modules</a> &raquo;</li>
+        
+      <li>11.1.1. Core object: Universe — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/documentation_pages/core/universe.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-MDAnalysis.core.universe"></span><div class="section" id="core-object-universe-mdanalysis-core-universe">
+<h1>11.1.1. Core object: Universe — <a class="reference internal" href="#module-MDAnalysis.core.universe" title="MDAnalysis.core.universe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a><a class="headerlink" href="#core-object-universe-mdanalysis-core-universe" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> class ties a topology
+and a trajectory together. Almost all code in MDAnalysis starts with a
+<code class="docutils literal notranslate"><span class="pre">Universe</span></code>.</p>
+<p>Normally, a <code class="docutils literal notranslate"><span class="pre">Universe</span></code> is created from files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;topology.psf&quot;</span><span class="p">,</span> <span class="s2">&quot;trajectory.dcd&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In order to construct new simulation system it is also convenient to
+construct a <code class="docutils literal notranslate"><span class="pre">Universe</span></code> from existing
+<code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> instances with the
+<a class="reference internal" href="#MDAnalysis.core.universe.Merge" title="MDAnalysis.core.universe.Merge"><code class="xref py py-func docutils literal notranslate"><span class="pre">Merge()</span></code></a> function.</p>
+<div class="section" id="classes">
+<h2>11.1.1.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MDAnalysis.core.universe.Universe">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.universe.</code><code class="descname">Universe</code><span class="sig-paren">(</span><em>topology=None</em>, <em>*coordinates</em>, <em>all_coordinates=False</em>, <em>format=None</em>, <em>topology_format=None</em>, <em>transformations=None</em>, <em>guess_bonds=False</em>, <em>vdwradii=None</em>, <em>in_memory=False</em>, <em>in_memory_step=1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe" title="Permalink to this definition">¶</a></dt>
+<dd><p>The MDAnalysis Universe contains all the information describing the system.</p>
+<p>The system always requires a <em>topology</em> file — in the simplest case just
+a list of atoms. This can be a CHARMM/NAMD PSF file or a simple coordinate
+file with atom informations such as XYZ, PDB, Gromacs GRO, or CHARMM
+CRD. See <a class="reference internal" href="../topology/init.html#supported-topology-formats"><span class="std std-ref">Table of Supported Topology Formats</span></a> for what kind of topologies can
+be read.</p>
+<p>A trajectory provides coordinates; the coordinates have to be ordered in
+the same way as the list of atoms in the topology. A trajectory can be a
+single frame such as a PDB, CRD, or GRO file, or it can be a MD trajectory
+(in CHARMM/NAMD/LAMMPS DCD, Gromacs XTC/TRR, or generic XYZ format).  See
+<a class="reference internal" href="../coordinates/init.html#id2"><span class="std std-ref">Table of supported coordinate formats</span></a> for what can be read as a
+“trajectory”.</p>
+<p>As a special case, when the topology is a file that contains atom
+information <em>and</em> coordinates (such as XYZ, PDB, GRO or CRD, see
+<a class="reference internal" href="../coordinates/init.html#id2"><span class="std std-ref">Table of supported coordinate formats</span></a>) then the coordinates are immediately
+loaded from the “topology” file unless a trajectory is supplied.</p>
+<p>Examples for setting up a universe:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>          <span class="c1"># read system from file(s)</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">)</span>                       <span class="c1"># read atoms and coordinates from PDB or GRO</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="p">[</span><span class="n">traj1</span><span class="p">,</span> <span class="n">traj2</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span> <span class="c1"># read from a list of trajectories</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">traj1</span><span class="p">,</span> <span class="n">traj2</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>   <span class="c1"># read from multiple trajectories</span>
+</pre></div>
+</div>
+<p>Load new data into a universe (replaces old trajectory and does <em>not</em> append):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">load_new</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span>                      <span class="c1"># read from a new trajectory file</span>
+</pre></div>
+</div>
+<p>Select atoms, with syntax similar to CHARMM (see
+<a class="reference internal" href="#MDAnalysis.core.universe.Universe.select_atoms" title="MDAnalysis.core.universe.Universe.select_atoms"><code class="xref py py-class docutils literal notranslate"><span class="pre">select_atoms</span></code></a> for details):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>topology</strong> (str, stream, <cite>~MDAnalysis.core.topology.Topology</cite>, <cite>np.ndarray</cite>, None) – A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
+define the list of atoms. If the file includes bond information,
+partial charges, atom masses, … then these data will be available to
+MDAnalysis. Alternatively, an existing
+<a class="reference internal" href="topology.html#MDAnalysis.core.topology.Topology" title="MDAnalysis.core.topology.Topology"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.topology.Topology</span></code></a> instance may be given,
+numpy coordinates, or None for an empty universe.</li>
+<li><strong>coordinates</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>stream</em><em>, </em><em>list of str</em><em>, </em><em>list of stream</em><em> (</em><em>optional</em><em>)</em>) – Coordinates can be provided as files of
+a single frame (eg a PDB, CRD, or GRO file); a list of single
+frames; or a trajectory file (in CHARMM/NAMD/LAMMPS DCD, Gromacs
+XTC/TRR, or generic XYZ format). The coordinates must be
+ordered in the same way as the list of atoms in the topology.
+See <a class="reference internal" href="../coordinates/init.html#id2"><span class="std std-ref">Table of supported coordinate formats</span></a> for what can be read
+as coordinates. Alternatively, streams can be given.</li>
+<li><strong>topology_format</strong> (str, <code class="docutils literal notranslate"><span class="pre">None</span></code>, default <code class="docutils literal notranslate"><span class="pre">None</span></code>) – Provide the file format of the topology file; <code class="docutils literal notranslate"><span class="pre">None</span></code> guesses it from
+the file extension. Can also pass a subclass of
+<a class="reference internal" href="../topology/base.html#MDAnalysis.topology.base.TopologyReaderBase" title="MDAnalysis.topology.base.TopologyReaderBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.topology.base.TopologyReaderBase</span></code></a> to define a custom
+reader to be used on the topology file.</li>
+<li><strong>format</strong> (str, <code class="docutils literal notranslate"><span class="pre">None</span></code>, default <code class="docutils literal notranslate"><span class="pre">None</span></code>) – Provide the file format of the coordinate or trajectory file; <code class="docutils literal notranslate"><span class="pre">None</span></code>
+guesses it from the file extension. Note that this keyword has no
+effect if a list of file names is supplied because the “chained” reader
+has to guess the file format for each individual list member.
+Can also pass a subclass of <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.ProtoReader</span></code></a>
+to define a custom reader to be used on the trajectory file.</li>
+<li><strong>all_coordinates</strong> (bool, default <code class="docutils literal notranslate"><span class="pre">False</span></code>) – If set to <code class="docutils literal notranslate"><span class="pre">True</span></code> specifies that if more than one filename is passed
+they are all to be used, if possible, as coordinate files (employing a
+<a class="reference internal" href="../coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader" title="MDAnalysis.coordinates.chain.ChainReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain.ChainReader</span></code></a>). The
+default behavior is to take the first file as a topology and the
+remaining as coordinates. The first argument will always always be used
+to infer a topology regardless of <em>all_coordinates</em>.</li>
+<li><strong>guess_bonds</strong> (bool, default <code class="docutils literal notranslate"><span class="pre">False</span></code>) – Once Universe has been loaded, attempt to guess the connectivity
+between atoms.  This will populate the .bonds, .angles, and .dihedrals
+attributes of the Universe.</li>
+<li><strong>vdwradii</strong> (dict, <code class="docutils literal notranslate"><span class="pre">None</span></code>, default <code class="docutils literal notranslate"><span class="pre">None</span></code>) – For use with <em>guess_bonds</em>. Supply a dict giving a vdwradii for each
+atom type which are used in guessing bonds.</li>
+<li><strong>transformations</strong> (function or list, <code class="docutils literal notranslate"><span class="pre">None</span></code>, default <code class="docutils literal notranslate"><span class="pre">None</span></code>) – Provide a list of transformations that you wish to apply to the
+trajectory upon reading. Transformations can be found in
+<a class="reference internal" href="../trajectory_transformations.html#module-MDAnalysis.transformations" title="MDAnalysis.transformations"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations</span></code></a>, or can be user-created.</li>
+<li><strong>in_memory</strong> (bool, default <code class="docutils literal notranslate"><span class="pre">False</span></code>) – After reading in the trajectory, transfer it to an in-memory
+representations, which allow for manipulation of coordinates.</li>
+<li><strong>in_memory_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default 1</em>) – Only read every nth frame into in-memory representation.</li>
+<li><strong>continuous</strong> (bool, default <code class="docutils literal notranslate"><span class="pre">False</span></code>) – The <cite>continuous</cite> option is used by the
+<a class="reference internal" href="../coordinates/chain.html#module-MDAnalysis.coordinates.chain" title="MDAnalysis.coordinates.chain"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ChainReader</span></code></a>, which contains the
+functionality to treat independent trajectory files as a single virtual
+trajectory.</li>
+<li><strong>**kwargs</strong> (<em>extra arguments are passed to the topology parser.</em>) – </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="MDAnalysis.core.universe.Universe.trajectory">
+<code class="descname">trajectory</code><a class="headerlink" href="#MDAnalysis.core.universe.Universe.trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>currently loaded trajectory reader;</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.universe.Universe.dimensions">
+<code class="descname">dimensions</code><a class="headerlink" href="#MDAnalysis.core.universe.Universe.dimensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>current system dimensions (simulation unit cell, if set in the
+trajectory)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">atoms, residues, segments</code></dt>
+<dd><p>principal Groups for each topology level</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">bonds, angles, dihedrals</code></dt>
+<dd><p>principal ConnectivityGroups for each connectivity type</p>
+</dd></dl>
+
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Universe() now raises an error. Use Universe(None) or <a class="reference internal" href="#MDAnalysis.core.universe.Universe.empty" title="MDAnalysis.core.universe.Universe.empty"><code class="xref py py-func docutils literal notranslate"><span class="pre">Universe.empty()</span></code></a> instead.
+Removed instant selectors.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Universe now can be (un)pickled.
+<code class="docutils literal notranslate"><span class="pre">topology</span></code> and <code class="docutils literal notranslate"><span class="pre">trajectory</span></code> are reserved
+upon unpickle.</p>
+</div>
+<dl class="method">
+<dt id="MDAnalysis.core.universe.Universe.add_Residue">
+<code class="descname">add_Residue</code><span class="sig-paren">(</span><em>segment=None</em>, <em>**attrs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_Residue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_Residue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new Residue to this Universe</p>
+<p>New Residues will not contain any Atoms, but can be assigned to Atoms
+as per usual.  If the Universe contains multiple segments, this must
+be specified as a keyword.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>segment</strong> (<em>MDAnalysis.Segment</em>) – If there are multiple segments, then the Segment that the new
+Residue will belong in must be specified.</li>
+<li><strong>attrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – For each Residue attribute, the value for the new Residue must be
+specified</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">A reference to the new Residue</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code> – If any information was missing.  This happens before any changes have
+been made, ie the change is rolled back.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<p>Adding a new GLY residue, then placing atoms within it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">newres</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">add_Residue</span><span class="p">(</span><span class="n">segment</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">resid</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">resname</span><span class="o">=</span><span class="s1">&#39;GLY&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span><span class="o">.</span><span class="n">residues</span> <span class="o">=</span> <span class="n">newres</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname GLY and resid 42&#39;</span><span class="p">)</span>
+<span class="go">&lt;AtomGroup with 3 atoms&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.universe.Universe.add_Segment">
+<code class="descname">add_Segment</code><span class="sig-paren">(</span><em>**attrs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_Segment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_Segment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new Segment to this Universe</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>attrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – For each Segment attribute as a key, give the value in the new
+Segment</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">A reference to the new Segment</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code> – If any attributes were not specified as a keyword.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.universe.Universe.add_TopologyAttr">
+<code class="descname">add_TopologyAttr</code><span class="sig-paren">(</span><em>topologyattr</em>, <em>values=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_TopologyAttr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_TopologyAttr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new topology attribute to the Universe</p>
+<p>Adding a TopologyAttribute to the Universe makes it available to
+all AtomGroups etc throughout the Universe.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>topologyattr</strong> (<a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr" title="MDAnalysis.core.topologyattrs.TopologyAttr"><em>TopologyAttr</em></a><em> or </em><em>string</em>) – Either a MDAnalysis TopologyAttr object or the name of a possible
+topology attribute.</li>
+<li><strong>values</strong> (<em>np.ndarray</em><em>, </em><em>optional</em>) – If initiating an attribute from a string, the initial values to
+use.  If not supplied, the new TopologyAttribute will have empty
+or zero values.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<p>For example to add bfactors to a Universe:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="s1">&#39;bfactors&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">bfactors</span>
+<span class="go">array([ 0.,  0.,  0., ...,  0.,  0.,  0.])</span>
+</pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.17.0: </span>Can now also add TopologyAttrs with a string of the name of the
+attribute to add (eg ‘charges’), can also supply initial values
+using values keyword.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.universe.Universe.add_angles">
+<code class="descname">add_angles</code><span class="sig-paren">(</span><em>values</em>, <em>types=None</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_angles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add new Angles to this Universe.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>values</strong> (<em>iterable of tuples</em><em>, </em><em>AtomGroups</em><em>, or </em><em>Angles;</em><em> or </em><a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><em>TopologyGroup</em></a>) – An iterable of: tuples of 3 atom indices, or AtomGroups with 3 atoms,
+or Angles. If every value is a Angle, all
+keywords are ignored.
+If AtomGroups, Angles, or a TopologyGroup are passed,
+they <em>must</em> be from the same Universe.</li>
+<li><strong>types</strong> (<em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default None</em><em>)</em>) – None, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></li>
+<li><strong>guessed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> or </em><em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default False</em><em>)</em>) – bool, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></li>
+<li><strong>versionadded:</strong> (<em>.</em>) – 1.0.0:</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.universe.Universe.add_bonds">
+<code class="descname">add_bonds</code><span class="sig-paren">(</span><em>values</em>, <em>types=None</em>, <em>guessed=False</em>, <em>order=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_bonds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add new Bonds to this Universe.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>values</strong> (<em>iterable of tuples</em><em>, </em><em>AtomGroups</em><em>, or </em><em>Bonds;</em><em> or </em><a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><em>TopologyGroup</em></a>) – An iterable of: tuples of 2 atom indices, or AtomGroups with 2 atoms,
+or Bonds. If every value is a Bond, all
+keywords are ignored.
+If AtomGroups, Bonds, or a TopologyGroup are passed,
+they <em>must</em> be from the same Universe.</li>
+<li><strong>types</strong> (<em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default None</em><em>)</em>) – None, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></li>
+<li><strong>guessed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> or </em><em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default False</em><em>)</em>) – bool, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></li>
+<li><strong>order</strong> (<em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default None</em><em>)</em>) – None, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<p>Adding TIP4P water bonds with a list of AtomGroups:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">GRO</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">GRO</span><span class="p">)</span>
+<span class="n">sol</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL&#39;</span><span class="p">)</span>
+<span class="n">ow_hw1</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name OW or name HW1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;residue&#39;</span><span class="p">)</span>
+<span class="n">ow_hw2</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name OW or name HW2&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;residue&#39;</span><span class="p">)</span>
+<span class="n">ow_mw</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name OW or name MW&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;residue&#39;</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">add_bonds</span><span class="p">(</span><span class="n">ow_hw1</span> <span class="o">+</span> <span class="n">ow_hw2</span> <span class="o">+</span> <span class="n">ow_mw</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can only add bonds from the same Universe. If you would like to add
+AtomGroups, Bonds, or a TopologyGroup from a different Universe, convert
+them to indices first.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span>
+<span class="n">u2</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">)</span>
+
+<span class="c1">#  assuming you have already added bonds to u</span>
+<span class="n">u2</span><span class="o">.</span><span class="n">add_bonds</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">to_indices</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.universe.Universe.add_dihedrals">
+<code class="descname">add_dihedrals</code><span class="sig-paren">(</span><em>values</em>, <em>types=None</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_dihedrals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_dihedrals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add new Dihedrals to this Universe.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>values</strong> (<em>iterable of tuples</em><em>, </em><em>AtomGroups</em><em>, or </em><em>Dihedrals;</em><em> or </em><a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><em>TopologyGroup</em></a>) – An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms,
+or Dihedrals. If every value is a Dihedral, all
+keywords are ignored.
+If AtomGroups, Dihedrals, or a TopologyGroup are passed,
+they <em>must</em> be from the same Universe.</li>
+<li><strong>types</strong> (<em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default None</em><em>)</em>) – None, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></li>
+<li><strong>guessed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> or </em><em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default False</em><em>)</em>) – bool, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.universe.Universe.add_impropers">
+<code class="descname">add_impropers</code><span class="sig-paren">(</span><em>values</em>, <em>types=None</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_impropers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_impropers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add new Impropers to this Universe.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>values</strong> (<em>iterable of tuples</em><em>, </em><em>AtomGroups</em><em>, or </em><em>Impropers;</em><em> or </em><a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><em>TopologyGroup</em></a>) – An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms,
+or Impropers. If every value is an Improper, all
+keywords are ignored.
+If AtomGroups, Impropers, or a TopologyGroup are passed,
+they <em>must</em> be from the same Universe.</li>
+<li><strong>types</strong> (<em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default None</em><em>)</em>) – None, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></li>
+<li><strong>guessed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> or </em><em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default False</em><em>)</em>) – bool, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.universe.Universe.angles">
+<code class="descname">angles</code><a class="headerlink" href="#MDAnalysis.core.universe.Universe.angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Angles between atoms</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.universe.Universe.bonds">
+<code class="descname">bonds</code><a class="headerlink" href="#MDAnalysis.core.universe.Universe.bonds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bonds between atoms</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.universe.Universe.coord">
+<code class="descname">coord</code><a class="headerlink" href="#MDAnalysis.core.universe.Universe.coord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference to current timestep and coordinates of universe.</p>
+<p>The raw trajectory coordinates are <code class="xref py py-attr docutils literal notranslate"><span class="pre">Universe.coord.positions</span></code>,
+represented as a <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.float32</span></code> array.</p>
+<p>Because <a class="reference internal" href="#MDAnalysis.core.universe.Universe.coord" title="MDAnalysis.core.universe.Universe.coord"><code class="xref py py-attr docutils literal notranslate"><span class="pre">coord</span></code></a> is a reference to a
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>, it changes its contents
+while one is stepping through the trajectory.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In order to access the coordinates it is better to use the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">AtomGroup.positions()</span></code> method; for instance, all coordinates of
+the Universe as a numpy array: <code class="xref py py-meth docutils literal notranslate"><span class="pre">Universe.atoms.positions()</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.universe.Universe.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an independent copy of this Universe</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.universe.Universe.delete_angles">
+<code class="descname">delete_angles</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.delete_angles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.delete_angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete Angles from this Universe.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>values</strong> (<em>iterable of tuples</em><em>, </em><em>AtomGroups</em><em>, or </em><em>Angles;</em><em> or </em><a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><em>TopologyGroup</em></a>) – An iterable of: tuples of 3 atom indices, or AtomGroups with 3 atoms,
+or Angles.
+If AtomGroups, Angles, or a TopologyGroup are passed,
+they <em>must</em> be from the same Universe.</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.universe.Universe.delete_bonds">
+<code class="descname">delete_bonds</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.delete_bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.delete_bonds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete Bonds from this Universe.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>values</strong> (<em>iterable of tuples</em><em>, </em><em>AtomGroups</em><em>, or </em><em>Bonds;</em><em> or </em><a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><em>TopologyGroup</em></a>) – An iterable of: tuples of 2 atom indices, or AtomGroups with 2 atoms,
+or Bonds.
+If AtomGroups, Bonds, or a TopologyGroup are passed,
+they <em>must</em> be from the same Universe.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<p>Deleting bonds from a Universe:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">)</span>
+
+<span class="c1">#  delete first 5 bonds</span>
+<span class="n">u</span><span class="o">.</span><span class="n">delete_bonds</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">bonds</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>If you are deleting bonds in the form of AtomGroups, Bonds, or a
+TopologyGroup, they must come from the same Universe. If you want to
+delete bonds from another Universe, convert them to indices first.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PDB</span>
+<span class="n">u2</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">)</span>
+
+<span class="n">u</span><span class="o">.</span><span class="n">delete_bonds</span><span class="p">(</span><span class="n">u2</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">to_indices</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.universe.Universe.delete_dihedrals">
+<code class="descname">delete_dihedrals</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.delete_dihedrals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.delete_dihedrals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete Dihedrals from this Universe.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>values</strong> (<em>iterable of tuples</em><em>, </em><em>AtomGroups</em><em>, or </em><em>Dihedrals;</em><em> or </em><a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><em>TopologyGroup</em></a>) – An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms,
+or Dihedrals.
+If AtomGroups, Dihedrals, or a TopologyGroup are passed,
+they <em>must</em> be from the same Universe.</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.universe.Universe.delete_impropers">
+<code class="descname">delete_impropers</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.delete_impropers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.delete_impropers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete Impropers from this Universe.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>values</strong> (<em>iterable of tuples</em><em>, </em><em>AtomGroups</em><em>, or </em><em>Impropers;</em><em> or </em><a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><em>TopologyGroup</em></a>) – An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms,
+or Impropers.
+If AtomGroups, Angles, or a TopologyGroup are passed,
+they <em>must</em> be from the same Universe.</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.universe.Universe.dihedrals">
+<code class="descname">dihedrals</code><a class="headerlink" href="#MDAnalysis.core.universe.Universe.dihedrals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dihedral angles between atoms</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">dimensions</code></dt>
+<dd><p>Current dimensions of the unitcell</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="MDAnalysis.core.universe.Universe.empty">
+<em class="property">classmethod </em><code class="descname">empty</code><span class="sig-paren">(</span><em>n_atoms</em>, <em>n_residues=1</em>, <em>n_segments=1</em>, <em>atom_resindex=None</em>, <em>residue_segindex=None</em>, <em>trajectory=False</em>, <em>velocities=False</em>, <em>forces=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a blank Universe</p>
+<p>Useful for building a Universe without requiring existing files,
+for example for system building.</p>
+<p>If <cite>trajectory</cite> is set to True, a
+<a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory.MemoryReader</span></code></a> will be
+attached to the Universe.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of Atoms in the Universe</li>
+<li><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default 1</em>) – number of Residues in the Universe, defaults to 1</li>
+<li><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default 1</em>) – number of Segments in the Universe, defaults to 1</li>
+<li><strong>atom_resindex</strong> (<em>array like</em><em>, </em><em>optional</em>) – mapping of atoms to residues, e.g. with 6 atoms,
+<cite>atom_resindex=[0, 0, 1, 1, 2, 2]</cite> would put 2 atoms
+into each of 3 residues.</li>
+<li><strong>residue_segindex</strong> (<em>array like</em><em>, </em><em>optional</em>) – mapping of residues to segments</li>
+<li><strong>trajectory</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, attaches a <a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory.MemoryReader</span></code></a>
+allowing coordinates to be set and written.  Default is False</li>
+<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – include velocities in the <a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory.MemoryReader</span></code></a></li>
+<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – include forces in the <a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory.MemoryReader</span></code></a></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">MDAnalysis.Universe object</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>For example to create a new Universe with 6 atoms in 2 residues, with
+positions for the atoms and a mass attribute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>
+<span class="go">                           atom_resindex=np.array([0, 0, 0, 1, 1, 1]),</span>
+<span class="go">                           trajectory=True,</span>
+<span class="go">        )</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="s1">&#39;masses&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.17.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>The attached Reader when trajectory=True is now a MemoryReader</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Universes can now be created with 0 atoms</p>
+</div>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="MDAnalysis.core.universe.Universe.from_smiles">
+<em class="property">classmethod </em><code class="descname">from_smiles</code><span class="sig-paren">(</span><em>smiles</em>, <em>sanitize=True</em>, <em>addHs=True</em>, <em>generate_coordinates=True</em>, <em>numConfs=1</em>, <em>rdkit_kwargs={}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.from_smiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.from_smiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Universe from a SMILES string with rdkit</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>smiles</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – SMILES string</li>
+<li><strong>sanitize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>, </em><em>default True</em><em>)</em>) – Toggle the sanitization of the molecule</li>
+<li><strong>addHs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>, </em><em>default True</em><em>)</em>) – Add all necessary hydrogens to the molecule</li>
+<li><strong>generate_coordinates</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>, </em><em>default True</em><em>)</em>) – Generate 3D coordinates using RDKit’s <cite>AllChem.EmbedMultipleConfs</cite>
+function. Requires adding hydrogens with the <cite>addHs</cite> parameter</li>
+<li><strong>numConfs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>, </em><em>default 1</em><em>)</em>) – Number of frames to generate coordinates for. Ignored if
+<cite>generate_coordinates=False</cite></li>
+<li><strong>rdkit_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em> (</em><em>optional</em><em>)</em>) – Other arguments passed to the RDKit <cite>EmbedMultipleConfs</cite> function</li>
+<li><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – Parameters passed on Universe creation</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>To create a Universe with 10 conformers of ethanol:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="o">.</span><span class="n">from_smiles</span><span class="p">(</span><span class="s1">&#39;CCO&#39;</span><span class="p">,</span> <span class="n">numConfs</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span>
+<span class="go">&lt;Universe with 9 atoms&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span>
+<span class="go">&lt;RDKitReader with 10 frames of 9 atoms&gt;</span>
+</pre></div>
+</div>
+<p>To use a different conformer generation algorithm, like ETKDGv3:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="o">.</span><span class="n">from_smiles</span><span class="p">(</span><span class="s1">&#39;CCO&#39;</span><span class="p">,</span> <span class="n">rdkit_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+<span class="go">                                 params=AllChem.ETKDGv3()))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span>
+<span class="go">&lt;RDKitReader with 1 frames of 9 atoms&gt;</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.universe.Universe.impropers">
+<code class="descname">impropers</code><a class="headerlink" href="#MDAnalysis.core.universe.Universe.impropers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Improper dihedral angles between atoms</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.universe.Universe.kwargs">
+<code class="descname">kwargs</code><a class="headerlink" href="#MDAnalysis.core.universe.Universe.kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>keyword arguments used to initialize this universe</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.universe.Universe.load_new">
+<code class="descname">load_new</code><span class="sig-paren">(</span><em>filename</em>, <em>format=None</em>, <em>in_memory=False</em>, <em>in_memory_step=1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.load_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.load_new" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load coordinates from <cite>filename</cite>.</p>
+<p>The file format of <cite>filename</cite> is autodetected from the file name suffix
+or can be explicitly set with the <cite>format</cite> keyword. A sequence of files
+can be read as a single virtual trajectory by providing a list of
+filenames.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – the coordinate file (single frame or trajectory) <em>or</em> a list of
+filenames, which are read one after another.</li>
+<li><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><em>object</em></a><em> (</em><em>optional</em><em>)</em>) – provide the file format of the coordinate or trajectory file;
+<code class="docutils literal notranslate"><span class="pre">None</span></code> guesses it from the file extension. Note that this
+keyword has no effect if a list of file names is supplied because
+the “chained” reader has to guess the file format for each
+individual list member [<code class="docutils literal notranslate"><span class="pre">None</span></code>]. Can also pass a subclass of
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.ProtoReader</span></code></a> to define a custom
+reader to be used on the trajectory file.</li>
+<li><strong>in_memory</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <p>Directly load trajectory into memory with the
+<a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryReader</span></code></a></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.16.0.</span></p>
+</div>
+</li>
+<li><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – Other kwargs are passed to the trajectory reader (only for
+advanced use)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>universe</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe">Universe</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><em>TypeError if trajectory format can not be</em> – determined or no appropriate trajectory reader found</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>If a list or sequence that is provided for <cite>filename</cite> only contains
+a single entry then it is treated as single coordinate file. This
+has the consequence that it is not read by the
+<a class="reference internal" href="../coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader" title="MDAnalysis.coordinates.chain.ChainReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChainReader</span></code></a> but directly by
+its specialized file format reader, which typically has more
+features than the
+<a class="reference internal" href="../coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader" title="MDAnalysis.coordinates.chain.ChainReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChainReader</span></code></a>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.17.0: </span>Now returns a <a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> instead of the tuple of file/array
+and detected file type.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.universe.Universe.select_atoms">
+<code class="descname">select_atoms</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.select_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.select_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select atoms.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="MDAnalysis.core.groups.AtomGroup.select_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.select_atoms()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">trajectory</code></dt>
+<dd><p>Reference to trajectory reader object containing trajectory data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.universe.Universe.transfer_to_memory">
+<code class="descname">transfer_to_memory</code><span class="sig-paren">(</span><em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.transfer_to_memory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.transfer_to_memory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transfer the trajectory to in memory representation.</p>
+<p>Replaces the current trajectory reader object with one of type
+<a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory.MemoryReader</span></code></a> to support in-place
+editing of coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – start reading from the nth frame.</li>
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – read upto and excluding the nth frame.</li>
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Read in every nth frame. [1]</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Will print the progress of loading trajectory to memory, if
+set to True. Default value is False.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.16.0.</span></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="functions">
+<h2>11.1.1.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MDAnalysis.core.universe.Merge">
+<code class="descclassname">MDAnalysis.core.universe.</code><code class="descname">Merge</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new new <a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> from one or more
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> instances.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>*args</strong> (<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>) – One or more AtomGroups.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>universe</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – Too few arguments or an AtomGroup is empty and</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> – Arguments are not <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> instances.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The resulting <a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> will only inherit the common topology
+attributes that all merged universes share.</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> instances can come from different Universes, or can come
+directly from a <a class="reference internal" href="#MDAnalysis.core.universe.Universe.select_atoms" title="MDAnalysis.core.universe.Universe.select_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a> call.</p>
+<p><a class="reference internal" href="#MDAnalysis.core.universe.Merge" title="MDAnalysis.core.universe.Merge"><code class="xref py py-class docutils literal notranslate"><span class="pre">Merge</span></code></a> can also be used with a single <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> if the
+user wants to, for example, re-order the atoms in the <a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>.</p>
+<p>If multiple <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> instances from the same <a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>
+are given, the merge will first simply “add” together the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> instances.</p>
+<p>Merging does not create a full trajectory but only a single structure even
+if the input consists of one or more trajectories.  However, one can use
+the <a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryReader</span></code></a> to construct a
+trajectory for the new Universe as described under
+<a class="reference internal" href="../coordinates/memory.html#creating-in-memory-trajectory-label"><span class="std std-ref">Creating an in-memory trajectory of a sub-system</span></a>.</p>
+<p class="rubric">Example</p>
+<p>In this example, protein, ligand, and solvent were externally prepared in
+three different PDB files. They are loaded into separate <a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>
+objects (where they could be further manipulated, e.g. renumbered,
+relabeled, rotated, …) The <a class="reference internal" href="#MDAnalysis.core.universe.Merge" title="MDAnalysis.core.universe.Merge"><code class="xref py py-func docutils literal notranslate"><span class="pre">Merge()</span></code></a> command is used to combine all
+of them together:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;protein.pdb&quot;</span><span class="p">)</span>
+<span class="n">u2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;ligand.pdb&quot;</span><span class="p">)</span>
+<span class="n">u3</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;solvent.pdb&quot;</span><span class="p">)</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">Merge</span><span class="p">(</span><span class="n">u1</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">),</span> <span class="n">u2</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">u3</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;system.pdb&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The complete system is then written out to a new PDB file.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.9.0: </span>Raises exceptions instead of assertion errors.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.16.0: </span>The trajectory is now a
+<a class="reference internal" href="../coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryReader</span></code></a>.</p>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="groups.html" class="btn btn-neutral float-right" title="11.1.2. Core objects: Containers — MDAnalysis.core.groups" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../core_modules.html" class="btn btn-neutral float-left" title="11. Core modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.0.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

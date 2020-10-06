@@ -1,0 +1,590 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>13.2.4. Neighbor search library — MDAnalysis.lib.nsgrid &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="13.2.5. PeriodicKDTree — MDAnalysis.lib.pkdtree" href="pkdtree.html" />
+    <link rel="prev" title="13.2.3. Neighbor Search wrapper for MDAnalysis — MDAnalysis.lib.NeighborSearch" href="NeighborSearch.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0-dev0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#overview">13.1. Overview</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../lib_modules.html#list-of-modules">13.2. List of modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="distances.html">13.2.1. Fast distance array computation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="distances.html#low-level-modules-for-mdanalysis-lib-distances">13.2.2. Low-level modules for <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">13.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">13.2.4. Neighbor search library — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#about-the-code">13.2.4.1. About the code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#about-the-algorithm">13.2.4.2. About the algorithm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#classes">13.2.4.3. Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pkdtree.html">13.2.5. PeriodicKDTree — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="log.html">13.2.6. Setting up logging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mdamath.html">13.2.7. Mathematical helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transformations.html">13.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcprot.html">13.2.9. Fast QCP RMSD structure alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="util.html">13.2.10. Helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="correlations.html">13.2.11. Correlations utilities — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="picklable_file_io.html">13.2.12. Picklable read-only I/O classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">13.3. Low level file formats</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a> &raquo;</li>
+        
+      <li>13.2.4. Neighbor search library — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/documentation_pages/lib/nsgrid.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-MDAnalysis.lib.nsgrid"></span><div class="section" id="neighbor-search-library-mdanalysis-lib-nsgrid">
+<h1>13.2.4. Neighbor search library — <a class="reference internal" href="#module-MDAnalysis.lib.nsgrid" title="MDAnalysis.lib.nsgrid"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a><a class="headerlink" href="#neighbor-search-library-mdanalysis-lib-nsgrid" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="about-the-code">
+<h2>13.2.4.1. About the code<a class="headerlink" href="#about-the-code" title="Permalink to this headline">¶</a></h2>
+<p>This Neighbor search library is a serialized Cython version greatly
+inspired by the NS grid search implemented in
+<a class="reference external" href="http://www.gromacs.org/">GROMACS</a> .</p>
+<p>GROMACS 4.x code (more precisely
+<a class="reference external" href="https://github.com/gromacs/gromacs/commits/master/src/mdlib/nsgrid.c">nsgrid.c</a>
+and <a class="reference external" href="https://github.com/gromacs/gromacs/commits/master/src/mdlib/ns.c">ns.c</a> )
+was used as reference to write this file.</p>
+<p>GROMACS 4.x code is released under the GNU Public Licence v2.</p>
+</div>
+<div class="section" id="about-the-algorithm">
+<h2>13.2.4.2. About the algorithm<a class="headerlink" href="#about-the-algorithm" title="Permalink to this headline">¶</a></h2>
+<p>The neighbor search implemented here is based on
+<a class="reference external" href="https://en.wikipedia.org/wiki/Cell_lists">cell lists</a> which allow
+computation of pairs <a class="footnote-reference" href="#id2" id="id1">[1]</a> with a cost of <span class="math notranslate nohighlight">\(O(N)\)</span>, instead
+of <span class="math notranslate nohighlight">\(O(N^2)\)</span>. The basic algorithm is described in
+Appendix F,  Page 552 of
+<code class="docutils literal notranslate"><span class="pre">Understanding</span> <span class="pre">Molecular</span> <span class="pre">Dynamics:</span> <span class="pre">From</span> <span class="pre">Algorithm</span> <span class="pre">to</span> <span class="pre">Applications</span></code> by Frenkel and Smit.</p>
+<p>In brief, the algorithm divides the domain into smaller subdomains called <cite>cells</cite>
+and distributes every particle to these cells based on their positions. Subsequently,
+any distance based query first identifies the corresponding cell position in the
+domain followed by distance evaluations within the identified cell and
+neighboring cells only. Care must be taken to ensure that <cite>cellsize</cite> is
+greater than the desired search distance, otherwise all of the neighbours might
+not reflect in the results.</p>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>a pair correspond to two particles that are considered as neighbors .</td></tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.19.0.</span></p>
+</div>
+</div>
+<div class="section" id="classes">
+<h2>13.2.4.3. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MDAnalysis.lib.nsgrid.FastNS">
+<em class="property">class </em><code class="descclassname">MDAnalysis.lib.nsgrid.</code><code class="descname">FastNS</code><span class="sig-paren">(</span><em>cutoff</em>, <em>coords</em>, <em>box</em>, <em>max_gridsize=5000</em>, <em>pbc=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.FastNS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Grid based search between two group of atoms</p>
+<p>Instantiates a class object which uses <code class="xref py py-class docutils literal notranslate"><span class="pre">_PBCBox</span></code> and
+<code class="xref py py-class docutils literal notranslate"><span class="pre">_NSGrid</span></code> to construct a cuboidal
+grid in an orthogonal brick shaped box.</p>
+<p>Minimum image convention is used for distance evaluations
+if pbc is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<p>Initialize the grid and sort the coordinates in respective
+cells by shifting the coordinates in a brick shaped box.
+The brick shaped box is defined by <code class="xref py py-class docutils literal notranslate"><span class="pre">_PBCBox</span></code>
+and cuboidal grid is initialize by <code class="xref py py-class docutils literal notranslate"><span class="pre">_NSGrid</span></code>.
+If box is supplied, periodic shifts along box vectors are used
+to contain all the coordinates inside the brick shaped box.
+If box is not supplied, the range of coordinates i.e.
+<code class="docutils literal notranslate"><span class="pre">[xmax,</span> <span class="pre">ymax,</span> <span class="pre">zmax]</span> <span class="pre">-</span> <span class="pre">[xmin,</span> <span class="pre">ymin,</span> <span class="pre">zmin]</span></code> should be used
+to construct a pseudo box. Subsequently, the origin should also be
+shifted to <code class="docutils literal notranslate"><span class="pre">[xmin,</span> <span class="pre">ymin,</span> <span class="pre">zmin]</span></code>. These arguments must be provided
+to the function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Desired cutoff distance</li>
+<li><strong>coords</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – atom coordinates of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span></code> for <code class="docutils literal notranslate"><span class="pre">N</span></code> atoms.
+<code class="docutils literal notranslate"><span class="pre">dtype=numpy.float32</span></code>. For Non-PBC calculations,
+all the coords must be within the bounding box specified
+by <code class="docutils literal notranslate"><span class="pre">box</span></code></li>
+<li><strong>box</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – Box dimension of shape (6, ). The dimensions must be
+provided in the same format as returned
+by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>. For non-PBC
+evaluations, provide an orthogonal bounding box
+(dtype = numpy.float32)</li>
+<li><strong>max_gridsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – maximum number of cells in the grid. This parameter
+can be tuned for superior performance.</li>
+<li><strong>pbc</strong> (<em>boolean</em>) – Handle to switch periodic boundary conditions on/off [True]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">pbc=False</span></code> Only works for orthogonal boxes.</li>
+<li>Care must be taken such that all particles are inside
+the bounding box as defined by the box argument for non-PBC
+calculations.</li>
+<li>In case of Non-PBC calculations, a bounding box must be provided
+to encompass all the coordinates as well as the search coordinates.
+The dimension should be similar to <code class="docutils literal notranslate"><span class="pre">box</span></code> argument but for
+an orthogonal box. For instance, one valid set of argument
+for <code class="docutils literal notranslate"><span class="pre">box</span></code> for the case of no PBC could be
+<code class="docutils literal notranslate"><span class="pre">[10,</span> <span class="pre">10,</span> <span class="pre">10,</span> <span class="pre">90,</span> <span class="pre">90,</span> <span class="pre">90]</span></code></li>
+<li>Following operations are advisable for non-PBC calculations</li>
+</ul>
+<div class="last highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lmax</span> <span class="o">=</span> <span class="n">all_coords</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">lmin</span> <span class="o">=</span> <span class="n">all_coords</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">pseudobox</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.1</span><span class="o">*</span><span class="p">(</span><span class="n">lmax</span> <span class="o">-</span> <span class="n">lmin</span><span class="p">)</span>
+<span class="n">pseudobox</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="mf">90.</span>
+<span class="n">shift</span> <span class="o">=</span> <span class="n">all_coords</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">shift</span> <span class="o">-=</span> <span class="n">lmin</span>
+<span class="n">gridsearch</span> <span class="o">=</span> <span class="n">FastNS</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">,</span> <span class="n">shift</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">pseudobox</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<dl class="method">
+<dt id="MDAnalysis.lib.nsgrid.FastNS.search">
+<code class="descname">search</code><span class="sig-paren">(</span><em>self</em>, <em>search_coords</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.FastNS.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search a group of atoms against initialized coordinates</p>
+<p>Creates a new grid with the query atoms and searches
+against the initialized coordinates. The search is exclusive
+i.e. only the pairs <code class="docutils literal notranslate"><span class="pre">(i,</span> <span class="pre">j)</span></code> such that <code class="docutils literal notranslate"><span class="pre">atom[i]</span></code> from query atoms
+and <code class="docutils literal notranslate"><span class="pre">atom[j]</span></code> from the initialized set of coordinates is stored as
+neighbors.</p>
+<p>PBC-aware/non PBC-aware calculations are automatically enabled during
+the instantiation of :class:FastNS.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>search_coords</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – Query coordinates of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span></code> where
+<code class="docutils literal notranslate"><span class="pre">N</span></code> is the number of queries</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>results</strong> – An <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults" title="MDAnalysis.lib.nsgrid.NSResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">NSResults</span></code></a> object holding neighbor search results, which
+can be accessed by its methods <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_indices" title="MDAnalysis.lib.nsgrid.NSResults.get_indices"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_indices()</span></code></a>,
+<a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_distances" title="MDAnalysis.lib.nsgrid.NSResults.get_distances"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_distances()</span></code></a>, <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_pairs" title="MDAnalysis.lib.nsgrid.NSResults.get_pairs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_pairs()</span></code></a>, and
+<a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_pair_distances" title="MDAnalysis.lib.nsgrid.NSResults.get_pair_distances"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_pair_distances()</span></code></a>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults" title="MDAnalysis.lib.nsgrid.NSResults">NSResults</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For non-PBC aware calculations, the current implementation doesn’t work
+if any of the query coordinates lies outside the <cite>box</cite> supplied to
+<a class="reference internal" href="#MDAnalysis.lib.nsgrid.FastNS" title="MDAnalysis.lib.nsgrid.FastNS"><code class="xref py py-class docutils literal notranslate"><span class="pre">FastNS</span></code></a>.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.nsgrid.FastNS.self_search">
+<code class="descname">self_search</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.FastNS.self_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Searches all the pairs within the initialized coordinates</p>
+<p>All the pairs among the initialized coordinates are registered
+in hald the time. Although the algorithm is still the same, but
+the distance checks can be reduced to half in this particular case
+as every pair need not be evaluated twice.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>results</strong> – An <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults" title="MDAnalysis.lib.nsgrid.NSResults"><code class="xref py py-class docutils literal notranslate"><span class="pre">NSResults</span></code></a> object holding neighbor search results, which
+can be accessed by its methods <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_indices" title="MDAnalysis.lib.nsgrid.NSResults.get_indices"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_indices()</span></code></a>,
+<a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_distances" title="MDAnalysis.lib.nsgrid.NSResults.get_distances"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_distances()</span></code></a>, <a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_pairs" title="MDAnalysis.lib.nsgrid.NSResults.get_pairs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_pairs()</span></code></a>, and
+<a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_pair_distances" title="MDAnalysis.lib.nsgrid.NSResults.get_pair_distances"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_pair_distances()</span></code></a>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults" title="MDAnalysis.lib.nsgrid.NSResults">NSResults</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.lib.nsgrid.NSResults">
+<em class="property">class </em><code class="descclassname">MDAnalysis.lib.nsgrid.</code><code class="descname">NSResults</code><span class="sig-paren">(</span><em>dreal cutoff</em>, <em>real[:</em>, <em>::1] coords</em>, <em>real[:</em>, <em>::1] searchcoords</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.NSResults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to store the results</p>
+<p>All outputs from <a class="reference internal" href="#MDAnalysis.lib.nsgrid.FastNS" title="MDAnalysis.lib.nsgrid.FastNS"><code class="xref py py-class docutils literal notranslate"><span class="pre">FastNS</span></code></a> are stored in an instance of this class.
+All methods of <a class="reference internal" href="#MDAnalysis.lib.nsgrid.FastNS" title="MDAnalysis.lib.nsgrid.FastNS"><code class="xref py py-class docutils literal notranslate"><span class="pre">FastNS</span></code></a> return an instance of this class, which can
+be used to  generate the desired results on demand.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Specified cutoff distance</li>
+<li><strong>coords</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – Array with coordinates of atoms of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span></code> for
+<code class="docutils literal notranslate"><span class="pre">N</span></code> particles. <code class="docutils literal notranslate"><span class="pre">dtype</span></code> must be <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code></li>
+<li><strong>searchcoords</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – Array with query coordinates. Shape must be <code class="docutils literal notranslate"><span class="pre">(M,</span> <span class="pre">3)</span></code>
+for <code class="docutils literal notranslate"><span class="pre">M</span></code> queries. <code class="docutils literal notranslate"><span class="pre">dtype</span></code> must be <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="MDAnalysis.lib.nsgrid.NSResults.get_distances">
+<code class="descname">get_distances</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.NSResults.get_distances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distance corresponding to individual neighbors of query atom</p>
+<p>For every queried atom <code class="docutils literal notranslate"><span class="pre">i</span></code>, a list of all the distances
+from its neighboring atoms can be obtained from <code class="docutils literal notranslate"><span class="pre">get_distances()[i]</span></code>.
+Every <code class="docutils literal notranslate"><span class="pre">distance[i][j]</span></code> will correspond
+to the distance between atoms <code class="docutils literal notranslate"><span class="pre">atom[i]</span></code> from the query
+atoms and <code class="docutils literal notranslate"><span class="pre">atom[indices[j]]</span></code> from the initialized
+set of coordinates, where <code class="docutils literal notranslate"><span class="pre">indices</span></code> can be obtained
+by <code class="docutils literal notranslate"><span class="pre">get_indices()</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>distances</strong> – Every element i.e. <code class="docutils literal notranslate"><span class="pre">distances[i]</span></code> will be an array of
+shape <code class="docutils literal notranslate"><span class="pre">m</span></code> where m is the number of neighbours of
+query atom[i].<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">NSResults</span><span class="p">()</span>
+<span class="n">distances</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_distances</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_indices" title="MDAnalysis.lib.nsgrid.NSResults.get_indices"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_indices()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.nsgrid.NSResults.get_indices">
+<code class="descname">get_indices</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.NSResults.get_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Individual neighbours of query atom</p>
+<p>For every queried atom <code class="docutils literal notranslate"><span class="pre">i</span></code>, an array of all its neighbors
+indices can be obtained from <code class="docutils literal notranslate"><span class="pre">get_indices()[i]</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>indices</strong> – Indices of neighboring atoms.
+Every element i.e. <code class="docutils literal notranslate"><span class="pre">indices[i]</span></code> will be a list of
+size <code class="docutils literal notranslate"><span class="pre">m</span></code> where m is the number of neighbours of
+query atom[i].<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">NSResults</span><span class="p">()</span>
+<span class="n">indices</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_indices</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">indices[i]</span></code> will be a list of neighboring atoms of
+<code class="docutils literal notranslate"><span class="pre">atom[i]</span></code> from query atoms <code class="docutils literal notranslate"><span class="pre">atom</span></code>. <code class="docutils literal notranslate"><span class="pre">indices[i][j]</span></code> will give
+the atom-id of initial coordinates such that
+<code class="docutils literal notranslate"><span class="pre">initial_atom[indices[i][j]]</span></code> is a neighbor of <code class="docutils literal notranslate"><span class="pre">atom[i]</span></code>.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.nsgrid.NSResults.get_pair_distances">
+<code class="descname">get_pair_distances</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.NSResults.get_pair_distances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all the distances corresponding to each pair of neighbors</p>
+<p>Returns an array of shape <code class="docutils literal notranslate"><span class="pre">N</span></code> where N is the number of pairs
+among the query atoms and initial atoms within a specified distance.
+Every element <code class="docutils literal notranslate"><span class="pre">[i]</span></code> corresponds to the distance between
+<code class="docutils literal notranslate"><span class="pre">pairs[i,</span> <span class="pre">0]</span></code> and <code class="docutils literal notranslate"><span class="pre">pairs[i,</span> <span class="pre">1]</span></code>, where pairs is the array
+obtained from <code class="docutils literal notranslate"><span class="pre">get_pairs()</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>distances</strong> – distances between pairs of query and initial
+atom coordinates of shape <code class="docutils literal notranslate"><span class="pre">N</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.lib.nsgrid.NSResults.get_pairs" title="MDAnalysis.lib.nsgrid.NSResults.get_pairs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_pairs()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.lib.nsgrid.NSResults.get_pairs">
+<code class="descname">get_pairs</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.NSResults.get_pairs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all the pairs within the desired cutoff distance</p>
+<p>Returns an array of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">2)</span></code>, where N is the number of pairs
+between <code class="docutils literal notranslate"><span class="pre">reference</span></code> and <code class="docutils literal notranslate"><span class="pre">configuration</span></code> within the specified distance.
+For every pair <code class="docutils literal notranslate"><span class="pre">(i,</span> <span class="pre">j)</span></code>, <code class="docutils literal notranslate"><span class="pre">reference[i]</span></code> and <code class="docutils literal notranslate"><span class="pre">configuration[j]</span></code> are
+atom positions such that <code class="docutils literal notranslate"><span class="pre">reference</span></code> is the position of query
+atoms while <code class="docutils literal notranslate"><span class="pre">configuration</span></code> coontains the position of group of
+atoms used to search against  the query atoms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>pairs</strong> – pairs of atom indices of neighbors from query
+and initial atom coordinates of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">2)</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="pkdtree.html" class="btn btn-neutral float-right" title="13.2.5. PeriodicKDTree — MDAnalysis.lib.pkdtree" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="NeighborSearch.html" class="btn btn-neutral float-left" title="13.2.3. Neighbor Search wrapper for MDAnalysis — MDAnalysis.lib.NeighborSearch" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.0.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
