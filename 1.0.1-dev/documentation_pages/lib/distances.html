@@ -379,8 +379,8 @@ implemented.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>reference</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – Reference coordinate array with shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code>.</li>
 <li><strong>configuration</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – Configuration coordinate array with shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">3)</span></code>.</li>
-<li><strong>max_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Maximum cutoff distance between the reference and configuration.</li>
-<li><strong>min_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – Minimum cutoff distance between reference and configuration.</li>
+<li><strong>max_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Maximum cutoff distance between the reference and configuration.</li>
+<li><strong>min_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Minimum cutoff distance between reference and configuration.</li>
 <li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
@@ -388,7 +388,7 @@ triclinic and must be provided in the same format as returned by
 </li>
 <li><strong>method</strong> (<em>{'bruteforce'</em><em>, </em><em>'nsgrid'</em><em>, </em><em>'pkdtree'}</em><em>, </em><em>optional</em>) – Keyword to override the automatic guessing of the employed search
 method.</li>
-<li><strong>return_distances</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, distances will also be returned.</li>
+<li><strong>return_distances</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, distances will also be returned.</li>
 </ul>
 </td>
 </tr>
@@ -451,8 +451,8 @@ implemented.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>reference</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – Reference coordinate array with shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code>.</li>
-<li><strong>max_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Maximum cutoff distance between <cite>reference</cite> coordinates.</li>
-<li><strong>min_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – Minimum cutoff distance between <cite>reference</cite> coordinates.</li>
+<li><strong>max_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Maximum cutoff distance between <cite>reference</cite> coordinates.</li>
+<li><strong>min_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Minimum cutoff distance between <cite>reference</cite> coordinates.</li>
 <li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
@@ -460,7 +460,7 @@ triclinic and must be provided in the same format as returned by
 </li>
 <li><strong>method</strong> (<em>{'bruteforce'</em><em>, </em><em>'nsgrid'</em><em>, </em><em>'pkdtree'}</em><em>, </em><em>optional</em>) – Keyword to override the automatic guessing of the employed search
 method.</li>
-<li><strong>return_distances</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, distances will also be returned.</li>
+<li><strong>return_distances</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, distances will also be returned.</li>
 </ul>
 </td>
 </tr>
@@ -895,7 +895,7 @@ coordinates must be within the primary unit cell.</li>
 dimensions must be provided in the same format as returned
 by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code></li>
-<li><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Thickness of cutoff region for duplicate image generation.</li>
+<li><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Thickness of cutoff region for duplicate image generation.</li>
 </ul>
 </td>
 </tr>
@@ -943,7 +943,7 @@ is necessary when generating the images:</p>
 <li><strong>translation</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – Index map of dtype <code class="docutils literal notranslate"><span class="pre">numpy.int64</span></code> linking the augmented indices to the
 original particle indices such that
 <code class="docutils literal notranslate"><span class="pre">translation[augmented_index]</span> <span class="pre">=</span> <span class="pre">original_index</span></code>.</li>
-<li><strong>nreal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Number of real coordinates, i.e., indices in <cite>results</cite> equal or larger
+<li><strong>nreal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of real coordinates, i.e., indices in <cite>results</cite> equal or larger
 than this need to be mapped to their real counterpart.</li>
 </ul>
 </td>

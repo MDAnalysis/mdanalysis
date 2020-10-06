@@ -310,8 +310,8 @@ XYZ.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – filename of the output trajectory</li>
-<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – number of atoms. If none is given use the same number of atoms from
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – filename of the output trajectory</li>
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – number of atoms. If none is given use the same number of atoms from
 the reader instance is used</li>
 <li><strong>**kwargs</strong> – See <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="MDAnalysis.coordinates.XYZ.XYZWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">XYZWriter</span></code></a> for additional kwargs</li>
 </ul>
@@ -357,10 +357,10 @@ the VMD implementation for the molfile <a class="reference external" href="http:
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – filename of trajectory file. If it ends with “gz” then the file
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – filename of trajectory file. If it ends with “gz” then the file
 will be gzip-compressed; if it ends with “bz2” it will be bzip2
 compressed.</li>
-<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of atoms in trajectory. By default assume that this is None
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of atoms in trajectory. By default assume that this is None
 and that this file is used to store several different models
 instead of a single trajectory. If a number is provided each
 written TimeStep has to contain the same number of atoms.</li>
@@ -372,9 +372,9 @@ used when a trajectory is written from raw
 information. If you write a <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> with
 <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter.write" title="MDAnalysis.coordinates.XYZ.XYZWriter.write"><code class="xref py py-meth docutils literal notranslate"><span class="pre">XYZWriter.write()</span></code></a> then atom information is taken
 at each step and <em>atoms</em> is ignored.</li>
-<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – convert quantities to default MDAnalysis units of Angstrom upon
+<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – convert quantities to default MDAnalysis units of Angstrom upon
 writing  [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
-<li><strong>remark</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – single line of text (“molecule name”). By default writes MDAnalysis
+<li><strong>remark</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – single line of text (“molecule name”). By default writes MDAnalysis
 version and frame</li>
 <li><strong>versionchanged:</strong> (<em>.</em>) – 1.0.0: Removed <code class="code docutils literal notranslate"><span class="pre">default_remark</span></code> variable (Issue #2692).</li>
 </ul>

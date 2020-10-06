@@ -389,7 +389,7 @@ index and therefore destroy the correspondence between the two groups.
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a></li>
 <li><strong>reference</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – reference structure, a <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
 or a whole <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a></li>
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em> (</em><em>optional</em><em>)</em>) – <p>The selection to operate on; can be one of:</p>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em> (</em><em>optional</em><em>)</em>) – <p>The selection to operate on; can be one of:</p>
 <ol class="arabic">
 <li>any valid selection string for
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="MDAnalysis.core.groups.AtomGroup.select_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a> that
@@ -408,14 +408,14 @@ be a <em>list of selection strings</em> to generate a
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> with defined atom order as
 described under <a class="reference internal" href="../selections.html#ordered-selections-label"><span class="std std-ref">Ordered selections</span></a>).</p>
 </li>
-<li><strong>match_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to match the mobile and reference atom-by-atom. Default <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
+<li><strong>match_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to match the mobile and reference atom-by-atom. Default <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
 <li><strong>weights</strong> ({“mass”, <code class="docutils literal notranslate"><span class="pre">None</span></code>} or array_like (optional)) – choose weights. With <code class="docutils literal notranslate"><span class="pre">&quot;mass&quot;</span></code> uses masses as weights; with <code class="docutils literal notranslate"><span class="pre">None</span></code>
 weigh each atom equally. If a float array of the same length as
 <cite>mobile</cite> is provided, use each element of the <cite>array_like</cite> as a
 weight for the corresponding atom in <cite>mobile</cite>.</li>
-<li><strong>tol_mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Reject match if the atomic masses for matched atoms differ by more than
+<li><strong>tol_mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Reject match if the atomic masses for matched atoms differ by more than
 <cite>tol_mass</cite>, default [0.1]</li>
-<li><strong>strict</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <dl class="docutils">
+<li><strong>strict</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <dl class="docutils">
 <dt><code class="docutils literal notranslate"><span class="pre">True</span></code></dt>
 <dd>Will raise <code class="xref py py-exc docutils literal notranslate"><span class="pre">SelectionError</span></code> if a single atom does not
 match between the two selections.</dd>
@@ -425,7 +425,7 @@ residues with non-matching atoms. See <a class="reference internal" href="#MDAna
 for details.</dd>
 </dl>
 </li>
-<li><strong>subselection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a><em> (</em><em>optional</em><em>)</em>) – <p>Apply the transformation only to this selection.</p>
+<li><strong>subselection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a><em> (</em><em>optional</em><em>)</em>) – <p>Apply the transformation only to this selection.</p>
 <dl class="docutils">
 <dt><code class="docutils literal notranslate"><span class="pre">None</span></code> [default]</dt>
 <dd>Apply to <code class="docutils literal notranslate"><span class="pre">mobile.universe.atoms</span></code> (i.e., all atoms in the
@@ -499,27 +499,27 @@ on <a class="reference internal" href="#MDAnalysis.analysis.align.AlignTraj.rmsd
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>mobile</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe containing trajectory to be fitted to reference</li>
 <li><strong>reference</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe containing trajectory frame to be used as reference</li>
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Set as default to all, is used for Universe.select_atoms to choose
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Set as default to all, is used for Universe.select_atoms to choose
 subdomain to be fitted against</li>
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Provide a filename for results to be written to</li>
-<li><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Provide a string to prepend to filename for results to be written
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Provide a filename for results to be written to</li>
+<li><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Provide a string to prepend to filename for results to be written
 to</li>
 <li><strong>weights</strong> ({“mass”, <code class="docutils literal notranslate"><span class="pre">None</span></code>} or array_like (optional)) – choose weights. With <code class="docutils literal notranslate"><span class="pre">&quot;mass&quot;</span></code> uses masses of <cite>reference</cite> as
 weights; with <code class="docutils literal notranslate"><span class="pre">None</span></code> weigh each atom equally. If a float array of
 the same length as the selection is provided, use each element of
 the <cite>array_like</cite> as a weight for the corresponding atom in the
 selection.</li>
-<li><strong>tol_mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Tolerance given to <cite>get_matching_atoms</cite> to find appropriate atoms</li>
-<li><strong>match_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to match the mobile and reference atom-by-atom. Default <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
-<li><strong>strict</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Force <cite>get_matching_atoms</cite> to fail if atoms can’t be found using
+<li><strong>tol_mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Tolerance given to <cite>get_matching_atoms</cite> to find appropriate atoms</li>
+<li><strong>match_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to match the mobile and reference atom-by-atom. Default <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
+<li><strong>strict</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Force <cite>get_matching_atoms</cite> to fail if atoms can’t be found using
 exact methods</li>
-<li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Force overwrite of filename for rmsd-fitting</li>
-<li><strong>in_memory</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <em>Permanently</em> switch <cite>mobile</cite> to an in-memory trajectory
+<li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Force overwrite of filename for rmsd-fitting</li>
+<li><strong>in_memory</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <em>Permanently</em> switch <cite>mobile</cite> to an in-memory trajectory
 so that alignment can be done in-place, which can improve
 performance substantially in some cases. In this case, no file
 is written out (<cite>filename</cite> and <cite>prefix</cite> are ignored) and only
 the coordinates of <cite>mobile</cite> are <em>changed in memory</em>.</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Set logger to show more information and show detailed progress of
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Set logger to show more information and show detailed progress of
 the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
 </ul>
 </td>
@@ -578,7 +578,7 @@ positions will be written to upon running RMSD alignment</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></td>
 </tr>
 </tbody>
 </table>
@@ -646,26 +646,26 @@ current frame.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>mobile</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe containing trajectory to be fitted to reference</li>
 <li><strong>reference</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> (</em><em>optional</em><em>)</em>) – Universe containing trajectory frame to be used as reference</li>
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Set as default to all, is used for Universe.select_atoms to choose
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Set as default to all, is used for Universe.select_atoms to choose
 subdomain to be fitted against</li>
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Provide a filename for results to be written to</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Provide a filename for results to be written to</li>
 <li><strong>weights</strong> ({“mass”, <code class="docutils literal notranslate"><span class="pre">None</span></code>} or array_like (optional)) – choose weights. With <code class="docutils literal notranslate"><span class="pre">&quot;mass&quot;</span></code> uses masses of <cite>reference</cite> as
 weights; with <code class="docutils literal notranslate"><span class="pre">None</span></code> weigh each atom equally. If a float array of
 the same length as the selection is provided, use each element of
 the <cite>array_like</cite> as a weight for the corresponding atom in the
 selection.</li>
-<li><strong>tol_mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Tolerance given to <cite>get_matching_atoms</cite> to find appropriate atoms</li>
-<li><strong>match_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to match the mobile and reference atom-by-atom. Default <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
-<li><strong>strict</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Force <cite>get_matching_atoms</cite> to fail if atoms can’t be found using
+<li><strong>tol_mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Tolerance given to <cite>get_matching_atoms</cite> to find appropriate atoms</li>
+<li><strong>match_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to match the mobile and reference atom-by-atom. Default <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
+<li><strong>strict</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Force <cite>get_matching_atoms</cite> to fail if atoms can’t be found using
 exact methods</li>
-<li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Force overwrite of filename for rmsd-fitting</li>
-<li><strong>in_memory</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <em>Permanently</em> switch <cite>mobile</cite> to an in-memory trajectory
+<li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Force overwrite of filename for rmsd-fitting</li>
+<li><strong>in_memory</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <em>Permanently</em> switch <cite>mobile</cite> to an in-memory trajectory
 so that alignment can be done in-place, which can improve
 performance substantially in some cases. In this case, no file
 is written out (<cite>filename</cite> and <cite>prefix</cite> are ignored) and only
 the coordinates of <cite>mobile</cite> are <em>changed in memory</em>.</li>
-<li><strong>ref_frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – frame index to select frame from <cite>reference</cite></li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Set logger to show more information and show detailed progress of
+<li><strong>ref_frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – frame index to select frame from <cite>reference</cite></li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Set logger to show more information and show detailed progress of
 the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
 </ul>
 </td>
@@ -736,7 +736,7 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></td>
 </tr>
 </tbody>
 </table>
@@ -751,7 +751,7 @@ structure is written</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></td>
 </tr>
 </tbody>
 </table>
@@ -919,29 +919,29 @@ sequence of resids as they appear in the topology in <cite>ref_resids</cite> or
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>fastafilename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>path to filename</em>) – FASTA file with first sequence as reference and
+<li><strong>fastafilename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>path to filename</em>) – FASTA file with first sequence as reference and
 second the one to be aligned (ORDER IS IMPORTANT!)</li>
-<li><strong>is_aligned</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <dl class="docutils">
+<li><strong>is_aligned</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <dl class="docutils">
 <dt><code class="docutils literal notranslate"><span class="pre">False</span></code> (default)</dt>
 <dd>run clustalw for sequence alignment;</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">True</span></code></dt>
 <dd>use the alignment in the file (e.g. from STAMP) [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</dd>
 </dl>
 </li>
-<li><strong>ref_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – add this number to the column number in the FASTA file
+<li><strong>ref_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – add this number to the column number in the FASTA file
 to get the original residue number, default: 0</li>
-<li><strong>target_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – add this number to the column number in the FASTA file
+<li><strong>target_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – add this number to the column number in the FASTA file
 to get the original residue number, default: 0</li>
-<li><strong>ref_resids</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – sequence of resids as they appear in the reference structure</li>
-<li><strong>target_resids</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – sequence of resids as they appear in the target</li>
-<li><strong>alnfilename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – filename of ClustalW alignment (clustal format) that is
+<li><strong>ref_resids</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – sequence of resids as they appear in the reference structure</li>
+<li><strong>target_resids</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – sequence of resids as they appear in the target</li>
+<li><strong>alnfilename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – filename of ClustalW alignment (clustal format) that is
 produced by <em>clustalw</em> when <em>is_aligned</em> = <code class="docutils literal notranslate"><span class="pre">False</span></code>.
 default <code class="docutils literal notranslate"><span class="pre">None</span></code> uses the name and path of <em>fastafilename</em> and
 subsititutes the suffix with ‘.aln’.</li>
-<li><strong>treefilename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – filename of ClustalW guide tree (Newick format);
+<li><strong>treefilename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – filename of ClustalW guide tree (Newick format);
 if default <code class="docutils literal notranslate"><span class="pre">None</span></code>  the the filename is generated from <em>alnfilename</em>
 with the suffix ‘.dnd’ instead of ‘.aln’</li>
-<li><strong>clustalw</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – path to the ClustalW (or ClustalW2) binary; only
+<li><strong>clustalw</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – path to the ClustalW (or ClustalW2) binary; only
 needed for <cite>is_aligned</cite> = <code class="docutils literal notranslate"><span class="pre">False</span></code>, default: “ClustalW2”</li>
 </ul>
 </td>
@@ -951,7 +951,7 @@ that can be used immediately in <a class="reference internal" href="#MDAnalysis.
 <code class="docutils literal notranslate"><span class="pre">select=select_dict</span></code>.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></p>
 </td>
 </tr>
 </tbody>
@@ -984,12 +984,12 @@ muscle, tcoffee, or similar should be used.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>mobile</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – Atom group to be aligned</li>
 <li><strong>reference</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – Atom group to be aligned against</li>
-<li><strong>match_score</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em><em>, </em><em>default 2</em>) – score for matching residues, default 2</li>
-<li><strong>mismatch_penalty</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em><em>, </em><em>default -1</em>) – penalty for residues that do not match , default : -1</li>
-<li><strong>gap_penalty</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em><em>, </em><em>default -2</em>) – penalty for opening a gap; the high default value creates compact
+<li><strong>match_score</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em><em>, </em><em>default 2</em>) – score for matching residues, default 2</li>
+<li><strong>mismatch_penalty</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em><em>, </em><em>default -1</em>) – penalty for residues that do not match , default : -1</li>
+<li><strong>gap_penalty</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em><em>, </em><em>default -2</em>) – penalty for opening a gap; the high default value creates compact
 alignments for highly identical sequences but might not be suitable
 for sequences with low identity, default : -2</li>
-<li><strong>gapextension_penalty</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em><em>, </em><em>default -0.1</em>) – penalty for extending a gap, default: -0.1</li>
+<li><strong>gapextension_penalty</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em><em>, </em><em>default -0.1</em>) – penalty for extending a gap, default: -0.1</li>
 </ul>
 </td>
 </tr>
@@ -997,7 +997,7 @@ for sequences with low identity, default : -2</li>
 begin, end)</cite></p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)">tuple</a></p>
 </td>
 </tr>
 </tbody>
@@ -1040,9 +1040,9 @@ information about mismatches.</p>
 compared</li>
 <li><strong>ag2</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – Second <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> instance that is
 compared</li>
-<li><strong>tol_mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Reject if the atomic masses for matched atoms differ by more than
+<li><strong>tol_mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Reject if the atomic masses for matched atoms differ by more than
 <cite>tol_mass</cite> [0.1]</li>
-<li><strong>strict</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <dl class="docutils">
+<li><strong>strict</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <dl class="docutils">
 <dt><code class="docutils literal notranslate"><span class="pre">True</span></code></dt>
 <dd>Will raise <code class="xref py py-exc docutils literal notranslate"><span class="pre">SelectionError</span></code> if a single atom does not
 match between the two selections.</dd>
@@ -1052,7 +1052,7 @@ residues with non-matching atoms. See <a class="reference internal" href="#MDAna
 for details.</dd>
 </dl>
 </li>
-<li><strong>match_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <dl class="docutils">
+<li><strong>match_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <dl class="docutils">
 <dt><code class="docutils literal notranslate"><span class="pre">True</span></code></dt>
 <dd>Will attempt to match atoms based on mass</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">False</span></code></dt>
@@ -1068,7 +1068,7 @@ original groups if all matched or slices of the original
 groups.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)">tuple</a></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">SelectionError</span></code> – Error raised if the number of residues does not match or if in the final

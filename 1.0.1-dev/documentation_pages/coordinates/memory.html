@@ -382,15 +382,15 @@ array.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The total number of atoms this Timestep describes</li>
-<li><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether this Timestep has position information [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
-<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has velocity information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
-<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has force information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The total number of atoms this Timestep describes</li>
+<li><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether this Timestep has position information [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
+<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has velocity information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has force information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
 <li><strong>reader</strong> (<em>Reader</em><em> (</em><em>optional</em><em>)</em>) – A weak reference to the owning Reader.  Used for
 when attributes require trajectory manipulation (e.g. dt)</li>
-<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The time difference between frames (ps).  If <a class="reference internal" href="#MDAnalysis.coordinates.memory.Timestep.time" title="MDAnalysis.coordinates.memory.Timestep.time"><code class="xref py py-attr docutils literal notranslate"><span class="pre">time</span></code></a>
+<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The time difference between frames (ps).  If <a class="reference internal" href="#MDAnalysis.coordinates.memory.Timestep.time" title="MDAnalysis.coordinates.memory.Timestep.time"><code class="xref py py-attr docutils literal notranslate"><span class="pre">time</span></code></a>
 is set, then <cite>dt</cite> will be ignored.</li>
-<li><strong>time_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The starting time from which to calculate time (in ps)</li>
+<li><strong>time_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The starting time from which to calculate time (in ps)</li>
 </ul>
 </td>
 </tr>
@@ -415,8 +415,8 @@ the <code class="docutils literal notranslate"><span class="pre">has_*</span></c
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sel</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.8)"><em>slice</em></a>) – The underlying position, velocity, and force arrays are sliced
-using a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a>, or any array-like.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sel</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.9)"><em>slice</em></a>) – The underlying position, velocity, and force arrays are sliced
+using a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a>, or any array-like.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A <cite>Timestep</cite> object of the same type containing all header
 information and all atom information relevant to the selection.</td>
@@ -427,11 +427,11 @@ information and all atom information relevant to the selection.</td>
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The selection must be a 0 based <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> or array of the atom indices
+<p class="last">The selection must be a 0 based <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> or array of the atom indices
 in this <a class="reference internal" href="#MDAnalysis.coordinates.memory.Timestep" title="MDAnalysis.coordinates.memory.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a></p>
 </div>
 <p class="rubric">Example</p>
-<p>Using a Python <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> object:</p>
+<p>Using a Python <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> object:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">new_ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">copy_slice</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -698,7 +698,7 @@ coordinates).</li>
 lengths <em>A</em>, <em>B</em>, <em>C</em> are in the MDAnalysis length unit (Å), and
 angles are in degrees. An array of dimensions can be given,
 which must then be shape (nframes, 6)</li>
-<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The time difference between frames (ps).  If <a class="reference internal" href="#MDAnalysis.coordinates.memory.MemoryReader.time" title="MDAnalysis.coordinates.memory.MemoryReader.time"><code class="xref py py-attr docutils literal notranslate"><span class="pre">time</span></code></a>
+<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The time difference between frames (ps).  If <a class="reference internal" href="#MDAnalysis.coordinates.memory.MemoryReader.time" title="MDAnalysis.coordinates.memory.MemoryReader.time"><code class="xref py py-attr docutils literal notranslate"><span class="pre">time</span></code></a>
 is set, then <cite>dt</cite> will be ignored.</li>
 <li><strong>filename</strong> (<em>string</em><em> (</em><em>optional</em><em>)</em>) – The name of the file from which this instance is created. Set to <code class="docutils literal notranslate"><span class="pre">None</span></code>
 when created from an array</li>
@@ -798,7 +798,7 @@ raise an exception.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>transform_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – list of all the transformations that will be applied to the coordinates</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>transform_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – list of all the transformations that will be applied to the coordinates</td>
 </tr>
 </tbody>
 </table>
@@ -825,11 +825,11 @@ the warning below.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a>) – Starting frame index (inclusive). <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – Starting frame index (inclusive). <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default
 of 0, i.e., the initial frame.</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a>) – Last frame index (exclusive). <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – Last frame index (exclusive). <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default
 of n_frames, i.e., it includes the last frame of the trajectory.</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a>) – step size of the slice, <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default of 1, i.e,
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – step size of the slice, <code class="docutils literal notranslate"><span class="pre">None</span></code> corresponds to the default of 1, i.e,
 include every frame in the range <cite>start</cite>, <cite>stop</cite>.</li>
 </ul>
 </td>
@@ -837,7 +837,7 @@ include every frame in the range <cite>start</cite>, <cite>stop</cite>.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>start, stop, step</strong> – Integers representing the slice</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)">tuple</a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a>)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)">tuple</a> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a>)</p>
 </td>
 </tr>
 </tbody>
@@ -846,7 +846,7 @@ include every frame in the range <cite>start</cite>, <cite>stop</cite>.</li>
 <p class="first admonition-title">Warning</p>
 <p>The returned values <cite>start</cite>, <cite>stop</cite> and <cite>step</cite> give the expected result
 when passed in <code class="xref py py-func docutils literal notranslate"><span class="pre">range()</span></code> but gives unexpected behavior when passed
-in a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> when <code class="docutils literal notranslate"><span class="pre">stop=None</span></code> and <code class="docutils literal notranslate"><span class="pre">step=-1</span></code></p>
+in a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> when <code class="docutils literal notranslate"><span class="pre">stop=None</span></code> and <code class="docutils literal notranslate"><span class="pre">step=-1</span></code></p>
 <p>This can be a problem for downstream processing of the output from this
 method. For example, slicing of trajectories is implemented by passing
 the values returned by <a class="reference internal" href="#MDAnalysis.coordinates.memory.MemoryReader.check_slice_indices" title="MDAnalysis.coordinates.memory.MemoryReader.check_slice_indices"><code class="xref py py-meth docutils literal notranslate"><span class="pre">check_slice_indices()</span></code></a> to <code class="xref py py-func docutils literal notranslate"><span class="pre">range()</span></code></p>
@@ -856,7 +856,7 @@ the values returned by <a class="reference internal" href="#MDAnalysis.coordinat
 <p>and using them as the indices to randomly seek to. On the other hand,
 in <a class="reference internal" href="../analysis/base.html#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.AnalysisBase</span></code></a> the values returned
 by <a class="reference internal" href="#MDAnalysis.coordinates.memory.MemoryReader.check_slice_indices" title="MDAnalysis.coordinates.memory.MemoryReader.check_slice_indices"><code class="xref py py-meth docutils literal notranslate"><span class="pre">check_slice_indices()</span></code></a> are used to splice the trajectory by
-creating a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> instance</p>
+creating a <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> instance</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -884,7 +884,7 @@ creating a <a class="reference external" href="https://docs.python.org/3/library
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>force</strong> (<em>array_like</em>) – Forces to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
 </ul>
 </td>
 </tr>
@@ -911,7 +911,7 @@ is avoided.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>force</strong> (<em>array_like</em>) – Forces to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
 </ul>
 </td>
 </tr>
@@ -938,7 +938,7 @@ is avoided.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>x</strong> (<em>array_like</em>) – Positions to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
 </ul>
 </td>
 </tr>
@@ -968,7 +968,7 @@ returned.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>x</strong> (<em>array_like</em>) – Positions to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
 </ul>
 </td>
 </tr>
@@ -998,7 +998,7 @@ returned.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>t</strong> (<em>array_like</em>) – Time values to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
 </ul>
 </td>
 </tr>
@@ -1030,7 +1030,7 @@ returned.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>t</strong> (<em>array_like</em>) – Time values to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</li>
 </ul>
 </td>
 </tr>
@@ -1061,7 +1061,7 @@ returned.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>v</strong> (<em>array_like</em>) – Velocities to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
 </ul>
 </td>
 </tr>
@@ -1088,7 +1088,7 @@ is avoided.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>v</strong> (<em>array_like</em>) – Velocities to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
 </ul>
 </td>
 </tr>
@@ -1139,8 +1139,8 @@ is avoided.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Name of the auxiliary to get value for</li>
-<li><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Name of gettable attribute in the auxiliary reader</li>
+<li><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Name of the auxiliary to get value for</li>
+<li><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Name of gettable attribute in the auxiliary reader</li>
 </ul>
 </td>
 </tr>
@@ -1172,7 +1172,7 @@ second trajectory:</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of dictionaries of the args/kwargs describing each auxiliary.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></td>
 </tr>
 </tbody>
 </table>
@@ -1207,7 +1207,7 @@ through the trajectory.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Name of the auxiliary to iterate over.</li>
+<li><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Name of the auxiliary to iterate over.</li>
 <li><strong>stop</strong><strong>, </strong><strong>step</strong><strong>)</strong> (<em>(</em><em>start</em><em>,</em>) – Options for iterating over a slice of the auxiliary.</li>
 <li><strong>selected</strong> (<em>lst | ndarray</em><em>, </em><em>optional</em>) – List of steps to iterate over.</li>
 </ul>
@@ -1271,7 +1271,7 @@ coordinates).</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>n_atoms</strong> – number of atoms in system</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
 </td>
 </tr>
 </tbody>
@@ -1301,12 +1301,12 @@ list of added auxiliaries, and in the auxiliary reader itself.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Name of the auxiliary to rename</li>
-<li><strong>new</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – New name to try set</li>
+<li><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Name of the auxiliary to rename</li>
+<li><strong>new</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – New name to try set</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If the name <em>new</em> is already in use by an existing auxiliary.</p>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If the name <em>new</em> is already in use by an existing auxiliary.</p>
 </td>
 </tr>
 </tbody>
@@ -1350,8 +1350,8 @@ coordinates).</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Name of the auxiliary to alter</li>
-<li><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Name of settable attribute in the auxiliary reader</li>
+<li><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Name of the auxiliary to alter</li>
+<li><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Name of settable attribute in the auxiliary reader</li>
 <li><strong>new</strong> – New value to try set <em>attrname</em> to</li>
 </ul>
 </td>
@@ -1387,9 +1387,9 @@ underlying array, while a copy is returned otherwise.</p>
 coordinate data is returned. Note that in this case, a view
 of the underlying numpy array is returned, while a copy of the
 data is returned whenever <cite>asel</cite> is different from <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – </li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – </li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – range of trajectory to access, <cite>start</cite> and <cite>stop</cite> are <em>inclusive</em></li>
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – </li>
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – </li>
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – range of trajectory to access, <cite>start</cite> and <cite>stop</cite> are <em>inclusive</em></li>
 <li><strong>order</strong> (<em>{&quot;afc&quot;</em><em>, </em><em>&quot;acf&quot;</em><em>, </em><em>&quot;caf&quot;</em><em>, </em><em>&quot;fac&quot;</em><em>, </em><em>&quot;fca&quot;</em><em>, </em><em>&quot;cfa&quot;}</em><em> (</em><em>optional</em><em>)</em>) – the order/shape of the return data array, corresponding
 to (a)tom, (f)rame, (c)oordinates all six combinations
 of ‘a’, ‘f’, ‘c’ are allowed ie “fac” - return array

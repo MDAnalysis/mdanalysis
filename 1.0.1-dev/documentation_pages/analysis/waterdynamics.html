@@ -655,12 +655,12 @@ ice. The HBL is also know as “Hydrogen Bond Population Relaxation”
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</li>
-<li><strong>selection1</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string for first selection [‘byres name OH2’].
+<li><strong>selection1</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Selection string for first selection [‘byres name OH2’].
 It could be any selection available in MDAnalysis, not just water.</li>
-<li><strong>selection2</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string to analize its HBL against selection1</li>
-<li><strong>t0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – frame  where analysis begins</li>
-<li><strong>tf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – frame where analysis ends</li>
-<li><strong>dtmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Maximum dt size, <cite>dtmax</cite> &lt; <cite>tf</cite> or it will crash.</li>
+<li><strong>selection2</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Selection string to analize its HBL against selection1</li>
+<li><strong>t0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – frame  where analysis begins</li>
+<li><strong>tf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – frame where analysis ends</li>
+<li><strong>dtmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Maximum dt size, <cite>dtmax</cite> &lt; <cite>tf</cite> or it will crash.</li>
 </ul>
 </td>
 </tr>
@@ -704,10 +704,10 @@ a unit vector along HH, OH or dipole vector.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string for water [‘byres name OH2’].</li>
-<li><strong>t0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – frame  where analysis begins</li>
-<li><strong>tf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – frame where analysis ends</li>
-<li><strong>dtmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Maximum dt size, <cite>dtmax</cite> &lt; <cite>tf</cite> or it will crash.</li>
+<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Selection string for water [‘byres name OH2’].</li>
+<li><strong>t0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – frame  where analysis begins</li>
+<li><strong>tf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – frame where analysis ends</li>
+<li><strong>dtmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Maximum dt size, <cite>dtmax</cite> &lt; <cite>tf</cite> or it will crash.</li>
 </ul>
 </td>
 </tr>
@@ -750,8 +750,8 @@ of lists, see <a class="reference internal" href="#output">Output</a>. The AD is
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</li>
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string to evaluate its angular distribution [‘byres name OH2’]</li>
-<li><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of bins to create the histogram by means of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.histogram.html#numpy.histogram" title="(in NumPy v1.19)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.histogram()</span></code></a></li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Selection string to evaluate its angular distribution [‘byres name OH2’]</li>
+<li><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of bins to create the histogram by means of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.histogram.html#numpy.histogram" title="(in NumPy v1.19)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.histogram()</span></code></a></li>
 <li><strong>axis</strong> (<em>{'x'</em><em>, </em><em>'y'</em><em>, </em><em>'z'}</em><em> (</em><em>optional</em><em>)</em>) – Axis to create angle with the vector (HH, OH or dipole) and calculate
 cosine theta [‘z’].</li>
 </ul>
@@ -791,10 +791,10 @@ average distance that particles travels. The MSD is given by:</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</li>
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string for water [‘byres name OH2’].</li>
-<li><strong>t0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – frame  where analysis begins</li>
-<li><strong>tf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – frame where analysis ends</li>
-<li><strong>dtmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Maximum dt size, <cite>dtmax</cite> &lt; <cite>tf</cite> or it will crash.</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Selection string for water [‘byres name OH2’].</li>
+<li><strong>t0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – frame  where analysis begins</li>
+<li><strong>tf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – frame where analysis ends</li>
+<li><strong>dtmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Maximum dt size, <cite>dtmax</cite> &lt; <cite>tf</cite> or it will crash.</li>
 </ul>
 </td>
 </tr>
@@ -830,7 +830,7 @@ timestep, <span class="math notranslate nohighlight">\(N(t)\)</span> the number 
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</li>
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string; any selection is allowed. With this selection you
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Selection string; any selection is allowed. With this selection you
 define the region/zone where to analyze, e.g.: “resname SOL and around 5 (resid 10)”. See <a class="reference internal" href="#sp-examples">SP-examples</a>.</li>
 <li><strong>verbose</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – When True, prints progress and comments to the console.</li>
 </ul>
@@ -868,21 +868,21 @@ previous <cite>inclusive</cite> behaviour),</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Zero-based index of the first frame to be analysed, Default: None
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Zero-based index of the first frame to be analysed, Default: None
 (first frame).</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Zero-based index of the last frame to be analysed (exclusive),
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Zero-based index of the last frame to be analysed (exclusive),
 Default: None (last frame).</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Jump every <cite>step</cite>-th frame. This is compatible but independant of
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Jump every <cite>step</cite>-th frame. This is compatible but independant of
 the taus used, and it is good to consider using the  <cite>step</cite> equal
 to <cite>tau_max</cite> to remove the overlap. Note that <cite>step</cite> and <cite>tau_max</cite>
 work consistently with intermittency. Default: None
 (use every frame).</li>
-<li><strong>tau_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Survival probability is calculated for the range
+<li><strong>tau_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Survival probability is calculated for the range
 1 &lt;= <cite>tau</cite> &lt;= <cite>tau_max</cite>.</li>
 <li><strong>residues</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – If true, the analysis will be carried out on the residues
 (.resids) rather than on atom (.ids). A single atom is sufficient
 to classify the residue as within the distance.</li>
-<li><strong>intermittency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum number of consecutive frames for which an atom can
+<li><strong>intermittency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum number of consecutive frames for which an atom can
 leave but be counted as present if it returns at the next frame.
 An intermittency of <cite>0</cite> is equivalent to a continuous survival
 probability, which does not allow for the leaving and returning of

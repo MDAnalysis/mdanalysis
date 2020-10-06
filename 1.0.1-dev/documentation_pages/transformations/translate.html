@@ -241,12 +241,12 @@ If a point is given, the center of the atomgroup will be translated to this poin
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>ag</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – atom group to be centered on the unit cell.</li>
-<li><strong>center</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – used to choose the method of centering on the given atom group. Can be ‘geometry’
+<li><strong>center</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – used to choose the method of centering on the given atom group. Can be ‘geometry’
 or ‘mass’</li>
 <li><strong>point</strong> (<em>array-like</em><em>, </em><em>optional</em>) – overrides the unit cell center - the coordinates of the Timestep are translated so
 that the center of mass/geometry of the given AtomGroup is aligned to this position
 instead. Defined as an array of size 3.</li>
-<li><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <cite>True</cite>, all the atoms from the given AtomGroup will be moved to the unit cell
+<li><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <cite>True</cite>, all the atoms from the given AtomGroup will be moved to the unit cell
 before calculating the center of mass or geometry. Default is <cite>False</cite>, no changes
 to the atom coordinates are done before calculating the center of the AtomGroup.</li>
 </ul>

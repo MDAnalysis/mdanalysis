@@ -202,10 +202,10 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – Change in time between auxiliary steps (in ps). If not specified, will
+<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Change in time between auxiliary steps (in ps). If not specified, will
 attempt to determine from auxiliary data; otherwise defaults to 1 ps.
 Ignored if <code class="docutils literal notranslate"><span class="pre">constant_dt</span></code> is False.</li>
-<li><strong>initial_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – Time of first auxiliary step (in ps). If not specified, will attempt to
+<li><strong>initial_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Time of first auxiliary step (in ps). If not specified, will attempt to
 determine from auxiliary data; otherwise defaults to 0 ps. Ignored if
 <code class="docutils literal notranslate"><span class="pre">constant_dt</span></code> is False.</li>
 <li><strong>time_selector</strong> (<em>optional</em>) – Key to select ‘time’ value from the full set of data read for each
@@ -218,7 +218,7 @@ data read for each step, if data selection is enabled by the reader;
 type will vary depending on the auxiliary data format (see individual
 AuxReader documentation).
 If <code class="docutils literal notranslate"><span class="pre">None</span></code> (default value), the full set of data is returned.</li>
-<li><strong>constant_dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – (Default: True) Set to False if <code class="docutils literal notranslate"><span class="pre">dt</span></code> is not constant
+<li><strong>constant_dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – (Default: True) Set to False if <code class="docutils literal notranslate"><span class="pre">dt</span></code> is not constant
 throughout the auxiliary data set, in which case a valid
 <code class="docutils literal notranslate"><span class="pre">time_selector</span></code> must be provided.</li>
 </ul>
@@ -234,7 +234,7 @@ throughout the auxiliary data set, in which case a valid
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></td>
 </tr>
 </tbody>
 </table>
@@ -273,12 +273,12 @@ data may be stored in e.g. an array or a separate file.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Name for auxiliary data. When added to a trajectory, the representative
+<li><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Name for auxiliary data. When added to a trajectory, the representative
 auxiliary value(s) for the timestep may be accessed as <code class="docutils literal notranslate"><span class="pre">ts.aux.auxname</span></code>
 or <code class="docutils literal notranslate"><span class="pre">ts.aux['auxname']</span></code>.</li>
-<li><strong>represent_ts_as</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Method to use to calculate representative value of auxiliary data for a
+<li><strong>represent_ts_as</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Method to use to calculate representative value of auxiliary data for a
 trajectory timestep. See <a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxReader.calc_representative" title="MDAnalysis.auxiliary.base.AuxReader.calc_representative"><code class="xref py py-func docutils literal notranslate"><span class="pre">calc_representative()</span></code></a> for valid options.</li>
-<li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – Auxiliary steps further from the trajectory timestep than <em>cutoff</em>
+<li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Auxiliary steps further from the trajectory timestep than <em>cutoff</em>
 (in ps) will be ignored when calculating representative values. If -1
 (default), all auxiliary steps assigned to that timestep will be used.</li>
 <li><strong>**kwargs</strong> – Options to be passed to <a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxStep" title="MDAnalysis.auxiliary.base.AuxStep"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxStep</span></code></a></li>
@@ -303,7 +303,7 @@ the step and trajectory timestep (i.e. <code class="docutils literal notranslate
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></td>
 </tr>
 </tbody>
 </table>
@@ -409,7 +409,7 @@ reload an auxiliary into a trajectory:</p>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Key-word arguments and values that can be used to replicate the
 AuxReader.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></td>
 </tr>
 </tbody>
 </table>
@@ -470,7 +470,7 @@ frame is to be found.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Index of the next auxiliary-containing frame in the trajectory.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></td>
 </tr>
 </tbody>
 </table>
@@ -549,11 +549,11 @@ also optionally be returned with <em>return_time_diff</em>.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Number of the auxiliary step to calculate closest trajectory frame
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of the auxiliary step to calculate closest trajectory frame
 for.</li>
 <li><strong>ts</strong> (<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object) – (Any) timestep from the trajectory the calculated frame number is to
 correspond to.</li>
-<li><strong>return_time_diff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – (Default: False) Additionally return the time difference between
+<li><strong>return_time_diff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – (Default: False) Additionally return the time difference between
 <em>step</em> and returned frame.</li>
 </ul>
 </td>
@@ -587,13 +587,13 @@ each step.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Index (0-based) of step to return time for</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Index (0-based) of step to return time for</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>time</strong> – Time (in ps) of step <em>i</em></td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – When <em>i</em> not in valid range</td>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – When <em>i</em> not in valid range</td>
 </tr>
 </tbody>
 </table>
@@ -637,7 +637,7 @@ value in <code class="docutils literal notranslate"><span class="pre">ts.aux</sp
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If <code class="docutils literal notranslate"><span class="pre">auxname</span></code> is not set.</td>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If <code class="docutils literal notranslate"><span class="pre">auxname</span></code> is not set.</td>
 </tr>
 </tbody>
 </table>
@@ -661,7 +661,7 @@ large to read in at once.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Location of the file containing the auxiliary data.</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Location of the file containing the auxiliary data.</li>
 <li><strong>**kwargs</strong> – Other AuxReader options.</li>
 </ul>
 </td>

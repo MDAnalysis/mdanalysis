@@ -226,9 +226,9 @@ by this object.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of atoms in topology. Must be larger then 1 at each level</li>
-<li><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of residues in topology. Must be larger then 1 at each level</li>
-<li><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of segments in topology. Must be larger then 1 at each level</li>
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of atoms in topology. Must be larger then 1 at each level</li>
+<li><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of residues in topology. Must be larger then 1 at each level</li>
+<li><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of segments in topology. Must be larger then 1 at each level</li>
 <li><strong>attrs</strong> (<em>TopologyAttr objects</em>) – components of the topology to be included</li>
 <li><strong>atom_resindex</strong> (<em>array</em>) – 1-D array giving the resindex of each atom in the system</li>
 <li><strong>residue_segindex</strong> (<em>array</em>) – 1-D array giving the segindex of each residue in the system</li>
@@ -303,9 +303,9 @@ object (suffix <cite>_2d</cite>).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of atoms in topology</li>
-<li><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of residues in topology</li>
-<li><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of segments in topology</li>
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of atoms in topology</li>
+<li><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of residues in topology</li>
+<li><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of segments in topology</li>
 <li><strong>atom_resindex</strong> (<em>1-D array</em>) – resindex for each atom in the topology; the number of unique values in
 this array must be &lt;= <cite>n_residues</cite>, and the array must be length
 <cite>n_atoms</cite>; giving None defaults to placing all atoms in residue 0</li>
@@ -325,7 +325,7 @@ in this array must be &lt;= <cite>n_segments</cite>, and the array must be lengt
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></td>
 </tr>
 </tbody>
 </table>
@@ -339,7 +339,7 @@ in this array must be &lt;= <cite>n_segments</cite>, and the array must be lengt
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></td>
 </tr>
 </tbody>
 </table>
@@ -353,7 +353,7 @@ in this array must be &lt;= <cite>n_segments</cite>, and the array must be lengt
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></td>
 </tr>
 </tbody>
 </table>
@@ -505,7 +505,7 @@ in this array must be &lt;= <cite>n_segments</cite>, and the array must be lengt
 <cite>rix</cite>, with each element being an array of the atom indices present
 in that residue</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></td>
 </tr>
 </tbody>
 </table>
@@ -561,7 +561,7 @@ in that residue</td>
 <cite>six</cite>, with each element being an array of the atom indices present
 in that segment</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></td>
 </tr>
 </tbody>
 </table>
@@ -599,7 +599,7 @@ in that segment</td>
 <cite>six</cite>, with each element being an array of the residue indices
 present in that segment</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></td>
 </tr>
 </tbody>
 </table>
@@ -651,7 +651,7 @@ of each parent.  Length <cite>nparents</cite> + 1</p>
 <p>Entry 0 corresponds to residue 0 and says that this contains atoms 0, 2 &amp; 5</p>
 <p class="rubric">Notes</p>
 <p>The final entry in the return array will be <code class="docutils literal notranslate"><span class="pre">None</span></code> to ensure that the
-dtype of the array is <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>.</p>
+dtype of the array is <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a>.</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">This means negative indexing should <strong>never</strong>

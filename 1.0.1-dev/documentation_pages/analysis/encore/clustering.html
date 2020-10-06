@@ -239,7 +239,7 @@ for particular choices of method.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ensembles</strong> (<em>MDAnalysis.Universe</em><em>, or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em>, or </em><em>list of list thereof</em>) – The function takes either a single Universe object, a list of Universe
+<li><strong>ensembles</strong> (<em>MDAnalysis.Universe</em><em>, or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em>, or </em><em>list of list thereof</em>) – The function takes either a single Universe object, a list of Universe
 objects or a list of lists of Universe objects. If given a single
 universe, it simply clusters the conformations in the trajectory. If
 given a list of ensembles, it will merge them and cluster them together,
@@ -252,15 +252,15 @@ the clustering module. A separate analysis will be run for each
 method. Note that different parameters for the same clustering method
 can be explored by adding different instances of the same clustering
 class.</li>
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
 <li><strong>distance_matrix</strong> (<a class="reference internal" href="utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix" title="MDAnalysis.analysis.encore.utils.TriangularMatrix"><em>encore.utils.TriangularMatrix</em></a><em> or </em><em>list thereof</em><em>, </em><em>optional</em>) – Distance matrix used for clustering. If this parameter
 is not supplied the matrix will be calculated on the fly.
 If several distance matrices are supplied, an analysis will be done
 for each of them. The number of provided distance matrices should
 match the number of provided ensembles.</li>
-<li><strong>allow_collapsed_result</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether a return value of a list of one value should be collapsed
+<li><strong>allow_collapsed_result</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether a return value of a list of one value should be collapsed
 into just the value.</li>
-<li><strong>ncores</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum number of cores to be used (default is 1).</li>
+<li><strong>ncores</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum number of cores to be used (default is 1).</li>
 </ul>
 </td>
 </tr>
@@ -352,7 +352,7 @@ designed to store results from clustering algorithms.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></td>
 </tr>
 </tbody>
 </table>
@@ -382,7 +382,7 @@ those that belong to the cluster.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></td>
 </tr>
 </tbody>
 </table>
@@ -425,9 +425,9 @@ those that belong to the cluster.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>elem_list</strong> (<em>numpy.array</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a>) – numpy array of cluster elements</li>
-<li><strong>centroid</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a><em> or </em><em>element object</em>) – centroid</li>
-<li><strong>idn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – cluster ID</li>
+<li><strong>elem_list</strong> (<em>numpy.array</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – numpy array of cluster elements</li>
+<li><strong>centroid</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a><em> or </em><em>element object</em>) – centroid</li>
+<li><strong>idn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – cluster ID</li>
 <li><strong>metadata</strong> (<em>iterable</em>) – metadata, one value for each cluster element. The iterable
 must have the same length as the elements array.</li>
 </ul>
@@ -451,7 +451,7 @@ encore.clustering.Cluster objects.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></td>
 </tr>
 </tbody>
 </table>
@@ -476,8 +476,8 @@ element 5 has its own cluster.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>elements</strong> (<em>iterable of ints</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a>) – clustering results. See the previous description for details</li>
-<li><strong>metadata</strong> (<em>{str:list</em><em>, </em><em>str:list</em><em>,</em><em>..}</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a>) – metadata for the data elements. The list must be of the same
+<li><strong>elements</strong> (<em>iterable of ints</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – clustering results. See the previous description for details</li>
+<li><strong>metadata</strong> (<em>{str:list</em><em>, </em><em>str:list</em><em>,</em><em>..}</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – metadata for the data elements. The list must be of the same
 size as the elements array, with one value per element.</li>
 </ul>
 </td>
@@ -549,15 +549,15 @@ in sklearn.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>damping</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – Damping factor (default is 0.9). Parameter for the Affinity
+<li><strong>damping</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Damping factor (default is 0.9). Parameter for the Affinity
 Propagation for clustering.</li>
-<li><strong>preference</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – Preference parameter used in the Affinity Propagation algorithm
+<li><strong>preference</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Preference parameter used in the Affinity Propagation algorithm
 for clustering  (default -1.0). A high preference value results
 in many clusters, a low preference will result in fewer numbers
 of clusters.</li>
-<li><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum number of iterations for affinity propagation (default
+<li><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum number of iterations for affinity propagation (default
 is 500).</li>
-<li><strong>convergence_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Minimum number of unchanging iterations to achieve convergence
+<li><strong>convergence_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Minimum number of unchanging iterations to achieve convergence
 (default is 50). Parameter in the Affinity Propagation for
 clustering.</li>
 </ul>
@@ -576,18 +576,18 @@ clustering.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>damping</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – Damping factor (default is 0.9). Parameter for the Affinity
+<li><strong>damping</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Damping factor (default is 0.9). Parameter for the Affinity
 Propagation for clustering.</li>
-<li><strong>preference</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – Preference parameter used in the Affinity Propagation algorithm for
+<li><strong>preference</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Preference parameter used in the Affinity Propagation algorithm for
 clustering  (default -1.0). A high preference value results in
 many clusters, a low preference will result in fewer numbers of
 clusters.</li>
-<li><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum number of iterations for affinity propagation (default is
+<li><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum number of iterations for affinity propagation (default is
 500).</li>
-<li><strong>convergence_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Minimum number of unchanging iterations to achieve convergence
+<li><strong>convergence_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Minimum number of unchanging iterations to achieve convergence
 (default is 50). Parameter in the Affinity Propagation for
 clustering.</li>
-<li><strong>add_noise</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Apply noise to similarity matrix before running clustering
+<li><strong>add_noise</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Apply noise to similarity matrix before running clustering
 (default is True)</li>
 </ul>
 </td>
@@ -611,15 +611,15 @@ clustering.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>eps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em><em> (</em><em>default = 0.5</em><em>)</em>) – The maximum distance between two samples for them to be
+<li><strong>eps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em><em> (</em><em>default = 0.5</em><em>)</em>) – The maximum distance between two samples for them to be
 considered as in the same neighborhood.</li>
-<li><strong>min_samples</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em><em> (</em><em>default = 5</em><em>)</em>) – The number of samples (or total weight) in a neighborhood for
+<li><strong>min_samples</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em><em> (</em><em>default = 5</em><em>)</em>) – The number of samples (or total weight) in a neighborhood for
 a point to be considered as a core point. This includes the
 point itself.</li>
 <li><strong>algorithm</strong> (<em>{'auto'</em><em>, </em><em>'ball_tree'</em><em>, </em><em>'kd_tree'</em><em>, </em><em>'brute'}</em><em>, </em><em>optional</em>) – The algorithm to be used by the NearestNeighbors module
 to compute pointwise distances and find nearest neighbors.
 See NearestNeighbors module documentation for details.</li>
-<li><strong>leaf_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em><em> (</em><em>default = 30</em><em>)</em>) – Leaf size passed to BallTree or cKDTree. This can affect the
+<li><strong>leaf_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em><em> (</em><em>default = 30</em><em>)</em>) – Leaf size passed to BallTree or cKDTree. This can affect the
 speed of the construction and query, as well as the memory
 required to store the tree. The optimal value depends
 on the nature of the problem.</li>
@@ -642,10 +642,10 @@ Note that weights are absolute, and default to 1.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>n_clusters</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The number of clusters to form as well as the number of
+<li><strong>n_clusters</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of clusters to form as well as the number of
 centroids to generate.</li>
-<li><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em><em> (</em><em>default 300</em><em>)</em>) – Maximum number of iterations of the k-means algorithm to run.</li>
-<li><strong>n_init</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em><em> (</em><em>default 10</em><em>)</em>) – Number of time the k-means algorithm will be run with different
+<li><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em><em> (</em><em>default 300</em><em>)</em>) – Maximum number of iterations of the k-means algorithm to run.</li>
+<li><strong>n_init</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em><em> (</em><em>default 10</em><em>)</em>) – Number of time the k-means algorithm will be run with different
 centroid seeds. The final results will be the best output of
 n_init consecutive runs in terms of inertia.</li>
 <li><strong>init</strong> (<em>{'k-means++'</em><em>, </em><em>'random'</em><em>, or </em><em>ndarray</em><em>, or </em><em>a callable}</em><em>, </em><em>optional</em>) – Method for initialization, default to ‘k-means++’:
@@ -664,7 +664,7 @@ n_samples * n_clusters &gt; 12 million. This corresponds to about
 100MB overhead per job using double precision.
 True : always precompute distances
 False : never precompute distances</li>
-<li><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em><em> (</em><em>default 1e-4</em><em>)</em>) – The relative increment in the results before declaring
+<li><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em><em> (</em><em>default 1e-4</em><em>)</em>) – The relative increment in the results before declaring
 convergence.</li>
 <li><strong>verbose</strong> (<em>boolean</em><em>, </em><em>optional</em><em> (</em><em>default False</em><em>)</em>) – Verbosity mode.</li>
 <li><strong>random_state</strong> (<em>integer</em><em> or </em><em>numpy.RandomState</em><em>, </em><em>optional</em>) – The generator used to initialize the centers. If an integer is
@@ -676,7 +676,7 @@ data is not modified.  If False, the original data is modified,
 and put back before the function returns, but small numerical
 differences may be introduced by subtracting and then adding
 the data mean.</li>
-<li><strong>n_jobs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The number of jobs to use for the computation. This works by
+<li><strong>n_jobs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of jobs to use for the computation. This works by
 computing each of the n_init runs in parallel. If -1 all CPUs
 are used. If 1 is given, no parallel computing code is used at
 all, which is useful for debugging. For n_jobs below -1,
@@ -731,17 +731,17 @@ Science 315, 972–976, February 2007</p>
 clustering elements. Notice that the current implementation does not
 allow for asymmetric values (i.e. similarity(a,b) is assumed to be
 equal to similarity(b,a))</li>
-<li><strong>preference</strong> (<em>numpy.array of floats</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Preference values, which the determine the number of clusters. If a
+<li><strong>preference</strong> (<em>numpy.array of floats</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Preference values, which the determine the number of clusters. If a
 single value is given, all the preference values are set to that.
 Otherwise, the list is used to set the preference values (one value per
 element, so the list must be of the same size as the number of
 elements)</li>
-<li><strong>lam</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Floating point value that defines how much damping is applied to the
+<li><strong>lam</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Floating point value that defines how much damping is applied to the
 solution at each iteration. Must be ]0,1]</li>
-<li><strong>max_iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Maximum number of iterations</li>
-<li><strong>convergence</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Number of iterations in which the cluster centers must remain the same
+<li><strong>max_iterations</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Maximum number of iterations</li>
+<li><strong>convergence</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of iterations in which the cluster centers must remain the same
 in order to reach convergence</li>
-<li><strong>noise</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Whether to apply noise to the input s matrix, such there are no equal
+<li><strong>noise</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Whether to apply noise to the input s matrix, such there are no equal
 values. 1 is for yes, 0 is for no.</li>
 </ul>
 </td>
@@ -751,7 +751,7 @@ encore.utils.ClustersCollection to generate Cluster objects. See these
 classes for more details.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list of int or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list of int or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a></p>
 </td>
 </tr>
 </tbody>

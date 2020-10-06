@@ -321,9 +321,9 @@ reference structure are properly superimposed.</p>
 <li><strong>a</strong> (<em>array_like</em>) – coordinates to align to <cite>b</cite></li>
 <li><strong>b</strong> (<em>array_like</em>) – coordinates to align to (same shape as <cite>a</cite>)</li>
 <li><strong>weights</strong> (<em>array_like</em><em> (</em><em>optional</em><em>)</em>) – 1D array with weights, use to compute weighted average</li>
-<li><strong>center</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – subtract center of geometry before calculation. With weights given
+<li><strong>center</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – subtract center of geometry before calculation. With weights given
 compute weighted average as center.</li>
-<li><strong>superposition</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – perform a rotational and translational superposition with the fast QCP
+<li><strong>superposition</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – perform a rotational and translational superposition with the fast QCP
 algorithm <a class="reference internal" href="../lib/qcprot.html#theobald2005" id="id3">[Theobald2005]</a> before calculating the RMSD; implies
 <code class="docutils literal notranslate"><span class="pre">center=True</span></code>.</li>
 </ul>
@@ -332,7 +332,7 @@ algorithm <a class="reference internal" href="../lib/qcprot.html#theobald2005" i
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>rmsd</strong> – RMSD between <cite>a</cite> and <cite>b</cite></p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
 </td>
 </tr>
 </tbody>
@@ -396,7 +396,7 @@ associated with the atoms then the computation iterates over the
 trajectory.</li>
 <li><strong>reference</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> (</em><em>optional</em><em>)</em>) – Group of reference atoms; if <code class="docutils literal notranslate"><span class="pre">None</span></code> then the current frame of
 <cite>atomgroup</cite> is used.</li>
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em> (</em><em>optional</em><em>)</em>) – <p>The selection to operate on; can be one of:</p>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em> (</em><em>optional</em><em>)</em>) – <p>The selection to operate on; can be one of:</p>
 <ol class="arabic">
 <li>any valid selection string for
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="MDAnalysis.core.groups.AtomGroup.select_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a> that
@@ -415,7 +415,7 @@ be a <em>list of selection strings</em> to generate a
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> with defined atom order as
 described under <a class="reference internal" href="../selections.html#ordered-selections-label"><span class="std std-ref">Ordered selections</span></a>).</p>
 </li>
-<li><strong>groupselections</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em> (</em><em>optional</em><em>)</em>) – <p>A list of selections as described for <cite>select</cite>, with the difference
+<li><strong>groupselections</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em> (</em><em>optional</em><em>)</em>) – <p>A list of selections as described for <cite>select</cite>, with the difference
 that these selections are <em>always applied to the full universes</em>,
 i.e., <code class="docutils literal notranslate"><span class="pre">atomgroup.universe.select_atoms(sel1)</span></code> and
 <code class="docutils literal notranslate"><span class="pre">reference.universe.select_atoms(sel2)</span></code>. Each selection describes
@@ -443,10 +443,10 @@ corresponding atom in <cite>select</cite>, and assumes <code class="docutils lit
 <p>2. A list of {“mass”, <code class="docutils literal notranslate"><span class="pre">None</span></code> or array_like} with the length of <cite>groupselections</cite>
 will apply the weights to <cite>groupselections</cite> correspondingly.</p>
 </li>
-<li><strong>tol_mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Reject match if the atomic masses for matched atoms differ by more
+<li><strong>tol_mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Reject match if the atomic masses for matched atoms differ by more
 than <cite>tol_mass</cite>.</li>
-<li><strong>ref_frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – frame index to select frame from <cite>reference</cite></li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the
+<li><strong>ref_frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – frame index to select frame from <cite>reference</cite></li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the
 default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
 </ul>
 </td>
@@ -454,13 +454,13 @@ default is <code class="docutils literal notranslate"><span class="pre">False</s
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last">
 <li><p class="first"><code class="xref py py-exc docutils literal notranslate"><span class="pre">SelectionError</span></code> – If the selections from <cite>atomgroup</cite> and <cite>reference</cite> do not match.</p>
 </li>
-<li><p class="first"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> – If <cite>weights</cite> or <cite>weights_groupselections</cite> is not of the appropriate type;
+<li><p class="first"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> – If <cite>weights</cite> or <cite>weights_groupselections</cite> is not of the appropriate type;
 see also <a class="reference internal" href="../lib/util.html#MDAnalysis.lib.util.get_weights" title="MDAnalysis.lib.util.get_weights"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.util.get_weights()</span></code></a></p>
 </li>
-<li><p class="first"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If <cite>weights</cite> are not compatible with <cite>atomgroup</cite> (not the same
+<li><p class="first"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If <cite>weights</cite> are not compatible with <cite>atomgroup</cite> (not the same
 length) or if it is not a 1D array (see
 <a class="reference internal" href="../lib/util.html#MDAnalysis.lib.util.get_weights" title="MDAnalysis.lib.util.get_weights"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.util.get_weights()</span></code></a>).</p>
-<p>A <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> is also raised if the length of <cite>weights_groupselections</cite>
+<p>A <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> is also raised if the length of <cite>weights_groupselections</cite>
 are not compatible with <cite>groupselections</cite>.</p>
 </li>
 </ul>
@@ -529,10 +529,10 @@ array with content <code class="docutils literal notranslate"><span class="pre">
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</li>
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</li>
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</li>
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</li>
 </ul>
 </td>
 </tr>
@@ -562,12 +562,12 @@ in the array <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF.r
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – Atoms for which RMSF is calculated</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the
 default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – raised if negative values are calculated, which indicates that a
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – raised if negative values are calculated, which indicates that a
 numerical overflow or underflow occured</p>
 </td>
 </tr>
@@ -678,10 +678,10 @@ giving RMSFs for each of the given atoms.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</li>
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</li>
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</li>
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</li>
 </ul>
 </td>
 </tr>

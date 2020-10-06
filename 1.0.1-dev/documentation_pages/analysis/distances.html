@@ -334,7 +334,7 @@ are applied.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>coord</strong> (<em>array</em>) – Array of coordinates of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span></code> and dtype float32.</li>
-<li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em><em>, </em><em>default 15</em>) – Particles within <cite>cutoff</cite> are considered to form a contact.</li>
+<li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em><em>, </em><em>default 15</em>) – Particles within <cite>cutoff</cite> are considered to form a contact.</li>
 <li><strong>returntype</strong> (<em>string</em><em>, </em><em>optional</em><em>, </em><em>default &quot;numpy&quot;</em>) – Select how the contact matrix is returned.
 * <code class="docutils literal notranslate"><span class="pre">&quot;numpy&quot;</span></code>: return as an <code class="docutils literal notranslate"><span class="pre">(N.</span> <span class="pre">N)</span></code> <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>
 * <code class="docutils literal notranslate"><span class="pre">&quot;sparse&quot;</span></code>: return as a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.lil_matrix.html#scipy.sparse.lil_matrix" title="(in SciPy v1.5.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.sparse.lil_matrix</span></code></a></li>
@@ -379,9 +379,9 @@ comparison with PDB numbering.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>B</strong> (<em>A</em><em>,</em>) – <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> with the
 same number of atoms</li>
-<li><strong>offset</strong> (<em>integer</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>, </em><em>optional</em><em>, </em><em>default 0</em>) – <p>An integer <cite>offset</cite> is added to <em>resids_A</em> and <em>resids_B</em> (see
+<li><strong>offset</strong> (<em>integer</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em>, </em><em>optional</em><em>, </em><em>default 0</em>) – <p>An integer <cite>offset</cite> is added to <em>resids_A</em> and <em>resids_B</em> (see
 below) in order to produce PDB numbers.</p>
-<p>If <cite>offset</cite> is <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> then <code class="docutils literal notranslate"><span class="pre">offset[0]</span></code> is added to
+<p>If <cite>offset</cite> is <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> then <code class="docutils literal notranslate"><span class="pre">offset[0]</span></code> is added to
 <em>resids_A</em> and <code class="docutils literal notranslate"><span class="pre">offset[1]</span></code> to <em>resids_B</em>. Note that one can
 actually supply numpy arrays of the same length as the atom
 group so that an individual offset is added to each resid.</p>
@@ -418,7 +418,7 @@ group so that an individual offset is added to each resid.</p>
 <li><strong>B</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – <cite>A</cite> and <cite>B</cite> are the groups of atoms between which atoms in
 <cite>group</cite> are searched for.  The function works is more
 efficient if <cite>group</cite> is bigger than either <cite>A</cite> or <cite>B</cite>.</li>
-<li><strong>distance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – maximum distance for an atom to be counted as in the vicinity of
+<li><strong>distance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – maximum distance for an atom to be counted as in the vicinity of
 <cite>A</cite> or <cite>B</cite></li>
 </ul>
 </td>

@@ -318,14 +318,14 @@ the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/vmd-
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>atoms</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – atoms for which bonds should be guessed</li>
 <li><strong>coords</strong> (<em>array</em>) – coordinates of the atoms (i.e., <cite>AtomGroup.positions)</cite>)</li>
-<li><strong>fudge_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – The factor by which atoms must overlap eachother to be considered a
+<li><strong>fudge_factor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – The factor by which atoms must overlap eachother to be considered a
 bond.  Larger values will increase the number of bonds found. [0.55]</li>
-<li><strong>vdwradii</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em>, </em><em>optional</em>) – To supply custom vdwradii for atoms in the algorithm. Must be a dict
+<li><strong>vdwradii</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a><em>, </em><em>optional</em>) – To supply custom vdwradii for atoms in the algorithm. Must be a dict
 of format {type:radii}. The default table of van der Waals radii is
 hard-coded as <a class="reference internal" href="tables.html#MDAnalysis.topology.tables.vdwradii" title="MDAnalysis.topology.tables.vdwradii"><code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.topology.tables.vdwradii</span></code></a>.  Any user
 defined vdwradii passed as an argument will supercede the table
 values. [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
-<li><strong>lower_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – The minimum bond length. All bonds found shorter than this length will
+<li><strong>lower_bound</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – The minimum bond length. All bonds found shorter than this length will
 be ignored. This is useful for parsing PDB with altloc records where
 atoms with altloc A and B maybe very close together and there should be
 no chemical bond between them. [0.1]</li>
@@ -338,7 +338,7 @@ search. [<code class="docutils literal notranslate"><span class="pre">None</span
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of tuples suitable for use in Universe topology building.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
 </td>
 </tr>
 </tbody>
@@ -352,7 +352,7 @@ structure is correct. This is wrong and will burn somebody.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> if inputs are malformed or <cite>vdwradii</cite> data is missing.</td>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> if inputs are malformed or <cite>vdwradii</cite> data is missing.</td>
 </tr>
 </tbody>
 </table>
