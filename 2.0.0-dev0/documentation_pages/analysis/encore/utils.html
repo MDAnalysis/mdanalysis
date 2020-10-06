@@ -226,7 +226,7 @@ available cores.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></td>
 </tr>
 </tbody>
 </table>
@@ -287,7 +287,7 @@ len(kwargs).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></td>
 </tr>
 </tbody>
 </table>
@@ -298,12 +298,12 @@ len(kwargs).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>n_jobs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Number of cores to be used for parallel calculation. If -1 use all
+<li><strong>n_jobs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of cores to be used for parallel calculation. If -1 use all
 available cores.</li>
 <li><strong>function</strong> (<em>object that supports __call__</em><em>, </em><em>as functions</em>) – function to be run in parallel.</li>
 <li><strong>args</strong> (<em>list of tuples</em>) – Arguments for function; see the ParallelCalculation class
 description.</li>
-<li><strong>kwargs</strong> (<em>list of dicts</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a>) – kwargs for function; see the ParallelCalculation
+<li><strong>kwargs</strong> (<em>list of dicts</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – kwargs for function; see the ParallelCalculation
 class description.</li>
 </ul>
 </td>
@@ -323,7 +323,7 @@ certain argument in the args list, and object is the result of
 corresponding calculation. For instance, in (3, output), output
 is the return of function(*args[3], **kwargs[3]).</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple of ordered tuples (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)">object</a>)</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">tuple of ordered tuples (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)">object</a>)</td>
 </tr>
 </tbody>
 </table>
@@ -370,8 +370,8 @@ accessed using the [] and () operators, similarly to a normal numpy array.</p>
 array is provided instead, the size of the triangular matrix
 will be calculated and the array copied as the matrix
 elements. Otherwise, the matrix is just initialized to zero.</li>
-<li><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a>) – Metadata dictionary. Used to generate the metadata attribute.</li>
-<li><strong>loadfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a>) – Load the matrix from this file. All the attributes and data will
+<li><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – Metadata dictionary. Used to generate the metadata attribute.</li>
+<li><strong>loadfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – Load the matrix from this file. All the attributes and data will
 be determined by the matrix file itself (i.e. metadata will be
 ignored); size has to be provided though.</li>
 </ul>
@@ -393,7 +393,7 @@ ignored); size has to be provided though.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Name of the file to be loaded.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Name of the file to be loaded.</td>
 </tr>
 </tbody>
 </table>
@@ -408,7 +408,7 @@ data as well.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Name of the file to be saved.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Name of the file to be saved.</td>
 </tr>
 </tbody>
 </table>
@@ -446,8 +446,8 @@ For instance: trm_indices((0,0),(2,1)) yields (0,0) (1,0) (1,1) (2,0)
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>a</strong> (<em>(</em><em>int i</em><em>, </em><em>int j</em><em>) </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a>) – starting matrix element.</li>
-<li><strong>b</strong> (<em>(</em><em>int i</em><em>, </em><em>int j</em><em>) </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a>) – final matrix element.</li>
+<li><strong>a</strong> (<em>(</em><em>int i</em><em>, </em><em>int j</em><em>) </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a>) – starting matrix element.</li>
+<li><strong>b</strong> (<em>(</em><em>int i</em><em>, </em><em>int j</em><em>) </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a>) – final matrix element.</li>
 </ul>
 </td>
 </tr>
@@ -464,7 +464,7 @@ with diagonal</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Matrix size</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Matrix size</td>
 </tr>
 </tbody>
 </table>
@@ -479,7 +479,7 @@ without diagonal (e.g. no elements (0,0),(1,1),…,(n,n))</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Matrix size</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Matrix size</td>
 </tr>
 </tbody>
 </table>

@@ -278,7 +278,7 @@ below.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>trajectory</strong> (<em>mda.Reader</em>) – A trajectory Reader</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on more logging and debugging, default <code class="docutils literal notranslate"><span class="pre">False</span></code></li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on more logging and debugging, default <code class="docutils literal notranslate"><span class="pre">False</span></code></li>
 </ul>
 </td>
 </tr>
@@ -298,10 +298,10 @@ removed. These should now be directly passed to
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</li>
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</li>
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</li>
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</li>
 </ul>
 </td>
 </tr>
@@ -349,8 +349,8 @@ removed. These should now be directly passed to
 <li><strong>function</strong> (<em>callable</em>) – function to evaluate at each frame</li>
 <li><strong>trajectory</strong> (<em>mda.coordinates.Reader</em><em> (</em><em>optional</em><em>)</em>) – trajectory to iterate over. If <code class="docutils literal notranslate"><span class="pre">None</span></code> the first AtomGroup found in
 args and kwargs is used as a source for the trajectory.</li>
-<li><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – arguments for <code class="docutils literal notranslate"><span class="pre">function</span></code></li>
-<li><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – arguments for <code class="docutils literal notranslate"><span class="pre">function</span></code> and <code class="docutils literal notranslate"><span class="pre">AnalysisBase</span></code></li>
+<li><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – arguments for <code class="docutils literal notranslate"><span class="pre">function</span></code></li>
+<li><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – arguments for <code class="docutils literal notranslate"><span class="pre">function</span></code> and <code class="docutils literal notranslate"><span class="pre">AnalysisBase</span></code></li>
 <li><strong>versionchanged:</strong> (<em>.</em>) – 1.0.0: Support for directly passing the <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, and <code class="docutils literal notranslate"><span class="pre">step</span></code>
 arguments has been removed. These should instead be passed
 to <code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisFromFunction.run()</span></code>.</li>

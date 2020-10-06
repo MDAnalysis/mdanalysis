@@ -255,15 +255,15 @@ allocate space for both coordinates and velocities;</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The total number of atoms this Timestep describes</li>
-<li><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether this Timestep has position information [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
-<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has velocity information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
-<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has force information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The total number of atoms this Timestep describes</li>
+<li><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether this Timestep has position information [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
+<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has velocity information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has force information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
 <li><strong>reader</strong> (<em>Reader</em><em> (</em><em>optional</em><em>)</em>) – A weak reference to the owning Reader.  Used for
 when attributes require trajectory manipulation (e.g. dt)</li>
-<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The time difference between frames (ps).  If <code class="xref py py-attr docutils literal notranslate"><span class="pre">time</span></code>
+<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The time difference between frames (ps).  If <code class="xref py py-attr docutils literal notranslate"><span class="pre">time</span></code>
 is set, then <cite>dt</cite> will be ignored.</li>
-<li><strong>time_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The starting time from which to calculate time (in ps)</li>
+<li><strong>time_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The starting time from which to calculate time (in ps)</li>
 </ul>
 </td>
 </tr>
@@ -307,7 +307,7 @@ the ‘.ncdf’ suffix and read by the <a class="reference internal" href="#MDAn
 exact time
 step. In principle, the trajectories can be in different units than the AMBER
 defaults of ångström and picoseconds but at the moment MDAnalysis only supports
-those and will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> if anything else is detected.</p>
+those and will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> if anything else is detected.</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFReader">
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.TRJ.</code><code class="descname">NCDFReader</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms=None</em>, <em>mmap=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader" title="Permalink to this definition">¶</a></dt>
@@ -335,7 +335,7 @@ writing</li>
 <p>The NCDF reader uses <code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code> and therefore <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/index.html#module-scipy" title="(in SciPy v1.5.2)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy</span></code></a> must
 be installed. It supports the <em>mmap</em> keyword argument (when reading):
 <code class="docutils literal notranslate"><span class="pre">mmap=True</span></code> is memory efficient and directly maps the trajectory on disk
-to memory (using the <a class="reference external" href="https://docs.python.org/3/library/mmap.html#mmap.mmap" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mmap</span></code></a>); <code class="docutils literal notranslate"><span class="pre">mmap=False</span></code> may consume large
+to memory (using the <a class="reference external" href="https://docs.python.org/3/library/mmap.html#mmap.mmap" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mmap</span></code></a>); <code class="docutils literal notranslate"><span class="pre">mmap=False</span></code> may consume large
 amounts of memory because it loads the whole trajectory into memory but it
 might be faster. The default is <code class="docutils literal notranslate"><span class="pre">mmap=None</span></code> and then default behavior of
 <code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf.netcdf_file</span></code> prevails, i.e. <code class="docutils literal notranslate"><span class="pre">True</span></code> when
@@ -380,10 +380,10 @@ removed (Issue #2327)</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – filename of the output NCDF trajectory</li>
-<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – number of atoms</li>
-<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – length of one timestep in picoseconds</li>
-<li><strong>remarks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – string that is stored in the title field</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – filename of the output NCDF trajectory</li>
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – number of atoms</li>
+<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – length of one timestep in picoseconds</li>
+<li><strong>remarks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – string that is stored in the title field</li>
 </ul>
 </td>
 </tr>
@@ -400,11 +400,11 @@ removed (Issue #2327)</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFReader.close">
 <code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFReader.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Close trajectory; any further access will raise an <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a>.</p>
+<dd><p>Close trajectory; any further access will raise an <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The underlying <code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code> module may open netcdf
-files with <a class="reference external" href="https://docs.python.org/3/library/mmap.html#mmap.mmap" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mmap</span></code></a> if <code class="docutils literal notranslate"><span class="pre">mmap=True</span></code> was
+files with <a class="reference external" href="https://docs.python.org/3/library/mmap.html#mmap.mmap" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mmap</span></code></a> if <code class="docutils literal notranslate"><span class="pre">mmap=True</span></code> was
 set. Hence <em>any</em> reference to an array <em>must</em> be removed
 before the file can be closed.</p>
 </div>
@@ -420,9 +420,9 @@ before the file can be closed.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>n_atoms</strong> – the number of atoms in the coordinate file</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> – when the number of atoms can’t be deduced</td>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> – when the number of atoms can’t be deduced</td>
 </tr>
 </tbody>
 </table>
@@ -446,14 +446,14 @@ velocities).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of output file</li>
-<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of atoms in trajectory file</li>
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – starting timestep</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – skip between subsequent timesteps</li>
-<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – timestep</li>
-<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code>: units are converted to the AMBER base format; [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
-<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Write velocities into the trajectory [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
-<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Write forces into the trajectory [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – name of output file</li>
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of atoms in trajectory file</li>
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – starting timestep</li>
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – skip between subsequent timesteps</li>
+<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – timestep</li>
+<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code>: units are converted to the AMBER base format; [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
+<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Write velocities into the trajectory [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Write forces into the trajectory [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
 </ul>
 </td>
 </tr>
@@ -531,7 +531,7 @@ be written to trajectory file</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if <cite>ts</cite> contains a valid simulation box</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></td>
 </tr>
 </tbody>
 </table>
@@ -557,8 +557,8 @@ be accessible with its filename.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> or </em><em>file-like</em>) – a filename given a text or byte string.</li>
-<li><strong>mmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to mmap <cite>filename</cite> when reading. True when <cite>filename</cite>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>file-like</em>) – a filename given a text or byte string.</li>
+<li><strong>mmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to mmap <cite>filename</cite> when reading. True when <cite>filename</cite>
 is a file name, False when <cite>filename</cite> is a file-like object.</li>
 </ul>
 </td>
@@ -626,7 +626,7 @@ assumed to be non-periodic (for technical reasons).</li>
 is auto-detected.</p>
 <p>The number of atoms in a timestep <em>must</em> be provided in the <cite>n_atoms</cite>
 keyword because it is not stored in the trajectory header and cannot be
-reliably autodetected. The constructor raises a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> if
+reliably autodetected. The constructor raises a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> if
 <cite>n_atoms</cite> is left at its default value of <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 <p>The length of a timestep is not stored in the trajectory itself but can
 be set by passing the <cite>dt</cite> keyword argument to the constructor; it

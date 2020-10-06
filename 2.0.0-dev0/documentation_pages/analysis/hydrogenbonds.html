@@ -414,16 +414,16 @@ bonds in a Universe.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – MDAnalysis Universe object</li>
-<li><strong>donors_sel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string for the hydrogen bond donor atoms. If the
+<li><strong>donors_sel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Selection string for the hydrogen bond donor atoms. If the
 universe topology contains bonding information, leave
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code> as <cite>None</cite> so that donor-hydrogen pairs can be
 correctly identified.</li>
-<li><strong>hydrogens_sel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string for the hydrogen bond hydrogen atoms. Leave as
+<li><strong>hydrogens_sel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Selection string for the hydrogen bond hydrogen atoms. Leave as
 <cite>None</cite> to guess which hydrogens to use in the analysis using
 <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_hydrogens" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_hydrogens"><code class="xref py py-attr docutils literal notranslate"><span class="pre">guess_hydrogens</span></code></a>. If <code class="xref py py-attr docutils literal notranslate"><span class="pre">hydrogens_sel</span></code> is left as
 <cite>None</cite>, also leave <code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code> as None so that
 donor-hydrogen pairs can be correctly identified.</li>
-<li><strong>acceptors_sel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string for the hydrogen bond acceptor atoms. Leave as
+<li><strong>acceptors_sel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Selection string for the hydrogen bond acceptor atoms. Leave as
 <cite>None</cite> to guess which atoms to use in the analysis using
 <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_acceptors" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_acceptors"><code class="xref py py-attr docutils literal notranslate"><span class="pre">guess_acceptors</span></code></a></li>
 <li><strong>between</strong> (<em>List</em><em> (</em><em>optional</em><em>)</em><em>,</em>) – Specify two selection strings for non-updating atom groups between
@@ -437,11 +437,11 @@ example, between=[[“protein”, “SOL”], [“protein”, “protein”]]`
 will calculate all protein-water and protein-protein hydrogen
 bonds but not water-water hydrogen bonds. If <cite>None</cite>, hydrogen
 bonds between all donors and acceptors will be calculated.</li>
-<li><strong>d_h_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Distance cutoff used for finding donor-hydrogen pairs [1.2]. Only used to find donor-hydrogen pairs if the
+<li><strong>d_h_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Distance cutoff used for finding donor-hydrogen pairs [1.2]. Only used to find donor-hydrogen pairs if the
 universe topology does not contain bonding information</li>
-<li><strong>d_a_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Distance cutoff for hydrogen bonds. This cutoff refers to the D-A distance. [3.0]</li>
-<li><strong>d_h_a_angle_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – D-H-A angle cutoff for hydrogen bonds, in degrees. [150]</li>
-<li><strong>update_selections</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether or not to update the acceptor, donor and hydrogen lists at each frame. [True]</li>
+<li><strong>d_a_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Distance cutoff for hydrogen bonds. This cutoff refers to the D-A distance. [3.0]</li>
+<li><strong>d_h_a_angle_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – D-H-A angle cutoff for hydrogen bonds, in degrees. [150]</li>
+<li><strong>update_selections</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether or not to update the acceptor, donor and hydrogen lists at each frame. [True]</li>
 </ul>
 </td>
 </tr>
@@ -527,8 +527,8 @@ acceptor atoms in a hydrogen bond.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Selection string for atom group from which acceptors will be identified.</li>
-<li><strong>max_charge</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Maximum allowed charge of an acceptor atom.</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Selection string for atom group from which acceptors will be identified.</li>
+<li><strong>max_charge</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Maximum allowed charge of an acceptor atom.</li>
 </ul>
 </td>
 </tr>
@@ -536,7 +536,7 @@ acceptor atoms in a hydrogen bond.</p>
 hydrogen bonds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
 </td>
 </tr>
 </tbody>
@@ -546,8 +546,8 @@ hydrogen bonds.</p>
 hydrogen bond analysis. If an atom has an atomic charge less than <code class="xref py py-attr docutils literal notranslate"><span class="pre">max_charge</span></code> then it is considered
 capable of participating in hydrogen bonds.</p>
 <p>If <code class="xref py py-attr docutils literal notranslate"><span class="pre">acceptors_sel</span></code> is <cite>None</cite>, this function is called to guess the selection.</p>
-<p>Alternatively, this function may be used to quickly generate a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> of potential acceptor atoms involved
-in hydrogen bonding. This <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> may then be modified before being used to set the attribute
+<p>Alternatively, this function may be used to quickly generate a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> of potential acceptor atoms involved
+in hydrogen bonding. This <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> may then be modified before being used to set the attribute
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">acceptors_sel</span></code>.</p>
 </dd></dl>
 
@@ -561,8 +561,8 @@ contain bonding information, otherwise donor-hydrogen pairs may be incorrectly a
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Selection string for atom group from which donors will be identified.</li>
-<li><strong>max_charge</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Maximum allowed charge of a donor atom.</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Selection string for atom group from which donors will be identified.</li>
+<li><strong>max_charge</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Maximum allowed charge of a donor atom.</li>
 </ul>
 </td>
 </tr>
@@ -570,7 +570,7 @@ contain bonding information, otherwise donor-hydrogen pairs may be incorrectly a
 hydrogen bonds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
 </td>
 </tr>
 </tbody>
@@ -581,8 +581,8 @@ hydrogen bond analysis. If an atom has an atomic charge less than <code class="x
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">d_h_cutoff</span></code> of a hydrogen atom, then it is considered capable of participating in hydrogen bonds.</p>
 <p>If <code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code> is <cite>None</cite>, and the universe topology does not have bonding information, this function is
 called to guess the selection.</p>
-<p>Alternatively, this function may be used to quickly generate a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> of potential donor atoms involved
-in hydrogen bonding. This <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> may then be modified before being used to set the attribute
+<p>Alternatively, this function may be used to quickly generate a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> of potential donor atoms involved
+in hydrogen bonding. This <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> may then be modified before being used to set the attribute
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code>.</p>
 </dd></dl>
 
@@ -595,9 +595,9 @@ in hydrogen bonding. This <a class="reference external" href="https://docs.pytho
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Selection string for atom group from which hydrogens will be identified.</li>
-<li><strong>max_mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Maximum allowed mass of a hydrogen atom.</li>
-<li><strong>min_charge</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Minimum allowed charge of a hydrogen atom.</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Selection string for atom group from which hydrogens will be identified.</li>
+<li><strong>max_mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Maximum allowed mass of a hydrogen atom.</li>
+<li><strong>min_charge</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Minimum allowed charge of a hydrogen atom.</li>
 </ul>
 </td>
 </tr>
@@ -605,7 +605,7 @@ in hydrogen bonding. This <a class="reference external" href="https://docs.pytho
 hydrogen bonds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
 </td>
 </tr>
 </tbody>
@@ -615,7 +615,7 @@ hydrogen bonds.</p>
 capable of participating in hydrogen bonding. If an atom has a mass less than <code class="xref py py-attr docutils literal notranslate"><span class="pre">max_mass</span></code> and an atomic
 charge greater than <code class="xref py py-attr docutils literal notranslate"><span class="pre">min_charge</span></code> then it is considered capable of participating in hydrogen bonds.</p>
 <p>If <code class="xref py py-attr docutils literal notranslate"><span class="pre">hydrogens_sel</span></code> is <cite>None</cite>, this function is called to guess the selection.</p>
-<p>Alternatively, this function may be used to quickly generate a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> of potential hydrogen atoms involved
+<p>Alternatively, this function may be used to quickly generate a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> of potential hydrogen atoms involved
 in hydrogen bonding. This str may then be modified before being used to set the attribute
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">hydrogens_sel</span></code>.</p>
 </dd></dl>
@@ -642,10 +642,10 @@ details.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>window_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – The number of frames between each t(0).</li>
-<li><strong>tau_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Hydrogen bond lifetime is calculated for frames in the range
+<li><strong>window_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – The number of frames between each t(0).</li>
+<li><strong>tau_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Hydrogen bond lifetime is calculated for frames in the range
 1 &lt;= <cite>tau</cite> &lt;= <cite>tau_max</cite></li>
-<li><strong>intermittency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum number of consecutive frames for which a bond can
+<li><strong>intermittency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum number of consecutive frames for which a bond can
 disappear but be counted as present if it returns at the next
 frame. An intermittency of <cite>0</cite> is equivalent to a continuous
 autocorrelation, which does not allow for hydrogen bond

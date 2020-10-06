@@ -373,7 +373,7 @@ the same size as distances</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>Q</strong> – fraction of contacts</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
 </td>
 </tr>
 </tbody>
@@ -399,15 +399,15 @@ the same size as distances</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>r</strong> (<em>array</em>) – Contact distances at time t</li>
 <li><strong>r0</strong> (<em>array</em>) – Contact distances at time t=0, reference distances</li>
-<li><strong>beta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>default 5.0 Angstrom</em><em>)</em>) – Softness of the switching function</li>
-<li><strong>lambda_constant</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>default 1.8</em><em>, </em><em>unitless</em><em>)</em>) – Reference distance tolerance</li>
+<li><strong>beta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>default 5.0 Angstrom</em><em>)</em>) – Softness of the switching function</li>
+<li><strong>lambda_constant</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>default 1.8</em><em>, </em><em>unitless</em><em>)</em>) – Reference distance tolerance</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>Q</strong> – fraction of native contacts</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
 </td>
 </tr>
 </tbody>
@@ -434,14 +434,14 @@ folding mechanisms in atomistic simulations” _PNAS_ <strong>110</strong> (2013
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>r</strong> (<em>ndarray</em>) – distance array between atoms</li>
 <li><strong>r0</strong> (<em>ndarray</em>) – unused to fullfill <a class="reference internal" href="#MDAnalysis.analysis.contacts.Contacts" title="MDAnalysis.analysis.contacts.Contacts"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contacts</span></code></a> API</li>
-<li><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Distance between atoms at which a contact is formed</li>
+<li><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Distance between atoms at which a contact is formed</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>Q</strong> – fraction of contacts</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
 </td>
 </tr>
 </tbody>
@@ -469,7 +469,7 @@ doi: <a class="reference external" href="http://doi.org/10.1093/nar/gkm342">10.1
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>d</strong> (<em>array-like</em>) – distance matrix</li>
-<li><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – distance below which a contact is formed.</li>
+<li><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – distance below which a contact is formed.</li>
 <li><strong>out</strong> (<em>array</em><em> (</em><em>optional</em><em>)</em>) – If <cite>out</cite> is supplied as a pre-allocated array of the correct
 shape then it is filled instead of allocating a new one in
 order to increase performance.</li>
@@ -499,7 +499,7 @@ of a trajectory <a class="reference internal" href="#franklin2007" id="id4">[Fra
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>u</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe with a trajectory</li>
 <li><strong>select</strong> (<em>string</em><em>, </em><em>optional</em>) – atoms to do analysis on</li>
-<li><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – distance at which contact is formed</li>
+<li><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – distance at which contact is formed</li>
 </ul>
 </td>
 </tr>
@@ -541,7 +541,7 @@ argument <cite>method</cite>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></td>
 </tr>
 </tbody>
 </table>
@@ -566,17 +566,17 @@ argument <cite>method</cite>.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>u</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – trajectory</li>
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>(</em><em>string</em><em>, </em><em>string</em><em>)</em>) – two contacting groups that change over time</li>
-<li><strong>refgroup</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>(</em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em>, </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em>)</em>) – two contacting atomgroups in their reference conformation. This
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em>(</em><em>string</em><em>, </em><em>string</em><em>)</em>) – two contacting groups that change over time</li>
+<li><strong>refgroup</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em>(</em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em>, </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em>)</em>) – two contacting atomgroups in their reference conformation. This
 can also be a list of tuples containing different atom groups</li>
-<li><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em><em> (</em><em>4.5 Angstroms</em><em>)</em>) – radius within which contacts exist in refgroup</li>
+<li><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em><em> (</em><em>4.5 Angstroms</em><em>)</em>) – radius within which contacts exist in refgroup</li>
 <li><strong>method</strong> (<em>string | callable</em><em> (</em><em>optional</em><em>)</em>) – Can either be one of <code class="docutils literal notranslate"><span class="pre">['hard_cut'</span> <span class="pre">,</span> <span class="pre">'soft_cut',</span> <span class="pre">'radius_cut']</span></code> or a callable
 with call signature <code class="docutils literal notranslate"><span class="pre">func(r,</span> <span class="pre">r0,</span> <span class="pre">**kwargs)</span></code> (the “Contacts API”).</li>
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Uses periodic boundary conditions to calculate distances if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Uses periodic boundary conditions to calculate distances if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the
 default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
-<li><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em>, </em><em>optional</em>) – dictionary of additional kwargs passed to <cite>method</cite>. Check
+<li><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a><em>, </em><em>optional</em>) – dictionary of additional kwargs passed to <cite>method</cite>. Check
 respective functions for reasonable values.</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the
 default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
 </ul>
 </td>
