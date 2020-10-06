@@ -16,6 +16,7 @@ import xml.etree.ElementTree as ET
 import errno
 import glob
 import textwrap
+import shutil
 
 try:
     from urllib.request import Request, urlopen
@@ -76,9 +77,10 @@ existing = [item['version'] for item in versions]
 already_exists = VERSION in existing
 latest = 'dev' not in VERSION
 
-if not already_exists and latest:
-    for ver in versions:
-        ver['latest'] = False
+if not already_exists:
+    if latest:
+        for ver in versions:
+            ver['latest'] = False
 
     versions.append({
         'version': VERSION,
@@ -86,17 +88,6 @@ if not already_exists and latest:
         'url': os.path.join(URL, VERSION),
         'latest': latest
     })
-
-versions.sort(key=lambda x: x["version"])
-
-with open("versions.json", 'w') as f:
-    json.dump(versions, f, indent=2)
-
-# ========= WRITE HTML STUBS =========
-# Add HTML files to redirect:
-# index.html -> latest release
-# latest/index.html -> latest release
-# dev/index.html -> dev docs
 
 for ver in versions[::-1]:
     if ver['latest']:
@@ -118,11 +109,23 @@ else:
     except IndexError:
         dev_version = None
 
+versions.sort(key=lambda x: x["version"])
+
+# ========= WRITE HTML STUBS AND COPY DOCS =========
+# Add HTML files to redirect:
+# index.html -> stable/ docs
+# latest/index.html -> latest release (not dev docs)
+# stable/ : a copy of the release docs with the highest number (2.0.0 instead of 1.0.0)
+# dev/ : a copy of the develop docs with the highest number (2.0.0-dev instead of 1.0.1-dev)
 
 if latest:
-    html_files = glob.glob(f'{VERSION}/**/*.html', recursive=True)
+    shutil.copytree(VERSION, "stable")
+    print(f"Copied {VERSION} to stable/")
+    html_files = glob.glob(f'stable/**/*.html', recursive=True)
     for file in html_files:
-        outfile = file.strip(f'{VERSION}/')
+        # below should be true because we only globbed stable/* paths
+        assert file.startswith("stable/")
+        outfile = file[7:]  # strip "stable/"
         dirname = os.path.dirname(outfile)
         if dirname and not os.path.exists(dirname):
             try:
@@ -133,14 +136,44 @@ if latest:
 
         write_redirect(file, '', outfile)
 
+
+
 if latest_version:
-    write_redirect('index.html', latest_version)
-    write_redirect('objects.inv', latest_version, 'latest/objects.inv')
+    write_redirect('index.html', "stable")
     write_redirect('index.html', latest_version, 'latest/index.html')
+    for ver in versions:
+        if ver["version"] == "stable":
+            ver["url"] = os.path.join(URL, "stable")
+            break
+    else:
+        versions.append({
+            "version": "stable",
+            "display": "stable",
+            "url": os.path.join(URL, "stable"),
+            "latest": False
+        })
 
 
 if dev_version:
-    write_redirect('index.html', dev_version, 'dev/index.html')
+    if dev_version == VERSION:
+        shutil.copytree(VERSION, "dev")
+        print(f"Copied {VERSION} to dev/")
+
+    for ver in versions:
+        if ver["version"] == "dev":
+            ver["url"] = os.path.join(URL, "dev")
+            break
+    else:
+        versions.append({
+            "version": "dev",
+            "display": "dev",
+            "url": os.path.join(URL, "dev"),
+            "latest": False
+        })
+
+
+with open("versions.json", 'w') as f:
+    json.dump(versions, f, indent=2)
 
 # ========= WRITE SUPER SITEMAP.XML =========
 # make one big sitemap.xml
