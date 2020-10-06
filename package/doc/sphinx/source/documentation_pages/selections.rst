@@ -12,7 +12,7 @@ syntax`_)::
   >>> kalp = universe.select_atoms("segid KALP")
 
 .. _`CHARMM's atom selection syntax`:
-   http://www.charmm.org/documentation/c37b1/select.html
+   https://www.charmm.org/charmm/documentation/by-version/c45b1/select.html
 
 The :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` method of a
 :class:`~MDAnalysis.core.groups.AtomGroup` or a
