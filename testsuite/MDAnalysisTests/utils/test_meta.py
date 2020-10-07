@@ -44,7 +44,7 @@ def test_version_format(version=None):
         import MDAnalysis.version
         version = MDAnalysis.version.__version__
     # see https://github.com/MDAnalysis/mdanalysis/wiki/SemanticVersioning for format definition
-    m = re.match('(?P<MAJOR>\d+)\.(?P<MINOR>\d+)\.(?P<PATCH>\d+)(-(?P<suffix>\w+))?$',
+    m = re.match(r'(?P<MAJOR>\d+)\.(?P<MINOR>\d+)\.(?P<PATCH>\d+)(-(?P<suffix>\w+))?$',
                  version)
     assert m, "version {0} does not match the MAJOR.MINOR.PATCH(-suffix) format".format(version)
 
