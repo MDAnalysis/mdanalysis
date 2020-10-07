@@ -39,7 +39,7 @@ Also converts some objects within the
     - `simtk.openmm.app.modeller.Modeller <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.modeller.Modeller.html#simtk.openmm.app.modeller.Modeller>`_
     - `simtk.openmm.app.pdbxfile.PDBxFile <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbxfile.PDBxFile.html#simtk.openmm.app.pdbxfile.PDBxFile>`_
 
-The :class:`OpenMMTopologyParser` generates a topology from an OpenMM Topology object files. 
+The :class:`OpenMMTopologyParser` generates a topology from an OpenMM Topology object. 
 
 .. _OpenMM: http://docs.openmm.org/latest/api-python/app.html
 
@@ -112,7 +112,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
         residue_segindex = [r.chain.index for r in omm_topology.residues()]
         atomids = [a.id for a in omm_topology.atoms()]
         atomnames = [a.name for a in omm_topology.atoms()]
-        atomtypes = guess_types(atomnames)
+        #atomtypes = guess_types(atomnames)
         chainids = [a.residue.chain.id for a in omm_topology.atoms()]
         elements = [a.element.symbol for a in omm_topology.atoms()]
         masses = [a.element.mass._value for a in omm_topology.atoms()]
@@ -131,7 +131,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
         attrs = [
             Atomids(np.array(atomids, dtype=np.int32)),
             Atomnames(np.array(atomnames, dtype=object)),
-            Atomtypes(np.array(atomtypes, dtype=object)),
+            #Atomtypes(np.array(atomtypes, dtype=object)),
             Bonds(bonds, types=bond_types, order=bond_orders, guessed=False),
             ChainIDs(np.array(chainids, dtype=object)),
             Elements(np.array(elements, dtype=object)),
@@ -155,7 +155,6 @@ class OpenMMTopologyParser(TopologyReaderBase):
 
     def parse(self, **kwargs):
         omm_topology = self.filename
-
         top = self._mda_topology_from_omm_topology(omm_topology)
 
         return top
@@ -181,8 +180,6 @@ class OpenMMAppTopologyParser(OpenMMTopologyParser):
             omm_topology = self.filename.getTopology()
         except AttributeError:
             omm_topology = self.filename.topology
-
-
         top = self._mda_topology_from_omm_topology(omm_topology)
 
         return top

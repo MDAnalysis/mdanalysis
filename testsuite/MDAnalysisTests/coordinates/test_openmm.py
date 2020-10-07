@@ -34,7 +34,50 @@ import MDAnalysis as mda
 mm = pytest.importorskip("simtk.openmm")
 unit = pytest.importorskip("simtk.unit")
 app = pytest.importorskip("simtk.openmm.app")
-pmd = pytest.importorskip("parmed")
+
+class TestOpenMMBasicSimulationReader():
+    @pytest.fixture
+    def omm_sim_uni(self):
+        system = mm.System()
+        topology = app.Topology()
+        chain = topology.addChain("CHAIN")
+        hydrogen = app.element.Element.getByAtomicNumber(1)
+        residue = topology.addResidue("RES", chain)
+        for i in range(5):
+            system.addParticle(1.0)
+            topology.addAtom(i, hydrogen, residue)
+        positions = np.ones((5,3)) * unit.angstrom
+        integrator = mm.LangevinIntegrator(273 * unit.kelvin,
+            1.0 / unit.picoseconds, 2.0 * unit.femtoseconds)
+        simulation = app.Simulation(topology, system, integrator)
+        simulation.context.setPositions(positions)
+
+        return mda.Universe(simulation)
+
+
+    def test_dimensions(self, omm_sim_uni):
+        assert_almost_equal(
+            omm_sim_uni.trajectory.ts.dimensions,
+            np.array([20., 20., 20., 90., 90., 90.]),
+            3,
+            "OpenMMBasicSimulationReader failed to get unitcell dimensions " +
+            "from OpenMM Simulation Object",
+        )
+
+    def test_coordinates(self, omm_sim_uni):
+        up = omm_sim_uni.atoms.positions
+        reference = np.ones((5,3))
+        assert_almost_equal(up, reference, decimal=3)
+
+    def test_basic_topology(self, omm_sim_uni):
+        assert omm_sim_uni.atoms.n_atoms == 5
+        assert omm_sim_uni.residues.n_residues == 1
+        assert omm_sim_uni.residues.resnames[0] == "RES"
+        assert omm_sim_uni.segments.n_segments == 1
+        assert omm_sim_uni.segments.segids[0] == 0
+        assert len(omm_sim_uni.bonds.indices) == 0
+
+
 
 
 class TestOpenMMPDBFileReader(_SingleFrameReader):
