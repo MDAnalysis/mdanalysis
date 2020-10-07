@@ -45,7 +45,7 @@ IGNORE_RESIDUES = ["SOL", "WAT", "TIP", "HOH", "K  ", "NA ", "CL "]
 #: *Simple* - Only use one value for each element C O H etc.
 #: Added radii for K+, NA+, CL- (Pauling hydration radius from Hille 2002).
 #: The data file can be written with the convenience function :func:`write_simplerad2`.
-SIMPLE2_RAD = """
+SIMPLE2_RAD = r"""
 remark: Time-stamp: <2005-11-21 13:57:55 oliver> [OB]
 remark: van der Waals radii: AMBER united atom
 remark: from Weiner et al. (1984), JACS, vol 106 pp765-768
@@ -111,7 +111,7 @@ set double_water_color {double_water_color}
 array set triangles {{}}
 """
 
-vmd_script_function = """
+vmd_script_function = r"""
 global vmd_frame;
 trace add variable vmd_frame([molinfo top]) write drawFrame
 
@@ -134,6 +134,6 @@ proc drawFrame { name element op } {
             }
         }
 
-drawFrame 0 0 0 
+drawFrame 0 0 0
 """
 

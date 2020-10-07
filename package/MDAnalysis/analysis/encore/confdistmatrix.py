@@ -171,7 +171,7 @@ def conformational_distance_matrix(ensemble,
     # Initialize workers. Simple worker doesn't perform fitting,
     # fitter worker does.
     indices = trm_indices((0, 0), (framesn - 1, framesn - 1))
-    Parallel(n_jobs=n_jobs, verbose=verbose, require='sharedmem', 
+    Parallel(n_jobs=n_jobs, verbose=verbose, require='sharedmem',
             max_nbytes=max_nbytes)(delayed(conf_dist_function)(
         np.int64(element),
         rmsd_coordinates,
@@ -247,8 +247,8 @@ def set_rmsd_matrix_elements(tasks, coords, rmsdmat, weights, fit_coords=None,
             rotated_i.astype(np.float64), translated_j.astype(np.float64),
             coords[j].shape[0], weights, sumweights)
     else:
-        raise TypeError("Both fit_coords and fit_weights must be specified \
-                        if one of them is given")
+        raise TypeError("Both fit_coords and fit_weights must be specified "
+                        "if one of them is given")
 
 
 def get_distance_matrix(ensemble,

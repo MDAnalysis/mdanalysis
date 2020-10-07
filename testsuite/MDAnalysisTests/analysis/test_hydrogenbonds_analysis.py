@@ -474,7 +474,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessHydrogens_NoTopology(object):
 
     def test_guess_hydrogens_min_max_mass(self, h):
 
-        errmsg = "min_mass is higher than \(or equal to\) max_mass"
+        errmsg = r"min_mass is higher than \(or equal to\) max_mass"
 
         with pytest.raises(ValueError, match=errmsg):
 

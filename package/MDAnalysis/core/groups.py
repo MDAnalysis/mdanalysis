@@ -121,7 +121,7 @@ def _unpickle_uag(basepickle, selections, selstrs):
 
 
 def make_classes():
-    """Make a fresh copy of all classes
+    r"""Make a fresh copy of all classes
 
     Returns
     -------
@@ -129,7 +129,6 @@ def make_classes():
     to serve as bases for :class:`~MDAnalysis.core.universe.Universe`\ -specific
     MDA container classes. Another with the final merged versions of those
     classes. The classes themselves are used as hashing keys.
-
     """
     bases = {}
     classes = {}
@@ -356,7 +355,7 @@ class _MutableBase(object):
                 raise NoDataError(err.format(selfcls=selfcls,
                                              attrname=attrname,
                                              topattr=topattr))
-        
+
         else:
             clean = attr.lower().replace('_', '')
             err = '{selfcls} has no attribute {attr}. '.format(selfcls=selfcls,
@@ -410,7 +409,7 @@ def _only_same_level(function):
 
 
 class GroupBase(_MutableBase):
-    """Base class from which a :class:`<~MDAnalysis.core.universe.Universe`\ 's
+    r"""Base class from which a :class:`<~MDAnalysis.core.universe.Universe`\ 's
     Group class is built.
 
     Instances of :class:`GroupBase` provide the following operations that
@@ -525,7 +524,7 @@ class GroupBase(_MutableBase):
             # subclasses, such as UpdatingAtomGroup, to control the class
             # resulting from slicing.
             return self._derived_class(self.ix[item], self.universe)
-    
+
     def __getattr__(self, attr):
         selfcls = type(self).__name__
         if attr in _TOPOLOGY_ATTRS:
@@ -921,7 +920,7 @@ class GroupBase(_MutableBase):
 
     @warn_if_not_unique
     def accumulate(self, attribute, function=np.sum, compound='group'):
-        """Accumulates the attribute associated with (compounds of) the group.
+        r"""Accumulates the attribute associated with (compounds of) the group.
 
         Accumulates the attribute of :class:`Atoms<Atom>` in the group.
         The accumulation per :class:`Residue`, :class:`Segment`, molecule,
@@ -1347,7 +1346,7 @@ class GroupBase(_MutableBase):
         return self.wrap(box=box, inplace=inplace)
 
     def wrap(self, compound="atoms", center="com", box=None, inplace=True):
-        """Shift the contents of this group back into the primary unit cell
+        r"""Shift the contents of this group back into the primary unit cell
         according to periodic boundary conditions.
 
         Specifying a `compound` will keep the :class:`Atoms<Atom>` in each
@@ -1368,8 +1367,8 @@ class GroupBase(_MutableBase):
         box : array_like, optional
             The unitcell dimensions of the system, which can be orthogonal or
             triclinic and must be provided in the same format as returned by
-            :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
-            ``[lx, ly, lz, alpha, beta, gamma]``.\n
+            :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+            ``[lx, ly, lz, alpha, beta, gamma]``.
             If ``None``, uses the
             dimensions of the current time step.
         inplace: bool, optional
@@ -1406,14 +1405,14 @@ class GroupBase(_MutableBase):
 
         .. math::
 
-           x_i' = x_i - \left\lfloor\\frac{x_i}{L_i}\\right\\rfloor\,.
+           x_i' = x_i - \left\lfloor\frac{x_i}{L_i}\right\rfloor\,.
 
         When specifying a `compound`, the translation is calculated based on
         each compound. The same translation is applied to all atoms
         within this compound, meaning it will not be broken by the shift.
         This might however mean that not all atoms of a compound will be
         inside the unit cell after wrapping, but rather will be the center of
-        the compound.\n
+        the compound.
         Be aware of the fact that only atoms *belonging to the group* will be
         taken into account!
 
@@ -1548,7 +1547,7 @@ class GroupBase(_MutableBase):
         return positions
 
     def unwrap(self, compound='fragments', reference='com', inplace=True):
-        """Move atoms of this group so that bonds within the
+        r"""Move atoms of this group so that bonds within the
         group's compounds aren't split across periodic boundaries.
 
         This function is most useful when atoms have been packed into the
@@ -1601,7 +1600,7 @@ class GroupBase(_MutableBase):
         ----
         Be aware of the fact that only atoms *belonging to the group* will
         be unwrapped! If you want entire molecules to be unwrapped, make sure
-        that all atoms of these molecules are part of the group.\n
+        that all atoms of these molecules are part of the group.
         An AtomGroup containing all atoms of all fragments in the group ``ag``
         can be created with::
 
@@ -2486,7 +2485,7 @@ class AtomGroup(GroupBase):
 
     @property
     def positions(self):
-        """Coordinates of the :class:`Atoms<Atom>` in the :class:`AtomGroup`.
+        r"""Coordinates of the :class:`Atoms<Atom>` in the :class:`AtomGroup`.
 
         A :class:`numpy.ndarray` with
         :attr:`~numpy.ndarray.shape`\ ``=(``\ :attr:`~AtomGroup.n_atoms`\ ``, 3)``
@@ -2524,7 +2523,7 @@ class AtomGroup(GroupBase):
 
     @property
     def velocities(self):
-        """Velocities of the :class:`Atoms<Atom>` in the :class:`AtomGroup`.
+        r"""Velocities of the :class:`Atoms<Atom>` in the :class:`AtomGroup`.
 
         A :class:`numpy.ndarray` with
         :attr:`~numpy.ndarray.shape`\ ``=(``\ :attr:`~AtomGroup.n_atoms`\ ``, 3)``
@@ -2553,7 +2552,7 @@ class AtomGroup(GroupBase):
 
     @property
     def forces(self):
-        """Forces on each :class:`Atom` in the :class:`AtomGroup`.
+        r"""Forces on each :class:`Atom` in the :class:`AtomGroup`.
 
         A :class:`numpy.ndarray` with
         :attr:`~numpy.ndarray.shape`\ ``=(``\ :attr:`~AtomGroup.n_atoms`\ ``, 3)``
@@ -3591,7 +3590,7 @@ class SegmentGroup(GroupBase):
 
 @functools.total_ordering
 class ComponentBase(_MutableBase):
-    """Base class from which a :class:`~MDAnalysis.core.universe.Universe`\ 's
+    r"""Base class from which a :class:`~MDAnalysis.core.universe.Universe`\ 's
     Component class is built.
 
     Components are the individual objects that are found in Groups.

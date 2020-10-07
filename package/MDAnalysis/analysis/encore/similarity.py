@@ -469,30 +469,33 @@ def gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
 def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
                                ln_P1_exp_P1=None, ln_P2_exp_P2=None,
                                ln_P1P2_exp_P1=None, ln_P1P2_exp_P2=None):
-    """
-    Calculate the Jensen-Shannon divergence according the the
-    Dimensionality reduction method. In this case, we have continuous
-    probability densities, this we need to integrate over the measurable
-    space. The aim is to first calculate the Kullback-Liebler divergence, which
-    is defined as:
+    r"""Calculate the Jensen-Shannon divergence according the Dimensionality
+    reduction method.
+
+    In this case, we have continuous probability densities, this we need to
+    integrate over the measurable space. The aim is to first calculate the
+    Kullback-Liebler divergence, which is defined as:
 
     .. math::
-        D_{KL}(P(x) || Q(x)) = \\int_{-\\infty}^{\\infty}P(x_i) ln(P(x_i)/Q(x_i)) = \\langle{}ln(P(x))\\rangle{}_P - \\langle{}ln(Q(x))\\rangle{}_P
 
-    where the :math:`\\langle{}.\\rangle{}_P` denotes an expectation calculated
+       D_{KL}(P(x) || Q(x)) =
+           \int_{-\infty}^{\infty}P(x_i) ln(P(x_i)/Q(x_i)) =
+           \langle{}ln(P(x))\rangle{}_P - \langle{}ln(Q(x))\rangle{}_P
+
+    where the :math:`\langle{}.\rangle{}_P` denotes an expectation calculated
     under the distribution P. We can, thus, just estimate the expectation
-    values of the components to get an estimate of dKL.
-    Since the Jensen-Shannon distance is actually  more complex, we need to
-    estimate four expectation values:
+    values of the components to get an estimate of dKL.  Since the
+    Jensen-Shannon distance is actually more complex, we need to estimate four
+    expectation values:
 
     .. math::
-         \\langle{}log(P(x))\\rangle{}_P
+         \langle{}log(P(x))\rangle{}_P
 
-         \\langle{}log(Q(x))\\rangle{}_Q
+         \langle{}log(Q(x))\rangle{}_Q
 
-         \\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_P
+         \langle{}log(0.5*(P(x)+Q(x)))\rangle{}_P
 
-         \\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_Q
+         \langle{}log(0.5*(P(x)+Q(x)))\rangle{}_Q
 
     Parameters
     ----------
@@ -512,22 +515,22 @@ def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
         calculate the expected values according to 'Q' as detailed before.
 
     ln_P1_exp_P1 : float or None
-        Use this value for :math:`\\langle{}log(P(x))\\rangle{}_P`; if None,
+        Use this value for :math:`\langle{}log(P(x))\rangle{}_P`; if ``None``,
         calculate it instead
 
     ln_P2_exp_P2 : float or None
-        Use this value for :math:`\\langle{}log(Q(x))\\rangle{}_Q`; if
-        None, calculate it instead
+        Use this value for :math:`\langle{}log(Q(x))\rangle{}_Q`; if
+        ``None``, calculate it instead
 
     ln_P1P2_exp_P1 : float or None
         Use this value for
-        :math:`\\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_P`;
-        if None, calculate it instead
+        :math:`\langle{}log(0.5*(P(x)+Q(x)))\rangle{}_P`;
+        if ``None``, calculate it instead
 
     ln_P1P2_exp_P2 : float or None
         Use this value for
-        :math:`\\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_Q`;
-        if None, calculate it instead
+        :math:`\langle{}log(0.5*(P(x)+Q(x)))\rangle{}_Q`;
+        if ``None``, calculate it instead
 
     Returns
     -------
@@ -720,11 +723,10 @@ def hes(ensembles,
         estimate_error=False,
         bootstrapping_samples=100,
         calc_diagonal=False):
-    """
+    r"""Calculates the Harmonic Ensemble Similarity (HES) between ensembles.
 
-    Calculates the Harmonic Ensemble Similarity (HES) between ensembles using
-    the symmetrized version of Kullback-Leibler divergence as described
-    in [Tiberti2015]_.
+    The HES is calculated with the symmetrized version of Kullback-Leibler
+    divergence as described in [Tiberti2015]_.
 
     Parameters
     ----------
@@ -766,13 +768,13 @@ def hes(ensembles,
     symmetrized version of Kullback-Leibler divergence defined as:
 
     .. math::
-        D_{KL}(P(x) || Q(x)) = \\int_{-\\infty}^{\\infty}P(x_i)
-        ln(P(x_i)/Q(x_i)) = \\langle{}ln(P(x))\\rangle{}_P -
-        \\langle{}ln(Q(x))\\rangle{}_P
+       D_{KL}(P(x) || Q(x)) =
+           \int_{-\infty}^{\infty}P(x_i) ln(P(x_i)/Q(x_i)) =
+           \langle{}ln(P(x))\rangle{}_P - \langle{}ln(Q(x))\rangle{}_P
 
 
-    where the :math:`\\langle{}.\\rangle{}_P` denotes an expectation
-    calculated under the distribution P.
+    where the :math:`\langle{}.\rangle{}_P` denotes an expectation
+    calculated under the distribution :math:`P`.
 
     For each ensemble, the  mean conformation is estimated as the average over
     the ensemble, and the covariance matrix is calculated by default using a
@@ -802,16 +804,17 @@ def hes(ensembles,
          [ 38279683.95892926         0.        ]]
 
 
-    You can use the align=True option to align the ensembles first. This will
+    You can use the ``align=True`` option to align the ensembles first. This will
     align everything to the current timestep in the first ensemble. Note that
-    this changes the ens1 and ens2 objects:
+    this changes the ``ens1`` and ``ens2`` objects:
 
         >>> print(encore.hes([ens1, ens2], align=True)[0])
         [[    0.          6880.34140106]
         [ 6880.34140106     0.        ]]
 
     Alternatively, for greater flexibility in how the alignment should be done
-    you can call use an AlignTraj object manually:
+    you can call use an :class:`~MDAnalysis.analysis.align.AlignTraj` object
+    manually:
 
         >>> from MDAnalysis.analysis import align
         >>> align.AlignTraj(ens1, ens1, select="name CA", in_memory=True).run()
@@ -820,9 +823,10 @@ def hes(ensembles,
         [[    0.          7032.19607004]
          [ 7032.19607004     0.        ]]
 
+
     .. versionchanged:: 1.0.0
-       hes doesn't accept the *details* argument anymore, it always returns the
-       details of the calculation instead, in the form of a dictionary
+       ``hes`` doesn't accept the `details` argument anymore, it always returns
+       the details of the calculation instead, in the form of a dictionary
 
     """
 

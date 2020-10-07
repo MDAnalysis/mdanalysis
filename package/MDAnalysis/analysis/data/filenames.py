@@ -20,24 +20,26 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""Analysis data files
+r"""Analysis data files
 ===================
 
 :mod:`MDAnalysis.analysis.data` contains data files that are used as part of
 analysis. These can be experimental or theoretical data. Files are stored
 inside the package and made accessible via variables in
 :mod:`MDAnalysis.analysis.data.filenames`. These variables are documented
-below, including references to the literature and where they are used
-inside :mod:`MDAnalysis.analysis`.
+below, including references to the literature and where they are used inside
+:mod:`MDAnalysis.analysis`.
 
 Data files
 ----------
 
 .. data:: Rama_ref
 
-   Reference Ramachandran histogram for :class:`MDAnalysis.analysis.dihedrals.Ramachandran`.
-   The data were calculated on a data set of 500 PDB structures taken from [Lovell2003]_.
-   This is a numpy array in the :math:`\phi` and :math:`psi` backbone dihedral angles.
+   Reference Ramachandran histogram for
+   :class:`MDAnalysis.analysis.dihedrals.Ramachandran`.  The data were
+   calculated on a data set of 500 PDB structures taken from [Lovell2003]_.
+   This is a numpy array in the :math:`\phi` and :math:`\psi` backbone dihedral
+   angles.
 
    Load and plot it with ::
 
@@ -55,8 +57,9 @@ Data files
 .. data:: Janin_ref
 
    Reference Janin histogram for :class:`MDAnalysis.analysis.dihedrals.Janin`.
-   The data were calculated on a data set of 500 PDB structures taken from [Lovell2003]_.
-   This is a numpy array in the :math:`\chi_1` and :math:`chi_2` sidechain dihedral angles.
+   The data were calculated on a data set of 500 PDB structures taken from
+   [Lovell2003]_.  This is a numpy array in the :math:`\chi_1` and
+   :math:`\chi_2` sidechain dihedral angles.
 
    Load and plot it with ::
 
@@ -73,7 +76,7 @@ Data files
 """
 
 __all__ = [
-    "Rama_ref", "Janin_ref" # reference plots for Ramachandran and Janin classes
+    "Rama_ref", "Janin_ref", # reference plots for Ramachandran and Janin classes
 ]
 
 from pkg_resources import resource_filename
