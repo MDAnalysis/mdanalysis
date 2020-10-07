@@ -67,6 +67,7 @@ Classes
 import numpy as np
 
 from . import base
+from .. import units
 
 
 class OpenMMSimulationReader(base.SingleFrameReaderBase):
@@ -78,7 +79,7 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
 
     format = "OPENMMSIMULATION"
     units = {"time": "ps", "length": "nm", "velocity": "nm/ps", 
-            "force": "kJ/(mol*nm)"}
+            "force": "kJ/(mol*nm)", "energy": "kJ/mol"}
 
     @staticmethod
     def _format_hint(thing):
@@ -116,8 +117,10 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
         ts = self._Timestep(n_atoms, **self._ts_kwargs)
         ts.frame = 0
         ts.data["time"] = state.getTime()._value
-        ts.data["potential_energy"] = state.getPotentialEnergy()
-        ts.data["kinetic_energy"] = state.getKineticEnergy()
+        ts.data["potential_energy"] = self.convert_energies_from_native(
+                state.getPotentialEnergy()._value)
+        ts.data["kinetic_energy"] = self.convert_energies_from_native(
+                state.getKineticEnergy()._value)
         ts.triclinic_dimensions = state.getPeriodicBoxVectors(
                 asNumpy=True)._value
         ts.positions = state.getPositions(asNumpy=True)._value
@@ -125,6 +128,32 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
         ts.forces = state.getForces(asNumpy=True)._value
 
         return ts
+
+    def convert_energies_from_native(self, energy, inplace=True):
+        """Conversion of energies array *energy* from native to base units
+
+        Parameters
+        ----------
+        energy: array_like
+          energies to transform
+        inplace : bool (optional)
+          Whether to modify the array inplace, overwriting previous data
+
+        Note
+        ----
+        By default, the input *energy* is modified in place and also returned.
+        In-place operations improve performance because allocating new arrays
+        is avoided.
+
+        """
+        f = units.get_conversion_factor(
+            'energy', self.units['energy'], 'kJ/mol')
+        if f == 1.:
+            return energy
+        if not inplace:
+            return f * energy 
+        energy *= f
+        return energy
 
 
 class OpenMMAppReader(base.SingleFrameReaderBase):
