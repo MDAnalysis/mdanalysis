@@ -108,7 +108,6 @@ Macromolecules
    :maxdepth: 1
 
    analysis/gnm
-   analysis/helanal
    analysis/helix_analysis
    analysis/dihedrals
 
