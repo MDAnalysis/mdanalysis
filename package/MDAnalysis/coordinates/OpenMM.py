@@ -37,6 +37,19 @@ Also converts other objects within the
     - `simtk.openmm.app.modeller.Modeller <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.modeller.Modeller.html#simtk.openmm.app.modeller.Modeller>`_
     - `simtk.openmm.app.pdbxfile.PDBxFile <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbxfile.PDBxFile.html#simtk.openmm.app.pdbxfile.PDBxFile>`_
 
+Example
+-------
+OpenMM can read various file formats into OpenMM objects.
+MDAnalysis can then convert some of these OpenMM objects into MDAnalysis Universe objects.
+
+    >>> import simtk.openmm.app as app
+    >>> import MDAnalysis as mda
+    >>> from MDAnalysis.tests.datafiles import PDBX
+    >>> pdbxfile = app.PDBxFile(PDBX)
+    >>> mda.Universe(pdbxfile)
+    <Universe with 60 atoms>
+
+
 
 Classes
 -------
