@@ -264,7 +264,7 @@ def _attach_transplant_stubs(attribute_name, topology_attribute_class):
 
 
 class _TopologyAttrMeta(type):
-    """Register TopologyAttrs on class creation
+    r"""Register TopologyAttrs on class creation
 
     Each topology attribute is added to the top-level dictionaries
     for various record purposes. The class itself is added to

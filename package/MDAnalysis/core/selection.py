@@ -54,9 +54,9 @@ from ..lib import distances
 from ..exceptions import SelectionError, NoDataError
 
 
-FLOAT_PATTERN = "-?\d*\.?\d*(?:e[-+]?\d+)?"
-INT_PATTERN = "-?\d+"
-RANGE_PATTERN = "\s*(?:[:-]| to )\s*"
+FLOAT_PATTERN = r"-?\d*\.?\d*(?:e[-+]?\d+)?"
+INT_PATTERN = r"-?\d+"
+RANGE_PATTERN = r"\s*(?:[:-]| to )\s*"
 
 def is_keyword(val):
     """Is val a selection keyword?
@@ -681,7 +681,7 @@ class ResidSelection(Selection):
             else:
                 # check if in appropriate format 'lower:upper' or 'lower-upper'
                 # each val is one or more digits, maybe a letter
-                selrange = re.match(f"(\d+)(\w?){RANGE_PATTERN}(\d+)(\w?)", val)
+                selrange = re.match(r"(\d+)(\w?)" + RANGE_PATTERN + r"(\d+)(\w?)", val)
                 if selrange is None:  # re.match returns None on failure
                     raise ValueError("Failed to parse value: {0}".format(val))
                 res = selrange.groups()
