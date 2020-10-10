@@ -60,10 +60,10 @@ def test_pbc_box():
         nsgrid._PBCBox(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]], dtype=float), pbc)  # Box provided as array of double
 
 
-def test_nsgrid_badcutoff(universe):
+@pytest.mark.parametrize('cutoff', [-4, 100000])
+def test_nsgrid_badcutoff(universe, cutoff):
     with pytest.raises(ValueError):
-        run_grid_search(universe, 0, -4)
-        run_grid_search(universe, 0, 100000)
+        run_grid_search(universe, 0, cutoff)
 
 
 def test_ns_grid_noneighbor(universe):

@@ -238,6 +238,8 @@ cdef class _NSGrid(object):
                           self.triclinic_dimensions[6] > 0 or
                           self.triclinic_dimensions[7] > 0)
         # TODO: Something smart about defining the maximum cutoff for a given boxsize
+        if cutoff < 0:
+            raise ValueError("Cutoff must be positive")
         
         # Calculate best cutoff, with 0.01A minimum
         cutoff = max(cutoff, 0.01)
