@@ -46,18 +46,19 @@ def run_grid_search(u, ref_id, cutoff=3):
 
     return searcher.search(searchcoords)
 
-def test_pbc_box():
+@pytest.mark.parametrize('box', [
+    np.zeros(3),  # Bad shape
+    np.zeros((3, 3)),  # Collapsed box
+    np.array([[0, 0, 0], [0, 1, 0], [0, 0, 1]]),  # 2D box
+    np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),  # Box provided as array of integers
+    np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),  # Box provided as array of double
+])
+def test_pbc_box(box):
     """Check that PBC box accepts only well-formated boxes"""
-    pbc = True
-    with pytest.raises(TypeError):
-        nsgrid._PBCBox([])
+    coords = np.array([[1.0, 1.0, 1.0]], dtype=np.float32)
 
     with pytest.raises(ValueError):
-        nsgrid._PBCBox(np.zeros((3)), pbc)  # Bad shape
-        nsgrid._PBCBox(np.zeros((3, 3)), pbc)  # Collapsed box
-        nsgrid._PBCBox(np.array([[0, 0, 0], [0, 1, 0], [0, 0, 1]]), pbc)  # 2D box
-        nsgrid._PBCBox(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), pbc)  # Box provided as array of integers
-        nsgrid._PBCBox(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]], dtype=float), pbc)  # Box provided as array of double
+        nsgrid.FastNS(4.0, coords, box=box)
 
 
 @pytest.mark.parametrize('cutoff', [-4, 100000])

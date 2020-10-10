@@ -210,9 +210,10 @@ cdef class _NSGrid(object):
     cdef float[6] dimensions
     cdef float[3] inverse_dimensions
     cdef float[9] triclinic_dimensions
-
+    # are we periodic in the X, Y and Z dimension?
+    cdef bint periodicX, periodicY, periodicZ
     
-    def __init__(self, float[:, ::1] coords, double cutoff, float[:] box):
+    def __init__(self, float[:, ::1] coords, double cutoff, box, bint pbc):
         """
         Parameters
         ----------
@@ -222,10 +223,16 @@ cdef class _NSGrid(object):
             Minimum desired cutoff radius
         box : numpy ndarray shape=(6,)
             Box info, [lx, ly, lz, alpha, beta, gamma]
+        pbc : is this NSGrid periodic at all?
         """
         cdef int i, j
         cdef double relative_cutoff_margin
         cdef double original_cutoff
+
+        if box.shape != (6,):
+            raise ValueError("Box must be a numpy array of [lx, ly, lz, alpha, beta, gamma]")
+
+        box = box.astype(np.float32)
         
         from MDAnalysis.lib.mdamath import triclinic_vectors
 
@@ -258,6 +265,18 @@ cdef class _NSGrid(object):
         self.ncells[0] = <int> floor(self.triclinic_dimensions[0] / cutoff)
         self.ncells[1] = <int> floor(self.triclinic_dimensions[4] / cutoff)
         self.ncells[2] = <int> floor(self.triclinic_dimensions[8] / cutoff)
+        for i in range(3):
+            if self.ncells[i] == 0:
+                self.ncells[i] = 1
+
+        if not pbc:
+            self.periodicX = False
+            self.periodicY = False
+            self.periodicZ = False
+        else:
+            self.periodicX = self.ncells[0] > 2
+            self.periodicY = self.ncells[0] > 2
+            self.periodicZ = self.ncells[0] > 2
 
         self.cellsize[0] = self.triclinic_dimensions[0] / <double> self.ncells[0]
         self.cellsize[1] = self.triclinic_dimensions[4] / <double> self.ncells[1]
@@ -265,8 +284,8 @@ cdef class _NSGrid(object):
 
         self.max_cutoff2 = 0.0
         for i in range(3):
-            if (self.cellsize[i] * self.cellsize[i]) > self.max_cutoff2:
-                self.max_cutoff2 = self.cellsize[i] * self.cellsize[i]
+            if (0.25 * self.cellsize[i] * self.cellsize[i]) > self.max_cutoff2:
+                self.max_cutoff2 = 0.25 * self.cellsize[i] * self.cellsize[i]
         
         self.size = self.ncells[0] * self.ncells[1] * self.ncells[2]
         
@@ -315,21 +334,37 @@ cdef class _NSGrid(object):
         xyz[2] = cz
 
     cdef int cellxyz2cellid(self, int cx, int cy, int cz) nogil:
-        """Convert cell coordinate to cell id"""
-        # TODO: return -1 on overflow for periodic
-        # periodic boundaries on cell coordinates
+        """Convert cell coordinate to cell id, -1 for out of bounds"""
         if cx < 0:
-            cx = self.ncells[0] - 1
+            if self.periodicX:
+                cx = self.ncells[0] - 1
+            else:
+                return -1
         elif cx == self.ncells[0]:
-            cx = 0
+            if self.periodicX:
+                cx = 0
+            else:
+                return -1
         if cy < 0:
-            cy = self.ncells[1] - 1
+            if self.periodicY:
+                cy = self.ncells[1] - 1
+            else:
+                return -1
         elif cy == self.ncells[1]:
-            cy = 0
+            if self.periodicY:
+                cy = 0
+            else:
+                return -1
         if cz < 0:
-            cz = self.ncells[2] - 1
+            if self.periodicZ:
+                cz = self.ncells[2] - 1
+            else:
+                return -1
         elif cz == self.ncells[2]:
-            cz = 0
+            if self.periodicZ:
+                cz = 0
+            else:
+                return -1
 
         return cx + cy * self.cell_offsets[1] + cz * self.cell_offsets[2]
 
@@ -369,7 +404,7 @@ cdef class FastNS(object):
             ``dtype=numpy.float32``. For Non-PBC calculations,
             all the coords must be within the bounding box specified
             by ``box``
-        box : numpy.ndarray
+        box : numpy.ndarray or None
             Box dimension of shape (6, ). The dimensions must be
             provided in the same format as returned
             by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
@@ -415,17 +450,20 @@ cdef class FastNS(object):
 
         self.periodic = pbc
 
+        # TODO: Probably don't wrap these if pbc=False?
         self.coords_bbox = distances.apply_PBC(coords, box)
 
         self.cutoff = cutoff
         # Note that self.cutoff might be different from self.grid.cutoff
         # due to optimization
-        self.grid = _NSGrid(self.coords_bbox, self.cutoff, box)
+        self.grid = _NSGrid(self.coords_bbox, self.cutoff, box, pbc)
         
         if self.cutoff < 0:
             raise ValueError("Cutoff must be positive!")
+
         if self.cutoff * cutoff > self.grid.max_cutoff2:
-            raise ValueError("Cutoff greater than maximum cutoff ({:.3f}) given the PBC")
+            raise ValueError("Cutoff greater than maximum cutoff ({:.3f}) given the PBC"
+                             "".format(np.sqrt(self.grid.max_cutoff2)))
 
     def search(self, search_coords):
         """Search a group of atoms against initialized coordinates
@@ -539,7 +577,7 @@ cdef class FastNS(object):
 
         cdef double cutoff2 = self.cutoff * self.cutoff
 
-        size_search = self.coords.shape[0]
+        size_search = self.coords_bbox.shape[0]
         results = NSResults()
 
         # loop over 13 neighbouring pairs
