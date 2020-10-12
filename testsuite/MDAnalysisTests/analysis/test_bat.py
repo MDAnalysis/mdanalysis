@@ -31,6 +31,8 @@ from MDAnalysisTests.datafiles import (PSF, DCD, mol2_comments_header, XYZ_mini,
                                        BATArray)
 from MDAnalysis.analysis.bat import BAT
 
+import os
+
 
 class TestBAT(object):
     @pytest.fixture()
@@ -44,6 +46,14 @@ class TestBAT(object):
         R = BAT(selected_residues)
         R.run()
         return R.bat
+
+    @pytest.fixture
+    def bat_npz(self, tmpdir, selected_residues):
+        filename = str(tmpdir / 'test_bat_IO.npy')
+        R = BAT(selected_residues)
+        R.run()
+        R.save(filename)
+        return filename
 
     def test_bat_root_selection(self, selected_residues):
         R = BAT(selected_residues)
@@ -79,11 +89,8 @@ class TestBAT(object):
             err_msg="error: Reconstructed Cartesian coordinates " + \
                     "don't match original")
 
-    def test_bat_IO(self, selected_residues, bat):
-        R = BAT(selected_residues)
-        R.run()
-        R.save('test_bat_IO.npy')
-        R2 = BAT(selected_residues, filename='test_bat_IO.npy')
+    def test_bat_IO(self, bat_npz, selected_residues, bat):
+        R2 = BAT(selected_residues, filename=bat_npz)
         test_bat = R2.bat
         assert_almost_equal(
             bat,
@@ -107,8 +114,8 @@ class TestBAT(object):
         with pytest.raises(ValueError):
             R = BAT(selected_residues)
 
-    def test_bat_incorrect_dims(self):
+    def test_bat_incorrect_dims(self, bat_npz):
         u = mda.Universe(PSF, DCD)
         selected_residues = u.select_atoms("resid 1-3")
         with pytest.raises(ValueError):
-            R = BAT(selected_residues, filename='test_bat_IO.npy')
+            R = BAT(selected_residues, filename=bat_npz)
