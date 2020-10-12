@@ -513,8 +513,10 @@ def _infer_bo_and_charges(mol):
     one will be charged. It will also affect more complex conjugated systems.
     """
 
-    for atom in sorted(mol.GetAtoms(), reverse=True,
-                       key=lambda a: _get_nb_unpaired_electrons(a)[0]):
+    atoms = sorted([a for a in mol.GetAtoms() if a.GetAtomicNum() > 1],
+                   reverse=True,
+                   key=lambda a: _get_nb_unpaired_electrons(a)[0])
+    for atom in atoms:
         # get NUE for each possible valence
         nue = _get_nb_unpaired_electrons(atom)
         # if there's only one possible valence state and the corresponding
@@ -550,11 +552,11 @@ def _infer_bo_and_charges(mol):
                         # recalculate nue for atom
                         nue = _get_nb_unpaired_electrons(atom)
 
-            # if the atom still has unpaired electrons
-            nue = _get_nb_unpaired_electrons(atom)[0]
-            if nue > 0:
-                # transform it to a negative charge
-                atom.SetFormalCharge(-nue)
+            # if atom valence is still not filled
+            nue_list = _get_nb_unpaired_electrons(atom)
+            if not any(nue == 0 for nue in nue_list):
+                # transform nue to charge
+                atom.SetFormalCharge(-nue_list[0])
                 atom.SetNumRadicalElectrons(0)
                 mol.UpdatePropertyCache(strict=False)
 
@@ -611,19 +613,19 @@ def _standardize_patterns(mol, max_iter=200):
     +---------------+------------------------------------------------------------------------------+
     | conjugated-O- | ``[O:1]=[#6:2]-[*:3]=[*:4]-[*-:5]>>[O-:1]-[*:2]=[*:3]-[*:4]=[*+0:5]``        |
     +---------------+------------------------------------------------------------------------------+
-    | Cterm         | ``[C-;X2:1]=[O:2]>>[C+0:1]=[O:2]``                                           |
+    | Cterm         | ``[C-;X2;H0:1]=[O:2]>>[C+0:1]=[O:2]``                                        |
     +---------------+------------------------------------------------------------------------------+
     | Nterm         | ``[N-;X2;H1:1]>>[N+0:1]``                                                    |
     +---------------+------------------------------------------------------------------------------+
     | keto-enolate  | ``[#6-:1]-[#6:2]=[O:3]>>[#6+0:1]=[#6:2]-[O-:3]``                             |
     +---------------+------------------------------------------------------------------------------+
-    | arginine      | ``[N;H1:1]-[C-;X3;H0:2](-[N;H2:3])-[N;H2:4]>>[N:1]-[C+0:2](-[N:3])=[N+:4]``  |
+    | arginine      | ``[C-;v3:1]-[#7+0;v3;H2:2]>>[#6+0:1]=[#7+:2]``                               |
     +---------------+------------------------------------------------------------------------------+
     | histidine     | ``[#6+0;H0:1]=[#6+0:2]-[#7;X3:3]-[#6-;X3:4]>>[#6:1]=[#6:2]-[#7+:3]=[#6+0:4]``|
     +---------------+------------------------------------------------------------------------------+
     | sulfone       | ``[S;X4;v4:1](-[O-;X1:2])-[O-;X1:3]>>[S:1](=[O+0:2])=[O+0:3]``               |
     +---------------+------------------------------------------------------------------------------+
-    | nitro         | ``[N;X3;v3:1](-[O-;X1:2])-[O-;X1:3]>>[N+:1](-[O-:2])=[O+0:3]``               |
+    | charged N     | ``[#7+0;v3:1]-[*-:2]>>[#7+:1]=[*+0:2]``                                      |
     +---------------+------------------------------------------------------------------------------+
  
     """
@@ -635,17 +637,15 @@ def _standardize_patterns(mol, max_iter=200):
     for reactant in Chem.GetMolFrags(mol, asMols=True):
 
         for name, reaction in [
-            ("Cterm", "[C-;X2:1]=[O:2]>>[C+0:1]=[O:2]"),
+            ("Cterm", "[C-;X2;H0:1]=[O:2]>>[C+0:1]=[O:2]"),
             ("Nterm", "[N-;X2;H1:1]>>[N+0:1]"),
             ("keto-enolate", "[#6-:1]-[#6:2]=[O:3]>>[#6+0:1]=[#6:2]-[O-:3]"),
-            ("ARG", "[N;H1:1]-[C-;X3;H0:2](-[N;H2:3])-[N;H2:4]"
-                    ">>[N:1]-[C+0:2](-[N:3])=[N+:4]"),
+            ("ARG", "[C-;v3:1]-[#7+0;v3;H2:2]>>[#6+0:1]=[#7+:2]"),
             ("HIP", "[#6+0;H0:1]=[#6+0:2]-[#7;X3:3]-[#6-;X3:4]"
                     ">>[#6:1]=[#6:2]-[#7+:3]=[#6+0:4]"),
             ("sulfone", "[S;X4;v4:1](-[O-;X1:2])-[O-;X1:3]"
                         ">>[S:1](=[O+0:2])=[O+0:3]"),
-            ("nitro", "[N;X3;v3:1](-[O-;X1:2])-[O-;X1:3]"
-                      ">>[N+:1](-[O-:2])=[O+0:3]"),
+            ("charged-N", "[#7+0;v3:1]-[*-:2]>>[#7+:1]=[*+0:2]"),
         ]:
             reactant.UpdatePropertyCache(strict=False)
             Chem.Kekulize(reactant)
@@ -789,7 +789,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
             # check if we haven't already transformed this triplet
             for match in matches:
                 # sort the indices for the comparison
-                g = tuple(sorted(match))
+                g = set(match)
                 if g in backtrack:
                     # already transformed
                     continue
@@ -799,7 +799,13 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
                     backtrack.append(g)
                     break
             else:
-                anion, a1, a2 = matches[0]
+                # tried all paths and now blocked from backtracking
+                warnings.warn("The standardization got stuck in a dead-end, "
+                              "likely because of a charge in a conjugated "
+                              "system. Please check the output molecule "
+                              "carefully as it is likely to be an unreasonable"
+                              " resonance structure")
+                return
             # charges
             mol.GetAtomWithIdx(anion).SetFormalCharge(0)
             mol.GetAtomWithIdx(a2).SetFormalCharge(-1)

@@ -490,8 +490,11 @@ class TestRDKitFunctions(object):
         "O=C([C@H](CC1=CNC=N1)N)O",
         "O=C([C@H](CC1=CN=CN1)N)O",
         "O=C([C@H](CC1=C[NH1+]=CN1)[NH3+])[O-]",
-        # fix conjugated carbonyl/carboxyl
+        # fixes from PR #???
         "CCOC(=O)c1cc2cc(C(=O)O)ccc2[nH]1",
+        "[O-][n+]1cccnc1",
+        "C[n+]1ccccc1",
+        "[PH4+]",
     ])
     def test_order_independant(self, smi_in):
         # generate mol with hydrogens but without bond orders
@@ -516,9 +519,16 @@ class TestRDKitFunctions(object):
             m = _standardize_patterns(m)
             Chem.SanitizeMol(m)
             m = Chem.RemoveHs(m)
-            assert m.HasSubstructMatch(ref) and ref.HasSubstructMatch(
-                m), (f"(input) {Chem.MolToSmiles(ref)} != "
-                     f"{Chem.MolToSmiles(m)} (output) root atom {a.GetIdx()}")
+            match = m.HasSubstructMatch(ref) and ref.HasSubstructMatch(m)
+            if not match:
+                # try resonance structures for charged conjugated systems
+                for mol in Chem.ResonanceMolSupplier(m, maxStructs=20):
+                    match = mol.HasSubstructMatch(ref) and ref.HasSubstructMatch(mol)
+                    if match:
+                        break
+            assert match, (f"(input) {Chem.MolToSmiles(ref)} != "
+                           f"{Chem.MolToSmiles(m)} (output) "
+                           f"root atom {a.GetIdx()}")
 
     def test_warn_conjugated_max_iter(self):
         smi = "[C-]C=CC=CC=CC=CC=CC=C[C-]"
