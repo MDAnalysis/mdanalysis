@@ -58,6 +58,8 @@ Fixes
     Universe (PR #2893)
   * ensure that unistd.h is included on macOS when compiling ENCORE's spe.c
     (Issue #2934)
+  * Fix tests for analysis.bat that could fail when run in parallel and that
+    would create a test artifact (Issue #2979, PR #2981)
 
 Enhancements
   * Refactored analysis.helanal into analysis.helix_analysis
