@@ -58,7 +58,7 @@ def norm(v):
 
     .. math:: v = \sqrt{\mathbf{v}\cdot\mathbf{v}}
 
-    This version is faster then numpy.linalg.norm because it only works for a
+    This version is faster than numpy.linalg.norm because it only works for a
     single vector and therefore can skip a lot of the additional fuss
     linalg.norm does.
 
