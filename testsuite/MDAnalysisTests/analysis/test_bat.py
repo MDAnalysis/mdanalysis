@@ -31,8 +31,6 @@ from MDAnalysisTests.datafiles import (PSF, DCD, mol2_comments_header, XYZ_mini,
                                        BATArray)
 from MDAnalysis.analysis.bat import BAT
 
-import os
-
 
 class TestBAT(object):
     @pytest.fixture()
