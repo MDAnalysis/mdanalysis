@@ -37,6 +37,7 @@ import numpy as np
 from ..analysis import align
 from ..lib.transformations import euler_from_matrix, euler_matrix
 from ..lib.util import threadpool_limits_decorator
+from threadpoolctl import threadpool_limits
 
 
 class fit_translation(object):
@@ -208,29 +209,31 @@ class fit_rot_trans(object):
         self.ref_com = self.ref.center(self.weights)
         self.ref_coordinates = self.ref.atoms.positions - self.ref_com
 
-        self.__call__ = threadpool_limits_decorator(_thread_limit)(self.__call__)
+        self._thread_limit = _thread_limit
+       # self.__call__ = threadpool_limits_decorator(_thread_limit)(self.__call__)
 
     def __call__(self, ts):
-        mobile_com = self.mobile.atoms.center(self.weights)
-        mobile_coordinates = self.mobile.atoms.positions - mobile_com
-        rotation, dump = align.rotation_matrix(mobile_coordinates,
-                                               self.ref_coordinates,
-                                               weights=self.weights)
-        vector = self.ref_com
-        if self.plane is not None:
-            matrix = np.r_[rotation, np.zeros(3).reshape(1, 3)]
-            matrix = np.c_[matrix, np.zeros(4)]
-            euler_angs = np.asarray(euler_from_matrix(matrix, axes='sxyz'),
-                                    np.float32)
-            for i in range(0, euler_angs.size):
-                euler_angs[i] = (euler_angs[self.plane] if i == self.plane
-                                 else 0)
-            rotation = euler_matrix(euler_angs[0],
-                                    euler_angs[1],
-                                    euler_angs[2],
-                                    axes='sxyz')[:3, :3]
-            vector[self.plane] = mobile_com[self.plane]
-        ts.positions = ts.positions - mobile_com
-        ts.positions = np.dot(ts.positions, rotation.T)
-        ts.positions = ts.positions + vector
-        return ts
+        with threadpool_limits(self._thread_limit):
+            mobile_com = self.mobile.atoms.center(self.weights)
+            mobile_coordinates = self.mobile.atoms.positions - mobile_com
+            rotation, dump = align.rotation_matrix(mobile_coordinates,
+                                                   self.ref_coordinates,
+                                                   weights=self.weights)
+            vector = self.ref_com
+            if self.plane is not None:
+                matrix = np.r_[rotation, np.zeros(3).reshape(1, 3)]
+                matrix = np.c_[matrix, np.zeros(4)]
+                euler_angs = np.asarray(euler_from_matrix(matrix, axes='sxyz'),
+                                        np.float32)
+                for i in range(0, euler_angs.size):
+                    euler_angs[i] = (euler_angs[self.plane] if i == self.plane
+                                     else 0)
+                rotation = euler_matrix(euler_angs[0],
+                                        euler_angs[1],
+                                        euler_angs[2],
+                                        axes='sxyz')[:3, :3]
+                vector[self.plane] = mobile_com[self.plane]
+            ts.positions = ts.positions - mobile_com
+            ts.positions = np.dot(ts.positions, rotation.T)
+            ts.positions = ts.positions + vector
+            return ts
