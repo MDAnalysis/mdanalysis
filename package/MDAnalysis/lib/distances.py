@@ -1524,7 +1524,7 @@ def apply_PBC(coords, box, center=None, backend="serial"):
     boxtype, box = check_box(box)
 
     if center is not None:
-        box_center = triclinic_vectors(box).sum(axis=0) * 0.5
+        box_center = box.sum(axis=0) * 0.5
         center_displacement = box_center - center
         coords += center_displacement
 
@@ -1571,12 +1571,11 @@ def apply_compact_PBC(coords, box, center=None, backend="serial"):
 
     .. versionadded:: 2.0.0
     """
-    boxtype, box = check_box(box)
+    boxtype, tric_vecs = check_box(box)
     # shortcut for orthogonal boxes
     if boxtype == 'ortho':
         return apply_PBC(coords, box, center=center, backend=backend)
 
-    tric_vecs = triclinic_vectors(box)
     pbc_img_coeffs = np.array(list(itertools.product([0, -1, 1], repeat=3)))
     pbc_img_vecs = np.matmul(pbc_img_coeffs, tric_vecs)
 

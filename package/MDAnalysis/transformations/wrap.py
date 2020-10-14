@@ -37,9 +37,6 @@ removes jumps across the periodic boundaries when iterating along a trajectory.
 """
 
 from ..lib.distances import apply_PBC
-from ..lib.mdamath import triclinic_vectors
-from ..exceptions import NoDataError
-import numpy as np
 
 
 class wrap(object):
