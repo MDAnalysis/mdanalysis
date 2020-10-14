@@ -104,19 +104,19 @@ int CAffinityPropagation(float *s, int n, float lambda, int max_iterations, int 
     int sqm_idx = 0;                  // index for square matrix
     int currit = 0;                   // current iteration number
     int conv_count = 0;               // number of iterations with constant centroids so far
-	float tmpsum = 0.0, maxsim = 0.0, this_tmpsum = 0.0;      // accumulators
-	float tmp = 0.0;                  // temporary value
+	double tmpsum = 0.0, maxsim = 0.0, this_tmpsum = 0.0;      // accumulators
+	double tmp = 0.0;                  // temporary value
 	float max1 = 0;
 	float max2 = 0;
 	int conv_reached = 0;        // convergence flag
 	int has_cluster = 0;         // found clusters flag
-	float lamprev = 1.0 - lambda;     // 1-lambda
+	double lamprev = 1.0 - lambda;     // 1-lambda
 	int n_clusters = 0; 			// number of clusters
 
 
     if (noise != 0) { // Add noise to data
         for (int i=0;i<n*(n+1)/2;i++) {
-            s[i] = s[i] + (1e-16*s[i] )*(rand()/((float)RAND_MAX+1));
+            s[i] = s[i] + (1e-16*s[i] )*(rand()/((double)RAND_MAX+1));
         }
      }
 
