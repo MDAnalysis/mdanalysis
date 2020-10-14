@@ -758,7 +758,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
             # index of each atom
             anion1, a1, a2, anion2 = end_match
             term_atom = mol.GetAtomWithIdx(anion2)
-            # [*-]-*=*-C=O
+            # [*-]-*=*-C=O --> *=*-*=C-[O-]
             if term_atom.GetAtomicNum() == 6 and term_atom.GetFormalCharge() == 0:
                 for neighbor in term_atom.GetNeighbors():
                     bond = mol.GetBondBetweenAtoms(anion2, neighbor.GetIdx())
@@ -767,10 +767,10 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
                         neighbor.SetFormalCharge(-1)
                         break
             else:
-                # [*-]-*=*-N
+                # [*-]-*=*-N --> *=*-*=[N+]
                 if term_atom.GetAtomicNum() == 7 and term_atom.GetFormalCharge() == 0:
                     end_charge = 1
-                # [*-]-*=*-[*-]
+                # [*-]-*=*-[*-] --> *=*-*=*
                 else:
                     end_charge = 0
                 term_atom.SetFormalCharge(end_charge)
