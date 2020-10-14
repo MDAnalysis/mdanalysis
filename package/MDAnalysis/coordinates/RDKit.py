@@ -796,9 +796,9 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
             mol.GetBondBetweenAtoms(a2, anion2).SetBondType(
                 Chem.BondType.DOUBLE)
             mol.UpdatePropertyCache(strict=False)
+            continue
 
         # shorten the anion-anion pattern from n to n-1
-        # will not match if ending pattern has been reached
         matches = mol.GetSubstructMatches(pattern)
         if matches:
             # check if we haven't already transformed this triplet
