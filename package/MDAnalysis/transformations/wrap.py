@@ -203,9 +203,6 @@ class nojump(object):
 
     This function is based on consecutive frame displacement vectors. It will
     keep molecules whole provided they were whole in the first iteration frame.
-    By default, it will automatically call
-    :meth:`MDAnalysis.core.groups.AtomGroup.unwrap` if an iteration reset is
-    detected.
 
     Example
     -------
@@ -225,7 +222,10 @@ class nojump(object):
     x, y, z : bool, optional
         Over which dimension(s) to remove jumps.
     initial_workflow : callable or list, optional
-        Transform(s) to apply when starting or restarting iteration.
+        Transform(s) to apply when starting or restarting iteration. Most
+        usefully, passing :class:`unwrap` makes compounds whole for the first
+        frame, and the nojump operation takes care of keeping them whole for
+        the remaining frames.
     refocus : bool or int
         Whether to correct each frame for position drift due to successive
         vector addition. If set to a nonzero int, defines every how many frames
