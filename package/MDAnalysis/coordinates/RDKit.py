@@ -511,11 +511,25 @@ def _infer_bo_and_charges(mol):
     R-C(-O)-O the first oxygen read will receive a double bond and the other
     one will be charged. It will also affect more complex conjugated systems.
     """
-
     atoms = sorted([a for a in mol.GetAtoms() if a.GetAtomicNum() > 1],
                    reverse=True,
                    key=lambda a: _get_nb_unpaired_electrons(a)[0])
+
+    MONOATOMIC_ION_CHARGES = {
+        3: 1, 11: 1, 19: 1, 37: 1, 47: 1, 55: 1,
+        12: 2, 20: 2, 29: 2, 30: 2, 38: 2, 56: 2,
+        26: 2, # Fe could also be 3
+        13: 3,
+        9: -1, 17: -1, 35: -1, 53: -1,
+    }
+
     for atom in atoms:
+        # monatomic ions
+        if atom.GetDegree() == 0:
+            atom.SetFormalCharge(MONOATOMIC_ION_CHARGES.get(
+                                 atom.GetAtomicNum(), 0))
+            mol.UpdatePropertyCache(strict=False)
+            continue
         # get NUE for each possible valence
         nue = _get_nb_unpaired_electrons(atom)
         # if there's only one possible valence state and the corresponding
