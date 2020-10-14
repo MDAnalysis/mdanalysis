@@ -1594,7 +1594,7 @@ def apply_compact_PBC(coords, box, center=None, backend="serial"):
     outside_ats = np.where(center_dists > min_compact_norm)[0]
     # Let's make sure we're dealing with everyone in the primary cell
     outside_pos = coords[outside_ats] = apply_PBC(coords[outside_ats],
-                                                  box, backend)
+                                                  box, backend=backend)
     # Potentially save cycles by re-filtering after PBC. It makes sense for
     # GROMACS trajectories, that are saved as the rectangular cell.
     center_dists = distance_array(center, outside_pos)[0]
