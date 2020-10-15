@@ -50,6 +50,10 @@ Fixes
 Enhancements
   * Improved performances when parsing TPR files (PR #2804)
 
+Changes (not affecting users)
+  * Continuous integration uses mamba rather than conda to install the
+    dependencies (PR #2983)
+
 Deprecations
   * waterdynamics.HydrogenBondLifetimes will be removed in 2.0.0 and
     replaced with hydrogenbonds.HydrogenBondAnalysis.lifetime() (#2547)
