@@ -813,6 +813,9 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
                     anion, a1, a2 = match
                     backtrack.append(g)
                     break
+            else:
+                # already performed all changes
+                continue
 
             # charges
             mol.GetAtomWithIdx(anion).SetFormalCharge(0)
