@@ -92,6 +92,8 @@ Enhancements
     explicit in the topology (Issue #2468, PR #2775)
 
 Changes
+  * Continuous integration uses mamba rather than conda to install the
+    dependencies (PR #2983)
   * removes deprecated `as_Universe` function from MDAnalysis.core.universe,
     as a result :class:`MDAnalysis.analysis.leaflet.LeafletFinder` now only
     accepts Universes for its `universe` argument (Issue #2920)
