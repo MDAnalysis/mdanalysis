@@ -40,6 +40,7 @@ env:
     - INSTALL_HOLE="true"
     - CYTHON_TRACE_NOGIL=1
     - MPLBACKEND=agg
+    - MAMBA=true
 
   jobs:
     # Run a coverage test for most versions
