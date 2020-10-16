@@ -213,7 +213,6 @@ class fit_rot_trans(TransformationBase):
         self.ref_com = self.ref.center(self.weights)
         self.ref_coordinates = self.ref.atoms.positions - self.ref_com
 
-
     def _transform(self, ts):
         mobile_com = self.mobile.atoms.center(self.weights)
         mobile_coordinates = self.mobile.atoms.positions - mobile_com

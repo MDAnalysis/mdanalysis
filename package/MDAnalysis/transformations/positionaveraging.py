@@ -37,6 +37,7 @@ import warnings
 
 from .base import TransformationBase
 
+
 class PositionAverager(TransformationBase):
     """
     Averages the coordinates of a given timestep so that the coordinates

@@ -116,7 +116,8 @@ class center_in_box(TransformationBase):
         The transformation was changed from a function/closure to a class
         with ``__call__``.
     """
-    def __init__(self, ag, center='geometry', point=None, wrap=False, max_threads=1):
+    def __init__(self, ag, center='geometry', point=None, wrap=False,
+                 max_threads=1):
         super().__init__(max_threads)
 
         self.ag = ag

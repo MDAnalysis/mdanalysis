@@ -39,6 +39,7 @@ from ..lib.util import get_weights
 
 from .base import TransformationBase
 
+
 class rotateby(TransformationBase):
     '''
     Rotates the trajectory by a given angle on a given axis. The axis is defined by
