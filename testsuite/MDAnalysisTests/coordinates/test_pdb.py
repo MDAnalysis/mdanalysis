@@ -524,6 +524,22 @@ class TestPDBWriter(object):
         read_universe = mda.Universe(pdb_path)
         assert np.all(read_universe.atoms.ids == universe.atoms.ids)
 
+    def test_no_reindex_bonds(self, universe, tmpdir):
+        """
+        When setting the `reindex` keyword to False, the connect
+        record match the non-reindexed atoms.
+        """
+        pdb_path = str(tmpdir / 'output.pdb')
+        universe.atoms.ids = universe.atoms.ids + 23
+        universe.atoms.write(pdb_path, reindex=False, bonds='all')
+        with open(pdb_path) as infile:
+            for line in infile:
+                if line.startswith('CONECT'):
+                    assert line.strip() == "CONECT   23   24   25   26   27"
+                    break
+            else:
+                raise AssertError('No CONECT record fond in the output.')
+
     def test_reindex(self, universe, tmpdir):
         """
         When setting the `reindex` keyword to True, the atom are
