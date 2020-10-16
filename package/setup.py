@@ -62,15 +62,8 @@ if sys.version_info[:2] < (3, 6):
     print('Please upgrade your version of Python.')
     sys.exit(-1)
 
-if sys.version_info[0] < 3:
-    import ConfigParser as configparser
-else:
-    import configparser
-
-if sys.version_info[0] >= 3:
-    from subprocess import getoutput
-else:
-    from commands import getoutput
+import configparser
+from subprocess import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
 RELEASE = "2.0.0-dev0"
@@ -85,7 +78,7 @@ try:
     cython_found = True
     from distutils.version import LooseVersion
 
-    required_version = "0.16"
+    required_version = "3.0"
     if not LooseVersion(Cython.__version__) >= LooseVersion(required_version):
         # We don't necessarily die here. Maybe we already have
         #  the cythonized '.c' files.
@@ -264,6 +257,12 @@ def extensions(config):
     extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops',
                           '-fsigned-zeros']  # see #2722
     define_macros = []
+
+    # Do not anymore use deprecated numpy API (needs Cython >=3.0)
+    # in Cython http://docs.cython.org/en/latest/src/userguide/source_files_and_compilation.html#configuring-the-c-build and
+    # https://cython.readthedocs.io/en/latest/src/userguide/migrating_to_cy30.html#numpy-c-api
+    define_macros.append(("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION"))
+
     if config.get('debug_cflags', default=False):
         extra_compile_args.extend(['-Wall', '-pedantic'])
         define_macros.extend([('DEBUG', '1')])

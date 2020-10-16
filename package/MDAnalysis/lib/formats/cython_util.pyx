@@ -112,7 +112,7 @@ cdef np.ndarray ptr_to_ndarray(void* data_ptr, np.int64_t[:] dim, int data_type)
 
     cdef np.ndarray ndarray = np.array(array_wrapper, copy=False)
     # Assign our object to the 'base' of the ndarray object
-    ndarray.base = <PyObject*> array_wrapper
+    np.PyArray_SetBaseObject(ndarray, array_wrapper)
     # Increment the reference count, as the above assignement was done in
     # C, and Python does not know that there is this additional reference
     Py_INCREF(array_wrapper)
