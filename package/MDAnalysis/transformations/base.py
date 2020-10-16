@@ -27,19 +27,16 @@ Transformations Base Class --- :mod:`MDAnalysis.transformations.base`
 .. autoclass:: TransformationBase
 
 """
-import numpy as np
-
-from ..lib.util import threadpool_limits_decorator
+from threadpoolctl import threadpool_limits
 
 
 class TransformationBase(object):
     def __init__(self, max_threads):
-        self._transform = threadpool_limits_decorator(max_threads)(self._transform)
+        self.max_threads = max_threads
 
     def __call__(self, ts):
-       return self._transform(ts)
+        with threadpool_limits(self.max_threads):
+            return self._transform(ts)
 
     def _transform(self):
-       pass
-
-
+        pass
