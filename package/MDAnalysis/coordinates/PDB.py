@@ -806,7 +806,10 @@ class PDBWriter(base.WriterBase):
         bondset = set(itertools.chain(*(a.bonds for a in self.obj.atoms)))
         if self._reindex:
             index_attribute = 'index'
-            mapping = {index: i for i, index in enumerate(self.obj.atoms.indices, start=1)}
+            mapping = {
+                index: i
+                for i, index in enumerate(self.obj.atoms.indices, start=1)
+            }
             atoms = np.sort(self.obj.atoms.indices)
         else:
             index_attribute = 'id'
@@ -815,12 +818,18 @@ class PDBWriter(base.WriterBase):
         if self.bonds == "conect":
             # Write out only the bonds that were defined in CONECT records
             bonds = (
-                (getattr(bond[0], index_attribute), getattr(bond[1], index_attribute))
+                (
+                    getattr(bond[0], index_attribute),
+                    getattr(bond[1], index_attribute),
+                )
                 for bond in bondset if not bond.is_guessed
             )
         elif self.bonds == "all":
             bonds = (
-                (getattr(bond[0], index_attribute), getattr(bond[1], index_attribute))
+                (
+                    getattr(bond[0], index_attribute),
+                    getattr(bond[1], index_attribute),
+                )
                 for bond in bondset
             )
         else:
