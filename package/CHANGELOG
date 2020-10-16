@@ -62,6 +62,8 @@ Fixes
     would create a test artifact (Issue #2979, PR #2981)
 
 Enhancements
+  * The PDB writer gives more control over how to write the atom ids
+    (Issue #1072, PR #2886)
   * Refactored analysis.helanal into analysis.helix_analysis
     (Issue #2452, PR #2622)
   * Improved MSD code to accept `AtomGroup` and reject `UpdatingAtomGroup`
