@@ -827,7 +827,6 @@ class PDBWriter(base.WriterBase):
 
         con = collections.defaultdict(list)
         for a1, a2 in bonds:
-            print(a1, a2)
             if not (a1 in mapping and a2 in mapping):
                 continue
             con[a2].append(a1)
