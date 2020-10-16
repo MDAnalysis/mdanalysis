@@ -36,11 +36,11 @@ import numpy as np
 
 from ..analysis import align
 from ..lib.transformations import euler_from_matrix, euler_matrix
-from ..lib.util import threadpool_limits_decorator
-from threadpoolctl import threadpool_limits
+
+from .base import TransformationBase
 
 
-class fit_translation(object):
+class fit_translation(TransformationBase):
     """Translates a given AtomGroup so that its center of geometry/mass matches
     the respective center of the given reference. A plane can be given by the
     user using the option `plane`, and will result in the removal of
@@ -87,7 +87,9 @@ class fit_translation(object):
         The transformation was changed from a function/closure to a class
         with ``__call__``.
     """
-    def __init__(self, ag, reference, plane=None, weights=None):
+    def __init__(self, ag, reference, plane=None, weights=None, max_threads=1):
+        super().__init__(max_threads)
+
         self.ag = ag
         self.reference = reference
         self.plane = plane
@@ -119,7 +121,7 @@ class fit_translation(object):
         self.weights = align.get_weights(self.ref.atoms, weights=self.weights)
         self.ref_com = self.ref.center(self.weights)
 
-    def __call__(self, ts):
+    def _transform(self, ts):
         mobile_com = np.asarray(self.mobile.atoms.center(self.weights),
                                 np.float32)
         vector = self.ref_com - mobile_com
@@ -130,7 +132,7 @@ class fit_translation(object):
         return ts
 
 
-class fit_rot_trans(object):
+class fit_rot_trans(TransformationBase):
     """Perform a spatial superposition by minimizing the RMSD.
 
     Spatially align the group of atoms `ag` to `reference` by doing a RMSD
@@ -177,7 +179,9 @@ class fit_rot_trans(object):
     -------
     MDAnalysis.coordinates.base.Timestep
     """
-    def __init__(self, ag, reference, plane=None, weights=None, _thread_limit=1):
+    def __init__(self, ag, reference, plane=None, weights=None, max_threads=1):
+        super().__init__(max_threads)
+
         self.ag = ag
         self.reference = reference
         self.plane = plane
@@ -209,31 +213,28 @@ class fit_rot_trans(object):
         self.ref_com = self.ref.center(self.weights)
         self.ref_coordinates = self.ref.atoms.positions - self.ref_com
 
-        self._thread_limit = _thread_limit
-       # self.__call__ = threadpool_limits_decorator(_thread_limit)(self.__call__)
 
-    def __call__(self, ts):
-        with threadpool_limits(self._thread_limit):
-            mobile_com = self.mobile.atoms.center(self.weights)
-            mobile_coordinates = self.mobile.atoms.positions - mobile_com
-            rotation, dump = align.rotation_matrix(mobile_coordinates,
-                                                   self.ref_coordinates,
-                                                   weights=self.weights)
-            vector = self.ref_com
-            if self.plane is not None:
-                matrix = np.r_[rotation, np.zeros(3).reshape(1, 3)]
-                matrix = np.c_[matrix, np.zeros(4)]
-                euler_angs = np.asarray(euler_from_matrix(matrix, axes='sxyz'),
-                                        np.float32)
-                for i in range(0, euler_angs.size):
-                    euler_angs[i] = (euler_angs[self.plane] if i == self.plane
-                                     else 0)
-                rotation = euler_matrix(euler_angs[0],
-                                        euler_angs[1],
-                                        euler_angs[2],
-                                        axes='sxyz')[:3, :3]
-                vector[self.plane] = mobile_com[self.plane]
-            ts.positions = ts.positions - mobile_com
-            ts.positions = np.dot(ts.positions, rotation.T)
-            ts.positions = ts.positions + vector
-            return ts
+    def _transform(self, ts):
+        mobile_com = self.mobile.atoms.center(self.weights)
+        mobile_coordinates = self.mobile.atoms.positions - mobile_com
+        rotation, dump = align.rotation_matrix(mobile_coordinates,
+                                               self.ref_coordinates,
+                                               weights=self.weights)
+        vector = self.ref_com
+        if self.plane is not None:
+            matrix = np.r_[rotation, np.zeros(3).reshape(1, 3)]
+            matrix = np.c_[matrix, np.zeros(4)]
+            euler_angs = np.asarray(euler_from_matrix(matrix, axes='sxyz'),
+                                    np.float32)
+            for i in range(0, euler_angs.size):
+                euler_angs[i] = (euler_angs[self.plane] if i == self.plane
+                                 else 0)
+            rotation = euler_matrix(euler_angs[0],
+                                    euler_angs[1],
+                                    euler_angs[2],
+                                    axes='sxyz')[:3, :3]
+            vector[self.plane] = mobile_com[self.plane]
+        ts.positions = ts.positions - mobile_com
+        ts.positions = np.dot(ts.positions, rotation.T)
+        ts.positions = ts.positions + vector
+        return ts

@@ -36,10 +36,10 @@ from functools import partial
 
 from ..lib.transformations import rotation_matrix
 from ..lib.util import get_weights
-from ..lib.util import threadpool_limits_decorator
 
+from .base import TransformationBase
 
-class rotateby(object):
+class rotateby(TransformationBase):
     '''
     Rotates the trajectory by a given angle on a given axis. The axis is defined by
     the user, combining the direction vector and a point. This point can be the center
@@ -119,7 +119,10 @@ class rotateby(object):
                  point=None,
                  ag=None,
                  weights=None,
-                 wrap=False):
+                 wrap=False,
+                 max_threads=1):
+        super().__init__(max_threads)
+
         self.angle = angle
         self.direction = direction
         self.point = point
@@ -163,8 +166,7 @@ class rotateby(object):
         else:
             raise ValueError('A point or an AtomGroup must be specified')
 
-    @threadpool_limits_decorator(limits=1)
-    def __call__(self, ts):
+    def _transform(self, ts):
         if self.point is None:
             position = self.center_method()
         else:
