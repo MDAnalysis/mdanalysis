@@ -513,6 +513,29 @@ class TestPDBWriter(object):
         with pytest.raises(ValueError, match=expected_msg):
             u.atoms.write(outfile)
 
+    def test_no_reindex(self, universe, tmpdir):
+        """
+        When setting the `reindex` keyword to False, the atom are
+        not reindexed.
+        """
+        pdb_path = str(tmpdir / 'output.pdb')
+        universe.atoms.ids = universe.atoms.ids + 23
+        universe.atoms.write(pdb_path, reindex=False)
+        read_universe = mda.Universe(pdb_path)
+        assert np.all(read_universe.atoms.ids == universe.atoms.ids)
+
+    def test_reindex(self, universe, tmpdir):
+        """
+        When setting the `reindex` keyword to True, the atom are
+        reindexed.
+        """
+        pdb_path = str(tmpdir / 'output.pdb')
+        universe.atoms.ids = universe.atoms.ids + 23
+        universe.atoms.write(pdb_path, reindex=True)
+        read_universe = mda.Universe(pdb_path)
+        # AG.ids is 1-based, while AG.indices is 0-based, hence the +1
+        assert np.all(read_universe.atoms.ids == universe.atoms.indices + 1)
+
 
 class TestMultiPDBReader(object):
     @staticmethod
