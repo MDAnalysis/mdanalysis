@@ -534,7 +534,8 @@ class PDBWriter(base.WriterBase):
        An indexing issue meant it previously used the first charater (Issue #2224)
 
     .. versionchanged:: 2.0.0
-        Add the "reindex" argument.
+        Add the `redindex` argument. Setting this keyword to ``True``
+        (the default) preserves the behavior in earlier versions of MDAnalysis.
 
     """
     fmt = {
