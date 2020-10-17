@@ -198,9 +198,9 @@ def _build_stub(method_name, method, attribute_name):
     """
     def stub_method(self, *args, **kwargs):
         message = (
-            '{method_name} requires {attribute_name} to '
-            'be defined in the topology'
-        ).format(method_name=method_name, attribute_name=attribute_name)
+            f'{self.__class__.__name__}.{method_name}() '
+            f'not available; this requires {attribute_name}'
+        )
         raise NoDataError(message)
 
     annotation = textwrap.dedent("""\
