@@ -42,13 +42,7 @@ import numbers
 import numpy as np
 import warnings
 import textwrap
-
-# inspect.signature was added in python 3.3, earlier versions require
-# funcsigs as backport.
-try:
-    from inspect import signature as inspect_signature
-except ImportError:
-    from funcsigs import signature as inspect_signature
+from inspect import signature as inspect_signature
 
 from numpy.lib.utils import deprecate
 
