@@ -209,8 +209,16 @@ def _build_stub(method_name, method, attribute_name):
           This requires the underlying topology to have {}. Otherwise, a
           :exc:`~MDAnalysis.exceptions.NoDataError` is raised.
 
+
     """.format(attribute_name))
-    stub_method.__doc__ = annotation + method.__doc__
+    # The first line of the original docstring is not indented, but the
+    # subsequent lines are. We want to dedent the whole docstring.
+    first_line, other_lines = method.__doc__.split('\n', 1)
+    stub_method.__doc__ = (
+        first_line + '\n'
+        + textwrap.dedent(other_lines)
+        + '\n\n' + annotation
+    )
     stub_method.__name__ = method_name
     stub_method.__signature__ = inspect_signature(method)
     return stub_method
