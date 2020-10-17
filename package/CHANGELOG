@@ -20,6 +20,8 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * The methods provided by topology attributes now appear in the
+    documentation (Issue #1845)
   * AtomGroup.center now works correctly for compounds + unwrapping
     (Issue #2984)
   * Avoid using deprecated array indexing in topology attributes
