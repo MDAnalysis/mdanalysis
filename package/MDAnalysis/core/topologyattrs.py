@@ -169,7 +169,8 @@ def _build_stub(method_name, method, attribute_name):
     Build a stub for a transplanted method.
 
     A transplanted stub is a dummy method that get attached to a core class
-    (usually from :mod:`MDAnalysis.core.groups`) and raise a :exc:`NoDataError`.
+    (usually from :mod:`MDAnalysis.core.groups`) and raise a
+    :exc:`NoDataError`.
     The stub mimics the original method for everything that as traits with the
     documentation (docstring, name, signature). It gets overwritten by the
     actual method when the later is transplanted at universe creation.
@@ -197,7 +198,7 @@ def _build_stub(method_name, method, attribute_name):
 
     annotation = textwrap.dedent("""\
         .. note::
-        
+ 
           This requires the underlying topology to have {}. Otherwise, a
           :exc:`~MDAnalysis.exceptions.NoDataError` is raised.
 
