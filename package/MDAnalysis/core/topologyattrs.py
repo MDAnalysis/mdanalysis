@@ -1445,15 +1445,6 @@ class Masses(AtomAttr):
             calculation. [``False``]
 
 
-        References
-        ----------
-        .. [Dima2004a] Dima, R. I., & Thirumalai, D. (2004). Asymmetry
-           in the shapes of folded and denatured states of
-           proteins. *J Phys Chem B*, 108(21),
-           6564-6570. doi:`10.1021/jp037128y
-           <https://doi.org/10.1021/jp037128y>`_
-
-
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8 Added *pbc* keyword
 
@@ -1497,16 +1488,6 @@ class Masses(AtomAttr):
             If ``True``, compounds will be unwrapped before computing their centers.
         compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
             Which type of component to keep together during unwrapping.
-
-
-        References
-        ----------
-
-        .. [Dima2004b] Dima, R. I., & Thirumalai, D. (2004). Asymmetry
-           in the shapes of folded and denatured states of
-           proteins. *J Phys Chem B*, 108(21),
-           6564-6570. doi:`10.1021/jp037128y
-           <https://doi.org/10.1021/jp037128y>`_
 
 
         .. versionadded:: 0.7.7
