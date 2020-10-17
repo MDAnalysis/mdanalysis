@@ -198,7 +198,7 @@ def _build_stub(method_name, method, attribute_name):
 
     annotation = textwrap.dedent("""\
         .. note::
- 
+
           This requires the underlying topology to have {}. Otherwise, a
           :exc:`~MDAnalysis.exceptions.NoDataError` is raised.
 
