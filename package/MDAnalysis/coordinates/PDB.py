@@ -800,9 +800,6 @@ class PDBWriter(base.WriterBase):
         if not self.obj or not hasattr(self.obj.universe, 'bonds'):
             return
 
-        if not self._reindex and not hasattr(self.obj.atoms, 'ids'):
-            return
-
         bondset = set(itertools.chain(*(a.bonds for a in self.obj.atoms)))
         if self._reindex:
             index_attribute = 'index'
