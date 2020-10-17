@@ -42,6 +42,8 @@ from numpy.testing import (assert_equal,
                            assert_array_almost_equal,
                            assert_almost_equal)
 
+IGNORE_NO_INFORMATION_WARNING = 'ignore:Found no information for attr:UserWarning'
+
 
 class TestPDBReader(_SingleFrameReader):
     __test__ = True
@@ -217,6 +219,22 @@ class TestPDBWriter(object):
     @pytest.fixture
     def outfile(self, tmpdir):
         return str(tmpdir.mkdir("PDBWriter").join('primitive-pdb-writer' + self.ext))
+
+    @pytest.fixture
+    def u_no_ids(self):
+        # The test universe does not have atom ids, but it has everything
+        # else the PDB writer expects to avoid issuing warnings.
+        universe = make_Universe(
+            [
+                'names', 'resids', 'resnames', 'altLocs',
+                'segids', 'occupancies', 'tempfactors',
+            ],
+            trajectory=True,
+        )
+        universe.add_TopologyAttr('icodes', [' '] * len(universe.residues))
+        universe.add_TopologyAttr('record_types', ['ATOM'] * len(universe.atoms))
+        universe.dimensions = [10, 10, 10, 90, 90, 90]
+        return universe
 
     @pytest.fixture
     def u_no_resnames(self):
@@ -513,26 +531,26 @@ class TestPDBWriter(object):
         with pytest.raises(ValueError, match=expected_msg):
             u.atoms.write(outfile)
 
-    def test_no_reindex(self, universe, tmpdir):
+    @pytest.mark.filterwarnings(IGNORE_NO_INFORMATION_WARNING)
+    def test_no_reindex(self, universe, outfile):
         """
         When setting the `reindex` keyword to False, the atom are
         not reindexed.
         """
-        pdb_path = str(tmpdir / 'output.pdb')
         universe.atoms.ids = universe.atoms.ids + 23
-        universe.atoms.write(pdb_path, reindex=False)
-        read_universe = mda.Universe(pdb_path)
+        universe.atoms.write(outfile, reindex=False)
+        read_universe = mda.Universe(outfile)
         assert np.all(read_universe.atoms.ids == universe.atoms.ids)
 
-    def test_no_reindex_bonds(self, universe, tmpdir):
+    @pytest.mark.filterwarnings(IGNORE_NO_INFORMATION_WARNING)
+    def test_no_reindex_bonds(self, universe, outfile):
         """
         When setting the `reindex` keyword to False, the connect
         record match the non-reindexed atoms.
         """
-        pdb_path = str(tmpdir / 'output.pdb')
         universe.atoms.ids = universe.atoms.ids + 23
-        universe.atoms.write(pdb_path, reindex=False, bonds='all')
-        with open(pdb_path) as infile:
+        universe.atoms.write(outfile, reindex=False, bonds='all')
+        with open(outfile) as infile:
             for line in infile:
                 if line.startswith('CONECT'):
                     assert line.strip() == "CONECT   23   24   25   26   27"
@@ -540,17 +558,27 @@ class TestPDBWriter(object):
             else:
                 raise AssertError('No CONECT record fond in the output.')
 
-    def test_reindex(self, universe, tmpdir):
+    @pytest.mark.filterwarnings(IGNORE_NO_INFORMATION_WARNING)
+    def test_reindex(self, universe, outfile):
         """
         When setting the `reindex` keyword to True, the atom are
         reindexed.
         """
-        pdb_path = str(tmpdir / 'output.pdb')
         universe.atoms.ids = universe.atoms.ids + 23
-        universe.atoms.write(pdb_path, reindex=True)
-        read_universe = mda.Universe(pdb_path)
+        universe.atoms.write(outfile, reindex=True)
+        read_universe = mda.Universe(outfile)
         # AG.ids is 1-based, while AG.indices is 0-based, hence the +1
         assert np.all(read_universe.atoms.ids == universe.atoms.indices + 1)
+
+    def test_no_reindex_missing_ids(self, u_no_ids, outfile):
+        """
+        When setting `reindex` to False, if there is no AG.ids,
+        then an exception is raised.
+        """
+        # Making sure AG.ids is indeed missing
+        assert not hasattr(u_no_ids.atoms, 'ids')
+        with pytest.raises(mda.exceptions.NoDataError):
+            u_no_ids.atoms.write(outfile, reindex=False)
 
 
 class TestMultiPDBReader(object):
