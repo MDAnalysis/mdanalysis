@@ -36,7 +36,6 @@ requirements:
     - netcdf4
     - mmtf-python
     - scikit-learn
-    - funcsigs
 
 test:
   imports:

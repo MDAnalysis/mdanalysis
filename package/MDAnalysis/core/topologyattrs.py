@@ -44,8 +44,6 @@ import warnings
 import textwrap
 from inspect import signature as inspect_signature
 
-from numpy.lib.utils import deprecate
-
 from ..lib.util import (cached, convert_aa_code, iterable, warn_if_not_unique,
                         unique_int_1d)
 from ..lib import transformations, mdamath
