@@ -851,12 +851,18 @@ class GroupBase(_MutableBase):
 
         # Sort positions and weights by compound index and promote to dtype if
         # required:
-        sort_indices = np.argsort(compound_indices)
+
+        # are we already sorted? argsorting and fancy-indexing can be expensive
+        if np.any(np.diff(compound_indices) < 0):
+            sort_indices = np.argsort(compound_indices)
+        else:
+            sort_indices = slice(None)
         compound_indices = compound_indices[sort_indices]
 
         # Unwrap Atoms
         if unwrap:
-            coords = atoms.unwrap(compound=comp, reference=None, inplace=False)
+            coords = atoms.unwrap(compound=comp, reference=None,
+                                  inplace=False)[sort_indices]
         else:
             coords = atoms.positions[sort_indices]
         if weights is None:
