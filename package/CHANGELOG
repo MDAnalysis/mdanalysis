@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/20 richardjgowers, IAlibay, orbeckst, tylerjereddy, jbarnoud,
          yuxuanzhuang, lilyminium, VOD555, p-j-smith, bieniekmateusz,
-         calcraven, ianmkenney, rcrehuet
+         calcraven, ianmkenney, rcrehuet, manuel.nuno.melo
 
   * 1.0.1
 
@@ -25,6 +25,8 @@ Fixes
   * Testsuite does not use any more matplotlib.use('agg') (#2191)
   * The methods provided by topology attributes now appear in the
     documentation (Issue #1845)
+  * AtomGroup.center now works correctly for compounds + unwrapping
+    (Issue #2984)
   * In ChainReader, read_frame does not trigger change of iterating position.
     (Issue #2723, PR #2815)
   * empty_atomgroup.select_atoms('name *') now returns an empty
