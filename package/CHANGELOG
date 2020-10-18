@@ -15,11 +15,13 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
-         calcraven，xiki-tempula, mieczyslaw
+         calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo
 
   * 2.0.0
 
 Fixes
+  * AtomGroup.center now works correctly for compounds + unwrapping
+    (Issue #2984)
   * Avoid using deprecated array indexing in topology attributes
     (Issue #2990, PR #2991)
   * ParmedParser no longer guesses elements if they are not recognised, instead
