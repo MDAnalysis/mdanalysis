@@ -119,9 +119,10 @@ versions.sort(key=lambda x: x["version"])
 # dev/ : a copy of the develop docs with the highest number (2.0.0-dev instead of 1.0.1-dev)
 # sitemap.xml files are updated by replacing URL strings
 
+
 def redirect_sitemap(old_version, new_version):
     """Replace paths in copied sitemap.xml with new directory path
-    
+
     Sitemaps can only contain URLs 'within' that directory structure.
     For more, see https://www.sitemaps.org/faq.html#faq_sitemap_location
     """
