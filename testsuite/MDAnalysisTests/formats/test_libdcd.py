@@ -22,6 +22,7 @@ import os
 import sys
 import string
 import struct
+import platform
 
 import hypothesis.strategies as strategies
 from hypothesis import example, given
@@ -317,8 +318,10 @@ def write_dcd(in_name, out_name, remarks='testing', header=None):
             f_out.write(xyz=frame.xyz, box=frame.unitcell)
 
 
-@pytest.mark.xfail(os.name == 'nt' and sys.maxsize <= 2**32,
-                   reason="occasional fail on 32-bit windows")
+@pytest.mark.xfail((os.name == 'nt'
+                    and sys.maxsize <= 2**32) or
+                    platform.machine() == 'aarch64',
+                   reason="occasional fail on 32-bit windows and ARM")
 @given(remarks=strategies.text(
     alphabet=string.printable, min_size=0,
     max_size=239))  # handle the printable ASCII strings
