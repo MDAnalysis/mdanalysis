@@ -105,9 +105,7 @@ matrix:
       virt: vm
       group: edge
       before_install:
-        - python -m pip install cython numpy
-        # special test SciPy wheel for ARM64:
-        - python -m pip install https://anaconda.org/multibuild-wheels-staging/scipy/1.6.0.dev0+a240c17/download/scipy-1.6.0.dev0+a240c17-cp37-cp37m-manylinux2014_aarch64.whl
+        - python -m pip install cython numpy scipy
         - python -m pip install --no-build-isolation hypothesis matplotlib pytest pytest-cov pytest-xdist tqdm
       install:
         - cd package
