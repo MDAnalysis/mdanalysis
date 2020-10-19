@@ -66,6 +66,9 @@ Fixes
     would create a test artifact (Issue #2979, PR #2981)
 
 Enhancements
+  * Can now do wrapping to compact unit cell representations; sped up
+    `AtomGroup.wrap()` treatment of compounds (PR #2982)
+  * Added a `transformations.nojump` (PR #2982)
   * Refactored analysis.helanal into analysis.helix_analysis
     (Issue #2452, PR #2622)
   * Improved MSD code to accept `AtomGroup` and reject `UpdatingAtomGroup`

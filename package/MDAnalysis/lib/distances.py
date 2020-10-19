@@ -61,6 +61,7 @@ Functions
 .. autofunction:: calc_angles
 .. autofunction:: calc_dihedrals
 .. autofunction:: apply_PBC
+.. autofunction:: apply_compact_PBC
 .. autofunction:: transform_RtoS
 .. autofunction:: transform_StoR
 .. autofunction:: augment_coordinates(coordinates, box, r)
@@ -68,6 +69,7 @@ Functions
 """
 import numpy as np
 from numpy.lib.utils import deprecate
+import itertools
 
 from .util import check_coords, check_box
 from .mdamath import triclinic_vectors
@@ -1133,7 +1135,7 @@ def transform_RtoS(coords, box, backend="serial"):
     Returns
     -------
     newcoords : numpy.ndarray (``dtype=numpy.float32``, ``shape=coords.shape``)
-        An array containing fractional coordiantes.
+        An array containing fractional coordinates.
 
 
     .. versionchanged:: 0.13.0
@@ -1482,8 +1484,8 @@ def calc_dihedrals(coords1, coords2, coords3, coords4, box=None, result=None,
 
 
 @check_coords('coords')
-def apply_PBC(coords, box, backend="serial"):
-    """Moves coordinates into the primary unit cell.
+def apply_PBC(coords, box, center=None, backend="serial"):
+    """Moves coordinates into an arbitrarily centered unit cell.
 
     Parameters
     ----------
@@ -1495,12 +1497,15 @@ def apply_PBC(coords, box, backend="serial"):
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
+    center : numpy.ndarray
+        Coordinate array of shape ``(3,)`` of the center of the output unit
+        cell representation. Defaults to the primary unit cell's center.
     backend : {'serial', 'OpenMP'}, optional
         Keyword selecting the type of acceleration.
 
     Returns
     -------
-    newcoords : numpy.ndarray  (``dtype=numpy.float32``, ``shape=coords.shape``)
+    newcoords : numpy.ndarray (``dtype=numpy.float32``, ``shape=coords.shape``)
         Array containing coordinates that all lie within the primary unit cell
         as defined by `box`.
 
@@ -1511,13 +1516,101 @@ def apply_PBC(coords, box, backend="serial"):
     .. versionchanged:: 0.19.0
        Internal dtype conversion of input coordinates to ``numpy.float32``.
        Now also accepts (and, likewise, returns) single coordinates.
+    .. versionchanged:: 2.0.0
+       Added *center* keyword.
     """
     if len(coords) == 0:
         return coords
     boxtype, box = check_box(box)
+
+    if center is not None:
+        box_center = box.sum(axis=0) * 0.5
+        center_displacement = box_center - center
+        coords += center_displacement
+
     if boxtype == 'ortho':
         _run("ortho_pbc", args=(coords, box), backend=backend)
     else:
         _run("triclinic_pbc", args=(coords, box), backend=backend)
 
+    if center is not None:
+        coords -= center_displacement
+
+    return coords
+
+
+@check_coords('coords')
+def apply_compact_PBC(coords, box, center=None, backend="serial"):
+    """Moves coordinates into an arbitrarily centered, space-filling compact
+       volume.
+
+    Parameters
+    ----------
+    coords : numpy.ndarray
+        Coordinate array of shape ``(3,)`` or ``(n, 3)`` (dtype is arbitrary,
+        will be converted to ``numpy.float32`` internally).
+    box : numpy.ndarray
+        The unitcell dimensions of the system, which can be orthogonal or
+        triclinic and must be provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        ``[lx, ly, lz, alpha, beta, gamma]``.
+    center : numpy.ndarray
+        Coordinate array of shape ``(3,)`` of the center of the output compact
+        representation. Defaults to the primary unit cell's center.
+    backend : {'serial', 'OpenMP'}, optional
+        Keyword selecting the type of acceleration.
+
+    Returns
+    -------
+    newcoords : numpy.ndarray (``dtype=numpy.float32``, ``shape=coords.shape``)
+        Array containing coordinates that all lie within a compact
+        space-filling volume centered on the point given with `center` (compact
+        in that all that volume's points are closest to the center than to any
+        of the center's periodic images).
+
+
+    .. versionadded:: 2.0.0
+    """
+    boxtype, tric_vecs = check_box(box)
+    # shortcut for orthogonal boxes
+    if boxtype == 'ortho':
+        return apply_PBC(coords, box, center=center, backend=backend)
+
+    pbc_img_coeffs = np.array(list(itertools.product([0, -1, 1], repeat=3)))
+    pbc_img_vecs = np.matmul(pbc_img_coeffs, tric_vecs)
+
+    # Stuff could get sped up because this can work with squared distance;
+    # no accelerated function exists for it yet, though.
+    min_compact_norm = np.linalg.norm(pbc_img_vecs[1:], axis=1).min() * 0.5
+
+    if center is None:
+        center = tric_vecs.sum(axis=0) * 0.5
+    else:
+        center = np.asarray(center, dtype=np.float32)
+    pbc_imgs = pbc_img_vecs + center
+
+    # Also improvable as distance^2
+    center_dists = distance_array(center, coords)[0]
+    outside_ats = np.where(center_dists > min_compact_norm)[0]
+    # Let's make sure we're dealing with everyone in the primary cell
+    outside_pos = coords[outside_ats] = apply_PBC(coords[outside_ats],
+                                                  box, backend=backend)
+    # Potentially save cycles by re-filtering after PBC. It makes sense for
+    # GROMACS trajectories, that are saved as the rectangular cell.
+    center_dists = distance_array(center, outside_pos)[0]
+    outside_ats = outside_ats[center_dists > min_compact_norm]
+    outside_pos = coords[outside_ats]
+
+    # This works for the general case by checking the distance to all 27
+    # unit cell centers (primary + 1st neighbors). Will break for extremely
+    # skewed cases where the closest center is in a 2nd neighbor unit cell.
+    # The distance check to all 26 1st neighbors can also probably be
+    # optimized, both in general and with boxtype-specific shortcuts.
+    # Also improvable as distance^2
+    closest_img_ndx = distance_array(outside_pos, pbc_imgs).argmin(axis=1)
+    to_move = closest_img_ndx.nonzero()[0]
+    closest_img_ndx = closest_img_ndx[to_move]
+    outside_ats = outside_ats[to_move]
+    outside_pos = coords[outside_ats] - pbc_img_vecs[closest_img_ndx]
+    coords[outside_ats] = outside_pos
     return coords

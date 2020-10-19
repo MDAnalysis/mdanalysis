@@ -1351,7 +1351,8 @@ class GroupBase(_MutableBase):
         """
         return self.wrap(box=box, inplace=inplace)
 
-    def wrap(self, compound="atoms", center="com", box=None, inplace=True):
+    def wrap(self, compound="atoms", center="com", compact=False, box=None,
+             inplace=True):
         r"""Shift the contents of this group back into the primary unit cell
         according to periodic boundary conditions.
 
@@ -1359,6 +1360,28 @@ class GroupBase(_MutableBase):
         compound together during the process. If `compound` is different from
         ``'atoms'``, each compound as a whole will be shifted so that its
         `center` lies within the primary unit cell.
+
+        Wrapping with `compound`='atoms':
+           +-----------+              +-----------+
+           |           |              |           |
+           |           | 3 6          | 3 6       |
+           |           | ! !          | ! !       |
+           |         1-|-2-5-8  ->    |-2-5-8   1-|
+           |           | ! !          | ! !       |
+           |           | 4 7          | 4 7       |
+           |           |              |           |
+           +-----------+              +-----------+
+
+        Wrapping with `compound`='fragments':
+           +-----------+              +-----------+
+           |           |              |           |
+           |           | 3 6          | 3 6       |
+           |           | ! !          | ! !       |
+           |         1-|-2-5-8  ->  1-|-2-5-8     |
+           |           | ! !          | ! !       |
+           |           | 4 7          | 4 7       |
+           |           |              |           |
+           +-----------+              +-----------+
 
         Parameters
         ----------
@@ -1370,6 +1393,10 @@ class GroupBase(_MutableBase):
         center : {'com', 'cog'}
             How to define the center of a given group of atoms. If `compound` is
             ``'atoms'``, this parameter is meaningless and therefore ignored.
+        compact : bool, optional
+            If ``True``, wrapping will be done to the space-filling volume
+            closest to the primary unit cell's center (only useful for
+            non-orthogonal periodic boxes).
         box : array_like, optional
             The unitcell dimensions of the system, which can be orthogonal or
             triclinic and must be provided in the same format as returned by
@@ -1413,6 +1440,12 @@ class GroupBase(_MutableBase):
 
            x_i' = x_i - \left\lfloor\frac{x_i}{L_i}\right\rfloor\,.
 
+        `compact` changes the shifting behavior: centers will be shifted by
+        the integer combination of box vectors that minimizes
+        :math:`\left\|\mathbf{r_{compact}}-\mathbf{r_{box\_center}}\right\|`,
+        the distance of a center's final position,
+        :math:`\mathbf{r_{compact}}`, to the primary unit cell's center.
+
         When specifying a `compound`, the translation is calculated based on
         each compound. The same translation is applied to all atoms
         within this compound, meaning it will not be broken by the shift.
@@ -1423,8 +1456,9 @@ class GroupBase(_MutableBase):
         taken into account!
 
         `center` allows to define how the center of each group is computed.
-        This can be either ``'com'`` for center of mass, or ``'cog'`` for center
-        of geometry.
+        This can be either ``'com'`` for center of mass, or ``'cog'`` for
+        center of geometry.
+
 
         `box` allows a unit cell to be given for the transformation. If not
         specified, the :attr:`~MDAnalysis.coordinates.base.Timestep.dimensions`
@@ -1457,6 +1491,7 @@ class GroupBase(_MutableBase):
             raise ValueError("Invalid box: Box has invalid shape or not all "
                              "box dimensions are positive. You can specify a "
                              "valid box using the 'box' argument.")
+        packer = distances.apply_compact_PBC if compact else distances.apply_PBC
 
         # no matter what kind of group we have, we need to work on its (unique)
         # atoms:
@@ -1478,7 +1513,7 @@ class GroupBase(_MutableBase):
             return np.zeros((0, 3), dtype=np.float32)
 
         if comp == "atoms" or len(atoms) == 1:
-            positions = distances.apply_PBC(atoms.positions, box)
+            positions = packer(atoms.positions, box)
         else:
             ctr = center.lower()
             if ctr == 'com':
@@ -1502,7 +1537,7 @@ class GroupBase(_MutableBase):
                 else:  # ctr == 'cog'
                     ctrpos = atoms.center_of_geometry(pbc=False, compound=comp)
                 ctrpos = ctrpos.astype(np.float32, copy=False)
-                target = distances.apply_PBC(ctrpos, box)
+                target = packer(ctrpos, box)
                 positions += target - ctrpos
             else:
                 if comp == 'segments':
@@ -1516,6 +1551,7 @@ class GroupBase(_MutableBase):
                         errmsg = ("Cannot use compound='molecules', this "
                                   "requires molnums.")
                         raise NoDataError(errmsg) from None
+
                 else:  # comp == 'fragments'
                     try:
                         compound_indices = atoms.fragindices
@@ -1535,16 +1571,16 @@ class GroupBase(_MutableBase):
                 else:  # ctr == 'cog'
                     ctrpos = atoms.center_of_geometry(pbc=False, compound=comp)
                 ctrpos = ctrpos.astype(np.float32, copy=False)
-                target = distances.apply_PBC(ctrpos, box)
+                target = packer(ctrpos, box)
                 shifts = target - ctrpos
 
+                # There may be gaps in the used indices. We must translate
+                # them to a (0, 1, 2, ..., n_indices-1) sequence
+                unique_indices = unique_int_1d(compound_indices)
+                transl_indices = np.arange(unique_indices.max()+1)
+                transl_indices[unique_indices] = np.arange(len(unique_indices))
                 # apply the shifts:
-                unique_compound_indices = unique_int_1d(compound_indices)
-                shift_idx = 0
-                for i in unique_compound_indices:
-                    mask = np.where(compound_indices == i)
-                    positions[mask] += shifts[shift_idx]
-                    shift_idx += 1
+                positions += shifts[transl_indices[compound_indices]]
 
         if inplace:
             atoms.positions = positions
@@ -1565,7 +1601,7 @@ class GroupBase(_MutableBase):
            |           |       |           |
            | 6       3 |       |         3 | 6
            | !       ! |       |         ! | !
-           |-5-8   1-2-|  ==>  |       1-2-|-5-8
+           |-5-8   1-2-|  ->   |       1-2-|-5-8
            | !       ! |       |         ! | !
            | 7       4 |       |         4 | 7
            |           |       |           |
