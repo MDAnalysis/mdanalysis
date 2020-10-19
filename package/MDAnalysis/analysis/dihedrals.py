@@ -303,11 +303,11 @@ class Ramachandran(AnalysisBase):
     atomgroup : AtomGroup or ResidueGroup
         atoms for residues for which :math:`\phi` and :math:`\psi` are
         calculated
-    c_name: str (optional)
+    c_name : str (optional)
         name for the backbone C atom
-    n_name: str (optional)
+    n_name : str (optional)
         name for the backbone N atom
-    ca_name: str (optional)
+    ca_name : str (optional)
         name for the alpha-carbon atom
     check_protein: bool (optional)
         whether to raise an error if the provided atomgroup is not a

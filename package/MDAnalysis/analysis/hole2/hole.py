@@ -329,7 +329,7 @@ def hole(pdbfile,
         frames).
     keep_files : bool, optional
         Whether to keep the HOLE output files and possible temporary
-        symlinks after running the function. Default: ``True``
+        symlinks after running the function.
 
 
     Returns
@@ -428,22 +428,22 @@ class HoleAnalysis(AnalysisBase):
     Parameters
     ----------
 
-    universe: Universe or AtomGroup
+    universe : Universe or AtomGroup
         The Universe or AtomGroup to apply the analysis to.
-    select: string, optional
+    select : string, optional
         The selection string to create an atom selection that the HOLE
         analysis is applied to.
-    vdwradii_file: str, optional
+    vdwradii_file : str, optional
         path to the file specifying van der Waals radii for each atom. If
         set to ``None``, then a set of default radii,
         :data:`SIMPLE2_RAD`, is used (an extension of ``simple.rad`` from
         the HOLE distribution).
-    executable: str, optional
+    executable : str, optional
         Path to the :program:`hole` executable.
         (e.g. ``~/hole2/exe/hole``). If
         :program:`hole` is found on the :envvar:`PATH`, then the bare
         executable name is sufficient.
-    tmpdir: str, optional
+    tmpdir : str, optional
         The temporary directory that files can be symlinked to, to shorten
         the path name. HOLE can only read filenames up to a certain length.
     cpoint : array_like, 'center_of_geometry' or None, optional
@@ -506,9 +506,9 @@ class HoleAnalysis(AnalysisBase):
         account during the calculation; wildcards are *not*
         supported. Note that all residues must have 3 letters. Pad
         with space on the right-hand side if necessary.
-    prefix: str, optional
+    prefix : str, optional
         Prefix for HOLE output files.
-    write_input_files: bool, optional
+    write_input_files : bool, optional
         Whether to write out the input HOLE text as files.
         Files are called `hole.inp`.
 
@@ -674,7 +674,7 @@ class HoleAnalysis(AnalysisBase):
             By default,
             :program:`hole` will use the time of the day.
             For reproducible runs (e.g., for testing) set ``random_seed``
-            to an integer. Default: ``None``
+            to an integer.
         """
         self.random_seed = random_seed
         return super(HoleAnalysis, self).run(start=start, stop=stop,
@@ -905,18 +905,17 @@ class HoleAnalysis(AnalysisBase):
 
         Parameters
         ----------
-        frames: array-like, optional
+        frames : array-like, optional
             Frames to plot. If ``None``, plots all of them.
-            Default: ``None``
-        color: str or array-like, optional
+        color : str or array-like, optional
             Color or colors for the plot. If ``None``, colors are
-            drawn from ``cmap``. Default: ``None``
-        cmap: str, optional
+            drawn from ``cmap``.
+        cmap : str, optional
             color map to make colors for the plot if ``color`` is
             not given. Names should be from the ``matplotlib.pyplot.cm``
-            module. Default: 'viridis'
-        linestyle: str or array-like, optional
-            Line style for the plot. Default: '-'
+            module.
+        linestyle : str or array-like, optional
+            Line style for the plot.
 
 
         Returns
@@ -957,27 +956,26 @@ class HoleAnalysis(AnalysisBase):
         ----------
         frames: array-like, optional
             Frames to plot. If ``None``, plots all of them.
-            Default: ``None``
         color: str or array-like, optional
             Color or colors for the plot. If ``None``, colors are
-            drawn from ``cmap``. Default: ``None``
+            drawn from ``cmap``.
         cmap: str, optional
             color map to make colors for the plot if ``color`` is
             not given. Names should be from the ``matplotlib.pyplot.cm``
-            module. Default: 'viridis'
+            module.
         linestyle: str or array-like, optional
-            Line style for the plot. Default: '-'
+            Line style for the plot.
         y_shift : float, optional
             displace each :math:`R(\zeta)` profile by ``y_shift`` in the
-            :math:`y`-direction for clearer visualization. Default: 0.0
+            :math:`y`-direction for clearer visualization.
         label : bool or string, optional
             If ``False`` then no legend is
-            displayed. Default: ``True``
+            displayed.
         ax : :class:`matplotlib.axes.Axes`
             If no `ax` is supplied or set to ``None`` then the plot will
-            be added to the current active axes. Default: ``None``
+            be added to the current active axes.
         legend_loc : str, optional
-            Location of the legend. Default: 'best'
+            Location of the legend.
         kwargs :  `**kwargs`
             All other `kwargs` are passed to :func:`matplotlib.pyplot.plot`.
 
@@ -1023,26 +1021,25 @@ class HoleAnalysis(AnalysisBase):
 
         Parameters
         ----------
-        frames: array-like, optional
+        frames : array-like, optional
             Frames to plot. If ``None``, plots all of them.
-            Default: ``None``
-        color: str or array-like, optional
+        color : str or array-like, optional
             Color or colors for the plot. If ``None``, colors are
-            drawn from ``cmap``. Default: ``None``
-        cmap: str, optional
+            drawn from ``cmap``.
+        cmap : str, optional
             color map to make colors for the plot if ``color`` is
             not given. Names should be from the ``matplotlib.pyplot.cm``
-            module. Default: 'viridis'
-        linestyle: str or array-like, optional
-            Line style for the plot. Default: '-'
+            module.
+        linestyle : str or array-like, optional
+            Line style for the plot.
         r_max : float, optional
             only display radii up to ``r_max``. If ``None``, all radii are
-            plotted. Default: ``None``
+            plotted.
         ax : :class:`matplotlib.axes.Axes`
             If no `ax` is supplied or set to ``None`` then the plot will
-            be added to the current active axes. Default: ``None``
+            be added to the current active axes.
         ylabel : str, optional
-            Y-axis label. Default: 'Frames'
+            Y-axis label.
         **kwargs :
             All other `kwargs` are passed to :func:`matplotlib.pyplot.plot`.
 
@@ -1094,13 +1091,12 @@ class HoleAnalysis(AnalysisBase):
 
         Parameters
         ----------
-        order_parameters: array-like or string
+        order_parameters : array-like or string
             Sequence or text file containing order parameters (float
             numbers) corresponding to the frames in the trajectory. Must
             be same length as trajectory.
-        frames: array-like, optional
+        frames : array-like, optional
             Selected frames to return. If ``None``, returns all of them.
-            Default: ``None``
 
         Returns
         -------
@@ -1159,27 +1155,26 @@ class HoleAnalysis(AnalysisBase):
 
         Parameters
         ----------
-        order_parameters: array-like or string
+        order_parameters : array-like or string
             Sequence or text file containing order parameters (float
             numbers) corresponding to the frames in the trajectory. Must
             be same length as trajectory.
-        aggregator: callable, optional
+        aggregator : callable, optional
             Function applied to the radius array of each profile to
-            reduce it to one representative value. Default: ``min``
-        frames: array-like, optional
+            reduce it to one representative value.
+        frames : array-like, optional
             Frames to plot. If ``None``, plots all of them.
-            Default: ``None``
-        color: str or array-like, optional
-            Color for the plot. Default: 'blue'
-        linestyle: str or array-like, optional
-            Line style for the plot. Default: '-'
+        color : str or array-like, optional
+            Color for the plot.
+        linestyle : str or array-like, optional
+            Line style for the plot.
         ax : :class:`matplotlib.axes.Axes`
             If no `ax` is supplied or set to ``None`` then the plot will
-            be added to the current active axes. Default: ``None``
+            be added to the current active axes.
         xlabel : str, optional
-            X-axis label. Default: 'Order parameter'
+            X-axis label.
         ylabel : str, optional
-            Y-axis label. Default: 'Minimum HOLE pore radius $r$ ($\AA$)'
+            Y-axis label.
         **kwargs :
             All other `kwargs` are passed to :func:`matplotlib.pyplot.plot`.
 
@@ -1210,14 +1205,12 @@ class HoleAnalysis(AnalysisBase):
 
         Parameters
         ----------
-        frames: int or iterable of ints, optional
+        frames : int or iterable of ints, optional
             Profiles to include by frame. If ``None``, includes
-            all frames. Default: ``None``
-
-        flat: bool, optional
+            all frames.
+        flat : bool, optional
             Whether to flatten the list of field arrays into a
-            single array. Default: ``False``
-
+            single array.
 
         Returns
         -------
@@ -1248,13 +1241,13 @@ class HoleAnalysis(AnalysisBase):
 
         Parameters
         ----------
-        frames: int or iterable of ints, optional
+        frames : int or iterable of ints, optional
             Profiles to include by frame. If ``None``, includes
-            all frames. Default: ``None``
-
-        bins: int or iterable of edges, optional
-            If bins is an int, it defines the number of equal-width bins in the given range. If bins is a sequence, it defines a monotonically increasing array of bin edges, including the rightmost edge, allowing for non-uniform bin widths. Default: 100
-
+            all frames.
+        bins : int or iterable of edges, optional
+            If bins is an int, it defines the number of equal-width bins in the given range.
+            If bins is a sequence, it defines a monotonically increasing array of bin edges,
+            including the rightmost edge, allowing for non-uniform bin widths.
         range : (float, float), optional
             The lower and upper range of the bins.
             If not provided, ``range`` is simply ``(a.min(), a.max())``,
@@ -1302,17 +1295,16 @@ class HoleAnalysis(AnalysisBase):
 
         Parameters
         ----------
-        aggregator: callable, optional
+        aggregator : callable, optional
             this function must take an iterable of floats and return a
-            single value. Default: np.mean
-
-        frames: int or iterable of ints, optional
+            single value.
+        frames : int or iterable of ints, optional
             Profiles to include by frame. If ``None``, includes
-            all frames. Default: ``None``
-
-        bins: int or iterable of edges, optional
-            If bins is an int, it defines the number of equal-width bins in the given range. If bins is a sequence, it defines a monotonically increasing array of bin edges, including the rightmost edge, allowing for non-uniform bin widths. Default: 100
-
+            all frames.
+        bins : int or iterable of edges, optional
+            If bins is an int, it defines the number of equal-width bins in the given range.
+            If bins is a sequence, it defines a monotonically increasing array of bin edges,
+            including the rightmost edge, allowing for non-uniform bin widths.
         range : (float, float), optional
             The lower and upper range of the bins.
             If not provided, ``range`` is simply ``(a.min(), a.max())``,
@@ -1341,48 +1333,37 @@ class HoleAnalysis(AnalysisBase):
 
         Parameters
         ----------
-        frames: int or iterable of ints, optional
+        frames : int or iterable of ints, optional
             Profiles to include by frame. If ``None``, includes
-            all frames. Default: ``None``
-
-        bins: int or iterable of edges, optional
-            If bins is an int, it defines the number of equal-width bins in the given range. If bins is a sequence, it defines a monotonically increasing array of bin edges, including the rightmost edge, allowing for non-uniform bin widths. Default: 100
-
+            all frames.
+        bins : int or iterable of edges, optional
+            If bins is an int, it defines the number of equal-width bins in the given range.
+            If bins is a sequence, it defines a monotonically increasing array of bin edges,
+            including the rightmost edge, allowing for non-uniform bin widths.
         range : (float, float), optional
             The lower and upper range of the bins.
             If not provided, ``range`` is simply ``(a.min(), a.max())``,
             where ``a`` is the array of reaction coordinates.
             Values outside the range are ignored. The first element of the range must be less than or equal to the second.
-
-        color: str or array-like, optional
-            Color for the plot. Default: 'blue'
-
-        linestyle: str or array-like, optional
-            Line style for the plot. Default: '-'
-
+        color : str or array-like, optional
+            Color for the plot.
+        linestyle : str or array-like, optional
+            Line style for the plot.
         ax : :class:`matplotlib.axes.Axes`
             If no `ax` is supplied or set to ``None`` then the plot will
-            be added to the current active axes. Default: ``None``
-
+            be added to the current active axes.
         xlabel : str, optional
-            X-axis label. Default: 'Order parameter'
-
-        fill_alpha: float, optional
-            Opacity of filled standard deviation area Default: 0.3
-
-        n_std: int, optional
+            X-axis label.
+        fill_alpha : float, optional
+            Opacity of filled standard deviation area
+        n_std : int, optional
             Number of standard deviations from the mean to fill between.
-            Default: 1
-
-        legend: bool, optional
-            Whether to plot a legend. Default: True
-
-        legend_loc: str, optional
-            Location of legend. Default: 'best'
-
+        legend : bool, optional
+            Whether to plot a legend.
+        legend_loc : str, optional
+            Location of legend.
         **kwargs :
             All other `kwargs` are passed to :func:`matplotlib.pyplot.plot`.
-
 
         Returns
         -------
@@ -1425,31 +1406,30 @@ class HoleAnalysis(AnalysisBase):
 
         Parameters
         ----------
-        order_parameters: array-like or string
+        order_parameters : array-like or string
             Sequence or text file containing order parameters(float
             numbers) corresponding to the frames in the trajectory. Must
             be same length as trajectory.
-        frames: array-like, optional
+        frames : array-like, optional
             Frames to plot. If ``None``, plots all of them.
-            Default: ``None``
-        color: str or array-like, optional
+        color : str or array-like, optional
             Color or colors for the plot. If ``None``, colors are
-            drawn from ``cmap``. Default: ``None``
-        cmap: str, optional
+            drawn from ``cmap``.
+        cmap : str, optional
             color map to make colors for the plot if ``color`` is
             not given. Names should be from the ``matplotlib.pyplot.cm``
-            module. Default: 'viridis'
-        linestyle: str or array-like, optional
-            Line style for the plot. Default: '-'
-        ax: : class: `matplotlib.axes.Axes`
+            module.
+        linestyle : str or array-like, optional
+            Line style for the plot.
+        ax : : class: `matplotlib.axes.Axes`
             If no `ax` is supplied or set to ``None`` then the plot will
-            be added to the current active axes. Default: ``None``
-        r_max: float, optional
+            be added to the current active axes.
+        r_max : float, optional
             only display radii up to ``r_max``. If ``None``, all radii are
-            plotted. Default: ``None``
-        ylabel: str, optional
-            Y-axis label. Default: 'Order parameter'
-        **kwargs:
+            plotted.
+        ylabel : str, optional
+            Y-axis label.
+        **kwargs :
             All other `kwargs` are passed to: func: `matplotlib.pyplot.plot`.
 
         Returns
