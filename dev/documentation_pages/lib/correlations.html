@@ -302,13 +302,13 @@ The angular brackets represent an average over all time origins, <span class="ma
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>list_of_sets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of sets. Each set corresponds to data from a single frame. Each element in a set
+<li><strong>list_of_sets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – List of sets. Each set corresponds to data from a single frame. Each element in a set
 may be, for example, an atom id or a tuple of atoms ids. In the case of calculating the
 survival probability of water around a protein, these atom ids in a given set will be
 those of the atoms which are within a cutoff distance of the protein at a given frame.</li>
-<li><strong>tau_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The last tau (lag time, inclusive) for which to calculate the autocorrelation. e.g if tau_max = 20,
+<li><strong>tau_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The last tau (lag time, inclusive) for which to calculate the autocorrelation. e.g if tau_max = 20,
 the survival probability will be calculated over 20 frames.</li>
-<li><strong>window_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – <dl class="docutils">
+<li><strong>window_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – <dl class="docutils">
 <dt>The step size for t0 to perform autocorrelation. Ideally, window_step will be larger than</dt>
 <dd>tau_max to ensure independence of each window for which the calculation is performed.
 Default is 1.</dd>
@@ -362,9 +362,9 @@ intermittency in the calculation of hydrogen bond lifetimes.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>list_of_sets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – In the simple case of e.g survival probability, a list of sets of atom ids present at each frame, where a
+<li><strong>list_of_sets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – In the simple case of e.g survival probability, a list of sets of atom ids present at each frame, where a
 single set contains atom ids at a given frame, e.g [{0, 1}, {0}, {0}, {0, 1}]</li>
-<li><strong>intermittency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The maximum gap allowed. The default <cite>intermittency=0</cite> means that if the datapoint is missing at any frame, no
+<li><strong>intermittency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The maximum gap allowed. The default <cite>intermittency=0</cite> means that if the datapoint is missing at any frame, no
 changes are made to the data. With the value of <cite>intermittency=2</cite>, all datapoints missing for up to two
 consecutive frames will be instead be considered present.</li>
 </ul>
@@ -376,7 +376,7 @@ both atoms will be considered present throughout and thus the returned list of s
 [{0, 1}, {0, 1}, {0, 1}, {0, 1}].</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
 </td>
 </tr>
 </tbody>

@@ -208,7 +208,7 @@
 <p>The <a class="reference internal" href="#MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d" title="MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_streamlines_3d()</span></code></a> function can generate a 3D flow field from
 a MD trajectory, for instance, lipid molecules in a virus capsid. It can make
 use of multiple cores to perform the analyis in parallel (using
-<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a>).</p>
+<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.9)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a>).</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
@@ -225,23 +225,23 @@ use of multiple cores to perform the analyis in parallel (using
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>topology_file_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Absolute path to the topology file</li>
-<li><strong>trajectory_file_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Absolute path to the trajectory file. It will normally be desirable
+<li><strong>topology_file_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Absolute path to the topology file</li>
+<li><strong>trajectory_file_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Absolute path to the trajectory file. It will normally be desirable
 to filter the trajectory with a tool such as GROMACS
 <strong class="program">g_filter</strong> (see <a class="reference internal" href="streamlines.html#chavent2014" id="id2">[Chavent2014]</a>)</li>
-<li><strong>grid_spacing</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – The spacing between grid lines (angstroms)</li>
-<li><strong>MDA_selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – MDAnalysis selection string</li>
-<li><strong>start_frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – First frame number to parse</li>
-<li><strong>end_frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Last frame number to parse</li>
-<li><strong>xmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Minimum coordinate boundary for x-axis (angstroms)</li>
-<li><strong>xmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Maximum coordinate boundary for x-axis (angstroms)</li>
-<li><strong>ymin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Minimum coordinate boundary for y-axis (angstroms)</li>
-<li><strong>ymax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Maximum coordinate boundary for y-axis (angstroms)</li>
-<li><strong>maximum_delta_magnitude</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Absolute value of the largest displacement tolerated for the
+<li><strong>grid_spacing</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – The spacing between grid lines (angstroms)</li>
+<li><strong>MDA_selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – MDAnalysis selection string</li>
+<li><strong>start_frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – First frame number to parse</li>
+<li><strong>end_frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Last frame number to parse</li>
+<li><strong>xmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Minimum coordinate boundary for x-axis (angstroms)</li>
+<li><strong>xmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Maximum coordinate boundary for x-axis (angstroms)</li>
+<li><strong>ymin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Minimum coordinate boundary for y-axis (angstroms)</li>
+<li><strong>ymax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Maximum coordinate boundary for y-axis (angstroms)</li>
+<li><strong>maximum_delta_magnitude</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Absolute value of the largest displacement tolerated for the
 centroid of a group of particles ( angstroms). Values above this
 displacement will not count in the streamplot (treated as
 excessively large displacements crossing the periodic boundary)</li>
-<li><strong>num_cores</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> or </em><em>'maximum'</em><em> (</em><em>optional</em><em>)</em>) – The number of cores to use. (Default ‘maximum’ uses all available
+<li><strong>num_cores</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>'maximum'</em><em> (</em><em>optional</em><em>)</em>) – The number of cores to use. (Default ‘maximum’ uses all available
 cores)</li>
 </ul>
 </td>

@@ -741,18 +741,18 @@ customized <cite>donors</cite> and/or <cite>acceptors</cite>.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</li>
-<li><strong>selection1</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Selection string for first selection [‘protein’]</li>
-<li><strong>selection2</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Selection string for second selection [‘not resname SOL’]
+<li><strong>selection1</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Selection string for first selection [‘protein’]</li>
+<li><strong>selection2</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Selection string for second selection [‘not resname SOL’]
 This string selects everything except water where water is assumed
 to have a residue name as SOL.</li>
-<li><strong>water_selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <p>Selection string for bridging water selection [‘resname SOL’]
+<li><strong>water_selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <p>Selection string for bridging water selection [‘resname SOL’]
 The default selection assumes that the water molecules have residue
 name “SOL”. Change it to the appropriate selection for your
 specific force field.</p>
 <p>However, in theory, this selection can be anything which forms
 a hydrogen bond with selection 1 and selection 2.</p>
 </li>
-<li><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – <p>The maximum number of water bridges linking both selections.
+<li><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – <p>The maximum number of water bridges linking both selections.
 if the order is set to 3, then all the residues linked with less than
 three water molecules will be detected. [1]</p>
 <p>Computation of high order water bridges can be very time-consuming.
@@ -766,12 +766,12 @@ value for <cite>selection1_type</cite> automatically determines how
 ‘both’ then <cite>selection2</cite> will also contain ‘both’. If <cite>selection1</cite>
 is set to ‘donor’ then <cite>selection2</cite> is ‘acceptor’ (and vice versa).
 [‘both’].</li>
-<li><strong>update_selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Update selection 1 and 2 at each frame. Setting to <code class="docutils literal notranslate"><span class="pre">True</span></code> if the
+<li><strong>update_selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Update selection 1 and 2 at each frame. Setting to <code class="docutils literal notranslate"><span class="pre">True</span></code> if the
 selection is not static. Selections are filtered first to speed up
 performance. Thus, setting to <code class="docutils literal notranslate"><span class="pre">True</span></code> is recommended if contact
 surface between selection 1 and selection 2 is constantly
 changing. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
-<li><strong>update_water_selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <p>Update selection of water at each frame. Setting to <code class="docutils literal notranslate"><span class="pre">False</span></code> is
+<li><strong>update_water_selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <p>Update selection of water at each frame. Setting to <code class="docutils literal notranslate"><span class="pre">False</span></code> is
 <strong>only</strong> recommended when the total amount of water molecules in the
 simulation are small and when water molecules remain static across
 the simulation.</p>
@@ -781,15 +781,15 @@ update the water selection and set keyword <cite>filter_first</cite> to
 <code class="docutils literal notranslate"><span class="pre">True</span></code> so as to filter out water not residing between the two
 selections. [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p>
 </li>
-<li><strong>filter_first</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Filter the water selection to only include water within 4 Å + <cite>order</cite> *
+<li><strong>filter_first</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Filter the water selection to only include water within 4 Å + <cite>order</cite> *
 (2 Å + <cite>distance</cite>) away from <cite>both</cite> selection 1 and selection 2.
 Selection 1 and selection 2 are both filtered to only include atoms
 with the same distance away from the other selection. [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
-<li><strong>distance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Distance cutoff for hydrogen bonds; only interactions with a H-A
+<li><strong>distance</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Distance cutoff for hydrogen bonds; only interactions with a H-A
 distance &lt;= <cite>distance</cite> (and the appropriate D-H-A angle, see
 <cite>angle</cite>) are recorded. (Note: <cite>distance_type</cite> can change this to
 the D-A distance.) [3.0]</li>
-<li><strong>angle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Angle cutoff for hydrogen bonds; an ideal H-bond has an angle of
+<li><strong>angle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Angle cutoff for hydrogen bonds; an ideal H-bond has an angle of
 180º.  A hydrogen bond is only recorded if the D-H-A angle is
 &gt;=  <cite>angle</cite>. The default of 120º also finds fairly non-specific
 hydrogen interactions and possibly better value is 150º. [120.0]</li>
@@ -810,11 +810,11 @@ atom (“hydrogen”). If using “heavy” then one should set the
 “sele1_sele2”, for each hydrogen bond, the one close to selection 1
 will be placed before selection 2. If set to “donor_acceptor”, the
 donor will be placed before acceptor. “sele1_sele2”]</li>
-<li><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – If set to <code class="docutils literal notranslate"><span class="pre">True</span></code> enables per-frame debug logging. This is disabled
+<li><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – If set to <code class="docutils literal notranslate"><span class="pre">True</span></code> enables per-frame debug logging. This is disabled
 by default because it generates a very large amount of output in
 the log file. (Note that a logger must have been started to see
 the output, e.g. using <a class="reference internal" href="../lib/log.html#MDAnalysis.start_logging" title="MDAnalysis.start_logging"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.start_logging()</span></code></a>.)</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Toggle progress output. (Can also be given as keyword argument to
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Toggle progress output. (Can also be given as keyword argument to
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code>.)</li>
 </ul>
 </td>
@@ -840,7 +840,7 @@ of a water bridge existence.</p>
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS">
-<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('O', 'NE2', 'OC2', 'OG', 'OE1', 'OG1', 'OE2', 'OH', 'OC1', 'OD2', 'OH2', 'OD1', 'ND1', 'SD', 'OW', 'SG'), 'GLYCAM06': ('NT', 'OW', 'OH', 'O2', 'SM', 'OY', 'OS', 'N', 'O'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('OW', 'OH', 'OG1', 'NE2', 'OD1', 'OE2', 'OD2', 'ND1', 'OG', 'SG', 'SD', 'OH2', 'OC1', 'OC2', 'OE1', 'O'), 'GLYCAM06': ('SM', 'OW', 'OH', 'N', 'OY', 'NT', 'OS', 'O', 'O2'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default atom names that are treated as hydrogen <em>acceptors</em>
 (see <a class="reference internal" href="hbond_analysis.html#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>acceptors</cite> to add a list of additional acceptor names.</p>
@@ -848,7 +848,7 @@ use the keyword <cite>acceptors</cite> to add a list of additional acceptor name
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS">
-<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('NE2', 'NH2', 'NZ', 'OG', 'OG1', 'ND2', 'NE1', 'OH', 'NE', 'OH2', 'N', 'ND1', 'OW', 'SG', 'NH1'), 'GLYCAM06': ('NT', 'OH', 'N', 'OW', 'N3'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('ND2', 'OW', 'NE', 'NZ', 'N', 'OG1', 'NH2', 'NE1', 'OH', 'NH1', 'ND1', 'OG', 'SG', 'OH2', 'NE2'), 'GLYCAM06': ('OW', 'OH', 'N', 'NT', 'N3'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
 (see <a class="reference internal" href="hbond_analysis.html#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>donors</cite> to add a list of additional donor names.</p>
@@ -867,7 +867,7 @@ See <a class="reference internal" href="#wb-count-by-time"><span class="std std-
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>counts</strong> – Returns a time series <code class="docutils literal notranslate"><span class="pre">N(t)</span></code> where <code class="docutils literal notranslate"><span class="pre">N</span></code> is the total
 number of observed water bridges at time <code class="docutils literal notranslate"><span class="pre">t</span></code>.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></td>
 </tr>
 </tbody>
 </table>
@@ -888,13 +888,13 @@ for detail.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>counts</strong> – Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> containing atom indices for <em>A</em> and
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>counts</strong> – Returns a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> containing atom indices for <em>A</em> and
 <em>B</em>, residue names, residue numbers, atom names (for both A and B) and
 the fraction of the total time during which the water bridge was
 detected. This method returns None if method
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">WaterBridgeAnalysis.run()</span></code> was not executed first.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></td>
 </tr>
 </tbody>
 </table>
@@ -936,7 +936,7 @@ can be retrived from the universe:</p>
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.r_cov">
 <code class="descname">r_cov</code><em class="property"> = {'N': 1.31, 'O': 1.31, 'P': 1.58, 'S': 1.55}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.r_cov" title="Permalink to this definition">¶</a></dt>
-<dd><p>A <a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.defaultdict" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">collections.defaultdict</span></code></a> of covalent radii of common donors
+<dd><p>A <a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.defaultdict" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">collections.defaultdict</span></code></a> of covalent radii of common donors
 (used in :meth`_get_bonded_hydrogens_list` to check if a hydrogen is
 sufficiently close to its donor heavy atom). Values are stored for
 N, O, P, and S. Any other heavy atoms are assumed to have hydrogens
@@ -974,7 +974,7 @@ assign to a variable:</p>
 <code class="descname">timesteps_by_type</code><span class="sig-paren">(</span><em>analysis_func=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hbonds/wbridge_analysis.html#WaterBridgeAnalysis.timesteps_by_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.timesteps_by_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Frames during which each water bridges existed, sorted by each water bridges.</p>
 <p>Processes <code class="xref py py-attr docutils literal notranslate"><span class="pre">WaterBridgeAnalysis._network</span></code> and returns a
-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> containing atom indices, residue names, residue
+<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> containing atom indices, residue names, residue
 numbers (from selection 1 and selection 2) and each timestep at which the
 water bridge was detected.</p>
 <p>Similar to <a class="reference internal" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.count_by_type" title="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.count_by_type"><code class="xref py py-meth docutils literal notranslate"><span class="pre">count_by_type()</span></code></a> and
@@ -986,7 +986,7 @@ supplying an analysis_func.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>data</strong></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></td>
 </tr>
 </tbody>
 </table>

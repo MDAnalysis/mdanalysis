@@ -241,7 +241,7 @@ method.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ensembles</strong> (<em>MDAnalysis.Universe</em><em>, or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em> or </em><em>list of list thereof</em>) – The function takes either a single Universe object, a list of Universe
+<li><strong>ensembles</strong> (<em>MDAnalysis.Universe</em><em>, or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em> or </em><em>list of list thereof</em>) – The function takes either a single Universe object, a list of Universe
 objects or a list of lists of Universe objects. If given a single
 universe, it simply works on the conformations in the trajectory. If
 given a list of ensembles, it will merge them and analyse them together,
@@ -249,21 +249,21 @@ keeping track of the ensemble to which each of the conformations belong.
 Finally, if passed a list of list of ensembles, the function will just
 repeat the functionality just described - merging ensembles for each
 ensemble in the outer loop.</li>
-<li><strong>method</strong> (<em>MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – A single or a list of instances of the DimensionalityReductionMethod
+<li><strong>method</strong> (<em>MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – A single or a list of instances of the DimensionalityReductionMethod
 classes from the dimensionality_reduction module. A separate analysis
 will be run for each method. Note that different parameters for the
 same method can be explored by adding different instances of
 the same dimensionality reduction class. Options are Stochastic
 Proximity Embedding or Principal Component Analysis.</li>
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format (default is “name CA”)</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format (default is “name CA”)</li>
 <li><strong>distance_matrix</strong> (<a class="reference internal" href="utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix" title="MDAnalysis.analysis.encore.utils.TriangularMatrix"><em>encore.utils.TriangularMatrix</em></a><em>, </em><em>optional</em>) – Distance matrix for stochastic proximity embedding. If this parameter
 is not supplied an RMSD distance matrix will be calculated on the fly (default).
 If several distance matrices are supplied, an analysis will be done
 for each of them. The number of provided distance matrices should
 match the number of provided ensembles.</li>
-<li><strong>allow_collapsed_result</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether a return value of a list of one value should be collapsed
+<li><strong>allow_collapsed_result</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether a return value of a list of one value should be collapsed
 into just the value (default = True).</li>
-<li><strong>ncores</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum number of cores to be used (default is 1).</li>
+<li><strong>ncores</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum number of cores to be used (default is 1).</li>
 </ul>
 </td>
 </tr>
@@ -353,7 +353,7 @@ sklearn.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dimension</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Number of dimensions to which the conformational space will be
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dimension</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of dimensions to which the conformational space will be
 reduced to (default is 3).</td>
 </tr>
 </tbody>
@@ -369,13 +369,13 @@ reduced to (default is 3).</td>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>dimension</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Number of dimensions to which the conformational space will be
+<li><strong>dimension</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of dimensions to which the conformational space will be
 reduced to (default is 3).</li>
-<li><strong>min_lam</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – Final lambda learning rate (default is 0.1).</li>
-<li><strong>max_lam</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – Starting lambda learning rate parameter (default is 2.0).</li>
-<li><strong>ncycle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Number of cycles per run (default is 100). At the end of every
+<li><strong>min_lam</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Final lambda learning rate (default is 0.1).</li>
+<li><strong>max_lam</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Starting lambda learning rate parameter (default is 2.0).</li>
+<li><strong>ncycle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of cycles per run (default is 100). At the end of every
 cycle, lambda is updated.</li>
-<li><strong>nstep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Number of steps per cycle (default is 10000)</li>
+<li><strong>nstep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of steps per cycle (default is 10000)</li>
 </ul>
 </td>
 </tr>
@@ -414,13 +414,13 @@ Journal of Molecular Graphics and Modelling 22 (2003) 133–140</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>s</strong> (<em>encore.utils.TriangularMatrix object</em>) – Triangular matrix containing the distance values for each pair of
 elements in the original space.</li>
-<li><strong>rco</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – neighborhood distance cut-off</li>
-<li><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of dimensions for the embedded space</li>
-<li><strong>minlam</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – final learning parameter</li>
-<li><strong>maxlam</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – starting learning parameter</li>
-<li><strong>ncycle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of cycles. Each cycle is composed of nstep steps. At the end
+<li><strong>rco</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – neighborhood distance cut-off</li>
+<li><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of dimensions for the embedded space</li>
+<li><strong>minlam</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – final learning parameter</li>
+<li><strong>maxlam</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – starting learning parameter</li>
+<li><strong>ncycle</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of cycles. Each cycle is composed of nstep steps. At the end
 of each cycle, the lerning parameter lambda is updated.</li>
-<li><strong>nstep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of coordinate update steps for each cycle</li>
+<li><strong>nstep</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of coordinate update steps for each cycle</li>
 </ul>
 </td>
 </tr>

@@ -271,7 +271,7 @@ to the function.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Desired cutoff distance</li>
+<li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Desired cutoff distance</li>
 <li><strong>coords</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – atom coordinates of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span></code> for <code class="docutils literal notranslate"><span class="pre">N</span></code> atoms.
 <code class="docutils literal notranslate"><span class="pre">dtype=numpy.float32</span></code>. For Non-PBC calculations,
 all the coords must be within the bounding box specified
@@ -282,7 +282,7 @@ by <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coord
 <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>. For non-PBC
 evaluations, provide an orthogonal bounding box
 (dtype = numpy.float32)</li>
-<li><strong>max_gridsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – maximum number of cells in the grid. This parameter
+<li><strong>max_gridsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – maximum number of cells in the grid. This parameter
 can be tuned for superior performance.</li>
 <li><strong>pbc</strong> (<em>boolean</em>) – Handle to switch periodic boundary conditions on/off [True]</li>
 </ul>
@@ -387,7 +387,7 @@ be used to  generate the desired results on demand.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Specified cutoff distance</li>
+<li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Specified cutoff distance</li>
 <li><strong>coords</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – Array with coordinates of atoms of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span></code> for
 <code class="docutils literal notranslate"><span class="pre">N</span></code> particles. <code class="docutils literal notranslate"><span class="pre">dtype</span></code> must be <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code></li>
 <li><strong>searchcoords</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – Array with query coordinates. Shape must be <code class="docutils literal notranslate"><span class="pre">(M,</span> <span class="pre">3)</span></code>
@@ -420,7 +420,7 @@ query atom[i].<div class="highlight-python notranslate"><div class="highlight"><
 </div>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></td>
 </tr>
 </tbody>
 </table>
@@ -453,7 +453,7 @@ the atom-id of initial coordinates such that
 <code class="docutils literal notranslate"><span class="pre">initial_atom[indices[i][j]]</span></code> is a neighbor of <code class="docutils literal notranslate"><span class="pre">atom[i]</span></code>.</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></td>
 </tr>
 </tbody>
 </table>

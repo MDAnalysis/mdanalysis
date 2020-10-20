@@ -241,7 +241,7 @@ compute the MSD with <span class="math notranslate nohighlight">\(N log(N)\)</sp
 Transform is known and can be accessed by setting <code class="docutils literal notranslate"><span class="pre">fft=True</span></code> <a class="reference internal" href="../references.html#calandri2011" id="id2">[Calandri2011]</a>
 <a class="reference internal" href="../references.html#buyl2018" id="id3">[Buyl2018]</a>. The FFT-based approach requires that the
 <a class="reference external" href="https://github.com/pdebuyl-lab/tidynamics">tidynamics</a> package is
-installed; otherwise the code will raise an <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ImportError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ImportError</span></code></a>.</p>
+installed; otherwise the code will raise an <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ImportError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ImportError</span></code></a>.</p>
 <p>Please cite <a class="reference internal" href="../references.html#calandri2011" id="id4">[Calandri2011]</a> <a class="reference internal" href="../references.html#buyl2018" id="id5">[Buyl2018]</a> if you use this module in addition to
 the normal MDAnalysis citations.</p>
 <div class="section" id="computing-an-msd">
@@ -389,10 +389,10 @@ arXiv:2003.09205 [Cond-Mat, Physics:Physics].</td></tr>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>u</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – An MDAnalysis <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code>.
 Note that <code class="xref py py-class docutils literal notranslate"><span class="pre">UpdatingAtomGroup</span></code> instances are not accepted.</li>
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – A selection string. Defaults to “all” in which case
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – A selection string. Defaults to “all” in which case
 all atoms are selected.</li>
 <li><strong>msd_type</strong> (<em>{'xyz'</em><em>, </em><em>'xy'</em><em>, </em><em>'yz'</em><em>, </em><em>'xz'</em><em>, </em><em>'x'</em><em>, </em><em>'y'</em><em>, </em><em>'z'}</em>) – Desired dimensions to be included in the MSD. Defaults to ‘xyz’.</li>
-<li><strong>fft</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, uses a fast FFT based algorithm for computation of
+<li><strong>fft</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, uses a fast FFT based algorithm for computation of
 the MSD. Otherwise, use the simple “windowed” algorithm.
 The tidynamics package is required for <cite>fft=True</cite>.
 Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
@@ -409,7 +409,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></td>
 </tr>
 </tbody>
 </table>
@@ -465,7 +465,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></td>
 </tr>
 </tbody>
 </table>
@@ -479,7 +479,7 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></td>
 </tr>
 </tbody>
 </table>
@@ -491,10 +491,10 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>u</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – An MDAnalysis <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code>.</li>
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – A selection string. Defaults to “all” in which case
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – A selection string. Defaults to “all” in which case
 all atoms are selected.</li>
 <li><strong>msd_type</strong> (<em>{'xyz'</em><em>, </em><em>'xy'</em><em>, </em><em>'yz'</em><em>, </em><em>'xz'</em><em>, </em><em>'x'</em><em>, </em><em>'y'</em><em>, </em><em>'z'}</em>) – Desired dimensions to be included in the MSD. Defaults to ‘xyz’.</li>
-<li><strong>fft</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, uses a fast FFT based algorithm for computation of
+<li><strong>fft</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, uses a fast FFT based algorithm for computation of
 the MSD. Otherwise, use the simple “windowed” algorithm.
 The tidynamics package is required for <cite>fft=True</cite>.
 Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
@@ -512,10 +512,10 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</li>
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</li>
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</li>
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</li>
 </ul>
 </td>
 </tr>

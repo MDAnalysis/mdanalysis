@@ -208,7 +208,7 @@ boundary conditions.</p>
 <dl class="class">
 <dt id="MDAnalysis.lib.pkdtree.PeriodicKDTree">
 <em class="property">class </em><code class="descclassname">MDAnalysis.lib.pkdtree.</code><code class="descname">PeriodicKDTree</code><span class="sig-paren">(</span><em>box=None</em>, <em>leafsize=10</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/pkdtree.html#PeriodicKDTree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.pkdtree.PeriodicKDTree" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrapper around <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.cKDTree.html#scipy.spatial.cKDTree" title="(in SciPy v1.5.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.spatial.cKDTree</span></code></a></p>
+<dd><p>Wrapper around <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.cKDTree.html#scipy.spatial.cKDTree" title="(in SciPy v1.5.3)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.spatial.cKDTree</span></code></a></p>
 <p>Creates an object which can handle periodic as well as
 non periodic boundary condtions depending on the parameters
 provided while constructing the tree.</p>
@@ -230,7 +230,7 @@ traced back to the original particle using the
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.trajectory.base.Timestep.dimensions</span></code> when
 periodic boundary conditions should be taken into account for
 the calculation of contacts.</li>
-<li><strong>leafsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of entries in leafs of the KDTree. If you suffer poor
+<li><strong>leafsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of entries in leafs of the KDTree. If you suffer poor
 performance you can play around with this number. Increasing the
 <cite>leafsize</cite> will speed up the construction of the KDTree but
 slow down the search.</li>
@@ -249,7 +249,7 @@ slow down the search.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>indices</strong> – neighbors for the last query points and search radius</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></td>
 </tr>
 </tbody>
 </table>
@@ -279,7 +279,7 @@ and their images.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>centers</strong> (<em>array_like</em><em> (</em><em>N</em><em>,</em><em>3</em><em>)</em>) – coordinate array to search for neighbors</li>
-<li><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – maximum distance to search for neighbors.</li>
+<li><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – maximum distance to search for neighbors.</li>
 </ul>
 </td>
 </tr>
@@ -295,7 +295,7 @@ and their images.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Maximum distance between pairs of coordinates</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Maximum distance between pairs of coordinates</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>pairs</strong> – Indices of all the pairs which are within the specified radius</td>
 </tr>
@@ -322,7 +322,7 @@ class initialization</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>centers</strong> (<em>array_like</em><em> (</em><em>N</em><em>,</em><em>3</em><em>)</em>) – coordinate array to search for neighbors</li>
-<li><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – maximum distance to search for neighbors.</li>
+<li><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – maximum distance to search for neighbors.</li>
 </ul>
 </td>
 </tr>
@@ -360,7 +360,7 @@ the parameter is only required for periodic calculations.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>coords</strong> (<em>array_like</em>) – Coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span></code> for N atoms.</li>
-<li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Specified cutoff distance to create duplicate images
+<li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Specified cutoff distance to create duplicate images
 Typically equivalent to the desired search radius
 or the maximum of the desired cutoff radius. Relevant images
 corresponding to every atom which lies
