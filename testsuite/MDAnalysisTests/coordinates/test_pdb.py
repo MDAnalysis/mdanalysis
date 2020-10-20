@@ -970,7 +970,7 @@ class TestWriterAlignments(object):
 
     def test_atomtype_alignment(self, writtenstuff):
         result_line = ("ATOM      1  H5T GUA A   1       7.974   6.430   9.561"
-                       "  1.00  0.00      RNAA H\n")
+                       "  1.00  0.00      RNAA  \n")
         assert_equal(writtenstuff[9], result_line)
 
 
@@ -1101,6 +1101,60 @@ def test_partially_missing_cryst():
     assert len(u.atoms) == 3
     assert len(u.trajectory) == 2
     assert_array_almost_equal(u.dimensions, 0.0)
+
+
+def test_write_no_atoms_elements(dummy_universe_without_elements):
+    """
+    If no element symbols are provided, the PDB writer guesses.
+    """
+    destination = StringIO()
+    with mda.coordinates.PDB.PDBWriter(destination) as writer:
+        writer.write(dummy_universe_without_elements.atoms)
+        content = destination.getvalue()
+    element_symbols = [
+        line[76:78].strip()
+        for line in content.splitlines()
+        if line[:6] == 'ATOM  '
+    ]
+    expectation = ['', '', '', '']
+    assert element_symbols == expectation
+
+
+def test_write_atom_elements(dummy_universe_without_elements):
+    """
+    If element symbols are provided, they are used when writing the file.
+
+    See `Issue 2423 <https://github.com/MDAnalysis/mdanalysis/issues/2423>`_.
+    """
+    expectation = ['S', 'O', '', 'C']
+    dummy_universe_with_elements = dummy_universe_without_elements
+    dummy_universe_with_elements.add_TopologyAttr('elements', expectation)
+    destination = StringIO()
+    with mda.coordinates.PDB.PDBWriter(destination) as writer:
+        writer.write(dummy_universe_without_elements.atoms)
+        content = destination.getvalue()
+    element_symbols = [
+        line[76:78].strip()
+        for line in content.splitlines()
+        if line[:6] == 'ATOM  '
+    ]
+    assert element_symbols == expectation
+
+
+def test_elements_roundtrip(tmpdir):
+    """
+    Roundtrip test for PDB elements reading/writing.
+    """
+    u = mda.Universe(CONECT)
+    elements = u.atoms.elements
+
+    outfile = os.path.join(str(tmpdir), 'elements.pdb')
+    with mda.coordinates.PDB.PDBWriter(outfile) as writer:
+        writer.write(u.atoms)
+
+    u_written = mda.Universe(outfile)
+
+    assert_equal(elements, u_written.atoms.elements)
 
 
 def test_cryst_meaningless_warning():

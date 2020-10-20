@@ -299,30 +299,26 @@ def test_PDB_elements():
     assert_equal(u.atoms.elements, element_list)
 
 
-PDB_missing_ele = """\
-REMARK For testing warnings in case of absent element information
-ATOM      1  N   ASN A   1      -8.901   4.127  -0.555  1.00  0.00
-ATOM      2  CA  ASN A   1      -8.608   3.135  -1.618  1.00  0.00
-ATOM      3  C   ASN A   1      -7.117   2.964  -1.897  1.00  0.00
-ATOM      4  O   ASN A   1      -6.634   1.849  -1.758  1.00  0.00
-TER       5
-HETATM    6 CU    CU A   2      03.000  00.000  00.000  1.00 00.00
-HETATM    7 FE    FE A   3      00.000  03.000  00.000  1.00 00.00
-HETATM    8 Mg    Mg A   4      03.000  03.000  03.000  1.00 00.00
-TER       9
+PDB_elements_partial = """\
+ATOM      1  N   PRO A   1       0.401  40.138  17.790  1.00 23.44            
+ATOM      2  CA  PRO A   1      -0.540  39.114  18.241  1.00 23.00           C
+ATOM      3  C   PRO A   1      -0.028  38.397  19.491  1.00 22.34            
+ATOM      4  O   PRO A   1       1.136  38.550  19.843  1.00 22.20           O
 """
 
 
-def test_missing_elements_warnings():
-    """The test checks whether it returns the appropriate warning on
-    encountering missing elements.
-    """
-    with pytest.warns(UserWarning) as record:
-        u = mda.Universe(StringIO(PDB_missing_ele), format='PDB')
+def test_missing_elements_noattribute():
+    """Check that:
 
-    assert len(record) == 1
-    assert record[0].message.args[0] == "Element information is absent or "\
-        "missing for a few atoms. Elements attributes will not be populated."
+    1) a warning is raised if elements are missing
+    2) the elements attribute is not set
+    """
+    wmsg = ("Element information is missing, elements attribute will not be "
+            "populated")
+    with pytest.warns(UserWarning, match=wmsg):
+        u = mda.Universe(PDB_small)
+    with pytest.raises(AttributeError):
+        _ = u.atoms.elements
 
 
 PDB_wrong_ele = """\
@@ -345,12 +341,11 @@ def test_wrong_elements_warnings():
     """The test checks whether there are invalid elements in the elements
     column which have been parsed and returns an appropriate warning.
     """
-    with pytest.warns(UserWarning) as record:
+    with pytest.warns(UserWarning, match='Unknown element XX found'):
         u = mda.Universe(StringIO(PDB_wrong_ele), format='PDB')
 
-    assert len(record) == 2
-    assert record[1].message.args[0] == "Invalid elements found in the PDB "\
-        "file, elements attributes will not be populated."
+    expected = np.array(['N', 'C', 'C', 'O', '', 'Cu', 'Fe', 'Mg'], dtype=object)
+    assert_equal(u.atoms.elements, expected)
 
 
 def test_nobonds_error():

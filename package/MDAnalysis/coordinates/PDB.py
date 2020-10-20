@@ -1040,6 +1040,7 @@ class PDBWriter(base.WriterBase):
         occupancies = get_attr('occupancies', 1.0)
         tempfactors = get_attr('tempfactors', 0.0)
         atomnames = get_attr('names', 'X')
+        elements = get_attr('elements', ' ')
         record_types = get_attr('record_types', 'ATOM')
 
         for i, atom in enumerate(atoms):
