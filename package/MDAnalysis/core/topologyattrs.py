@@ -2343,11 +2343,6 @@ class Bonds(_Connection):
         :class:`~MDAnalysis.core.topologyattrs.Bonds.fragment` this
         :class:`~MDAnalysis.core.groups.Atom` is part of.
 
-        Note
-        ----
-        This property is only accessible if the underlying topology contains
-        bond information.
-
 
         .. versionadded:: 0.20.0
         """
@@ -2362,11 +2357,6 @@ class Bonds(_Connection):
         A :class:`numpy.ndarray` with
         :attr:`~numpy.ndarray.shape`\ ``=(``\ :attr:`~AtomGroup.n_atoms`\ ``,)``
         and :attr:`~numpy.ndarray.dtype`\ ``=numpy.int64``.
-
-        Note
-        ----
-        This property is only accessible if the underlying topology contains
-        bond information.
 
 
         .. versionadded:: 0.20.0
@@ -2385,11 +2375,6 @@ class Bonds(_Connection):
         or more :class:`~MDAnalysis.core.topologyattrs.Bonds` between any pair
         of :class:`Atoms<MDAnalysis.core.groups.Atom>`
         within a fragment. Thus, a fragment typically corresponds to a molecule.
-
-        Note
-        ----
-        This property is only accessible if the underlying topology contains
-        bond information.
 
 
         .. versionadded:: 0.9.0
@@ -2414,8 +2399,6 @@ class Bonds(_Connection):
 
         Note
         ----
-        * This property is only accessible if the underlying topology contains
-          bond information.
         * The contents of the fragments may extend beyond the contents of this
           :class:`~MDAnalysis.core.groups.AtomGroup`.
 
@@ -2431,11 +2414,6 @@ class Bonds(_Connection):
         :class:`~MDAnalysis.core.topologyattrs.Bonds.fragments` the
         :class:`Atoms<MDAnalysis.core.groups.Atom>` of this
         :class:`~MDAnalysis.core.groups.AtomGroup` are part of.
-
-        Note
-        ----
-        This property is only accessible if the underlying topology contains
-        bond information.
 
 
         .. versionadded:: 0.20.0
