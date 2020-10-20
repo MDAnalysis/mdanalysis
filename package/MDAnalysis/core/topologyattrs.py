@@ -1116,7 +1116,7 @@ class Masses(AtomAttr):
 
         if isinstance(rg._ix, numbers.Integral):
             # for a single residue
-            masses = self.values[resatoms].sum()
+            masses = self.values[tuple(resatoms)].sum()
         else:
             # for a residuegroup
             masses = np.empty(len(rg))
@@ -1537,7 +1537,7 @@ class Charges(AtomAttr):
         resatoms = self.top.tt.residues2atoms_2d(rg.ix)
 
         if isinstance(rg._ix, numbers.Integral):
-            charges = self.values[resatoms].sum()
+            charges = self.values[tuple(resatoms)].sum()
         else:
             charges = np.empty(len(rg))
             for i, row in enumerate(resatoms):
