@@ -111,13 +111,9 @@ MOL2 format notes
     1   BENZENE 1   PERM    0   ****    ****    0   ROOT
 
 """
-from __future__ import absolute_import
-from six import raise_from
-
 import numpy as np
 
 from . import base
-from ..core import flags
 from ..lib import util
 
 
@@ -220,9 +216,9 @@ class MOL2Reader(base.ReaderBase):
         try:
             block = self.frames[frame]
         except IndexError:
-            raise_from(IOError("Invalid frame {0} for trajectory with length {1}"
-                          "".format(frame, len(self))),
-                       None)
+            errmsg = (f"Invalid frame {frame} for trajectory with length "
+                      f"{len(self)}")
+            raise IOError(errmsg) from None
 
         sections, coords = self.parse_block(block)
 
@@ -281,7 +277,7 @@ class MOL2Writer(base.WriterBase):
     multiframe = True
     units = {'time': None, 'length': 'Angstrom'}
 
-    def __init__(self, filename, n_atoms=None, convert_units=None):
+    def __init__(self, filename, n_atoms=None, convert_units=True):
         """Create a new MOL2Writer
 
         Parameters
@@ -289,12 +285,9 @@ class MOL2Writer(base.WriterBase):
         filename: str
             name of output file
         convert_units: bool (optional)
-            units are converted to the MDAnalysis base format; ``None`` selects
-            the value of :data:`MDAnalysis.core.flags` ['convert_lengths']
+            units are converted to the MDAnalysis base format; [``True``]
         """
         self.filename = filename
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
 
         self.frames_written = 0
@@ -310,15 +303,21 @@ class MOL2Writer(base.WriterBase):
         ----------
         obj : AtomGroup or Universe
         """
+        # Issue 2717
+        try:
+            obj = obj.atoms
+        except AttributeError:
+            errmsg = "Input obj is neither an AtomGroup or Universe"
+            raise TypeError(errmsg) from None
+
         traj = obj.universe.trajectory
         ts = traj.ts
 
         try:
             molecule = ts.data['molecule']
         except KeyError:
-            raise_from(NotImplementedError(
-                "MOL2Writer cannot currently write non MOL2 data"),
-                None)
+            errmsg = "MOL2Writer cannot currently write non MOL2 data"
+            raise NotImplementedError(errmsg) from None
 
         # Need to remap atom indices to 1 based in this selection
         mapping = {a: i for i, a in enumerate(obj.atoms, start=1)}
@@ -361,26 +360,32 @@ class MOL2Writer(base.WriterBase):
 
         check_sums = molecule[1].split()
         check_sums[0], check_sums[1] = str(len(obj.atoms)), str(len(bondgroup))
+
+        # prevent behavior change between repeated calls
+        # see gh-2678
+        molecule_0_store = molecule[0]
+        molecule_1_store = molecule[1]
+
         molecule[1] = "{0}\n".format(" ".join(check_sums))
         molecule.insert(0, "@<TRIPOS>MOLECULE\n")
 
-        return "".join(molecule) + atom_lines + bond_lines + "".join(substructure)
+        return_val = ("".join(molecule) + atom_lines +
+                      bond_lines + "".join(substructure))
 
-    def write(self, obj):
+        molecule[0] = molecule_0_store
+        molecule[1] = molecule_1_store
+        return return_val
+
+    def _write_next_frame(self, obj):
         """Write a new frame to the MOL2 file.
 
         Parameters
         ----------
         obj : AtomGroup or Universe
-        """
-        self.write_next_timestep(obj)
 
-    def write_next_timestep(self, obj):
-        """Write a new frame to the MOL2 file.
 
-        Parameters
-        ----------
-        obj : AtomGroup or Universe
+        .. versionchanged:: 1.0.0
+            Renamed from `write_next_timestep` to `_write_next_frame`.
         """
         block = self.encode_block(obj)
         self.file.writelines(block)

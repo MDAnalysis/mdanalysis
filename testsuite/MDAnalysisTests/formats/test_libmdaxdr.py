@@ -20,13 +20,12 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import print_function, absolute_import
-from six.moves import cPickle as pickle
+import pickle
 
 import numpy as np
 
 from numpy.testing import (assert_almost_equal, assert_array_almost_equal,
-                           assert_array_equal)
+                           assert_array_equal, assert_equal)
 
 from MDAnalysis.lib.formats.libmdaxdr import TRRFile, XTCFile
 
@@ -51,8 +50,19 @@ def trr():
 
 
 @pytest.mark.parametrize('fname, xdr', ((XTC_multi_frame, XTCFile),
-                                        (TRR_multi_frame, TRRFile)))
+                                        (TRR_multi_frame, TRRFile)),
+                         indirect=True)
 class TestCommonAPI(object):
+    @staticmethod
+    @pytest.fixture
+    def fname(request):
+        return request.param
+
+    @staticmethod
+    @pytest.fixture
+    def xdr(request):
+        return request.param
+
     @staticmethod
     @pytest.fixture
     def reader(fname, xdr):
@@ -94,7 +104,7 @@ class TestCommonAPI(object):
         reader.seek(4)
         assert reader.tell() == 4
 
-    def test_seek_negatice(self, reader):
+    def test_seek_negative(self, reader):
         with pytest.raises(IOError):
             reader.seek(-4)
 
@@ -117,30 +127,74 @@ class TestCommonAPI(object):
             with pytest.raises(IOError):
                 f.read()
 
+    @staticmethod
+    def _assert_compare_readers(old_reader, new_reader):
+        frame = old_reader.read()
+        new_frame = new_reader.read()
+
+        assert old_reader.fname == new_reader.fname
+        assert old_reader.tell() == new_reader.tell()
+
+        assert_equal(old_reader.offsets, new_reader.offsets)
+        assert_almost_equal(frame.x, new_frame.x)
+        assert_almost_equal(frame.box, new_frame.box)
+        assert frame.step == new_frame.step
+        assert_almost_equal(frame.time, new_frame.time)
+
     def test_pickle(self, reader):
+        mid = len(reader) // 2
+        reader.seek(mid)
+        new_reader = pickle.loads(pickle.dumps(reader))
+        self._assert_compare_readers(reader, new_reader)
+
+    def test_pickle_last_frame(self, reader):
+        #  This is the file state when XDRReader is in its last frame.
+        #  (Issue #2878)
         reader.seek(len(reader) - 1)
-        dump = pickle.dumps(reader)
-        new_reader = pickle.loads(dump)
+        _ = reader.read()
+        new_reader = pickle.loads(pickle.dumps(reader))
 
         assert reader.fname == new_reader.fname
         assert reader.tell() == new_reader.tell()
-        assert_almost_equal(reader.offsets, new_reader.offsets)
+        with pytest.raises(StopIteration):
+            new_reader.read()
 
     def test_pickle_closed(self, reader):
         reader.seek(len(reader) - 1)
         reader.close()
-        dump = pickle.dumps(reader)
-        new_reader = pickle.loads(dump)
+        new_reader = pickle.loads(pickle.dumps(reader))
 
         assert reader.fname == new_reader.fname
         assert reader.tell() != new_reader.tell()
+
+    def test_pickle_immediately(self, reader):
+        new_reader = pickle.loads(pickle.dumps(reader))
+
+        assert reader.fname == new_reader.fname
+        assert reader.tell() == new_reader.tell()
 
 
 
 @pytest.mark.parametrize("xdrfile, fname, offsets",
                          ((XTCFile, XTC_multi_frame, XTC_OFFSETS),
-                          (TRRFile, TRR_multi_frame, TRR_OFFSETS)))
+                          (TRRFile, TRR_multi_frame, TRR_OFFSETS)),
+                         indirect=True)
 class TestOffsets(object):
+    @staticmethod
+    @pytest.fixture
+    def fname(request):
+        return request.param
+
+    @staticmethod
+    @pytest.fixture
+    def xdrfile(request):
+        return request.param
+
+    @staticmethod
+    @pytest.fixture
+    def offsets(request):
+        return request.param
+
     @staticmethod
     @pytest.fixture
     def reader(xdrfile, fname):

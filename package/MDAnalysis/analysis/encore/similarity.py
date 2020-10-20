@@ -76,17 +76,16 @@ examples first execute: ::
     >>> import MDAnalysis.analysis.encore as encore
     >>> from MDAnalysis.tests.datafiles import PSF, DCD, DCD2
 
-
 To calculate the Harmonic Ensemble Similarity (:func:`hes`)
 two ensemble objects are first created and then used for calculation: ::
 
     >>> ens1 = Universe(PSF, DCD)
     >>> ens2 = Universe(PSF, DCD2)
-    >>> print encore.hes([ens1, ens2])
-    (array([[        0.        ,  38279683.95892926],
-            [ 38279683.95892926,         0.        ]]), None)
+    >>> HES, details = encore.hes([ens1, ens2])
+    >>> print(HES)
+    [[        0.        ,  38279683.95892926],
+    [ 38279683.95892926,         0.        ]]
 
-Here None is returned in the array as the default details parameter is False.
 HES can assume any non-negative value, i.e. no upper bound exists and the
 measurement can therefore be used as an absolute scale.
 
@@ -100,7 +99,7 @@ The RMSD matrix is automatically calculated. ::
     >>> ens1 = Universe(PSF, DCD)
     >>> ens2 = Universe(PSF, DCD2)
     >>> CES, details = encore.ces([ens1, ens2])
-    >>> print CES
+    >>> print(CES)
     [[ 0.          0.68070702]
     [ 0.68070702  0.        ]]
 
@@ -133,7 +132,7 @@ saved RMSD matrix and the default SPE dimensional reduction method.   : ::
 
     >>> DRES,details = encore.dres([ens1, ens2],
                                    distance_matrix = rmsd_matrix)
-    >>> print DRES
+    >>> print(DRES)
     [[ 0.        ,   0.67453198]
      [  0.67453198,  0.        ]]
 
@@ -170,9 +169,6 @@ Function reference
 .. All functions are included via automodule :members:.
 
 """
-from __future__ import print_function, division, absolute_import
-from six.moves import range, zip
-
 import warnings
 import logging
 
@@ -302,7 +298,7 @@ def harmonic_ensemble_similarity(sigma1,
 
 
 def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
-                                   selection="name CA"):
+                                   select="name CA"):
     """Clustering ensemble similarity: calculate the probability densities from
      the clusters and calculate discrete Jensen-Shannon divergence.
 
@@ -325,7 +321,7 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
     ens2_id : int
         Second ensemble id as detailed in the ClustersCollection metadata
 
-    selection : str
+    select : str
         Atom selection string in the MDAnalysis format. Default is "name CA".
 
     Returns
@@ -335,9 +331,9 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
         Jensen-Shannon divergence between the two ensembles, as calculated by
         the clustering ensemble similarity method
     """
-    ens1_coordinates = ens1.trajectory.timeseries(ens1.select_atoms(selection),
+    ens1_coordinates = ens1.trajectory.timeseries(ens1.select_atoms(select),
                                                   order='fac')
-    ens2_coordinates = ens2.trajectory.timeseries(ens2.select_atoms(selection),
+    ens2_coordinates = ens2.trajectory.timeseries(ens2.select_atoms(select),
                                                   order='fac')
     tmpA = np.array([np.where(c.metadata['ensemble_membership'] == ens1_id)[
                             0].shape[0] / float(ens1_coordinates.shape[0]) for
@@ -473,30 +469,33 @@ def gen_kde_pdfs(embedded_space, ensemble_assignment, nensembles,
 def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
                                ln_P1_exp_P1=None, ln_P2_exp_P2=None,
                                ln_P1P2_exp_P1=None, ln_P1P2_exp_P2=None):
-    """
-    Calculate the Jensen-Shannon divergence according the the
-    Dimensionality reduction method. In this case, we have continuous
-    probability densities, this we need to integrate over the measurable
-    space. The aim is to first calculate the Kullback-Liebler divergence, which
-    is defined as:
+    r"""Calculate the Jensen-Shannon divergence according the Dimensionality
+    reduction method.
+
+    In this case, we have continuous probability densities, this we need to
+    integrate over the measurable space. The aim is to first calculate the
+    Kullback-Liebler divergence, which is defined as:
 
     .. math::
-        D_{KL}(P(x) || Q(x)) = \\int_{-\\infty}^{\\infty}P(x_i) ln(P(x_i)/Q(x_i)) = \\langle{}ln(P(x))\\rangle{}_P - \\langle{}ln(Q(x))\\rangle{}_P
 
-    where the :math:`\\langle{}.\\rangle{}_P` denotes an expectation calculated
+       D_{KL}(P(x) || Q(x)) =
+           \int_{-\infty}^{\infty}P(x_i) ln(P(x_i)/Q(x_i)) =
+           \langle{}ln(P(x))\rangle{}_P - \langle{}ln(Q(x))\rangle{}_P
+
+    where the :math:`\langle{}.\rangle{}_P` denotes an expectation calculated
     under the distribution P. We can, thus, just estimate the expectation
-    values of the components to get an estimate of dKL.
-    Since the Jensen-Shannon distance is actually  more complex, we need to
-    estimate four expectation values:
+    values of the components to get an estimate of dKL.  Since the
+    Jensen-Shannon distance is actually more complex, we need to estimate four
+    expectation values:
 
     .. math::
-         \\langle{}log(P(x))\\rangle{}_P
+         \langle{}log(P(x))\rangle{}_P
 
-         \\langle{}log(Q(x))\\rangle{}_Q
+         \langle{}log(Q(x))\rangle{}_Q
 
-         \\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_P
+         \langle{}log(0.5*(P(x)+Q(x)))\rangle{}_P
 
-         \\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_Q
+         \langle{}log(0.5*(P(x)+Q(x)))\rangle{}_Q
 
     Parameters
     ----------
@@ -516,22 +515,22 @@ def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
         calculate the expected values according to 'Q' as detailed before.
 
     ln_P1_exp_P1 : float or None
-        Use this value for :math:`\\langle{}log(P(x))\\rangle{}_P`; if None,
+        Use this value for :math:`\langle{}log(P(x))\rangle{}_P`; if ``None``,
         calculate it instead
 
     ln_P2_exp_P2 : float or None
-        Use this value for :math:`\\langle{}log(Q(x))\\rangle{}_Q`; if
-        None, calculate it instead
+        Use this value for :math:`\langle{}log(Q(x))\rangle{}_Q`; if
+        ``None``, calculate it instead
 
     ln_P1P2_exp_P1 : float or None
         Use this value for
-        :math:`\\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_P`;
-        if None, calculate it instead
+        :math:`\langle{}log(0.5*(P(x)+Q(x)))\rangle{}_P`;
+        if ``None``, calculate it instead
 
     ln_P1P2_exp_P2 : float or None
         Use this value for
-        :math:`\\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_Q`;
-        if None, calculate it instead
+        :math:`\langle{}log(0.5*(P(x)+Q(x)))\rangle{}_Q`;
+        if ``None``, calculate it instead
 
     Returns
     -------
@@ -664,7 +663,7 @@ def write_output(matrix, base_fname=None, header="", suffix="",
 
 def prepare_ensembles_for_convergence_increasing_window(ensemble,
                                                         window_size,
-                                                        selection="name CA"):
+                                                        select="name CA"):
     """
     Generate ensembles to be fed to ces_convergence or dres_convergence
     from a single ensemble. Basically, the different slices the algorithm
@@ -679,7 +678,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
     window_size : int
         size of the window (in number of frames) to be used
 
-    selection : str
+    select : str
         Atom selection string in the MDAnalysis format. Default is "name CA"
 
     Returns
@@ -693,7 +692,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
 
     """
 
-    ens_size = ensemble.trajectory.timeseries(ensemble.select_atoms(selection),
+    ens_size = ensemble.trajectory.timeseries(ensemble.select_atoms(select),
                                               order='fac').shape[0]
 
     rest_slices = ens_size // window_size
@@ -717,25 +716,23 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
 
 
 def hes(ensembles,
-        selection="name CA",
+        select="name CA",
         cov_estimator="shrinkage",
         weights='mass',
         align=False,
-        details=False,
         estimate_error=False,
         bootstrapping_samples=100,
         calc_diagonal=False):
-    """
+    r"""Calculates the Harmonic Ensemble Similarity (HES) between ensembles.
 
-    Calculates the Harmonic Ensemble Similarity (HES) between ensembles using
-    the symmetrized version of Kullback-Leibler divergence as described
-    in [Tiberti2015]_.
+    The HES is calculated with the symmetrized version of Kullback-Leibler
+    divergence as described in [Tiberti2015]_.
 
     Parameters
     ----------
     ensembles : list
         List of Universe objects for similarity measurements.
-    selection : str, optional
+    select : str, optional
         Atom selection string in the MDAnalysis format. Default is "name CA"
     cov_estimator : str, optional
         Covariance matrix estimator method, either shrinkage, `shrinkage`,
@@ -747,9 +744,6 @@ def hes(ensembles,
         Note: this changes the ensembles in-place, and will thus leave your
         ensembles in an altered state.
         (default is False)
-    details : bool, optional
-        Save the mean and covariance matrix for each
-        ensemble in a numpy array (default is False).
     estimate_error : bool, optional
         Whether to perform error estimation (default is False).
     bootstrapping_samples : int, optional
@@ -762,8 +756,9 @@ def hes(ensembles,
 
     Returns
     -------
-    numpy.array (bidimensional)
-        Harmonic similarity measurements between each pair of ensembles.
+    hes, details : numpy.array, dictionary
+        Harmonic similarity measurements between each pair of ensembles,
+        and dict containing mean and covariance matrix for each ensemble
 
     Notes
     -----
@@ -773,13 +768,13 @@ def hes(ensembles,
     symmetrized version of Kullback-Leibler divergence defined as:
 
     .. math::
-        D_{KL}(P(x) || Q(x)) = \\int_{-\\infty}^{\\infty}P(x_i)
-        ln(P(x_i)/Q(x_i)) = \\langle{}ln(P(x))\\rangle{}_P -
-        \\langle{}ln(Q(x))\\rangle{}_P
+       D_{KL}(P(x) || Q(x)) =
+           \int_{-\infty}^{\infty}P(x_i) ln(P(x_i)/Q(x_i)) =
+           \langle{}ln(P(x))\rangle{}_P - \langle{}ln(Q(x))\rangle{}_P
 
 
-    where the :math:`\\langle{}.\\rangle{}_P` denotes an expectation
-    calculated under the distribution P.
+    where the :math:`\langle{}.\rangle{}_P` denotes an expectation
+    calculated under the distribution :math:`P`.
 
     For each ensemble, the  mean conformation is estimated as the average over
     the ensemble, and the covariance matrix is calculated by default using a
@@ -804,28 +799,35 @@ def hes(ensembles,
         >>> ens1 = Universe(PSF, DCD)
         >>> ens2 = Universe(PSF, DCD2)
         >>> HES, details = encore.hes([ens1, ens2])
-        >>> print HES
+        >>> print(HES)
         [[        0.          38279683.95892926]
          [ 38279683.95892926         0.        ]]
 
 
-    You can use the align=True option to align the ensembles first. This will
+    You can use the ``align=True`` option to align the ensembles first. This will
     align everything to the current timestep in the first ensemble. Note that
-    this changes the ens1 and ens2 objects:
+    this changes the ``ens1`` and ``ens2`` objects:
 
-        >>> print encore.hes([ens1, ens2], align=True)[0]
+        >>> print(encore.hes([ens1, ens2], align=True)[0])
         [[    0.          6880.34140106]
         [ 6880.34140106     0.        ]]
 
     Alternatively, for greater flexibility in how the alignment should be done
-    you can call use an AlignTraj object manually:
+    you can call use an :class:`~MDAnalysis.analysis.align.AlignTraj` object
+    manually:
 
         >>> from MDAnalysis.analysis import align
         >>> align.AlignTraj(ens1, ens1, select="name CA", in_memory=True).run()
         >>> align.AlignTraj(ens2, ens1, select="name CA", in_memory=True).run()
-        >>> print encore.hes([ens1, ens2])[0]
+        >>> print(encore.hes([ens1, ens2])[0])
         [[    0.          7032.19607004]
          [ 7032.19607004     0.        ]]
+
+
+    .. versionchanged:: 1.0.0
+       ``hes`` doesn't accept the `details` argument anymore, it always returns
+       the details of the calculation instead, in the form of a dictionary
+
     """
 
     if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
@@ -842,7 +844,7 @@ def hes(ensembles,
     if align:
         for e, w in zip(ensembles, weights):
             mda.analysis.align.AlignTraj(e, ensembles[0],
-                                         select=selection,
+                                         select=select,
                                          weights=w,
                                          in_memory=True).run()
     else:
@@ -889,13 +891,13 @@ def hes(ensembles,
             for i, e_orig in enumerate(ensembles):
                 xs.append(np.average(
                     ensembles_list[i][t].trajectory.timeseries(
-                        e_orig.select_atoms(selection),
+                        e_orig.select_atoms(select),
                         order=('fac')),
                     axis=0).flatten())
                 sigmas.append(covariance_matrix(ensembles_list[i][t],
                                                 weights=weights[i],
                                                 estimator=covariance_estimator,
-                                                selection=selection))
+                                                select=select))
 
             for pair in pairs_indices:
                 value = harmonic_ensemble_similarity(x1=xs[pair[0]],
@@ -916,7 +918,7 @@ def hes(ensembles,
 
     for e, w in zip(ensembles, weights):
         # Extract coordinates from each ensemble
-        coordinates_system = e.trajectory.timeseries(e.select_atoms(selection),
+        coordinates_system = e.trajectory.timeseries(e.select_atoms(select),
                                                      order='fac')
 
         # Average coordinates in each system
@@ -926,7 +928,7 @@ def hes(ensembles,
         sigmas.append(covariance_matrix(e,
                                         weights=w,
                                         estimator=covariance_estimator,
-                                        selection=selection))
+                                        select=select))
 
     for i, j in pairs_indices:
         value = harmonic_ensemble_similarity(x1=xs[i],
@@ -937,21 +939,16 @@ def hes(ensembles,
         values[j, i] = value
 
     # Save details as required
-    if details:
-        kwds = {}
-        for i in range(out_matrix_eln):
-            kwds['ensemble{0:d}_mean'.format(i + 1)] = xs[i]
-            kwds['ensemble{0:d}_covariance_matrix'.format(i + 1)] = sigmas[i]
-        details = np.array(kwds)
-
-    else:
-        details = None
+    details = {}
+    for i in range(out_matrix_eln):
+        details['ensemble{0:d}_mean'.format(i + 1)] = xs[i]
+        details['ensemble{0:d}_covariance_matrix'.format(i + 1)] = sigmas[i]
 
     return values, details
 
 
 def ces(ensembles,
-        selection="name CA",
+        select="name CA",
         clustering_method=AffinityPropagationNative(
             preference=-1.0,
             max_iter=500,
@@ -976,7 +973,7 @@ def ces(ensembles,
     ensembles : list
         List of ensemble objects for similarity measurements
 
-    selection : str, optional
+    select : str, optional
         Atom selection string in the MDAnalysis format. Default is "name CA"
 
     clustering_method :
@@ -1060,8 +1057,8 @@ def ces(ensembles,
 
         >>> ens1 = Universe(PSF, DCD)
         >>> ens2 = Universe(PSF, DCD2)
-        >>> CES,details = encore.ces([ens1,ens2])
-        >>> print CES
+        >>> CES, details = encore.ces([ens1,ens2])
+        >>> print(CES)
         [[ 0.          0.68070702]
          [ 0.68070702  0.        ]]
 
@@ -1073,10 +1070,10 @@ def ces(ensembles,
         >>> CES, details = encore.ces([ens1,ens2],
                                       clustering_method = [encore.DBSCAN(eps=0.45),
                                                            encore.DBSCAN(eps=0.50)])
-        >>> print "eps=0.45: ", CES[0]
+        >>> print("eps=0.45: ", CES[0])
         eps=0.45:  [[ 0.          0.20447236]
         [ 0.20447236  0.        ]]
-        >>> print "eps=0.5: ", CES[1]
+        >>> print("eps=0.5: ", CES[1])
         eps=0.5:  [[ 0.          0.25331629]
         [ 0.25331629  0.        ]]"
 
@@ -1107,7 +1104,7 @@ def ces(ensembles,
     # Calculate distance matrix if not provided
     if any_method_accept_distance_matrix and not distance_matrix:
         distance_matrix = get_distance_matrix(merge_universes(ensembles),
-                                              selection=selection,
+                                              select=select,
                                               ncores=ncores)
     if estimate_error:
         if any_method_accept_distance_matrix:
@@ -1139,7 +1136,7 @@ def ces(ensembles,
     # Call clustering procedure
     ccs = cluster(ensembles,
                   method= clustering_methods,
-                  selection=selection,
+                  select=select,
                   distance_matrix = distance_matrix,
                   ncores = ncores,
                   allow_collapsed_result=False)
@@ -1171,7 +1168,7 @@ def ces(ensembles,
                                                        ensembles[j][
                                                            pair[1]],
                                                        pair[1] + 1,
-                                                       selection=selection)
+                                                       select=select)
                     values[i][-1][pair[0], pair[1]] = this_djs
                     values[i][-1][pair[1], pair[0]] = this_djs
                 k += 1
@@ -1203,7 +1200,7 @@ def ces(ensembles,
                                                    pair[0] + 1,
                                                    ensembles[pair[1]],
                                                    pair[1] + 1,
-                                                   selection=selection)
+                                                   select=select)
                 values[-1][pair[0], pair[1]] = this_val
                 values[-1][pair[1], pair[0]] = this_val
 
@@ -1216,7 +1213,7 @@ def ces(ensembles,
 
 
 def dres(ensembles,
-         selection="name CA",
+         select="name CA",
          dimensionality_reduction_method = StochasticProximityEmbeddingNative(
              dimension=3,
              distance_cutoff = 1.5,
@@ -1244,7 +1241,7 @@ def dres(ensembles,
     ensembles : list
         List of ensemble objects for similarity measurements
 
-    selection : str, optional
+    select : str, optional
         Atom selection string in the MDAnalysis format. Default is "name CA"
 
     dimensionality_reduction_method :
@@ -1336,7 +1333,7 @@ def dres(ensembles,
         >>> ens1 = Universe(PSF,DCD)
         >>> ens2 = Universe(PSF,DCD2)
         >>> DRES, details = encore.dres([ens1,ens2])
-        >>> print DRES
+        >>> print(DRES)
         [[ 0.          0.67996043]
          [ 0.67996043  0.        ]]
 
@@ -1352,7 +1349,7 @@ def dres(ensembles,
 
         >>> DRES, details = encore.dres([ens1,ens2],
                                         dimensionality_reduction_method = encore.PrincipalComponentAnalysis(dimension=2))
-        >>> print DRES
+        >>> print(DRES)
         [[ 0.          0.69314718]
          [ 0.69314718  0.        ]]
 
@@ -1383,7 +1380,7 @@ def dres(ensembles,
     # Calculate distance matrix if not provided
     if any_method_accept_distance_matrix and not distance_matrix:
         distance_matrix = get_distance_matrix(merge_universes(ensembles),
-                                              selection=selection,
+                                              select=select,
                                               ncores=ncores)
     if estimate_error:
         if any_method_accept_distance_matrix:
@@ -1414,14 +1411,14 @@ def dres(ensembles,
     coordinates, dim_red_details = reduce_dimensionality(
         ensembles,
         method=dimensionality_reduction_methods,
-        selection=selection,
+        select=select,
         distance_matrix = distance_matrix,
         ncores = ncores,
         allow_collapsed_result = False)
 
     details = {}
     details["reduced_coordinates"] = coordinates
-    details["dimensionality_reduction_details"] = details
+    details["dimensionality_reduction_details"] = dim_red_details
 
     if estimate_error:
         k = 0
@@ -1489,7 +1486,7 @@ def dres(ensembles,
 
 def ces_convergence(original_ensemble,
                     window_size,
-                    selection="name CA",
+                    select="name CA",
                     clustering_method=AffinityPropagationNative(
                         preference=-1.0,
                         max_iter=500,
@@ -1516,7 +1513,7 @@ def ces_convergence(original_ensemble,
     window_size : int
         Size of window to be used, in number of frames
 
-    selection : str, optional
+    select : str, optional
         Atom selection string in the MDAnalysis format. Default is "name CA"
 
     clustering_method : MDAnalysis.analysis.encore.clustering.ClusteringMethod
@@ -1549,7 +1546,7 @@ def ces_convergence(original_ensemble,
 
         >>> ens1 = Universe(PSF,DCD)
         >>> ces_conv = encore.ces_convergence(ens1, 10)
-        >>> print ces_conv
+        >>> print(ces_conv)
         [[ 0.48194205]
         [ 0.40284672]
         [ 0.31699026]
@@ -1565,10 +1562,10 @@ def ces_convergence(original_ensemble,
     """
 
     ensembles = prepare_ensembles_for_convergence_increasing_window(
-        original_ensemble, window_size, selection=selection)
+        original_ensemble, window_size, select=select)
 
     ccs = cluster(ensembles,
-                  selection=selection,
+                  select=select,
                   method=clustering_method,
                   allow_collapsed_result=False,
                   ncores=ncores)
@@ -1590,7 +1587,7 @@ def ces_convergence(original_ensemble,
 
 def dres_convergence(original_ensemble,
                      window_size,
-                     selection="name CA",
+                     select="name CA",
                      dimensionality_reduction_method = \
                             StochasticProximityEmbeddingNative(
                                 dimension=3,
@@ -1620,7 +1617,7 @@ def dres_convergence(original_ensemble,
     window_size : int
         Size of window to be used, in number of frames
 
-    selection : str, optional
+    select : str, optional
         Atom selection string in the MDAnalysis format. Default is "name CA"
 
     dimensionality_reduction_method :
@@ -1658,7 +1655,7 @@ def dres_convergence(original_ensemble,
 
         >>> ens1 = Universe(PSF,DCD)
         >>> dres_conv = encore.dres_convergence(ens1, 10)
-        >>> print dres_conv
+        >>> print(dres_conv)
         [[ 0.5295528 ]
          [ 0.40716539]
          [ 0.31158669]
@@ -1675,12 +1672,12 @@ def dres_convergence(original_ensemble,
     """
 
     ensembles = prepare_ensembles_for_convergence_increasing_window(
-        original_ensemble, window_size, selection=selection)
+        original_ensemble, window_size, select=select)
 
     coordinates, dimred_details = \
         reduce_dimensionality(
             ensembles,
-            selection=selection,
+            select=select,
             method=dimensionality_reduction_method,
             allow_collapsed_result=False,
             ncores=ncores)

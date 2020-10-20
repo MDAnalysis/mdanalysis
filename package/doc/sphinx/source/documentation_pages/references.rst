@@ -140,6 +140,46 @@ If you use the hydrogen bond analysis code in
 
 .. _`10.1039/C9CP01532A`: http://dx.doi.org/10.1039/C9CP01532A
 
+If you use :meth:`~MDAnalysis.analysis.pca.PCA.rmsip` or 
+:func:`~MDAnalysis.analysis.pca.rmsip` please cite [Amadei1999]_ and 
+[Leo-Macias2004]_ .
+
+.. [Amadei1999] Amadei, A., Ceruso, M. A. & Nola, A. D. 
+   On the convergence of the conformational coordinates basis set obtained by the essential dynamics analysis of proteins’ molecular dynamics simulations. 
+   *Proteins: Structure, Function, and Bioinformatics* **36**, 419–424 (1999).
+   doi: `10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U`_
+
+.. _`10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U`: https://doi.org/10.1002/(SICI)1097-0134(19990901)36:4%3C419::AID-PROT5%3E3.0.CO;2-U
+
+.. [Leo-Macias2004] Leo-Macias, A., Lopez-Romero, P., Lupyan, D., Zerbino, D. & Ortiz, A. R. 
+   An Analysis of Core Deformations in Protein Superfamilies. 
+   *Biophys J* **88**, 1291–1299 (2005). doi: `10.1529/biophysj.104.052449`_
+
+.. _`10.1529/biophysj.104.052449`: https://dx.doi.org/10.1529%2Fbiophysj.104.052449
+
+If you use :meth:`~MDAnalysis.analysis.pca.PCA.cumulative_overlap` or 
+:func:`~MDAnalysis.analysis.pca.cumulative_overlap` please cite [Yang2008]_ .
+
+.. [Yang2008] Yang, L., Song, G., Carriquiry, A. & Jernigan, R. L. 
+   Close Correspondence between the Motions from Principal Component Analysis of Multiple HIV-1 Protease Structures and Elastic Network Modes. 
+   *Structure* **16**, 321–330 (2008). doi: `10.1016/j.str.2007.12.011`_
+
+.. _`10.1016/j.str.2007.12.011`: https://dx.doi.org/10.1016/j.str.2007.12.011
+
+If you use the Mean Squared Displacement analysis code in
+:mod:`MDAnalysis.analysis.msd` please cite [Calandri2011]_ and [Buyl2018]_.
+
+.. [Calandri2011] Calandrini, V., Pellegrini, E., Calligari, P., Hinsen, K., Kneller, G. R. 
+   NMoldyn-Interfacing Spectroscopic Experiments, Molecular Dynamics Simulations and Models for Time Correlation Functions. 
+   *Collect. SFN*, **12**, 201–232 (2011). doi: `10.1051/sfn/201112010`_
+   	
+.. _`10.1051/sfn/201112010`: https://doi.org/10.1051/sfn/201112010
+
+.. [Buyl2018] Buyl, P. tidynamics: A tiny package to compute the dynamics of stochastic and molecular simulations. Journal of Open Source Software,
+   3(28), 877 (2018). doi: `10.21105/joss.00877`_
+
+.. _`10.21105/joss.00877`: https://doi.org/10.21105/joss.00877
+
 .. _citations-using-duecredit:
 
 Citations using Duecredit

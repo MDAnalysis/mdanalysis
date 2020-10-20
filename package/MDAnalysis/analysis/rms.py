@@ -87,8 +87,7 @@ The trajectory is included with the test data files. The data in
               select="backbone",             # superimpose on whole backbone of the whole protein
               groupselections=["backbone and (resid 1-29 or resid 60-121 or resid 160-214)",   # CORE
                                "backbone and resid 122-159",                                   # LID
-                               "backbone and resid 30-59"],                                    # NMP
-              filename="rmsd_all_CORE_LID_NMP.dat")
+                               "backbone and resid 30-59"])                                    # NMP
    R.run()
 
    import matplotlib.pyplot as plt
@@ -133,11 +132,6 @@ Analysis classes
       giving RMSFs for each of the given atoms.
 
 """
-from __future__ import division, absolute_import
-
-from six.moves import zip
-from six import raise_from, string_types
-
 import numpy as np
 
 import logging
@@ -146,8 +140,7 @@ import warnings
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
-from MDAnalysis.lib.log import ProgressMeter
-from MDAnalysis.lib.util import asiterable, iterable, get_weights, deprecate
+from MDAnalysis.lib.util import asiterable, iterable, get_weights
 
 
 logger = logging.getLogger('MDAnalysis.analysis.rmsd')
@@ -231,7 +224,6 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
     a = np.asarray(a, dtype=np.float64)
     b = np.asarray(b, dtype=np.float64)
     N = b.shape[0]
-
     if a.shape != b.shape:
         raise ValueError('a and b must have same shape')
 
@@ -281,30 +273,25 @@ def process_selection(select):
     :func:`fasta2select` based on a ClustalW_ or STAMP_ sequence alignment.
     """
 
-    if isinstance(select, string_types):
+    if isinstance(select, str):
         select = {'reference': str(select), 'mobile': str(select)}
     elif type(select) is tuple:
         try:
             select = {'mobile': select[0], 'reference': select[1]}
         except IndexError:
-            raise_from(IndexError(
+            raise IndexError(
                 "select must contain two selection strings "
-                "(reference, mobile)"),
-                None,
-                )
+                "(reference, mobile)") from None
     elif type(select) is dict:
         # compatability hack to use new nomenclature
         try:
             select['mobile']
             select['reference']
         except KeyError:
-            raise_from(
-                KeyError(
+            raise KeyError(
                     "select dictionary must contain entries for keys "
                     "'mobile' and 'reference'."
-                    ),
-                None,
-                )
+                    ) from None
     else:
         raise TypeError("'select' must be either a string, 2-tuple, or dict")
     select['mobile'] = asiterable(select['mobile'])
@@ -331,11 +318,14 @@ class RMSD(AnalysisBase):
     Run the analysis with :meth:`RMSD.run`, which stores the results
     in the array :attr:`RMSD.rmsd`.
 
+    .. versionchanged:: 1.0.0
+       ``save()`` method was removed, use ``np.savetxt()`` on
+       :attr:`RMSD.rmsd` instead.
+
     """
     def __init__(self, atomgroup, reference=None, select='all',
-                 groupselections=None, filename="rmsd.dat",
-                 weights=None, tol_mass=0.1, ref_frame=0, **kwargs):
-        # DEPRECATION: remove filename kwarg in 1.0
+                 groupselections=None, weights=None, weights_groupselections=False,
+                 tol_mass=0.1, ref_frame=0, **kwargs):
         r"""Parameters
         ----------
         atomgroup : AtomGroup or Universe
@@ -379,17 +369,22 @@ class RMSD(AnalysisBase):
 
             .. Note:: Experimental feature. Only limited error checking
                       implemented.
-        filename : str (optional)
-            write RMSD into file with :meth:`RMSD.save`
-
-            .. deprecated:; 0.19.0
-               `filename` will be removed together with :meth:`save` in 1.0.
 
         weights : {"mass", ``None``} or array_like (optional)
-             choose weights. With ``"mass"`` uses masses as weights; with ``None``
-             weigh each atom equally. If a float array of the same length as
-             `atomgroup` is provided, use each element of the `array_like` as a
-             weight for the corresponding atom in `atomgroup`.
+             1. "mass" will use masses as weights for both `select` and `groupselections`.
+
+             2. ``None`` will weigh each atom equally for both `select` and `groupselections`.
+
+             3. If 1D float array of the same length as `atomgroup` is provided,
+             use each element of the `array_like` as a weight for the
+             corresponding atom in `select`, and assumes ``None`` for `groupselections`.
+
+        weights_groupselections : False or list of {"mass", ``None`` or array_like} (optional)
+             1. ``False`` will apply imposed weights to `groupselections` from ``weights`` option.
+
+             2. A list of {"mass", ``None`` or array_like} with the length of `groupselections`
+             will apply the weights to `groupselections` correspondingly.
+
         tol_mass : float (optional)
              Reject match if the atomic masses for matched atoms differ by more
              than `tol_mass`.
@@ -404,17 +399,15 @@ class RMSD(AnalysisBase):
         SelectionError
              If the selections from `atomgroup` and `reference` do not match.
         TypeError
-             If `weights` is not of the appropriate type; see also
-             :func:`MDAnalysis.lib.util.get_weights`
+             If `weights` or `weights_groupselections` is not of the appropriate type;
+             see also :func:`MDAnalysis.lib.util.get_weights`
         ValueError
              If `weights` are not compatible with `atomgroup` (not the same
              length) or if it is not a 1D array (see
              :func:`MDAnalysis.lib.util.get_weights`).
 
-             A :exc:`ValueError` is also raised if `weights` are not compatible
-             with `groupselections`: only equal weights (``weights=None``) or
-             mass-weighted (``weights="mass"``) are supported for additional
-             `groupselections`.
+             A :exc:`ValueError` is also raised if the length of `weights_groupselections`
+             are not compatible with `groupselections`.
 
         Notes
         -----
@@ -466,8 +459,8 @@ class RMSD(AnalysisBase):
         .. versionchanged:: 0.17.0
            removed deprecated `mass_weighted` keyword; `groupselections`
            are *not* rotationally superimposed any more.
-        .. deprecated:: 0.19.0
-           `filename` will be removed in 1.0
+        .. versionchanged:: 1.0.0
+           `filename` keyword was removed.
 
         """
         super(RMSD, self).__init__(atomgroup.universe.trajectory,
@@ -481,8 +474,7 @@ class RMSD(AnalysisBase):
         self.weights = weights
         self.tol_mass = tol_mass
         self.ref_frame = ref_frame
-        self.filename = filename   # DEPRECATED in 0.19.0, remove in 1.0.0
-
+        self.weights_groupselections = weights_groupselections
         self.ref_atoms = self.reference.select_atoms(*select['reference'])
         self.mobile_atoms = self.atomgroup.select_atoms(*select['mobile'])
 
@@ -540,33 +532,66 @@ class RMSD(AnalysisBase):
                         igroup, sel['reference'], sel['mobile'],
                         len(atoms['reference']), len(atoms['mobile'])))
 
-        # Explicitly check for "mass" because this option CAN
-        # be used with groupselection. (get_weights() returns the mass array
-        # for "mass")
-        if not iterable(self.weights) and self.weights == "mass":
-            pass
-        else:
-            self.weights = get_weights(self.mobile_atoms, self.weights)
+        # check weights type
+        acceptable_dtypes = (np.dtype('float64'), np.dtype('int64'))
+        msg = ("weights should only be 'mass', None or 1D float array."
+              "For weights on groupselections, "
+              "use **weight_groupselections**")
 
-        # cannot use arbitrary weight array (for superposition) with
-        # groupselections because arrays will not match
-        if (len(self.groupselections) > 0 and (
-                iterable(self.weights) or self.weights not in ("mass", None))):
-            raise ValueError("groupselections can only be combined with "
-                             "weights=None or weights='mass', not a weight "
-                             "array.")
+        if iterable(self.weights):
+            element_lens = []
+            for element in self.weights:
+                if iterable(element):
+                    element_lens.append(len(element))
+                else:
+                    element_lens.append(1)
+            if np.unique(element_lens).size > 1:
+                # jagged data structure
+                raise TypeError(msg)
+            if np.array(element).dtype not in acceptable_dtypes:
+                raise TypeError(msg)
 
-        # initialized to note for testing the save function
-        self.rmsd = None
+        if iterable(self.weights) or self.weights != "mass":
+            get_weights(self.mobile_atoms, self.weights)
+
+        if self.weights_groupselections:
+            if len(self.weights_groupselections) != len(self.groupselections):
+                raise ValueError("Length of weights_groupselections is not equal to "
+                                 "length of groupselections ")
+            for weights, atoms, selection in zip(self.weights_groupselections,
+                                                 self._groupselections_atoms,
+                                                 self.groupselections):
+                try:
+                    if iterable(weights) or weights != "mass":
+                        get_weights(atoms['mobile'], weights)
+                except Exception as e:
+                    raise type(e)(str(e) + ' happens in selection %s' % selection['mobile'])
 
 
     def _prepare(self):
         self._n_atoms = self.mobile_atoms.n_atoms
+        if not self.weights_groupselections:
+            if not iterable(self.weights):         # apply 'mass' or 'None' to groupselections
+                self.weights_groupselections = [self.weights] * len(self.groupselections)
+            else:
+                self.weights_groupselections = [None] * len(self.groupselections)
 
-        if not iterable(self.weights) and self.weights == 'mass':
-            self.weights = self.ref_atoms.masses
-        if self.weights is not None:
-            self.weights = np.asarray(self.weights, dtype=np.float64) / np.mean(self.weights)
+        for igroup, (weights, atoms) in enumerate(zip(self.weights_groupselections,
+                                                      self._groupselections_atoms)):
+            if str(weights) == 'mass':
+                self.weights_groupselections[igroup] = atoms['mobile'].masses
+            if weights is not None:
+                self.weights_groupselections[igroup] = np.asarray(self.weights_groupselections[igroup],
+                                                                  dtype=np.float64) /  \
+                                             np.mean(self.weights_groupselections[igroup])
+        # add the array of weights to weights_select
+        self.weights_select = get_weights(self.mobile_atoms, self.weights)
+        self.weights_ref = get_weights(self.ref_atoms, self.weights)
+        if self.weights_select is not None:
+            self.weights_select = np.asarray(self.weights_select, dtype=np.float64) /  \
+                                  np.mean(self.weights_select)
+            self.weights_ref = np.asarray(self.weights_ref, dtype=np.float64) / \
+                               np.mean(self.weights_ref)
 
         current_frame = self.reference.universe.trajectory.ts.frame
 
@@ -575,14 +600,14 @@ class RMSD(AnalysisBase):
             # (coordinates MUST be stored in case the ref traj is advanced
             # elsewhere or if ref == mobile universe)
             self.reference.universe.trajectory[self.ref_frame]
-            self._ref_com = self.ref_atoms.center(self.weights)
+            self._ref_com = self.ref_atoms.center(self.weights_ref)
             # makes a copy
             self._ref_coordinates = self.ref_atoms.positions - self._ref_com
             if self._groupselections_atoms:
                 self._groupselections_ref_coords64 = [(self.reference.
-                    select_atoms(*s['reference']).
-                    positions.astype(np.float64)) for s in
-                    self.groupselections]
+                                                       select_atoms(*s['reference']).
+                                                       positions.astype(np.float64)) for s in
+                                                     self.groupselections]
         finally:
             # Move back to the original frame
             self.reference.universe.trajectory[current_frame]
@@ -603,12 +628,10 @@ class RMSD(AnalysisBase):
         self.rmsd = np.zeros((self.n_frames,
                               3 + len(self._groupselections_atoms)))
 
-        self._pm.format = ("RMSD {rmsd:5.2f} A at frame "
-                           "{step:5d}/{numsteps}  [{percentage:5.1f}%]")
         self._mobile_coordinates64 = self.mobile_atoms.positions.copy().astype(np.float64)
 
     def _single_frame(self):
-        mobile_com = self.mobile_atoms.center(self.weights).astype(np.float64)
+        mobile_com = self.mobile_atoms.center(self.weights_select).astype(np.float64)
         self._mobile_coordinates64[:] = self.mobile_atoms.positions
         self._mobile_coordinates64 -= mobile_com
 
@@ -623,7 +646,7 @@ class RMSD(AnalysisBase):
 
             self.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
                 self._ref_coordinates64, self._mobile_coordinates64,
-                self._n_atoms, self._rot, self.weights)
+                self._n_atoms, self._rot, self.weights_select)
 
             self._R[:, :] = self._rot.reshape(3, 3)
             # Transform each atom in the trajectory (use inplace ops to
@@ -642,37 +665,14 @@ class RMSD(AnalysisBase):
                         self._groupselections_atoms), 3):
                 self.rmsd[self._frame_index, igroup] = rmsd(
                     refpos, atoms['mobile'].positions,
-                    weights=self.weights,
+                    weights=self.weights_groupselections[igroup-3],
                     center=False, superposition=False)
         else:
             # only calculate RMSD by setting the Rmatrix to None (no need
             # to carry out the rotation as we already get the optimum RMSD)
             self.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
                 self._ref_coordinates64, self._mobile_coordinates64,
-                self._n_atoms, None, self.weights)
-
-        self._pm.rmsd = self.rmsd[self._frame_index, 2]
-
-    @deprecate(release="0.19.0", remove="1.0.0",
-               message="You can instead use "
-               "``np.savetxt(filename, RMSD.rmsd)``.")
-    def save(self, filename=None):
-        """Save RMSD from :attr:`RMSD.rmsd` to text file *filename*.
-
-        Parameters
-        ----------
-        filename : str (optional)
-            if no filename is given the default provided to the constructor is
-            used.
-
-        """
-        filename = filename or self.filename
-        if filename is not None:
-            if self.rmsd is None:
-                raise NoDataError("rmsd has not been calculated yet")
-            np.savetxt(filename, self.rmsd)
-            logger.info("Wrote RMSD timeseries  to file %r", filename)
-        return filename
+                self._n_atoms, None, self.weights_select)
 
 
 class RMSF(AnalysisBase):
@@ -696,14 +696,6 @@ class RMSF(AnalysisBase):
         ----------
         atomgroup : AtomGroup
             Atoms for which RMSF is calculated
-        start : int (optional)
-            starting frame, default None becomes 0.
-        stop : int (optional)
-            Frame index to stop analysis. Default: None becomes
-            n_frames. Iteration stops *before* this frame number,
-            which means that the trajectory would be read until the end.
-        step : int (optional)
-            step between frames, default None becomes 1.
         verbose : bool (optional)
              Show detailed progress of the calculation if set to ``True``; the
              default is ``False``.
@@ -805,6 +797,9 @@ class RMSF(AnalysisBase):
            the keyword argument `quiet` is deprecated in favor of `verbose`.
         .. versionchanged:: 0.17.0
            removed unused keyword `weights`
+        .. versionchanged:: 1.0.0
+           Support for the ``start``, ``stop``, and ``step`` keywords has been
+           removed. These should instead be passed to :meth:`RMSF.run`.
 
         """
         super(RMSF, self).__init__(atomgroup.universe.trajectory, **kwargs)

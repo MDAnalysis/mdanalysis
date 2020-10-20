@@ -20,10 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import division, absolute_import, print_function
-
 import pytest
-from six.moves import range
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.psa as PSA
@@ -36,6 +33,7 @@ import scipy.spatial
 import matplotlib
 
 from MDAnalysisTests.datafiles import PSF, DCD, DCD2
+from MDAnalysis import NoDataError
 
 
 class TestPSAnalysis(object):
@@ -167,21 +165,63 @@ class TestPSAnalysis(object):
         psa.run_pairs_analysis(neighbors=True)
         assert len(psa.nearest_neighbors) == 3
 
-    @pytest.mark.xfail
-    def test_load(self, psa):
+    @pytest.mark.parametrize('stored', [True, False])
+    def test_load(self, stored, tmpdir):
         """Test that the automatically saved files can be loaded"""
-        expected_path_names = psa.path_names[:]
+        # To allow for testing the store keyword, ignore fixture
+        universe1 = mda.Universe(PSF, DCD)
+        universe2 = mda.Universe(PSF, DCD2)
+        universe_rev = mda.Universe(PSF, DCD)
+
+        psa = PSA.PSAnalysis([universe1, universe2, universe_rev],
+                              path_select='name CA',
+                              targetdir=str(tmpdir))
+
+        psa2 = PSA.PSAnalysis([universe1, universe2, universe_rev],
+                              path_select='name CA',
+                              targetdir=str(tmpdir))
+
+        psa.generate_paths(align=True, store=stored)
+
+        # Make copies to the existing data
+        # Note: path names are set after save_paths has been called
         expected_paths = [p.copy() for p in psa.paths]
-        psa.save_paths()
-        psa.load()
-        assert psa.path_names == expected_path_names
-        # manually compare paths because
-        #         assert_almost_equal(psa.paths, expected_paths, decimal=6)
-        # raises a ValueError in the assertion code itself
-        assert len(psa.paths) == len(expected_paths)
-        for ipath, (observed, expected) in enumerate(zip(psa.paths, expected_paths)):
+
+        if not stored:
+            psa.save_paths()
+
+        expected_path_names = psa.path_names[:]
+
+        # Load data in the empty PSAnalysis object
+        psa2.load()
+
+        assert psa2.path_names == expected_path_names
+        assert len(psa2.paths) == len(expected_paths)
+
+        for ipath, (observed, expected) in enumerate(zip(psa2.paths,
+                                                         expected_paths)):
             assert_almost_equal(observed, expected, decimal=6,
-                                err_msg="loaded path {} does not agree with input".format(ipath))
+                                err_msg=("loaded path {} does not agree with "
+                                         "input").format(ipath))
+
+    def test_load_nofile(self, psa):
+        """Test case where save_paths hasn't been called before load"""
+        match_exp = "Fitted trajectories cannot be loaded"
+        with pytest.raises(NoDataError, match=match_exp):
+            psa.load()
+
+    def test_save_nopaths(self, tmpdir):
+        """Test case were save_paths is called without calcualted paths"""
+        match_exp = "Paths have not been calculated yet"
+        with pytest.raises(NoDataError, match=match_exp):
+            universe1 = mda.Universe(PSF, DCD)
+            universe2 = mda.Universe(PSF, DCD2)
+            universe_rev = mda.Universe(PSF, DCD)
+
+            psa = PSA.PSAnalysis([universe1, universe2, universe_rev],
+                                 path_select='name CA',
+                                 targetdir=str(tmpdir))
+            psa.save_paths()
 
     def test_dendrogram_produced(self, plot_data):
         """Test whether Dendrogram dictionary object was produced"""

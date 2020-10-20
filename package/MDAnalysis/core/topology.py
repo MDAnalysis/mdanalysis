@@ -56,9 +56,6 @@ Helper functions
 .. autofunction:: make_downshift_arrays
 
 """
-from __future__ import absolute_import
-
-from six.moves import zip
 import numpy as np
 
 from .topologyattrs import Atomindices, Resindices, Segindices
@@ -583,3 +580,4 @@ class Topology(object):
             attr.values = np.concatenate([attr.values, np.array([newval])])
 
         return segidx
+        

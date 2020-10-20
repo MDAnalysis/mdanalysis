@@ -118,7 +118,7 @@ examples in the documentation or the tutorials_, also install the
    http://www.pip-installer.org/en/latest/index.html
 .. _conda:
    http://conda.pydata.org/docs/
-.. _run the tests: http://wiki.mdanalysis.org/UnitTests   
+.. _run the tests: https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 .. _tutorials: https://www.mdanalysis.org/pages/learning_MDAnalysis/
 
 
@@ -170,6 +170,7 @@ Thank you!
    ./documentation_pages/analysis_modules
    ./documentation_pages/topology_modules
    ./documentation_pages/coordinates_modules
+   ./documentation_pages/converters
    ./documentation_pages/trajectory_transformations
    ./documentation_pages/selections_modules
    ./documentation_pages/auxiliary_modules

@@ -20,14 +20,11 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 import MDAnalysis as mda
 import numpy as np
 import pytest
 from MDAnalysisTests.datafiles import (COORDINATES_XTC, COORDINATES_TOPOLOGY)
 from numpy.testing import assert_almost_equal, assert_equal
-from six.moves import range
 
 
 def test_get_bad_auxreader_format_raises_ValueError():
@@ -227,6 +224,19 @@ class BaseAuxReaderTest(object):
         for i, val in enumerate(reader):
             assert val.time == ref.select_time_ref[i], "time for step {} does not match".format(i)
 
+    def test_time_non_constant_dt(self, reader):
+        reader.constant_dt = False
+        with pytest.raises(ValueError, match="If dt is not constant, must have a valid time selector"):
+            reader.time
+
+    def test_time_selector_manual(self, ref):
+        reader = ref.reader(ref.testdata,
+                            time_selector = ref.time_selector)
+        # Manually set time selector
+        reader.time_selector = ref.time_selector
+        for i, val in enumerate(reader):
+            assert val.time == ref.select_time_ref[i], "time for step {} does not match".format(i)
+
     def test_data_selector(self, ref):
         # reload reader, passing in a data selector
         reader = ref.reader(ref.testdata,
@@ -315,29 +325,34 @@ class BaseAuxReaderTest(object):
         reader = mda.auxiliary.core.get_auxreader_for(ref.testdata)
         assert reader == ref.reader
 
-    def test_iterate_through_trajectory(self, ref):
-        # add to trajectory
-        u = mda.Universe(COORDINATES_TOPOLOGY, COORDINATES_XTC)
-        u.trajectory.add_auxiliary('test', ref.testdata)
+    def test_iterate_through_trajectory(self, ref, ref_universe):
         # check the representative values of aux for each frame are as expected
         # trajectory here has same dt, offset; so there's a direct correspondence
         # between frames and steps
-        for i, ts in enumerate(u.trajectory):
+        for i, ts in enumerate(ref_universe.trajectory):
             assert_equal(ts.aux.test, ref.auxsteps[i].data,
-                         "representative value does not match when iterating through all trajectory timesteps")
-        u.trajectory.close()
+                         "representative value does not match when "
+                         "iterating through all trajectory timesteps")
 
-    def test_iterate_as_auxiliary_from_trajectory(self, ref):
-        # add to trajectory
-        u = mda.Universe(COORDINATES_TOPOLOGY, COORDINATES_XTC)
-        u.trajectory.add_auxiliary('test', ref.testdata)
+    def test_iterate_as_auxiliary_from_trajectory(self, ref, ref_universe):
         # check representative values of aux for each frame are as expected
-        # trahectory here has same dt, offset, so there's a direct correspondence
+        # trajectory here has same dt, offset, so there's a direct correspondence
         # between frames and steps, and iter_as_aux will run through all frames
-        for i, ts in enumerate(u.trajectory.iter_as_aux('test')):
+        for i, ts in enumerate(ref_universe.trajectory.iter_as_aux('test')):
             assert_equal(ts.aux.test, ref.auxsteps[i].data,
-                         "representative value does not match when iterating through all trajectory timesteps")
-        u.trajectory.close()
+                         "representative value does not match when "
+                         "iterating through all trajectory timesteps")
+
+    def test_auxiliary_read_ts_rewind(self, ref_universe):
+        # AuxiliaryBase.read_ts() should retrieve the correct step after
+        # reading the last one. Issue #2674 describes a case in which the
+        # object gets stuck on the last frame.
+        aux_info_0 = ref_universe.trajectory[0].aux.test
+        ref_universe.trajectory[-1]
+        aux_info_0_rewind = ref_universe.trajectory[0].aux.test
+        assert_equal(aux_info_0, aux_info_0_rewind,
+                     "aux info was retrieved incorrectly "
+                     "after reading the last step")
 
     def test_get_description(self, ref, reader):
         description = reader.get_description()
@@ -348,6 +363,46 @@ class BaseAuxReaderTest(object):
         description = reader.get_description()
         new = mda.auxiliary.core.auxreader(**description)
         assert new == reader, "AuxReader reloaded from description does not match"
+
+    def test_step_to_frame_out_of_bounds(self, reader, ref):
+
+        ts = mda.coordinates.base.Timestep(0, dt=ref.dt)
+
+        assert reader.step_to_frame(-1, ts) is None
+        assert reader.step_to_frame(reader.n_steps, ts) is None
+
+    def test_step_to_frame_no_time_diff(self, reader, ref):
+
+        ts = mda.coordinates.base.Timestep(0, dt=ref.dt)
+
+        for idx in range(reader.n_steps):
+
+            assert reader.step_to_frame(idx, ts) == idx
+
+    def test_step_to_frame_time_diff(self, reader, ref):
+
+        # Timestep is 0.1 longer than auxiliary data
+        ts = mda.coordinates.base.Timestep(0, dt=ref.dt + 0.1)
+
+        # Test all 5 frames
+        for idx in range(5):
+
+            frame, time_diff = reader.step_to_frame(idx, ts, return_time_diff=True)
+
+            assert frame == idx
+            np.testing.assert_almost_equal(time_diff, idx * 0.1)
+
+    def test_go_to_step_fail(self, reader):
+
+        with pytest.raises(ValueError, match="Step index [0-9]* is not valid for auxiliary"):
+            reader._go_to_step(reader.n_steps)
+
+    @pytest.mark.parametrize("constant", [True, False])
+    def test_set_constant_dt(self, reader, constant):
+
+        reader.constant_dt = constant
+
+        assert reader.constant_dt == constant
 
 
 def assert_auxstep_equal(A, B):

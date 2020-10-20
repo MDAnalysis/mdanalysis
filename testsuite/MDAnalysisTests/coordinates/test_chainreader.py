@@ -20,9 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import division, absolute_import
-from six.moves import zip
-
 import numpy as np
 import os
 
@@ -98,6 +95,11 @@ class TestChainReader(object):
     def test_frame_numbering(self, universe):
         universe.trajectory[98]  # index is 0-based and frames are 0-based
         assert_equal(universe.trajectory.frame, 98, "wrong frame number")
+
+    def test_next_after_frame_numbering(self, universe):
+        universe.trajectory[98]  # index is 0-based and frames are 0-based
+        universe.trajectory.next()
+        assert_equal(universe.trajectory.frame, 99, "wrong frame number")
 
     def test_frame(self, universe):
         universe.trajectory[0]
@@ -257,7 +259,7 @@ def build_trajectories(folder, sequences, fmt='xtc'):
                 ts.dimensions = [10, 10, 10, 90, 90, 90]
                 # The time is set from the user input
                 ts.time = time
-                out_traj.write(ts)
+                out_traj.write(u)
     return utop, fnames
 
 

@@ -251,6 +251,15 @@ also recognized when they are compressed with :program:`gzip` or
    | MMTF [#a]_    | mmtf      |  r    | Macromolecular Transmission Format                   |
    |               |           |       | :mod:`MDAnalysis.coordinates.MMTF`                   |
    +---------------+-----------+-------+------------------------------------------------------+
+   | NAMD          | coor,     |  r/w  | NAMD binary file format for coordinates              |
+   |               | namdbin   |       | :mod:`MDAnalysis.coordinates.NAMDBIN`                |
+   +---------------+-----------+-------+------------------------------------------------------+
+   | FHIAIMS       | in        |  r/w  | FHI-AIMS file format for coordinates                 |
+   |               |           |       | :mod:`MDAnalysis.coordinates.FHIAIMS`                |
+   +---------------+-----------+-------+------------------------------------------------------+
+   | H5MD          | h5md      |  r    | H5MD_ file format for coordinates                    |
+   |               |           |       | :mod:`MDAnalysis.coordinates.H5MD`                   |
+   +---------------+-----------+-------+------------------------------------------------------+
 
 .. [#a] This format can also be used to provide basic *topology*
    information (i.e. the list of atoms); it is possible to create a
@@ -258,6 +267,7 @@ also recognized when they are compressed with :program:`gzip` or
    providing a file of this format: ``u = Universe(filename)``
 
 .. _`netcdf4-python`: https://github.com/Unidata/netcdf4-python
+.. _`H5MD`: https://nongnu.org/h5md/index.html
 
 .. _Trajectory API:
 
@@ -276,30 +286,6 @@ Reader and Writer classes are derived from base classes in
 :mod:`MDAnalysis.coordinates.base`.
 
 
-History
-~~~~~~~
-
-- 2010-04-30 Draft [orbeckst]
-- 2010-08-20 added single frame writers to API [orbeckst]
-- 2010-10-09 added write() method to Writers [orbeckst]
-- 2010-10-19 use close() instead of close_trajectory() [orbeckst]
-- 2010-10-30 clarified Writer write() methods (see also `Issue 49`_)
-- 2011-02-01 extended call signature of Reader class
-- 2011-03-30 optional Writer() method for Readers
-- 2011-04-18 added time and frame managed attributes to Reader
-- 2011-04-20 added volume to Timestep
-- 2012-02-11 added _velocities to Timestep
-- 2012-05-24 multiframe keyword to distinguish trajectory from single frame writers
-- 2012-06-04 missing implementations of Reader.__getitem__ should raise :exc:`TypeError`
-- 2013-08-02 Readers/Writers must conform to the Python `Context Manager`_ API
-- 2015-01-15 Timestep._init_unitcell() method added
-- 2015-06-11 Reworked Timestep init.  Base Timestep now does Vels & Forces
-- 2015-07-21 Major changes to Timestep and Reader API (release 0.11.0)
-- 2016-04-03 Removed references to Strict Readers for PDBS [jdetle]
-
-.. _Issue 49: https://github.com/MDAnalysis/mdanalysis/issues/49
-.. _Context Manager: http://docs.python.org/2/reference/datamodel.html#context-managers
-
 Registry
 ~~~~~~~~
 
@@ -312,6 +298,13 @@ or :class:`MDAnalysis.coordinates.base.WriterBase` and set the
 :attr:`~MDAnalysis.coordinates.base.ProtoReader.format` attribute with a string
 defining the expected suffix.  To assign multiple suffixes to an I/O class, a
 list of suffixes can be given.
+
+In addition to this, a Reader may define a ``_format_hint`` staticmethod, which
+returns a boolean of if it can process a given object. E.g. the
+:class:`MDAnalysis.coordinates.memory.MemoryReader` identifies itself as
+capable of reading numpy arrays.  This functionality is used in
+:func:`MDAnalysis.core._get_readers.get_reader_for` when figuring out how to
+read an object (which was usually supplied to mda.Universe).
 
 To define that a Writer can write multiple trajectory frames, set the
 `multiframe` attribute to ``True``.  The default is ``False``.
@@ -486,6 +479,8 @@ The following methods must be implemented in a Reader class.
  ``__exit__()``
      exit method of a `Context Manager`_, should call ``close()``.
 
+.. _Context Manager: http://docs.python.org/2/reference/datamodel.html#context-managers
+
 .. Note::
    a ``__del__()`` method should also be present to ensure that the
    trajectory is properly closed. However, certain types of Reader can ignore
@@ -631,14 +626,12 @@ Typically, many methods and attributes are overriden.
 
 Signature::
 
-   W = TrajectoryWriter(filename,n_atoms,**kwargs)
-   W.write_next_timestep(Timestep)
+   with TrajectoryWriter(filename, n_atoms, **kwargs) as w:
+       w.write(Universe)    # write a whole universe
 
 or::
 
-   W.write(AtomGroup)   # write a selection
-   W.write(Universe)    # write a whole universe
-   W.write(Timestep)    # same as write_next_timestep()
+   w.write(AtomGroup)  # write a selection of Atoms from Universe
 
 
 Methods
@@ -648,8 +641,6 @@ Methods
      opens *filename* and writes header if required by format
  ``write(obj)``
      write Timestep data in *obj*
- ``write_next_timestep([timestep])``
-     write data in *timestep* to trajectory file
  ``convert_dimensions_to_unitcell(timestep)``
      take the dimensions from the timestep and convert to the native
      unitcell representation of the format
@@ -720,14 +711,12 @@ Methods
    raw :class:`~MDAnalysis.coordinates.base.Timestep` objects.
 
 """
-from __future__ import absolute_import
 __all__ = ['reader', 'writer']
-
-import six
 
 from . import base
 from .core import reader, writer
 from . import chain
+from . import chemfiles
 from . import CRD
 from . import DCD
 from . import DLPoly
@@ -737,11 +726,13 @@ from . import GRO
 from . import INPCRD
 from . import LAMMPS
 from . import MOL2
+from . import ParmEd
 from . import PDB
 from . import PDBQT
 from . import PQR
 from . import TRJ
 from . import TRR
+from . import H5MD
 from . import TRZ
 from . import XTC
 from . import XYZ
@@ -750,3 +741,6 @@ from . import memory
 from . import MMTF
 from . import GSD
 from . import null
+from . import NAMDBIN
+from . import FHIAIMS
+from . import RDKit

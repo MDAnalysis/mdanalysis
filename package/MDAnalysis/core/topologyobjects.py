@@ -28,10 +28,6 @@ Core Topology Objects --- :mod:`MDAnalysis.core.topologyobjects`
 The building blocks for MDAnalysis' description of topology
 
 """
-from __future__ import print_function, absolute_import, division
-
-from six.moves import zip
-from six import raise_from
 import numbers
 import numpy as np
 import functools
@@ -330,6 +326,50 @@ class ImproperDihedral(Dihedral):
         return self.dihedral()
 
 
+class UreyBradley(TopologyObject):
+
+    """A Urey-Bradley angle between two :class:`~MDAnalysis.core.groups.Atom` instances.
+    Two :class:`UreyBradley` instances can be compared with the ``==`` and
+    ``!=`` operators. A UreyBradley angle is equal to another if the same atom
+    numbers are involved.
+
+    .. versionadded:: 1.0.0
+    """
+    btype = 'ureybradley'
+
+    def partner(self, atom):
+        """UreyBradley.partner(Atom)
+        Returns
+        -------
+        the other :class:`~MDAnalysis.core.groups.Atom` in this
+        interaction
+        """
+        if atom == self.atoms[0]:
+            return self.atoms[1]
+        elif atom == self.atoms[1]:
+            return self.atoms[0]
+        else:
+            raise ValueError("Unrecognised Atom")
+
+    def distance(self, pbc=True):
+        """Distance between the atoms.
+        """
+        box = self.universe.dimensions if pbc else None
+        return distances.calc_bonds(self[0].position, self[1].position, box)
+
+    value = distance
+
+
+class CMap(TopologyObject):
+    """
+    Coupled-torsion correction map term between five 
+    :class:`~MDAnalysis.core.groups.Atom` instances.
+
+    .. versionadded:: 1.0.0
+    """
+    btype = 'cmap'
+
+
 class TopologyDict(object):
 
     """A customised dictionary designed for sorting the bonds, angles and
@@ -468,7 +508,8 @@ class TopologyDict(object):
         return other in self.dict or other[::-1] in self.dict
 
 
-_BTYPE_TO_SHAPE = {'bond': 2, 'angle': 3, 'dihedral': 4, 'improper': 4}
+_BTYPE_TO_SHAPE = {'bond': 2, 'ureybradley': 2, 'angle': 3, 
+                   'dihedral': 4, 'improper': 4, 'cmap': 5}
 
 
 class TopologyGroup(object):
@@ -523,7 +564,7 @@ class TopologyGroup(object):
     .. versionchanged:: 0.19.0
        Empty TopologyGroup now returns correctly shaped empty array via
        indices property and to_indices()
-    .. versionchanged::0.21.0
+    .. versionchanged::1.0.0
        ``type``, ``guessed``, and ``order`` are no longer reshaped to arrays
        with an extra dimension
     """
@@ -542,6 +583,7 @@ class TopologyGroup(object):
             raise ValueError("Unsupported btype, use one of '{}'"
                              "".format(', '.join(_BTYPE_TO_SHAPE)))
 
+        bondidx = np.asarray(bondidx)
         nbonds = len(bondidx)
         # remove duplicate bonds
         if type is None:
@@ -551,7 +593,7 @@ class TopologyGroup(object):
         elif guessed is True or guessed is False:
             guessed = np.repeat(guessed, nbonds)
         else:
-            guessed = np.asarray(guessed, dtype=np.bool)
+            guessed = np.asarray(guessed, dtype=bool)
         if order is None:
             order = np.repeat(None, nbonds)
 
@@ -766,7 +808,9 @@ class TopologyGroup(object):
             outclass = {'bond': Bond,
                         'angle': Angle,
                         'dihedral': Dihedral,
-                        'improper': ImproperDihedral}[self.btype]
+                        'improper': ImproperDihedral,
+                        'ureybradley': UreyBradley,
+                        'cmap': CMap}[self.btype]
             return outclass(self._bix[item],
                             self._u,
                             type=self._bondtypes[item],
@@ -816,11 +860,9 @@ class TopologyGroup(object):
             return self._ags[2]
         except IndexError:
             nvert = _BTYPE_TO_SHAPE[self.btype]
-            raise_from(
-                IndexError(
-                    "TopologyGroup of {}s only has {} vertical AtomGroups".format(
-                        self.btype, nvert)),
-                None)
+            errmsg = (f"TopologyGroup of {self.btype}s only has {nvert} "
+                      f"vertical AtomGroups")
+            raise IndexError(errmsg) from None
 
     @property
     def atom4(self):
@@ -829,11 +871,9 @@ class TopologyGroup(object):
             return self._ags[3]
         except IndexError:
             nvert = _BTYPE_TO_SHAPE[self.btype]
-            raise_from(
-                IndexError(
-                    "TopologyGroup of {}s only has {} vertical AtomGroups".format(
-                        self.btype, nvert)),
-                None)
+            errmsg = (f"TopologyGroup of {self.btype}s only has {nvert} "
+                      f"vertical AtomGroups")
+            raise IndexError(errmsg) from None
 
     # Distance calculation methods below
     # "Slow" versions exist as a way of testing the Cython implementations
@@ -965,7 +1005,7 @@ class TopologyGroup(object):
                          for a, b, c in zip(ab, bc, cd)])
 
     def dihedrals(self, result=None, pbc=False):
-        """Calculate the dihedralal angle in radians for this topology
+        """Calculate the dihedral angle in radians for this topology
         group.
 
         Defined as the angle between a plane formed by atoms 1, 2 and

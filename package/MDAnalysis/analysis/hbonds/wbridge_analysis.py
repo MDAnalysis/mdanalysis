@@ -559,16 +559,14 @@ Classes
       of a water bridge existence.
 
 """
-from __future__ import print_function, absolute_import, division
-
 from collections import defaultdict
 import logging
 import warnings
-import six
 import numpy as np
 
 from ..base import AnalysisBase
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
+from MDAnalysis.lib.distances import capped_distance, calc_angles
 from MDAnalysis import NoDataError, MissingDataWarning, SelectionError
 from MDAnalysis.lib import distances
 
@@ -789,9 +787,9 @@ class WaterBridgeAnalysis(AnalysisBase):
 
         # set up the donors/acceptors lists
         if donors is None:
-            donors = []
+            donors = ()
         if acceptors is None:
-            acceptors = []
+            acceptors = ()
         self.forcefield = forcefield
         self.donors = tuple(set(self.DEFAULT_DONORS[forcefield]).union(donors))
         self.acceptors = tuple(set(self.DEFAULT_ACCEPTORS[forcefield]).union(acceptors))
@@ -819,94 +817,123 @@ class WaterBridgeAnalysis(AnalysisBase):
         logger.info("WaterBridgeAnalysis: force field %s to guess donor and \
         acceptor names", self.forcefield)
 
-    def _update_selection(self):
-        self._s1 = self.u.select_atoms(self.selection1)
-        self._s2 = self.u.select_atoms(self.selection2)
+    def _build_residue_dict(self, selection):
+        # Build the residue_dict where the key is the residue name
+        # The content is a dictionary where hydrogen bond donor heavy atom names is the key
+        # The content is the hydrogen bond donor hydrogen atom names
+        atom_group = self.u.select_atoms(selection)
+        for residue in atom_group.residues:
+            if not residue.resname in self._residue_dict:
+                self._residue_dict[residue.resname] = defaultdict(set)
+            for atom in residue.atoms:
+                if atom.name in self.donors:
+                    self._residue_dict[residue.resname][atom.name].update(self._get_bonded_hydrogens(atom).names)
 
-        if self.filter_first and self._s1:
+    def _update_donor_h(self, atom_ix, h_donors, donors_h):
+        atom = self.u.atoms[atom_ix]
+        residue = atom.residue
+        hydrogen_names = self._residue_dict[residue.resname][atom.name]
+        if hydrogen_names:
+            hydrogens = residue.atoms.select_atoms('name {0}'.format(
+                ' '.join(hydrogen_names))).ix
+            for atom in hydrogens:
+                h_donors[atom] = atom_ix
+                donors_h[atom_ix].append(atom)
+
+    def _update_selection(self):
+        self._s1_donors = []
+        self._s1_h_donors = {}
+        self._s1_donors_h = defaultdict(list)
+        self._s1_acceptors = []
+
+        self._s2_donors = []
+        self._s2_h_donors = {}
+        self._s2_donors_h = defaultdict(list)
+        self._s2_acceptors = []
+
+        self._s1 = self.u.select_atoms(self.selection1).ix
+        self._s2 = self.u.select_atoms(self.selection2).ix
+
+        if self.filter_first and len(self._s1):
             self.logger_debug('Size of selection 1 before filtering:'
                               ' {} atoms'.format(len(self._s1)))
-            ns_selection_1 = AtomNeighborSearch(self._s1, box=self.box)
-            self._s1 = ns_selection_1.search(self._s2, self.selection_distance)
+            ns_selection_1 = AtomNeighborSearch(self.u.atoms[self._s1], box=self.box)
+            self._s1 = ns_selection_1.search(self.u.atoms[self._s2], self.selection_distance).ix
         self.logger_debug("Size of selection 1: {0} atoms".format(len(self._s1)))
 
-        if not self._s1:
+        if len(self._s1) == 0:
             logger.warning('Selection 1 "{0}" did not select any atoms.'
                            .format(str(self.selection1)[:80]))
             return
 
-        if self.filter_first and self._s2:
+        if self.filter_first and len(self._s2):
             self.logger_debug('Size of selection 2 before filtering:'
                               ' {} atoms'.format(len(self._s2)))
-            ns_selection_2 = AtomNeighborSearch(self._s2, box=self.box)
-            self._s2 = ns_selection_2.search(self._s1, self.selection_distance)
+            ns_selection_2 = AtomNeighborSearch(self.u.atoms[self._s2], box=self.box)
+            self._s2 = ns_selection_2.search(self.u.atoms[self._s1], self.selection_distance).ix
         self.logger_debug('Size of selection 2: {0} atoms'.format(len(self._s2)))
 
-        if not self._s2:
+        if len(self._s2) == 0:
             logger.warning('Selection 2 "{0}" did not select any atoms.'
                            .format(str(self.selection2)[:80]))
             return
 
         if self.selection1_type in ('donor', 'both'):
-            self._s1_donors = self._s1.select_atoms(
-                'name {0}'.format(' '.join(self.donors)))
-            self._s1_donors_h = {}
-            for i, atom in enumerate(self._s1_donors):
-                tmp = self._get_bonded_hydrogens(atom)
-                if tmp:
-                    self._s1_donors_h[i] = tmp
+            self._s1_donors = self.u.atoms[self._s1].select_atoms(
+                'name {0}'.format(' '.join(self.donors))).ix
+            for atom_ix in self._s1_donors:
+                self._update_donor_h(atom_ix, self._s1_h_donors, self._s1_donors_h)
             self.logger_debug("Selection 1 donors: {0}".format(len(self._s1_donors)))
-            self.logger_debug("Selection 1 donor hydrogens: {0}".format(len(self._s1_donors_h)))
+            self.logger_debug("Selection 1 donor hydrogens: {0}".format(len(self._s1_h_donors)))
         if self.selection1_type in ('acceptor', 'both'):
-            self._s1_acceptors = self._s1.select_atoms(
-                'name {0}'.format(' '.join(self.acceptors)))
+            self._s1_acceptors = self.u.atoms[self._s1].select_atoms(
+                'name {0}'.format(' '.join(self.acceptors))).ix
             self.logger_debug("Selection 1 acceptors: {0}".format(len(self._s1_acceptors)))
 
-        if not self._s2:
+        if len(self._s2) == 0:
             return None
         if self.selection1_type in ('donor', 'both'):
-            self._s2_acceptors = self._s2.select_atoms(
-                'name {0}'.format(' '.join(self.acceptors)))
+            self._s2_acceptors = self.u.atoms[self._s2].select_atoms(
+                'name {0}'.format(' '.join(self.acceptors))).ix
             self.logger_debug("Selection 2 acceptors: {0:d}".format(len(self._s2_acceptors)))
         if self.selection1_type in ('acceptor', 'both'):
-            self._s2_donors = self._s2.select_atoms(
-                'name {0}'.format(' '.join(self.donors)))
-            self._s2_donors_h = {}
-            for i, d in enumerate(self._s2_donors):
-                tmp = self._get_bonded_hydrogens(d)
-                if tmp:
-                    self._s2_donors_h[i] = tmp
+            self._s2_donors = self.u.atoms[self._s2].select_atoms(
+                'name {0}'.format(' '.join(self.donors))).ix
+            for atom_ix in self._s2_donors:
+                self._update_donor_h(atom_ix, self._s2_h_donors, self._s2_donors_h)
             self.logger_debug("Selection 2 donors: {0:d}".format(len(self._s2_donors)))
-            self.logger_debug("Selection 2 donor hydrogens: {0:d}".format(len(self._s2_donors_h)))
+            self.logger_debug("Selection 2 donor hydrogens: {0:d}".format(len(self._s2_h_donors)))
 
     def _update_water_selection(self):
-        self._water = self.u.select_atoms(self.water_selection)
+        self._water_donors = []
+        self._water_h_donors = {}
+        self._water_donors_h = defaultdict(list)
+        self._water_acceptors = []
+
+        self._water = self.u.select_atoms(self.water_selection).ix
         self.logger_debug('Size of water selection before filtering:'
                           ' {} atoms'.format(len(self._water)))
-        if self._water and self.filter_first:
-            filtered_s1 = AtomNeighborSearch(self._water, box=self.box).search(self._s1,
+        if len(self._water) and self.filter_first:
+            filtered_s1 = AtomNeighborSearch(self.u.atoms[self._water], box=self.box).search(self.u.atoms[self._s1],
                                                     self.selection_distance)
             if filtered_s1:
-                self._water = AtomNeighborSearch(filtered_s1, box=self.box).search(self._s2,
-                                                        self.selection_distance)
+                self._water = AtomNeighborSearch(filtered_s1, box=self.box).search(self.u.atoms[self._s2],
+                                                        self.selection_distance).ix
 
         self.logger_debug("Size of water selection: {0} atoms".format(len(self._water)))
 
-        if not self._water:
+        if len(self._water) == 0:
             logger.warning("Water selection '{0}' did not select any atoms."
                            .format(str(self.water_selection)[:80]))
         else:
-            self._water_donors = self._water.select_atoms(
-                'name {0}'.format(' '.join(self.donors)))
-            self._water_donors_h = {}
-            for i, d in enumerate(self._water_donors):
-                tmp = self._get_bonded_hydrogens(d)
-                if tmp:
-                    self._water_donors_h[i] = tmp
+            self._water_donors = self.u.atoms[self._water].select_atoms(
+                'name {0}'.format(' '.join(self.donors))).ix
+            for atom_ix in self._water_donors:
+                self._update_donor_h(atom_ix, self._water_h_donors, self._water_donors_h)
             self.logger_debug("Water donors: {0}".format(len(self._water_donors)))
-            self.logger_debug("Water donor hydrogens: {0}".format(len(self._water_donors_h)))
-            self._water_acceptors = self._water.select_atoms(
-                'name {0}'.format(' '.join(self.acceptors)))
+            self.logger_debug("Water donor hydrogens: {0}".format(len(self._water_h_donors)))
+            self._water_acceptors = self.u.atoms[self._water].select_atoms(
+                'name {0}'.format(' '.join(self.acceptors))).ix
             self.logger_debug("Water acceptors: {0}".format(len(self._water_acceptors)))
 
     def _get_bonded_hydrogens(self, atom):
@@ -952,24 +979,18 @@ class WaterBridgeAnalysis(AnalysisBase):
         # plus order of water bridge times the length of OH bond plus hydrogne bond distance
         self.selection_distance = (2 * 2 + self.order * (2 + self.distance))
 
-        self._s1_donors = {}
-        self._s1_donors_h = {}
-        self._s1_acceptors = {}
-
-        self._s2_donors = {}
-        self._s2_donors_h = {}
-        self._s2_acceptors = {}
-
         self.box = self.u.dimensions if self.pbc else None
+        self._residue_dict = {}
+        self._build_residue_dict(self.selection1)
+        self._build_residue_dict(self.selection2)
+        self._build_residue_dict(self.water_selection)
+
         self._update_selection()
 
-        self._water_donors = {}
-        self._water_donors_h = {}
-        self._water_acceptors = {}
-
         self.timesteps = []
-        if self._s1 and self._s2:
+        if len(self._s1) and len(self._s2):
             self._update_water_selection()
+        else:
             logger.info("WaterBridgeAnalysis: no atoms found in the selection.")
 
         logger.info("WaterBridgeAnalysis: initial checks passed.")
@@ -987,29 +1008,48 @@ class WaterBridgeAnalysis(AnalysisBase):
         logger.info("Starting analysis (frame index start=%d stop=%d, step=%d)",
                     self.start, self.stop, self.step)
 
-    def _donor2acceptor(self, donors, donor_hs, acceptor):
+    def _donor2acceptor(self, donors, h_donors, acceptor):
+        if len(donors) == 0 or len(acceptor) == 0:
+            return []
+        if self.distance_type != 'heavy':
+            donors_idx = list(h_donors.keys())
+        else:
+            donors_idx = list(donors.keys())
         result = []
-        ns_acceptors = AtomNeighborSearch(acceptor, self.box)
-        for i, donor_h_set in donor_hs.items():
-            d = donors[i]
-            for h in donor_h_set:
-                res = ns_acceptors.search(h, self.distance)
-                for a in res:
-                    donor_atom = h if self.distance_type != 'heavy' else d
-                    dist = distances.calc_bonds(donor_atom.position,
-                                                a.position, box=self.box)
-                    if dist <= self.distance:
-                        angle = distances.calc_angles(d.position, h.position,
-                                                      a.position, box=self.box)
-                        angle = np.rad2deg(angle)
-                        if angle >= self.angle:
-                            self.logger_debug(
-                                "D: {0!s} <-> A: {1!s} {2:f} A, {3:f} DEG" \
-                                    .format(h.index, a.index, dist, angle))
-                            result.append((h.index, d.index, a.index,
-                                     (h.resname, h.resid, h.name),
-                                     (a.resname, a.resid, a.name),
-                                     dist, angle))
+        # Code modified from p-j-smith
+        pairs, distances = capped_distance(self.u.atoms[donors_idx].positions,
+                                           self.u.atoms[acceptor].positions,
+                                           max_cutoff=self.distance, box=self.box,
+                                           return_distances=True)
+        if self.distance_type != 'heavy':
+            tmp_donors = [h_donors[donors_idx[idx]] for idx in pairs[:,0]]
+            tmp_hydrogens = [donors_idx[idx] for idx in pairs[:,0]]
+            tmp_acceptors = [acceptor[idx] for idx in pairs[:,1]]
+        else:
+            tmp_donors = []
+            tmp_hydrogens = []
+            tmp_acceptors = []
+            for idx in range(len(pairs[:,0])):
+                for h in donors[donors_idx[pairs[idx,0]]]:
+                    tmp_donors.append(donors_idx[pairs[idx,0]])
+                    tmp_hydrogens.append(h)
+                    tmp_acceptors.append(acceptor[pairs[idx,1]])
+
+        angles = np.rad2deg(
+            calc_angles(
+                self.u.atoms[tmp_donors].positions,
+                self.u.atoms[tmp_hydrogens].positions,
+                self.u.atoms[tmp_acceptors].positions,
+                box=self.box
+            )
+        )
+        hbond_indices = np.where(angles > self.angle)[0]
+        for index in hbond_indices:
+            h = tmp_hydrogens[index]
+            d = tmp_donors[index]
+            a = tmp_acceptors[index]
+            result.append((h, d, a, self._expand_index(h), self._expand_index(a),
+                       distances[index], angles[index]))
         return result
 
     def _single_frame(self):
@@ -1018,7 +1058,7 @@ class WaterBridgeAnalysis(AnalysisBase):
 
         if self.update_selection:
             self._update_selection()
-        if self._s1 and self._s2:
+        if len(self._s1) and len(self._s2):
             if self.update_water_selection:
                 self._update_water_selection()
         else:
@@ -1032,26 +1072,32 @@ class WaterBridgeAnalysis(AnalysisBase):
 
         if self.selection1_type in ('donor', 'both'):
             # check for direct hbond from s1 to s2
-            if self._s2_acceptors:
-                self.logger_debug("Selection 1 Donors <-> Selection 2 Acceptors")
-                results = self._donor2acceptor(self._s1_donors, self._s1_donors_h, self._s2_acceptors)
-                for line in results:
-                    h_index, d_index, a_index, (h_resname, h_resid, h_name), (a_resname, a_resid, a_name), dist, angle = line
-                    water_pool[(a_resname, a_resid)] = None
-                    selection_1.append((h_index, d_index, a_index, None, dist, angle))
-                    selection_2.append((a_resname, a_resid))
-            if self.order > 0 and self._water_acceptors:
+            self.logger_debug("Selection 1 Donors <-> Selection 2 Acceptors")
+            results = self._donor2acceptor(self._s1_donors_h, self._s1_h_donors,self._s2_acceptors)
+            for line in results:
+                h_index, d_index, a_index, (h_resname, h_resid, h_name), (a_resname, a_resid, a_name), dist, angle = line
+                water_pool[(a_resname, a_resid)] = None
+                selection_1.append((h_index, d_index, a_index, None, dist, angle))
+                selection_2.append((a_resname, a_resid))
+            if self.order > 0:
                 self.logger_debug("Selection 1 Donors <-> Water Acceptors")
-                results = self._donor2acceptor(self._s1_donors, self._s1_donors_h, self._water_acceptors)
+                results = self._donor2acceptor(self._s1_donors_h, self._s1_h_donors, self._water_acceptors)
                 for line in results:
-                    h_index, d_index, a_index, (h_resname, h_resid, h_name), (a_resname, a_resid, a_name), dist, angle = line
-                    next_round_water.add((a_resname, a_resid))
+                    h_index, d_index, a_index, (h_resname, h_resid, h_name), (
+                    a_resname, a_resid, a_name), dist, angle = line
                     selection_1.append((h_index, d_index, a_index, None, dist, angle))
 
-        if (self.selection1_type in ('acceptor', 'both') and
-                self._s1_acceptors):
+                self.logger_debug("Water Donors <-> Selection 2 Acceptors")
+                results = self._donor2acceptor(self._water_donors_h, self._water_h_donors, self._s2_acceptors)
+                for line in results:
+                    h_index, d_index, a_index, (h_resname, h_resid, h_name), (
+                    a_resname, a_resid, a_name), dist, angle = line
+                    water_pool[(h_resname, h_resid)].append((h_index, d_index, a_index, None, dist, angle))
+                    selection_2.append((a_resname, a_resid))
+
+        if self.selection1_type in ('acceptor', 'both'):
             self.logger_debug("Selection 2 Donors <-> Selection 1 Acceptors")
-            results = self._donor2acceptor(self._s2_donors, self._s2_donors_h, self._s1_acceptors)
+            results = self._donor2acceptor(self._s2_donors_h, self._s2_h_donors, self._s1_acceptors)
             for line in results:
                 h_index, d_index, a_index, (h_resname, h_resid, h_name), (a_resname, a_resid, a_name), dist, angle = line
                 water_pool[(h_resname, h_resid)] = None
@@ -1059,78 +1105,29 @@ class WaterBridgeAnalysis(AnalysisBase):
                 selection_2.append((h_resname, h_resid))
 
             if self.order > 0:
-                self.logger_debug("Selection 1 Acceptors <-> Water Donors")
-                results = self._donor2acceptor(self._water_donors, self._water_donors_h, self._s1_acceptors)
+                self.logger_debug("Selection 2 Donors <-> Water Acceptors")
+                results = self._donor2acceptor(self._s2_donors_h, self._s2_h_donors, self._water_acceptors)
                 for line in results:
-                    h_index, d_index, a_index, (h_resname, h_resid, h_name), (a_resname, a_resid, a_name), dist, angle = line
-                    next_round_water.add((h_resname, h_resid))
+                    h_index, d_index, a_index, (h_resname, h_resid, h_name), (
+                    a_resname, a_resid, a_name), dist, angle = line
+                    water_pool[(a_resname, a_resid)].append((a_index, None, h_index, d_index, dist, angle))
+                    selection_2.append((h_resname, h_resid))
+
+                self.logger_debug("Selection 1 Acceptors <-> Water Donors")
+                results = self._donor2acceptor(self._water_donors_h, self._water_h_donors, self._s1_acceptors)
+                for line in results:
+                    h_index, d_index, a_index, (h_resname, h_resid, h_name), (
+                    a_resname, a_resid, a_name), dist, angle = line
                     selection_1.append((a_index, None, h_index, d_index, dist, angle))
 
-        for i in range(self.order):
-            # Narrow down the water selection
-            selection_resn_id = list(next_round_water)
-            if (not selection_resn_id) or (not self._water):
-                logger.warning("No water forming hydrogen bonding with selection 1.")
-                break
-            selection_resn_id = ['(resname {} and resid {})'.format(
-                resname, resid) for resname, resid in selection_resn_id]
-            water_bridges = self._water.select_atoms(' or '.join(selection_resn_id))
-            self.logger_debug("Size of water bridge selection for the {} order of water bridge: {} atoms".format(i+1,
-                                                                                                len(water_bridges)))
-
-            water_bridges_donors = water_bridges.select_atoms(
-                'name {0}'.format(' '.join(self.donors)))
-            water_bridges_donors_h = {}
-            for j, d in enumerate(water_bridges_donors):
-                tmp = self._get_bonded_hydrogens(d)
-                if tmp:
-                    water_bridges_donors_h[j] = tmp
-            self.logger_debug("water bridge donors: {0}".format(len(water_bridges_donors)))
-            self.logger_debug("water bridge donor hydrogens: {0}".format(len(water_bridges_donors_h)))
-            water_bridges_acceptors = water_bridges.select_atoms(
-                'name {0}'.format(' '.join(self.acceptors)))
-            self.logger_debug("water bridge acceptors: {0}".format(len(water_bridges_acceptors)))
-
-            if i < self.order:
-                next_round_water = set([])
-                # first check if the water can touch the other end
-                # Finding the hydrogen bonds between water bridge and selection 2
-                if self._s2_acceptors:
-                    self.logger_debug("Order {} water donor <-> Selection 2 Acceptors".format(i + 1))
-                    results = self._donor2acceptor(water_bridges_donors, water_bridges_donors_h, self._s2_acceptors)
-                    for line in results:
-                        h_index, d_index, a_index, (h_resname, h_resid, h_name), (a_resname, a_resid, a_name), dist, angle = line
-                        water_pool[(h_resname, h_resid)].append((h_index, d_index, a_index, None, dist, angle))
-                        selection_2.append((a_resname, a_resid))
-
-                # Finding the hydrogen bonds between water bridge and selection 2
-                if water_bridges_acceptors:
-                    self.logger_debug("Selection 2 Donors <-> Order {} water".format(i + 1))
-                    results = self._donor2acceptor(self._s2_donors, self._s2_donors_h, water_bridges_acceptors)
-                    for line in results:
-                        h_index, d_index, a_index, (h_resname, h_resid, h_name), (a_resname, a_resid, a_name), dist, angle = line
-                        water_pool[(a_resname, a_resid)].append((a_index, None, h_index, d_index, dist, angle))
-                        selection_2.append((h_resname, h_resid))
-
-                # find the water water hydrogen bond
-                if water_bridges_acceptors:
-                    self.logger_debug("Order {} water acceptor <-> Order {} water donor".format(i + 1, i + 2))
-                    results = self._donor2acceptor(self._water_donors, self._water_donors_h, water_bridges_acceptors)
-                    for line in results:
-                        h_index, d_index, a_index, (h_resname, h_resid, h_name), (a_resname, a_resid, a_name), dist, angle = line
-                        water_pool[(a_resname, a_resid)].append((a_index, None, h_index, d_index, dist, angle))
-                        next_round_water.add((h_resname, h_resid))
-
-                if water_bridges_donors_h:
-                    self.logger_debug("Order {} water donor <-> Order {} water acceptor".format(i + 1, i + 2))
-                    results = self._donor2acceptor(water_bridges_donors, water_bridges_donors_h, self._water_acceptors)
-                    for line in results:
-                        h_index, d_index, a_index, (h_resname, h_resid, h_name), (a_resname, a_resid, a_name), dist, angle = line
-                        water_pool[(h_resname, h_resid)].append((h_index, d_index, a_index, None, dist, angle))
-                        next_round_water.add((a_resname, a_resid))
-
-                # eliminate the water which has been tested
-                next_round_water = next_round_water.difference(set(water_pool.keys()))
+        if self.order > 1:
+            self.logger_debug("Water donor <-> Water Acceptors")
+            results = self._donor2acceptor(self._water_donors_h, self._water_h_donors, self._water_acceptors)
+            for line in results:
+                h_index, d_index, a_index, (h_resname, h_resid, h_name), (
+                a_resname, a_resid, a_name), dist, angle = line
+                water_pool[(a_resname, a_resid)].append((a_index, None, h_index, d_index, dist, angle))
+                water_pool[(h_resname, h_resid)].append((h_index, d_index, a_index, None, dist, angle))
 
         # solve the connectivity network
         # The following code attempt to generate a water network which is formed by the class dict.
@@ -1499,7 +1496,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                                              link_func=self._full_link, time=time, **kwargs)
 
             result_list = []
-            for key, time_list in six.iteritems(result):
+            for key, time_list in result.items():
                 for time in time_list:
                     if output == 'combined':
                         key = list(key)

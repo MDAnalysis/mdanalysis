@@ -55,7 +55,7 @@ trajectory, while writing each frame::
           W.write(calphas)
 
 It is important to *always close the trajectory* when done because only at this
-step is the final END_ record written, which is required by the `PDB 3.2
+step is the final END_ record written, which is required by the `PDB 3.3
 standard`_. Using the writer as a context manager ensures that this always
 happens.
 
@@ -65,7 +65,7 @@ Capabilities
 
 A pure-Python implementation for PDB files commonly encountered in MD
 simulations comes under the names :class:`PDBReader` and :class:`PDBWriter`. It
-only implements a subset of the `PDB 3.2 standard`_ and also allows some
+only implements a subset of the `PDB 3.3 standard`_ and also allows some
 typical enhancements such as 4-letter resids (introduced by CHARMM/NAMD).
 
 The :class:`PDBReader` can read multi-frame PDB files and represents
@@ -136,16 +136,11 @@ Classes
    :inherited-members:
 
 
-.. _`PDB 3.2 standard`:
-    http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
+.. _`PDB 3.3 standard`:
+    http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html
 
 """
-from __future__ import absolute_import
-
-from six.moves import range, zip
-from six import raise_from, StringIO, BytesIO
-
-import io
+from io import StringIO, BytesIO
 import os
 import errno
 import itertools
@@ -155,11 +150,9 @@ import logging
 import collections
 import numpy as np
 
-from ..core import flags
 from ..lib import util
 from . import base
 from ..topology.core import guess_atom_element
-from ..core.universe import Universe
 from ..exceptions import NoDataError
 
 
@@ -167,6 +160,7 @@ logger = logging.getLogger("MDAnalysis.coordinates.PBD")
 
 # Pairs of residue name / atom name in use to deduce PDB formatted atom names
 Pair = collections.namedtuple('Atom', 'resname name')
+
 
 class PDBReader(base.ReaderBase):
     """PDBReader that reads a `PDB-formatted`_ file, no frills.
@@ -183,11 +177,11 @@ class PDBReader(base.ReaderBase):
     Reads multi-`MODEL`_ PDB files as trajectories.
 
     .. _PDB-formatted:
-       http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
+       http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html
     .. _PDB coordinate section:
-       http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html
+       http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html
     .. _MODEL:
-       http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
+       http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL
 
     =============  ============  ===========  =============================================
     COLUMNS        DATA  TYPE    FIELD        DEFINITION
@@ -218,6 +212,18 @@ class PDBReader(base.ReaderBase):
     79 - 80        LString(2)    charge       Charge  on the atom.
     =============  ============  ===========  =============================================
 
+    Notes
+    -----
+    If a system does not have unit cell parameters (such as in electron
+    microscopy structures), the PDB file format requires the CRYST1_ field to
+    be provided with unitary values (cubic box with sides of 1 Å) and an
+    appropriate REMARK. If unitary values are found within the CRYST1_ field,
+    :code:`PDBReader` will not set unit cell dimensions (which will take the
+    default value :code:`np.zeros(6)`, see Issue #2698)
+    and it will warn the user.
+
+    .. _CRYST1: http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1
+
 
     See Also
     --------
@@ -231,6 +237,9 @@ class PDBReader(base.ReaderBase):
        Can now read PDB files with DOS line endings
     .. versionchanged:: 0.20.0
        Strip trajectory header of trailing spaces and newlines
+    .. versionchanged:: 1.0.0
+       Raise user warning for CRYST1_ record with unitary valuse
+       (cubic box with sides of 1 Å) and do not set cell dimensions.
     """
     format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}
@@ -363,11 +372,25 @@ class PDBReader(base.ReaderBase):
         return self._read_frame(frame)
 
     def _read_frame(self, frame):
+        """
+        Read frame from PDB file.
+
+        Notes
+        -----
+        When the CRYST1_ record has unitary values (cubic box with sides of
+        1 Å), cell dimensions are considered fictitious. An user warning is
+        raised and cell dimensions are set to
+        :code:`np.zeros(6)` (see Issue #2698)
+
+        .. versionchanged:: 1.0.0
+           Raise user warning for CRYST1_ record with unitary valuse
+           (cubic box with sides of 1 Å) and do not set cell dimensions.
+        """
         try:
             start = self._start_offsets[frame]
             stop = self._stop_offsets[frame]
         except IndexError:  # out of range of known frames
-            raise_from(IOError, None)
+            raise IOError from None
 
         pos = 0
         occupancy = np.ones(self.n_atoms)
@@ -392,13 +415,24 @@ class PDBReader(base.ReaderBase):
             elif line[:6] == 'CRYST1':
                 # does an implicit str -> float conversion
                 try:
-                    self.ts._unitcell[:] = [line[6:15], line[15:24],
-                                            line[24:33], line[33:40],
-                                            line[40:47], line[47:54]]
+                    cell_dims = np.array([line[6:15], line[15:24],
+                                         line[24:33], line[33:40],
+                                         line[40:47], line[47:54]],
+                                         dtype=np.float32)
                 except ValueError:
                     warnings.warn("Failed to read CRYST1 record, "
                                   "possibly invalid PDB file, got:\n{}"
                                   "".format(line))
+                else:
+                    if np.allclose(cell_dims, np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0])):
+                        # FIXME: Dimensions set to zeros.
+                        # FIXME: This might change with Issue #2698
+                        warnings.warn("1 A^3 CRYST1 record,"
+                                      " this is usually a placeholder."
+                                      " Unit cell dimensions will be set"
+                                      " to zeros.")
+                    else:
+                        self.ts._unitcell[:] = cell_dims
 
         # check if atom number changed
         if pos != self.n_atoms:
@@ -425,7 +459,7 @@ class PDBReader(base.ReaderBase):
 
 
 class PDBWriter(base.WriterBase):
-    """PDB writer that implements a subset of the `PDB 3.2 standard`_ .
+    """PDB writer that implements a subset of the `PDB 3.3 standard`_ .
 
     PDB format as used by NAMD/CHARMM: 4-letter resnames and segID are allowed,
     altLoc is written.
@@ -436,12 +470,19 @@ class PDBWriter(base.WriterBase):
     PDB "movie" (multi frame mode, *multiframe* = ``True``), consisting of
     multiple models (using the MODEL_ and ENDMDL_ records).
 
-    .. _`PDB 3.2 standard`:
-       http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
-    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
-    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
-    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
-
+    .. _`PDB 3.3 standard`:
+       http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html
+    .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ATOM
+    .. _COMPND: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#COMPND
+    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format33/sect10.html#CONECT
+    .. _END: http://www.wwpdb.org/documentation/file-format-content/format33/sect11.html#END
+    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ENDMDL
+    .. _HEADER: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#HEADER
+    .. _HETATM: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#HETATM
+    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL
+    .. _NUMMDL: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#NUMMDL
+    .. _REMARKS: http://www.wwpdb.org/documentation/file-format-content/format33/remarks.html
+    .. _TITLE: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#TITLE
 
     Note
     ----
@@ -454,6 +495,15 @@ class PDBWriter(base.WriterBase):
     The maximum frame number that can be stored in a PDB file is 9999 and it
     will wrap around (see :meth:`MODEL` for further details).
 
+    The CRYST1_ record specifies the unit cell. This record is set to
+    unitary values (cubic box with sides of 1 Å) if unit cell dimensions
+    are not set (:code:`None` or :code:`np.zeros(6)`,
+    see Issue #2698).
+
+    When the :attr:`record_types` attribute is present (e.g. Universe object
+    was created by loading a PDB file), ATOM_ and HETATM_ record type
+    keywords are written out accordingly. Otherwise, the ATOM_ record type
+    is the default output.
 
     See Also
     --------
@@ -479,10 +529,19 @@ class PDBWriter(base.WriterBase):
     .. versionchanged:: 0.20.0
        Strip trajectory header of trailing spaces and newlines
 
+    .. versionchanged:: 1.0.0
+       ChainID now comes from the last character of segid, as stated in the documentation.
+       An indexing issue meant it previously used the first charater (Issue #2224)
+
     """
     fmt = {
         'ATOM': (
             "ATOM  {serial:5d} {name:<4s}{altLoc:<1s}{resName:<4s}"
+            "{chainID:1s}{resSeq:4d}{iCode:1s}"
+            "   {pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}"
+            "{tempFactor:6.2f}      {segID:<4s}{element:>2s}\n"),
+        'HETATM': (
+            "HETATM{serial:5d} {name:<4s}{altLoc:<1s}{resName:<4s}"
             "{chainID:1s}{resSeq:4d}{iCode:1s}"
             "   {pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}"
             "{tempFactor:6.2f}      {segID:<4s}{element:>2s}\n"),
@@ -537,7 +596,7 @@ class PDBWriter(base.WriterBase):
 
     def __init__(self, filename, bonds="conect", n_atoms=None, start=0, step=1,
                  remarks="Created by PDBWriter",
-                 convert_units=None, multiframe=None):
+                 convert_units=True, multiframe=None):
         """Create a new PDBWriter
 
         Parameters
@@ -554,9 +613,8 @@ class PDBWriter(base.WriterBase):
            any remarks from the trajectory that serves as input are
            written to REMARK records with lines longer than :attr:`remark_max_length` (66
            characters) being wrapped.
-        convert_units: str (optional)
-           units are converted to the MDAnalysis base format; ``None`` selects
-           the value of :data:`MDAnalysis.core.flags` ['convert_lengths']
+        convert_units: bool (optional)
+           units are converted to the MDAnalysis base format; [``True``]
         bonds : {"conect", "all", None} (optional)
            If set to "conect", then only write those bonds that were already
            defined in an input PDB file as PDB CONECT_ record. If set to "all",
@@ -567,11 +625,6 @@ class PDBWriter(base.WriterBase):
            multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_
            records. If ``None``, then the class default is chosen.    [``None``]
 
-
-        .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
-        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
-        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
-
         """
         # n_atoms = None : dummy keyword argument
         # (not used, but Writer() always provides n_atoms as the second argument)
@@ -580,8 +633,6 @@ class PDBWriter(base.WriterBase):
         #       - additional title keyword could contain line for TITLE
 
         self.filename = filename
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         # convert length and time to base units
         self.convert_units = convert_units
         self._multiframe = self.multiframe if multiframe is None else multiframe
@@ -590,7 +641,7 @@ class PDBWriter(base.WriterBase):
         if start < 0:
             raise ValueError("'Start' must be a positive value")
 
-        self.start =  self.frames_written = start
+        self.start = self.frames_written = start
         self.step = step
         self.remarks = remarks
 
@@ -618,7 +669,25 @@ class PDBWriter(base.WriterBase):
                        "".format(self.start, self.remarks))
 
     def _write_pdb_header(self):
-        if self.first_frame_done == True:
+        """
+        Write PDB header.
+
+        The HEADER_ record is set to :code: `trajectory.header`.
+        The TITLE_ record explicitly mentions MDAnalysis and contains
+        information about trajectory frame(s).
+        The COMPND_ record is set to :code:`trajectory.compound`.
+        The REMARKS_ records are set to :code:`u.trajectory.remarks`
+        The CRYST1_ record specifies the unit cell. This record is set to
+        unitary values (cubic box with sides of 1 Å) if unit cell dimensions
+        are not set.
+
+        .. versionchanged: 1.0.0
+           Fix writing of PDB file without unit cell dimensions (Issue #2679).
+           If cell dimensions are not found, unitary values (cubic box with
+           sides of 1 Å) are used (PDB standard for CRYST1_).
+        """
+
+        if self.first_frame_done is True:
             return
 
         self.first_frame_done = True
@@ -638,7 +707,29 @@ class PDBWriter(base.WriterBase):
             self.REMARK(*remarks)
         except AttributeError:
             pass
-        self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
+
+        # FIXME: Values for meaningless cell dimensions are not consistent.
+        # FIXME: See Issue #2698. Here we check for both None and zeros
+        if u.dimensions is None or np.allclose(u.dimensions, np.zeros(6)):
+            # Unitary unit cell by default. See PDB standard:
+            # http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1
+            self.CRYST1(np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0]))
+
+            # Add CRYST1 REMARK (285)
+            # The SCALE record is not included
+            # (We are only implementing a subset of the PDB standard)
+            self.REMARK("285 UNITARY VALUES FOR THE UNIT CELL AUTOMATICALLY SET")
+            self.REMARK("285 BY MDANALYSIS PDBWRITER BECAUSE UNIT CELL INFORMATION")
+            self.REMARK("285 WAS MISSING.")
+            self.REMARK("285 PROTEIN DATA BANK CONVENTIONS REQUIRE THAT")
+            self.REMARK("285 CRYST1 RECORD IS INCLUDED, BUT THE VALUES ON")
+            self.REMARK("285 THIS RECORD ARE MEANINGLESS.")
+
+            warnings.warn("Unit cell dimensions not found. "
+                          "CRYST1 record set to unitary values.")
+
+        else:
+            self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
 
     def _check_pdb_coordinates(self):
         """Check if the coordinate values fall within the range allowed for PDB files.
@@ -647,7 +738,14 @@ class PDBWriter(base.WriterBase):
         already been written (in multi-frame mode) adds a REMARK instead of the
         coordinates and closes the file.
 
-        Raises :exc:`ValueError` if the coordinates fail the check.
+        Raises
+        ------
+        ValueError
+            if the coordinates fail the check.
+
+        .. versionchanged: 1.0.0
+            Check if :attr:`filename` is `StringIO` when attempting to remove
+            a PDB file with invalid coordinates (Issue #2512)
         """
         atoms = self.obj.atoms  # make sure to use atoms (Issue 46)
         # can write from selection == Universe (Issue 49)
@@ -673,6 +771,14 @@ class PDBWriter(base.WriterBase):
             except OSError as err:
                 if err.errno == errno.ENOENT:
                     pass
+                else:
+                    raise
+            except TypeError:
+                if isinstance(self.filename, StringIO):
+                    pass
+                else:
+                    raise
+
         raise ValueError("PDB files must have coordinate values between "
                          "{0:.3f} and {1:.3f} Angstroem: file writing was "
                          "aborted.".format(self.pdb_coor_limits["min"],
@@ -725,7 +831,7 @@ class PDBWriter(base.WriterBase):
         * :attr:`PDBWriter.timestep` (the underlying trajectory
           :class:`~MDAnalysis.coordinates.base.Timestep`)
 
-        Before calling :meth:`write_next_timestep` this method **must** be
+        Before calling :meth:`_write_next_frame` this method **must** be
         called at least once to enable extracting topology information from the
         current frame.
         """
@@ -764,7 +870,7 @@ class PDBWriter(base.WriterBase):
         # Issue 105: with write() ONLY write a single frame; use
         # write_all_timesteps() to dump everything in one go, or do the
         # traditional loop over frames
-        self.write_next_timestep(self.ts, multiframe=self._multiframe)
+        self._write_next_frame(self.ts, multiframe=self._multiframe)
         self._write_pdb_bonds()
         # END record is written when file is being close()d
 
@@ -807,7 +913,7 @@ class PDBWriter(base.WriterBase):
 
         for framenumber in range(start, len(traj), step):
             traj[framenumber]
-            self.write_next_timestep(self.ts, multiframe=True)
+            self._write_next_frame(self.ts, multiframe=True)
 
         self._write_pdb_bonds()
         self.close()
@@ -815,7 +921,7 @@ class PDBWriter(base.WriterBase):
         # Set the trajectory to the starting position
         traj[start]
 
-    def write_next_timestep(self, ts=None, **kwargs):
+    def _write_next_frame(self, ts=None, **kwargs):
         '''write a new timestep to the PDB file
 
         :Keywords:
@@ -831,17 +937,18 @@ class PDBWriter(base.WriterBase):
            argument, :meth:`PDBWriter._update_frame` *must* be called
            with the :class:`~MDAnalysis.core.groups.AtomGroup.Universe` as
            its argument so that topology information can be gathered.
+
+
+        .. versionchanged:: 1.0.0
+           Renamed from `write_next_timestep` to `_write_next_frame`.
         '''
         if ts is None:
             try:
                 ts = self.ts
             except AttributeError:
-                raise_from(
-                    NoDataError(
-                        "PBDWriter: no coordinate data to write to "
-                        "trajectory file"
-                        ),
-                    None)
+                errmsg = ("PBDWriter: no coordinate data to write to "
+                          "trajectory file")
+                raise NoDataError(errmsg) from None
         self._check_pdb_coordinates()
         self._write_timestep(ts, **kwargs)
 
@@ -884,15 +991,21 @@ class PDBWriter(base.WriterBase):
         :class:`PDBWriter` is in single frame mode and no MODEL_
         records are written.
 
-        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
-        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
-        .. _NUMMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#NUMMDL
-
         .. versionchanged:: 0.7.6
            The *multiframe* keyword was added, which completely determines if
-           MODEL records are written. (Previously, this was decided based on the
-           underlying trajectory and only if ``len(traj) > 1`` would MODEL records
-           have been written.)
+           MODEL_ records are written. (Previously, this was decided based on
+           the underlying trajectory and only if ``len(traj) > 1`` would
+           MODEL records have been written.)
+
+        .. versionchanged:: 1.0.0
+           ChainID now comes from the last character of segid, as stated in
+           the documentation. An indexing issue meant it previously used the
+           first charater (Issue #2224)
+
+        .. versionchanged:: 2.0.0
+           When only :attr:`record_types` attribute is present, instead of
+           using ATOM_ for both ATOM_ and HETATM_, HETATM_ record
+           types are properly written out (Issue #1753).
 
         """
         atoms = self.obj.atoms
@@ -927,13 +1040,7 @@ class PDBWriter(base.WriterBase):
         occupancies = get_attr('occupancies', 1.0)
         tempfactors = get_attr('tempfactors', 0.0)
         atomnames = get_attr('names', 'X')
-        try:
-            elements = getattr(atoms, 'elements')
-        except AttributeError:
-            elements = [
-                guess_atom_element(name.strip())
-                for name in atomnames
-            ]
+        record_types = get_attr('record_types', 'ATOM')
 
         for i, atom in enumerate(atoms):
             vals = {}
@@ -941,7 +1048,7 @@ class PDBWriter(base.WriterBase):
             vals['name'] = self._deduce_PDB_atom_name(atomnames[i], resnames[i])
             vals['altLoc'] = altlocs[i][:1]
             vals['resName'] = resnames[i][:4]
-            vals['chainID'] = segids[i][:1]
+            vals['chainID'] = segids[i][-1:]
             vals['resSeq'] = util.ltruncate_int(resids[i], 4)
             vals['iCode'] = icodes[i][:1]
             vals['pos'] = pos[i]  # don't take off atom so conversion works
@@ -950,16 +1057,20 @@ class PDBWriter(base.WriterBase):
             vals['segID'] = segids[i][:4]
             vals['element'] = elements[i][:2]
 
-            # .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ATOM
-            self.pdbfile.write(self.fmt['ATOM'].format(**vals))
+            # record_type attribute, if exists, can be ATOM or HETATM
+            try:
+                self.pdbfile.write(self.fmt[record_types[i]].format(**vals))
+            except KeyError:
+                errmsg = (f"Found {record_types[i]} for the record type, but "
+                          f"only allowed types are ATOM or HETATM")
+                raise ValueError(errmsg) from None
+
         if multiframe:
             self.ENDMDL()
         self.frames_written += 1
 
     def HEADER(self, trajectory):
         """Write HEADER_ record.
-
-        .. _HEADER: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#HEADER
 
         .. versionchanged:: 0.20.0
             Strip `trajectory.header` since it can be modified by the user and should be
@@ -973,22 +1084,15 @@ class PDBWriter(base.WriterBase):
     def TITLE(self, *title):
         """Write TITLE_ record.
 
-        .. _TITLE: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html
-
         """
         line = " ".join(title)  # TODO: should do continuation automatically
         self.pdbfile.write(self.fmt['TITLE'].format(line))
 
     def REMARK(self, *remarks):
-        """Write generic REMARK_ record (without number).
+        """Write generic REMARKS_ record (without number).
 
-        Each string provided in *remarks* is written as a separate REMARK_
+        Each string provided in *remarks* is written as a separate REMARKS_
         record.
-
-        See also `REMARK (update)`_.
-
-        .. _REMARK: http://www.wwpdb.org/documentation/file-format-content/format32/remarks1.html
-        .. _REMARK (update): http://www.wwpdb.org/documentation/file-format-content/format32/remarks2.html
 
         """
         for remark in remarks:
@@ -1003,9 +1107,6 @@ class PDBWriter(base.WriterBase):
 
     def CRYST1(self, dimensions, spacegroup='P 1', zvalue=1):
         """Write CRYST1_ record.
-
-        .. _CRYST1: http://www.wwpdb.org/documentation/file-format-content/format32/sect8.html#CRYST1
-
         """
         self.pdbfile.write(self.fmt['CRYST1'].format(
             box=dimensions[:3],
@@ -1022,10 +1123,6 @@ class PDBWriter(base.WriterBase):
            standard (i.e., 4 digits). If frame numbers are larger than
            9999, they will wrap around, i.e., 9998, 9999, 0, 1, 2, ...
 
-
-        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
-
-
         .. versionchanged:: 0.19.0
            Maximum model number is enforced.
 
@@ -1040,8 +1137,6 @@ class PDBWriter(base.WriterBase):
         method right before closing the file it is recommended to *not* call
         :meth:`~PDBWriter.END` explicitly.
 
-        .. _END: http://www.wwpdb.org/documentation/file-format-content/format32/sect11.html#END
-
         """
         if not self.has_END:
             # only write a single END record
@@ -1051,15 +1146,11 @@ class PDBWriter(base.WriterBase):
     def ENDMDL(self):
         """Write the ENDMDL_ record.
 
-        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
-
         """
         self.pdbfile.write(self.fmt['ENDMDL'])
 
     def CONECT(self, conect):
         """Write CONECT_ record.
-
-        .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
 
         """
         conect = ["{0:5d}".format(entry + 1) for entry in conect]
@@ -1070,7 +1161,7 @@ class PDBWriter(base.WriterBase):
 class ExtendedPDBReader(PDBReader):
     """PDBReader that reads a PDB-formatted file with five-digit residue numbers.
 
-    This reader does not conform to the `PDB 3.2 standard`_ because it allows
+    This reader does not conform to the `PDB 3.3 standard`_ because it allows
     five-digit residue numbers that may take up columns 23 to 27 (inclusive)
     instead of being confined to 23-26 (with column 27 being reserved for the
     insertion code in the PDB standard). PDB files in this format are written
@@ -1089,7 +1180,7 @@ class ExtendedPDBReader(PDBReader):
 
 
 class MultiPDBWriter(PDBWriter):
-    """PDB writer that implements a subset of the `PDB 3.2 standard`_ .
+    """PDB writer that implements a subset of the `PDB 3.3 standard`_ .
 
     PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc
     is written.
@@ -1099,9 +1190,9 @@ class MultiPDBWriter(PDBWriter):
     and ENDMDL_ records).
 
 
-    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
-    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
-    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
+    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL
+    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ENDMDL
+    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format33/sect10.html#CONECT
 
 
     See Also

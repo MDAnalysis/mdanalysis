@@ -32,8 +32,6 @@ algorithms, wrapping them to allow them to be used interchangably.
 .. versionadded:: 0.16.0
 
 """
-from __future__ import absolute_import
-
 import numpy as np
 from ..utils import ParallelCalculation, merge_universes
 from .ClusterCollection import ClusterCollection
@@ -43,7 +41,7 @@ from . import ClusteringMethod
 
 def cluster(ensembles,
             method = ClusteringMethod.AffinityPropagationNative(),
-            selection="name CA",
+            select="name CA",
             distance_matrix=None,
             allow_collapsed_result=True,
             ncores=1,
@@ -75,7 +73,7 @@ def cluster(ensembles,
         can be explored by adding different instances of the same clustering
         class.
 
-    selection : str, optional
+    select : str, optional
         Atom selection string in the MDAnalysis format. Default is "name CA"
 
     distance_matrix : encore.utils.TriangularMatrix or list thereof, optional
@@ -197,7 +195,7 @@ def cluster(ensembles,
             distance_matrix = []
             for merged_ensemble in merged_ensembles:
                 distance_matrix.append(get_distance_matrix(merged_ensemble,
-                                                           selection=selection,
+                                                           select=select,
                                                            **kwargs))
 
     args = []
@@ -231,7 +229,7 @@ def cluster(ensembles,
 
     # Create clusters collections from clustering results,
     # one for each cluster. None if clustering didn't work.
-    ccs = [ClusterCollection(clusters[1][0],
+    ccs = [ClusterCollection(clusters[1],
                              metadata=metadata) for clusters in results]
 
     if allow_collapsed_result and len(ccs) == 1:

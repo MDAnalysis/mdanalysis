@@ -24,27 +24,28 @@
 Test the user facing API is as we expect...
 """
 
-from __future__ import absolute_import
-
 import MDAnalysis as mda
+
 
 def test_Universe():
     assert mda.Universe is mda.core.universe.Universe
 
-def test_as_Universe():
-    assert mda.as_Universe is mda.core.universe.as_Universe
 
 def test_fetch_mmtf():
     assert mda.fetch_mmtf is mda.coordinates.MMTF.fetch_mmtf
 
+
 def test_Writer():
     assert mda.Writer is mda.coordinates.core.writer
+
 
 def test_AtomGroup():
     assert mda.AtomGroup is mda.core.groups.AtomGroup
 
+
 def test_ResidueGroup():
     assert mda.ResidueGroup is mda.core.groups.ResidueGroup
+
 
 def test_SegmentGroup():
     assert mda.SegmentGroup is mda.core.groups.SegmentGroup

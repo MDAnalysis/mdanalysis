@@ -98,14 +98,10 @@ option are guaranteed to conform to the above format::
 .. _PDB2PQR: https://apbs-pdb2pqr.readthedocs.io/en/latest/pdb2pqr/index.html
 .. _PDB:     http://www.wwpdb.org/documentation/file-format
 """
-from __future__ import absolute_import
-from six.moves import zip
-
 import itertools
 import numpy as np
 import warnings
 
-from ..core import flags
 from ..lib import util
 from . import base
 
@@ -197,23 +193,21 @@ class PQRWriter(base.WriterBase):
                 " {pos[2]:-8.3f} {charge:-7.4f} {radius:6.4f}\n")
     fmt_remark = "REMARK   {0} {1}\n"
 
-    def __init__(self, filename, convert_units=None, **kwargs):
+    def __init__(self, filename, convert_units=True, **kwargs):
         """Set up a PQRWriter with full whitespace separation.
 
         Parameters
         ----------
         filename : str
              output filename
+        convert_units: bool (optional)
+            units are converted to the MDAnalysis base format; [``True``]
         remarks : str (optional)
              remark lines (list of strings) or single string to be added to the
              top of the PQR file
         """
         self.filename = util.filename(filename, ext='pqr')
-
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
-
         self.remarks = kwargs.pop('remarks', "PQR file written by MDAnalysis")
 
     def write(self, selection, frame=None):
@@ -233,7 +227,12 @@ class PQRWriter(base.WriterBase):
 
         """
         # write() method that complies with the Trajectory API
-        u = selection.universe
+        try:
+            u = selection.universe
+        except AttributeError:
+            errmsg = "Input obj is neither an AtomGroup or Universe"
+            raise TypeError(errmsg) from None
+
         if frame is not None:
             u.trajectory[frame]  # advance to frame
         else:

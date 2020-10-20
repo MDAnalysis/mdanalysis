@@ -32,7 +32,6 @@ reduction algorithms, wrapping them to allow them to be used interchangably.
 .. versionadded:: 0.16.0
 
 """
-from __future__ import absolute_import
 import numpy as np
 from ..confdistmatrix import get_distance_matrix
 from ..utils import ParallelCalculation, merge_universes
@@ -42,7 +41,7 @@ from ..dimensionality_reduction.DimensionalityReductionMethod import (
 
 def reduce_dimensionality(ensembles,
                           method=StochasticProximityEmbeddingNative(),
-                          selection="name CA",
+                          select="name CA",
                           distance_matrix=None,
                           allow_collapsed_result=True,
                           ncores=1,
@@ -77,7 +76,7 @@ def reduce_dimensionality(ensembles,
         the same dimensionality reduction class. Options are Stochastic
         Proximity Embedding or Principal Component Analysis.
 
-    selection : str, optional
+    select : str, optional
         Atom selection string in the MDAnalysis format (default is "name CA")
 
     distance_matrix : encore.utils.TriangularMatrix, optional
@@ -195,7 +194,7 @@ def reduce_dimensionality(ensembles,
             distance_matrix = []
             for merged_ensemble in merged_ensembles:
                 distance_matrix.append(get_distance_matrix(merged_ensemble,
-                                                           selection=selection,
+                                                           select=select,
                                                            **kwargs))
 
     args = []

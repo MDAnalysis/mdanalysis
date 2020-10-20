@@ -27,8 +27,6 @@
 ================================================================
 """
 
-from __future__ import absolute_import
-
 __all__ = ['log', 'transformations', 'util', 'mdamath', 'distances',
            'NeighborSearch', 'formats', 'pkdtree', 'nsgrid']
 
@@ -41,3 +39,6 @@ from . import NeighborSearch
 from . import formats
 from . import pkdtree
 from . import nsgrid
+from .picklable_file_io import (FileIOPicklable,
+                                BufferIOPicklable,
+                                TextIOPicklable)

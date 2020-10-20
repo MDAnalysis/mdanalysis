@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import division, absolute_import
-
 import numpy as np
 from numpy.testing import assert_equal, assert_almost_equal
 
@@ -118,6 +116,11 @@ class TestTotals(object):
         ref = [sum(a.charges) for a in group.atoms.groupby(name).values()]
         assert_almost_equal(group.total_charge(compound=compound), ref)
 
+    @pytest.mark.filterwarnings(  # Prevents regression of issue #2990
+        "error:"
+        "Using a non-tuple sequence for multidimensional indexing is deprecated:"
+        "FutureWarning"
+    )
     def test_total_charge_duplicates(self, group):
         group2 = group + group[0]
         ref = group.total_charge() + group[0].charge
@@ -135,6 +138,11 @@ class TestTotals(object):
         ref = [sum(a.masses) for a in group.atoms.groupby(name).values()]
         assert_almost_equal(group.total_mass(compound=compound), ref)
 
+    @pytest.mark.filterwarnings(  # Prevents regression of issue #2990
+        "error:"
+        "Using a non-tuple sequence for multidimensional indexing is deprecated:"
+        "FutureWarning"
+    )
     def test_total_mass_duplicates(self, group):
         group2 = group + group[0]
         ref = group.total_mass() + group2[0].mass

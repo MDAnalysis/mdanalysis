@@ -204,18 +204,13 @@ Classes
 
 
 """
-from __future__ import division, absolute_import
-from six.moves import zip
-from six import raise_from
-
 import numpy as np
 import scipy.optimize
 
 import warnings
 
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressBar
 from MDAnalysis.lib.distances import capped_distance, calc_angles, calc_bonds
-from MDAnalysis.lib.util import deprecate
 from MDAnalysis.core.groups import requires
 
 from MDAnalysis.due import due, Doi
@@ -285,6 +280,11 @@ class HydrogenBondAutoCorrel(object):
         Within each run, the number of frames to analyse [50]
     pbc : bool, optional
         Whether to consider periodic boundaries in calculations [``True``]
+
+    ..versionchanged: 1.0.0
+      ``save_results()`` method was removed. You can instead use ``np.savez()``
+      on :attr:`HydrogenBondAutoCorrel.solution['time']` and
+      :attr:`HydrogenBondAutoCorrel.solution['results']` instead.
     """
 
     def __init__(self, universe,
@@ -297,12 +297,17 @@ class HydrogenBondAutoCorrel(object):
                  nruns=1,  # number of times to iterate through the trajectory
                  nsamples=50,  # number of different points to sample in a run
                  pbc=True):
+
+        #warnings.warn("This class is deprecated, use analysis.hbonds.HydrogenBondAnalysis "
+        #              "which has .autocorrelation function",
+        #              category=DeprecationWarning)
+
         self.u = universe
         # check that slicing is possible
         try:
             self.u.trajectory[0]
         except Exception:
-            raise_from(ValueError("Trajectory must support slicing"), None)
+            raise ValueError("Trajectory must support slicing") from None
 
         self.h = hydrogens
         self.a = acceptors
@@ -381,37 +386,34 @@ class HydrogenBondAutoCorrel(object):
         if self.solution['results'] is not None and not force:
             return
 
-        master_results = np.zeros_like(np.arange(self._starts[0],
+        main_results = np.zeros_like(np.arange(self._starts[0],
                                                        self._stops[0],
                                                        self._skip),
                                           dtype=np.float32)
         # for normalising later
-        counter = np.zeros_like(master_results, dtype=np.float32)
+        counter = np.zeros_like(main_results, dtype=np.float32)
 
-        pm = ProgressMeter(self.nruns, interval=1,
-                           format="Performing run %(step)5d/%(numsteps)d"
-                                  "[%(percentage)5.1f%%]")
-
-        for i, (start, stop) in enumerate(zip(self._starts, self._stops)):
-            pm.echo(i)
+        for i, (start, stop) in ProgressBar(enumerate(zip(self._starts,
+                                            self._stops)), total=self.nruns,
+                                            desc="Performing run"):
 
             # needed else trj seek thinks a np.int64 isn't an int?
             results = self._single_run(int(start), int(stop))
 
             nresults = len(results)
-            if nresults == len(master_results):
-                master_results += results
+            if nresults == len(main_results):
+                main_results += results
                 counter += 1.0
             else:
-                master_results[:nresults] += results
+                main_results[:nresults] += results
                 counter[:nresults] += 1.0
 
-        master_results /= counter
+        main_results /= counter
 
         self.solution['time'] = np.arange(
-            len(master_results),
+            len(main_results),
             dtype=np.float32) * self.u.trajectory.dt * self._skip
-        self.solution['results'] = master_results
+        self.solution['results'] = main_results
 
     def _single_run(self, start, stop):
         """Perform a single pass of the trajectory"""
@@ -426,7 +428,7 @@ class HydrogenBondAutoCorrel(object):
             # set to above dist crit to exclude
             exclude = np.column_stack((self.exclusions[0], self.exclusions[1]))
             pair = np.delete(pair, np.where(pair==exclude), 0)
-        
+
         hidx, aidx = np.transpose(pair)
 
 
@@ -480,28 +482,6 @@ class HydrogenBondAutoCorrel(object):
         results /= nbonds
 
         return results
-
-    @deprecate(release="0.19.0", remove="1.0.0",
-               message="You can instead use "
-               "``np.savez(filename, time=HydrogenBondAutoCorrel.solution['time'], "
-               "results=HydrogenBondAutoCorrel.solution['results'])``.")
-    def save_results(self, filename='hbond_autocorrel'):
-        """Saves the results to a numpy zipped array (.npz, see np.savez)
-
-        This can be loaded using np.load(filename)
-
-        Parameters
-        ----------
-        filename : str, optional
-            The desired filename [hbond_autocorrel]
-
-        """
-        if self.solution['results'] is not None:
-            np.savez(filename, time=self.solution['time'],
-                        results=self.solution['results'])
-        else:
-            raise ValueError(
-                "Results have not been generated, use the run method first")
 
     def solve(self, p_guess=None):
         """Fit results to an multi exponential decay and integrate to find

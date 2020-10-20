@@ -20,11 +20,11 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
 import itertools
+import pickle
+
 import numpy as np
 import pytest
-from six.moves import zip, range
 from unittest import TestCase
 from numpy.testing import (assert_equal, assert_almost_equal,
                            assert_array_almost_equal, assert_allclose)
@@ -37,7 +37,7 @@ from MDAnalysis.lib.mdamath import triclinic_vectors
 
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
 from MDAnalysisTests.datafiles import AUX_XVG_HIGHF, AUX_XVG_LOWF
-from MDAnalysisTests import tempdir, make_Universe
+from MDAnalysisTests import make_Universe
 
 
 class _SingleFrameReader(TestCase, RefAdKSmall):
@@ -101,8 +101,8 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
                             err_msg="wrong coordinates for A10:CA")
 
     def test_distances(self):
-        NTERM = self.universe.atoms.N[0]
-        CTERM = self.universe.atoms.C[-1]
+        NTERM = self.universe.select_atoms('name N')[0]
+        CTERM = self.universe.select_atoms('name C')[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
         assert_almost_equal(d,
                             self.ref_distances['endtoend'],
@@ -119,6 +119,13 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         trj_iter = self.universe.trajectory[-1:]
         frames = [ts.frame for ts in trj_iter]
         assert_equal(frames, np.arange(self.universe.trajectory.n_frames))
+
+    def test_pickle_singleframe_reader(self):
+        reader = self.universe.trajectory
+        reader_p = pickle.loads(pickle.dumps(reader))
+        assert_equal(len(reader), len(reader_p))
+        assert_equal(reader.ts, reader_p.ts,
+                     "Single-frame timestep is changed after pickling")
 
 
 class BaseReference(object):
@@ -234,16 +241,16 @@ class BaseReaderTest(object):
         reader.close()
         reader._reopen()
 
-    def test_get_writer_1(self, ref, reader):
-        with tempdir.in_tempdir():
-            outfile = 'test-writer' + ref.ext
+    def test_get_writer_1(self, ref, reader, tmpdir):
+        with tmpdir.as_cwd():
+            outfile = 'test-writer.' + ref.ext
             with reader.Writer(outfile) as W:
                 assert_equal(isinstance(W, ref.writer), True)
                 assert_equal(W.n_atoms, reader.n_atoms)
 
-    def test_get_writer_2(self, ref, reader):
-        with tempdir.in_tempdir():
-            outfile = 'test-writer' + ref.ext
+    def test_get_writer_2(self, ref, reader, tmpdir):
+        with tmpdir.as_cwd():
+            outfile = 'test-writer.' + ref.ext
             with reader.Writer(outfile, n_atoms=100) as W:
                 assert_equal(isinstance(W, ref.writer), True)
                 assert_equal(W.n_atoms, 100)
@@ -419,11 +426,17 @@ class BaseReaderTest(object):
             ideal_coords = ref.iter_ts(i).positions + v1 + v2
             assert_array_almost_equal(ts.positions, ideal_coords, decimal = ref.prec)
 
-
     def test_add_another_transformations_raises_ValueError(self, transformed):
         # After defining the transformations, the workflow cannot be changed
         with pytest.raises(ValueError):
             transformed.add_transformations(translate([2,2,2]))
+
+    def test_pickle_reader(self, reader):
+        reader_p = pickle.loads(pickle.dumps(reader))
+        assert_equal(len(reader), len(reader_p))
+        assert_equal(reader.ts, reader_p.ts,
+                     "Timestep is changed after pickling")
+
 
 class MultiframeReaderTest(BaseReaderTest):
     def test_last_frame(self, ref, reader):
@@ -490,6 +503,23 @@ class MultiframeReaderTest(BaseReaderTest):
                                          ref.iter_ts(ref.aux_lowf_frames_with_steps[i]),
                                          decimal=ref.prec)
 
+    #  To make sure we not only save the current timestep information,
+    #  but also maintain its relative position.
+    def test_pickle_next_ts_reader(self, reader):
+        reader_p = pickle.loads(pickle.dumps(reader))
+        assert_equal(next(reader), next(reader_p),
+                     "Next timestep is changed after pickling")
+
+    #  To make sure pickle works for last frame.
+    def test_pickle_last_ts_reader(self, reader):
+        #  move current ts to last frame.
+        reader[-1]
+        reader_p = pickle.loads(pickle.dumps(reader))
+        assert_equal(len(reader), len(reader_p),
+                     "Last timestep is changed after pickling")
+        assert_equal(reader.ts, reader_p.ts,
+                     "Last timestep is changed after pickling")
+
 
 class BaseWriterTest(object):
     @staticmethod
@@ -515,68 +545,61 @@ class BaseWriterTest(object):
 
     @staticmethod
     @pytest.fixture()
-    def tempdir():
-        return tempdir.TempDir()
+    def universe(ref):
+        return mda.Universe(ref.topology, ref.trajectory)
 
-    def tmp_file(self, name, ref, tempdir):
-        return tempdir.name + name + '.' + ref.ext
-
-    def test_write_trajectory_timestep(self,ref, reader, tempdir):
-        outfile = self.tmp_file('write-timestep-test', ref, tempdir)
-        with ref.writer(outfile, reader.n_atoms) as W:
-            for ts in reader:
-                W.write(ts)
-        self._check_copy(outfile, ref, reader)
-
-    def test_write_different_box(self, ref, reader, tempdir):
+    def test_write_different_box(self, ref, universe, tmpdir):
         if ref.changing_dimensions:
-            outfile = self.tmp_file('write-dimensions-test', ref, tempdir)
-            with ref.writer(outfile, reader.n_atoms) as W:
-                for ts in reader:
-                    ts.dimensions[:3] += 1
-                    W.write(ts)
+            outfile = 'write-dimensions-test' + ref.ext
+            with tmpdir.as_cwd():
+                with ref.writer(outfile, universe.atoms.n_atoms) as W:
+                    for ts in universe.trajectory:
+                        universe.dimensions[:3] += 1
+                        W.write(universe)
 
-            written = ref.reader(outfile)
+                written = ref.reader(outfile)
 
-            for ts_ref, ts_w in zip(reader, written):
-                ts_ref.dimensions[:3] += 1
-                assert_array_almost_equal(ts_ref.dimensions,
-                                          ts_w.dimensions,
-                                          decimal=ref.prec)
+                for ts_ref, ts_w in zip(universe.trajectory, written):
+                    universe.dimensions[:3] += 1
+                    assert_array_almost_equal(universe.dimensions,
+                                              ts_w.dimensions,
+                                              decimal=ref.prec)
 
-    def test_write_trajectory_atomgroup(self, ref,reader, tempdir):
-        uni = mda.Universe(ref.topology, ref.trajectory)
-        outfile = self.tmp_file('write-atoms-test', ref, tempdir)
-        with ref.writer(outfile, uni.atoms.n_atoms) as w:
-            for ts in uni.trajectory:
-                w.write(uni.atoms)
-        self._check_copy(outfile, ref, reader)
+    def test_write_trajectory_atomgroup(self, ref,reader, universe, tmpdir):
+        outfile = 'write-atoms-test.' + ref.ext
+        with tmpdir.as_cwd():
+            with ref.writer(outfile, universe.atoms.n_atoms) as w:
+                for ts in universe.trajectory:
+                    w.write(universe.atoms)
+            self._check_copy(outfile, ref, reader)
 
-    def test_write_trajectory_universe(self, ref, reader, tempdir):
-        uni = mda.Universe(ref.topology, ref.trajectory)
-        outfile = self.tmp_file('write-uni-test', ref, tempdir)
-        with ref.writer(outfile, uni.atoms.n_atoms) as w:
-            for ts in uni.trajectory:
-                w.write(uni)
-        self._check_copy(outfile, ref, reader)
+    def test_write_trajectory_universe(self, ref, reader, universe, tmpdir):
+        outfile = 'write-uni-test.' + ref.ext
+        with tmpdir.as_cwd():
+            with ref.writer(outfile, universe.atoms.n_atoms) as w:
+                for ts in universe.trajectory:
+                    w.write(universe)
+            self._check_copy(outfile, ref, reader)
 
-    def test_write_selection(self, ref, reader, u_no_resnames, u_no_resids, u_no_names, tempdir):
-        uni = mda.Universe(ref.topology, ref.trajectory)
+    def test_write_selection(self, ref, reader, universe, u_no_resnames,
+                             u_no_resids, u_no_names, tmpdir):
         sel_str = 'resid 1'
-        sel = uni.select_atoms(sel_str)
-        outfile = self.tmp_file('write-selection-test', ref, tempdir)
+        sel = universe.select_atoms(sel_str)
+        outfile = 'write-selection-test.' + ref.ext
 
-        with ref.writer(outfile, sel.n_atoms) as W:
-            for ts in uni.trajectory:
-                W.write(sel.atoms)
 
-        copy = ref.reader(outfile)
-        for orig_ts, copy_ts in zip(uni.trajectory, copy):
-            assert_array_almost_equal(
-                copy_ts._pos, sel.atoms.positions, ref.prec,
-                err_msg="coordinate mismatch between original and written "
-                        "trajectory at frame {} (orig) vs {} (copy)".format(
-                    orig_ts.frame, copy_ts.frame))
+        with tmpdir.as_cwd():
+            with ref.writer(outfile, sel.n_atoms) as W:
+                for ts in universe.trajectory:
+                    W.write(sel.atoms)
+
+            copy = ref.reader(outfile)
+            for orig_ts, copy_ts in zip(universe.trajectory, copy):
+                assert_array_almost_equal(
+                    copy_ts._pos, sel.atoms.positions, ref.prec,
+                    err_msg="coordinate mismatch between original and written "
+                            "trajectory at frame {} (orig) vs {} (copy)".format(
+                        orig_ts.frame, copy_ts.frame))
 
     def _check_copy(self, fname, ref, reader):
         copy = ref.reader(fname)
@@ -585,27 +608,29 @@ class BaseWriterTest(object):
             assert_timestep_almost_equal(
                 copy_ts, orig_ts, decimal=ref.prec)
 
-    def test_write_none(self, ref, tempdir):
-        outfile = self.tmp_file('write-none', ref, tempdir)
-        with pytest.raises(TypeError):
-            with ref.writer(outfile, 42) as w:
-                w.write(None)
+    def test_write_none(self, ref, tmpdir):
+        outfile = 'write-none.' + ref.ext
+        with tmpdir.as_cwd():
+            with pytest.raises(TypeError):
+                with ref.writer(outfile, 42) as w:
+                    w.write(None)
 
-    def test_no_container(self, ref):
-        with tempdir.in_tempdir():
+    def test_no_container(self, ref, tmpdir):
+        with tmpdir.as_cwd():
             if ref.container_format:
                 ref.writer('foo')
             else:
                 with pytest.raises(TypeError):
                     ref.writer('foo')
 
-    def test_write_not_changing_ts(self, ref, reader, tempdir):
-        outfile = self.tmp_file('write-not-changing-ts', ref, tempdir)
-        ts = reader.ts.copy()
-        copy_ts = ts.copy()
-        with ref.writer(outfile, n_atoms=5) as W:
-            W.write(ts)
-            assert_timestep_almost_equal(copy_ts, ts)
+    def test_write_not_changing_ts(self, ref, universe, tmpdir):
+        outfile = 'write-not-changing-ts.' + ref.ext
+
+        copy_ts = universe.trajectory.ts.copy()
+        with tmpdir.as_cwd():
+            with ref.writer(outfile, n_atoms=5) as W:
+                W.write(universe)
+                assert_timestep_almost_equal(copy_ts, universe.trajectory.ts)
 
 
 class BaseTimestepTest(object):

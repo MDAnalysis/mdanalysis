@@ -1,0 +1,45 @@
+[ moleculetype ]
+; molname   nrexcl
+SOL     2
+
+[ atoms ]
+;   nr   type  resnr residue  atom   cgnr     charge       mass
+#ifndef HEAVY_H
+     1     OW      1    SOL     OW      1    -0.8476   15.99940
+     2      H      1    SOL    HW1      1     0.4238    1.00800
+     3      H      1    SOL    HW2      1     0.4238    1.00800
+#else
+     1     OW      1    SOL     OW      1    -0.8476    9.95140
+     2      H      1    SOL    HW1      1     0.4238    4.03200
+     3      H      1    SOL    HW2      1     0.4238    4.03200
+#ifdef EXTRA_ATOMS
+     4     OW      1    SOL    OW2      1    -0.8476    9.95140
+     5      H      1    SOL    HW3      1     0.4238    4.03200
+#ifndef HEAVY_SIX
+     6      H      1    SOL    HW4      1     0.4238    4.03200
+#else
+     6      H      1    SOL    HW4      1     0.4238    40.0320
+#endif
+     7      H      1    SOL    HW5      1     0.4238    4.03200
+#endif
+#endif
+
+#ifndef FLEXIBLE
+[ settles ]
+; OW    funct   doh dhh
+1   1   0.1 0.16330
+
+[ exclusions ]
+1   2   3
+2   1   3
+3   1   2
+#else
+[ bonds ]
+; i j   funct   length  force.c.
+1   2   1   0.1 345000  0.1     345000
+1   3   1   0.1 345000  0.1     345000
+    
+[ angles ]
+; i j   k   funct   angle   force.c.
+2   1   3   1   109.47  383 109.47  383
+#endif

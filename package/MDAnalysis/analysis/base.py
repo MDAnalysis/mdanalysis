@@ -28,17 +28,14 @@ A collection of useful building blocks for creating Analysis
 classes.
 
 """
-from __future__ import absolute_import
-import six
-from six.moves import range, zip
 import inspect
 import logging
-import warnings
+import itertools
 
 import numpy as np
 from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressBar
 
 logger = logging.getLogger(__name__)
 
@@ -89,6 +86,13 @@ class AnalysisBase(object):
        na = NewAnalysis(u.select_atoms('name CA'), 35).run(start=10, stop=20)
        print(na.result)
 
+    Attributes
+    ----------
+    times: np.ndarray
+        array of Timestep times. Only exists after calling run()
+    frames: np.ndarray
+        array of Timestep frame indices. Only exists after calling run()
+
     """
 
     def __init__(self, trajectory, verbose=False, **kwargs):
@@ -99,21 +103,15 @@ class AnalysisBase(object):
             A trajectory Reader
         verbose : bool, optional
            Turn on more logging and debugging, default ``False``
+
+
+        .. versionchanged:: 1.0.0
+           Support for setting ``start``, ``stop``, and ``step`` has been
+           removed. These should now be directly passed to
+           :meth:`AnalysisBase.run`.
         """
         self._trajectory = trajectory
         self._verbose = verbose
-        # do deprecated kwargs
-        # remove in 1.0
-        deps = []
-        for arg in ['start', 'stop', 'step']:
-            if arg in kwargs and not kwargs[arg] is None:
-                deps.append(arg)
-                setattr(self, arg, kwargs[arg])
-        if deps:
-            warnings.warn('Setting the following kwargs should be '
-                          'done in the run() method: {}'.format(
-                              ', '.join(deps)),
-                          DeprecationWarning)
 
     def _setup_frames(self, trajectory, start=None, stop=None, step=None):
         """
@@ -130,25 +128,20 @@ class AnalysisBase(object):
             stop frame of analysis
         step : int, optional
             number of frames to skip between each analysed frame
+
+
+        .. versionchanged:: 1.0.0
+            Added .frames and .times arrays as attributes
+
         """
         self._trajectory = trajectory
-        # TODO: Remove once start/stop/step are deprecated from init
-        # See if these have been set as class attributes, and use that
-        start = getattr(self, 'start', start)
-        stop = getattr(self, 'stop', stop)
-        step = getattr(self, 'step', step)
         start, stop, step = trajectory.check_slice_indices(start, stop, step)
         self.start = start
         self.stop = stop
         self.step = step
         self.n_frames = len(range(start, stop, step))
-        interval = int(self.n_frames // 100)
-        if interval == 0:
-            interval = 1
-
-        verbose = getattr(self, '_verbose', False)
-        self._pm = ProgressMeter(self.n_frames if self.n_frames else 1,
-                                 interval=interval, verbose=verbose)
+        self.frames = np.zeros(self.n_frames, dtype=int)
+        self.times = np.zeros(self.n_frames)
 
     def _single_frame(self):
         """Calculate data from a single frame of trajectory
@@ -159,14 +152,14 @@ class AnalysisBase(object):
 
     def _prepare(self):
         """Set things up before the analysis loop begins"""
-        pass # pylint: disable=unnecessary-pass
+        pass  # pylint: disable=unnecessary-pass
 
     def _conclude(self):
         """Finalise the results you've gathered.
 
         Called at the end of the run() method to finish everything up.
         """
-        pass # pylint: disable=unnecessary-pass
+        pass  # pylint: disable=unnecessary-pass
 
     def run(self, start=None, stop=None, step=None, verbose=None):
         """Perform the calculation
@@ -184,18 +177,21 @@ class AnalysisBase(object):
         """
         logger.info("Choosing frames to analyze")
         # if verbose unchanged, use class default
-        verbose = getattr(self, '_verbose', False) if verbose is None else verbose
+        verbose = getattr(self, '_verbose',
+                          False) if verbose is None else verbose
 
         self._setup_frames(self._trajectory, start, stop, step)
         logger.info("Starting preparation")
         self._prepare()
-        for i, ts in enumerate(
-                self._trajectory[self.start:self.stop:self.step]):
+        for i, ts in enumerate(ProgressBar(
+                self._trajectory[self.start:self.stop:self.step],
+                verbose=verbose)):
             self._frame_index = i
             self._ts = ts
+            self.frames[i] = ts.frame
+            self.times[i] = ts.time
             # logger.info("--> Doing frame {} of {}".format(i+1, self.n_frames))
             self._single_frame()
-            self._pm.echo(self._frame_index)
         logger.info("Finishing up")
         self._conclude()
         return self
@@ -236,21 +232,23 @@ class AnalysisFromFunction(AnalysisBase):
         **kwargs : dict
             arguments for ``function`` and ``AnalysisBase``
 
+        .. versionchanged:: 1.0.0
+           Support for directly passing the ``start``, ``stop``, and ``step``
+           arguments has been removed. These should instead be passed
+           to :meth:`AnalysisFromFunction.run`.
+
         """
         if (trajectory is not None) and (not isinstance(
                 trajectory, coordinates.base.ProtoReader)):
-            args = args + (trajectory,)
+            args = (trajectory,) + args
             trajectory = None
 
         if trajectory is None:
-            for arg in args:
+            # all possible places to find trajectory
+            for arg in itertools.chain(args, kwargs.values()):
                 if isinstance(arg, AtomGroup):
                     trajectory = arg.universe.trajectory
-            # when we still didn't find anything
-            if trajectory is None:
-                for arg in six.itervalues(kwargs):
-                    if isinstance(arg, AtomGroup):
-                        trajectory = arg.universe.trajectory
+                    break
 
         if trajectory is None:
             raise ValueError("Couldn't find a trajectory")
@@ -258,14 +256,9 @@ class AnalysisFromFunction(AnalysisBase):
         self.function = function
         self.args = args
 
-        # TODO: Remove in 1.0
-        my_kwargs = {}
-        for depped_arg in ['start', 'stop', 'step']:
-            if depped_arg in kwargs:
-                my_kwargs[depped_arg] = kwargs.pop(depped_arg)
         self.kwargs = kwargs
 
-        super(AnalysisFromFunction, self).__init__(trajectory, **my_kwargs)
+        super(AnalysisFromFunction, self).__init__(trajectory)
 
     def _prepare(self):
         self.results = []
@@ -346,14 +339,14 @@ def _filter_baseanalysis_kwargs(function, kwargs):
         # pylint: disable=deprecated-method
         argspec = inspect.getargspec(function)
 
-    for base_kw in six.iterkeys(base_kwargs):
+    for base_kw in base_kwargs.keys():
         if base_kw in argspec.args:
             raise ValueError(
                 "argument name '{}' clashes with AnalysisBase argument."
                 "Now allowed are: {}".format(base_kw, base_kwargs.keys()))
 
     base_args = {}
-    for argname, default in six.iteritems(base_kwargs):
+    for argname, default in base_kwargs.items():
         base_args[argname] = kwargs.pop(argname, default)
 
     return base_args, kwargs

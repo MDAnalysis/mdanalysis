@@ -32,10 +32,7 @@ designed to store results from clustering algorithms.
 .. versionadded:: 0.16.0
 
 """
-from __future__ import absolute_import
-
 import numpy as np
-import six
 
 
 class Cluster(object):
@@ -102,10 +99,11 @@ class Cluster(object):
         self.centroid = centroid
         self.size = self.elements.shape[0]
         if metadata:
-            for name, data in six.iteritems(metadata):
+            for name, data in metadata.items():
                 if len(data) != self.size:
-                    raise TypeError("Size of metadata having label \"{0}\"\
-is not equal to the number of cluster elmements".format(name))
+                    raise TypeError('Size of metadata having label "{0}"'
+                                    'is not equal to the number of cluster '
+                                    'elements'.format(name))
             self.add_metadata(name, data)
 
     def __iter__(self):
@@ -122,17 +120,21 @@ is not equal to the number of cluster elmements".format(name))
 
     def add_metadata(self, name, data):
         if len(data) != self.size:
-            raise TypeError("Size of metadata is not equal to the number of\
- cluster elmements")
+            raise TypeError("Size of metadata is not equal to the number of"
+                            "cluster elmements")
         self.metadata[name] = np.array(data)
 
     def __repr__(self):
         """
         Textual representation
         """
-        out = repr(self.elements)
-        return out
-
+        if self.size == 0:
+            return "<Cluster with no elements>"
+        else:
+            return "<Cluster with {0} elements, centroid={1}, id={2}>".format(
+                                                               self.size,
+                                                               self.centroid,
+                                                               self.id)
 
 class ClusterCollection(object):
     """Clusters collection class; this class represents the results of a full
@@ -191,13 +193,14 @@ class ClusterCollection(object):
         centroids = np.unique(elements_array)
         for i in centroids:
             if elements[i] != i:
-                raise ValueError("element {0}, which is a centroid, doesn't \
-belong to its own cluster".format(elements[i]))
+                raise ValueError("element {0}, which is a centroid, doesn't "
+                                 "belong to its own cluster".format(
+                                     elements[i]))
         for c in centroids:
             this_metadata = {}
             this_array = np.where(elements_array == c)
             if metadata:
-                for k, v in six.iteritems(metadata):
+                for k, v in metadata.items():
                     this_metadata[k] = np.asarray(v)[this_array]
             self.clusters.append(
                 Cluster(elem_list=this_array[0], idn=idn, centroid=c,
@@ -215,7 +218,7 @@ belong to its own cluster".format(elements[i]))
         ids : list of int
         list of cluster ids
         """
-        return [v.idn for v in self.clusters]
+        return [v.id for v in self.clusters]
 
     def get_centroids(self):
         """
@@ -247,10 +250,8 @@ belong to its own cluster".format(elements[i]))
         """
         Textual representation
         """
-        out = ""
-        for cluster in self.clusters:
-            out += "{0} (size:{1},centroid:{2}): {3}\n".format(cluster.id,
-                                                               len(cluster),
-                                                               cluster.centroid,
-                                                               repr(cluster))
-        return out
+        if self.clusters is None:
+            return "<ClusterCollection with no clusters>"
+        else:
+            return "<ClusterCollection with {0} clusters>".format(
+                                             len(self.clusters))
