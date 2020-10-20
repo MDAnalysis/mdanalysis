@@ -197,8 +197,12 @@ def _build_stub(method_name, method, attribute_name):
     """
     def stub_method(self, *args, **kwargs):
         message = (
-            f'{self.__class__.__name__}.{method_name}() '
-            f'not available; this requires {attribute_name}'
+            '{class_name}.{method_name}() '
+            'not available; this requires {attribute_name}'
+        ).format(
+            class_name=self.__class__.__name__,
+            method_name=method_name,
+            attribute_name=attribute_name,
         )
         raise NoDataError(message)
 
