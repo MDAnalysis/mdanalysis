@@ -35,15 +35,13 @@ a different file format (e.g. the "extended" PDB, *XPDB* format, see
 :mod:`~MDAnalysis.topology.ExtendedPDBParser`) that can handle residue
 numbers up to 99,999.
 
-TODO:
-    Add attributes to guess elements for non-physical or missing elements
 
 
 .. Note::
 
    The parser processes atoms and their names. Masses are guessed and set to 0
    if unknown. Partial charges are not set. Elements are parsed if they are
-   valid.
+   valid, if partially missing or incorrect empty records are assigned.
 
 See Also
 --------
@@ -183,7 +181,9 @@ class PDBParser(TopologyReaderBase):
     .. versionchanged:: 1.0.0
        Added parsing of valid Elements
     .. versionchanged:: 2.0.0
-       Bonds attribute is not added if no bonds are present in PDB file
+       Bonds attribute is not added if no bonds are present in PDB file.
+       If elements are invalid or partially missing, empty elements records
+       are now assigned (Issue #2422).
     """
     format = ['PDB', 'ENT']
 

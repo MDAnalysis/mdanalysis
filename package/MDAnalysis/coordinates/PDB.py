@@ -1006,6 +1006,9 @@ class PDBWriter(base.WriterBase):
            When only :attr:`record_types` attribute is present, instead of
            using ATOM_ for both ATOM_ and HETATM_, HETATM_ record
            types are properly written out (Issue #1753).
+           Writing now only uses the contents of the elements attribute
+           instead of guessing by default. If the elements are missing,
+           empty records are written out (Issues #2423).
 
         """
         atoms = self.obj.atoms
