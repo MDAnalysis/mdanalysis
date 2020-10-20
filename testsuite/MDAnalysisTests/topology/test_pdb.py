@@ -300,9 +300,9 @@ def test_PDB_elements():
 
 
 PDB_elements_partial = """\
-ATOM      1  N   PRO A   1       0.401  40.138  17.790  1.00 23.44            
+ATOM      1  N   PRO A   1       0.401  40.138  17.790  1.00 23.44
 ATOM      2  CA  PRO A   1      -0.540  39.114  18.241  1.00 23.00           C
-ATOM      3  C   PRO A   1      -0.028  38.397  19.491  1.00 22.34            
+ATOM      3  C   PRO A   1      -0.028  38.397  19.491  1.00 22.34
 ATOM      4  O   PRO A   1       1.136  38.550  19.843  1.00 22.20           O
 """
 
@@ -344,7 +344,8 @@ def test_wrong_elements_warnings():
     with pytest.warns(UserWarning, match='Unknown element XX found'):
         u = mda.Universe(StringIO(PDB_wrong_ele), format='PDB')
 
-    expected = np.array(['N', 'C', 'C', 'O', '', 'Cu', 'Fe', 'Mg'], dtype=object)
+    expected = np.array(['N', 'C', 'C', 'O', '', 'Cu', 'Fe', 'Mg'],
+                        dtype=object)
     assert_equal(u.atoms.elements, expected)
 
 
