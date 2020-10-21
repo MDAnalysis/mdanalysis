@@ -196,7 +196,7 @@
             
   <span class="target" id="module-MDAnalysis.topology.RDKitParser"></span><div class="section" id="rdkit-topology-parser">
 <h1>7.3. RDKit topology parser<a class="headerlink" href="#rdkit-topology-parser" title="Permalink to this headline">¶</a></h1>
-<p>Converts an <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol">RDKit</a> <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> into a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.Topology</span></code>.</p>
+<p>Converts an <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol">RDKit</a> <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> into a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.Topology</span></code>.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#module-MDAnalysis.coordinates.RDKit" title="MDAnalysis.coordinates.RDKit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.RDKit</span></code></a></p>
@@ -558,9 +558,9 @@ is avoided.</p>
 </div>
 <span class="target" id="module-MDAnalysis.coordinates.RDKit"></span><div class="section" id="rdkit-molecule-i-o-mdanalysis-coordinates-rdkit">
 <h1>7.4. RDKit molecule I/O — <a class="reference internal" href="#module-MDAnalysis.coordinates.RDKit" title="MDAnalysis.coordinates.RDKit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.RDKit</span></code></a><a class="headerlink" href="#rdkit-molecule-i-o-mdanalysis-coordinates-rdkit" title="Permalink to this headline">¶</a></h1>
-<p>Read coordinates data from an <a class="reference external" href="https://www.rdkit.org/docs/">RDKit</a> <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> with
+<p>Read coordinates data from an <a class="reference external" href="https://www.rdkit.org/docs/">RDKit</a> <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> with
 <a class="reference internal" href="#MDAnalysis.coordinates.RDKit.RDKitReader" title="MDAnalysis.coordinates.RDKit.RDKitReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">RDKitReader</span></code></a> into an MDAnalysis Universe. Convert it back to a
-<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> with <a class="reference internal" href="#MDAnalysis.coordinates.RDKit.RDKitConverter" title="MDAnalysis.coordinates.RDKit.RDKitConverter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RDKitConverter</span></code></a>.</p>
+<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> with <a class="reference internal" href="#MDAnalysis.coordinates.RDKit.RDKitConverter" title="MDAnalysis.coordinates.RDKit.RDKitConverter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RDKitConverter</span></code></a>.</p>
 <p class="rubric">Example</p>
 <p>To read an RDKit molecule and then convert the AtomGroup back to an RDKit
 molecule:</p>
@@ -592,7 +592,7 @@ in the resulting universe.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.03)"><em>rdkit.Chem.rdchem.Mol</em></a>) – RDKit molecule</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.09)"><em>rdkit.Chem.rdchem.Mol</em></a>) – RDKit molecule</td>
 </tr>
 </tbody>
 </table>
@@ -603,16 +603,16 @@ in the resulting universe.</p>
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.RDKit.</code><code class="descname">RDKitConverter</code><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/RDKit.html#RDKitConverter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.RDKit.RDKitConverter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert MDAnalysis <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> to RDKit
-<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mol</span></code></a></p>
+<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mol</span></code></a></p>
 <p>MDanalysis attributes are stored in each RDKit
-<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom" title="(in The RDKit v2020.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> of the resulting molecule in two different
+<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom" title="(in The RDKit v2020.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> of the resulting molecule in two different
 ways:</p>
 <ul class="simple">
-<li>in an <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.AtomPDBResidueInfo" title="(in The RDKit v2020.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomPDBResidueInfo</span></code></a> object available
-through the <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom.GetMonomerInfo" title="(in The RDKit v2020.03)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">GetMonomerInfo()</span></code></a> method if it’s
+<li>in an <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.AtomPDBResidueInfo" title="(in The RDKit v2020.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomPDBResidueInfo</span></code></a> object available
+through the <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom.GetMonomerInfo" title="(in The RDKit v2020.09)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">GetMonomerInfo()</span></code></a> method if it’s
 an attribute that is typically found in a PDB file,</li>
 <li>directly as an atom property available through the
-<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom.GetProp" title="(in The RDKit v2020.03)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">GetProp()</span></code></a> methods for the others.</li>
+<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom.GetProp" title="(in The RDKit v2020.09)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">GetProp()</span></code></a> methods for the others.</li>
 </ul>
 <p>Supported attributes:</p>
 <table border="1" class="docutils">
@@ -748,7 +748,7 @@ See <a class="reference internal" href="#MDAnalysis.coordinates.RDKit._rebuild_c
 <dt id="MDAnalysis.coordinates.RDKit.RDKitConverter.convert">
 <code class="descname">convert</code><span class="sig-paren">(</span><em>obj</em>, <em>cache=True</em>, <em>NoImplicit=True</em>, <em>max_iter=200</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/RDKit.html#RDKitConverter.convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.RDKit.RDKitConverter.convert" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write selection at current trajectory frame to
-<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mol</span></code></a>.</p>
+<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mol</span></code></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -788,7 +788,7 @@ charge of -NUE.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mol</strong> (<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2020.03)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule is modified inplace and must have all hydrogens added</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mol</strong> (<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2020.09)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule is modified inplace and must have all hydrogens added</td>
 </tr>
 </tbody>
 </table>
@@ -812,7 +812,7 @@ Finally, the fragments are recombined.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>mol</strong> (<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2020.03)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule to standardize</li>
+<li><strong>mol</strong> (<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2020.09)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule to standardize</li>
 <li><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Maximum number of iterations to standardize conjugated systems</li>
 </ul>
 </td>
@@ -820,7 +820,7 @@ Finally, the fragments are recombined.</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>mol</strong> – The standardized molecule</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.03)">rdkit.Chem.rdchem.Mol</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.09)">rdkit.Chem.rdchem.Mol</a></p>
 </td>
 </tr>
 </tbody>
@@ -899,7 +899,7 @@ with aromatic rings.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>mol</strong> (<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2020.03)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule to transform, modified inplace</li>
+<li><strong>mol</strong> (<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2020.09)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule to transform, modified inplace</li>
 <li><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Maximum number of iterations performed by the function</li>
 </ul>
 </td>

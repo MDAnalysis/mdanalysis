@@ -712,6 +712,10 @@
 <span class="sd">       ChainID now comes from the last character of segid, as stated in the documentation.</span>
 <span class="sd">       An indexing issue meant it previously used the first charater (Issue #2224)</span>
 
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">        Add the `redindex` argument. Setting this keyword to ``True``</span>
+<span class="sd">        (the default) preserves the behavior in earlier versions of MDAnalysis.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fmt</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;ATOM&#39;</span><span class="p">:</span> <span class="p">(</span>
@@ -775,7 +779,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">bonds</span><span class="o">=</span><span class="s2">&quot;conect&quot;</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">remarks</span><span class="o">=</span><span class="s2">&quot;Created by PDBWriter&quot;</span><span class="p">,</span>
-                 <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reindex</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a new PDBWriter</span>
 
 <span class="sd">        Parameters</span>
@@ -803,6 +807,9 @@
 <span class="sd">           ``False``: write a single frame to the file; ``True``: create a</span>
 <span class="sd">           multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_</span>
 <span class="sd">           records. If ``None``, then the class default is chosen.    [``None``]</span>
+<span class="sd">        reindex: bool (optional)</span>
+<span class="sd">            If ``True`` (default), the atom serial is set to be consecutive</span>
+<span class="sd">            numbers starting at 1. Else, use the atom id.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># n_atoms = None : dummy keyword argument</span>
@@ -816,6 +823,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_multiframe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">multiframe</span> <span class="k">if</span> <span class="n">multiframe</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">multiframe</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span> <span class="o">=</span> <span class="n">bonds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reindex</span> <span class="o">=</span> <span class="n">reindex</span>
 
         <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;Start&#39; must be a positive value&quot;</span><span class="p">)</span>
@@ -971,14 +979,35 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="s1">&#39;bonds&#39;</span><span class="p">):</span>
             <span class="k">return</span>
 
-        <span class="n">mapping</span> <span class="o">=</span> <span class="p">{</span><span class="n">index</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">indices</span><span class="p">)}</span>
-
         <span class="n">bondset</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">bonds</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">atoms</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reindex</span><span class="p">:</span>
+            <span class="n">index_attribute</span> <span class="o">=</span> <span class="s1">&#39;index&#39;</span>
+            <span class="n">mapping</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">index</span><span class="p">:</span> <span class="n">i</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="n">atoms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">index_attribute</span> <span class="o">=</span> <span class="s1">&#39;id&#39;</span>
+            <span class="n">mapping</span> <span class="o">=</span> <span class="p">{</span><span class="n">id_</span><span class="p">:</span> <span class="n">id_</span> <span class="k">for</span> <span class="n">id_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">ids</span><span class="p">}</span>
+            <span class="n">atoms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">ids</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span> <span class="o">==</span> <span class="s2">&quot;conect&quot;</span><span class="p">:</span>
             <span class="c1"># Write out only the bonds that were defined in CONECT records</span>
-            <span class="n">bonds</span> <span class="o">=</span> <span class="p">((</span><span class="n">bond</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">bond</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">bond</span> <span class="ow">in</span> <span class="n">bondset</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">bond</span><span class="o">.</span><span class="n">is_guessed</span><span class="p">)</span>
+            <span class="n">bonds</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="nb">getattr</span><span class="p">(</span><span class="n">bond</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">index_attribute</span><span class="p">),</span>
+                    <span class="nb">getattr</span><span class="p">(</span><span class="n">bond</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">index_attribute</span><span class="p">),</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">bond</span> <span class="ow">in</span> <span class="n">bondset</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">bond</span><span class="o">.</span><span class="n">is_guessed</span>
+            <span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonds</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
-            <span class="n">bonds</span> <span class="o">=</span> <span class="p">((</span><span class="n">bond</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">bond</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">bond</span> <span class="ow">in</span> <span class="n">bondset</span><span class="p">)</span>
+            <span class="n">bonds</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">(</span>
+                    <span class="nb">getattr</span><span class="p">(</span><span class="n">bond</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">index_attribute</span><span class="p">),</span>
+                    <span class="nb">getattr</span><span class="p">(</span><span class="n">bond</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">index_attribute</span><span class="p">),</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">bond</span> <span class="ow">in</span> <span class="n">bondset</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bonds has to be either None, &#39;conect&#39; or &#39;all&#39;&quot;</span><span class="p">)</span>
 
@@ -988,8 +1017,6 @@
                 <span class="k">continue</span>
             <span class="n">con</span><span class="p">[</span><span class="n">a2</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a1</span><span class="p">)</span>
             <span class="n">con</span><span class="p">[</span><span class="n">a1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a2</span><span class="p">)</span>
-
-        <span class="n">atoms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
 
         <span class="n">conect</span> <span class="o">=</span> <span class="p">([</span><span class="n">mapping</span><span class="p">[</span><span class="n">a</span><span class="p">]]</span> <span class="o">+</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">mapping</span><span class="p">[</span><span class="n">at</span><span class="p">]</span> <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">con</span><span class="p">[</span><span class="n">a</span><span class="p">]])</span>
                   <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">atoms</span> <span class="k">if</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">con</span><span class="p">)</span>
@@ -1221,9 +1248,22 @@
         <span class="n">atomnames</span> <span class="o">=</span> <span class="n">get_attr</span><span class="p">(</span><span class="s1">&#39;names&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">)</span>
         <span class="n">record_types</span> <span class="o">=</span> <span class="n">get_attr</span><span class="p">(</span><span class="s1">&#39;record_types&#39;</span><span class="p">,</span> <span class="s1">&#39;ATOM&#39;</span><span class="p">)</span>
 
+        <span class="c1"># If reindex == False, we use the atom ids for the serial. We do not</span>
+        <span class="c1"># want to use a fallback here.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reindex</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">atom_ids</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">ids</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span>
+                    <span class="s1">&#39;The &quot;id&quot; topology attribute is not set. &#39;</span>
+                    <span class="s1">&#39;Either set the attribute or use reindex=True.&#39;</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">atom_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">atom</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">atoms</span><span class="p">):</span>
             <span class="n">vals</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="n">vals</span><span class="p">[</span><span class="s1">&#39;serial&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">ltruncate_int</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>  <span class="c1"># check for overflow here?</span>
+            <span class="n">vals</span><span class="p">[</span><span class="s1">&#39;serial&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">ltruncate_int</span><span class="p">(</span><span class="n">atom_ids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>  <span class="c1"># check for overflow here?</span>
             <span class="n">vals</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deduce_PDB_atom_name</span><span class="p">(</span><span class="n">atomnames</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">resnames</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
             <span class="n">vals</span><span class="p">[</span><span class="s1">&#39;altLoc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">altlocs</span><span class="p">[</span><span class="n">i</span><span class="p">][:</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">vals</span><span class="p">[</span><span class="s1">&#39;resName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resnames</span><span class="p">[</span><span class="n">i</span><span class="p">][:</span><span class="mi">4</span><span class="p">]</span>
@@ -1332,7 +1372,7 @@
         <span class="sd">&quot;&quot;&quot;Write CONECT_ record.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">conect</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">{0:5d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">entry</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">conect</span><span class="p">]</span>
+        <span class="n">conect</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">{0:5d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">conect</span><span class="p">]</span>
         <span class="n">conect</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">conect</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;CONECT&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">conect</span><span class="p">))</span></div></div>
 

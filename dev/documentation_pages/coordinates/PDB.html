@@ -509,7 +509,7 @@ frame numbers.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDB.PDBWriter">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.PDB.</code><code class="descname">PDBWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>bonds='conect'</em>, <em>n_atoms=None</em>, <em>start=0</em>, <em>step=1</em>, <em>remarks='Created by PDBWriter'</em>, <em>convert_units=True</em>, <em>multiframe=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.PDB.</code><code class="descname">PDBWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>bonds='conect'</em>, <em>n_atoms=None</em>, <em>start=0</em>, <em>step=1</em>, <em>remarks='Created by PDBWriter'</em>, <em>convert_units=True</em>, <em>multiframe=None</em>, <em>reindex=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>PDB writer that implements a subset of the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html">PDB 3.3 standard</a> .</p>
 <p>PDB format as used by NAMD/CHARMM: 4-letter resnames and segID are allowed,
 altLoc is written.</p>
@@ -563,6 +563,10 @@ but can be enabled with the <em>bonds</em> keyword.</p>
 <p><span class="versionmodified">Changed in version 1.0.0: </span>ChainID now comes from the last character of segid, as stated in the documentation.
 An indexing issue meant it previously used the first charater (Issue #2224)</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Add the <cite>redindex</cite> argument. Setting this keyword to <code class="docutils literal notranslate"><span class="pre">True</span></code>
+(the default) preserves the behavior in earlier versions of MDAnalysis.</p>
+</div>
 <p>Create a new PDBWriter</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -585,6 +589,8 @@ not write any bonds. The default is “conect”.</li>
 <li><strong>multiframe</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <code class="docutils literal notranslate"><span class="pre">False</span></code>: write a single frame to the file; <code class="docutils literal notranslate"><span class="pre">True</span></code>: create a
 multi frame PDB file in which frames are written as <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL">MODEL</a> … <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ENDMDL">ENDMDL</a>
 records. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, then the class default is chosen.    [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
+<li><strong>reindex</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> (default), the atom serial is set to be consecutive
+numbers starting at 1. Else, use the atom id.</li>
 </ul>
 </td>
 </tr>
@@ -789,7 +795,7 @@ constructor). Thus, if <em>u</em> is a Universe then</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDB.MultiPDBWriter">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.PDB.</code><code class="descname">MultiPDBWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>bonds='conect'</em>, <em>n_atoms=None</em>, <em>start=0</em>, <em>step=1</em>, <em>remarks='Created by PDBWriter'</em>, <em>convert_units=True</em>, <em>multiframe=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#MultiPDBWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.MultiPDBWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.PDB.</code><code class="descname">MultiPDBWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>bonds='conect'</em>, <em>n_atoms=None</em>, <em>start=0</em>, <em>step=1</em>, <em>remarks='Created by PDBWriter'</em>, <em>convert_units=True</em>, <em>multiframe=None</em>, <em>reindex=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#MultiPDBWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.MultiPDBWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>PDB writer that implements a subset of the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html">PDB 3.3 standard</a> .</p>
 <p>PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc
 is written.</p>
@@ -825,6 +831,8 @@ not write any bonds. The default is “conect”.</li>
 <li><strong>multiframe</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <code class="docutils literal notranslate"><span class="pre">False</span></code>: write a single frame to the file; <code class="docutils literal notranslate"><span class="pre">True</span></code>: create a
 multi frame PDB file in which frames are written as <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL">MODEL</a> … <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ENDMDL">ENDMDL</a>
 records. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, then the class default is chosen.    [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
+<li><strong>reindex</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> (default), the atom serial is set to be consecutive
+numbers starting at 1. Else, use the atom id.</li>
 </ul>
 </td>
 </tr>
