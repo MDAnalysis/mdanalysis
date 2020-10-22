@@ -1035,7 +1035,7 @@ class PDBWriter(base.WriterBase):
            types are properly written out (Issue #1753).
            Writing now only uses the contents of the elements attribute
            instead of guessing by default. If the elements are missing,
-           empty records are written out (Issues #2423).
+           empty records are written out (Issue #2423).
 
         """
         atoms = self.obj.atoms

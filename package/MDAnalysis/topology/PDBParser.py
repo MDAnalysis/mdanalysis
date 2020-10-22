@@ -41,7 +41,7 @@ numbers up to 99,999.
 
    The parser processes atoms and their names. Masses are guessed and set to 0
    if unknown. Partial charges are not set. Elements are parsed if they are
-   valid, if partially missing or incorrect empty records are assigned.
+   valid. If partially missing or incorrect, empty records are assigned.
 
 See Also
 --------
