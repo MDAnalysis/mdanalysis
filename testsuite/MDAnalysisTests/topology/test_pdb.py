@@ -23,7 +23,6 @@
 from io import StringIO
 
 import pytest
-import warnings
 import numpy as np
 from numpy.testing import assert_equal
 import MDAnalysis as mda
@@ -66,9 +65,11 @@ hybrid36 = [
     ("10267", 10267)
 ]
 
+
 @pytest.mark.parametrize('hybrid, integer', hybrid36)
 def test_hy36decode(hybrid, integer):
     assert mda.topology.PDBParser.hy36decode(5, hybrid) == integer
+
 
 class PDBBase(ParserBase):
     expected_attrs = ['ids', 'names', 'record_types', 'resids',
@@ -205,6 +206,7 @@ ATOM      4  H2  TIP3           66.986  49.547  22.931  1.00  0.00      TIP3
 ENDMDL
 """
 
+
 def test_PDB_no_resid():
     u = mda.Universe(StringIO(PDB_noresid), format='PDB')
 
@@ -212,6 +214,7 @@ def test_PDB_no_resid():
     assert len(u.residues) == 1
     # should have default resid of 1
     assert u.residues[0].resid == 1
+
 
 PDB_hex = """\
 REMARK For testing reading of hex atom numbers
@@ -299,14 +302,6 @@ def test_PDB_elements():
     assert_equal(u.atoms.elements, element_list)
 
 
-PDB_elements_partial = """\
-ATOM      1  N   PRO A   1       0.401  40.138  17.790  1.00 23.44
-ATOM      2  CA  PRO A   1      -0.540  39.114  18.241  1.00 23.00           C
-ATOM      3  C   PRO A   1      -0.028  38.397  19.491  1.00 22.34
-ATOM      4  O   PRO A   1       1.136  38.550  19.843  1.00 22.20           O
-"""
-
-
 def test_missing_elements_noattribute():
     """Check that:
 
@@ -325,7 +320,7 @@ PDB_wrong_ele = """\
 REMARK For testing warnings of wrong elements
 REMARK This file represent invalid elements in the elements column
 ATOM      1  N   ASN A   1      -8.901   4.127  -0.555  1.00  0.00           N
-ATOM      2  CA  ASN A   1      -8.608   3.135  -1.618  1.00  0.00           C
+ATOM      2  CA  ASN A   1      -8.608   3.135  -1.618  1.00  0.00
 ATOM      3  C   ASN A   1      -7.117   2.964  -1.897  1.00  0.00           C
 ATOM      4  O   ASN A   1      -6.634   1.849  -1.758  1.00  0.00           O
 ATOM      5  X   ASN A   1      -9.437   3.396  -2.889  1.00  0.00          XX
@@ -344,7 +339,7 @@ def test_wrong_elements_warnings():
     with pytest.warns(UserWarning, match='Unknown element XX found'):
         u = mda.Universe(StringIO(PDB_wrong_ele), format='PDB')
 
-    expected = np.array(['N', 'C', 'C', 'O', '', 'Cu', 'Fe', 'Mg'],
+    expected = np.array(['N', '', 'C', 'O', '', 'Cu', 'Fe', 'Mg'],
                         dtype=object)
     assert_equal(u.atoms.elements, expected)
 
