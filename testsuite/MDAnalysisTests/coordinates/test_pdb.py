@@ -48,9 +48,10 @@ IGNORE_NO_INFORMATION_WARNING = 'ignore:Found no information for attr:UserWarnin
 @pytest.fixture
 def dummy_universe_without_elements():
     n_atoms = 4
-    u = mda.Universe.empty(n_atoms=n_atoms, trajectory=True)
+    u = make_Universe(size=(n_atoms, 1, 1), trajectory=True)
     u.add_TopologyAttr('resnames', ['RES'])
     u.add_TopologyAttr('names', ['C1', 'O2', 'N3', 'S4'])
+    u.dimensions = [42, 42, 42, 90, 90, 90]
     return u
 
 
@@ -1170,6 +1171,7 @@ def test_partially_missing_cryst():
     assert_array_almost_equal(u.dimensions, 0.0)
 
 
+@pytest.mark.filterwarnings(IGNORE_NO_INFORMATION_WARNING)
 def test_write_no_atoms_elements(dummy_universe_without_elements):
     """
     If no element symbols are provided, the PDB writer guesses.
@@ -1187,6 +1189,7 @@ def test_write_no_atoms_elements(dummy_universe_without_elements):
     assert element_symbols == expectation
 
 
+@pytest.mark.filterwarnings(IGNORE_NO_INFORMATION_WARNING)
 def test_write_atom_elements(dummy_universe_without_elements):
     """
     If element symbols are provided, they are used when writing the file.
