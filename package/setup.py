@@ -579,13 +579,14 @@ if __name__ == '__main__':
           'biopython>=1.71,<1.77', # to support Py 2
           'networkx>=1.0',
           'GridDataFormats>=0.4.0',
-          'six>=1.4.0',
+          'six>=1.4.0',            # to support Py 2
           'mmtf-python>=1.0.0',
           'joblib>=0.12,<0.15.0',  # to support Py 2
           'scipy>=1.0.0',
           'matplotlib>=1.5.1',
           'mock',
           'tqdm>=4.43.0',
+          'funcsigs',              # to support Py 2
     ]
     if not os.name == 'nt':
         install_requires.append('gsd>=1.4.0')

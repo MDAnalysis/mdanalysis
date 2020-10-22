@@ -23,6 +23,8 @@ Fixes
   * Development status changed from beta to mature (Issue #2773)
   * pip installation only requests Python 2.7-compatible packages (#2736)
   * Testsuite does not use any more matplotlib.use('agg') (#2191)
+  * The methods provided by topology attributes now appear in the
+    documentation (Issue #1845)
   * In ChainReader, read_frame does not trigger change of iterating position.
     (Issue #2723, PR #2815)
   * empty_atomgroup.select_atoms('name *') now returns an empty
