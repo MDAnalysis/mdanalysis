@@ -624,11 +624,6 @@ attributes.</p>
 <dd><p>The index (ID) of the
 <a class="reference internal" href="#MDAnalysis.core.topologyattrs.Bonds.fragment" title="MDAnalysis.core.topologyattrs.Bonds.fragment"><code class="xref py py-class docutils literal notranslate"><span class="pre">fragment</span></code></a> this
 <a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> is part of.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This property is only accessible if the underlying topology contains
-bond information.</p>
-</div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.20.0.</span></p>
 </div>
@@ -644,11 +639,6 @@ of all <a class="reference internal" href="groups.html#MDAnalysis.core.groups.At
 <p>A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with
 <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.19)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">shape</span></code></a><code class="docutils literal notranslate"><span class="pre">=(</span></code><code class="xref py py-attr docutils literal notranslate"><span class="pre">n_atoms</span></code><code class="docutils literal notranslate"><span class="pre">,)</span></code>
 and <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.dtype.html#numpy.ndarray.dtype" title="(in NumPy v1.19)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dtype</span></code></a><code class="docutils literal notranslate"><span class="pre">=numpy.int64</span></code>.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This property is only accessible if the underlying topology contains
-bond information.</p>
-</div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.20.0.</span></p>
 </div>
@@ -666,11 +656,6 @@ there exists a path along one
 or more <a class="reference internal" href="#MDAnalysis.core.topologyattrs.Bonds" title="MDAnalysis.core.topologyattrs.Bonds"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bonds</span></code></a> between any pair
 of <a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 within a fragment. Thus, a fragment typically corresponds to a molecule.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This property is only accessible if the underlying topology contains
-bond information.</p>
-</div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.9.0.</span></p>
 </div>
@@ -694,8 +679,6 @@ within a fragment. Thus, a fragment typically corresponds to a molecule.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <ul class="last simple">
-<li>This property is only accessible if the underlying topology contains
-bond information.</li>
 <li>The contents of the fragments may extend beyond the contents of this
 <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.</li>
 </ul>
@@ -712,11 +695,6 @@ bond information.</li>
 <a class="reference internal" href="#MDAnalysis.core.topologyattrs.Bonds.fragments" title="MDAnalysis.core.topologyattrs.Bonds.fragments"><code class="xref py py-class docutils literal notranslate"><span class="pre">fragments</span></code></a> the
 <a class="reference internal" href="groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> of this
 <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> are part of.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This property is only accessible if the underlying topology contains
-bond information.</p>
-</div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.20.0.</span></p>
 </div>
@@ -913,7 +891,7 @@ where <code class="docutils literal notranslate"><span class="pre">n</span></cod
 <dt id="MDAnalysis.core.topologyattrs.Masses.asphericity">
 <code class="descname">asphericity</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>unwrap=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.asphericity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.asphericity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Asphericity.</p>
-<p>See <a class="reference internal" href="#dima2004b" id="id1">[Dima2004b]</a> for background information.</p>
+<p>See <a class="reference internal" href="../references.html#dima2004b" id="id1">[Dima2004b]</a> for background information.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -926,16 +904,6 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 </ul>
 </td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">References</p>
-<table class="docutils citation" frame="void" id="dima2004b" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[Dima2004b]</a></td><td>Dima, R. I., &amp; Thirumalai, D. (2004). Asymmetry
-in the shapes of folded and denatured states of
-proteins. <em>J Phys Chem B</em>, 108(21),
-6564-6570. doi:<a class="reference external" href="https://doi.org/10.1021/jp037128y">10.1021/jp037128y</a></td></tr>
 </tbody>
 </table>
 <div class="versionadded">
@@ -1115,7 +1083,7 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 <dt id="MDAnalysis.core.topologyattrs.Masses.shape_parameter">
 <code class="descname">shape_parameter</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.shape_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.shape_parameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shape parameter.</p>
-<p>See <a class="reference internal" href="#dima2004a" id="id2">[Dima2004a]</a> for background information.</p>
+<p>See <a class="reference internal" href="../references.html#dima2004a" id="id2">[Dima2004a]</a> for background information.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1123,16 +1091,6 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
 calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</td>
 </tr>
-</tbody>
-</table>
-<p class="rubric">References</p>
-<table class="docutils citation" frame="void" id="dima2004a" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[Dima2004a]</a></td><td>Dima, R. I., &amp; Thirumalai, D. (2004). Asymmetry
-in the shapes of folded and denatured states of
-proteins. <em>J Phys Chem B</em>, 108(21),
-6564-6570. doi:<a class="reference external" href="https://doi.org/10.1021/jp037128y">10.1021/jp037128y</a></td></tr>
 </tbody>
 </table>
 <div class="versionadded">

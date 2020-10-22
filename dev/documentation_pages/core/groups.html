@@ -534,6 +534,37 @@ contain molecule information (molnums), or if <cite>compound</cite> is
 </div>
 </dd></dl>
 
+<dl class="method">
+<dt id="MDAnalysis.core.groups.AtomGroup.align_principal_axis">
+<code class="descname">align_principal_axis</code><span class="sig-paren">(</span><em>axis</em>, <em>vector</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.align_principal_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Align principal axis with index <cite>axis</cite> with <cite>vector</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>axis</strong> (<em>{0</em><em>, </em><em>1</em><em>, </em><em>2}</em>) – Index of the principal axis (0, 1, or 2), as produced by
+<a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.principal_axes" title="MDAnalysis.core.groups.AtomGroup.principal_axes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">principal_axes()</span></code></a>.</li>
+<li><strong>vector</strong> (<em>array_like</em>) – Vector to align principal axis with.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>To align the long axis of a channel (the first principal axis, i.e.
+<em>axis</em> = 0) with the z-axis:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">align_principal_axis</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;aligned.pdb&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.core.groups.AtomGroup.angle">
 <code class="descname">angle</code><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.angle" title="Permalink to this definition">¶</a></dt>
@@ -549,6 +580,41 @@ contain molecule information (molnums), or if <cite>compound</cite> is
 </table>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.AtomGroup.asphericity">
+<code class="descname">asphericity</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>unwrap=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.asphericity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asphericity.</p>
+<p>See <a class="reference internal" href="../references.html#dima2004b" id="id1">[Dima2004b]</a> for background information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to keep together during unwrapping.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <em>unwrap</em> and <em>compound</em> parameter</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
 </div>
 </dd></dl>
 
@@ -795,6 +861,80 @@ compounds</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.core.groups.AtomGroup.center_of_mass">
+<code class="descname">center_of_mass</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center_of_mass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center of mass of (compounds of) the group.</p>
+<p>Computes the center of mass of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Centers of mass per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly. If the masses of a compound sum up to zero, the
+center of mass coordinates of that compound will be <code class="docutils literal notranslate"><span class="pre">nan</span></code> (not a
+number).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact. Instead, the resulting
+center-of-mass position vectors will be moved to the primary unit
+cell after calculation.</li>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
+be returned as a single position vector. Otherwise, the centers of
+mass of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
+fragment will be returned as an array of position vectors, i.e. a 2d
+array.
+Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<em>belonging to the group</em> will be taken into account.</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>center</strong> – Position vector(s) of the center(s) of mass of the group.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+position vector.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the
+output will be a 2d coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal notranslate"><span class="pre">n</span></code>
+is the number of compounds.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>This method can only be accessed if the underlying topology has
+information about atomic masses.</li>
+</ul>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <cite>pbc</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
+compounds</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.centroid">
 <code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.centroid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of geometry of (compounds of) the group.</p>
@@ -1023,6 +1163,58 @@ contain <a class="reference internal" href="../coordinates/base.html#MDAnalysis.
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.groups.AtomGroup.fragindices">
+<code class="descname">fragindices</code><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.fragindices" title="Permalink to this definition">¶</a></dt>
+<dd><p>The
+<a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.fragindex" title="MDAnalysis.core.topologyattrs.Bonds.fragindex"><code class="xref py py-class docutils literal notranslate"><span class="pre">fragment</span> <span class="pre">indices</span></code></a>
+of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in this
+<a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.</p>
+<p>A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.19)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">shape</span></code></a><code class="docutils literal notranslate"><span class="pre">=(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">n_atoms</span></code></a><code class="docutils literal notranslate"><span class="pre">,)</span></code>
+and <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.dtype.html#numpy.ndarray.dtype" title="(in NumPy v1.19)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dtype</span></code></a><code class="docutils literal notranslate"><span class="pre">=numpy.int64</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.20.0.</span></p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have bonds. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.groups.AtomGroup.fragments">
+<code class="descname">fragments</code><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.fragments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read-only <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of
+<a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.fragment" title="MDAnalysis.core.topologyattrs.Bonds.fragment"><code class="xref py py-class docutils literal notranslate"><span class="pre">fragments</span></code></a>.</p>
+<p>Contains all fragments that
+any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> in this
+<a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> is part of.</p>
+<p>A fragment is a
+<a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">group</span> <span class="pre">of</span> <span class="pre">atoms</span></code></a> which are
+interconnected by <a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds" title="MDAnalysis.core.topologyattrs.Bonds"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bonds</span></code></a>, i.e.,
+there exists a path along one
+or more <a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds" title="MDAnalysis.core.topologyattrs.Bonds"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bonds</span></code></a> between any pair
+of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+within a fragment. Thus, a fragment typically corresponds to a molecule.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>The contents of the fragments may extend beyond the contents of this
+<a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.</li>
+</ul>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.0.</span></p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have bonds. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -1309,11 +1501,55 @@ gives a consistent API between components and groups.</p>
 </div>
 </dd></dl>
 
+<dl class="method">
+<dt id="MDAnalysis.core.groups.AtomGroup.moment_of_inertia">
+<code class="descname">moment_of_inertia</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.moment_of_inertia" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tensor moment of inertia relative to center of mass as 3x3 numpy
+array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.core.groups.AtomGroup.n_atoms">
 <code class="descname">n_atoms</code><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of atoms in the <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.</p>
 <p>Equivalent to <code class="docutils literal notranslate"><span class="pre">len(self)</span></code>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.groups.AtomGroup.n_fragments">
+<code class="descname">n_fragments</code><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.n_fragments" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of unique
+<a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.fragments" title="MDAnalysis.core.topologyattrs.Bonds.fragments"><code class="xref py py-class docutils literal notranslate"><span class="pre">fragments</span></code></a> the
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> of this
+<a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> are part of.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.20.0.</span></p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have bonds. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
@@ -1420,6 +1656,65 @@ does not contain
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.AtomGroup.principal_axes">
+<code class="descname">principal_axes</code><span class="sig-paren">(</span><em>pbc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.principal_axes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the principal axes from the moment of inertia.</p>
+<p>e1,e2,e3 = AtomGroup.principal_axes()</p>
+<p>The eigenvectors are sorted by eigenvalue, i.e. the first one
+corresponds to the highest eigenvalue and is thus the first principal
+axes.</p>
+<p>The eigenvectors form a right-handed coordinate system.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>axis_vectors</strong> – 3 x 3 array with <code class="docutils literal notranslate"><span class="pre">v[0]</span></code> as first, <code class="docutils literal notranslate"><span class="pre">v[1]</span></code> as second, and
+<code class="docutils literal notranslate"><span class="pre">v[2]</span></code> as third eigenvector.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">array</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Always return principal axes in right-hand convention.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.AtomGroup.radius_of_gyration">
+<code class="descname">radius_of_gyration</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.radius_of_gyration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Radius of gyration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
@@ -1827,6 +2122,33 @@ periodic are now on by default (as with default flags)</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.core.groups.AtomGroup.shape_parameter">
+<code class="descname">shape_parameter</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.shape_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shape parameter.</p>
+<p>See <a class="reference internal" href="../references.html#dima2004a" id="id2">[Dima2004a]</a> for background information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.split">
 <code class="descname">split</code><span class="sig-paren">(</span><em>level</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/groups.html#AtomGroup.split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.split" title="Permalink to this definition">¶</a></dt>
 <dd><p>Split <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> into a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of
@@ -1920,6 +2242,84 @@ both, without duplicate elements</td>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.16.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.AtomGroup.total_charge">
+<code class="descname">total_charge</code><span class="sig-paren">(</span><em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.total_charge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total charge of (compounds of) the group.</p>
+<p>Computes the total charge of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Total charges per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If ‘group’, the total charge of all atoms in the group will
+be returned as a single value. Otherwise, the total charges per
+<a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment
+will be returned as a 1d array.
+Note that, in any case, <em>only</em> the charges of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<em>belonging to the group</em> will be taken into account.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Total charge of (compounds of) the group.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
+where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have charges. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.AtomGroup.total_mass">
+<code class="descname">total_mass</code><span class="sig-paren">(</span><em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.total_mass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total mass of (compounds of) the group.</p>
+<p>Computes the total mass of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Total masses per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the total mass of all atoms in the group will be
+returned as a single value. Otherwise, the total masses per
+<a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment will be
+returned as a 1d array.
+Note that, in any case, <em>only</em> the masses of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<em>belonging to the group</em> will be taken into account.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Total mass of (compounds of) the group.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
+where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
 </div>
 </dd></dl>
 
@@ -2445,6 +2845,72 @@ contain molecule information (molnums), or if <cite>compound</cite> is
 </div>
 </dd></dl>
 
+<dl class="method">
+<dt id="MDAnalysis.core.groups.ResidueGroup.align_principal_axis">
+<code class="descname">align_principal_axis</code><span class="sig-paren">(</span><em>axis</em>, <em>vector</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.align_principal_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Align principal axis with index <cite>axis</cite> with <cite>vector</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>axis</strong> (<em>{0</em><em>, </em><em>1</em><em>, </em><em>2}</em>) – Index of the principal axis (0, 1, or 2), as produced by
+<a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup.principal_axes" title="MDAnalysis.core.groups.ResidueGroup.principal_axes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">principal_axes()</span></code></a>.</li>
+<li><strong>vector</strong> (<em>array_like</em>) – Vector to align principal axis with.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>To align the long axis of a channel (the first principal axis, i.e.
+<em>axis</em> = 0) with the z-axis:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">align_principal_axis</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;aligned.pdb&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.ResidueGroup.asphericity">
+<code class="descname">asphericity</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>unwrap=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.asphericity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asphericity.</p>
+<p>See <a class="reference internal" href="../references.html#dima2004b" id="id3">[Dima2004b]</a> for background information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to keep together during unwrapping.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <em>unwrap</em> and <em>compound</em> parameter</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.core.groups.ResidueGroup.atoms">
 <code class="descname">atoms</code><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.atoms" title="Permalink to this definition">¶</a></dt>
@@ -2661,6 +3127,80 @@ compounds</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.core.groups.ResidueGroup.center_of_mass">
+<code class="descname">center_of_mass</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center_of_mass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center of mass of (compounds of) the group.</p>
+<p>Computes the center of mass of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Centers of mass per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly. If the masses of a compound sum up to zero, the
+center of mass coordinates of that compound will be <code class="docutils literal notranslate"><span class="pre">nan</span></code> (not a
+number).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact. Instead, the resulting
+center-of-mass position vectors will be moved to the primary unit
+cell after calculation.</li>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
+be returned as a single position vector. Otherwise, the centers of
+mass of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
+fragment will be returned as an array of position vectors, i.e. a 2d
+array.
+Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<em>belonging to the group</em> will be taken into account.</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>center</strong> – Position vector(s) of the center(s) of mass of the group.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+position vector.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the
+output will be a 2d coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal notranslate"><span class="pre">n</span></code>
+is the number of compounds.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>This method can only be accessed if the underlying topology has
+information about atomic masses.</li>
+</ul>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <cite>pbc</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
+compounds</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.core.groups.ResidueGroup.centroid">
 <code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.centroid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of geometry of (compounds of) the group.</p>
@@ -2717,6 +3257,40 @@ compounds</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.0.0: </span>Removed flags affecting default behaviour</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.ResidueGroup.chi1_selections">
+<code class="descname">chi1_selections</code><span class="sig-paren">(</span><em>n_name='N'</em>, <em>ca_name='CA'</em>, <em>cb_name='CB'</em>, <em>cg_name='CG'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.chi1_selections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select list of AtomGroups corresponding to the chi1 sidechain dihedral
+N-CA-CB-CG.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+<li><strong>cb_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the beta-carbon atom</li>
+<li><strong>cg_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the gamma-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>List of AtomGroups</em> – 4-atom selections in the correct order. If no CB and/or CG is found
+then the corresponding item in the list is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionadded:: 1.0.0</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have names. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
 </div>
 </dd></dl>
 
@@ -3040,6 +3614,33 @@ gives a consistent API between components and groups.</p>
 </div>
 </dd></dl>
 
+<dl class="method">
+<dt id="MDAnalysis.core.groups.ResidueGroup.moment_of_inertia">
+<code class="descname">moment_of_inertia</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.moment_of_inertia" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tensor moment of inertia relative to center of mass as 3x3 numpy
+array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.core.groups.ResidueGroup.n_atoms">
 <code class="descname">n_atoms</code><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.n_atoms" title="Permalink to this definition">¶</a></dt>
@@ -3060,6 +3661,43 @@ including duplicate residues (and thus, duplicate atoms).</p>
 <code class="descname">n_segments</code><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.n_segments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of unique segments present in the ResidueGroup.</p>
 <p>Equivalent to <code class="docutils literal notranslate"><span class="pre">len(self.segments)</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.ResidueGroup.omega_selections">
+<code class="descname">omega_selections</code><span class="sig-paren">(</span><em>c_name='C'</em>, <em>n_name='N'</em>, <em>ca_name='CA'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.omega_selections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select list of AtomGroups corresponding to the omega protein
+backbone dihedral CA-C-N’-CA’.</p>
+<p>omega describes the -C-N- peptide bond. Typically, it is trans (180
+degrees) although cis-bonds (0 degrees) are also occasionally observed
+(especially near Proline).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>n_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone N atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>List of AtomGroups</em> – 4-atom selections in the correct order. If no C’ found in the
+previous residue (by resid) then the corresponding item in the
+list is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionadded:: 1.0.0</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have names. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -3114,6 +3752,133 @@ keywords.</p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.ResidueGroup.phi_selections">
+<code class="descname">phi_selections</code><span class="sig-paren">(</span><em>c_name='C'</em>, <em>n_name='N'</em>, <em>ca_name='CA'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.phi_selections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select list of AtomGroups corresponding to the phi protein
+backbone dihedral C’-N-CA-C.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>n_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone N atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>list of AtomGroups</em> – 4-atom selections in the correct order. If no C’ found in the
+previous residue (by resid) then corresponding item in the list
+is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionadded:: 1.0.0</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have names. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.ResidueGroup.principal_axes">
+<code class="descname">principal_axes</code><span class="sig-paren">(</span><em>pbc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.principal_axes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the principal axes from the moment of inertia.</p>
+<p>e1,e2,e3 = AtomGroup.principal_axes()</p>
+<p>The eigenvectors are sorted by eigenvalue, i.e. the first one
+corresponds to the highest eigenvalue and is thus the first principal
+axes.</p>
+<p>The eigenvectors form a right-handed coordinate system.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>axis_vectors</strong> – 3 x 3 array with <code class="docutils literal notranslate"><span class="pre">v[0]</span></code> as first, <code class="docutils literal notranslate"><span class="pre">v[1]</span></code> as second, and
+<code class="docutils literal notranslate"><span class="pre">v[2]</span></code> as third eigenvector.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">array</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Always return principal axes in right-hand convention.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.ResidueGroup.psi_selections">
+<code class="descname">psi_selections</code><span class="sig-paren">(</span><em>c_name='C'</em>, <em>n_name='N'</em>, <em>ca_name='CA'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.psi_selections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select list of AtomGroups corresponding to the psi protein
+backbone dihedral N-CA-C-N’.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>n_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone N atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>List of AtomGroups</em> – 4-atom selections in the correct order. If no N’ found in the
+following residue (by resid) then the corresponding item in the
+list is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionadded:: 1.0.0</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have names. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.ResidueGroup.radius_of_gyration">
+<code class="descname">radius_of_gyration</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.radius_of_gyration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Radius of gyration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
 </div>
 </dd></dl>
 
@@ -3226,6 +3991,129 @@ the <a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup" ti
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.core.groups.ResidueGroup.sequence">
+<code class="descname">sequence</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the amino acid sequence.</p>
+<p>The format of the sequence is selected with the keyword <em>format</em>:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="76%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><em>format</em></th>
+<th class="head">description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>‘SeqRecord’</td>
+<td><code class="xref py py-class docutils literal notranslate"><span class="pre">Bio.SeqRecord.SeqRecord</span></code> (default)</td>
+</tr>
+<tr class="row-odd"><td>‘Seq’</td>
+<td><code class="xref py py-class docutils literal notranslate"><span class="pre">Bio.Seq.Seq</span></code></td>
+</tr>
+<tr class="row-even"><td>‘string’</td>
+<td>string</td>
+</tr>
+</tbody>
+</table>
+<p>The sequence is returned by default (keyword <code class="docutils literal notranslate"><span class="pre">format</span> <span class="pre">=</span> <span class="pre">'SeqRecord'</span></code>)
+as a <code class="xref py py-class docutils literal notranslate"><span class="pre">Bio.SeqRecord.SeqRecord</span></code> instance, which can then be
+further processed. In this case, all keyword arguments (such as the
+<em>id</em> string or the <em>name</em> or the <em>description</em>) are directly passed to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Bio.SeqRecord.SeqRecord</span></code>.</p>
+<p>If the keyword <em>format</em> is set to <code class="docutils literal notranslate"><span class="pre">'Seq'</span></code>, all <em>kwargs</em> are ignored
+and a <code class="xref py py-class docutils literal notranslate"><span class="pre">Bio.Seq.Seq</span></code> instance is returned. The difference to the
+record is that the record also contains metadata and can be directly
+used as an input for other functions in <code class="xref py py-mod docutils literal notranslate"><span class="pre">Bio</span></code>.</p>
+<p>If the keyword <em>format</em> is set to <code class="docutils literal notranslate"><span class="pre">'string'</span></code>, all <em>kwargs</em> are
+ignored and a Python string is returned.</p>
+<p class="rubric">Example: Write FASTA file</p>
+<p>Use <code class="xref py py-func docutils literal notranslate"><span class="pre">Bio.SeqIO.write()</span></code>, which takes sequence records:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">Bio.SeqIO</span>
+
+<span class="c1"># get the sequence record of a protein component of a Universe</span>
+<span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
+<span class="n">record</span> <span class="o">=</span> <span class="n">protein</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;myseq1&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;myprotein&quot;</span><span class="p">)</span>
+
+<span class="n">Bio</span><span class="o">.</span><span class="n">SeqIO</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="s2">&quot;single.fasta&quot;</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A FASTA file with multiple entries can be written with</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Bio</span><span class="o">.</span><span class="n">SeqIO</span><span class="o">.</span><span class="n">write</span><span class="p">([</span><span class="n">record1</span><span class="p">,</span> <span class="n">record2</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="s2">&quot;multi.fasta&quot;</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>format</strong> (<em>string</em><em>, </em><em>optional</em>) – <ul>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;string&quot;</span></code>: return sequence as a string of 1-letter codes</li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;Seq&quot;</span></code>: return a <code class="xref py py-class docutils literal notranslate"><span class="pre">Bio.Seq.Seq</span></code> instance</li>
+<li><code class="docutils literal notranslate"><span class="pre">&quot;SeqRecord&quot;</span></code>: return a <code class="xref py py-class docutils literal notranslate"><span class="pre">Bio.SeqRecord.SeqRecord</span></code>
+instance</li>
+</ul>
+<blockquote>
+<div>Default is <code class="docutils literal notranslate"><span class="pre">&quot;SeqRecord&quot;</span></code></div></blockquote>
+</li>
+<li><strong>id</strong> (<em>optional</em>) – Sequence ID for SeqRecord (should be different for different
+sequences)</li>
+<li><strong>name</strong> (<em>optional</em>) – Name of the protein.</li>
+<li><strong>description</strong> (<em>optional</em>) – Short description of the sequence.</li>
+<li><strong>kwargs</strong> (<em>optional</em>) – Any other keyword arguments that are understood by
+class:<cite>Bio.SeqRecord.SeqRecord</cite>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> if a residue name cannot be converted to a</li>
+<li>1-letter IUPAC protein amino acid code; make sure to only</li>
+<li>select protein residues.</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> if an unknown <em>format</em> is selected.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.0.</span></p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have resnames. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.ResidueGroup.shape_parameter">
+<code class="descname">shape_parameter</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.shape_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shape parameter.</p>
+<p>See <a class="reference internal" href="../references.html#dima2004a" id="id4">[Dima2004a]</a> for background information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.core.groups.ResidueGroup.subtract">
 <code class="descname">subtract</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.subtract" title="Permalink to this definition">¶</a></dt>
 <dd><p>Group with elements from this Group that don’t appear in other</p>
@@ -3298,6 +4186,84 @@ both, without duplicate elements</td>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.16.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.ResidueGroup.total_charge">
+<code class="descname">total_charge</code><span class="sig-paren">(</span><em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.total_charge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total charge of (compounds of) the group.</p>
+<p>Computes the total charge of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Total charges per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If ‘group’, the total charge of all atoms in the group will
+be returned as a single value. Otherwise, the total charges per
+<a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment
+will be returned as a 1d array.
+Note that, in any case, <em>only</em> the charges of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<em>belonging to the group</em> will be taken into account.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Total charge of (compounds of) the group.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
+where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have charges. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.ResidueGroup.total_mass">
+<code class="descname">total_mass</code><span class="sig-paren">(</span><em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.total_mass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total mass of (compounds of) the group.</p>
+<p>Computes the total mass of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Total masses per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the total mass of all atoms in the group will be
+returned as a single value. Otherwise, the total masses per
+<a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment will be
+returned as a 1d array.
+Note that, in any case, <em>only</em> the masses of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<em>belonging to the group</em> will be taken into account.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Total mass of (compounds of) the group.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
+where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
 </div>
 </dd></dl>
 
@@ -3714,6 +4680,72 @@ contain molecule information (molnums), or if <cite>compound</cite> is
 </div>
 </dd></dl>
 
+<dl class="method">
+<dt id="MDAnalysis.core.groups.SegmentGroup.align_principal_axis">
+<code class="descname">align_principal_axis</code><span class="sig-paren">(</span><em>axis</em>, <em>vector</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.align_principal_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Align principal axis with index <cite>axis</cite> with <cite>vector</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>axis</strong> (<em>{0</em><em>, </em><em>1</em><em>, </em><em>2}</em>) – Index of the principal axis (0, 1, or 2), as produced by
+<a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup.principal_axes" title="MDAnalysis.core.groups.SegmentGroup.principal_axes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">principal_axes()</span></code></a>.</li>
+<li><strong>vector</strong> (<em>array_like</em>) – Vector to align principal axis with.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>To align the long axis of a channel (the first principal axis, i.e.
+<em>axis</em> = 0) with the z-axis:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">align_principal_axis</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;aligned.pdb&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.SegmentGroup.asphericity">
+<code class="descname">asphericity</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>unwrap=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.asphericity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asphericity.</p>
+<p>See <a class="reference internal" href="../references.html#dima2004b" id="id5">[Dima2004b]</a> for background information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to keep together during unwrapping.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <em>unwrap</em> and <em>compound</em> parameter</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.core.groups.SegmentGroup.atoms">
 <code class="descname">atoms</code><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.atoms" title="Permalink to this definition">¶</a></dt>
@@ -3927,6 +4959,80 @@ compounds</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.0.0: </span>Removed flags affecting default behaviour</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.SegmentGroup.center_of_mass">
+<code class="descname">center_of_mass</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center_of_mass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center of mass of (compounds of) the group.</p>
+<p>Computes the center of mass of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Centers of mass per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly. If the masses of a compound sum up to zero, the
+center of mass coordinates of that compound will be <code class="docutils literal notranslate"><span class="pre">nan</span></code> (not a
+number).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+primary unit cell before calculation.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the
+centers of mass of each compound will be calculated without moving
+any atoms to keep the compounds intact. Instead, the resulting
+center-of-mass position vectors will be moved to the primary unit
+cell after calculation.</li>
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
+be returned as a single position vector. Otherwise, the centers of
+mass of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
+fragment will be returned as an array of position vectors, i.e. a 2d
+array.
+Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<em>belonging to the group</em> will be taken into account.</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>center</strong> – Position vector(s) of the center(s) of mass of the group.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+position vector.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the
+output will be a 2d coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal notranslate"><span class="pre">n</span></code>
+is the number of compounds.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>This method can only be accessed if the underlying topology has
+information about atomic masses.</li>
+</ul>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <cite>pbc</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>
+compounds</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
 </div>
 </dd></dl>
 
@@ -4310,6 +5416,33 @@ gives a consistent API between components and groups.</p>
 </div>
 </dd></dl>
 
+<dl class="method">
+<dt id="MDAnalysis.core.groups.SegmentGroup.moment_of_inertia">
+<code class="descname">moment_of_inertia</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.moment_of_inertia" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tensor moment of inertia relative to center of mass as 3x3 numpy
+array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.core.groups.SegmentGroup.n_atoms">
 <code class="descname">n_atoms</code><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.n_atoms" title="Permalink to this definition">¶</a></dt>
@@ -4385,6 +5518,65 @@ keywords.</p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.SegmentGroup.principal_axes">
+<code class="descname">principal_axes</code><span class="sig-paren">(</span><em>pbc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.principal_axes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the principal axes from the moment of inertia.</p>
+<p>e1,e2,e3 = AtomGroup.principal_axes()</p>
+<p>The eigenvectors are sorted by eigenvalue, i.e. the first one
+corresponds to the highest eigenvalue and is thus the first principal
+axes.</p>
+<p>The eigenvectors form a right-handed coordinate system.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>axis_vectors</strong> – 3 x 3 array with <code class="docutils literal notranslate"><span class="pre">v[0]</span></code> as first, <code class="docutils literal notranslate"><span class="pre">v[1]</span></code> as second, and
+<code class="docutils literal notranslate"><span class="pre">v[2]</span></code> as third eigenvector.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">array</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Always return principal axes in right-hand convention.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.SegmentGroup.radius_of_gyration">
+<code class="descname">radius_of_gyration</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.radius_of_gyration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Radius of gyration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
 </div>
 </dd></dl>
 
@@ -4500,6 +5692,33 @@ not affect any code but only speed up calculations.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.core.groups.SegmentGroup.shape_parameter">
+<code class="descname">shape_parameter</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.shape_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shape parameter.</p>
+<p>See <a class="reference internal" href="../references.html#dima2004a" id="id6">[Dima2004a]</a> for background information.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.core.groups.SegmentGroup.subtract">
 <code class="descname">subtract</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.subtract" title="Permalink to this definition">¶</a></dt>
 <dd><p>Group with elements from this Group that don’t appear in other</p>
@@ -4572,6 +5791,84 @@ both, without duplicate elements</td>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.16.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.SegmentGroup.total_charge">
+<code class="descname">total_charge</code><span class="sig-paren">(</span><em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.total_charge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total charge of (compounds of) the group.</p>
+<p>Computes the total charge of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Total charges per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If ‘group’, the total charge of all atoms in the group will
+be returned as a single value. Otherwise, the total charges per
+<a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment
+will be returned as a 1d array.
+Note that, in any case, <em>only</em> the charges of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<em>belonging to the group</em> will be taken into account.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Total charge of (compounds of) the group.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
+where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have charges. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.SegmentGroup.total_mass">
+<code class="descname">total_mass</code><span class="sig-paren">(</span><em>compound='group'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.total_mass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total mass of (compounds of) the group.</p>
+<p>Computes the total mass of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
+Total masses per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
+fragment can be obtained by setting the <cite>compound</cite> parameter
+accordingly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the total mass of all atoms in the group will be
+returned as a single value. Otherwise, the total masses per
+<a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment will be
+returned as a 1d array.
+Note that, in any case, <em>only</em> the masses of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+<em>belonging to the group</em> will be taken into account.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Total mass of (compounds of) the group.
+If <cite>compound</cite> was set to <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the output will be a single
+value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
+where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>compound</cite> parameter</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have masses. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
 </div>
 </dd></dl>
 
@@ -5014,6 +6311,19 @@ generating its Topology-specific <a class="reference internal" href="#MDAnalysis
 from <code class="xref py py-class docutils literal notranslate"><span class="pre">ComponentBase</span></code>, so this class only includes ad-hoc methods
 specific to <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>.</p>
 <dl class="attribute">
+<dt id="MDAnalysis.core.groups.Atom.bonded_atoms">
+<code class="descname">bonded_atoms</code><a class="headerlink" href="#MDAnalysis.core.groups.Atom.bonded_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>An <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> of all
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> bonded to this
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have bonds. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="MDAnalysis.core.groups.Atom.force">
 <code class="descname">force</code><a class="headerlink" href="#MDAnalysis.core.groups.Atom.force" title="Permalink to this definition">¶</a></dt>
 <dd><p>Force on the atom.</p>
@@ -5034,6 +6344,44 @@ does not contain
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.groups.Atom.fragindex">
+<code class="descname">fragindex</code><a class="headerlink" href="#MDAnalysis.core.groups.Atom.fragindex" title="Permalink to this definition">¶</a></dt>
+<dd><p>The index (ID) of the
+<a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.fragment" title="MDAnalysis.core.topologyattrs.Bonds.fragment"><code class="xref py py-class docutils literal notranslate"><span class="pre">fragment</span></code></a> this
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> is part of.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.20.0.</span></p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have bonds. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.groups.Atom.fragment">
+<code class="descname">fragment</code><a class="headerlink" href="#MDAnalysis.core.groups.Atom.fragment" title="Permalink to this definition">¶</a></dt>
+<dd><p>An <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> representing the
+fragment this <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> is part of.</p>
+<p>A fragment is a
+<a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">group</span> <span class="pre">of</span> <span class="pre">atoms</span></code></a> which are
+interconnected by <a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds" title="MDAnalysis.core.topologyattrs.Bonds"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bonds</span></code></a>, i.e.,
+there exists a path along one
+or more <a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds" title="MDAnalysis.core.topologyattrs.Bonds"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bonds</span></code></a> between any pair
+of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
+within a fragment. Thus, a fragment typically corresponds to a molecule.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.9.0.</span></p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have bonds. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
@@ -5121,6 +6469,41 @@ specific to <a class="reference internal" href="#MDAnalysis.core.groups.Residue"
 <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="MDAnalysis.core.groups.Residue.chi1_selection">
+<code class="descname">chi1_selection</code><span class="sig-paren">(</span><em>n_name='N'</em>, <em>ca_name='CA'</em>, <em>cb_name='CB'</em>, <em>cg_name='CG'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.Residue.chi1_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+<li><strong>cb_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the beta-carbon atom</li>
+<li><strong>cg_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the gamma-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>AtomGroup</em> – 4-atom selection in the correct order. If no CB and/or CG is found
+then this method returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionchanged:: 1.0.0</em> – Added arguments for flexible atom names and refactored code for
+faster atom matching with boolean arrays.</li>
+<li><em>.. versionadded:: 0.7.5</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have names. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.core.groups.Residue.ix">
 <code class="descname">ix</code><a class="headerlink" href="#MDAnalysis.core.groups.Residue.ix" title="Permalink to this definition">¶</a></dt>
@@ -5139,6 +6522,111 @@ If it is a <a class="reference internal" href="#MDAnalysis.core.groups.Segment" 
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.core.groups.Residue.ix" title="MDAnalysis.core.groups.Residue.ix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ix</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.Residue.omega_selection">
+<code class="descname">omega_selection</code><span class="sig-paren">(</span><em>c_name='C'</em>, <em>n_name='N'</em>, <em>ca_name='CA'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.Residue.omega_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select AtomGroup corresponding to the omega protein backbone dihedral
+CA-C-N’-CA’.</p>
+<p>omega describes the -C-N- peptide bond. Typically, it is trans (180
+degrees) although cis-bonds (0 degrees) are also occasionally observed
+(especially near Proline).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>n_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone N atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>AtomGroup</em> – 4-atom selection in the correct order. If no C’ found in the
+previous residue (by resid) then this method returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionchanged:: 1.0.0</em> – Added arguments for flexible atom names and refactored code for
+faster atom matching with boolean arrays.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have names. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.Residue.phi_selection">
+<code class="descname">phi_selection</code><span class="sig-paren">(</span><em>c_name='C'</em>, <em>n_name='N'</em>, <em>ca_name='CA'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.Residue.phi_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select AtomGroup corresponding to the phi protein backbone dihedral
+C’-N-CA-C.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>n_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone N atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>AtomGroup</em> – 4-atom selection in the correct order. If no C’ found in the
+previous residue (by resid) then this method returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionchanged:: 1.0.0</em> – Added arguments for flexible atom names and refactored code for
+faster atom matching with boolean arrays.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have names. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.Residue.psi_selection">
+<code class="descname">psi_selection</code><span class="sig-paren">(</span><em>c_name='C'</em>, <em>n_name='N'</em>, <em>ca_name='CA'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.Residue.psi_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select AtomGroup corresponding to the psi protein backbone dihedral
+N-CA-C-N’.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>n_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone N atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>AtomGroup</em> – 4-atom selection in the correct order. If no N’ found in the
+following residue (by resid) then this method returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionchanged:: 1.0.0</em> – Added arguments for flexible atom names and refactored code for
+faster atom matching with boolean arrays.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have names. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
 </div>
 </dd></dl>
 
