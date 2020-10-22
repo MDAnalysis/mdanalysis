@@ -78,7 +78,7 @@ def case2():
 
 
 class TestFragments(object):
-    """Use 125 atom test Universe
+    r"""Use 125 atom test Universe
 
     5 segments of 5 residues of 5 atoms
 

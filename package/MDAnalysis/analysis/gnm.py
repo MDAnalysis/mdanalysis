@@ -352,7 +352,7 @@ class GNMAnalysis(object):
 
 
 class closeContactGNMAnalysis(GNMAnalysis):
-    """GNMAnalysis only using close contacts.
+    r"""GNMAnalysis only using close contacts.
 
     This is a version of the GNM where the Kirchoff matrix is
     constructed from the close contacts between individual atoms
