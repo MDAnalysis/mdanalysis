@@ -1099,7 +1099,7 @@ class PDBWriter(base.WriterBase):
             vals['occupancy'] = occupancies[i]
             vals['tempFactor'] = tempfactors[i]
             vals['segID'] = segids[i][:4]
-            vals['element'] = elements[i][:2]
+            vals['element'] = elements[i][:2].upper()
 
             # record_type attribute, if exists, can be ATOM or HETATM
             try:

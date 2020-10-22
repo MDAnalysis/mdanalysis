@@ -47,10 +47,10 @@ IGNORE_NO_INFORMATION_WARNING = 'ignore:Found no information for attr:UserWarnin
 
 @pytest.fixture
 def dummy_universe_without_elements():
-    n_atoms = 4
+    n_atoms = 5
     u = make_Universe(size=(n_atoms, 1, 1), trajectory=True)
     u.add_TopologyAttr('resnames', ['RES'])
-    u.add_TopologyAttr('names', ['C1', 'O2', 'N3', 'S4'])
+    u.add_TopologyAttr('names', ['C1', 'O2', 'N3', 'S4', 'NA'])
     u.dimensions = [42, 42, 42, 90, 90, 90]
     return u
 
@@ -1185,7 +1185,7 @@ def test_write_no_atoms_elements(dummy_universe_without_elements):
         for line in content.splitlines()
         if line[:6] == 'ATOM  '
     ]
-    expectation = ['', '', '', '']
+    expectation = ['', '', '', '', '']
     assert element_symbols == expectation
 
 
@@ -1196,9 +1196,10 @@ def test_write_atom_elements(dummy_universe_without_elements):
 
     See `Issue 2423 <https://github.com/MDAnalysis/mdanalysis/issues/2423>`_.
     """
-    expectation = ['S', 'O', '', 'C']
+    elems = ['S', 'O', '', 'C', 'Na']
+    expectation = ['S', 'O', '', 'C', 'NA']
     dummy_universe_with_elements = dummy_universe_without_elements
-    dummy_universe_with_elements.add_TopologyAttr('elements', expectation)
+    dummy_universe_with_elements.add_TopologyAttr('elements', elems)
     destination = StringIO()
     with mda.coordinates.PDB.PDBWriter(destination) as writer:
         writer.write(dummy_universe_without_elements.atoms)
