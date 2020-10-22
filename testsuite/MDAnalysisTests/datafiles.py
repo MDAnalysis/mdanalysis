@@ -531,8 +531,6 @@ LYSJaninArray = resource_filename(__name__, 'data/adk_oplsaa_LYS_janin.npy')
 PDB_rama = resource_filename(__name__, 'data/19hc.pdb.gz')
 PDB_janin = resource_filename(__name__, 'data/1a28.pdb.gz')
 
-Asph_gro = resource_filename(__name__, 'data/Asph.gro')
-Asph_xtc = resource_filename(__name__, 'data/Asph.xtc')
 BATArray = resource_filename(__name__, 'data/mol2_comments_header_bat.npy')
 
 ITP = resource_filename(__name__, 'data/gromacs_ala10.itp')
@@ -549,5 +547,7 @@ NAMDBIN = resource_filename(__name__, 'data/adk_open.coor')
 
 SDF_molecule = resource_filename(__name__, 'data/molecule.sdf')
 
+Asph_gro = resource_filename(__name__, 'data/Asph.gro')
+Asph_xtc = resource_filename(__name__, 'data/Asph.xtc')
 # This should be the last line: clean up namespace
 del resource_filename

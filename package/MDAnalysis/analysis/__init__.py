@@ -119,7 +119,7 @@ Available analysis modules
 
 __all__ = [
     'align',
-    'Aggregation_size',
+    'Aggregation_size',	
     'base',
     'contacts',
     'density',
