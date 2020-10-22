@@ -153,7 +153,7 @@ def in_dir(dirname):
 
 
 def assert_nowarns(warning_class, *args, **kwargs):
-    """Fail if the given callable throws the specified warning.
+    r"""Fail if the given callable throws the specified warning.
 
     A warning of class warning_class should NOT be thrown by the callable when
     invoked with arguments args and keyword arguments kwargs.

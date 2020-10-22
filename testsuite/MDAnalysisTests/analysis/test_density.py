@@ -213,8 +213,8 @@ class TestDensityAnalysis(DensityParameters):
         assert D.density.grid.shape == (8, 12, 17)
 
     def test_warn_userdefn_padding(self, universe):
-        regex = ("Box padding \(currently set at 1\.0\) is not used "
-                 "in user defined grids\.")
+        regex = (r"Box padding \(currently set at 1\.0\) is not used "
+                 r"in user defined grids\.")
         with pytest.warns(UserWarning, match=regex):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['static']),

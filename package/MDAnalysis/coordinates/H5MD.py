@@ -236,7 +236,7 @@ class Timestep(base.Timestep):
 
 
 class H5MDReader(base.ReaderBase):
-    """Reader for the H5MD format.
+    r"""Reader for the H5MD format.
 
     See `h5md documentation <https://nongnu.org/h5md/h5md.html>`_
     for a detailed overview of the H5MD file format.

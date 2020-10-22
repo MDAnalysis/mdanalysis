@@ -53,8 +53,12 @@ git remote add upstream "https://${GH_TOKEN}@${GH_REPOSITORY}"
 git fetch --depth 50 upstream ${GH_DOC_BRANCH} gh-pages
 git reset upstream/gh-pages
 
-# for dev, latest, home redirects
-mkdir dev latest
+# === REDIRECTS AND COPIES ====
+# home (index.html) redirects to stable/
+# latest (latest/index.html) redirects to most recent release
+# dev/ is a copy of the dev docs with the highest number (so 2.0.0-dev instead of 1.0.1-dev)
+# stable/ is a copy of the release docs with the highest number
+mkdir latest
 export URL="https://docs.mdanalysis.org"
 python ${MAINTAIN_DIR}/update_json_stubs_sitemap.py
 touch .
@@ -62,8 +66,13 @@ touch .nojekyll
 
 git add -A ${VERSION}/
 git add .nojekyll versions.json
-git add index.html dev latest
-git add *.xml
+git add index.html latest
+
+for dirname in dev stable documentation_pages ; do
+    if [ -d $dirname ]; then git add $dirname; fi
+done
+
+git add *.xml *.html
 
 # check for anything to commit
 # https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommited-changes
