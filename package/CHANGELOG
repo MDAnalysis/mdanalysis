@@ -24,6 +24,8 @@ Fixes
     instead of not assigning the elements attribute at all (Issue #2422)
   * PDB writer now uses elements attribute instead of guessing elements from
     atom name (Issue #2423)
+  * The methods provided by topology attributes now appear in the
+    documentation (Issue #1845)
   * AtomGroup.center now works correctly for compounds + unwrapping
     (Issue #2984)
   * Avoid using deprecated array indexing in topology attributes

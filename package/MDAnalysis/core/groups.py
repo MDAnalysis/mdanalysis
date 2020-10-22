@@ -227,7 +227,7 @@ class _TopologyAttrContainer(object):
             A class of parents :class:`_ImmutableBase`, *other* and this class.
             Its name is the same as *other*'s.
         """
-        newcls = type(other.__name__, (_ImmutableBase, other, cls), {})
+        newcls = type(other.__name__, (_ImmutableBase, cls, other), {})
         newcls._derived_class = newcls
         return newcls
 
