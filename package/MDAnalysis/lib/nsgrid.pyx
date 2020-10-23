@@ -70,6 +70,15 @@ not reflect in the results.
 
 .. versionadded:: 0.19.0
 
+Important Note
+--------------
+
+Several issues have been raised about the nsgrid code (#2919, #2229, #2345,
+#2670, #2930). In summary, this code currently yield unreliable/inaccurate
+results. Until fixed, it should not be used. We have left this module in
+place as we prepare an fix for these errors. In the meantime, use of this
+library is at your own perils.
+
 Classes
 -------
 """

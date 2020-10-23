@@ -96,7 +96,7 @@ query_1 = (np.array([0.1, 0.1, 0.1], dtype=np.float32),
            np.array([[0.1, 0.1, 0.1],
                      [0.2, 0.1, 0.1]], dtype=np.float32))
 
-method_1 = ('bruteforce', 'pkdtree', 'nsgrid')
+method_1 = ('bruteforce', 'pkdtree') # add nsgrid back
 
 min_cutoff_1 = (None, 0.1)
 
@@ -220,7 +220,7 @@ def test_self_capped_distance(npoints, box, method, min_cutoff, ret_dist):
                          [(1, 0.02, '_bruteforce_capped_self'),
                           (1, 0.2, '_bruteforce_capped_self'),
                           (600, 0.02, '_pkdtree_capped_self'),
-                          (600, 0.2, '_nsgrid_capped_self')])
+                          (600, 0.2, '_pkdtree_capped_self')]) # tmp switch to pkdtree
 def test_method_selfselection(box, npoints, cutoff, meth):
     np.random.seed(90003)
     points = (np.random.uniform(low=0, high=1.0,
@@ -235,9 +235,9 @@ def test_method_selfselection(box, npoints, cutoff, meth):
 @pytest.mark.parametrize('npoints,cutoff,meth',
                          [(1, 0.02, '_bruteforce_capped'),
                           (1, 0.2, '_bruteforce_capped'),
-                          (200, 0.02, '_nsgrid_capped'),
+                          (200, 0.02, '_pkdtree_capped'), # tmp switch to pkdtree
                           (200, 0.35, '_bruteforce_capped'),
-                          (10000, 0.35, '_nsgrid_capped')])
+                          (10000, 0.35, '_pkdtree_capped')]) # tmp switch to pkdtree
 def test_method_selection(box, npoints, cutoff, meth):
     np.random.seed(90003)
     points = (np.random.uniform(low=0, high=1.0,
@@ -991,7 +991,7 @@ class TestInputUnchanged(object):
         assert_equal(crd, ref)
 
     @pytest.mark.parametrize('box', boxes)
-    @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", "nsgrid", None])
+    @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", None]) # add nsgrid back
     def test_input_unchanged_capped_distance(self, coords, box, met):
         crds = coords[:2]
         refs = [crd.copy() for crd in crds]
@@ -1000,7 +1000,7 @@ class TestInputUnchanged(object):
         assert_equal(crds, refs)
 
     @pytest.mark.parametrize('box', boxes)
-    @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", "nsgrid", None])
+    @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", None]) # add nsgrid back
     def test_input_unchanged_self_capped_distance(self, coords, box, met):
         crd = coords[0]
         ref = crd.copy()
@@ -1101,7 +1101,7 @@ class TestEmptyInputCoordinates(object):
     @pytest.mark.parametrize('box', boxes)
     @pytest.mark.parametrize('min_cut', [min_cut, None])
     @pytest.mark.parametrize('ret_dist', [False, True])
-    @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", "nsgrid", None])
+    @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", None]) # add nsgrid back
     def test_empty_input_capped_distance(self, empty_coord, min_cut, box, met,
                                          ret_dist):
         res = distances.capped_distance(empty_coord, empty_coord,
@@ -1117,7 +1117,7 @@ class TestEmptyInputCoordinates(object):
     @pytest.mark.parametrize('box', boxes)
     @pytest.mark.parametrize('min_cut', [min_cut, None])
     @pytest.mark.parametrize('ret_dist', [False, True])
-    @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", "nsgrid", None])
+    @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", None]) # add nsgrid back
     def test_empty_input_self_capped_distance(self, empty_coord, min_cut, box,
                                               met, ret_dist):
         res = distances.self_capped_distance(empty_coord,
@@ -1234,7 +1234,7 @@ class TestOutputTypes(object):
     @pytest.mark.parametrize('min_cut', [min_cut, None])
     @pytest.mark.parametrize('ret_dist', [False, True])
     @pytest.mark.parametrize('incoords', list(comb(coords, 2)))
-    @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", "nsgrid", None])
+    @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", None]) # add nsgrid back
     def test_output_type_capped_distance(self, incoords, min_cut, box, met,
                                          ret_dist):
         res = distances.capped_distance(*incoords, max_cutoff=self.max_cut,
@@ -1257,7 +1257,7 @@ class TestOutputTypes(object):
     @pytest.mark.parametrize('min_cut', [min_cut, None])
     @pytest.mark.parametrize('ret_dist', [False, True])
     @pytest.mark.parametrize('incoords', coords)
-    @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", "nsgrid", None])
+    @pytest.mark.parametrize('met', ["bruteforce", "pkdtree", None]) # add nsgrid back
     def test_output_type_self_capped_distance(self, incoords, min_cut, box,
                                               met, ret_dist):
         res = distances.self_capped_distance(incoords,
