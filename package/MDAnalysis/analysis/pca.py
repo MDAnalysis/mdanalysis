@@ -162,13 +162,13 @@ class PCA(AnalysisBase):
     Computation can be sped up by supplying a precalculated mean structure.
 
     .. versionchanged:: 1.0.0
-       ``n_components`` now limits the correct axis of ``p_components``. ``cumulated_variance``
-       now accurately represents the contribution of each
-       principal component and does not change when ``n_components`` is given. If
-       ``n_components`` is not None or is less than the number of ``p_components``,
-       ``cumulated_variance`` will not sum to 1.
-       ``align=True`` now correctly aligns the trajectory and computes the correct
-       means and covariance matrix.
+       ``n_components`` now limits the correct axis of ``p_components``.
+       ``cumulated_variance`` now accurately represents the contribution of
+       each principal component and does not change when ``n_components`` is
+       given. If ``n_components`` is not None or is less than the number of
+       ``p_components``, ``cumulated_variance`` will not sum to 1.
+       ``align=True`` now correctly aligns the trajectory and computes the
+       correct means and covariance matrix.
 
     .. versionchanged:: 0.19.0
        The start frame is used when performing selections and calculating
@@ -297,13 +297,14 @@ class PCA(AnalysisBase):
         atomgroup : MDAnalysis atomgroup/ Universe
             The atomgroup or universe containing atoms to be PCA transformed.
         n_components : int, optional
-            The number of components to be projected onto, Default None: maps
-            onto all components.
+            The number of components to be projected onto, The default
+            ``None``maps onto all components.
         start : int, optional
-            The frame to start on for the PCA transform. Default: None becomes
-            0, the first frame index.
+            The frame to start on for the PCA transform. The default
+            ``None`` becomes 0, the first frame index.
         stop : int, optional
-            Frame index to stop PCA transform. Default: None becomes n_frames.
+            Frame index to stop PCA transform. The default ``None`` becomes
+            the total number of frames in the trajectory.
             Iteration stops *before* this frame number, which means that the
             trajectory would be read until the end.
         step : int, optional
