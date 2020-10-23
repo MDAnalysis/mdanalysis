@@ -24,63 +24,9 @@
     "latest": false
   },
   {
-    "version": "dev",
-    "display": "dev",
-    "url": "https://docs.mdanalysis.org/dev",
-    "latest": false
-  },
-  {
-    "version": "dev",
-    "display": "dev",
-    "url": "https://docs.mdanalysis.org/dev",
-    "latest": false
-  },
-  {
-    "version": "dev",
-    "display": "dev",
-    "url": "https://docs.mdanalysis.org/dev",
-    "latest": false
-  },
-  {
-    "version": "dev",
-    "display": "dev",
-    "url": "https://docs.mdanalysis.org/dev",
-    "latest": false
-  },
-  {
-    "version": "dev",
-    "display": "dev",
-    "url": "https://docs.mdanalysis.org/dev",
-    "latest": false
-  },
-  {
-    "version": "dev",
-    "display": "dev",
-    "url": "https://docs.mdanalysis.org/dev",
-    "latest": false
-  },
-  {
     "version": "stable",
     "display": "stable",
     "url": "https://docs.mdanalysis.org/stable",
-    "latest": false
-  },
-  {
-    "version": "dev",
-    "display": "dev",
-    "url": "https://docs.mdanalysis.org/dev",
-    "latest": false
-  },
-  {
-    "version": "dev",
-    "display": "dev",
-    "url": "https://docs.mdanalysis.org/dev",
-    "latest": false
-  },
-  {
-    "version": "dev",
-    "display": "dev",
-    "url": "https://docs.mdanalysis.org/dev",
     "latest": false
   }
 ]
