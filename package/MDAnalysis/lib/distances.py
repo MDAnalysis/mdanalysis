@@ -398,7 +398,8 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
 
     .. versionchanged:: 1.0.1
        nsgrid was temporarily removed and replaced with pkdtree due to issues
-       surround its reliability (Issues #2919, #2229, #2345, #2670, #2930)
+       relating to its reliability and accuracy (Issues #2919, #2229, #2345,
+       #2670, #2930)
     """
     if box is not None:
         box = np.asarray(box, dtype=np.float32)
@@ -446,7 +447,8 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
 
     .. versionchanged:: 1.0.1
        nsgrid was temporarily removed and replaced with pkdtree due to issues
-       surround its reliability (Issues #2919, #2229, #2345, #2670, #2930)
+       relating to its reliability and accuracy (Issues #2919, #2229, #2345,
+       #2670, #2930)
     """
     # TODO: add 'nsgrid': _nsgrid_capped back once fixed
     methods = {'bruteforce': _bruteforce_capped,
@@ -813,7 +815,8 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
        Added `return_distances` keyword.
     .. versionchanged:: 1.0.1
        nsgrid was temporarily removed and replaced with pkdtree due to issues
-       surround its reliability (Issues #2919, #2229, #2345, #2670, #2930)
+       relating to its reliability and accuracy (Issues #2919, #2229, #2345,
+       #2670, #2930)
     """
     if box is not None:
         box = np.asarray(box, dtype=np.float32)
@@ -859,7 +862,8 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
 
     .. versionchanged:: 1.0.1
        nsgrid was temporarily removed and replaced with pkdtree due to issues
-       surround its reliability (Issues #2919, #2229, #2345, #2670, #2930)
+       relating to its reliability and accuracy (Issues #2919, #2229, #2345,
+       #2670, #2930)
     """
     # TODO: add 'nsgrid': _nsgrid_capped back once fixed
     methods = {'bruteforce': _bruteforce_capped_self,

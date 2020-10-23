@@ -20,7 +20,10 @@ The rules for this file:
   * 1.0.1
 
 Fixes
-  * Disable NSGrid in favour fo PKDTree (Issue #2930)
+  * Due to issues with the reliability/accuracy of `nsgrid`, this method is
+    currently not recommended for use. It has also been removed as an option
+    from lib.capped_distance and lib.self_capped_distance. Please use PKDTree
+    instead (Issue #2930)
   * Development status changed from beta to mature (Issue #2773)
   * pip installation only requests Python 2.7-compatible packages (#2736)
   * Testsuite does not use any more matplotlib.use('agg') (#2191)
