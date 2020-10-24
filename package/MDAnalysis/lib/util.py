@@ -20,7 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""
+r"""
 Helper functions --- :mod:`MDAnalysis.lib.util`
 ====================================================
 
@@ -1057,7 +1057,8 @@ def asiterable(obj):
 #: ``(?P<repeat>\d?)(?P<format>[IFELAX])(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?``
 #:
 #: .. _FORTRAN edit descriptor: http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html
-FORTRAN_format_regex = "(?P<repeat>\d+?)(?P<format>[IFEAX])(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?"
+FORTRAN_format_regex = (r"(?P<repeat>\d+?)(?P<format>[IFEAX])"
+                        r"(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?")
 _FORTRAN_format_pattern = re.compile(FORTRAN_format_regex)
 
 
@@ -1424,7 +1425,7 @@ def convert_aa_code(x):
 
 #: Regular expression to match and parse a residue-atom selection; will match
 #: "LYS300:HZ1" or "K300:HZ1" or "K300" or "4GB300:H6O" or "4GB300" or "YaA300".
-RESIDUE = re.compile("""
+RESIDUE = re.compile(r"""
                  (?P<aa>([ACDEFGHIKLMNPQRSTVWY])   # 1-letter amino acid
                         |                          #   or
                         ([0-9A-Z][a-zA-Z][A-Z][A-Z]?)    # 3-letter or 4-letter residue name
@@ -2176,7 +2177,7 @@ class _Deprecate(object):
 
 
 def deprecate(*args, **kwargs):
-    """Issues a DeprecationWarning, adds warning to `old_name`'s
+    r"""Issues a DeprecationWarning, adds warning to `old_name`'s
     docstring, rebinds ``old_name.__name__`` and returns the new
     function object.
 
@@ -2310,7 +2311,7 @@ def check_box(box):
     box : array_like
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
 
     Returns

@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -25,14 +25,15 @@
 ParmEd topology parser
 ======================
 
-Converts a `ParmEd <https://parmed.github.io/ParmEd/html>`_ :class:`parmed.structure.Structure` into a :class:`MDAnalysis.core.Topology`.
+Converts a `ParmEd <https://parmed.github.io/ParmEd/html>`_
+:class:`parmed.structure.Structure` into a :class:`MDAnalysis.core.Topology`.
 
 
 Example
 -------
 
-If you want to use an MDAnalysis-written ParmEd structure for simulation 
-in ParmEd, you need to first read your files with ParmEd to include the 
+If you want to use an MDAnalysis-written ParmEd structure for simulation
+in ParmEd, you need to first read your files with ParmEd to include the
 necessary topology parameters. ::
 
     >>> import parmed as pmd
@@ -42,7 +43,7 @@ necessary topology parameters. ::
     >>> prm
     <AmberParm 3026 atoms; 1003 residues; 3025 bonds; PBC (orthogonal); parametrized>
 
-We can then convert this to an MDAnalysis structure, select only the 
+We can then convert this to an MDAnalysis structure, select only the
 protein atoms, and then convert it back to ParmEd. ::
 
     >>> u = mda.Universe(prm)
@@ -53,7 +54,8 @@ protein atoms, and then convert it back to ParmEd. ::
     >>> prm_prot
     <Structure 23 atoms; 2 residues; 22 bonds; PBC (orthogonal); parametrized>
 
-From here you can create an OpenMM simulation system and minimize the energy. ::
+From here you can create an OpenMM simulation system and minimize the
+energy. ::
 
     >>> import simtk.openmm as mm
     >>> import simtk.openmm.app as app
@@ -81,12 +83,8 @@ Classes
 
 """
 import logging
-import functools
-from math import ceil
 import numpy as np
 
-from ..lib.util import openany
-from .guessers import guess_atom_element
 from .base import TopologyReaderBase, change_squash
 from .tables import Z2SYMB
 from ..core.topologyattrs import (
@@ -122,11 +120,13 @@ from ..core.topology import Topology
 
 logger = logging.getLogger("MDAnalysis.topology.ParmEdParser")
 
+
 def squash_identical(values):
     if len(values) == 1:
         return values[0]
     else:
         return tuple(values)
+
 
 class ParmEdParser(TopologyReaderBase):
     """
@@ -153,6 +153,12 @@ class ParmEdParser(TopologyReaderBase):
         Returns
         -------
         MDAnalysis *Topology* object
+
+
+        .. versionchanged:: 2.0.0
+           Elements are no longer guessed, if the elements present in the
+           parmed object are not recoginsed (usually given an atomic mass of 0)
+           then they will be assigned an empty string.
         """
         structure = self.filename
 
@@ -182,8 +188,6 @@ class ParmEdParser(TopologyReaderBase):
         rmin14s = []
         epsilon14s = []
 
-
-
         for atom in structure.atoms:
             names.append(atom.name)
             masses.append(atom.mass)
@@ -209,7 +213,7 @@ class ParmEdParser(TopologyReaderBase):
             epsilons.append(atom.epsilon)
             rmin14s.append(atom.rmin_14)
             epsilon14s.append(atom.epsilon_14)
-        
+
         attrs = []
 
         n_atoms = len(names)
@@ -220,7 +224,7 @@ class ParmEdParser(TopologyReaderBase):
             try:
                 elements.append(Z2SYMB[z])
             except KeyError:
-                elements.append(guess_atom_element(name))
+                elements.append('')
 
         # Make Atom TopologyAttrs
         for vals, Attr, dtype in (
@@ -232,7 +236,7 @@ class ParmEdParser(TopologyReaderBase):
                 (serials, Atomids, np.int32),
                 (chainids, ChainIDs, object),
 
-                (altLocs, AltLocs, object),                
+                (altLocs, AltLocs, object),
                 (bfactors, Tempfactors, np.float32),
                 (occupancies, Occupancies, np.float32),
 
@@ -253,7 +257,8 @@ class ParmEdParser(TopologyReaderBase):
         segids = np.array(segids, dtype=object)
 
         residx, (resids, resnames, chainids, segids) = change_squash(
-            (resids, resnames, chainids, segids), (resids, resnames, chainids, segids))
+            (resids, resnames, chainids, segids),
+            (resids, resnames, chainids, segids))
 
         n_residues = len(resids)
         attrs.append(Resids(resids))
@@ -284,7 +289,6 @@ class ParmEdParser(TopologyReaderBase):
         cmap_values = {}
         cmap_types = []
 
-
         for bond in structure.bonds:
             idx = (bond.atom1.idx, bond.atom2.idx)
             if idx not in bond_values:
@@ -299,11 +303,11 @@ class ParmEdParser(TopologyReaderBase):
             bond_values, bond_types, bond_orders = [], [], []
         else:
             bond_types, bond_orders = zip(*values)
-            
+
             bond_types = list(map(squash_identical, bond_types))
             bond_orders = list(map(squash_identical, bond_orders))
 
-        attrs.append(Bonds(bond_values, types=bond_types, guessed=False, 
+        attrs.append(Bonds(bond_values, types=bond_types, guessed=False,
                            order=bond_orders))
 
         for pmdlist, na, values, types in (
@@ -343,4 +347,3 @@ class ParmEdParser(TopologyReaderBase):
                        residue_segindex=segidx)
 
         return top
-

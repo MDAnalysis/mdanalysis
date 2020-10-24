@@ -15,11 +15,19 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
-         calcraven，xiki-tempula, mieczyslaw
+         calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo
 
   * 2.0.0
 
 Fixes
+  * The methods provided by topology attributes now appear in the
+    documentation (Issue #1845)
+  * AtomGroup.center now works correctly for compounds + unwrapping
+    (Issue #2984)
+  * Avoid using deprecated array indexing in topology attributes
+    (Issue #2990, PR #2991)
+  * ParmedParser no longer guesses elements if they are not recognised, instead
+    empty strings are assigned (Issue #2933)
   * Instead of using ATOM for both ATOM and HETATM, HETATM record type
     keyword is properly written out by PDB writer (Issue #1753, PR #2880).
   * Change referenced PDB standard version to 3.3 (Issue #2906).
@@ -53,11 +61,19 @@ Fixes
   * libmdaxdr and libdcd classes in their last frame can now be pickled
     (Issue #2878, PR #2911)
   * AtomGroup now are pickled/unpickled without looking for its anchored
-    Universe (PR #2893) 
+    Universe (PR #2893)
+  * ensure that unistd.h is included on macOS when compiling ENCORE's spe.c
+    (Issue #2934)
+  * Fix tests for analysis.bat that could fail when run in parallel and that
+    would create a test artifact (Issue #2979, PR #2981)
 
 Enhancements
-  * Added a wrapper function around set_atoms attribute in topologyattrs to check the datatype of the values passed
-  (Issue #2764, PR#2788)
+  * Added a wrapper function around set_atoms attribute in topologyattrs to check 
+    the datatype of the values passed (Issue #2764, PR#2788)
+  * The PDB writer gives more control over how to write the atom ids
+    (Issue #1072, PR #2886)
+  * Preliminary support for the Linux ARM64 platform with minimal
+    dependencies (PR #2956)
   * Refactored analysis.helanal into analysis.helix_analysis
     (Issue #2452, PR #2622)
   * Improved MSD code to accept `AtomGroup` and reject `UpdatingAtomGroup`
@@ -88,9 +104,13 @@ Enhancements
     explicit in the topology (Issue #2468, PR #2775)
 
 Changes
+  * Continuous integration uses mamba rather than conda to install the
+    dependencies (PR #2983)
   * removes deprecated `as_Universe` function from MDAnalysis.core.universe,
     as a result :class:`MDAnalysis.analysis.leaflet.LeafletFinder` now only
     accepts Universes for its `universe` argument (Issue #2920)
+  * deprecated Python escape sequence usage has been fixed in our test suite,
+    and the test suite will now raise an error for this usage of `\` (PR #2885)
   * deprecated NumPy type aliases have been replaced with their actual types
     (see upstream NumPy PR 14882), and our pytest configuration will raise an
     error for any violation when testing with development NumPy builds
@@ -113,7 +133,11 @@ Changes
   * Sets the minimal RDKit version for CI to 2020.03.1 (Issue #2827, PR #2831)
   * Removes deprecated waterdynamics.HydrogenBondLifetimes (PR #2842)
   * Make NeighborSearch return empty atomgroup, residue, segments instead of list (Issue #2892, PR #2907)
-  * Updated Universe creation function signatures to named arguments (Issue #2921)
+  * Updated Universe creation function signatures to named arguments (Issue #2921)  
+  * The transformation was changed from a function/closure to a class with
+    `__call__` (Issue #2860, PR #2859)
+  * deprecated ``analysis.helanal`` module has been removed in favour of
+    ``analysis.helix_analysis`` (PR #2929)
 
 Deprecations
 
