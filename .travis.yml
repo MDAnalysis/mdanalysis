@@ -21,7 +21,7 @@ env:
     - MDA_DOCDIR=${TRAVIS_BUILD_DIR}/package/doc/html/html
     - MAINTAIN_DIR=${TRAVIS_BUILD_DIR}/maintainer
     # Set default python version to avoid repetition later
-    - PYTHON_VERSION=3.5
+    - PYTHON_VERSION=3.7
     - BUILD_DOCS=false
     - CODECOV=false
     - PYTEST_FLAGS="--disable-pytest-warnings --durations=50"
@@ -44,7 +44,7 @@ env:
 
   jobs:
     # Run a coverage test for most versions
-    - CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+    - PYTHON_VERSION=3.5 MAMBA=false CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.8 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.7 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.6 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
@@ -57,7 +57,6 @@ jobs:
     - env: NAME="Doc"
            MAIN_CMD="cd package && python setup.py"
            SETUP_CMD="build_sphinx"
-           PYTHON_VERSION=3.7
            BUILD_DOCS=true
            BUILD_CMD="cd ${TRAVIS_BUILD_DIR}/package && python setup.py build_ext --inplace"
            INSTALL_HOLE="false"
