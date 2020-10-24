@@ -274,3 +274,15 @@ def test_around_overlapping():
     #                                         box=u.dimensions)
     # assert np.count_nonzero(np.any(dist <= 0.0, axis=0)) == 48
     assert u.select_atoms('around 0.0 index 0:11').n_atoms == 48
+
+
+def test_fastns_warning(universe):
+    """
+    Tests for warning on the use of FastNS.
+    TODO: remove when nsgrid is fixed.
+    """
+    wmsg = ("The current nsgrid code can return incorrect values and should "
+            "not be used for production work.")
+    with pytest.warns(UserWarning, match=wmsg):
+        searcher = nsgrid.FastNS(3, universe.atoms.positions,
+                                 universe.dimensions)
