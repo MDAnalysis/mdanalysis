@@ -146,13 +146,13 @@ def add_or_update_version(version):
         if ver["version"] == version:
             ver["url"] = os.path.join(URL, version)
             break
-        else:
-            versions.append({
-                "version": version,
-                "display": version,
-                "url": os.path.join(URL, version),
-                "latest": False
-            })
+    else:
+        versions.append({
+            "version": version,
+            "display": version,
+            "url": os.path.join(URL, version),
+            "latest": False
+        })
 
 
 def copy_version(old_version, new_version):
