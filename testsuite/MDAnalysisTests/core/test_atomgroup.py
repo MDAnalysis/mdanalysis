@@ -993,8 +993,9 @@ class TestUnwrapFlag(object):
         group = universe.residues[0:3]
         group.wrap(inplace=True)
         if request.param:
+            rg = np.random.Generator(np.random.MT19937(121989))
             ndx = np.arange(len(group))
-            np.random.shuffle(ndx)
+            rg.shuffle(ndx)
             group = group[ndx]
         return group
 
@@ -1474,7 +1475,6 @@ class TestAtomGroup(object):
         imposed on the system
         """
         u = universe
-        u.trajectory.rewind()  # just to make sure...
         ag = u.atoms[1000:2000:200]
         # Provide arbitrary box
         box = np.array([5., 5., 5., 90., 90., 90.], dtype=np.float32)
@@ -1557,7 +1557,6 @@ class TestAtomGroup(object):
 
     def test_improper(self, universe):
         u = universe
-        u.trajectory.rewind()  # just to make sure...
         peptbond = u.select_atoms("atom 4AKE 20 C", "atom 4AKE 21 CA",
                                   "atom 4AKE 21 N", "atom 4AKE 21 HN")
         assert_almost_equal(peptbond.improper.value(), 168.52952575683594,
@@ -1567,21 +1566,18 @@ class TestAtomGroup(object):
 
     def test_dihedral_equals_improper(self, universe):
         u = universe
-        u.trajectory.rewind()  # just to make sure...
         peptbond = u.select_atoms("atom 4AKE 20 C", "atom 4AKE 21 CA",
                                   "atom 4AKE 21 N", "atom 4AKE 21 HN")
         assert_equal(peptbond.improper.value(), peptbond.dihedral.value(),
                      "improper() and proper dihedral() give different results")
 
     def test_bond(self, universe):
-        universe.trajectory.rewind()  # just to make sure...
         sel2 = universe.select_atoms('segid 4AKE and resid 98'
                                      ).select_atoms("name OE1", "name OE2")
         assert_almost_equal(sel2.bond.value(), 2.1210737228393555, 3,
                             "distance of Glu98 OE1--OE2 wrong")
 
     def test_bond_pbc(self, universe):
-        universe.trajectory.rewind()
         sel2 = universe.select_atoms('segid 4AKE and resid 98'
                                      ).select_atoms("name OE1", "name OE2")
         assert_almost_equal(sel2.bond.value(pbc=True), 2.1210737228393555, 3,
@@ -1593,7 +1589,6 @@ class TestAtomGroup(object):
             getattr(ag, 'bond')
 
     def test_angle(self, universe):
-        universe.trajectory.rewind()  # just to make sure...
         sel3 = universe.select_atoms('segid 4AKE and resid 98').select_atoms(
                                             'name OE1', 'name CD', 'name OE2')
         assert_almost_equal(sel3.angle.value(), 117.46187591552734, 3,
@@ -1637,12 +1632,11 @@ class TestAtomGroup(object):
                             err_msg="failed to update atoms 12:42 position "
                             "to new position")
 
-        def set_badarr(pos=pos):
-            # create wrong size array
-            badarr = np.random.random((pos.shape[0] - 1, pos.shape[1] - 1))
-            ag.positions = badarr
+        rg = np.random.Generator(np.random.MT19937(121989))
+        # create wrong size array
+        badarr = rg.random((pos.shape[0] - 1, pos.shape[1] - 1))
         with pytest.raises(ValueError):
-            set_badarr()
+            ag.positions = badarr
 
     def test_set_names(self, universe):
         ag = universe.atoms[:2]
