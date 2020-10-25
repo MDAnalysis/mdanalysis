@@ -1088,6 +1088,8 @@ class TestPBCFlag(object):
         universe = mda.Universe(TRZ_psf, TRZ)
         return universe.residues[0:3]
 
+    @pytest.mark.parametrize('pbc, ref', ((True, ref_PBC),
+                                          (False, ref_noPBC)))
     @pytest.mark.parametrize('method_name', ('center_of_geometry',
                                              'center_of_mass',
                                              'radius_of_gyration',
@@ -1097,38 +1099,19 @@ class TestPBCFlag(object):
                                              'bbox',
                                              'bsphere',
                                              'principal_axes'))
-    def test_default(self, ag, method_name):
+    def test_pbc(self, ag, pbc, ref, method_name):
         method = getattr(ag, method_name)
-        # Test regular behaviour
-        result = method()
-        if method_name == 'bsphere':
-            assert_almost_equal(result[0], self.ref_noPBC[method_name][0],
-                                self.prec)
-            assert_almost_equal(result[1], self.ref_noPBC[method_name][1],
-                                self.prec)
+        if pbc:
+            result = method(pbc=True)
         else:
-            assert_almost_equal(result, self.ref_noPBC[method_name], self.prec)
+            # Test no-pbc as the default behaviour
+            result = method()
 
-    @pytest.mark.parametrize('method_name', ('center_of_geometry',
-                                             'center_of_mass',
-                                             'radius_of_gyration',
-                                             'shape_parameter',
-                                             'asphericity',
-                                             'moment_of_inertia',
-                                             'bbox',
-                                             'bsphere',
-                                             'principal_axes'))
-    def test_default(self, ag, method_name):
-        method = getattr(ag, method_name)
-        # Test regular behaviour
-        result = method(pbc=True)
         if method_name == 'bsphere':
-            assert_almost_equal(result[0], self.ref_PBC[method_name][0],
-                                self.prec)
-            assert_almost_equal(result[1], self.ref_PBC[method_name][1],
-                                self.prec)
+            assert_almost_equal(result[0], ref[method_name][0], self.prec)
+            assert_almost_equal(result[1], ref[method_name][1], self.prec)
         else:
-            assert_almost_equal(result, self.ref_PBC[method_name], self.prec)
+            assert_almost_equal(result, ref[method_name], self.prec)
 
 
 class TestAtomGroup(object):
