@@ -993,7 +993,7 @@ class TestUnwrapFlag(object):
         group = universe.residues[0:3]
         group.wrap(inplace=True)
         if request.param:
-            rg = np.random.Generator(np.random.MT19937(121989))
+            rg = np.random.RandomState(121989)
             ndx = np.arange(len(group))
             rg.shuffle(ndx)
             group = group[ndx]
@@ -1632,7 +1632,7 @@ class TestAtomGroup(object):
                             err_msg="failed to update atoms 12:42 position "
                             "to new position")
 
-        rg = np.random.Generator(np.random.MT19937(121989))
+        rg = np.random.RandomState(121989)
         # create wrong size array
         badarr = rg.random((pos.shape[0] - 1, pos.shape[1] - 1))
         with pytest.raises(ValueError):
