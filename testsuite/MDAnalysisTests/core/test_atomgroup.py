@@ -247,7 +247,7 @@ class _WriteAtoms(object):
         # check EVERYTHING, otherwise we might get false positives!
         sel2 = u2.atoms
         assert len(u2.atoms) == len(sel.atoms), ("written selection does not "
-                                                "match original selection")
+                                                 "match original selection")
         assert_almost_equal(
             sel2.positions, sel.positions, self.precision,
             err_msg="written coordinates do not agree with original")
@@ -499,7 +499,7 @@ class TestSplit(object):
     def ag(self):
         universe = mda.Universe(PSF, DCD)
         return universe.select_atoms("resid 1:50 and not resname LYS and "
-                                     "name CA CB") 
+                                     "name CA CB")
 
     def test_split_atoms(self, ag):
         sg = ag.split('atom')
@@ -943,29 +943,29 @@ class TestUnwrapFlag(object):
                                         [32.062, 36.16, 27.679],
                                         [27.071, 29.997, 28.506]],
                                        dtype=np.float32),
-        'center_of_mass' : np.array([[21.286, 28.407, 36.629],
-                                     [31.931, 35.814, 27.916],
-                                     [26.817, 29.41, 29.05]],
-                                    dtype=np.float32),
-        'moment_of_inertia' :
-                np.array([[7333.79167791, -211.8997285, -721.50785456],
-                          [-211.8997285, 7059.07470427, -91.32156884],
-                          [-721.50785456, -91.32156884, 6509.31735029]]),
+        'center_of_mass': np.array([[21.286, 28.407, 36.629],
+                                    [31.931, 35.814, 27.916],
+                                    [26.817, 29.41, 29.05]],
+                                   dtype=np.float32),
+        'moment_of_inertia':
+            np.array([[7333.79167791, -211.8997285, -721.50785456],
+                      [-211.8997285, 7059.07470427, -91.32156884],
+                      [-721.50785456, -91.32156884, 6509.31735029]]),
         'asphericity': 0.02060121,
     }
 
     ref_Unwrap_residues = {
         'center_of_geometry': np.array([[21.356, 41.685, 40.501],
                                         [44.577, 43.312, 79.039],
-                                        [ 2.204, 27.722, 54.023]],
+                                        [2.204, 27.722, 54.023]],
                                        dtype=np.float32),
         'center_of_mass': np.array([[21.286, 41.664, 40.465],
                                     [44.528, 43.426, 78.671],
-                                    [ 2.111, 27.871, 53.767]],
+                                    [2.111, 27.871, 53.767]],
                                    dtype=np.float32),
         'moment_of_inertia': np.array([[16687.941, -1330.617, 2925.883],
                                        [-1330.617, 19256.178, 3354.832],
-                                       [ 2925.883,  3354.832, 8989.946]]),
+                                       [2925.883,  3354.832, 8989.946]]),
         'asphericity': 0.2969491080,
     }
 
@@ -987,7 +987,7 @@ class TestUnwrapFlag(object):
         'asphericity': 1.0,
     }
 
-    @pytest.fixture(params=[False, True]) # params indicate shuffling
+    @pytest.fixture(params=[False, True])  # params indicate shuffling
     def ag(self, request):
         universe = mda.Universe(TRZ_psf, TRZ)
         group = universe.residues[0:3]
@@ -1611,8 +1611,8 @@ class TestAtomGroup(object):
 
     def test_angle(self, universe):
         universe.trajectory.rewind()  # just to make sure...
-        sel3 = universe.select_atoms('segid 4AKE and resid 98'
-                              ).select_atoms("name OE1", 'name CD', "name OE2")
+        sel3 = universe.select_atoms('segid 4AKE and resid 98').select_atoms(
+                                            'name OE1', 'name CD', 'name OE2')
         assert_almost_equal(sel3.angle.value(), 117.46187591552734, 3,
                             "angle of Glu98 OE1-CD-OE2 wrong")
 
