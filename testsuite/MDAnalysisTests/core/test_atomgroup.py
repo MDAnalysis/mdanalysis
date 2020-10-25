@@ -1634,7 +1634,7 @@ class TestAtomGroup(object):
 
         rg = np.random.RandomState(121989)
         # create wrong size array
-        badarr = rg.random((pos.shape[0] - 1, pos.shape[1] - 1))
+        badarr = rg.random_sample((pos.shape[0] - 1, pos.shape[1] - 1))
         with pytest.raises(ValueError):
             ag.positions = badarr
 
