@@ -308,8 +308,9 @@ class PCA(AnalysisBase):
             Iteration stops *before* this frame number, which means that the
             trajectory would be read until the end.
         step : int, optional
-            Number of frames to skip over for PCA transform. Default: None
-            becomes 1.
+            Number of frames to skip over for PCA transform. If set to ``None``
+            (the default) then every frame is analyzed (i.e., same as
+            ``step=1``).
 
         Returns
         -------
