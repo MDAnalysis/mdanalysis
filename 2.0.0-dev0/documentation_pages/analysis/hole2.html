@@ -438,7 +438,7 @@ initially.</li>
 <li><strong>dcd_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – step size for going through the trajectory (skips <code class="docutils literal notranslate"><span class="pre">dcd_step-1</span></code>
 frames).</li>
 <li><strong>keep_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to keep the HOLE output files and possible temporary
-symlinks after running the function. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></li>
+symlinks after running the function.</li>
 </ul>
 </td>
 </tr>
@@ -576,12 +576,15 @@ Files are called <cite>hole.inp</cite>.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>iterable of ints</em><em>, </em><em>optional</em>) – Profiles to include by frame. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, includes
-all frames. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>iterable of edges</em><em>, </em><em>optional</em>) – If bins is an int, it defines the number of equal-width bins in the given range. If bins is a sequence, it defines a monotonically increasing array of bin edges, including the rightmost edge, allowing for non-uniform bin widths. Default: 100</li>
+all frames.</li>
+<li><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>iterable of edges</em><em>, </em><em>optional</em>) – If bins is an int, it defines the number of equal-width bins in the given
+range. If bins is a sequence, it defines a monotonically increasing array of
+bin edges, including the rightmost edge, allowing for non-uniform bin widths.</li>
 <li><strong>range</strong> (<em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>)</em><em>, </em><em>optional</em>) – The lower and upper range of the bins.
 If not provided, <code class="docutils literal notranslate"><span class="pre">range</span></code> is simply <code class="docutils literal notranslate"><span class="pre">(a.min(),</span> <span class="pre">a.max())</span></code>,
 where <code class="docutils literal notranslate"><span class="pre">a</span></code> is the array of reaction coordinates.
-Values outside the range are ignored. The first element of the range must be less than or equal to the second.</li>
+Values outside the range are ignored. The first element of the range must be
+less than or equal to the second.</li>
 </ul>
 </td>
 </tr>
@@ -661,9 +664,9 @@ minimum radius for one water molecule.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>iterable of ints</em><em>, </em><em>optional</em>) – Profiles to include by frame. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, includes
-all frames. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+all frames.</li>
 <li><strong>flat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to flatten the list of field arrays into a
-single array. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></li>
+single array.</li>
 </ul>
 </td>
 </tr>
@@ -707,14 +710,17 @@ aggregated radii and bin edges.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>aggregator</strong> (<em>callable</em><em>, </em><em>optional</em>) – this function must take an iterable of floats and return a
-single value. Default: np.mean</li>
+single value.</li>
 <li><strong>frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>iterable of ints</em><em>, </em><em>optional</em>) – Profiles to include by frame. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, includes
-all frames. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>iterable of edges</em><em>, </em><em>optional</em>) – If bins is an int, it defines the number of equal-width bins in the given range. If bins is a sequence, it defines a monotonically increasing array of bin edges, including the rightmost edge, allowing for non-uniform bin widths. Default: 100</li>
+all frames.</li>
+<li><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>iterable of edges</em><em>, </em><em>optional</em>) – If bins is an int, it defines the number of equal-width bins in the given
+range. If bins is a sequence, it defines a monotonically increasing array of
+bin edges, including the rightmost edge, allowing for non-uniform bin widths.</li>
 <li><strong>range</strong> (<em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>)</em><em>, </em><em>optional</em>) – The lower and upper range of the bins.
 If not provided, <code class="docutils literal notranslate"><span class="pre">range</span></code> is simply <code class="docutils literal notranslate"><span class="pre">(a.min(),</span> <span class="pre">a.max())</span></code>,
 where <code class="docutils literal notranslate"><span class="pre">a</span></code> is the array of reaction coordinates.
-Values outside the range are ignored. The first element of the range must be less than or equal to the second.</li>
+Values outside the range are ignored. The first element of the range must be
+less than or equal to the second.</li>
 </ul>
 </td>
 </tr>
@@ -747,8 +753,7 @@ Values outside the range are ignored. The first element of the range must be les
 <li><strong>order_parameters</strong> (<em>array-like</em><em> or </em><em>string</em>) – Sequence or text file containing order parameters (float
 numbers) corresponding to the frames in the trajectory. Must
 be same length as trajectory.</li>
-<li><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Selected frames to return. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, returns all of them.
-Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+<li><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Selected frames to return. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, returns all of them.</li>
 </ul>
 </td>
 </tr>
@@ -774,21 +779,20 @@ plotted for each trajectory frame.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Frames to plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, plots all of them.
-Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+<li><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Frames to plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, plots all of them.</li>
 <li><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color or colors for the plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, colors are
-drawn from <code class="docutils literal notranslate"><span class="pre">cmap</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+drawn from <code class="docutils literal notranslate"><span class="pre">cmap</span></code>.</li>
 <li><strong>cmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – color map to make colors for the plot if <code class="docutils literal notranslate"><span class="pre">color</span></code> is
 not given. Names should be from the <code class="docutils literal notranslate"><span class="pre">matplotlib.pyplot.cm</span></code>
-module. Default: ‘viridis’</li>
-<li><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot. Default: ‘-‘</li>
+module.</li>
+<li><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot.</li>
 <li><strong>y_shift</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – displace each <span class="math notranslate nohighlight">\(R(\zeta)\)</span> profile by <code class="docutils literal notranslate"><span class="pre">y_shift</span></code> in the
-<span class="math notranslate nohighlight">\(y\)</span>-direction for clearer visualization. Default: 0.0</li>
+<span class="math notranslate nohighlight">\(y\)</span>-direction for clearer visualization.</li>
 <li><strong>label</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> or </em><em>string</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">False</span></code> then no legend is
-displayed. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></li>
+displayed.</li>
 <li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.3.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
-be added to the current active axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>legend_loc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Location of the legend. Default: ‘best’</li>
+be added to the current active axes.</li>
+<li><strong>legend_loc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Location of the legend.</li>
 <li><strong>kwargs</strong> (<cite>**kwargs</cite>) – All other <cite>kwargs</cite> are passed to <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v3.3.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.plot()</span></code></a>.</li>
 </ul>
 </td>
@@ -815,19 +819,18 @@ plotted for each trajectory frame.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Frames to plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, plots all of them.
-Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+<li><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Frames to plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, plots all of them.</li>
 <li><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color or colors for the plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, colors are
-drawn from <code class="docutils literal notranslate"><span class="pre">cmap</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+drawn from <code class="docutils literal notranslate"><span class="pre">cmap</span></code>.</li>
 <li><strong>cmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – color map to make colors for the plot if <code class="docutils literal notranslate"><span class="pre">color</span></code> is
 not given. Names should be from the <code class="docutils literal notranslate"><span class="pre">matplotlib.pyplot.cm</span></code>
-module. Default: ‘viridis’</li>
-<li><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot. Default: ‘-‘</li>
+module.</li>
+<li><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot.</li>
 <li><strong>r_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – only display radii up to <code class="docutils literal notranslate"><span class="pre">r_max</span></code>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, all radii are
-plotted. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+plotted.</li>
 <li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.3.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
-be added to the current active axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Y-axis label. Default: ‘Frames’</li>
+be added to the current active axes.</li>
+<li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Y-axis label.</li>
 <li><strong>**kwargs</strong> – All other <cite>kwargs</cite> are passed to <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v3.3.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.plot()</span></code></a>.</li>
 </ul>
 </td>
@@ -857,19 +860,18 @@ plotted for each trajectory frame.</p>
 <li><strong>order_parameters</strong> (<em>array-like</em><em> or </em><em>string</em>) – Sequence or text file containing order parameters(float
 numbers) corresponding to the frames in the trajectory. Must
 be same length as trajectory.</li>
-<li><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Frames to plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, plots all of them.
-Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+<li><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Frames to plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, plots all of them.</li>
 <li><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color or colors for the plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, colors are
-drawn from <code class="docutils literal notranslate"><span class="pre">cmap</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+drawn from <code class="docutils literal notranslate"><span class="pre">cmap</span></code>.</li>
 <li><strong>cmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – color map to make colors for the plot if <code class="docutils literal notranslate"><span class="pre">color</span></code> is
 not given. Names should be from the <code class="docutils literal notranslate"><span class="pre">matplotlib.pyplot.cm</span></code>
-module. Default: ‘viridis’</li>
-<li><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot. Default: ‘-‘</li>
+module.</li>
+<li><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot.</li>
 <li><strong>ax</strong> (: class: <cite>matplotlib.axes.Axes</cite>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
-be added to the current active axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+be added to the current active axes.</li>
 <li><strong>r_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – only display radii up to <code class="docutils literal notranslate"><span class="pre">r_max</span></code>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, all radii are
-plotted. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Y-axis label. Default: ‘Order parameter’</li>
+plotted.</li>
+<li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Y-axis label.</li>
 <li><strong>**kwargs</strong> – All other <cite>kwargs</cite> are passed to: func: <cite>matplotlib.pyplot.plot</cite>.</li>
 </ul>
 </td>
@@ -894,22 +896,24 @@ plotted. Default: <code class="docutils literal notranslate"><span class="pre">N
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>iterable of ints</em><em>, </em><em>optional</em>) – Profiles to include by frame. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, includes
-all frames. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>iterable of edges</em><em>, </em><em>optional</em>) – If bins is an int, it defines the number of equal-width bins in the given range. If bins is a sequence, it defines a monotonically increasing array of bin edges, including the rightmost edge, allowing for non-uniform bin widths. Default: 100</li>
+all frames.</li>
+<li><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>iterable of edges</em><em>, </em><em>optional</em>) – If bins is an int, it defines the number of equal-width bins in the given
+range. If bins is a sequence, it defines a monotonically increasing array of
+bin edges, including the rightmost edge, allowing for non-uniform bin widths.</li>
 <li><strong>range</strong> (<em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>)</em><em>, </em><em>optional</em>) – The lower and upper range of the bins.
 If not provided, <code class="docutils literal notranslate"><span class="pre">range</span></code> is simply <code class="docutils literal notranslate"><span class="pre">(a.min(),</span> <span class="pre">a.max())</span></code>,
 where <code class="docutils literal notranslate"><span class="pre">a</span></code> is the array of reaction coordinates.
-Values outside the range are ignored. The first element of the range must be less than or equal to the second.</li>
-<li><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color for the plot. Default: ‘blue’</li>
-<li><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot. Default: ‘-‘</li>
+Values outside the range are ignored. The first element of the range must be
+less than or equal to the second.</li>
+<li><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color for the plot.</li>
+<li><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot.</li>
 <li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.3.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
-be added to the current active axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – X-axis label. Default: ‘Order parameter’</li>
-<li><strong>fill_alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Opacity of filled standard deviation area Default: 0.3</li>
-<li><strong>n_std</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of standard deviations from the mean to fill between.
-Default: 1</li>
-<li><strong>legend</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to plot a legend. Default: True</li>
-<li><strong>legend_loc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Location of legend. Default: ‘best’</li>
+be added to the current active axes.</li>
+<li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – X-axis label.</li>
+<li><strong>fill_alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Opacity of filled standard deviation area</li>
+<li><strong>n_std</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of standard deviations from the mean to fill between.</li>
+<li><strong>legend</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to plot a legend.</li>
+<li><strong>legend_loc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Location of legend.</li>
 <li><strong>**kwargs</strong> – All other <cite>kwargs</cite> are passed to <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v3.3.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.plot()</span></code></a>.</li>
 </ul>
 </td>
@@ -939,15 +943,14 @@ single value, e.g. <code class="docutils literal notranslate"><span class="pre">
 numbers) corresponding to the frames in the trajectory. Must
 be same length as trajectory.</li>
 <li><strong>aggregator</strong> (<em>callable</em><em>, </em><em>optional</em>) – Function applied to the radius array of each profile to
-reduce it to one representative value. Default: <code class="docutils literal notranslate"><span class="pre">min</span></code></li>
-<li><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Frames to plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, plots all of them.
-Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color for the plot. Default: ‘blue’</li>
-<li><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot. Default: ‘-‘</li>
+reduce it to one representative value.</li>
+<li><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Frames to plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, plots all of them.</li>
+<li><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color for the plot.</li>
+<li><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot.</li>
 <li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.3.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
-be added to the current active axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – X-axis label. Default: ‘Order parameter’</li>
-<li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Y-axis label. Default: ‘Minimum HOLE pore radius $r$ ($AA$)’</li>
+be added to the current active axes.</li>
+<li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – X-axis label.</li>
+<li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Y-axis label.</li>
 <li><strong>**kwargs</strong> – All other <cite>kwargs</cite> are passed to <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v3.3.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.plot()</span></code></a>.</li>
 </ul>
 </td>
@@ -979,7 +982,7 @@ be added to the current active axes. Default: <code class="docutils literal notr
 By default,
 <strong class="program">hole</strong> will use the time of the day.
 For reproducible runs (e.g., for testing) set <code class="docutils literal notranslate"><span class="pre">random_seed</span></code>
-to an integer. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+to an integer.</li>
 </ul>
 </td>
 </tr>
@@ -1149,12 +1152,15 @@ Files are called <cite>hole.inp</cite>.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>iterable of ints</em><em>, </em><em>optional</em>) – Profiles to include by frame. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, includes
-all frames. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>iterable of edges</em><em>, </em><em>optional</em>) – If bins is an int, it defines the number of equal-width bins in the given range. If bins is a sequence, it defines a monotonically increasing array of bin edges, including the rightmost edge, allowing for non-uniform bin widths. Default: 100</li>
+all frames.</li>
+<li><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>iterable of edges</em><em>, </em><em>optional</em>) – If bins is an int, it defines the number of equal-width bins in the given
+range. If bins is a sequence, it defines a monotonically increasing array of
+bin edges, including the rightmost edge, allowing for non-uniform bin widths.</li>
 <li><strong>range</strong> (<em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>)</em><em>, </em><em>optional</em>) – The lower and upper range of the bins.
 If not provided, <code class="docutils literal notranslate"><span class="pre">range</span></code> is simply <code class="docutils literal notranslate"><span class="pre">(a.min(),</span> <span class="pre">a.max())</span></code>,
 where <code class="docutils literal notranslate"><span class="pre">a</span></code> is the array of reaction coordinates.
-Values outside the range are ignored. The first element of the range must be less than or equal to the second.</li>
+Values outside the range are ignored. The first element of the range must be
+less than or equal to the second.</li>
 </ul>
 </td>
 </tr>
@@ -1234,9 +1240,9 @@ minimum radius for one water molecule.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>iterable of ints</em><em>, </em><em>optional</em>) – Profiles to include by frame. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, includes
-all frames. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+all frames.</li>
 <li><strong>flat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to flatten the list of field arrays into a
-single array. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></li>
+single array.</li>
 </ul>
 </td>
 </tr>
@@ -1280,14 +1286,17 @@ aggregated radii and bin edges.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>aggregator</strong> (<em>callable</em><em>, </em><em>optional</em>) – this function must take an iterable of floats and return a
-single value. Default: np.mean</li>
+single value.</li>
 <li><strong>frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>iterable of ints</em><em>, </em><em>optional</em>) – Profiles to include by frame. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, includes
-all frames. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>iterable of edges</em><em>, </em><em>optional</em>) – If bins is an int, it defines the number of equal-width bins in the given range. If bins is a sequence, it defines a monotonically increasing array of bin edges, including the rightmost edge, allowing for non-uniform bin widths. Default: 100</li>
+all frames.</li>
+<li><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>iterable of edges</em><em>, </em><em>optional</em>) – If bins is an int, it defines the number of equal-width bins in the given
+range. If bins is a sequence, it defines a monotonically increasing array of
+bin edges, including the rightmost edge, allowing for non-uniform bin widths.</li>
 <li><strong>range</strong> (<em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>)</em><em>, </em><em>optional</em>) – The lower and upper range of the bins.
 If not provided, <code class="docutils literal notranslate"><span class="pre">range</span></code> is simply <code class="docutils literal notranslate"><span class="pre">(a.min(),</span> <span class="pre">a.max())</span></code>,
 where <code class="docutils literal notranslate"><span class="pre">a</span></code> is the array of reaction coordinates.
-Values outside the range are ignored. The first element of the range must be less than or equal to the second.</li>
+Values outside the range are ignored. The first element of the range must be
+less than or equal to the second.</li>
 </ul>
 </td>
 </tr>
@@ -1320,8 +1329,7 @@ Values outside the range are ignored. The first element of the range must be les
 <li><strong>order_parameters</strong> (<em>array-like</em><em> or </em><em>string</em>) – Sequence or text file containing order parameters (float
 numbers) corresponding to the frames in the trajectory. Must
 be same length as trajectory.</li>
-<li><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Selected frames to return. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, returns all of them.
-Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+<li><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Selected frames to return. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, returns all of them.</li>
 </ul>
 </td>
 </tr>
@@ -1347,21 +1355,20 @@ plotted for each trajectory frame.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Frames to plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, plots all of them.
-Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+<li><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Frames to plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, plots all of them.</li>
 <li><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color or colors for the plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, colors are
-drawn from <code class="docutils literal notranslate"><span class="pre">cmap</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+drawn from <code class="docutils literal notranslate"><span class="pre">cmap</span></code>.</li>
 <li><strong>cmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – color map to make colors for the plot if <code class="docutils literal notranslate"><span class="pre">color</span></code> is
 not given. Names should be from the <code class="docutils literal notranslate"><span class="pre">matplotlib.pyplot.cm</span></code>
-module. Default: ‘viridis’</li>
-<li><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot. Default: ‘-‘</li>
+module.</li>
+<li><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot.</li>
 <li><strong>y_shift</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – displace each <span class="math notranslate nohighlight">\(R(\zeta)\)</span> profile by <code class="docutils literal notranslate"><span class="pre">y_shift</span></code> in the
-<span class="math notranslate nohighlight">\(y\)</span>-direction for clearer visualization. Default: 0.0</li>
+<span class="math notranslate nohighlight">\(y\)</span>-direction for clearer visualization.</li>
 <li><strong>label</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> or </em><em>string</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">False</span></code> then no legend is
-displayed. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></li>
+displayed.</li>
 <li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.3.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
-be added to the current active axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>legend_loc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Location of the legend. Default: ‘best’</li>
+be added to the current active axes.</li>
+<li><strong>legend_loc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Location of the legend.</li>
 <li><strong>kwargs</strong> (<cite>**kwargs</cite>) – All other <cite>kwargs</cite> are passed to <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v3.3.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.plot()</span></code></a>.</li>
 </ul>
 </td>
@@ -1388,19 +1395,18 @@ plotted for each trajectory frame.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Frames to plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, plots all of them.
-Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+<li><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Frames to plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, plots all of them.</li>
 <li><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color or colors for the plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, colors are
-drawn from <code class="docutils literal notranslate"><span class="pre">cmap</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+drawn from <code class="docutils literal notranslate"><span class="pre">cmap</span></code>.</li>
 <li><strong>cmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – color map to make colors for the plot if <code class="docutils literal notranslate"><span class="pre">color</span></code> is
 not given. Names should be from the <code class="docutils literal notranslate"><span class="pre">matplotlib.pyplot.cm</span></code>
-module. Default: ‘viridis’</li>
-<li><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot. Default: ‘-‘</li>
+module.</li>
+<li><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot.</li>
 <li><strong>r_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – only display radii up to <code class="docutils literal notranslate"><span class="pre">r_max</span></code>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, all radii are
-plotted. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+plotted.</li>
 <li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.3.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
-be added to the current active axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Y-axis label. Default: ‘Frames’</li>
+be added to the current active axes.</li>
+<li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Y-axis label.</li>
 <li><strong>**kwargs</strong> – All other <cite>kwargs</cite> are passed to <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v3.3.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.plot()</span></code></a>.</li>
 </ul>
 </td>
@@ -1430,19 +1436,18 @@ plotted for each trajectory frame.</p>
 <li><strong>order_parameters</strong> (<em>array-like</em><em> or </em><em>string</em>) – Sequence or text file containing order parameters(float
 numbers) corresponding to the frames in the trajectory. Must
 be same length as trajectory.</li>
-<li><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Frames to plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, plots all of them.
-Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+<li><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Frames to plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, plots all of them.</li>
 <li><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color or colors for the plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, colors are
-drawn from <code class="docutils literal notranslate"><span class="pre">cmap</span></code>. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+drawn from <code class="docutils literal notranslate"><span class="pre">cmap</span></code>.</li>
 <li><strong>cmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – color map to make colors for the plot if <code class="docutils literal notranslate"><span class="pre">color</span></code> is
 not given. Names should be from the <code class="docutils literal notranslate"><span class="pre">matplotlib.pyplot.cm</span></code>
-module. Default: ‘viridis’</li>
-<li><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot. Default: ‘-‘</li>
+module.</li>
+<li><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot.</li>
 <li><strong>ax</strong> (: class: <cite>matplotlib.axes.Axes</cite>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
-be added to the current active axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+be added to the current active axes.</li>
 <li><strong>r_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – only display radii up to <code class="docutils literal notranslate"><span class="pre">r_max</span></code>. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, all radii are
-plotted. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Y-axis label. Default: ‘Order parameter’</li>
+plotted.</li>
+<li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Y-axis label.</li>
 <li><strong>**kwargs</strong> – All other <cite>kwargs</cite> are passed to: func: <cite>matplotlib.pyplot.plot</cite>.</li>
 </ul>
 </td>
@@ -1467,22 +1472,24 @@ plotted. Default: <code class="docutils literal notranslate"><span class="pre">N
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>frames</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>iterable of ints</em><em>, </em><em>optional</em>) – Profiles to include by frame. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, includes
-all frames. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>iterable of edges</em><em>, </em><em>optional</em>) – If bins is an int, it defines the number of equal-width bins in the given range. If bins is a sequence, it defines a monotonically increasing array of bin edges, including the rightmost edge, allowing for non-uniform bin widths. Default: 100</li>
+all frames.</li>
+<li><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>iterable of edges</em><em>, </em><em>optional</em>) – If bins is an int, it defines the number of equal-width bins in the given
+range. If bins is a sequence, it defines a monotonically increasing array of
+bin edges, including the rightmost edge, allowing for non-uniform bin widths.</li>
 <li><strong>range</strong> (<em>(</em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>)</em><em>, </em><em>optional</em>) – The lower and upper range of the bins.
 If not provided, <code class="docutils literal notranslate"><span class="pre">range</span></code> is simply <code class="docutils literal notranslate"><span class="pre">(a.min(),</span> <span class="pre">a.max())</span></code>,
 where <code class="docutils literal notranslate"><span class="pre">a</span></code> is the array of reaction coordinates.
-Values outside the range are ignored. The first element of the range must be less than or equal to the second.</li>
-<li><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color for the plot. Default: ‘blue’</li>
-<li><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot. Default: ‘-‘</li>
+Values outside the range are ignored. The first element of the range must be
+less than or equal to the second.</li>
+<li><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color for the plot.</li>
+<li><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot.</li>
 <li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.3.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
-be added to the current active axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – X-axis label. Default: ‘Order parameter’</li>
-<li><strong>fill_alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Opacity of filled standard deviation area Default: 0.3</li>
-<li><strong>n_std</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of standard deviations from the mean to fill between.
-Default: 1</li>
-<li><strong>legend</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to plot a legend. Default: True</li>
-<li><strong>legend_loc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Location of legend. Default: ‘best’</li>
+be added to the current active axes.</li>
+<li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – X-axis label.</li>
+<li><strong>fill_alpha</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – Opacity of filled standard deviation area</li>
+<li><strong>n_std</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Number of standard deviations from the mean to fill between.</li>
+<li><strong>legend</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to plot a legend.</li>
+<li><strong>legend_loc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Location of legend.</li>
 <li><strong>**kwargs</strong> – All other <cite>kwargs</cite> are passed to <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v3.3.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.plot()</span></code></a>.</li>
 </ul>
 </td>
@@ -1512,15 +1519,14 @@ single value, e.g. <code class="docutils literal notranslate"><span class="pre">
 numbers) corresponding to the frames in the trajectory. Must
 be same length as trajectory.</li>
 <li><strong>aggregator</strong> (<em>callable</em><em>, </em><em>optional</em>) – Function applied to the radius array of each profile to
-reduce it to one representative value. Default: <code class="docutils literal notranslate"><span class="pre">min</span></code></li>
-<li><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Frames to plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, plots all of them.
-Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color for the plot. Default: ‘blue’</li>
-<li><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot. Default: ‘-‘</li>
+reduce it to one representative value.</li>
+<li><strong>frames</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Frames to plot. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, plots all of them.</li>
+<li><strong>color</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Color for the plot.</li>
+<li><strong>linestyle</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array-like</em><em>, </em><em>optional</em>) – Line style for the plot.</li>
 <li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.3.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
-be added to the current active axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – X-axis label. Default: ‘Order parameter’</li>
-<li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Y-axis label. Default: ‘Minimum HOLE pore radius $r$ ($AA$)’</li>
+be added to the current active axes.</li>
+<li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – X-axis label.</li>
+<li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – Y-axis label.</li>
 <li><strong>**kwargs</strong> – All other <cite>kwargs</cite> are passed to <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v3.3.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.plot()</span></code></a>.</li>
 </ul>
 </td>
@@ -1552,7 +1558,7 @@ be added to the current active axes. Default: <code class="docutils literal notr
 By default,
 <strong class="program">hole</strong> will use the time of the day.
 For reproducible runs (e.g., for testing) set <code class="docutils literal notranslate"><span class="pre">random_seed</span></code>
-to an integer. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+to an integer.</li>
 </ul>
 </td>
 </tr>
@@ -1680,7 +1686,7 @@ initially.</li>
 <li><strong>dcd_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – step size for going through the trajectory (skips <code class="docutils literal notranslate"><span class="pre">dcd_step-1</span></code>
 frames).</li>
 <li><strong>keep_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to keep the HOLE output files and possible temporary
-symlinks after running the function. Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></li>
+symlinks after running the function.</li>
 </ul>
 </td>
 </tr>

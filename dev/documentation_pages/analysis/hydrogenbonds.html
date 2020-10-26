@@ -437,11 +437,13 @@ example, between=[[“protein”, “SOL”], [“protein”, “protein”]]`
 will calculate all protein-water and protein-protein hydrogen
 bonds but not water-water hydrogen bonds. If <cite>None</cite>, hydrogen
 bonds between all donors and acceptors will be calculated.</li>
-<li><strong>d_h_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Distance cutoff used for finding donor-hydrogen pairs [1.2]. Only used to find donor-hydrogen pairs if the
+<li><strong>d_h_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Distance cutoff used for finding donor-hydrogen pairs.
+Only used to find donor-hydrogen pairs if the
 universe topology does not contain bonding information</li>
-<li><strong>d_a_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Distance cutoff for hydrogen bonds. This cutoff refers to the D-A distance. [3.0]</li>
-<li><strong>d_h_a_angle_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – D-H-A angle cutoff for hydrogen bonds, in degrees. [150]</li>
-<li><strong>update_selections</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether or not to update the acceptor, donor and hydrogen lists at each frame. [True]</li>
+<li><strong>d_a_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Distance cutoff for hydrogen bonds. This cutoff refers to the D-A distance.</li>
+<li><strong>d_h_a_angle_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – D-H-A angle cutoff for hydrogen bonds, in degrees.</li>
+<li><strong>update_selections</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether or not to update the acceptor, donor and hydrogen
+lists at each frame.</li>
 </ul>
 </td>
 </tr>

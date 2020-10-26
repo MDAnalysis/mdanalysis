@@ -450,7 +450,6 @@
 <span class="sd">        Number of frames included in the analysis.</span>
 <span class="sd">    n_particles : int</span>
 <span class="sd">        Number of particles MSD was calculated over.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">msd_type</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">fft</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -463,13 +462,11 @@
 <span class="sd">            A selection string. Defaults to &quot;all&quot; in which case</span>
 <span class="sd">            all atoms are selected.</span>
 <span class="sd">        msd_type : {&#39;xyz&#39;, &#39;xy&#39;, &#39;yz&#39;, &#39;xz&#39;, &#39;x&#39;, &#39;y&#39;, &#39;z&#39;}</span>
-<span class="sd">            Desired dimensions to be included in the MSD. Defaults to &#39;xyz&#39;.</span>
+<span class="sd">            Desired dimensions to be included in the MSD.</span>
 <span class="sd">        fft : bool</span>
 <span class="sd">            If ``True``, uses a fast FFT based algorithm for computation of</span>
 <span class="sd">            the MSD. Otherwise, use the simple &quot;windowed&quot; algorithm.</span>
 <span class="sd">            The tidynamics package is required for `fft=True`.</span>
-<span class="sd">            Defaults to ``True``.    </span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">groups</span><span class="o">.</span><span class="n">UpdatingAtomGroup</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;UpdatingAtomGroups are not valid for MSD &quot;</span>

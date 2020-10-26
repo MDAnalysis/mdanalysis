@@ -508,7 +508,7 @@
 <span class="sd">        frames).</span>
 <span class="sd">    keep_files : bool, optional</span>
 <span class="sd">        Whether to keep the HOLE output files and possible temporary</span>
-<span class="sd">        symlinks after running the function. Default: ``True``</span>
+<span class="sd">        symlinks after running the function.</span>
 
 
 <span class="sd">    Returns</span>
@@ -607,22 +607,22 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 
-<span class="sd">    universe: Universe or AtomGroup</span>
+<span class="sd">    universe : Universe or AtomGroup</span>
 <span class="sd">        The Universe or AtomGroup to apply the analysis to.</span>
-<span class="sd">    select: string, optional</span>
+<span class="sd">    select : string, optional</span>
 <span class="sd">        The selection string to create an atom selection that the HOLE</span>
 <span class="sd">        analysis is applied to.</span>
-<span class="sd">    vdwradii_file: str, optional</span>
+<span class="sd">    vdwradii_file : str, optional</span>
 <span class="sd">        path to the file specifying van der Waals radii for each atom. If</span>
 <span class="sd">        set to ``None``, then a set of default radii,</span>
 <span class="sd">        :data:`SIMPLE2_RAD`, is used (an extension of ``simple.rad`` from</span>
 <span class="sd">        the HOLE distribution).</span>
-<span class="sd">    executable: str, optional</span>
+<span class="sd">    executable : str, optional</span>
 <span class="sd">        Path to the :program:`hole` executable.</span>
 <span class="sd">        (e.g. ``~/hole2/exe/hole``). If</span>
 <span class="sd">        :program:`hole` is found on the :envvar:`PATH`, then the bare</span>
 <span class="sd">        executable name is sufficient.</span>
-<span class="sd">    tmpdir: str, optional</span>
+<span class="sd">    tmpdir : str, optional</span>
 <span class="sd">        The temporary directory that files can be symlinked to, to shorten</span>
 <span class="sd">        the path name. HOLE can only read filenames up to a certain length.</span>
 <span class="sd">    cpoint : array_like, &#39;center_of_geometry&#39; or None, optional</span>
@@ -685,9 +685,9 @@
 <span class="sd">        account during the calculation; wildcards are *not*</span>
 <span class="sd">        supported. Note that all residues must have 3 letters. Pad</span>
 <span class="sd">        with space on the right-hand side if necessary.</span>
-<span class="sd">    prefix: str, optional</span>
+<span class="sd">    prefix : str, optional</span>
 <span class="sd">        Prefix for HOLE output files.</span>
-<span class="sd">    write_input_files: bool, optional</span>
+<span class="sd">    write_input_files : bool, optional</span>
 <span class="sd">        Whether to write out the input HOLE text as files.</span>
 <span class="sd">        Files are called `hole.inp`.</span>
 
@@ -853,7 +853,7 @@
 <span class="sd">            By default,</span>
 <span class="sd">            :program:`hole` will use the time of the day.</span>
 <span class="sd">            For reproducible runs (e.g., for testing) set ``random_seed``</span>
-<span class="sd">            to an integer. Default: ``None``</span>
+<span class="sd">            to an integer.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">random_seed</span> <span class="o">=</span> <span class="n">random_seed</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">HoleAnalysis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span>
@@ -1084,18 +1084,17 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        frames: array-like, optional</span>
+<span class="sd">        frames : array-like, optional</span>
 <span class="sd">            Frames to plot. If ``None``, plots all of them.</span>
-<span class="sd">            Default: ``None``</span>
-<span class="sd">        color: str or array-like, optional</span>
+<span class="sd">        color : str or array-like, optional</span>
 <span class="sd">            Color or colors for the plot. If ``None``, colors are</span>
-<span class="sd">            drawn from ``cmap``. Default: ``None``</span>
-<span class="sd">        cmap: str, optional</span>
+<span class="sd">            drawn from ``cmap``.</span>
+<span class="sd">        cmap : str, optional</span>
 <span class="sd">            color map to make colors for the plot if ``color`` is</span>
 <span class="sd">            not given. Names should be from the ``matplotlib.pyplot.cm``</span>
-<span class="sd">            module. Default: &#39;viridis&#39;</span>
-<span class="sd">        linestyle: str or array-like, optional</span>
-<span class="sd">            Line style for the plot. Default: &#39;-&#39;</span>
+<span class="sd">            module.</span>
+<span class="sd">        linestyle : str or array-like, optional</span>
+<span class="sd">            Line style for the plot.</span>
 
 
 <span class="sd">        Returns</span>
@@ -1136,27 +1135,26 @@
 <span class="sd">        ----------</span>
 <span class="sd">        frames: array-like, optional</span>
 <span class="sd">            Frames to plot. If ``None``, plots all of them.</span>
-<span class="sd">            Default: ``None``</span>
 <span class="sd">        color: str or array-like, optional</span>
 <span class="sd">            Color or colors for the plot. If ``None``, colors are</span>
-<span class="sd">            drawn from ``cmap``. Default: ``None``</span>
+<span class="sd">            drawn from ``cmap``.</span>
 <span class="sd">        cmap: str, optional</span>
 <span class="sd">            color map to make colors for the plot if ``color`` is</span>
 <span class="sd">            not given. Names should be from the ``matplotlib.pyplot.cm``</span>
-<span class="sd">            module. Default: &#39;viridis&#39;</span>
+<span class="sd">            module.</span>
 <span class="sd">        linestyle: str or array-like, optional</span>
-<span class="sd">            Line style for the plot. Default: &#39;-&#39;</span>
+<span class="sd">            Line style for the plot.</span>
 <span class="sd">        y_shift : float, optional</span>
 <span class="sd">            displace each :math:`R(\zeta)` profile by ``y_shift`` in the</span>
-<span class="sd">            :math:`y`-direction for clearer visualization. Default: 0.0</span>
+<span class="sd">            :math:`y`-direction for clearer visualization.</span>
 <span class="sd">        label : bool or string, optional</span>
 <span class="sd">            If ``False`` then no legend is</span>
-<span class="sd">            displayed. Default: ``True``</span>
+<span class="sd">            displayed.</span>
 <span class="sd">        ax : :class:`matplotlib.axes.Axes`</span>
 <span class="sd">            If no `ax` is supplied or set to ``None`` then the plot will</span>
-<span class="sd">            be added to the current active axes. Default: ``None``</span>
+<span class="sd">            be added to the current active axes.</span>
 <span class="sd">        legend_loc : str, optional</span>
-<span class="sd">            Location of the legend. Default: &#39;best&#39;</span>
+<span class="sd">            Location of the legend.</span>
 <span class="sd">        kwargs :  `**kwargs`</span>
 <span class="sd">            All other `kwargs` are passed to :func:`matplotlib.pyplot.plot`.</span>
 
@@ -1202,26 +1200,25 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        frames: array-like, optional</span>
+<span class="sd">        frames : array-like, optional</span>
 <span class="sd">            Frames to plot. If ``None``, plots all of them.</span>
-<span class="sd">            Default: ``None``</span>
-<span class="sd">        color: str or array-like, optional</span>
+<span class="sd">        color : str or array-like, optional</span>
 <span class="sd">            Color or colors for the plot. If ``None``, colors are</span>
-<span class="sd">            drawn from ``cmap``. Default: ``None``</span>
-<span class="sd">        cmap: str, optional</span>
+<span class="sd">            drawn from ``cmap``.</span>
+<span class="sd">        cmap : str, optional</span>
 <span class="sd">            color map to make colors for the plot if ``color`` is</span>
 <span class="sd">            not given. Names should be from the ``matplotlib.pyplot.cm``</span>
-<span class="sd">            module. Default: &#39;viridis&#39;</span>
-<span class="sd">        linestyle: str or array-like, optional</span>
-<span class="sd">            Line style for the plot. Default: &#39;-&#39;</span>
+<span class="sd">            module.</span>
+<span class="sd">        linestyle : str or array-like, optional</span>
+<span class="sd">            Line style for the plot.</span>
 <span class="sd">        r_max : float, optional</span>
 <span class="sd">            only display radii up to ``r_max``. If ``None``, all radii are</span>
-<span class="sd">            plotted. Default: ``None``</span>
+<span class="sd">            plotted.</span>
 <span class="sd">        ax : :class:`matplotlib.axes.Axes`</span>
 <span class="sd">            If no `ax` is supplied or set to ``None`` then the plot will</span>
-<span class="sd">            be added to the current active axes. Default: ``None``</span>
+<span class="sd">            be added to the current active axes.</span>
 <span class="sd">        ylabel : str, optional</span>
-<span class="sd">            Y-axis label. Default: &#39;Frames&#39;</span>
+<span class="sd">            Y-axis label.</span>
 <span class="sd">        **kwargs :</span>
 <span class="sd">            All other `kwargs` are passed to :func:`matplotlib.pyplot.plot`.</span>
 
@@ -1273,13 +1270,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        order_parameters: array-like or string</span>
+<span class="sd">        order_parameters : array-like or string</span>
 <span class="sd">            Sequence or text file containing order parameters (float</span>
 <span class="sd">            numbers) corresponding to the frames in the trajectory. Must</span>
 <span class="sd">            be same length as trajectory.</span>
-<span class="sd">        frames: array-like, optional</span>
+<span class="sd">        frames : array-like, optional</span>
 <span class="sd">            Selected frames to return. If ``None``, returns all of them.</span>
-<span class="sd">            Default: ``None``</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1338,27 +1334,26 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        order_parameters: array-like or string</span>
+<span class="sd">        order_parameters : array-like or string</span>
 <span class="sd">            Sequence or text file containing order parameters (float</span>
 <span class="sd">            numbers) corresponding to the frames in the trajectory. Must</span>
 <span class="sd">            be same length as trajectory.</span>
-<span class="sd">        aggregator: callable, optional</span>
+<span class="sd">        aggregator : callable, optional</span>
 <span class="sd">            Function applied to the radius array of each profile to</span>
-<span class="sd">            reduce it to one representative value. Default: ``min``</span>
-<span class="sd">        frames: array-like, optional</span>
+<span class="sd">            reduce it to one representative value.</span>
+<span class="sd">        frames : array-like, optional</span>
 <span class="sd">            Frames to plot. If ``None``, plots all of them.</span>
-<span class="sd">            Default: ``None``</span>
-<span class="sd">        color: str or array-like, optional</span>
-<span class="sd">            Color for the plot. Default: &#39;blue&#39;</span>
-<span class="sd">        linestyle: str or array-like, optional</span>
-<span class="sd">            Line style for the plot. Default: &#39;-&#39;</span>
+<span class="sd">        color : str or array-like, optional</span>
+<span class="sd">            Color for the plot.</span>
+<span class="sd">        linestyle : str or array-like, optional</span>
+<span class="sd">            Line style for the plot.</span>
 <span class="sd">        ax : :class:`matplotlib.axes.Axes`</span>
 <span class="sd">            If no `ax` is supplied or set to ``None`` then the plot will</span>
-<span class="sd">            be added to the current active axes. Default: ``None``</span>
+<span class="sd">            be added to the current active axes.</span>
 <span class="sd">        xlabel : str, optional</span>
-<span class="sd">            X-axis label. Default: &#39;Order parameter&#39;</span>
+<span class="sd">            X-axis label.</span>
 <span class="sd">        ylabel : str, optional</span>
-<span class="sd">            Y-axis label. Default: &#39;Minimum HOLE pore radius $r$ ($\AA$)&#39;</span>
+<span class="sd">            Y-axis label.</span>
 <span class="sd">        **kwargs :</span>
 <span class="sd">            All other `kwargs` are passed to :func:`matplotlib.pyplot.plot`.</span>
 
@@ -1389,14 +1384,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        frames: int or iterable of ints, optional</span>
+<span class="sd">        frames : int or iterable of ints, optional</span>
 <span class="sd">            Profiles to include by frame. If ``None``, includes</span>
-<span class="sd">            all frames. Default: ``None``</span>
-
-<span class="sd">        flat: bool, optional</span>
+<span class="sd">            all frames.</span>
+<span class="sd">        flat : bool, optional</span>
 <span class="sd">            Whether to flatten the list of field arrays into a</span>
-<span class="sd">            single array. Default: ``False``</span>
-
+<span class="sd">            single array.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1427,18 +1420,19 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        frames: int or iterable of ints, optional</span>
+<span class="sd">        frames : int or iterable of ints, optional</span>
 <span class="sd">            Profiles to include by frame. If ``None``, includes</span>
-<span class="sd">            all frames. Default: ``None``</span>
-
-<span class="sd">        bins: int or iterable of edges, optional</span>
-<span class="sd">            If bins is an int, it defines the number of equal-width bins in the given range. If bins is a sequence, it defines a monotonically increasing array of bin edges, including the rightmost edge, allowing for non-uniform bin widths. Default: 100</span>
-
+<span class="sd">            all frames.</span>
+<span class="sd">        bins : int or iterable of edges, optional</span>
+<span class="sd">            If bins is an int, it defines the number of equal-width bins in the given </span>
+<span class="sd">            range. If bins is a sequence, it defines a monotonically increasing array of </span>
+<span class="sd">            bin edges, including the rightmost edge, allowing for non-uniform bin widths.</span>
 <span class="sd">        range : (float, float), optional</span>
 <span class="sd">            The lower and upper range of the bins.</span>
 <span class="sd">            If not provided, ``range`` is simply ``(a.min(), a.max())``,</span>
 <span class="sd">            where ``a`` is the array of reaction coordinates.</span>
-<span class="sd">            Values outside the range are ignored. The first element of the range must be less than or equal to the second.</span>
+<span class="sd">            Values outside the range are ignored. The first element of the range must be </span>
+<span class="sd">            less than or equal to the second.</span>
 
 
 <span class="sd">        Returns</span>
@@ -1481,22 +1475,22 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        aggregator: callable, optional</span>
+<span class="sd">        aggregator : callable, optional</span>
 <span class="sd">            this function must take an iterable of floats and return a</span>
-<span class="sd">            single value. Default: np.mean</span>
-
-<span class="sd">        frames: int or iterable of ints, optional</span>
+<span class="sd">            single value.</span>
+<span class="sd">        frames : int or iterable of ints, optional</span>
 <span class="sd">            Profiles to include by frame. If ``None``, includes</span>
-<span class="sd">            all frames. Default: ``None``</span>
-
-<span class="sd">        bins: int or iterable of edges, optional</span>
-<span class="sd">            If bins is an int, it defines the number of equal-width bins in the given range. If bins is a sequence, it defines a monotonically increasing array of bin edges, including the rightmost edge, allowing for non-uniform bin widths. Default: 100</span>
-
+<span class="sd">            all frames.</span>
+<span class="sd">        bins : int or iterable of edges, optional</span>
+<span class="sd">            If bins is an int, it defines the number of equal-width bins in the given </span>
+<span class="sd">            range. If bins is a sequence, it defines a monotonically increasing array of </span>
+<span class="sd">            bin edges, including the rightmost edge, allowing for non-uniform bin widths.</span>
 <span class="sd">        range : (float, float), optional</span>
 <span class="sd">            The lower and upper range of the bins.</span>
 <span class="sd">            If not provided, ``range`` is simply ``(a.min(), a.max())``,</span>
 <span class="sd">            where ``a`` is the array of reaction coordinates.</span>
-<span class="sd">            Values outside the range are ignored. The first element of the range must be less than or equal to the second.</span>
+<span class="sd">            Values outside the range are ignored. The first element of the range must be </span>
+<span class="sd">            less than or equal to the second.</span>
 
 
 <span class="sd">        Returns</span>
@@ -1520,48 +1514,38 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        frames: int or iterable of ints, optional</span>
+<span class="sd">        frames : int or iterable of ints, optional</span>
 <span class="sd">            Profiles to include by frame. If ``None``, includes</span>
-<span class="sd">            all frames. Default: ``None``</span>
-
-<span class="sd">        bins: int or iterable of edges, optional</span>
-<span class="sd">            If bins is an int, it defines the number of equal-width bins in the given range. If bins is a sequence, it defines a monotonically increasing array of bin edges, including the rightmost edge, allowing for non-uniform bin widths. Default: 100</span>
-
+<span class="sd">            all frames.</span>
+<span class="sd">        bins : int or iterable of edges, optional</span>
+<span class="sd">            If bins is an int, it defines the number of equal-width bins in the given </span>
+<span class="sd">            range. If bins is a sequence, it defines a monotonically increasing array of </span>
+<span class="sd">            bin edges, including the rightmost edge, allowing for non-uniform bin widths.</span>
 <span class="sd">        range : (float, float), optional</span>
 <span class="sd">            The lower and upper range of the bins.</span>
 <span class="sd">            If not provided, ``range`` is simply ``(a.min(), a.max())``,</span>
 <span class="sd">            where ``a`` is the array of reaction coordinates.</span>
-<span class="sd">            Values outside the range are ignored. The first element of the range must be less than or equal to the second.</span>
-
-<span class="sd">        color: str or array-like, optional</span>
-<span class="sd">            Color for the plot. Default: &#39;blue&#39;</span>
-
-<span class="sd">        linestyle: str or array-like, optional</span>
-<span class="sd">            Line style for the plot. Default: &#39;-&#39;</span>
-
+<span class="sd">            Values outside the range are ignored. The first element of the range must be </span>
+<span class="sd">            less than or equal to the second.</span>
+<span class="sd">        color : str or array-like, optional</span>
+<span class="sd">            Color for the plot.</span>
+<span class="sd">        linestyle : str or array-like, optional</span>
+<span class="sd">            Line style for the plot.</span>
 <span class="sd">        ax : :class:`matplotlib.axes.Axes`</span>
 <span class="sd">            If no `ax` is supplied or set to ``None`` then the plot will</span>
-<span class="sd">            be added to the current active axes. Default: ``None``</span>
-
+<span class="sd">            be added to the current active axes.</span>
 <span class="sd">        xlabel : str, optional</span>
-<span class="sd">            X-axis label. Default: &#39;Order parameter&#39;</span>
-
-<span class="sd">        fill_alpha: float, optional</span>
-<span class="sd">            Opacity of filled standard deviation area Default: 0.3</span>
-
-<span class="sd">        n_std: int, optional</span>
+<span class="sd">            X-axis label.</span>
+<span class="sd">        fill_alpha : float, optional</span>
+<span class="sd">            Opacity of filled standard deviation area</span>
+<span class="sd">        n_std : int, optional</span>
 <span class="sd">            Number of standard deviations from the mean to fill between.</span>
-<span class="sd">            Default: 1</span>
-
-<span class="sd">        legend: bool, optional</span>
-<span class="sd">            Whether to plot a legend. Default: True</span>
-
-<span class="sd">        legend_loc: str, optional</span>
-<span class="sd">            Location of legend. Default: &#39;best&#39;</span>
-
+<span class="sd">        legend : bool, optional</span>
+<span class="sd">            Whether to plot a legend.</span>
+<span class="sd">        legend_loc : str, optional</span>
+<span class="sd">            Location of legend.</span>
 <span class="sd">        **kwargs :</span>
 <span class="sd">            All other `kwargs` are passed to :func:`matplotlib.pyplot.plot`.</span>
-
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1604,31 +1588,30 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        order_parameters: array-like or string</span>
+<span class="sd">        order_parameters : array-like or string</span>
 <span class="sd">            Sequence or text file containing order parameters(float</span>
 <span class="sd">            numbers) corresponding to the frames in the trajectory. Must</span>
 <span class="sd">            be same length as trajectory.</span>
-<span class="sd">        frames: array-like, optional</span>
+<span class="sd">        frames : array-like, optional</span>
 <span class="sd">            Frames to plot. If ``None``, plots all of them.</span>
-<span class="sd">            Default: ``None``</span>
-<span class="sd">        color: str or array-like, optional</span>
+<span class="sd">        color : str or array-like, optional</span>
 <span class="sd">            Color or colors for the plot. If ``None``, colors are</span>
-<span class="sd">            drawn from ``cmap``. Default: ``None``</span>
-<span class="sd">        cmap: str, optional</span>
+<span class="sd">            drawn from ``cmap``.</span>
+<span class="sd">        cmap : str, optional</span>
 <span class="sd">            color map to make colors for the plot if ``color`` is</span>
 <span class="sd">            not given. Names should be from the ``matplotlib.pyplot.cm``</span>
-<span class="sd">            module. Default: &#39;viridis&#39;</span>
-<span class="sd">        linestyle: str or array-like, optional</span>
-<span class="sd">            Line style for the plot. Default: &#39;-&#39;</span>
-<span class="sd">        ax: : class: `matplotlib.axes.Axes`</span>
+<span class="sd">            module.</span>
+<span class="sd">        linestyle : str or array-like, optional</span>
+<span class="sd">            Line style for the plot.</span>
+<span class="sd">        ax : : class: `matplotlib.axes.Axes`</span>
 <span class="sd">            If no `ax` is supplied or set to ``None`` then the plot will</span>
-<span class="sd">            be added to the current active axes. Default: ``None``</span>
-<span class="sd">        r_max: float, optional</span>
+<span class="sd">            be added to the current active axes.</span>
+<span class="sd">        r_max : float, optional</span>
 <span class="sd">            only display radii up to ``r_max``. If ``None``, all radii are</span>
-<span class="sd">            plotted. Default: ``None``</span>
-<span class="sd">        ylabel: str, optional</span>
-<span class="sd">            Y-axis label. Default: &#39;Order parameter&#39;</span>
-<span class="sd">        **kwargs:</span>
+<span class="sd">            plotted.</span>
+<span class="sd">        ylabel : str, optional</span>
+<span class="sd">            Y-axis label.</span>
+<span class="sd">        **kwargs :</span>
 <span class="sd">            All other `kwargs` are passed to: func: `matplotlib.pyplot.plot`.</span>
 
 <span class="sd">        Returns</span>

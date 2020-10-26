@@ -368,12 +368,13 @@ principal components.</p>
 <p class="rubric">Notes</p>
 <p>Computation can be sped up by supplying a precalculated mean structure.</p>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.0: </span><code class="docutils literal notranslate"><span class="pre">n_components</span></code> now limits the correct axis of <code class="docutils literal notranslate"><span class="pre">p_components</span></code>. <code class="docutils literal notranslate"><span class="pre">cumulated_variance</span></code> now accurately represents the contribution of each
-principal component and does not change when <code class="docutils literal notranslate"><span class="pre">n_components</span></code> is given. If
-<code class="docutils literal notranslate"><span class="pre">n_components</span></code> is not None or is less than the number of <code class="docutils literal notranslate"><span class="pre">p_components</span></code>,
-<code class="docutils literal notranslate"><span class="pre">cumulated_variance</span></code> will not sum to 1.
-<code class="docutils literal notranslate"><span class="pre">align=True</span></code> now correctly aligns the trajectory and computes the correct
-means and covariance matrix.</p>
+<p><span class="versionmodified">Changed in version 1.0.0: </span><code class="docutils literal notranslate"><span class="pre">n_components</span></code> now limits the correct axis of <code class="docutils literal notranslate"><span class="pre">p_components</span></code>.
+<code class="docutils literal notranslate"><span class="pre">cumulated_variance</span></code> now accurately represents the contribution of
+each principal component and does not change when <code class="docutils literal notranslate"><span class="pre">n_components</span></code> is
+given. If <code class="docutils literal notranslate"><span class="pre">n_components</span></code> is not None or is less than the number of
+<code class="docutils literal notranslate"><span class="pre">p_components</span></code>, <code class="docutils literal notranslate"><span class="pre">cumulated_variance</span></code> will not sum to 1.
+<code class="docutils literal notranslate"><span class="pre">align=True</span></code> now correctly aligns the trajectory and computes the
+correct means and covariance matrix.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.19.0: </span>The start frame is used when performing selections and calculating
@@ -392,9 +393,8 @@ structure.</li>
 <li><strong>mean</strong> (<em>MDAnalysis atomgroup</em><em>, </em><em>optional</em>) – An optional reference structure to be used as the mean of the
 covariance matrix.</li>
 <li><strong>n_components</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – The number of principal components to be saved, default saves
-all principal components, Default: None</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the
-default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
+all principal components</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
 </ul>
 </td>
 </tr>
