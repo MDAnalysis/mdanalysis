@@ -993,7 +993,7 @@ class TestUnwrapFlag(object):
         group = universe.residues[0:3]
         group.wrap(inplace=True)
         if request.param:
-            rg = np.random.RandomState(121989)
+            rg = np.random.RandomState(31012008)
             ndx = np.arange(len(group))
             rg.shuffle(ndx)
             group = group[ndx]
