@@ -628,7 +628,7 @@ def _standardize_patterns(mol, max_iter=200):
     +---------------+------------------------------------------------------------------------------+
     | Cterm         | ``[C-;X2;H0:1]=[O:2]>>[C+0:1]=[O:2]``                                        |
     +---------------+------------------------------------------------------------------------------+
-    | Nterm         | ``[N-;X2;H1:1]>>[N+0:1]``                                                    |
+    | Nterm         | ``[N-;H1;$(N-[*^3]):1]>>[N+0:1]``                                            |
     +---------------+------------------------------------------------------------------------------+
     | keto-enolate  | ``[#6-:1]-[#6:2]=[O:3]>>[#6+0:1]=[#6:2]-[O-:3]``                             |
     +---------------+------------------------------------------------------------------------------+
@@ -636,9 +636,9 @@ def _standardize_patterns(mol, max_iter=200):
     +---------------+------------------------------------------------------------------------------+
     | histidine     | ``[#6+0;H0:1]=[#6+0:2]-[#7;X3:3]-[#6-;X3:4]>>[#6:1]=[#6:2]-[#7+:3]=[#6+0:4]``|
     +---------------+------------------------------------------------------------------------------+
-    | sulfone       | ``[S;X4;v4:1](-[O-;X1:2])-[O-;X1:3]>>[S:1](=[O+0:2])=[O+0:3]``               |
+    | sulfone       | ``[S;X4;v4:1](-[*-:2])-[*-:3]>>[S:1](=[*+0:2])=[*+0:3]``                     |
     +---------------+------------------------------------------------------------------------------+
-    | charged N     | ``[#7+0;v3:1]-[*-:2]>>[#7+:1]=[*+0:2]``                                      |
+    | charged N     | ``[#7+0;X3:1]-[*-:2]>>[#7+:1]=[*+0:2]``                                      |
     +---------------+------------------------------------------------------------------------------+
  
     """
@@ -646,24 +646,26 @@ def _standardize_patterns(mol, max_iter=200):
     # standardize conjugated systems
     _rebuild_conjugated_bonds(mol, max_iter)
 
+    # list of sanitized reactions
+    reactions = []
+    for name, reaction in [
+        ("Cterm", "[C-;X2;H0:1]=[O:2]>>[C+0:1]=[O:2]"),
+        ("Nterm", "[N-;X2;H1;$(N-[*^3]):1]>>[N+0:1]"),
+        ("keto-enolate", "[#6-:1]-[#6:2]=[O:3]>>[#6+0:1]=[#6:2]-[O-:3]"),
+        ("ARG", "[C-;v3:1]-[#7+0;v3;H2:2]>>[#6+0:1]=[#7+:2]"),
+        ("HIP", "[#6+0;H0:1]=[#6+0:2]-[#7;X3:3]-[#6-;X3:4]"
+                ">>[#6:1]=[#6:2]-[#7+:3]=[#6+0:4]"),
+        ("sulfone", "[S;X4;v4:1](-[*-:2])-[*-:3]"
+                    ">>[S:1](=[*+0:2])=[*+0:3]"),
+        ("charged-N", "[#7+0;X3:1]-[*-:2]>>[#7+:1]=[*+0:2]"),
+    ]:
+        rxn = AllChem.ReactionFromSmarts(reaction)
+        reactions.append(rxn)
+
     fragments = []
     for reactant in Chem.GetMolFrags(mol, asMols=True):
-
-        for name, reaction in [
-            ("Cterm", "[C-;X2;H0:1]=[O:2]>>[C+0:1]=[O:2]"),
-            ("Nterm", "[N-;X2;H1:1]>>[N+0:1]"),
-            ("keto-enolate", "[#6-:1]-[#6:2]=[O:3]>>[#6+0:1]=[#6:2]-[O-:3]"),
-            ("ARG", "[C-;v3:1]-[#7+0;v3;H2:2]>>[#6+0:1]=[#7+:2]"),
-            ("HIP", "[#6+0;H0:1]=[#6+0:2]-[#7;X3:3]-[#6-;X3:4]"
-                    ">>[#6:1]=[#6:2]-[#7+:3]=[#6+0:4]"),
-            ("sulfone", "[S;X4;v4:1](-[O-;X1:2])-[O-;X1:3]"
-                        ">>[S:1](=[O+0:2])=[O+0:3]"),
-            ("charged-N", "[#7+0;v3:1]-[*-:2]>>[#7+:1]=[*+0:2]"),
-        ]:
-            reactant.UpdatePropertyCache(strict=False)
-            Chem.Kekulize(reactant)
+        for reaction in reactions:
             reactant = _run_reaction(reaction, reactant)
-
         fragments.append(reactant)
 
     # recombine fragments
@@ -683,8 +685,8 @@ def _run_reaction(reaction, reactant):
 
     Parameters
     ----------
-    reaction : str
-        SMARTS reaction
+    reaction : rdkit.Chem.rdChemReactions.ChemicalReaction
+        Reaction from SMARTS
     reactant : rdkit.Chem.rdchem.Mol
         The molecule to transform
 
@@ -693,27 +695,22 @@ def _run_reaction(reaction, reactant):
     product : rdkit.Chem.rdchem.Mol
         The final product of the reaction
     """
-    # count how many times the reaction should be run
-    pattern = Chem.MolFromSmarts(reaction.split(">>")[0])
-    n_matches = len(reactant.GetSubstructMatches(pattern))
-
-    # run the reaction for each matched pattern
-    rxn = AllChem.ReactionFromSmarts(reaction)
-    for n in range(n_matches):
-        products = rxn.RunReactants((reactant,))
+    for n in range(reactant.GetNumAtoms()):
+        reactant.UpdatePropertyCache(strict=False)
+        Chem.Kekulize(reactant)
+        products = reaction.RunReactants((reactant,))
         # only keep the first product
         if products:
             product = products[0][0]
             # map back atom properties from the reactant to the product
             _reassign_props_after_reaction(reactant, product)
             # apply the next reaction to the product
-            product.UpdatePropertyCache(strict=False)
             reactant = product
         else:
-            # exit the n_matches loop if there's no product. Example
-            # where this is needed: SO^{4}_{2-} will match the sulfone
-            # pattern 6 times but the reaction is only needed once
+            # exit the loop if there's no product
             break
+    reactant.UpdatePropertyCache(strict=False)
+    Chem.Kekulize(reactant)
     return reactant
 
 
@@ -815,7 +812,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
                     break
             else:
                 # already performed all changes
-                continue
+                anion, a1, a2 = matches[0]
 
             # charges
             mol.GetAtomWithIdx(anion).SetFormalCharge(0)
@@ -829,6 +826,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
             continue
 
         # no more changes to apply
+        mol.UpdatePropertyCache(strict=False)
         return
 
     # reached max_iter

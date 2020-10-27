@@ -495,6 +495,14 @@ class TestRDKitFunctions(object):
         "[O-][n+]1cccnc1",
         "C[n+]1ccccc1",
         "[PH4+]",
+        "c1nc[nH]n1",
+        "CC(=O)C=C(C)N",
+        "CC(C)=CC=C[O-]",
+        "O=S(C)(C)=NC",
+        "Cc1ccc2c3ncn(Cc4ccco4)c(O)c-3nc2c1",
+        # still needs fixing
+        # "c1c2c(=O)n3cccc(C)c3nc2n(C)c(=N)c1C(=O)NCc1cnccc1",
+        # "C(C#CCCCCCCCC(=O)O)#CC=CCCCC",
     ])
     def test_order_independant(self, smi_in):
         # generate mol with hydrogens but without bond orders
@@ -506,6 +514,7 @@ class TestRDKitFunctions(object):
         for bond in template.GetBonds():
             bond.SetIsAromatic(False)
             bond.SetBondType(Chem.BondType.SINGLE)
+        template.UpdatePropertyCache(strict=False)
 
         # go through each possible starting atom
         for a in template.GetAtoms():
@@ -513,6 +522,7 @@ class TestRDKitFunctions(object):
             m = Chem.MolFromSmiles(smi, sanitize=False)
             for atom in m.GetAtoms():
                 atom.SetFormalCharge(0)
+                atom.SetIsAromatic(False)
                 atom.SetNoImplicit(True)
             m.UpdatePropertyCache(strict=False)
             _infer_bo_and_charges(m)
