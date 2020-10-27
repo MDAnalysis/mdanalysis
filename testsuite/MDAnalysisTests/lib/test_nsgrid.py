@@ -56,7 +56,7 @@ def test_fastns_warning(universe):
     """
     wmsg = ("The current nsgrid code can return incorrect values and should "
             "not be used for production work.")
-    with pytest.warns(UserWarning, match=wmsg):
+    with pytest.warns(RuntimeWarning, match=wmsg):
         searcher = nsgrid.FastNS(3, universe.atoms.positions,
                                  universe.dimensions)
 
