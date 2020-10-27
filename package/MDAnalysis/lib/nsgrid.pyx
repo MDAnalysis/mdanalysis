@@ -791,9 +791,8 @@ cdef class FastNS(object):
 
         """
 
-        raise RuntimeError('testing CI')
         with warnings.catch_warnings():
-            warnings.simplefilter('always', RuntimeWarning)
+            warnings.simplefilter('always', UserWarning)
             wmsg = ('The current nsgrid code can return incorrect values '
                     'and should not be used for production work. We '
                     'instead recommend the use of MDAnalysis.lib.pkdtree. '
