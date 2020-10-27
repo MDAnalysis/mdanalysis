@@ -791,6 +791,7 @@ cdef class FastNS(object):
 
         """
 
+        raise RuntimeError('testing CI')
         with warnings.catch_warnings():
             warnings.simplefilter('always', RuntimeWarning)
             wmsg = ('The current nsgrid code can return incorrect values '
