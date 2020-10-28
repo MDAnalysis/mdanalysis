@@ -24,7 +24,10 @@
 Test the user facing API is as we expect...
 """
 
+import importlib
+
 import MDAnalysis as mda
+import pytest
 
 
 def test_Universe():
@@ -49,3 +52,33 @@ def test_ResidueGroup():
 
 def test_SegmentGroup():
     assert mda.SegmentGroup is mda.core.groups.SegmentGroup
+
+
+@pytest.mark.parametrize('module',
+                         ('',
+                          '.analysis',
+                          '.analysis.data.filenames',
+                          '.analysis.distances',
+                          '.analysis.encore',
+                          '.analysis.encore.dimensionality_reduction',
+                          '.analysis.hbonds',
+                          '.analysis.hydrogenbonds',
+                          '.coordinates',
+                          '.core',
+                          '.lib._augment',
+                          '.lib._cutil',
+                          '.lib.formats',
+                          '.lib.pkdtree',
+                          '.topology',
+                          '.topology.tpr',
+                          '.visualization'
+                          )
+                         )
+def test_import_star(module):
+    try:
+        # This is really bad and ugly but I haven't found a way to run this
+        # using `importlib.import_module...`
+        exec("from MDAnalysis{} import *".format(module))
+    except (ImportError, AttributeError) as error:
+        # We want the test to fail, not to error
+        raise AssertionError(error)
