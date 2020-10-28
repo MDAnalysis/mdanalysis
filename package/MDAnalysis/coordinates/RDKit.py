@@ -515,7 +515,7 @@ def _infer_bo_and_charges(mol):
                    reverse=True,
                    key=lambda a: _get_nb_unpaired_electrons(a)[0])
 
-    MONOATOMIC_ION_CHARGES = {
+    MONATOMIC_ION_CHARGES = {
         3: 1, 11: 1, 19: 1, 37: 1, 47: 1, 55: 1,
         12: 2, 20: 2, 29: 2, 30: 2, 38: 2, 56: 2,
         26: 2, # Fe could also be 3
@@ -526,8 +526,9 @@ def _infer_bo_and_charges(mol):
     for atom in atoms:
         # monatomic ions
         if atom.GetDegree() == 0:
-            atom.SetFormalCharge(MONOATOMIC_ION_CHARGES.get(
-                                 atom.GetAtomicNum(), 0))
+            atom.SetFormalCharge(MONATOMIC_ION_CHARGES.get(
+                                 atom.GetAtomicNum(),
+                                 _get_nb_unpaired_electrons(atom)[0]))
             mol.UpdatePropertyCache(strict=False)
             continue
         # get NUE for each possible valence
@@ -545,7 +546,7 @@ def _infer_bo_and_charges(mol):
             neighbors = sorted(atom.GetNeighbors(), reverse=True,
                                key=lambda a: _get_nb_unpaired_electrons(a)[0])
             # check if one of the neighbors has a common NUE
-            for i, na in enumerate(neighbors, start=1):
+            for na in neighbors:
                 # get NUE for the neighbor
                 na_nue = _get_nb_unpaired_electrons(na)
                 # smallest common NUE
@@ -561,15 +562,16 @@ def _infer_bo_and_charges(mol):
                     order = common_nue + 1
                     bond.SetBondType(RDBONDORDER[order])
                     mol.UpdatePropertyCache(strict=False)
-                    if i < len(neighbors):
-                        # recalculate nue for atom
-                        nue = _get_nb_unpaired_electrons(atom)
+                    # go to next atom if one of the valences is complete
+                    nue = _get_nb_unpaired_electrons(atom)
+                    if any([n == 0 for n in nue]):
+                        break
 
             # if atom valence is still not filled
-            nue_list = _get_nb_unpaired_electrons(atom)
-            if not any(nue == 0 for nue in nue_list):
+            nue = _get_nb_unpaired_electrons(atom)
+            if not any([n == 0 for n in nue]):
                 # transform nue to charge
-                atom.SetFormalCharge(-nue_list[0])
+                atom.SetFormalCharge(-nue[0])
                 atom.SetNumRadicalElectrons(0)
                 mol.UpdatePropertyCache(strict=False)
 
@@ -620,7 +622,7 @@ def _standardize_patterns(mol, max_iter=200):
     +---------------+------------------------------------------------------------------------------+
     | Name          | Reaction                                                                     |
     +===============+==============================================================================+
-    | conjugated    | ``[*-;!O:1]-[*:2]=[*:3]-[*-:4]>>[*+0:1]=[*:2]-[*:3]=[*+0:4]``                |
+    | conjugated    | ``[*-:1]-[*:2]=[*:3]-[*-:4]>>[*+0:1]=[*:2]-[*:3]=[*+0:4]``                   |
     +---------------+------------------------------------------------------------------------------+
     | conjugated-N+ | ``[N;X3;v3:1]-[*:2]=[*:3]-[*-:4]>>[N+:1]=[*:2]-[*:3]=[*+0:4]``               |
     +---------------+------------------------------------------------------------------------------+
@@ -648,7 +650,7 @@ def _standardize_patterns(mol, max_iter=200):
 
     # list of sanitized reactions
     reactions = []
-    for name, reaction in [
+    for name, rxn in [
         ("Cterm", "[C-;X2;H0:1]=[O:2]>>[C+0:1]=[O:2]"),
         ("Nterm", "[N-;X2;H1;$(N-[*^3]):1]>>[N+0:1]"),
         ("keto-enolate", "[#6-:1]-[#6:2]=[O:3]>>[#6+0:1]=[#6:2]-[O-:3]"),
@@ -659,8 +661,8 @@ def _standardize_patterns(mol, max_iter=200):
                     ">>[S:1](=[*+0:2])=[*+0:3]"),
         ("charged-N", "[#7+0;X3:1]-[*-:2]>>[#7+:1]=[*+0:2]"),
     ]:
-        rxn = AllChem.ReactionFromSmarts(reaction)
-        reactions.append(rxn)
+        reaction = AllChem.ReactionFromSmarts(rxn)
+        reactions.append(reaction)
 
     fragments = []
     for reactant in Chem.GetMolFrags(mol, asMols=True):
@@ -733,6 +735,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
     Since ``anion-*=*`` is the same as ``*=*-anion`` in terms of SMARTS, we can
     control that we don't transform the same triplet of atoms back and forth by
     adding their indices to a list.
+    This function also handles conjugated systems with triple bonds.
     The molecule needs to be kekulized first to also cover systems
     with aromatic rings.
 
@@ -745,7 +748,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
     """
     mol.UpdatePropertyCache(strict=False)
     Chem.Kekulize(mol)
-    pattern = Chem.MolFromSmarts("[*-]-[*+0]=[*+0;!O]")
+    pattern = Chem.MolFromSmarts("[*-{1-2}]-,=[*+0]=,#[*+0;!O]")
     # number of unique matches with the pattern
     n_matches = len(set([match[0]
                          for match in mol.GetSubstructMatches(pattern)]))
@@ -754,7 +757,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
         return
     # check if there's an even number of anion-*=* patterns
     elif n_matches % 2 == 0:
-        end_pattern = Chem.MolFromSmarts("[*-]-[*+0]=[*+0]-[*-]")
+        end_pattern = Chem.MolFromSmarts("[*-{1-2}]-,=[*+0]=,#[*+0]-,=[*-{1-2}]")
     else:
         # as a last resort, the only way to standardize is to find a nitrogen
         # that can accept a double bond and a positive charge
@@ -778,20 +781,16 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
                         neighbor.SetFormalCharge(-1)
                         break
             else:
-                # [*-]-*=*-N --> *=*-*=[N+]
-                if term_atom.GetAtomicNum() == 7 and term_atom.GetFormalCharge() == 0:
-                    end_charge = 1
-                # [*-]-*=*-[*-] --> *=*-*=*
-                else:
-                    end_charge = 0
-                term_atom.SetFormalCharge(end_charge)
+                term_atom.SetFormalCharge(term_atom.GetFormalCharge() + 1)
             # common part of the conjugated systems: [*-]-*=*
-            mol.GetAtomWithIdx(anion1).SetFormalCharge(0)
-            mol.GetBondBetweenAtoms(anion1, a1).SetBondType(
-                Chem.BondType.DOUBLE)
-            mol.GetBondBetweenAtoms(a1, a2).SetBondType(Chem.BondType.SINGLE)
-            mol.GetBondBetweenAtoms(a2, anion2).SetBondType(
-                Chem.BondType.DOUBLE)
+            a = mol.GetAtomWithIdx(anion1)
+            a.SetFormalCharge(a.GetFormalCharge() + 1)
+            b = mol.GetBondBetweenAtoms(anion1, a1)
+            b.SetBondType(RDBONDORDER[b.GetBondTypeAsDouble() + 1])
+            b = mol.GetBondBetweenAtoms(a1, a2)
+            b.SetBondType(RDBONDORDER[b.GetBondTypeAsDouble() - 1])
+            b = mol.GetBondBetweenAtoms(a2, anion2)
+            b.SetBondType(RDBONDORDER[b.GetBondTypeAsDouble() + 1])
             mol.UpdatePropertyCache(strict=False)
             continue
 
@@ -813,14 +812,18 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
             else:
                 # already performed all changes
                 anion, a1, a2 = matches[0]
+                backtrack = []
 
             # charges
-            mol.GetAtomWithIdx(anion).SetFormalCharge(0)
-            mol.GetAtomWithIdx(a2).SetFormalCharge(-1)
+            a = mol.GetAtomWithIdx(anion)
+            a.SetFormalCharge(a.GetFormalCharge() + 1)
+            a = mol.GetAtomWithIdx(a2)
+            a.SetFormalCharge(a.GetFormalCharge() - 1)
             # bonds
-            mol.GetBondBetweenAtoms(anion, a1).SetBondType(
-                Chem.BondType.DOUBLE)
-            mol.GetBondBetweenAtoms(a1, a2).SetBondType(Chem.BondType.SINGLE)
+            b = mol.GetBondBetweenAtoms(anion, a1)
+            b.SetBondType(RDBONDORDER[b.GetBondTypeAsDouble() + 1])
+            b = mol.GetBondBetweenAtoms(a1, a2)
+            b.SetBondType(RDBONDORDER[b.GetBondTypeAsDouble() - 1])
             mol.UpdatePropertyCache(strict=False)
             # start new iteration
             continue
