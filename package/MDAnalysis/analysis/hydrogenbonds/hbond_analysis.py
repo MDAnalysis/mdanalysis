@@ -276,14 +276,16 @@ class HydrogenBondAnalysis(base.AnalysisBase):
             bonds but not water-water hydrogen bonds. If `None`, hydrogen
             bonds between all donors and acceptors will be calculated.
         d_h_cutoff : float (optional)
-            Distance cutoff used for finding donor-hydrogen pairs [1.2]. Only used to find donor-hydrogen pairs if the
+            Distance cutoff used for finding donor-hydrogen pairs.
+            Only used to find donor-hydrogen pairs if the
             universe topology does not contain bonding information
         d_a_cutoff : float (optional)
-            Distance cutoff for hydrogen bonds. This cutoff refers to the D-A distance. [3.0]
-        d_h_a_angle_cutoff: float (optional)
-            D-H-A angle cutoff for hydrogen bonds, in degrees. [150]
-        update_selections: bool (optional)
-            Whether or not to update the acceptor, donor and hydrogen lists at each frame. [True]
+            Distance cutoff for hydrogen bonds. This cutoff refers to the D-A distance.
+        d_h_a_angle_cutoff : float (optional)
+            D-H-A angle cutoff for hydrogen bonds, in degrees.
+        update_selections : bool (optional)
+            Whether or not to update the acceptor, donor and hydrogen
+            lists at each frame.
 
         Note
         ----
