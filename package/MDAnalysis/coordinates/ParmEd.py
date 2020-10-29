@@ -73,6 +73,8 @@ Classes
 
 """
 import functools
+import itertools
+import warnings
 
 from . import base
 from ..topology.tables import SYMB2Z
