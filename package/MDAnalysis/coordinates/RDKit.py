@@ -245,13 +245,13 @@ class RDKitConverter(base.ConverterBase):
     Since one of the main use case of the converter is converting trajectories
     and not just a topology, creating a new molecule from scratch for every
     frame would be too slow so the converter uses a caching system. The cache
-    only remembers the 2 most recent AtomGroups that were converted, as well
-    as the arguments that were passed to the converter. The number of objects
-    cached can be changed with the function :func:`set_converter_cache_size`.
-    However, ``ag.convert_to("RDKIT")`` followed by ``ag.convert_to("RDKIT", NoImplicit=False)``
-    will not use the cache since the arguments given are different.
-    You can pass a ``cache=False`` argument to the converter to bypass the
-    caching system.
+    only stores the 2 most recent AtomGroups that were converted, and is
+    sensitive to the arguments that were passed to the converter. The number of
+    objects cached can be changed with the function
+    :func:`set_converter_cache_size`. However, ``ag.convert_to("RDKIT")``
+    followed by ``ag.convert_to("RDKIT", NoImplicit=False)`` will not use the
+    cache since the arguments given are different. You can pass a
+    ``cache=False`` argument to the converter to bypass the caching system.
 
 
     .. versionadded:: 2.0.0
@@ -332,7 +332,8 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200):
     ag : MDAnalysis.core.groups.AtomGroup
         The AtomGroup to convert
     NoImplicit : bool
-        Prevent adding hydrogens to the molecule
+        Prevent adding hydrogens to the molecule and allow bond orders and
+        formal charges to be guessed from the valence of each atom.
     max_iter : int
         Maximum number of iterations to standardize conjugated systems.
         See :func:`_rebuild_conjugated_bonds`
@@ -346,7 +347,7 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200):
             "documentation to guess elements from other attributes or "
             "type `help(MDAnalysis.topology.guessers)`") from None
 
-    if "H" not in ag.elements:
+    if NoImplicit is True and "H" not in ag.elements:
         warnings.warn(
             "No hydrogen atom could be found in the topology, but the "
             "converter requires all hydrogens to be explicit. Please "

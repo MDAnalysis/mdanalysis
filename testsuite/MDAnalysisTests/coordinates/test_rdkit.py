@@ -239,6 +239,11 @@ class TestRDKitConverter(object):
             match="No hydrogen atom could be found in the topology"
         ):
             u.atoms.convert_to("RDKIT")
+        rdkit_converter = mda._CONVERTERS["RDKIT"]().convert
+        with pytest.warns(None) as record:
+            rdkit_converter(u.atoms, NoImplicit=False)
+        assert len(record) == 0
+        
 
     @pytest.mark.parametrize("attr, value, expected", [
         ("names", "C1", " C1 "),
@@ -331,12 +336,23 @@ class TestRDKitConverter(object):
             mol.GetConformer()
 
     def test_cache(self):
+        """5 tests are performed here:
+
+        * while iterating on timesteps in a trajectory, the number of cached
+          objects should not change
+        * the cache should remember about 2 atomgroups by default
+        * the cache size can be increased
+        * the cache is sensitive to arguments passed to the converter as they
+          might change the output molecule
+        * the cache can be ignored
+        """
         cached_func = mda.coordinates.RDKit.atomgroup_to_mol
         # create universes
         utraj = mda.Universe.from_smiles("CCO", numConfs=5)
         uc = mda.Universe.from_smiles("C")
         ucc = mda.Universe.from_smiles("CC")
         uccc = mda.Universe.from_smiles("CCC")
+        # test (1): iterating over frames in a trajectory
         previous_cache = None
         for ts in utraj.trajectory:
             mol = utraj.atoms.convert_to("RDKIT")
@@ -345,7 +361,7 @@ class TestRDKitConverter(object):
                 # the cache shouldn't change when iterating on timesteps
                 assert cache.currsize == previous_cache.currsize
                 previous_cache = copy.deepcopy(cache)
-        # only 2 molecules should be cached by default
+        # test (2): only 2 molecules should be cached by default
         cached_func.cache_clear()
         mol = uc.atoms.convert_to("RDKIT")
         mol = ucc.atoms.convert_to("RDKIT")
@@ -355,17 +371,17 @@ class TestRDKitConverter(object):
         assert cache.misses == 3
         mol = ucc.atoms.convert_to("RDKIT")
         assert cached_func.cache_info().hits == 1
-        # increase cache size
+        # test (3): increase cache size
         mda.coordinates.RDKit.set_converter_cache_size(3)
         cached_func = mda.coordinates.RDKit.atomgroup_to_mol
         assert cached_func.cache_info().maxsize == 3
-        # converter with kwargs
+        # test (4): caching is sensitive to converter arguments
         previous_cache = cached_func.cache_info()
         rdkit_converter = mda._CONVERTERS["RDKIT"]().convert
         mol = rdkit_converter(uc.atoms, NoImplicit=False)
         cache = cached_func.cache_info()
         assert cache.misses == previous_cache.misses + 1
-        # skip cache
+        # test (5): skip cache
         mol = rdkit_converter(uc.atoms, cache=False)
         new_cache = cached_func.cache_info()
         assert cache == new_cache
