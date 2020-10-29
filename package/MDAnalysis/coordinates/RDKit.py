@@ -344,7 +344,7 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200):
             "The `elements` attribute is required for the RDKitConverter "
             "but is not present in this AtomGroup. Please refer to the "
             "documentation to guess elements from other attributes or "
-            "type `help(mda.topology.guessers)`") from None
+            "type `help(MDAnalysis.topology.guessers)`") from None
 
     if "H" not in ag.elements:
         warnings.warn(
