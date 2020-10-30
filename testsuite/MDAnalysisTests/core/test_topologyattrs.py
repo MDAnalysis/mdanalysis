@@ -499,3 +499,26 @@ def test_static_typing_from_empty():
 
     assert isinstance(u._topology.masses.values, np.ndarray)
     assert isinstance(u.atoms[0].mass, float)
+
+
+@pytest.mark.parametrize('level, transplant_name', (
+    ('atoms', 'center_of_mass'),
+    ('atoms', 'total_charge'),
+    ('residues', 'total_charge'),
+))
+def test_stub_transplant_methods(level, transplant_name):
+    u = mda.Universe.empty(n_atoms=2)
+    group = getattr(u, level)
+    with pytest.raises(NoDataError):
+        getattr(group, transplant_name)()
+
+
+@pytest.mark.parametrize('level, transplant_name', (
+    ('universe', 'models'),
+    ('atoms', 'n_fragments'),
+))
+def test_stub_transplant_property(level, transplant_name):
+    u = mda.Universe.empty(n_atoms=2)
+    group = getattr(u, level)
+    with pytest.raises(NoDataError):
+        getattr(group, transplant_name)

@@ -21,7 +21,7 @@ env:
     - MDA_DOCDIR=${TRAVIS_BUILD_DIR}/package/doc/html/html
     - MAINTAIN_DIR=${TRAVIS_BUILD_DIR}/maintainer
     # Set default python version to avoid repetition later
-    - PYTHON_VERSION=3.5
+    - PYTHON_VERSION=3.7
     - BUILD_DOCS=false
     - CODECOV=false
     - PYTEST_FLAGS="--disable-pytest-warnings --durations=50"
@@ -29,7 +29,8 @@ env:
     - MAIN_CMD="pytest ${PYTEST_LIST}"
     - SETUP_CMD="${PYTEST_FLAGS}"
     - BUILD_CMD="(cd package && python setup.py install) && (cd testsuite/ && python setup.py build)"
-    - CONDA_MIN_DEPENDENCIES="mmtf-python mock six biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
+    - CONDA_MIN_DEPENDENCIES="mmtf-python mock biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
+    - CONDA_PY2_DEPENDENCIES="six funcsigs"
     - CONDA_STANDARD_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 tqdm>=4.43.0"
     - CONDA_DEPENDENCIES="${CONDA_STANDARD_DEPENDENCIES} chemfiles"
     - CONDA_CHANNELS='biobuilds conda-forge'
@@ -39,14 +40,15 @@ env:
     - INSTALL_HOLE="true"
     - CYTHON_TRACE_NOGIL=1
     - MPLBACKEND=agg
+    - MAMBA=true
 
   jobs:
     # Run a coverage test for most versions
-    - CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+    - PYTHON_VERSION=3.5 MAMBA=false CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.8 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.7 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.6 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    - NUMPY_VERSION=1.13.3
+    - NUMPY_VERSION=1.13.3 PYTHON_VERSION=3.6
     - NUMPY_VERSION=dev  EVENT_TYPE="cron"
 
 jobs:
@@ -55,7 +57,6 @@ jobs:
     - env: NAME="Doc"
            MAIN_CMD="cd package && python setup.py"
            SETUP_CMD="build_sphinx"
-           PYTHON_VERSION=3.7
            BUILD_DOCS=true
            BUILD_CMD="cd ${TRAVIS_BUILD_DIR}/package && python setup.py build_ext --inplace"
            INSTALL_HOLE="false"
@@ -77,7 +78,7 @@ jobs:
            PYTHON_VERSION=2.7
            CODECOV="true"
            NUMPY_VERSION=1.16
-           CONDA_DEPENDENCIES="${CONDA_STANDARD_DEPENDENCIES}"
+           CONDA_DEPENDENCIES="${CONDA_STANDARD_DEPENDENCIES} ${CONDA_PY2_DEPENDENCIES}"
            SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
            PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0 chemfiles"
 
@@ -87,11 +88,11 @@ jobs:
            MAIN_CMD=""
            SETUP_CMD=""
            NUMPY_VERSION=1.16
+           CONDA_DEPENDENCIES="${CONDA_STANDARD_DEPENDENCIES} ${CONDA_PY2_DEPENDENCIES}"	   
            PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
            ASV_CHECK="true"
 
     - env: NAME="pypi check"
-           PYTHON_VERSION=3.7
            CODECOV="false"
            MAIN_CMD="cd package && python setup.py"
            SETUP_CMD="sdist"
