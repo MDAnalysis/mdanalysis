@@ -74,10 +74,13 @@ Classes
 """
 from __future__ import absolute_import
 import functools
+import itertools
+import warnings
 
 from . import base
 from ..topology.tables import SYMB2Z
 from ..core.universe import Universe
+from ..exceptions import NoDataError
 
 
 class ParmEdReader(base.SingleFrameReaderBase):
