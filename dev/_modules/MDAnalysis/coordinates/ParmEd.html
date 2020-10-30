@@ -252,10 +252,13 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span> <span class="nn">..topology.tables</span> <span class="kn">import</span> <span class="n">SYMB2Z</span>
 <span class="kn">from</span> <span class="nn">..core.universe</span> <span class="kn">import</span> <span class="n">Universe</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
 
 
 <div class="viewcode-block" id="ParmEdReader"><a class="viewcode-back" href="../../../documentation_pages/converters/ParmEdParser.html#MDAnalysis.coordinates.ParmEd.ParmEdReader">[docs]</a><span class="k">class</span> <span class="nc">ParmEdReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>

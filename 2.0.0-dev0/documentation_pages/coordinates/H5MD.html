@@ -260,7 +260,7 @@ and trajectory files to <a class="reference internal" href="../core/universe.htm
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;topology.tpr&quot;</span><span class="p">,</span> <span class="s2">&quot;trajectory.h5md&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>It is also possible to pass an open <code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code> file stream
+<p>It is also possible to pass an open <a class="reference external" href="https://docs.h5py.org/en/stable/high/file.html#h5py.File" title="(in h5py v3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code></a> file stream
 into the reader:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
 <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s2">&quot;trajectory.h5md&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -502,7 +502,7 @@ it rewinds the trajectory back to the first timestep.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filename</strong> (str or <code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code>) – trajectory filename or open h5py file</li>
+<li><strong>filename</strong> (str or <a class="reference external" href="https://docs.h5py.org/en/stable/high/file.html#h5py.File" title="(in h5py v3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code></a>) – trajectory filename or open h5py file</li>
 <li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – convert units to MDAnalysis units</li>
 <li><strong>driver</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – H5PY file driver used to open H5MD file</li>
 <li><strong>comm</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">MPI.Comm</span></code> (optional)) – MPI communicator used to open H5MD file
@@ -583,11 +583,11 @@ it rewinds the trajectory back to the first timstep.</p>
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.H5MD.</code><code class="descname">H5PYPicklable</code><span class="sig-paren">(</span><em>name</em>, <em>mode=None</em>, <em>driver=None</em>, <em>libver=None</em>, <em>userblock_size=None</em>, <em>swmr=False</em>, <em>rdcc_nslots=None</em>, <em>rdcc_nbytes=None</em>, <em>rdcc_w0=None</em>, <em>track_order=None</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/H5MD.html#H5PYPicklable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.H5PYPicklable" title="Permalink to this definition">¶</a></dt>
 <dd><p>H5PY file object (read-only) that can be pickled.</p>
 <p>This class provides a file-like object (as returned by
-<code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code>) that,
+<a class="reference external" href="https://docs.h5py.org/en/stable/high/file.html#h5py.File" title="(in h5py v3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code></a>) that,
 unlike standard Python file objects,
 can be pickled. Only read mode is supported.</p>
 <p>When the file is pickled, filename, mode, driver, and comm of
-<code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code> in the file are saved. On unpickling, the file
+<a class="reference external" href="https://docs.h5py.org/en/stable/high/file.html#h5py.File" title="(in h5py v3.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code></a> in the file are saved. On unpickling, the file
 is opened by filename, mode, driver. This means that for a successful
 unpickle, the original file still has to be accessible with its filename.</p>
 <table class="docutils field-list" frame="void" rules="none">
