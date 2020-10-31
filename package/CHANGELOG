@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/20 richardjgowers, IAlibay, orbeckst, tylerjereddy, jbarnoud,
          yuxuanzhuang, lilyminium, VOD555, p-j-smith, bieniekmateusz,
-         calcraven, ianmkenney, rcrehuet
+         calcraven, ianmkenney, rcrehuet, manuel.nuno.melo
 
   * 1.0.1
 
@@ -27,6 +27,10 @@ Fixes
   * Development status changed from beta to mature (Issue #2773)
   * pip installation only requests Python 2.7-compatible packages (#2736)
   * Testsuite does not use any more matplotlib.use('agg') (#2191)
+  * The methods provided by topology attributes now appear in the
+    documentation (Issue #1845)
+  * AtomGroup.center now works correctly for compounds + unwrapping
+    (Issue #2984)
   * In ChainReader, read_frame does not trigger change of iterating position.
     (Issue #2723, PR #2815)
   * empty_atomgroup.select_atoms('name *') now returns an empty
@@ -51,6 +55,10 @@ Fixes
 
 Enhancements
   * Improved performances when parsing TPR files (PR #2804)
+
+Changes (not affecting users)
+  * Continuous integration uses mamba rather than conda to install the
+    dependencies (PR #2983)
 
 Deprecations
   * waterdynamics.HydrogenBondLifetimes will be removed in 2.0.0 and
