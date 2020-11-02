@@ -171,6 +171,11 @@ class TestRDKitConverter(object):
     def uo2(self):
         return mda.Universe.from_smiles("O=O")
 
+    def test_no_atoms_attr(self):
+        rdkit_converter = mda._CONVERTERS["RDKIT"]().convert
+        with pytest.raises(TypeError, match=""):
+            rdkit_converter("foo")
+
     @pytest.mark.parametrize("smi", ["[H]", "C", "O", "[He]"])
     def test_single_atom_mol(self, smi):
         u = mda.Universe.from_smiles(smi, addHs=False,
@@ -237,6 +242,12 @@ class TestRDKitConverter(object):
         with pytest.warns(UserWarning,
                           match="No `bonds` attribute in this AtomGroup"):
             u.atoms.convert_to("RDKIT")
+
+    def test_bonds_outside_sel(self):
+        u = mda.Universe(Chem.MolFromSmiles("CC(=O)C"))
+        ag = u.select_atoms("index 1")
+        rdkit_converter = mda._CONVERTERS["RDKIT"]().convert
+        rdkit_converter(ag, NoImplicit=False)
 
     def test_error_no_hydrogen(self, uo2):
         with pytest.raises(AttributeError,
