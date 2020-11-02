@@ -166,7 +166,7 @@ class TestRDKitConverter(object):
         elements = mda.topology.guessers.guess_types(u.atoms.names)
         u.add_TopologyAttr('elements', elements)
         return u.select_atoms("resid 2-12")
-    
+
     @pytest.fixture
     def uo2(self):
         return mda.Universe.from_smiles("O=O")
@@ -382,9 +382,9 @@ class TestRDKitConverter(object):
         cache = cached_func.cache_info()
         assert cache.currsize == 2
         assert cache.misses == 3
-        mol = ucc.atoms.convert_to("RDKIT") # should be inside of the cache
+        mol = ucc.atoms.convert_to("RDKIT")  # should be inside of the cache
         assert cached_func.cache_info().hits == 1
-        mol = uc.atoms.convert_to("RDKIT") # outside of the cache
+        mol = uc.atoms.convert_to("RDKIT")  # outside of the cache
         assert cached_func.cache_info().hits == 1
         assert cached_func.cache_info().misses == 4
         # test (3): increase cache size

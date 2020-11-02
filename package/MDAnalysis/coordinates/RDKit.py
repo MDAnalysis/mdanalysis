@@ -261,7 +261,7 @@ class RDKitConverter(base.ConverterBase):
     lib = 'RDKIT'
     units = {'time': None, 'length': 'Angstrom'}
 
-    def convert(self, obj, cache=True, NoImplicit=True, max_iter=200, 
+    def convert(self, obj, cache=True, NoImplicit=True, max_iter=200,
                 force=False):
         """Write selection at current trajectory frame to
         :class:`~rdkit.Chem.rdchem.Mol`.
