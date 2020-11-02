@@ -261,7 +261,8 @@ class RDKitConverter(base.ConverterBase):
     lib = 'RDKIT'
     units = {'time': None, 'length': 'Angstrom'}
 
-    def convert(self, obj, cache=True, NoImplicit=True, max_iter=200):
+    def convert(self, obj, cache=True, NoImplicit=True, max_iter=200, 
+                force=False):
         """Write selection at current trajectory frame to
         :class:`~rdkit.Chem.rdchem.Mol`.
 
@@ -279,6 +280,9 @@ class RDKitConverter(base.ConverterBase):
         max_iter : int
             Maximum number of iterations to standardize conjugated systems.
             See :func:`_rebuild_conjugated_bonds`
+        force : bool
+            Force the conversion when no hydrogens were detected but
+            ``NoImplicit=True``. Useful for inorganic molecules mostly.
         """
 
         try:
@@ -296,7 +300,7 @@ class RDKitConverter(base.ConverterBase):
                                 type(obj))) from None
 
         # parameters passed to atomgroup_to_mol
-        kwargs = dict(NoImplicit=NoImplicit, max_iter=max_iter)
+        kwargs = dict(NoImplicit=NoImplicit, max_iter=max_iter, force=force)
         if cache:
             mol = atomgroup_to_mol(ag, **kwargs)
             mol = copy.deepcopy(mol)
@@ -324,7 +328,7 @@ class RDKitConverter(base.ConverterBase):
 
 
 @lru_cache(maxsize=2)
-def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200):
+def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
     """Converts an AtomGroup to an RDKit molecule without coordinates.
 
     Parameters
@@ -337,6 +341,9 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200):
     max_iter : int
         Maximum number of iterations to standardize conjugated systems.
         See :func:`_rebuild_conjugated_bonds`
+    force : bool
+        Force the conversion when no hydrogens were detected but
+        ``NoImplicit=True``. Useful for inorganic molecules mostly.
     """
     try:
         elements = ag.elements
@@ -347,17 +354,20 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200):
             "documentation to guess elements from other attributes or "
             "type `help(MDAnalysis.topology.guessers)`") from None
 
-    if NoImplicit is True and "H" not in ag.elements:
-        warnings.warn(
-            "No hydrogen atom could be found in the topology, but the "
-            "converter requires all hydrogens to be explicit. Please "
-            "check carefully the output molecule as the converter is "
-            "likely to add negative charges and assign incorrect bond "
-            "orders to structures with implicit hydrogens. Alternatively, "
-            "you can use the parameter `NoImplicit=False` when using the "
-            "converter to allow implicit hydrogens and disable inferring "
-            "bond orders and charges."
-        )
+    if "H" not in ag.elements:
+        if force:
+            warnings.warn(
+                "No hydrogen atom found in the topology. "
+                "Forcing to continue the conversion."
+            )
+        elif NoImplicit:
+            raise AttributeError(
+                "No hydrogen atom could be found in the topology, but the "
+                "converter requires all hydrogens to be explicit. You can use "
+                "the parameter ``NoImplicit=False`` when using the converter "
+                "to allow implicit hydrogens and disable inferring bond "
+                "orders and charges. You can also use ``force=True`` to "
+                "ignore this error.")
 
     # attributes accepted in PDBResidueInfo object
     pdb_attrs = {}

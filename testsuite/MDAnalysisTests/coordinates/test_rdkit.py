@@ -166,12 +166,17 @@ class TestRDKitConverter(object):
         elements = mda.topology.guessers.guess_types(u.atoms.names)
         u.add_TopologyAttr('elements', elements)
         return u.select_atoms("resid 2-12")
+    
+    @pytest.fixture
+    def uo2(self):
+        return mda.Universe.from_smiles("O=O")
 
     @pytest.mark.parametrize("smi", ["[H]", "C", "O", "[He]"])
     def test_single_atom_mol(self, smi):
         u = mda.Universe.from_smiles(smi, addHs=False,
                                      generate_coordinates=False)
-        mol = u.atoms.convert_to("RDKIT")
+        rdkit_converter = mda._CONVERTERS["RDKIT"]().convert
+        mol = rdkit_converter(u.atoms, NoImplicit=False)
         assert mol.GetNumAtoms() == 1
         assert mol.GetAtomWithIdx(0).GetSymbol() == smi.strip("[]")
 
@@ -192,8 +197,9 @@ class TestRDKitConverter(object):
         ("resid 34 and altloc B", 2),
     ])
     def test_monomer_info(self, pdb, sel_str, atom_index):
+        rdkit_converter = mda._CONVERTERS["RDKIT"]().convert
         sel = pdb.select_atoms(sel_str)
-        umol = sel.convert_to("RDKIT")
+        umol = rdkit_converter(sel, NoImplicit=False)
         atom = umol.GetAtomWithIdx(atom_index)
         mda_index = atom.GetIntProp("_MDAnalysis_index")
         mi = atom.GetMonomerInfo()
@@ -232,18 +238,23 @@ class TestRDKitConverter(object):
                           match="No `bonds` attribute in this AtomGroup"):
             u.atoms.convert_to("RDKIT")
 
-    def test_warn_no_hydrogen(self):
-        u = mda.Universe.from_smiles("O=O")
-        with pytest.warns(
-            UserWarning,
-            match="No hydrogen atom could be found in the topology"
-        ):
-            u.atoms.convert_to("RDKIT")
+    def test_error_no_hydrogen(self, uo2):
+        with pytest.raises(AttributeError,
+                           match="the converter requires all hydrogens to be "
+                                 "explicit"):
+            uo2.atoms.convert_to("RDKIT")
+
+    def test_error_no_hydrogen_implicit(self, uo2):
         rdkit_converter = mda._CONVERTERS["RDKIT"]().convert
         with pytest.warns(None) as record:
-            rdkit_converter(u.atoms, NoImplicit=False)
+            rdkit_converter(uo2.atoms, NoImplicit=False)
         assert len(record) == 0
-        
+
+    def test_warning_no_hydrogen_force(self, uo2):
+        rdkit_converter = mda._CONVERTERS["RDKIT"]().convert
+        with pytest.warns(UserWarning,
+                          match="Forcing to continue the conversion"):
+            rdkit_converter(uo2.atoms, NoImplicit=False, force=True)
 
     @pytest.mark.parametrize("attr, value, expected", [
         ("names", "C1", " C1 "),
@@ -292,15 +303,17 @@ class TestRDKitConverter(object):
         "resname PRO and segid A",
     ])
     def test_index_property(self, pdb, sel_str):
+        rdkit_converter = mda._CONVERTERS["RDKIT"]().convert
         ag = pdb.select_atoms(sel_str)
-        mol = ag.convert_to("RDKIT")
+        mol = rdkit_converter(ag, NoImplicit=False)
         expected = [i for i in range(len(ag))]
         indices = sorted([a.GetIntProp("_MDAnalysis_index")
                           for a in mol.GetAtoms()])
         assert_equal(indices, expected)
 
     def test_assign_coordinates(self, pdb):
-        mol = pdb.atoms.convert_to("RDKIT")
+        rdkit_converter = mda._CONVERTERS["RDKIT"]().convert
+        mol = rdkit_converter(pdb.atoms, NoImplicit=False)
         positions = mol.GetConformer().GetPositions()
         indices = sorted(mol.GetAtoms(),
                          key=lambda a: a.GetIntProp("_MDAnalysis_index"))
@@ -369,8 +382,11 @@ class TestRDKitConverter(object):
         cache = cached_func.cache_info()
         assert cache.currsize == 2
         assert cache.misses == 3
-        mol = ucc.atoms.convert_to("RDKIT")
+        mol = ucc.atoms.convert_to("RDKIT") # should be inside of the cache
         assert cached_func.cache_info().hits == 1
+        mol = uc.atoms.convert_to("RDKIT") # outside of the cache
+        assert cached_func.cache_info().hits == 1
+        assert cached_func.cache_info().misses == 4
         # test (3): increase cache size
         mda.coordinates.RDKit.set_converter_cache_size(3)
         cached_func = mda.coordinates.RDKit.atomgroup_to_mol
