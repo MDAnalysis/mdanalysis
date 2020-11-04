@@ -106,7 +106,7 @@ matrix:
       group: edge
       before_install:
         - python -m pip install cython numpy scipy
-        - python -m pip install --no-build-isolation hypothesis matplotlib pytest pytest-cov pytest-xdist tqdm
+        - python -m pip install --no-build-isolation hypothesis matplotlib pytest pytest-cov pytest-xdist tqdm threadpoolctl
       install:
         - cd package
         - python setup.py install
