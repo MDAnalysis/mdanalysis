@@ -121,8 +121,9 @@ class rotateby(TransformationBase):
                  ag=None,
                  weights=None,
                  wrap=False,
-                 max_threads=1):
-        super().__init__(max_threads)
+                 max_threads=1,
+                 parallelizable=True):
+        super().__init__(max_threads, parallelizable)
 
         self.angle = angle
         self.direction = direction
