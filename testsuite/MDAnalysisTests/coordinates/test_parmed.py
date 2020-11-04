@@ -204,6 +204,17 @@ class BaseTestParmEdConverter:
                         p.improper == q.improper and
                         p.ignore_end == q.ignore_end) for q in original)
 
+    def test_missing_attr(self):
+        n_atoms = 10
+        u = mda.Universe.empty(n_atoms)
+        u.add_TopologyAttr("resid", [1])
+        u.add_TopologyAttr("segid", ["DUM"])
+        u.add_TopologyAttr("mass", [1] * n_atoms)
+        with pytest.warns(UserWarning,
+                          match="Supplied AtomGroup was missing the following "
+                                "attributes"):
+            # should miss names and resnames
+            u.atoms.convert_to("PARMED")
 
 
 class BaseTestParmEdConverterSubset(BaseTestParmEdConverter):
