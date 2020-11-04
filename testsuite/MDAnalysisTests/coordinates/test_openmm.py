@@ -45,7 +45,7 @@ class TestOpenMMBasicSimulationReader():
         residue = topology.addResidue("RES", chain)
         for i in range(5):
             system.addParticle(1.0)
-            topology.addAtom(i, hydrogen, residue)
+            topology.addAtom(hydrogen.symbol, hydrogen, residue)
         positions = np.ones((5,3)) * unit.angstrom
         integrator = mm.LangevinIntegrator(273 * unit.kelvin,
             1.0 / unit.picoseconds, 2.0 * unit.femtoseconds)
