@@ -86,6 +86,9 @@ class wrap(TransformationBase):
     .. versionchanged:: 2.0.0
         The transformation was changed from a function/closure to a class
         with ``__call__``.
+    .. versionchanged:: 2.0.0
+       The transformation was changed to inherit from the base class for
+       limiting threads and checking if it can be used in parallel analysis.
     """
     def __init__(self, ag, compound='atoms',
                  max_threads=None, parallelizable=True):
@@ -144,6 +147,9 @@ class unwrap(TransformationBase):
     .. versionchanged:: 2.0.0
         The transformation was changed from a function/closure to a class
         with ``__call__``.
+    .. versionchanged:: 2.0.0
+       The transformation was changed to inherit from the base class for
+       limiting threads and checking if it can be used in parallel analysis.
     """
     def __init__(self, ag, max_threads=None, parallelizable=True):
         super().__init__(max_threads=max_threads,

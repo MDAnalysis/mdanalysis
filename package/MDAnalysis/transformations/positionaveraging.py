@@ -134,8 +134,11 @@ class PositionAverager(TransformationBase):
     Returns
     -------
     MDAnalysis.coordinates.base.Timestep
-    
-    
+
+
+    .. versionchanged:: 2.0.0
+       The transformation was changed to inherit from the base class for
+       limiting threads and checking if it can be used in parallel analysis.
     """
 
     def __init__(self, avg_frames, check_reset=True,

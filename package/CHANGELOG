@@ -103,6 +103,8 @@ Enhancements
     'protein' selection (#2751 PR #2755)
   * Added an RDKit converter that works for any input with all hydrogens
     explicit in the topology (Issue #2468, PR #2775)
+  * Added `TransformationBase`. Implemented threadlimit and add an attribute for
+    checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
 
 Changes
   * Continuous integration uses mamba rather than conda to install the

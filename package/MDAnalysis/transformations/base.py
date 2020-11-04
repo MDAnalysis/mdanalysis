@@ -59,7 +59,8 @@ class TransformationBase(object):
        class NewTransformation(TransformationBase):
            def __init__(self, ag, parameter,
                         max_threads=1, parallelizable=True):
-               super().__init__(max_threads, parallelizable)
+               super().__init__(max_threads=max_threads,
+                                 parallelizable=parallelizable)
                self.ag = ag
                self._param = parameter
 

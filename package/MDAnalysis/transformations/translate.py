@@ -60,6 +60,13 @@ class translate(TransformationBase):
     -------
     :class:`~MDAnalysis.coordinates.base.Timestep` object
 
+
+    .. versionchanged:: 2.0.0
+       The transformation was changed from a function/closure to a class
+       with ``__call__``.
+    .. versionchanged:: 2.0.0
+       The transformation was changed to inherit from the base class for
+       limiting threads and checking if it can be used in parallel analysis.
     """
     def __init__(self, vector,
                  max_threads=None, parallelizable=True):
@@ -117,6 +124,9 @@ class center_in_box(TransformationBase):
     .. versionchanged:: 2.0.0
         The transformation was changed from a function/closure to a class
         with ``__call__``.
+    .. versionchanged:: 2.0.0
+       The transformation was changed to inherit from the base class for
+       limiting threads and checking if it can be used in parallel analysis.
     """
     def __init__(self, ag, center='geometry', point=None, wrap=False,
                  max_threads=None, parallelizable=True):
