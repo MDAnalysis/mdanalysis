@@ -112,7 +112,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
         residue_segindex = [r.chain.index for r in omm_topology.residues()]
         atomids = [a.id for a in omm_topology.atoms()]
         atomnames = [a.name for a in omm_topology.atoms()]
-        #atomtypes = guess_types(atomnames)
+        atomtypes = guess_types(atomnames)
         chainids = [a.residue.chain.id for a in omm_topology.atoms()]
         elements = [a.element.symbol for a in omm_topology.atoms()]
         masses = [a.element.mass._value for a in omm_topology.atoms()]
@@ -131,7 +131,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
         attrs = [
             Atomids(np.array(atomids, dtype=np.int32)),
             Atomnames(np.array(atomnames, dtype=object)),
-            #Atomtypes(np.array(atomtypes, dtype=object)),
+            Atomtypes(np.array(atomtypes, dtype=object)),
             Bonds(bonds, types=bond_types, order=bond_orders, guessed=False),
             ChainIDs(np.array(chainids, dtype=object)),
             Elements(np.array(elements, dtype=object)),
