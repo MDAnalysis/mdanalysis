@@ -303,11 +303,11 @@ class Ramachandran(AnalysisBase):
     atomgroup : AtomGroup or ResidueGroup
         atoms for residues for which :math:`\phi` and :math:`\psi` are
         calculated
-    c_name: str (optional)
+    c_name : str (optional)
         name for the backbone C atom
-    n_name: str (optional)
+    n_name : str (optional)
         name for the backbone N atom
-    ca_name: str (optional)
+    ca_name : str (optional)
         name for the alpha-carbon atom
     check_protein: bool (optional)
         whether to raise an error if the provided atomgroup is not a
@@ -349,6 +349,7 @@ class Ramachandran(AnalysisBase):
 
     .. versionchanged:: 1.0.0
         added c_name, n_name, ca_name, and check_protein keyword arguments
+
     """
 
     def __init__(self, atomgroup, c_name='C', n_name='N', ca_name='CA',
@@ -422,8 +423,8 @@ class Ramachandran(AnalysisBase):
     def plot(self, ax=None, ref=False, **kwargs):
         """Plots data into standard Ramachandran plot.
 
-        Each time step in :attr:`Ramachandran.angles` is plotted onto
-        the same graph.
+        Each time step in :attr:`Ramachandran.angles` is plotted onto the same
+        graph.
 
         Parameters
         ----------
@@ -468,8 +469,8 @@ class Ramachandran(AnalysisBase):
 
 
 class Janin(Ramachandran):
-    r"""Calculate :math:`\chi_1` and :math:`\chi_2` dihedral angles of
-    selected residues.
+    r"""Calculate :math:`\chi_1` and :math:`\chi_2` dihedral angles of selected
+    residues.
 
     :math:`\chi_1` and :math:`\chi_2` angles will be calculated for each residue
     corresponding to `atomgroup` for each time step in the trajectory. A

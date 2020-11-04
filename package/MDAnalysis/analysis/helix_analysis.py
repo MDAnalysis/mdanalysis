@@ -42,6 +42,15 @@ bending angles between successive local helix axes.
 
 .. _HELANAL: https://pubmed.ncbi.nlm.nih.gov/10798526/
 
+.. [Sugeta1967] Sugeta, H. and Miyazawa, T. 1967. General method for
+   calculating helical parameters of polymer chains from bond lengths, bond
+   angles and internal rotation angles. *Biopolymers* 5 673 - 679
+
+.. [Bansal2000] Bansal M, Kumar S, Velavan R. 2000.
+   HELANAL - A program to characterise helix geometry in proteins.
+   *J Biomol Struct Dyn.*  17(5):811-819.
+
+
 Example use
 -----------
 
@@ -85,7 +94,7 @@ def vector_of_best_fit(coordinates):
 
     Parameters
     ----------
-    coordinates: :class:`numpy.ndarray` of shape (N, 3)
+    coordinates : :class:`numpy.ndarray` of shape (N, 3)
 
     Returns
     -------
@@ -112,13 +121,13 @@ def local_screw_angles(global_axis, ref_axis, helix_directions):
 
     Parameters
     ----------
-    global_axis: :class:`numpy.ndarray` of shape (3,)
+    global_axis : :class:`numpy.ndarray` of shape (3,)
         Vector of best fit. Screw angles are calculated perpendicular to
         this axis.
-    ref_axis: :class:`numpy.ndarray` of shape (3,)
+    ref_axis : :class:`numpy.ndarray` of shape (3,)
         Reference length-wise axis. One of the reference vectors is
         orthogonal to this axis.
-    helix_directions: :class:`numpy.ndarray` of shape (N, 3)
+    helix_directions : :class:`numpy.ndarray` of shape (N, 3)
         array of vectors representing the local direction of each
         helix window.
 
@@ -169,34 +178,34 @@ def helix_analysis(positions, ref_axis=[0, 0, 1]):
 
     Parameters
     ----------
-    positions: :class:`numpy.ndarray` of shape (N, 3)
+    positions : :class:`numpy.ndarray` of shape (N, 3)
         Atomic coordinates.
-    ref_axis: array-like of length 3, optional
+    ref_axis : array-like of length 3, optional
         The reference axis used to calculate the tilt of the vector
         of best fit, and the local screw angles.
 
     Returns
     -------
     dict with the following keys:
-        local_twists: array, shape (N-3,)
+        local_twists : array, shape (N-3,)
             local twist angle from atom i+1 to i+2
-        local_nres_per_turn: array, shape (N-3,)
+        local_nres_per_turn : array, shape (N-3,)
             number of residues per turn, based on local_twist
-        local_axes:  array, shape (N-3, 3)
+        local_axes :  array, shape (N-3, 3)
             the length-wise helix axis of the local window
-        local_bends: array, shape (N-6,)
+        local_bends : array, shape (N-6,)
             the angles between local helix angles, 3 windows apart
-        local_heights: array, shape (N-3,)
+        local_heights : array, shape (N-3,)
             the rise of each local helix
-        local_helix_directions: array, shape (N-2, 3)
+        local_helix_directions : array, shape (N-2, 3)
             the unit vector from each local origin to atom i+1
-        local_origins: array, shape (N-2, 3)
+        local_origins : array, shape (N-2, 3)
             the projected origin for each helix
-        all_bends: array, shape (N-3, N-3)
+        all_bends : array, shape (N-3, N-3)
             angles between each local axis
-        global_axis: array, shape (3,)
+        global_axis : array, shape (3,)
             vector of best fit through origins, pointing at the first origin.
-        local_screw_angles: array, shape (N-2,)
+        local_screw_angles : array, shape (N-2,)
             cylindrical azimuth angle to plane of global_axis and ref_axis
     """
 
@@ -284,59 +293,59 @@ class HELANAL(AnalysisBase):
 
     Parameters
     ----------
-    universe: Universe or AtomGroup
+    universe : Universe or AtomGroup
         The Universe or AtomGroup to apply the analysis to.
-    select: str or iterable of str, optional
+    select : str or iterable of str, optional
         The selection string to create an atom selection that the HELANAL
         analysis is applied to. Note that HELANAL is designed to work on the
         alpha-carbon atoms of protein residues. If you pass in multiple
         selections, the selections will be analysed separately.
-    ref_axis: array-like of length 3, optional
+    ref_axis : array-like of length 3, optional
         The reference axis used to calculate the tilt of the vector
         of best fit, and the local screw angles.
-    flatten_single_helix: bool, optional
+    flatten_single_helix : bool, optional
         Whether to flatten results if only one selection is passed.
     verbose : bool, optional
         Turn on more logging and debugging.
 
     Attributes
     ----------
-    local_twists: array or list of arrays
+    local_twists : array or list of arrays
         The local twist angle from atom i+1 to i+2.
         Each array has shape (n_frames, n_residues-3)
-    local_nres_per_turn: array or list of arrays
+    local_nres_per_turn : array or list of arrays
         Number of residues per turn, based on local_twist.
         Each array has shape (n_frames, n_residues-3)
-    local_axes: array or list of arrays
+    local_axes : array or list of arrays
         The length-wise helix axis of the local window.
         Each array has shape (n_frames, n_residues-3, 3)
-    local_heights: array or list of arrays
+    local_heights : array or list of arrays
         The rise of each local helix.
         Each array has shape (n_frames, n_residues-3)
-    local_helix_directions: array or list of arrays
+    local_helix_directions : array or list of arrays
         The unit vector from each local origin to atom i+1.
         Each array has shape (n_frames, n_residues-2, 3)
-    local_origins: array or list of arrays
+    local_origins :array or list of arrays
         The projected origin for each helix.
         Each array has shape (n_frames, n_residues-2, 3)
-    local_screw_angles: array or list of arrays
+    local_screw_angles : array or list of arrays
         The local screw angle for each helix.
         Each array has shape (n_frames, n_residues-2)
-    local_bends: array or list of arrays
+    local_bends : array or list of arrays
         The angles between local helix axes, 3 windows apart.
         Each array has shape (n_frames, n_residues-6)
-    all_bends: array or list of arrays
+    all_bends : array or list of arrays
         The angles between local helix axes.
         Each array has shape (n_frames, n_residues-3, n_residues-3)
-    global_axis: array or list of arrays
+    global_axis : array or list of arrays
         The length-wise axis for the overall helix. This points at
         the first helix window in the helix, so it runs opposite to
         the direction of the residue numbers.
         Each array has shape (n_frames, 3)
-    global_tilts: array or list of arrays
+    global_tilts : array or list of arrays
         The angle between the global axis and the reference axis.
         Each array has shape (n_frames,)
-    summary: dict or list of dicts
+    summary : dict or list of dicts
         Summary of stats for each property: the mean, the sample
         standard deviation, and the mean absolute deviation.
     """

@@ -261,8 +261,15 @@ def extensions(config):
     use_cython = config.get('use_cython', default=not is_release)
     use_openmp = config.get('use_openmp', default=True)
 
-    extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops',
-                          '-fsigned-zeros']  # see #2722
+    if platform.machine() == 'aarch64':
+        # reduce optimization level for ARM64 machines
+        # because of issues with test failures sourcing to:
+        # MDAnalysis/analysis/encore/clustering/src/ap.c
+        extra_compile_args = ['-std=c99', '-ffast-math', '-O1', '-funroll-loops',
+                              '-fsigned-zeros']
+    else:
+        extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops',
+                              '-fsigned-zeros']  # see #2722
     define_macros = []
     if config.get('debug_cflags', default=False):
         extra_compile_args.extend(['-Wall', '-pedantic'])
@@ -609,7 +616,8 @@ if __name__ == '__main__':
           ext_modules=exts,
           requires=['numpy (>=1.16.0)', 'biopython (>= 1.71)', 'mmtf (>=1.0.0)',
                     'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib',
-                    'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)', 'tqdm (>=4.43.0)'],
+                    'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)', 'tqdm (>=4.43.0)',
+                    ],
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
