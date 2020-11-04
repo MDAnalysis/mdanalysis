@@ -81,7 +81,7 @@ class TransformationBase(object):
        check if it can be used in parallel analysis.
     """
 
-    def __init__(self, max_threads=None, parallelizable=True):
+    def __init__(self, **kwargs):
         """
         Parameters
         ----------
@@ -93,8 +93,8 @@ class TransformationBase(object):
            analysis approach.
            Default is `True`.
         """
-        self.max_threads = max_threads
-        self.parallelizable = parallelizable
+        self.max_threads = kwargs.pop('max_threads', None)
+        self.parallelizable = kwargs.pop('parallelizable', True)
 
     def __call__(self, ts):
         """The function that makes transformation can be called as a function

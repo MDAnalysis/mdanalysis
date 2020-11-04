@@ -87,8 +87,10 @@ class fit_translation(TransformationBase):
         The transformation was changed from a function/closure to a class
         with ``__call__``.
     """
-    def __init__(self, ag, reference, plane=None, weights=None, max_threads=1, parallelizable=True):
-        super().__init__(max_threads, parallelizable)
+    def __init__(self, ag, reference, plane=None, weights=None,
+                 max_threads=None, parallelizable=True):
+        super().__init__(max_threads=max_threads,
+                         parallelizable=parallelizable)
 
         self.ag = ag
         self.reference = reference
@@ -179,8 +181,10 @@ class fit_rot_trans(TransformationBase):
     -------
     MDAnalysis.coordinates.base.Timestep
     """
-    def __init__(self, ag, reference, plane=None, weights=None, max_threads=1, parallelizable=True):
-        super().__init__(max_threads, parallelizable)
+    def __init__(self, ag, reference, plane=None, weights=None,
+                 max_threads=1, parallelizable=True):
+        super().__init__(max_threads=max_threads,
+                         parallelizable=parallelizable)
 
         self.ag = ag
         self.reference = reference

@@ -61,8 +61,10 @@ class translate(TransformationBase):
     :class:`~MDAnalysis.coordinates.base.Timestep` object
 
     """
-    def __init__(self, vector, max_threads=1, parallelizable=True):
-        super().__init__(max_threads, parallelizable)
+    def __init__(self, vector,
+                 max_threads=None, parallelizable=True):
+        super().__init__(max_threads=max_threads,
+                         parallelizable=parallelizable)
 
         self.vector = vector
 
@@ -117,8 +119,9 @@ class center_in_box(TransformationBase):
         with ``__call__``.
     """
     def __init__(self, ag, center='geometry', point=None, wrap=False,
-                 max_threads=1, parallelizable=True):
-        super().__init__(max_threads, parallelizable)
+                 max_threads=None, parallelizable=True):
+        super().__init__(max_threads=max_threads,
+                         parallelizable=parallelizable)
 
         self.ag = ag
         self.center = center

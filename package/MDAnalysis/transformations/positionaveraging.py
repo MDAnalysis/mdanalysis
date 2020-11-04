@@ -138,8 +138,11 @@ class PositionAverager(TransformationBase):
     
     """
 
-    def __init__(self, avg_frames, check_reset=True, max_threads=1, parallelizable=False):
-        super().__init__(max_threads, parallelizable)
+    def __init__(self, avg_frames, check_reset=True,
+                 max_threads=None,
+                 parallelizable=False):
+        super().__init__(max_threads=max_threads,
+                         parallelizable=parallelizable)
         self.avg_frames = avg_frames
         self.check_reset = check_reset
         self.current_avg = 0
