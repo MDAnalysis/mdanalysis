@@ -33,7 +33,7 @@ environment:
         - PYTHON_VERSION: 3.8
           PYTHON_ARCH: 64
           MSVC_VERSION: "Visual Studio 10 Win64"
-          CONDA_OPENMM: ""
+          CONDA_OPENMM: " "
 
 init:
     - ps: Write-Host ${env:PYTHON} ${env:PYTHON_VERSION} ${env:PYTHON_ARCH}
