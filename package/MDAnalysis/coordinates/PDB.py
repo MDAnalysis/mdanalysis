@@ -650,9 +650,11 @@ class PDBWriter(base.WriterBase):
         self.first_frame_done = False
 
     def close(self):
-        """Close PDB file and write END record"""
+        """Close PDB file and write CONECT and END record"""
         if hasattr(self, 'pdbfile') and self.pdbfile is not None:
             if not self.has_END:
+                if hasattr(self, "obj"): # Avoid problems with zero atoms
+                    self._write_pdb_bonds()
                 self.END()
             else:
                 logger.warning("END record has already been written"
@@ -871,7 +873,7 @@ class PDBWriter(base.WriterBase):
         # write_all_timesteps() to dump everything in one go, or do the
         # traditional loop over frames
         self._write_next_frame(self.ts, multiframe=self._multiframe)
-        self._write_pdb_bonds()
+        # CONECT record is written when file is being close()d
         # END record is written when file is being close()d
 
     def write_all_timesteps(self, obj):
@@ -915,7 +917,7 @@ class PDBWriter(base.WriterBase):
             traj[framenumber]
             self._write_next_frame(self.ts, multiframe=True)
 
-        self._write_pdb_bonds()
+        # CONECT record is written when the file is being close()d
         self.close()
 
         # Set the trajectory to the starting position
