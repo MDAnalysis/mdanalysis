@@ -774,7 +774,7 @@ class TestMultiPDBWriter(object):
 
         with open(outfile, "r") as f:
             lines = f.read()
-            assert lines.count("CONECT") == 2  # Expected two CONECT records
+            assert lines.count("CONECT") == 2  # Expected only two CONECT records
 
     def test_write_atoms(self, universe2, outfile):
         u = universe2

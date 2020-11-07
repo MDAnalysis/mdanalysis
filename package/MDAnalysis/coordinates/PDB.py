@@ -653,7 +653,7 @@ class PDBWriter(base.WriterBase):
         """Close PDB file and write CONECT and END record"""
         if hasattr(self, 'pdbfile') and self.pdbfile is not None:
             if not self.has_END:
-                if hasattr(self, "obj"): # Avoid problems with zero atoms
+                if hasattr(self, "obj"):  # Avoid problems with zero atoms
                     self._write_pdb_bonds()
                 self.END()
             else:

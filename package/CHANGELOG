@@ -15,11 +15,12 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
-         calcraven，xiki-tempula, mieczyslaw
+         calcraven，xiki-tempula, mieczyslaw, rmeli
 
   * 2.0.0
 
 Fixes
+  * Write `CONECT` record only once in multi-model PDB files
   * ParmedParser no longer guesses elements if they are not recognised, instead
     empty strings are assigned (Issue #2933)
   * Instead of using ATOM for both ATOM and HETATM, HETATM record type
