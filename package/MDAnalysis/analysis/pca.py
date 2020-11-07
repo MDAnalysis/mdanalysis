@@ -162,12 +162,13 @@ class PCA(AnalysisBase):
     Computation can be sped up by supplying a precalculated mean structure.
 
     .. versionchanged:: 1.0.0
-       ``n_components`` now limits the correct axis of ``p_components``. ``cumulated_variance`` now accurately represents the contribution of each 
-       principal component and does not change when ``n_components`` is given. If 
-       ``n_components`` is not None or is less than the number of ``p_components``, 
-       ``cumulated_variance`` will not sum to 1.
-       ``align=True`` now correctly aligns the trajectory and computes the correct
-       means and covariance matrix.
+       ``n_components`` now limits the correct axis of ``p_components``.
+       ``cumulated_variance`` now accurately represents the contribution of
+       each principal component and does not change when ``n_components`` is
+       given. If ``n_components`` is not None or is less than the number of
+       ``p_components``, ``cumulated_variance`` will not sum to 1.
+       ``align=True`` now correctly aligns the trajectory and computes the
+       correct means and covariance matrix.
 
     .. versionchanged:: 0.19.0
        The start frame is used when performing selections and calculating
@@ -179,23 +180,22 @@ class PCA(AnalysisBase):
         """
         Parameters
         ----------
-        universe: Universe
+        universe : Universe
             Universe
-        select: string, optional
+        select : string, optional
             A valid selection statement for choosing a subset of atoms from
             the atomgroup.
-        align: boolean, optional
+        align : boolean, optional
             If True, the trajectory will be aligned to a reference
             structure.
-        mean: MDAnalysis atomgroup, optional
+        mean : MDAnalysis atomgroup, optional
             An optional reference structure to be used as the mean of the
             covariance matrix.
         n_components : int, optional
             The number of principal components to be saved, default saves
-            all principal components, Default: None
+            all principal components
         verbose : bool (optional)
-             Show detailed progress of the calculation if set to ``True``; the
-             default is ``False``.
+             Show detailed progress of the calculation if set to ``True``.
         """
         super(PCA, self).__init__(universe.trajectory, **kwargs)
         self._u = universe
@@ -294,21 +294,23 @@ class PCA(AnalysisBase):
 
         Parameters
         ----------
-        atomgroup: MDAnalysis atomgroup/ Universe
+        atomgroup : MDAnalysis atomgroup/ Universe
             The atomgroup or universe containing atoms to be PCA transformed.
-        n_components: int, optional
-            The number of components to be projected onto, Default none: maps
-            onto all components.
-        start: int, optional
-            The frame to start on for the PCA transform. Default: None becomes
-            0, the first frame index.
-        stop: int, optional
-            Frame index to stop PCA transform. Default: None becomes n_frames.
+        n_components : int, optional
+            The number of components to be projected onto, The default
+            ``None``maps onto all components.
+        start : int, optional
+            The frame to start on for the PCA transform. The default
+            ``None`` becomes 0, the first frame index.
+        stop : int, optional
+            Frame index to stop PCA transform. The default ``None`` becomes
+            the total number of frames in the trajectory.
             Iteration stops *before* this frame number, which means that the
             trajectory would be read until the end.
-        step: int, optional
-            Number of frames to skip over for PCA transform. Default: None
-            becomes 1.
+        step : int, optional
+            Number of frames to skip over for PCA transform. If set to ``None``
+            (the default) then every frame is analyzed (i.e., same as
+            ``step=1``).
 
         Returns
         -------
@@ -356,26 +358,26 @@ class PCA(AnalysisBase):
     def rmsip(self, other, n_components=None):
         """Compute the root mean square inner product between subspaces.
 
-        This is only symmetric if the number of components is the same for 
-        both instances. The RMSIP effectively measures how 
+        This is only symmetric if the number of components is the same for
+        both instances. The RMSIP effectively measures how
         correlated the vectors of this instance are to those of ``other``.
 
         Please cite [Amadei1999]_ and [Leo-Macias2004]_ if you use this function.
 
         Parameters
         ----------
-        other: :class:`~MDAnalysis.analysis.pca.PCA`
+        other : :class:`~MDAnalysis.analysis.pca.PCA`
             Another PCA class. This must have already been run.
-        n_components: int or tuple of ints, optional
+        n_components : int or tuple of ints, optional
             number of components to compute for the inner products.
             ``None`` computes all of them.
 
         Returns
         -------
         float:
-            Root mean square inner product of the selected subspaces. 
-            0 indicates that they are mutually orthogonal, whereas 1 indicates 
-            that they are identical. 
+            Root mean square inner product of the selected subspaces.
+            0 indicates that they are mutually orthogonal, whereas 1 indicates
+            that they are identical.
 
         See also
         --------
@@ -407,27 +409,27 @@ class PCA(AnalysisBase):
     def cumulative_overlap(self, other, i=0, n_components=None):
         """Compute the cumulative overlap of a vector in a subspace.
 
-        This is not symmetric. The cumulative overlap measures the overlap of 
+        This is not symmetric. The cumulative overlap measures the overlap of
         the chosen vector in this instance, in the ``other`` subspace.
 
         Please cite [Yang2008]_ if you use this function.
 
         Parameters
         ----------
-        other: :class:`~MDAnalysis.analysis.pca.PCA`
+        other : :class:`~MDAnalysis.analysis.pca.PCA`
             Another PCA class. This must have already been run.
-        i: int, optional
+        i : int, optional
             The index of eigenvector to be analysed.
-        n_components: int, optional
+        n_components : int, optional
             number of components in ``other`` to compute for the cumulative overlap.
             ``None`` computes all of them.
 
         Returns
         -------
         float:
-            Cumulative overlap of the chosen vector in this instance to 
-            the ``other`` subspace. 0 indicates that they are mutually 
-            orthogonal, whereas 1 indicates that they are identical. 
+            Cumulative overlap of the chosen vector in this instance to
+            the ``other`` subspace. 0 indicates that they are mutually
+            orthogonal, whereas 1 indicates that they are identical.
 
         See also
         --------
@@ -466,9 +468,9 @@ def cosine_content(pca_space, i):
 
     Parameters
     ----------
-    pca_space: array, shape (number of frames, number of components)
+    pca_space : array, shape (number of frames, number of components)
         The PCA space to be analyzed.
-    i: int
+    i : int
         The index of the pca_component projection to be analyzed.
 
     Returns
@@ -499,28 +501,28 @@ def cosine_content(pca_space, i):
 def rmsip(a, b, n_components=None):
     """Compute the root mean square inner product between subspaces.
 
-    This is only symmetric if the number of components is the same for 
-    ``a`` and ``b``. The RMSIP effectively measures how 
+    This is only symmetric if the number of components is the same for
+    ``a`` and ``b``. The RMSIP effectively measures how
     correlated the vectors of ``a`` are to those of ``b``.
 
     Please cite [Amadei1999]_ and [Leo-Macias2004]_ if you use this function.
 
     Parameters
     ----------
-    a: array, shape (n_components, n_features)
+    a : array, shape (n_components, n_features)
         The first subspace. Must have the same number of features as ``b``.
-    b: array, shape (n_components, n_features)
+    b : array, shape (n_components, n_features)
         The second subspace. Must have the same number of features as ``a``.
-    n_components: int or tuple of ints, optional
+    n_components : int or tuple of ints, optional
         number of components to compute for the inner products.
         ``None`` computes all of them.
 
     Returns
     -------
     float:
-        Root mean square inner product of the selected subspaces. 
-        0 indicates that they are mutually orthogonal, whereas 1 indicates 
-        that they are identical. 
+        Root mean square inner product of the selected subspaces.
+        0 indicates that they are mutually orthogonal, whereas 1 indicates
+        that they are identical.
 
     .. versionadded:: 1.0.0
     """
@@ -550,30 +552,30 @@ def rmsip(a, b, n_components=None):
 def cumulative_overlap(a, b, i=0, n_components=None):
     """Compute the cumulative overlap of a vector in a subspace.
 
-    This is not symmetric. The cumulative overlap measures the overlap of 
+    This is not symmetric. The cumulative overlap measures the overlap of
     the chosen vector in ``a``, in the ``b`` subspace.
 
     Please cite [Yang2008]_ if you use this function.
 
     Parameters
     ----------
-    a: array, shape (n_components, n_features) or vector, length n_features
+    a : array, shape (n_components, n_features) or vector, length n_features
         The first subspace containing the vector of interest. Alternatively,
         the actual vector. Must have the same number of features as ``b``.
-    b: array, shape (n_components, n_features)
+    b : array, shape (n_components, n_features)
         The second subspace. Must have the same number of features as ``a``.
-    i: int, optional
+    i : int, optional
         The index of eigenvector to be analysed.
-    n_components: int, optional
+    n_components : int, optional
         number of components in ``b`` to compute for the cumulative overlap.
         ``None`` computes all of them.
 
     Returns
     -------
     float:
-        Cumulative overlap of the chosen vector in ``a`` to the ``b`` subspace. 
-        0 indicates that they are mutually orthogonal, whereas 1 indicates 
-        that they are identical. 
+        Cumulative overlap of the chosen vector in ``a`` to the ``b`` subspace.
+        0 indicates that they are mutually orthogonal, whereas 1 indicates
+        that they are identical.
 
     .. versionadded:: 1.0.0
     """

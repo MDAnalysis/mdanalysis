@@ -44,11 +44,11 @@ class LinearDensity(AnalysisBase):
           any atomgroup
     grouping : str {'atoms', 'residues', 'segments', 'fragments'}
           Density profiles will be computed on the center of geometry
-          of a selected group of atoms ['atoms']
+          of a selected group of atoms
     binsize : float
           Bin width in Angstrom used to build linear density
           histograms. Defines the resolution of the resulting density
-          profile (smaller --> higher resolution) [0.25]
+          profile (smaller --> higher resolution)
     verbose : bool (optional)
           Show detailed progress of the calculation if set to ``True``; the
           default is ``False``.
