@@ -743,6 +743,39 @@ class TestMultiPDBWriter(object):
                              "AtomGroup contains %d frames, it should have %d" % (
                                  len(u.trajectory), desired_frames))
 
+        with open(outfile, "r") as f:
+            lines = f.read()
+            assert lines.count("CONECT") == 2 # Expected two CONECT records
+
+    def test_write_loop(self, multiverse, outfile):
+        """
+        Test write() in a loop with the multiframe writer (selected frames
+        for an atomselection)
+        """
+        u = multiverse
+        group = u.select_atoms('name CA', 'name C')
+        desired_group = 56
+        desired_frames = 6
+
+        with mda.Writer(outfile, multiframe=True) as W:
+            for ts in u.trajectory[12::2]:
+                W.write(group)
+
+        u2 = mda.Universe(outfile)
+        assert_equal(len(u2.atoms), desired_group,
+                     err_msg="MultiPDBWriter trajectory written for an "
+                             "AtomGroup contains %d atoms, it should contain %d" % (
+                                 len(u2.atoms), desired_group))
+
+        assert_equal(len(u2.trajectory), desired_frames,
+                     err_msg="MultiPDBWriter trajectory written for an "
+                             "AtomGroup contains %d frames, it should have %d" % (
+                                 len(u.trajectory), desired_frames))
+
+        with open(outfile, "r") as f:
+            lines = f.read()
+            assert lines.count("CONECT") == 2  # Expected two CONECT records
+
     def test_write_atoms(self, universe2, outfile):
         u = universe2
         with mda.Writer(outfile, multiframe=True) as W:
