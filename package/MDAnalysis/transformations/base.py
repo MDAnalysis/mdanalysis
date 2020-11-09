@@ -22,7 +22,7 @@
 
 """\
 Transformations Base Class --- :mod:`MDAnalysis.transformations.base`
-=================================================================
+=====================================================================
 
 .. autoclass:: TransformationBase
 
@@ -33,21 +33,25 @@ from threadpoolctl import threadpool_limits
 class TransformationBase(object):
     """Base class for defining on-the-fly transformations
 
-    The class is designed as a templatea for creating on-the-fly
+    The class is designed as a template for creating on-the-fly
     Transformation classes. This class will
-    1) set up a context manager framework on limiting the threads
-       per call, which may be the multi-thread OpenBlas backend of NumPy.
-       This backend may kill the performance when subscribing hyperthread
-       or oversubscribing the threads when used together with other parallel
-       engines e.g. Dask. (PR #2950)
-       Define `max_threads=1` when that is the case.
-    2) set up a boolean attribute `parallelizable` for checking if the
-       transformation can be applied in a **split-apply-combine** parallelism.
-       For example, the `MDAnalysis.transformations.PositionAverager`
-       is history-dependent and can not be used in parallel analysis natively.
-       (Issue #2996)
 
-    To define a new Transformation, `TransformationBase` has to be subclassed.
+    1) set up a context manager framework on limiting the threads
+    per call, which may be the multi-thread OpenBlas backend of NumPy.
+    This backend may kill the performance when subscribing hyperthread
+    or oversubscribing the threads when used together with other parallel
+    engines e.g. Dask. (PR #2950)
+
+    Define `max_threads=1` when that is the case.
+
+    2) set up a boolean attribute `parallelizable` for checking if the
+    transformation can be applied in a **split-apply-combine** parallelism.
+    For example, the :class:`MDAnalysis.transformations.PositionAverager`
+    is history-dependent and can not be used in parallel analysis natively.
+    (Issue #2996)
+
+    To define a new Transformation, :class:`TransformationBase`
+    has to be subclassed.
     `max_threads` will be set to `None` in default, i.e. does not do anything.
     `parallelizable` will be set to `True` in default. You may need to double
     check if it can be used in parallel analysis; if not, override the value
@@ -88,7 +92,7 @@ class TransformationBase(object):
         ----------
         max_threads: int, optional
            The maximum thread number can be used.
-           Default is `None`, which means the default or external setting.
+           Default is `None`, which means the default or the external setting.
         parallelizable: bool, optional
            A check for if this can be used in split-apply-combine parallel
            analysis approach.
@@ -101,7 +105,7 @@ class TransformationBase(object):
         """The function that makes transformation can be called as a function
 
         The thread limit works as a context manager with given `max_threads`
-        wrapping the real `_transform` function
+        wrapping the real :func:`_transform` function
         """
         with threadpool_limits(self.max_threads):
             return self._transform(ts)

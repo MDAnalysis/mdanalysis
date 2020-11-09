@@ -36,7 +36,7 @@ class DefaultTransformation(TransformationBase):
         super().__init__()
 
     def _transform(self, ts):
-        self.runtime_info = threadpool_info
+        self.runtime_info = threadpool_info()
         ts.positions = ts.positions + 1
         return ts
 
@@ -48,7 +48,7 @@ class CustomTransformation(TransformationBase):
                          parallelizable=parallelizable)
 
     def _transform(self, ts):
-        self.runtime_info = threadpool_info().copy()
+        self.runtime_info = threadpool_info()
         ts.positions = ts.positions + 1
         return ts
 

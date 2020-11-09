@@ -49,6 +49,8 @@ class translate(TransformationBase):
 
     Example
     -------
+    .. code-block:: python
+
         ts = MDAnalysis.transformations.translate([1,2,3])(ts)
 
     Parameters
