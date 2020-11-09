@@ -26,15 +26,6 @@ jobs:
         Python37-32bit-full:
           PYTHON_VERSION: '3.7'
           PYTHON_ARCH: 'x86'
-        Python36-64bit-full:
-          PYTHON_VERSION: '3.6'
-          PYTHON_ARCH: 'x64'
-        Python37-64bit-full:
-          PYTHON_VERSION: '3.7'
-          PYTHON_ARCH: 'x64'
-        Python38-64bit-full:
-          PYTHON_VERSION: '3.8'
-          PYTHON_ARCH: 'x64'
   steps:
   - task: UsePythonVersion@0
     inputs:
