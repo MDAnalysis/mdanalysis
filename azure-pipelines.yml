@@ -54,10 +54,11 @@ jobs:
       pytest-xdist
       scikit-learn
       scipy
-      h5py
+      h5py==2.10.0
       tqdm
     displayName: 'Install dependencies'
   # TODO: recent rdkit is not on PyPI
+  # NOTE: h5py pinned because of gh-3019
   - script: >-
       python -m pip install
       biopython
