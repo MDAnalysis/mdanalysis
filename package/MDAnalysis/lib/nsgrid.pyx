@@ -78,6 +78,7 @@ Classes
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from libc.math cimport sqrt
 import numpy as np
+import warnings
 from libcpp.vector cimport vector
 cimport numpy as np
 
@@ -777,6 +778,14 @@ cdef class FastNS(object):
         """
 
         from MDAnalysis.lib.mdamath import triclinic_vectors
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('always', UserWarning)
+            wmsg = ('The current nsgrid code can return incorrect values '
+                    'and should not be used for production work. We '
+                    'instead recommed the use of MDAnalysis.lib.pkdtree. '
+                    'See issue #2930 for more details')
+            warnings.warn(wmsg)
 
         if (coords.ndim != 2 or coords.shape[1] != 3):
             raise ValueError("coords must have a shape of (n, 3), got {}."
