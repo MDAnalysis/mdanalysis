@@ -199,16 +199,14 @@ class InterRDF(AnalysisBase):
     g2 : AtomGroup
       Second AtomGroup
     nbins : int (optional)
-          Number of bins in the histogram [75]
+          Number of bins in the histogram
     range : tuple or list (optional)
-          The size of the RDF [0.0, 15.0]
+          The size of the RDF
     exclusion_block : tuple (optional)
           A tuple representing the tile to exclude from the distance
-          array. [None]
+          array.
     verbose : bool (optional)
-          Show detailed progress of the calculation if set to ``True``; the
-          default is ``False``.
-
+          Show detailed progress of the calculation if set to ``True``
 
     Example
     -------
@@ -315,13 +313,13 @@ class InterRDF_s(AnalysisBase):
           a list of pairs of :class:`~MDAnalysis.core.groups.AtomGroup`
           instances
     nbins : int (optional)
-          Number of bins in the histogram [75]
+          Number of bins in the histogram
     range : tuple or list (optional)
-          The size of the RDF [0.0, 15.0]
+          The size of the RDF
     density : bool (optional)
           ``False``: calculate :math:`g_{ab}(r)`; ``True``: calculate
           the true :ref:`single particle density<equation-nab>`
-          :math:`n_{ab}(r)`. The default is ``False``.
+          :math:`n_{ab}(r)`.
 
           .. versionadded:: 1.0.1
 

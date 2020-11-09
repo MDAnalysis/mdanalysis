@@ -533,6 +533,10 @@ class PDBWriter(base.WriterBase):
        ChainID now comes from the last character of segid, as stated in the documentation.
        An indexing issue meant it previously used the first charater (Issue #2224)
 
+    .. versionchanged:: 2.0.0
+        Add the `redindex` argument. Setting this keyword to ``True``
+        (the default) preserves the behavior in earlier versions of MDAnalysis.
+
     """
     fmt = {
         'ATOM': (
@@ -596,7 +600,7 @@ class PDBWriter(base.WriterBase):
 
     def __init__(self, filename, bonds="conect", n_atoms=None, start=0, step=1,
                  remarks="Created by PDBWriter",
-                 convert_units=True, multiframe=None):
+                 convert_units=True, multiframe=None, reindex=True):
         """Create a new PDBWriter
 
         Parameters
@@ -624,6 +628,9 @@ class PDBWriter(base.WriterBase):
            ``False``: write a single frame to the file; ``True``: create a
            multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_
            records. If ``None``, then the class default is chosen.    [``None``]
+        reindex: bool (optional)
+            If ``True`` (default), the atom serial is set to be consecutive
+            numbers starting at 1. Else, use the atom id.
 
         """
         # n_atoms = None : dummy keyword argument
@@ -637,6 +644,7 @@ class PDBWriter(base.WriterBase):
         self.convert_units = convert_units
         self._multiframe = self.multiframe if multiframe is None else multiframe
         self.bonds = bonds
+        self._reindex = reindex
 
         if start < 0:
             raise ValueError("'Start' must be a positive value")
@@ -792,14 +800,35 @@ class PDBWriter(base.WriterBase):
         if not self.obj or not hasattr(self.obj.universe, 'bonds'):
             return
 
-        mapping = {index: i for i, index in enumerate(self.obj.atoms.indices)}
-
         bondset = set(itertools.chain(*(a.bonds for a in self.obj.atoms)))
+        if self._reindex:
+            index_attribute = 'index'
+            mapping = {
+                index: i
+                for i, index in enumerate(self.obj.atoms.indices, start=1)
+            }
+            atoms = np.sort(self.obj.atoms.indices)
+        else:
+            index_attribute = 'id'
+            mapping = {id_: id_ for id_ in self.obj.atoms.ids}
+            atoms = np.sort(self.obj.atoms.ids)
         if self.bonds == "conect":
             # Write out only the bonds that were defined in CONECT records
-            bonds = ((bond[0].index, bond[1].index) for bond in bondset if not bond.is_guessed)
+            bonds = (
+                (
+                    getattr(bond[0], index_attribute),
+                    getattr(bond[1], index_attribute),
+                )
+                for bond in bondset if not bond.is_guessed
+            )
         elif self.bonds == "all":
-            bonds = ((bond[0].index, bond[1].index) for bond in bondset)
+            bonds = (
+                (
+                    getattr(bond[0], index_attribute),
+                    getattr(bond[1], index_attribute),
+                )
+                for bond in bondset
+            )
         else:
             raise ValueError("bonds has to be either None, 'conect' or 'all'")
 
@@ -809,8 +838,6 @@ class PDBWriter(base.WriterBase):
                 continue
             con[a2].append(a1)
             con[a1].append(a2)
-
-        atoms = np.sort(self.obj.atoms.indices)
 
         conect = ([mapping[a]] + sorted([mapping[at] for at in con[a]])
                   for a in atoms if a in con)
@@ -1042,9 +1069,22 @@ class PDBWriter(base.WriterBase):
         atomnames = get_attr('names', 'X')
         record_types = get_attr('record_types', 'ATOM')
 
+        # If reindex == False, we use the atom ids for the serial. We do not
+        # want to use a fallback here.
+        if not self._reindex:
+            try:
+                atom_ids = atoms.ids
+            except AttributeError:
+                raise NoDataError(
+                    'The "id" topology attribute is not set. '
+                    'Either set the attribute or use reindex=True.'
+                )
+        else:
+            atom_ids = np.arange(len(atoms)) + 1
+
         for i, atom in enumerate(atoms):
             vals = {}
-            vals['serial'] = util.ltruncate_int(i + 1, 5)  # check for overflow here?
+            vals['serial'] = util.ltruncate_int(atom_ids[i], 5)  # check for overflow here?
             vals['name'] = self._deduce_PDB_atom_name(atomnames[i], resnames[i])
             vals['altLoc'] = altlocs[i][:1]
             vals['resName'] = resnames[i][:4]
@@ -1153,7 +1193,7 @@ class PDBWriter(base.WriterBase):
         """Write CONECT_ record.
 
         """
-        conect = ["{0:5d}".format(entry + 1) for entry in conect]
+        conect = ["{0:5d}".format(entry) for entry in conect]
         conect = "".join(conect)
         self.pdbfile.write(self.fmt['CONECT'].format(conect))
 
