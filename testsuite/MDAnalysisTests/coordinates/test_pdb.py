@@ -831,17 +831,19 @@ class TestMultiPDBWriter(object):
         u2 = mda.Universe(outfile)
         assert_equal(len(u2.atoms), desired_group,
                      err_msg="MultiPDBWriter trajectory written for an "
-                             "AtomGroup contains %d atoms, it should contain %d" % (
-                                 len(u2.atoms), desired_group))
+                             f"AtomGroup contains {len(u2.atoms)} atoms, "
+                             f"it should contain {desired_group}")
 
         assert_equal(len(u2.trajectory), desired_frames,
-                     err_msg="MultiPDBWriter trajectory written for an "
-                             "AtomGroup contains %d frames, it should have %d" % (
-                                 len(u.trajectory), desired_frames))
+                     err_msg=f"MultiPDBWriter trajectory written for an "
+                             "AtomGroup contains {len(u.trajectory)} "
+                             "frames, it should have {desired_frames}")
 
         with open(outfile, "r") as f:
             lines = f.read()
-            assert lines.count("CONECT") == 2  # Expected only two CONECT records
+
+            # Expected only two CONECT records
+            assert lines.count("CONECT") == 2
 
     def test_write_atoms(self, universe2, outfile):
         u = universe2
