@@ -658,7 +658,12 @@ class PDBWriter(base.WriterBase):
         self.first_frame_done = False
 
     def close(self):
-        """Close PDB file and write CONECT and END record"""
+        """
+        Close PDB file and write CONECT and END record
+        
+        .. versionchanged 2.0.0
+           CONECT_ record written just before END_ record
+        """
         if hasattr(self, 'pdbfile') and self.pdbfile is not None:
             if not self.has_END:
                 if hasattr(self, "obj"):  # Avoid problems with zero atoms
@@ -900,8 +905,7 @@ class PDBWriter(base.WriterBase):
         # write_all_timesteps() to dump everything in one go, or do the
         # traditional loop over frames
         self._write_next_frame(self.ts, multiframe=self._multiframe)
-        # CONECT record is written when file is being close()d
-        # END record is written when file is being close()d
+        # END and CONECT records are written when file is being close()d
 
     def write_all_timesteps(self, obj):
         """Write all timesteps associated with *obj* to the PDB file.
@@ -926,6 +930,9 @@ class PDBWriter(base.WriterBase):
 
         .. versionchanged:: 0.11.0
            Frames now 0-based instead of 1-based
+
+        .. versionchanged:: 2.0.0
+           CONECT_ record moved to :fun:`close`
         """
 
         self._update_frame(obj)
