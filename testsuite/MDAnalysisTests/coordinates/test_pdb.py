@@ -835,9 +835,9 @@ class TestMultiPDBWriter(object):
                              f"it should contain {desired_group}")
 
         assert_equal(len(u2.trajectory), desired_frames,
-                     err_msg=f"MultiPDBWriter trajectory written for an "
-                             "AtomGroup contains {len(u.trajectory)} "
-                             "frames, it should have {desired_frames}")
+                     err_msg="MultiPDBWriter trajectory written for an "
+                             f"AtomGroup contains {len(u.trajectory)} "
+                             f"frames, it should have {desired_frames}")
 
         with open(outfile, "r") as f:
             lines = f.read()
