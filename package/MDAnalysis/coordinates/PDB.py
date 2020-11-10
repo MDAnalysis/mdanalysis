@@ -928,6 +928,7 @@ class PDBWriter(base.WriterBase):
 
         will be writing frames 12, 14, 16, ...
 
+
         .. versionchanged:: 0.11.0
            Frames now 0-based instead of 1-based
 
