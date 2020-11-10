@@ -319,6 +319,8 @@ def extensions(config):
 
     source_suffix = '.pyx' if use_cython else '.c'
     cpp_source_suffix = '.pyx' if use_cython else '.cpp'
+    print(f"cpp_source_suffix: {cpp_source_suffix}")
+    print(f"use_cython: {use_cython}")
 
     # The callable is passed so that it is only evaluated at install time.
 
