@@ -933,7 +933,7 @@ class PDBWriter(base.WriterBase):
            Frames now 0-based instead of 1-based
 
         .. versionchanged:: 2.0.0
-           CONECT_ record moved to :fun:`close`
+           CONECT_ record moved to :meth:`close`
         """
 
         self._update_frame(obj)
