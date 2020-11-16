@@ -20,6 +20,10 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * PDB parser now assigns empty records for partially missing/invalid elements
+    instead of not assigning the elements attribute at all (Issue #2422)
+  * PDB writer now uses elements attribute instead of guessing elements from
+    atom name (Issue #2423)
   * Cleanup and parametrization of test_atomgroup.py (Issue #2995)
   * The methods provided by topology attributes now appear in the
     documentation (Issue #1845)
