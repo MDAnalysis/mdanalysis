@@ -660,14 +660,14 @@ class PDBWriter(base.WriterBase):
     def close(self):
         """
         Close PDB file and write CONECT and END record
-        
+
+
         .. versionchanged 2.0.0
            CONECT_ record written just before END_ record
         """
         if hasattr(self, 'pdbfile') and self.pdbfile is not None:
             if not self.has_END:
-                if hasattr(self, "obj"):  # Avoid problems with zero atoms
-                    self._write_pdb_bonds()
+                self._write_pdb_bonds()
                 self.END()
             else:
                 logger.warning("END record has already been written"
@@ -804,7 +804,9 @@ class PDBWriter(base.WriterBase):
         if self.bonds is None:
             return
 
-        if not self.obj or not hasattr(self.obj.universe, 'bonds'):
+        if (not hasattr(self, "obj") or
+                not self.obj or
+                not hasattr(self.obj.universe, 'bonds')):
             return
 
         bondset = set(itertools.chain(*(a.bonds for a in self.obj.atoms)))
