@@ -229,7 +229,7 @@ numbers up to 99,999.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">The parser processes atoms and their names. Masses are guessed and set to 0
 if unknown. Partial charges are not set. Elements are parsed if they are
-valid.</p>
+valid. If partially missing or incorrect, empty records are assigned.</p>
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
@@ -280,7 +280,9 @@ valid.</p>
 <p><span class="versionmodified">Changed in version 1.0.0: </span>Added parsing of valid Elements</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span>Bonds attribute is not added if no bonds are present in PDB file</p>
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Bonds attribute is not added if no bonds are present in PDB file.
+If elements are invalid or partially missing, empty elements records
+are now assigned (Issue #2422).</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.topology.PDBParser.PDBParser.close">

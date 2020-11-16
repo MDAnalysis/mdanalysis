@@ -668,7 +668,10 @@ first charater (Issue #2224)</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 2.0.0: </span>When only <code class="xref py py-attr docutils literal notranslate"><span class="pre">record_types</span></code> attribute is present, instead of
 using <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ATOM">ATOM</a> for both <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ATOM">ATOM</a> and <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#HETATM">HETATM</a>, <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#HETATM">HETATM</a> record
-types are properly written out (Issue #1753).</p>
+types are properly written out (Issue #1753).
+Writing now only uses the contents of the elements attribute
+instead of guessing by default. If the elements are missing,
+empty records are written out (Issue #2423).</p>
 </div>
 </dd></dl>
 

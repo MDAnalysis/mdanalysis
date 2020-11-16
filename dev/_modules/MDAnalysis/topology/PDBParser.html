@@ -214,15 +214,13 @@
 <span class="sd">:mod:`~MDAnalysis.topology.ExtendedPDBParser`) that can handle residue</span>
 <span class="sd">numbers up to 99,999.</span>
 
-<span class="sd">TODO:</span>
-<span class="sd">    Add attributes to guess elements for non-physical or missing elements</span>
 
 
 <span class="sd">.. Note::</span>
 
 <span class="sd">   The parser processes atoms and their names. Masses are guessed and set to 0</span>
 <span class="sd">   if unknown. Partial charges are not set. Elements are parsed if they are</span>
-<span class="sd">   valid.</span>
+<span class="sd">   valid. If partially missing or incorrect, empty records are assigned.</span>
 
 <span class="sd">See Also</span>
 <span class="sd">--------</span>
@@ -362,7 +360,9 @@
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       Added parsing of valid Elements</span>
 <span class="sd">    .. versionchanged:: 2.0.0</span>
-<span class="sd">       Bonds attribute is not added if no bonds are present in PDB file</span>
+<span class="sd">       Bonds attribute is not added if no bonds are present in PDB file.</span>
+<span class="sd">       If elements are invalid or partially missing, empty elements records</span>
+<span class="sd">       are now assigned (Issue #2422).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PDB&#39;</span><span class="p">,</span> <span class="s1">&#39;ENT&#39;</span><span class="p">]</span>
 
@@ -399,7 +399,6 @@
         <span class="n">icodes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">tempfactors</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">occupancies</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">atomtypes</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="n">resids</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">resnames</span> <span class="o">=</span> <span class="p">[]</span>
@@ -462,7 +461,6 @@
                 <span class="n">tempfactors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">float_or_default</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">60</span><span class="p">:</span><span class="mi">66</span><span class="p">],</span> <span class="mf">1.0</span><span class="p">))</span>  <span class="c1"># AKA bfactor</span>
 
                 <span class="n">segids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">66</span><span class="p">:</span><span class="mi">76</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-                <span class="n">atomtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">76</span><span class="p">:</span><span class="mi">78</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
 
         <span class="c1"># Warn about wrapped serials</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped_serials</span><span class="p">:</span>
@@ -490,27 +488,32 @@
         <span class="c1"># Guessed attributes</span>
         <span class="c1"># masses from types if they exist</span>
         <span class="c1"># OPT: We do this check twice, maybe could refactor to avoid this</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">elements</span><span class="p">):</span>
             <span class="n">atomtypes</span> <span class="o">=</span> <span class="n">guess_types</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atomtypes</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Element information is missing, elements attribute &quot;</span>
+                          <span class="s2">&quot;will not be populated. If needed these can be &quot;</span>
+                          <span class="s2">&quot;guessed using MDAnalysis.topology.guessers.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atomtypes</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
+            <span class="c1"># Feed atomtypes as raw element column, but validate elements</span>
+            <span class="n">atomtypes</span> <span class="o">=</span> <span class="n">elements</span>
+            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atomtypes</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
+
+            <span class="n">validated_elements</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="ow">in</span> <span class="n">SYMB2Z</span><span class="p">:</span>
+                    <span class="n">validated_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown element </span><span class="si">{</span><span class="n">elem</span><span class="si">}</span><span class="s2"> found for some atoms. &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;These have been given an empty element record. &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;If needed they can be guessed using &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;MDAnalysis.topology.guessers.&quot;</span><span class="p">)</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
+                    <span class="n">validated_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Elements</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">validated_elements</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
 
         <span class="n">masses</span> <span class="o">=</span> <span class="n">guess_masses</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">)</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Masses</span><span class="p">(</span><span class="n">masses</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-
-        <span class="c1"># Getting element information from element column.</span>
-        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">elements</span><span class="p">):</span>
-            <span class="n">element_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">elements</span><span class="p">))</span>
-            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">element</span> <span class="ow">in</span> <span class="n">SYMB2Z</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">element_set</span><span class="p">):</span>
-                <span class="n">element_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">]</span>
-                <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Elements</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">element_list</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Invalid elements found in the PDB file, &quot;</span>
-                              <span class="s2">&quot;elements attributes will not be populated.&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Element information is absent or missing for a few &quot;</span>
-                          <span class="s2">&quot;atoms. Elements attributes will not be populated.&quot;</span><span class="p">)</span>
 
         <span class="c1"># Residue level stuff from here</span>
         <span class="n">resids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
