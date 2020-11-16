@@ -45,6 +45,16 @@ from numpy.testing import (assert_equal,
 IGNORE_NO_INFORMATION_WARNING = 'ignore:Found no information for attr:UserWarning'
 
 
+@pytest.fixture
+def dummy_universe_without_elements():
+    n_atoms = 5
+    u = make_Universe(size=(n_atoms, 1, 1), trajectory=True)
+    u.add_TopologyAttr('resnames', ['RES'])
+    u.add_TopologyAttr('names', ['C1', 'O2', 'N3', 'S4', 'NA'])
+    u.dimensions = [42, 42, 42, 90, 90, 90]
+    return u
+
+
 class TestPDBReader(_SingleFrameReader):
     __test__ = True
 
@@ -1028,7 +1038,7 @@ class TestWriterAlignments(object):
 
     def test_atomtype_alignment(self, writtenstuff):
         result_line = ("ATOM      1  H5T GUA A   1       7.974   6.430   9.561"
-                       "  1.00  0.00      RNAA H\n")
+                       "  1.00  0.00      RNAA  \n")
         assert_equal(writtenstuff[9], result_line)
 
 
@@ -1159,6 +1169,63 @@ def test_partially_missing_cryst():
     assert len(u.atoms) == 3
     assert len(u.trajectory) == 2
     assert_array_almost_equal(u.dimensions, 0.0)
+
+
+@pytest.mark.filterwarnings(IGNORE_NO_INFORMATION_WARNING)
+def test_write_no_atoms_elements(dummy_universe_without_elements):
+    """
+    If no element symbols are provided, the PDB writer guesses.
+    """
+    destination = StringIO()
+    with mda.coordinates.PDB.PDBWriter(destination) as writer:
+        writer.write(dummy_universe_without_elements.atoms)
+        content = destination.getvalue()
+    element_symbols = [
+        line[76:78].strip()
+        for line in content.splitlines()
+        if line[:6] == 'ATOM  '
+    ]
+    expectation = ['', '', '', '', '']
+    assert element_symbols == expectation
+
+
+@pytest.mark.filterwarnings(IGNORE_NO_INFORMATION_WARNING)
+def test_write_atom_elements(dummy_universe_without_elements):
+    """
+    If element symbols are provided, they are used when writing the file.
+
+    See `Issue 2423 <https://github.com/MDAnalysis/mdanalysis/issues/2423>`_.
+    """
+    elems = ['S', 'O', '', 'C', 'Na']
+    expectation = ['S', 'O', '', 'C', 'NA']
+    dummy_universe_with_elements = dummy_universe_without_elements
+    dummy_universe_with_elements.add_TopologyAttr('elements', elems)
+    destination = StringIO()
+    with mda.coordinates.PDB.PDBWriter(destination) as writer:
+        writer.write(dummy_universe_without_elements.atoms)
+        content = destination.getvalue()
+    element_symbols = [
+        line[76:78].strip()
+        for line in content.splitlines()
+        if line[:6] == 'ATOM  '
+    ]
+    assert element_symbols == expectation
+
+
+def test_elements_roundtrip(tmpdir):
+    """
+    Roundtrip test for PDB elements reading/writing.
+    """
+    u = mda.Universe(CONECT)
+    elements = u.atoms.elements
+
+    outfile = os.path.join(str(tmpdir), 'elements.pdb')
+    with mda.coordinates.PDB.PDBWriter(outfile) as writer:
+        writer.write(u.atoms)
+
+    u_written = mda.Universe(outfile)
+
+    assert_equal(elements, u_written.atoms.elements)
 
 
 def test_cryst_meaningless_warning():
