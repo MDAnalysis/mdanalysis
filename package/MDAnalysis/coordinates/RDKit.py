@@ -343,7 +343,7 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
         See :func:`_rebuild_conjugated_bonds`
     force : bool
         Force the conversion when no hydrogens were detected but
-        ``NoImplicit=True``. Useful for inorganic molecules mostly.
+        ``NoImplicit=True``. Mostly useful for inorganic molecules.
     """
     try:
         elements = ag.elements
