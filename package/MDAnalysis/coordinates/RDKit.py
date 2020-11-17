@@ -751,21 +751,25 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
     mol.UpdatePropertyCache(strict=False)
     Chem.Kekulize(mol)
     pattern = Chem.MolFromSmarts("[*-{1-2}]-,=[*+0]=,#[*+0;!O]")
+    base_end_pattern = Chem.MolFromSmarts(
+        "[*-{1-2}]-,=[*+0]=,#[*+0]-,=[*-{1-2}]")
+    odd_end_pattern = Chem.MolFromSmarts(
+        "[*-]-[*+0]=[*+0]-[*-,$([#7;X3;v3]),$([#6+0]=O)]")
     # number of unique matches with the pattern
     n_matches = len(set([match[0]
                          for match in mol.GetSubstructMatches(pattern)]))
     if n_matches == 0:
         # nothing to standardize
         return
-    # check if there's an even number of anion-*=* patterns
-    elif n_matches % 2 == 0:
-        end_pattern = Chem.MolFromSmarts("[*-{1-2}]-,=[*+0]=,#[*+0]-,=[*-{1-2}]")
-    else:
+    elif n_matches == 1:
         # as a last resort, the only way to standardize is to find a nitrogen
         # that can accept a double bond and a positive charge
         # or a carbonyl that will become an enolate
-        end_pattern = Chem.MolFromSmarts(
-            "[*-]-[*+0]=[*+0]-[*-,$([#7;X3;v3]),$([#6+0]=O)]")
+        end_pattern = odd_end_pattern
+    else:
+        # give priority to base end pattern and then deal with the odd one if
+        # necessary
+        end_pattern = base_end_pattern
     backtrack = []
     for _ in range(max_iter):
         # check for ending pattern
@@ -775,10 +779,12 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
             anion1, a1, a2, anion2 = end_match
             term_atom = mol.GetAtomWithIdx(anion2)
             # [*-]-*=*-C=O --> *=*-*=C-[O-]
-            if term_atom.GetAtomicNum() == 6 and term_atom.GetFormalCharge() == 0:
+            if (term_atom.GetAtomicNum() == 6 and
+                term_atom.GetFormalCharge() == 0):
                 for neighbor in term_atom.GetNeighbors():
                     bond = mol.GetBondBetweenAtoms(anion2, neighbor.GetIdx())
-                    if neighbor.GetAtomicNum() == 8 and bond.GetBondTypeAsDouble() == 2:
+                    if (neighbor.GetAtomicNum() == 8 and
+                        bond.GetBondTypeAsDouble() == 2):
                         bond.SetBondType(Chem.BondType.SINGLE)
                         neighbor.SetFormalCharge(-1)
                         break
@@ -827,6 +833,10 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
             b = mol.GetBondBetweenAtoms(a1, a2)
             b.SetBondType(RDBONDORDER[b.GetBondTypeAsDouble() - 1])
             mol.UpdatePropertyCache(strict=False)
+            # update number of matches for the end pattern
+            n_matches = len(set([match[0] for match in matches]))
+            if n_matches == 1:
+                end_pattern = odd_end_pattern
             # start new iteration
             continue
 

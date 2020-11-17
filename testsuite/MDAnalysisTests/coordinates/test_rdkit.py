@@ -502,6 +502,7 @@ class TestRDKitFunctions(object):
         "Cc1ccc2c3ncn(Cc4ccco4)c(O)c-3nc2c1",
         "CCCC/C=C/C#CC#CCCCCCCCC(=O)O",
         "c1c2c(=O)n3cccc(C)c3nc2n(C)c(=N)c1C(=O)NCc1cnccc1",
+        "N#Cc1c[nH]c(C(=O)NC(=O)c2cc[n+]([O-])cc2)n1"
     ])
     def test_order_independant(self, smi_in):
         # generate mol with hydrogens but without bond orders
