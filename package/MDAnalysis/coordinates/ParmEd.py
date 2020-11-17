@@ -262,7 +262,8 @@ class ParmEdConverter(base.ConverterBase):
             struct.box = None
 
         if hasattr(ag_or_ts, 'universe'):
-            atomgroup = {atom: index for index, atom in enumerate(list(ag_or_ts))}
+            atomgroup = {atom: index for index,
+                         atom in enumerate(list(ag_or_ts))}
             get_atom_indices = functools.partial(get_indices_from_subset,
                                                  atomgroup=atomgroup,
                                                  universe=ag_or_ts.universe)
