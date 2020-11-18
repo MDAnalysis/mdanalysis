@@ -659,8 +659,7 @@ def _standardize_patterns(mol, max_iter=200):
         ("ARG", "[C-;v3:1]-[#7+0;v3;H2:2]>>[#6+0:1]=[#7+:2]"),
         ("HIP", "[#6+0;H0:1]=[#6+0:2]-[#7;X3:3]-[#6-;X3:4]"
                 ">>[#6:1]=[#6:2]-[#7+:3]=[#6+0:4]"),
-        ("sulfone", "[S;X4;v4:1](-[*-:2])-[*-:3]"
-                    ">>[S:1](=[*+0:2])=[*+0:3]"),
+        ("sulfone", "[S;D4;!v6:1]-[*-:2]>>[S;v6:1]=[*+0:2]"),
         ("charged-N", "[#7+0;X3:1]-[*-:2]>>[#7+:1]=[*+0:2]"),
     ]:
         reaction = AllChem.ReactionFromSmarts(rxn)
@@ -754,7 +753,8 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
     base_end_pattern = Chem.MolFromSmarts(
         "[*-{1-2}]-,=[*+0]=,#[*+0]-,=[*-{1-2}]")
     odd_end_pattern = Chem.MolFromSmarts(
-        "[*-]-[*+0]=[*+0]-[*-,$([#7;X3;v3]),$([#6+0]=O)]")
+        "[*-]-[*+0]=[*+0]-[*-,$([#7;X3;v3]),$([#6+0,#7+1]=O),"
+        "$([S;D4;v4]-[O-])]")
     # number of unique matches with the pattern
     n_matches = len(set([match[0]
                          for match in mol.GetSubstructMatches(pattern)]))
@@ -778,15 +778,30 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
             # index of each atom
             anion1, a1, a2, anion2 = end_match
             term_atom = mol.GetAtomWithIdx(anion2)
-            # [*-]-*=*-C=O --> *=*-*=C-[O-]
-            if (term_atom.GetAtomicNum() == 6 and
-                term_atom.GetFormalCharge() == 0):
+            # [*-]-*=*-[C,N+]=O --> *=*-*=[C,N+]-[O-]
+            if (
+                term_atom.GetAtomicNum() == 6
+                and term_atom.GetFormalCharge() == 0
+            ) or (
+                term_atom.GetAtomicNum() == 7
+                and term_atom.GetFormalCharge() == 1
+            ):
                 for neighbor in term_atom.GetNeighbors():
                     bond = mol.GetBondBetweenAtoms(anion2, neighbor.GetIdx())
                     if (neighbor.GetAtomicNum() == 8 and
                         bond.GetBondTypeAsDouble() == 2):
                         bond.SetBondType(Chem.BondType.SINGLE)
                         neighbor.SetFormalCharge(-1)
+                        break
+            # [*-]-*=*-[Sv4]-[O-] --> *=*-*=[Sv6]=O
+            elif term_atom.GetAtomicNum() == 16:
+                for neighbor in term_atom.GetNeighbors():
+                    bond = mol.GetBondBetweenAtoms(anion2, neighbor.GetIdx())
+                    if (neighbor.GetAtomicNum() == 8 and
+                        neighbor.GetFormalCharge() == -1 and
+                        bond.GetBondTypeAsDouble() == 1):
+                        bond.SetBondType(Chem.BondType.DOUBLE)
+                        neighbor.SetFormalCharge(0)
                         break
             else:
                 term_atom.SetFormalCharge(term_atom.GetFormalCharge() + 1)
@@ -819,8 +834,9 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
                     break
             else:
                 # already performed all changes
-                anion, a1, a2 = matches[0]
-                backtrack = []
+                match = matches[0]
+                anion, a1, a2 = match
+                backtrack = [set(match)]
 
             # charges
             a = mol.GetAtomWithIdx(anion)
