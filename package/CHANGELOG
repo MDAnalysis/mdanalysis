@@ -15,7 +15,8 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
-         calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri
+         calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
+         hanatok
 
   * 2.0.0
 
@@ -107,6 +108,7 @@ Enhancements
     'protein' selection (#2751 PR #2755)
   * Added an RDKit converter that works for any input with all hydrogens
     explicit in the topology (Issue #2468, PR #2775)
+  * Improved performance of the ParmEd converter (Issue #3028, PR #3029)
 
 Changes
   * Continuous integration uses mamba rather than conda to install the
