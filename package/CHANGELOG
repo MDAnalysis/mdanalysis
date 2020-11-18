@@ -20,6 +20,7 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * Add '.nc' as a recognised extension for the NCDFWriter (Issue #3030)
   * PDB parser now assigns empty records for partially missing/invalid elements
     instead of not assigning the elements attribute at all (Issue #2422)
   * PDB writer now uses elements attribute instead of guessing elements from
