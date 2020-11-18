@@ -586,3 +586,19 @@ class TestRDKitFunctions(object):
         with pytest.warns(UserWarning,
                           match="reasonable number of iterations"):
             _rebuild_conjugated_bonds(mol, 2)
+
+    @pytest.mark.parametrize("smi", [
+        "[Li+]", "[Na+]", "[K+]", "[Ag+]",
+        "[Mg+2]", "[Ca+2]", "[Cu+2]", "[Zn+2]", "[Fe+2]",
+        "[Al+3]",
+        "[Cl-]",
+        "[O-2]",
+        "[Na+].[Cl-]",
+    ])
+    def test_ions(self, smi):
+        ref = Chem.MolFromSmiles(smi)
+        mol = self.mol_to_template(ref)
+        _infer_bo_and_charges(mol)
+        mol = _standardize_patterns(mol)
+        Chem.SanitizeMol(mol)
+        assert mol.HasSubstructMatch(ref) and ref.HasSubstructMatch(mol)
