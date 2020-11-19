@@ -74,6 +74,7 @@ Fixes
     would create a test artifact (Issue #2979, PR #2981)
 
 Enhancements
+  * Improved performance of the ParmEd converter (Issue #3028, PR #3029)
   * Improved analysis class docstrings, and added missing classes to the 
     `__all__` list (PR #2998)
   * The PDB writer gives more control over how to write the atom ids
@@ -108,7 +109,6 @@ Enhancements
     'protein' selection (#2751 PR #2755)
   * Added an RDKit converter that works for any input with all hydrogens
     explicit in the topology (Issue #2468, PR #2775)
-  * Improved performance of the ParmEd converter (Issue #3028, PR #3029)
 
 Changes
   * Continuous integration uses mamba rather than conda to install the
