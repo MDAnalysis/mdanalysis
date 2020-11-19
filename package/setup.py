@@ -74,7 +74,7 @@ else:
     from commands import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "1.0.1-dev0"
+RELEASE = "1.0.1-dev"
 
 is_release = 'dev' not in RELEASE
 
@@ -319,8 +319,6 @@ def extensions(config):
 
     source_suffix = '.pyx' if use_cython else '.c'
     cpp_source_suffix = '.pyx' if use_cython else '.cpp'
-    print(f"cpp_source_suffix: {cpp_source_suffix}")
-    print(f"use_cython: {use_cython}")
 
     # The callable is passed so that it is only evaluated at install time.
 

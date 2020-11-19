@@ -55,11 +55,11 @@ install:
 
 build_script:
     - cmd: cd package
-    - cmd: C:\conda\envs\test\python.exe setup.py install 3>&1
+    - cmd: C:\conda\envs\test\python.exe setup.py develop --no-deps --user 3>&1
 
 test_script:
     - cmd: cd ..\testsuite
-    - cmd: C:\conda\envs\test\python.exe setup.py install 3>&1
+    - cmd: C:\conda\envs\test\python.exe setup.py develop --no-deps --user 3>&1
     - cmd: cd MDAnalysisTests
     - cmd: C:\conda\envs\test\Scripts\pytest.exe --cov=MDAnalysis --disable-pytest-warnings 3>&1
     - cmd: codecov
