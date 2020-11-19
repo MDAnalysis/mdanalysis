@@ -749,7 +749,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
     """
     mol.UpdatePropertyCache(strict=False)
     Chem.Kekulize(mol)
-    pattern = Chem.MolFromSmarts("[*-{1-2}]-,=[*+0]=,#[*+0;!O]")
+    pattern = Chem.MolFromSmarts("[*-{1-2}]-,=[*+0]=,#[*+0]")
     base_end_pattern = Chem.MolFromSmarts(
         "[*-{1-2}]-,=[*+0]=,#[*+0]-,=[*-{1-2}]")
     odd_end_pattern = Chem.MolFromSmarts(
@@ -771,6 +771,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
         # necessary
         end_pattern = base_end_pattern
     backtrack = []
+    backtrack_cycles = 0
     for _ in range(max_iter):
         # check for ending pattern
         end_match = mol.GetSubstructMatch(end_pattern)
@@ -794,7 +795,8 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
                         neighbor.SetFormalCharge(-1)
                         break
             # [*-]-*=*-[Sv4]-[O-] --> *=*-*=[Sv6]=O
-            elif term_atom.GetAtomicNum() == 16:
+            elif (term_atom.GetAtomicNum() == 16 and 
+                  term_atom.GetFormalCharge() == 0):
                 for neighbor in term_atom.GetNeighbors():
                     bond = mol.GetBondBetweenAtoms(anion2, neighbor.GetIdx())
                     if (neighbor.GetAtomicNum() == 8 and
@@ -834,9 +836,19 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
                     break
             else:
                 # already performed all changes
+                if backtrack_cycles == 1:
+                    # might be stuck because there were 2 "odd" end patterns
+                    # misqualified as a single base one
+                    end_pattern = odd_end_pattern
+                elif backtrack_cycles > 1:
+                    # likely stuck changing the same bonds over and over so
+                    # let's stop here
+                    mol.UpdatePropertyCache(strict=False)
+                    return
                 match = matches[0]
                 anion, a1, a2 = match
                 backtrack = [set(match)]
+                backtrack_cycles += 1
 
             # charges
             a = mol.GetAtomWithIdx(anion)
