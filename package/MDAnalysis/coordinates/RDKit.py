@@ -273,8 +273,8 @@ class RDKitConverter(base.ConverterBase):
 
         Parameters
         -----------
-        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`
-
+        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or 
+            :class:`~MDAnalysis.core.universe.Universe`
         cache : bool
             Use a cached copy of the molecule's topology when available. To be
             used, the cached molecule and the new one have to be made from the
@@ -339,9 +339,8 @@ class RDKitConverter(base.ConverterBase):
 
         return mol
 
-
     def atomgroup_to_mol(self, ag, NoImplicit=True, max_iter=200):
-        """Converts an AtomGroup to an RDKit molecule without coordinates.
+        """Converts an AtomGroup to an RDKit molecule
 
         Parameters
         -----------
@@ -645,7 +644,7 @@ def _standardize_patterns(mol, max_iter=200):
     +---------------+------------------------------------------------------------------------------+
     | charged N     | ``[#7+0;X3:1]-[*-:2]>>[#7+:1]=[*+0:2]``                                      |
     +---------------+------------------------------------------------------------------------------+
- 
+
     """
 
     # standardize conjugated systems
@@ -796,7 +795,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
                         neighbor.SetFormalCharge(-1)
                         break
             # [*-]-*=*-[Sv4]-[O-] --> *=*-*=[Sv6]=O
-            elif (term_atom.GetAtomicNum() == 16 and 
+            elif (term_atom.GetAtomicNum() == 16 and
                   term_atom.GetFormalCharge() == 0):
                 for neighbor in term_atom.GetNeighbors():
                     bond = mol.GetBondBetweenAtoms(anion2, neighbor.GetIdx())
