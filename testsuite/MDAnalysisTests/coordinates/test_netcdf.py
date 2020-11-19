@@ -602,6 +602,12 @@ class _NCDFWriterTest(object):
     def universe(self):
         return mda.Universe(self.topology, self.filename)
 
+    @pytest.fixture(params=['nc', 'ncdf'])
+    def outfile_extensions(self, tmpdir, request):
+        # Issue 3030, test all extensions of NCDFWriter
+        ext = request.param
+        return str(tmpdir) + f'ncdf-writer-1.{ext}'
+
     @pytest.fixture()
     def outfile(self, tmpdir):
         return str(tmpdir) + 'ncdf-writer-1.ncdf'
@@ -654,11 +660,11 @@ class _NCDFWriterTest(object):
         finally:
             sys.modules['MDAnalysis.coordinates.TRJ'].netCDF4 = loaded_netCDF4
 
-    def test_OtherWriter(self, universe, outfile):
+    def test_OtherWriter(self, universe, outfile_extensions):
         t = universe.trajectory
-        with t.OtherWriter(outfile) as W:
+        with t.OtherWriter(outfile_extensions) as W:
             self._copy_traj(W, universe)
-        self._check_new_traj(universe, outfile)
+        self._check_new_traj(universe, outfile_extensions)
 
     def _copy_traj(self, writer, universe):
         for ts in universe.trajectory:
