@@ -665,7 +665,7 @@ class PDBWriter(base.WriterBase):
         Close PDB file and write CONECT and END record
 
 
-        .. versionchanged 2.0.0
+        .. versionchanged:: 2.0.0
            CONECT_ record written just before END_ record
         """
         if hasattr(self, 'pdbfile') and self.pdbfile is not None:
@@ -1048,6 +1048,9 @@ class PDBWriter(base.WriterBase):
            When only :attr:`record_types` attribute is present, instead of
            using ATOM_ for both ATOM_ and HETATM_, HETATM_ record
            types are properly written out (Issue #1753).
+           Writing now only uses the contents of the elements attribute
+           instead of guessing by default. If the elements are missing,
+           empty records are written out (Issue #2423).
 
         """
         atoms = self.obj.atoms
@@ -1082,6 +1085,7 @@ class PDBWriter(base.WriterBase):
         occupancies = get_attr('occupancies', 1.0)
         tempfactors = get_attr('tempfactors', 0.0)
         atomnames = get_attr('names', 'X')
+        elements = get_attr('elements', ' ')
         record_types = get_attr('record_types', 'ATOM')
 
         # If reindex == False, we use the atom ids for the serial. We do not
@@ -1110,7 +1114,7 @@ class PDBWriter(base.WriterBase):
             vals['occupancy'] = occupancies[i]
             vals['tempFactor'] = tempfactors[i]
             vals['segID'] = segids[i][:4]
-            vals['element'] = guess_atom_element(atomnames[i].strip())[:2]
+            vals['element'] = elements[i][:2].upper()
 
             # record_type attribute, if exists, can be ATOM or HETATM
             try:
