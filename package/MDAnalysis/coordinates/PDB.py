@@ -662,7 +662,7 @@ class PDBWriter(base.WriterBase):
         Close PDB file and write CONECT and END record
 
 
-        .. versionchanged 2.0.0
+        .. versionchanged:: 2.0.0
            CONECT_ record written just before END_ record
         """
         if hasattr(self, 'pdbfile') and self.pdbfile is not None:
