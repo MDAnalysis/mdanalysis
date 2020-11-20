@@ -531,10 +531,12 @@ will wrap around (see <a class="reference internal" href="#MDAnalysis.coordinate
 unitary values (cubic box with sides of 1 Å) if unit cell dimensions
 are not set (<code class="code docutils literal notranslate"><span class="pre">None</span></code> or <code class="code docutils literal notranslate"><span class="pre">np.zeros(6)</span></code>,
 see Issue #2698).</p>
-<p class="last">When the <code class="xref py py-attr docutils literal notranslate"><span class="pre">record_types</span></code> attribute is present (e.g. Universe object
+<p>When the <code class="xref py py-attr docutils literal notranslate"><span class="pre">record_types</span></code> attribute is present (e.g. Universe object
 was created by loading a PDB file), <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ATOM">ATOM</a> and <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#HETATM">HETATM</a> record type
 keywords are written out accordingly. Otherwise, the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ATOM">ATOM</a> record type
 is the default output.</p>
+<p class="last">The <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect10.html#CONECT">CONECT</a> record is written out, if required, when the output stream
+is closed.</p>
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
@@ -745,7 +747,10 @@ record.</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PDBWriter.close">
 <code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBWriter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Close PDB file and write END record</p>
+<dd><p>Close PDB file and write CONECT and END record</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span><a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect10.html#CONECT">CONECT</a> record written just before <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect11.html#END">END</a> record</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -791,6 +796,9 @@ constructor). Thus, if <em>u</em> is a Universe then</p>
 <p>will be writing frames 12, 14, 16, …</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span><a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect10.html#CONECT">CONECT</a> record moved to <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter.close" title="MDAnalysis.coordinates.PDB.PDBWriter.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">close()</span></code></a></p>
 </div>
 </dd></dl>
 
