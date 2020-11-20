@@ -505,6 +505,9 @@ class PDBWriter(base.WriterBase):
     keywords are written out accordingly. Otherwise, the ATOM_ record type
     is the default output.
 
+    The CONECT_ record is written out, if required, when the output stream
+    is closed.
+
     See Also
     --------
     This class is identical to :class:`MultiPDBWriter` with the one
