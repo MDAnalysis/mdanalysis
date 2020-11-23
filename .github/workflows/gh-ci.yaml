@@ -1,0 +1,191 @@
+name: GH_CI
+on:
+  push:
+    branches:
+      - develop
+      - master
+  pull_request:
+    branches:
+      - develop
+      - master
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+jobs:
+  main_tests:
+    if: "github.repository == 'IAlibay/mdanalysis'"
+    runs-on: ${{ matrix.os }}
+    strategy:
+        matrix:
+          os: [ubuntu-latest, ]
+          python-version: [3.6, 3.7, 3.8]
+          run_type: [full, ]
+          install_hole: [True, ]
+          codecov: [True, ]
+          include:
+            - name: macOS
+              os: macOS-latest
+              python-version: 3.6
+              run_type: full
+              install_hole: True
+              codecov: True
+            - name: minimal-ubuntu
+              os: ubuntu-latest
+              python-version: 3.6
+              run_type: min
+              install_hole: False
+              codecov: True
+            - name: asv_check
+              os: ubuntu-latest
+              python-version: 3.6
+              run_type: full
+              install_hole: False
+              codecov: False
+    env:
+      CYTHON_TRACE_NOGIL: 1
+      MPLBACKEND: agg
+      MACOSX_DEPLOYMENT_TARGET: 10.9
+      GH_OS: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: setup_osx
+      if: startsWith(matrix.os, 'macOS')
+      run: |
+        echo "OS_NAME=osx" >> $GITHUB_ENV
+        ulimit -S -n 2048
+
+    - name: setup_linux
+      if: startsWith(matrix.os, 'ubuntu')
+      run: |
+        echo "OS_NAME=linux" >> $GITHUB_ENV
+
+    - name: setup_miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+        auto-update-conda: true
+        channel-priority: flexible
+        # channel clash even though you have the same definition..
+        #channels: biobuilds, conda-forge
+        add-pip-as-python-dependency: true
+        # mamba does not currently support pip in env files
+        # to enable post gh/mamba-org/mamba/issues/589
+        #mamba-version: "*"
+        architecture: x64
+        environment-file: maintainer/test-envs/conda-${{ matrix.run_type }}.yaml
+        activate-environment: mda-tests
+    
+    - name: check_setup
+      run: |
+        # Check OS
+        echo "OS: ${OS_NAME}"
+        # Check python
+        which python
+        which pip
+        conda info
+        # TODO: adequate tqdm installed, setup.py still overrides...
+        conda list
+
+    - name: install_asv
+      if: contains(matrix.name, 'asv_check')
+      run: |
+        pip install asv "setuptools<45.0.0"
+
+    - name: install_hole
+      if : matrix.install_hole
+      run: |
+        # cert issue, anyone with a mac can circumvent this?
+        echo insecure >> ~/.curlrc
+        bash ./maintainer/install_hole.sh ${OS_NAME} "${HOME}"
+        HOLE_BINDIR=${HOME}/hole2/exe
+        export PATH=${PATH}:${HOLE_BINDIR}
+
+    - name: install_mda
+      run: |
+        # Switching to install instead of build, any issues?
+        pip install -e package/ && (cd testsuite/ && python setup.py install)
+
+    - name: run_tests
+      if: contains(matrix.name, 'asv_check') != true
+      run: |
+        # TODO: fix weird skipped tests for gro/gms/trj/trz
+        pytest -n2 testsuite/MDAnalysisTests \
+               --disable-pytest-warnings --durations=50 --cov=MDAnalysis
+
+    - name: run_asv
+      if: contains(matrix.name, 'asv_check')
+      run: |
+        cd benchmarks
+        time python -m asv check -E existing
+
+    - name: codecov
+      if: matrix.codecov
+      run: |
+        codecov
+
+  pylint_check:
+    if: "github.repository == 'IAlibay/mdanalysis'"
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: setup_miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        python-version: 3.6
+        auto-update-conda: true
+        channel-priority: flexible
+        channels: conda-forge
+        add-pip-as-python-dependency: true
+        mamba-version: "*"
+        architecture: x64
+
+    - name: install
+      run: |
+        which pip
+        which python
+        pip install pylint
+
+    - name: pylint
+      env:
+        PYLINTRC: package/.pylintrc
+      run: |
+        pylint --py3k package/MDAnalysis && pylint --py3k testsuite/MDAnalysisTests
+
+  pypi_check:
+    if: "github.repository == 'IAlibay/mdanalysis'"
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: setup_miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        python-version: 3.6
+        auto-update-conda: true
+        channel-priority: flexible
+        channels: conda-forge
+        add-pip-as-python-dependency: true
+        mamba-version: "*"
+        architecture: x64
+
+    - name: install_conda
+      run: |
+        conda install setuptools cython numpy twine
+
+    - name: install_mdanalysis
+      run: |
+        cd package && python setup.py sdist
+
+    - name: check_package_build
+      run: |
+        DISTRIBUTION=$(ls -t1 package/dist/MDAnalysis-*.tar.gz | head -n 1)
+        test -n "${DISTRIBUTION}" || { echo "no distribution package/dist/MDAnalysis-*.tar.gz found"; exit 1; }
+        echo "twine check $DISTRIBUTION"
+        twine check $DISTRIBUTION
