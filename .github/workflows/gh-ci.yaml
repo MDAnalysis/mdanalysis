@@ -15,7 +15,7 @@ defaults:
 
 jobs:
   main_tests:
-    #if: "github.repository == 'MDAnalysis/mdanalysis'"
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ${{ matrix.os }}
     strategy:
         matrix:
@@ -124,11 +124,14 @@ jobs:
 
     - name: codecov
       if: matrix.codecov
-      run: |
-        codecov
+      uses: codecov/codecov-action@v1
+      with:
+        file: coverage.xml
+        fail_ci_if_error: True
+        verbose: True
 
   pylint_check:
-    #if: "github.repository == 'MDAnalysis/mdanalysis'"
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
 
     steps:
@@ -158,7 +161,7 @@ jobs:
         pylint --py3k package/MDAnalysis && pylint --py3k testsuite/MDAnalysisTests
 
   pypi_check:
-    #if: "github.repository == 'MDAnalysis/mdanalysis'"
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
 
     steps:
