@@ -20,7 +20,7 @@ jobs:
     strategy:
         matrix:
           os: [ubuntu-latest, ]
-          python-version: [3.6, 3.7, 3.8]
+          python-version: [3.6.2, 3.7, 3.8]
           run_type: [full, ]
           install_hole: [True, ]
           codecov: [True, ]
@@ -33,13 +33,13 @@ jobs:
               codecov: True
             - name: minimal-ubuntu
               os: ubuntu-latest
-              python-version: 3.6
+              python-version: 3.6.2
               run_type: min
               install_hole: False
               codecov: True
             - name: asv_check
               os: ubuntu-latest
-              python-version: 3.6
+              python-version: 3.6.2
               run_type: full
               install_hole: False
               codecov: False
@@ -135,7 +135,7 @@ jobs:
     - name: setup_miniconda
       uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: 3.6
+        python-version: 3.6.2
         auto-update-conda: true
         channel-priority: flexible
         channels: conda-forge
@@ -165,7 +165,7 @@ jobs:
     - name: setup_miniconda
       uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: 3.6
+        python-version: 3.6.2
         auto-update-conda: true
         channel-priority: flexible
         channels: conda-forge
