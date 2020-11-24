@@ -98,8 +98,6 @@ jobs:
     - name: install_hole
       if : matrix.install_hole
       run: |
-        # cert issue, anyone with a mac can circumvent this?
-        echo insecure >> ~/.curlrc
         bash ./maintainer/install_hole.sh ${OS_NAME} "${HOME}"
         HOLE_BINDIR=${HOME}/hole2/exe
         export PATH=${PATH}:${HOLE_BINDIR}

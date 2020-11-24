@@ -66,12 +66,15 @@ case "$OSNAME" in
 	OFORMAT=Linux
 	DOWNLOAD_URL="${DOWNLOAD_URL_LINUX}"
 	TARFILE=${TARFILE_LINUX}
+    CURLARGS=""
 	;;
     OSX|osx|Darwin|darwin)
 	OSNAME=Darwin
 	OFORMAT="Mach-O"
 	DOWNLOAD_URL="${DOWNLOAD_URL_DARWIN}"
 	TARFILE=${TARFILE_DARWIN}
+    security export -p -t certs -k `security list-keychains -d system|cut -d '"' -f 2` -o certs.crt
+    CURLARGS="--cacert $(PWD)/certs.crt"
 	;;
     *)
 	die "OS '${OSNAME}' not supported." 10;;
@@ -89,7 +92,7 @@ if ! test -f ${TARFILE}; then
     echo "Downloading ${TARFILE} from ${DOWNLOAD_URL}..."
     # fixing curl on travis/anaconda, see http://stackoverflow.com/a/31060428/334357
     export CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
-    curl -L ${DOWNLOAD_URL} -o ${TARFILE} || \
+    curl -L ${DOWNLOAD_URL} -o ${TARFILE} $CURLARGS || \
     die "Failed to download ${TARFILE} from ${DOWNLOAD_URL}" 1
 fi
 
