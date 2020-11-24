@@ -20,26 +20,26 @@ jobs:
     strategy:
         matrix:
           os: [ubuntu-latest, ]
-          python-version: [3.6.2, 3.7, 3.8]
+          python-version: [3.6, 3.7, 3.8]
           run_type: [full, ]
           install_hole: [True, ]
           codecov: [True, ]
           include:
             - name: macOS
               os: macOS-latest
-              python-version: 3.6.2
+              python-version: 3.6
               run_type: full
               install_hole: True
               codecov: True
             - name: minimal-ubuntu
               os: ubuntu-latest
-              python-version: 3.6.2
+              python-version: 3.6
               run_type: min
               install_hole: False
               codecov: True
             - name: asv_check
               os: ubuntu-latest
-              python-version: 3.6.2
+              python-version: 3.6
               run_type: full
               install_hole: False
               codecov: False
@@ -111,7 +111,7 @@ jobs:
       if: contains(matrix.name, 'asv_check') != true
       run: |
         # TODO: fix weird skipped tests for gro/gms/trj/trz
-        pytest testsuite/MDAnalysisTests --disable-pytest-warnings \
+        pytest -n2 testsuite/MDAnalysisTests --disable-pytest-warnings \
                --durations=50 --cov=MDAnalysis --cov-report=xml
 
     - name: run_asv
@@ -135,7 +135,7 @@ jobs:
     - name: setup_miniconda
       uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: 3.6.2
+        python-version: 3.6
         auto-update-conda: true
         channel-priority: flexible
         channels: conda-forge
@@ -165,7 +165,7 @@ jobs:
     - name: setup_miniconda
       uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: 3.6.2
+        python-version: 3.6
         auto-update-conda: true
         channel-priority: flexible
         channels: conda-forge

@@ -27,6 +27,8 @@ dependencies:
   - rdkit>=2020.03.1
   - h5py==2.10.0
   - pip:
+    - coveralls
+    - coverage<5
     - duecredit
     - parmed
     - pytest-cov

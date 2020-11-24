@@ -17,5 +17,7 @@ dependencies:
   - pytest
   - gsd
   - pip:
+    - coveralls
+    - coverage<5
     - pytest-cov
     - pytest-xdist
