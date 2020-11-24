@@ -31,6 +31,7 @@
 set -o errexit -o nounset
 
 SCRIPT=$(basename $0)
+MAINTAINER=$(cd "$(dirname "$0")"; pwd -P)
 
 # We still use the 2.2004 versions (academic only) because
 # for the v2.2005 (Apache license) there are no pre-compiled binaries
@@ -73,8 +74,8 @@ case "$OSNAME" in
 	OFORMAT="Mach-O"
 	DOWNLOAD_URL="${DOWNLOAD_URL_DARWIN}"
 	TARFILE=${TARFILE_DARWIN}
-    security export -p -t certs -k `security list-keychains -d system|cut -d '"' -f 2` -o certs.crt
-    CURLARGS="--cacert $(PWD)/certs.crt"
+    wget https://raw.githubusercontent.com/bagder/ca-bundle/master/ca-bundle.crt
+    CURLARGS="--cacert $(pwd)/ca-bundle.crt"
 	;;
     *)
 	die "OS '${OSNAME}' not supported." 10;;
