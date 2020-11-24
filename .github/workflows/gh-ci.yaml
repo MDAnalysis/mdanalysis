@@ -113,7 +113,7 @@ jobs:
       if: contains(matrix.name, 'asv_check') != true
       run: |
         # TODO: fix weird skipped tests for gro/gms/trj/trz
-        pytest -n2 testsuite/MDAnalysisTests --disable-pytest-warnings \
+        pytest testsuite/MDAnalysisTests --disable-pytest-warnings \
                --durations=50 --cov=MDAnalysis --cov-report=xml
 
     - name: run_asv
