@@ -27,26 +27,26 @@ jobs:
         matrix:
           os: [ubuntu-latest, ]
           python-version: [3.6, 3.7, 3.8]
-          run_type: [full, ]
+          run_type: [FULL, ]
           install_hole: [True, ]
           codecov: [True, ]
           include:
             - name: macOS
               os: macOS-latest
               python-version: 3.6
-              run_type: full
+              run_type: FULL
               install_hole: True
               codecov: True
             - name: minimal-ubuntu
               os: ubuntu-latest
               python-version: 3.6
-              run_type: min
+              run_type: MIN
               install_hole: False
               codecov: True
             - name: asv_check
               os: ubuntu-latest
               python-version: 3.6
-              run_type: full
+              run_type: FULL
               install_hole: False
               codecov: False
     env:
