@@ -84,7 +84,7 @@ jobs:
     - name: install_deps
       env:
         MDA_CONDA_FULL_DEPS: "${{ env.MDA_CONDA_MIN_DEPS }} ${{ env.MDA_CONDA_EXTRA_DEPS }}"
-        MDA_PIP_FULL_DEPS: "${{ env.MDA_PIP_MIN_DEPS }} ${{ MDA_PIP_EXTRA_DEPS }}"
+        MDA_PIP_FULL_DEPS: "${{ env.MDA_PIP_MIN_DEPS }} ${{ env.MDA_PIP_EXTRA_DEPS }}"
       run: |
         # Have to re-assign these to vars for some reason
         conda_deps=${CONDA_${{ matrix.run_type }}_DEPS}
