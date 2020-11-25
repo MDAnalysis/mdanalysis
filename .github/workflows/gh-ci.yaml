@@ -35,7 +35,7 @@ jobs:
               os: macOS-latest
               python-version: 3.6
               run_type: FULL
-              install_hole: True
+              install_hole: False
               codecov: True
             - name: minimal-ubuntu
               os: ubuntu-latest
@@ -43,6 +43,13 @@ jobs:
               run_type: MIN
               install_hole: False
               codecov: True
+            - name: numpy_min
+              os: ubuntu-latest
+              python-version: 3.6
+              run_type: FULL
+              install_hole: False
+              codecov: False
+              numpy: numpy=1.16.0
             - name: asv_check
               os: ubuntu-latest
               python-version: 3.6
@@ -86,8 +93,9 @@ jobs:
         MDA_CONDA_FULL_DEPS: "${{ env.MDA_CONDA_MIN_DEPS }} ${{ env.MDA_CONDA_EXTRA_DEPS }}"
         MDA_PIP_FULL_DEPS: "${{ env.MDA_PIP_MIN_DEPS }} ${{ env.MDA_PIP_EXTRA_DEPS }}"
       run: |
-        # Have to re-assign these to vars for some reason
-        conda_deps=${MDA_CONDA_${{ matrix.run_type }}_DEPS}
+        # vars need to be re-assigned
+        # matrix.numpy should yield empty string if not in use
+        conda_deps="${{ matrix.numpy }} ${MDA_CONDA_${{ matrix.run_type }}_DEPS}"
         pip_deps=${MDA_PIP_${{ matrix.run_type }}_DEPS}
         conda install ${conda_deps}
         pip install ${pip_deps}
@@ -124,7 +132,8 @@ jobs:
       if: contains(matrix.name, 'asv_check') != true
       run: |
         # TODO: fix weird skipped tests for gro/gms/trj/trz
-        pytest -n2 testsuite/MDAnalysisTests --disable-pytest-warnings \
+        # TODO: add a switch to not use --cov when not doing a coverage run?
+        pytest testsuite/MDAnalysisTests --disable-pytest-warnings \
                --durations=50 --cov=MDAnalysis --cov-report=xml
 
     - name: run_asv
