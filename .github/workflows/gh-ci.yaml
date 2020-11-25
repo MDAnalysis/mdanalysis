@@ -1,4 +1,4 @@
-name: GH_CI
+name: mda_gh_ci
 on:
   push:
     branches:
@@ -12,6 +12,12 @@ on:
 defaults:
   run:
     shell: bash -l {0}
+
+env:
+  MDA_CONDA_MIN_DEPS: "pip pytest mmtf-python biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
+  MDA_CONDA_EXTRA_DEPS: "seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles tqdm>=4.43.0 tidynamics>=1.0.0 rdkit>=2020.03.1 h5py==2.10.0"
+  MDA_PIP_MIN_DEPS: 'coveralls coverage<5 pytest-cov pytest-xdist'
+  MDA_PIP_EXTRA_DEPS: 'duecredit parmed'
 
 jobs:
   main_tests:
@@ -69,15 +75,22 @@ jobs:
         python-version: ${{ matrix.python-version }}
         auto-update-conda: true
         channel-priority: flexible
-        # channel clash even though you have the same definition..
-        #channels: biobuilds, conda-forge
+        channels: biobuilds, conda-forge
         add-pip-as-python-dependency: true
-        # mamba does not currently support pip in env files
-        # to enable post gh/mamba-org/mamba/issues/589
+        # TODO: mamba causes pip to segfault, need to work out why
         #mamba-version: "*"
         architecture: x64
-        environment-file: maintainer/test-envs/conda-${{ matrix.run_type }}.yaml
-        activate-environment: mda-tests
+        
+    - name: install_deps
+      env:
+        MDA_CONDA_FULL_DEPS: "${{ env.MDA_CONDA_MIN_DEPS }} ${{ env.MDA_CONDA_EXTRA_DEPS }}"
+        MDA_PIP_FULL_DEPS: "${{ env.MDA_PIP_MIN_DEPS }} ${{ MDA_PIP_EXTRA_DEPS }}"
+      run: |
+        # Have to re-assign these to vars for some reason
+        conda_deps=${CONDA_${{ matrix.run_type }}_DEPS}
+        pip_deps=${PIP_${{ matrix.run_type }}_DEPS}
+        conda install ${conda_deps}
+        pip install ${pip_deps}
     
     - name: check_setup
       run: |
@@ -99,8 +112,8 @@ jobs:
       if : matrix.install_hole
       run: |
         bash ./maintainer/install_hole.sh ${OS_NAME} "${HOME}"
-        HOLE_BINDIR=${HOME}/hole2/exe
-        export PATH=${PATH}:${HOLE_BINDIR}
+        echo "HOLE_BINDIR=${HOME}/hole2/exe" >> $GITHUB_ENV
+        echo "${HOLE_BINDIR}" >> $GITHUB_PATH
 
     - name: install_mda
       run: |
