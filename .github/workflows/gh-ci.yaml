@@ -134,7 +134,7 @@ jobs:
       run: |
         # TODO: fix weird skipped tests for gro/gms/trj/trz
         # TODO: add a switch to not use --cov when not doing a coverage run?
-        pytest testsuite/MDAnalysisTests --disable-pytest-warnings \
+        pytest -n 2 testsuite/MDAnalysisTests --disable-pytest-warnings \
                --durations=50 --cov=MDAnalysis --cov-report=xml
 
     - name: run_asv
