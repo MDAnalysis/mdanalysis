@@ -165,11 +165,13 @@ jobs:
 
     - name: codecov
       if: matrix.codecov
-      uses: codecov/codecov-action@v1
-      with:
-        file: coverage.xml
-        fail_ci_if_error: True
-        verbose: True
+      run: |
+        codecov
+      #uses: codecov/codecov-action@v1
+      #with:
+      #  file: coverage.xml
+      #  fail_ci_if_error: True
+      #  verbose: True
 
 
   build_docs:
