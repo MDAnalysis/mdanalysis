@@ -136,6 +136,7 @@ jobs:
       run: |
         # We manually build hole2 to avoid OS incompatibilities
         git clone https://github.com/MDAnalysis/hole2.git
+        cd hole2/src
         source ../source.apache
         (make FC=${FC}) && (make PREFIX=${HOME}/hole2 FC=${FC} install)
         source ../source.unset
