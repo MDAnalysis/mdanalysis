@@ -29,38 +29,39 @@ jobs:
           os: [ubuntu-latest, ]
           python-version: [3.6, 3.7, 3.8]
           run_type: [FULL, ]
-          install_hole: [True, ]
-          codecov: [True, ]
+          install_hole: [true, ]
+          codecov: [true, ]
           include:
             - name: macOS
               os: macOS-latest
               python-version: 3.6
               run_type: FULL
-              install_hole: False
-              codecov: True
+              install_hole: true
+              codecov: true
             - name: minimal-ubuntu
               os: ubuntu-latest
               python-version: 3.6
               run_type: MIN
-              install_hole: False
-              codecov: True
+              install_hole: false
+              codecov: true
             - name: numpy_min
               os: ubuntu-latest
               python-version: 3.6
               run_type: FULL
-              install_hole: False
-              codecov: False
+              install_hole: false
+              codecov: false
               numpy: numpy=1.16.0
             - name: asv_check
               os: ubuntu-latest
               python-version: 3.6
               run_type: FULL
-              install_hole: False
-              codecov: False
+              install_hole: false
+              codecov: false
     env:
       CYTHON_TRACE_NOGIL: 1
       MPLBACKEND: agg
-      MACOSX_DEPLOYMENT_TARGET: 10.9
+      # Is this necessary?
+      #MACOSX_DEPLOYMENT_TARGET: 10.9
       GH_OS: ${{ matrix.os }}
 
     steps:
@@ -69,13 +70,27 @@ jobs:
     - name: setup_osx
       if: startsWith(matrix.os, 'macOS')
       run: |
+        # Set OS specific vars and compiler flags
         echo "OS_NAME=osx" >> $GITHUB_ENV
         ulimit -S -n 2048
+        clang -v
+        echo "CC=clang" >> $GITHUB_ENV
+        clang++ -v
+        echo "CXX=clang++" >> $GITHUB_ENV
+        gfortran-9 -v
+        echo "FC=gfortran-9" >> $GITHUB_ENV
 
     - name: setup_linux
       if: startsWith(matrix.os, 'ubuntu')
       run: |
+        # Set OS specific vars and compiler flags
         echo "OS_NAME=linux" >> $GITHUB_ENV
+        gcc -v
+        echo "CC=gcc" >> $GITHUB_ENV
+        g++ -v
+        echo "CXX=g++" >> $GITHUB_ENV
+        gfortran -v
+        echo "FC=gfortran" >> $GITHUB_ENV
 
     - name: setup_miniconda
       uses: conda-incubator/setup-miniconda@v2
@@ -85,7 +100,7 @@ jobs:
         channel-priority: flexible
         channels: biobuilds, conda-forge
         add-pip-as-python-dependency: true
-        # TODO: mamba causes pip to segfault, need to work out why
+        # TODO: mamba causes pip to segfault, switch when fixed
         #mamba-version: "*"
         architecture: x64
         
@@ -94,48 +109,53 @@ jobs:
         MDA_CONDA_FULL_DEPS: "${{ env.MDA_CONDA_MIN_DEPS }} ${{ env.MDA_CONDA_EXTRA_DEPS }}"
         MDA_PIP_FULL_DEPS: "${{ env.MDA_PIP_MIN_DEPS }} ${{ env.MDA_PIP_EXTRA_DEPS }}"
       run: |
-        # vars need to be re-assigned
-        # matrix.numpy should yield empty string if not in use
+        # NOTE: vars need to be re-assigned
+        # NOTE: set matrix.numpy to pin to a specific numpy version
         conda_deps="${{ matrix.numpy }} ${MDA_CONDA_${{ matrix.run_type }}_DEPS}"
         pip_deps=${MDA_PIP_${{ matrix.run_type }}_DEPS}
         conda install ${conda_deps}
         pip install ${pip_deps}
+
+        # NOTE: set setuptools version if running asv test
+        if [ ${{ matrix.name }} = "asv_check" ]; then
+          pip install asv "setuptools<45.0.0"
+        fi
     
     - name: check_setup
       run: |
-        # Check OS
+        # Check OS and python setup
         echo "OS: ${OS_NAME}"
-        # Check python
         which python
         which pip
+        pip list
         conda info
-        # TODO: adequate tqdm installed, setup.py still overrides...
         conda list
-
-    - name: install_asv
-      if: contains(matrix.name, 'asv_check')
-      run: |
-        pip install asv "setuptools<45.0.0"
 
     - name: install_hole
       if : matrix.install_hole
       run: |
-        bash ./maintainer/install_hole.sh ${OS_NAME} "${HOME}"
-        echo "HOLE_BINDIR=${HOME}/hole2/exe" >> $GITHUB_ENV
-        echo "${HOME}/hole2/exe" >> $GITHUB_PATH
+        # We manually build hole2 to avoid OS incompatibilities
+        git clone https://github.com/MDAnalysis/hole2.git
+        source ../source.apache
+        (make FC=${FC}) && (make PREFIX=${HOME}/hole2 FC=${FC} install)
+        source ../source.unset
+        echo "HOLE_BINDIR=${PWD}/../exe" >> $GITHUB_ENV
+        echo "${PWD}/../exe" >> $GITHUB_PATH
 
     - name: install_mda
       run: |
-        # Switching to install instead of build, any issues?
-        pip install -e package/ && (cd testsuite/ && python setup.py install)
+        (cd package/ && python setup.py install) && (cd testsuite/ && python setup.py install)
 
     - name: run_tests
       if: contains(matrix.name, 'asv_check') != true
       run: |
-        # TODO: fix weird skipped tests for gro/gms/trj/trz
-        # TODO: add a switch to not use --cov when not doing a coverage run?
-        pytest -n 2 testsuite/MDAnalysisTests --disable-pytest-warnings \
-               --durations=50 --cov=MDAnalysis --cov-report=xml
+        PYTEST_FLAGS="--disable-pytest-warnings --durations=50"
+        if [ ${{ matrix.codecov }} = "true" ]; then
+          PYTEST_FLAGS="${PYTEST_FLAGS} --cov=MDAnalysis --cov-report=xml"
+        fi
+        echo $PYTEST_FLAGS
+        # TODO: add back -n2 when finished testing
+        pytest testsuite/MDAnalysisTests $PYTEST_FLAGS
 
     - name: run_asv
       if: contains(matrix.name, 'asv_check')
