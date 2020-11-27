@@ -155,8 +155,7 @@ jobs:
           PYTEST_FLAGS="${PYTEST_FLAGS} --cov=MDAnalysis --cov-report=xml"
         fi
         echo $PYTEST_FLAGS
-        # TODO: add back -n2 when finished testing
-        pytest testsuite/MDAnalysisTests $PYTEST_FLAGS
+        pytest -n 2 testsuite/MDAnalysisTests $PYTEST_FLAGS
 
     - name: run_asv
       if: contains(matrix.name, 'asv_check')
@@ -171,6 +170,49 @@ jobs:
         file: coverage.xml
         fail_ci_if_error: True
         verbose: True
+
+
+  build_docs:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    runs-on: ubuntu-latest
+    env:
+      CYTHON_TRACE_NOGIL: 1
+      MPLBACKEND: agg
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: setup_miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        python-version: 3.7
+        auto-update-conda: true
+        channel-priority: flexible
+        channels: biobuilds, conda-forge
+        add-pip-as-python-dependency: true
+        architecture: x64
+
+    - name: install_deps
+      run: |
+        conda_deps="${{ env.CONDA_MIN_DEPS }} ${{ env.CONDA_EXTRA_DEPS}}"
+        pip_deps="${{ env.PIP_MIN_DEPS}} ${{ env.PIP_EXTRA_DEPS }} sphinx==1.8.5 sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0"
+        conda install ${conda_deps}
+        pip install ${pip_deps}
+
+    - name: install_mda
+      run: |
+        cd package && python setup.py build_ext --inplace
+
+    - name: build_docs
+      run: |
+        cd package && python setup.py build_sphinx
+
+    - name: deploy_docs
+      if: github.event_name != 'pull_request'
+      run: |
+        # place the deploy call here
+        echo "Oh, maple syrup roast parsnips [Richard Gowers]"
+
 
   pylint_check:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
@@ -201,6 +243,7 @@ jobs:
         PYLINTRC: package/.pylintrc
       run: |
         pylint --py3k package/MDAnalysis && pylint --py3k testsuite/MDAnalysisTests
+
 
   pypi_check:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
