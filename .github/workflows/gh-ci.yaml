@@ -60,8 +60,6 @@ jobs:
     env:
       CYTHON_TRACE_NOGIL: 1
       MPLBACKEND: agg
-      # Is this necessary?
-      #MACOSX_DEPLOYMENT_TARGET: 10.9
       GH_OS: ${{ matrix.os }}
 
     steps:
@@ -72,6 +70,8 @@ jobs:
       run: |
         # Set OS specific vars and compiler flags
         echo "OS_NAME=osx" >> $GITHUB_ENV
+        # TODO: work out why this is necessary (from CI helpers)
+        echo "MACOSX_DEPLOYMENT_TARGET=10.9" >> $GITHUB_ENV
         ulimit -S -n 2048
         clang -v
         echo "CC=clang" >> $GITHUB_ENV
