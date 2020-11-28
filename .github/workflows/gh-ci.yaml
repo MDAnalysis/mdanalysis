@@ -145,7 +145,7 @@ jobs:
 
     - name: install_mda
       run: |
-        (cd package/ && python setup.py install) && (cd testsuite/ && python setup.py install)
+        (cd package/ && python setup.py develop) && (cd testsuite/ && python setup.py install)
 
     - name: run_tests
       if: contains(matrix.name, 'asv_check') != true
