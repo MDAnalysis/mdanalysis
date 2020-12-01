@@ -34,7 +34,7 @@ jobs:
           include:
             - name: macOS
               os: macOS-latest
-              python-version: 3.6
+              python-version: 3.7
               run_type: FULL
               install_hole: true
               codecov: true
@@ -53,7 +53,7 @@ jobs:
               numpy: numpy=1.16.0
             - name: asv_check
               os: ubuntu-latest
-              python-version: 3.6
+              python-version: 3.7
               run_type: FULL
               install_hole: false
               codecov: false
@@ -115,11 +115,6 @@ jobs:
         pip_deps=${MDA_PIP_${{ matrix.run_type }}_DEPS}
         conda install ${conda_deps}
         pip install ${pip_deps}
-
-        # NOTE: set setuptools version if running asv test
-        if [ ${{ matrix.name }} = "asv_check" ]; then
-          pip install asv "setuptools<45.0.0"
-        fi
     
     - name: check_setup
       run: |
@@ -140,8 +135,8 @@ jobs:
         source ../source.apache
         (make FC=${FC}) && (make PREFIX=${HOME}/hole2 FC=${FC} install)
         source ../source.unset
-        echo "HOLE_BINDIR=${PWD}/../exe" >> $GITHUB_ENV
-        echo "${PWD}/../exe" >> $GITHUB_PATH
+        echo "HOLE_BINDIR=${HOME}/hole2/bin" >> $GITHUB_ENV
+        echo "${HOME}/hole2/bin" >> $GITHUB_PATH
 
     - name: install_mda
       run: |
@@ -224,7 +219,7 @@ jobs:
     - name: setup_miniconda
       uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: 3.6
+        python-version: 3.7
         auto-update-conda: true
         channel-priority: flexible
         channels: conda-forge
@@ -255,7 +250,7 @@ jobs:
     - name: setup_miniconda
       uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: 3.6
+        python-version: 3.7
         auto-update-conda: true
         channel-priority: flexible
         channels: conda-forge
