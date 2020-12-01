@@ -115,6 +115,11 @@ jobs:
         pip_deps=${MDA_PIP_${{ matrix.run_type }}_DEPS}
         conda install ${conda_deps}
         pip install ${pip_deps}
+
+        # also install asv if required
+        if [ ${{ matrix.name }} = "asv_check" ]; then
+          pip install asv
+        fi
     
     - name: check_setup
       run: |
