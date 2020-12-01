@@ -16,11 +16,13 @@ The rules for this file:
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
-         hanatok
+         hanatok, rmeli
 
   * 2.0.0
 
 Fixes
+  * Write `CONECT` record only once in multi-model PDB files (Issue #3018)
+  * Add '.nc' as a recognised extension for the NCDFWriter (Issue #3030)
   * PDB parser now assigns empty records for partially missing/invalid elements
     instead of not assigning the elements attribute at all (Issue #2422)
   * PDB writer now uses elements attribute instead of guessing elements from
