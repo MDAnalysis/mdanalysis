@@ -145,6 +145,8 @@ jobs:
 
     - name: install_mda
       run: |
+        # TODO: using install instead of develop here causes coverage to drop
+        # for .pyx file. If possible a solution for this should be found.
         (cd package/ && python setup.py develop) && (cd testsuite/ && python setup.py install)
 
     - name: run_tests
@@ -201,11 +203,11 @@ jobs:
 
     - name: install_mda
       run: |
-        cd package && python setup.py build_ext --inplace
+        cd package && python setup.py develop
 
     - name: build_docs
       run: |
-        cd package && python setup.py build_sphinx
+        cd package && python setup.py build_sphinx -E
 
     - name: deploy_docs
       if: github.event_name != 'pull_request'
