@@ -175,6 +175,7 @@ jobs:
 
 
   build_docs:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
     env:
       CYTHON_TRACE_NOGIL: 1
@@ -209,6 +210,7 @@ jobs:
         cd package && python setup.py build_sphinx -E
 
     - name: deploy_docs
+      if: github.event_name != 'pull_request'
       run: |
         python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
         cd package/MDAnalysis
@@ -216,7 +218,7 @@ jobs:
         cd -
         export GH_DOC_BRANCH=$GITHUB_REF
         export GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
-        export GH_REPOSITORY=github.com/lilyminium/mdanalysis.git
+        export GH_REPOSITORY=github.com/mdanalysis/mdanalysis.git
         export MDA_DOCDIR="$(pwd)/package/doc/html/html"
         export MAINTAIN_DIR="$(pwd)/maintainer"        
         bash maintainer/deploy_docs.sh
