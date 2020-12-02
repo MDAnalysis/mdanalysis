@@ -220,8 +220,8 @@ jobs:
         export GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
         export GH_REPOSITORY=github.com/mdanalysis/mdanalysis.git
         export MDA_DOCDIR="$(pwd)/package/doc/html/html"
-        export MAINTAIN_DIR="$(pwd)/maintainer"
-        bash maintainer/deploy_docs_via_travis.sh
+        export MAINTAIN_DIR="$(pwd)/maintainer"        
+        bash maintainer/deploy_docs.sh
 
 
   pylint_check:
