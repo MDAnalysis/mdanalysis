@@ -488,7 +488,7 @@ class TestHoleAnalysisLong(BaseTestHole):
             assert key == rmsd
 
         idx = np.argsort(op)
-        arr = np.array(list(hole.profiles.values()))
+        arr = np.array(list(hole.profiles.values()), dtype=object)
         for op_prof, arr_prof in zip(profiles.values(), arr[idx]):
             assert op_prof is arr_prof
 
@@ -504,7 +504,7 @@ class TestHoleAnalysisLong(BaseTestHole):
             assert key == rmsd
 
         idx = np.argsort(op)
-        arr = np.array(list(hole.profiles.values()))
+        arr = np.array(list(hole.profiles.values()), dtype=object)
         for op_prof, arr_prof in zip(profiles.values(), arr[idx]):
             assert op_prof is arr_prof
 
@@ -528,7 +528,7 @@ class TestHoleAnalysisLong(BaseTestHole):
 
         idx = np.argsort(op[:n_frames])
         values = list(hole.profiles.values())[:n_frames]
-        arr = np.array(values)
+        arr = np.array(values, dtype=object)
         for op_prof, arr_prof in zip(profiles.values(), arr[idx]):
             assert op_prof is arr_prof
 
