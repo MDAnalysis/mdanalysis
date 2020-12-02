@@ -212,8 +212,16 @@ jobs:
     - name: deploy_docs
       if: github.event_name != 'pull_request'
       run: |
-        # place the deploy call here
-        echo "Oh, maple syrup roast parsnips [Richard Gowers]"
+        python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
+        cd package/MDAnalysis
+        export VERSION=$(python -c "import version; print(version.__version__)")
+        cd -
+        export GH_DOC_BRANCH=$GITHUB_REF
+        export GH_TOKEN=${{ secrets.GITHUB_TOKEN }}
+        export GH_REPOSITORY=github.com/mdanalysis/mdanalysis.git
+        export MDA_DOCDIR="$(pwd)/package/doc/html/html"
+        export MAINTAIN_DIR="$(pwd)/maintainer"
+        bash maintainer/deploy_docs_via_travis.sh
 
 
   pylint_check:

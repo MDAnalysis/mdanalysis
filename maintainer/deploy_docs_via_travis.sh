@@ -44,12 +44,12 @@ cd ${MDA_DOCDIR} || die "Failed to 'cd ${MDA_DOCDIR}'. Run from the top level of
 mkdir ../${VERSION} && mv * ../${VERSION}
 
 git init
-git config user.name "${GIT_CI_USER}"
-git config user.email "${GIT_CI_EMAIL}"
+git config user.name github-actions
+git config user.email github-actions@github.com
 
 mv ../${VERSION} $VERSION
 
-git remote add upstream "https://${GH_TOKEN}@${GH_REPOSITORY}"
+git remote add upstream "https://github-actions:${GH_TOKEN}@${GH_REPOSITORY}"
 git fetch --depth 50 upstream ${GH_DOC_BRANCH} gh-pages
 git reset upstream/gh-pages
 
