@@ -19,6 +19,7 @@ env:
   MDA_PIP_MIN_DEPS: 'coveralls coverage<5 pytest-cov pytest-xdist'
   MDA_PIP_EXTRA_DEPS: 'duecredit parmed'
 
+
 jobs:
   main_tests:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
@@ -211,9 +212,57 @@ jobs:
 
     - name: deploy_docs
       if: github.event_name != 'pull_request'
+      env:
+        GH_USER: github-actions
+        GH_EMAIL: "github-action@users.noreply.github.com"
+        GH_REPOSITORY: "github.com/${{ github.repository }}.git"
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        URL: https://docs.mdanalysis.org
+
       run: |
-        # place the deploy call here
-        echo "Oh, maple syrup roast parsnips [Richard Gowers]"
+        # set up environment variables
+        # cannot execute bash to make variables in env section
+        # export URL for the Python script $UPDATE_JSON
+        export URL
+        export VERSION=$(cd package/MDAnalysis; python -c 'import version; print(version.__version__)')
+        UPDATE_JSON=$(pwd)/maintainer/update_json_stubs_sitemap.py
+        BRANCH="${GITHUB_REF#refs/heads/}"
+
+        # the below turns off blocking as it causes large writes to stdout to fail
+        # (see https://github.com/travis-ci/travis-ci/issues/4704)
+
+        python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
+        cd package/doc/html/html
+
+        # move docs into version subfolder
+        mkdir ../${VERSION} && mv * ../${VERSION} && mv ../${VERSION} $VERSION
+
+        # set up git
+        REV=$(git rev-parse --short HEAD)
+        git init
+        git config user.name $GH_USER
+        git config user.email $GH_EMAIL
+        git remote add upstream "https://${GH_USER}:${GH_TOKEN}@${GH_REPOSITORY}"
+        git fetch --depth 50 upstream $BRANCH gh-pages
+        git reset upstream/gh-pages
+
+        # redirects and copies
+        mkdir latest
+        python $UPDATE_JSON
+        touch .
+        touch .nojekyll
+
+        git add -A ${VERSION}/
+        git add .nojekyll versions.json *.xml *.html index.html latest
+
+        for dirname in dev stable documentation_pages ; do
+          if [ -d $dirname ]; then git add $dirname; fi
+        done
+
+        # check for anything to commit
+        # https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommited-changes
+        git diff-index --quiet HEAD -- || git commit -m "rebuilt html docs for version ${VERSION} from branch ${BRANCH} with sphinx at ${REV}"
+        git push -q upstream HEAD:gh-pages
 
 
   pylint_check:
