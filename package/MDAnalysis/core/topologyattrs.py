@@ -312,29 +312,30 @@ class _TopologyAttrMeta(type):
             else:
                 _attach_transplant_stubs(attrname, cls)
             # add each to "same attr as" class
-            if singular not in selection.SameSelection.prop_trans:
-                selection.SameSelection.prop_trans[singular] = attrname
+            
+        if singular not in selection.SameSelection.prop_trans:
+            selection.SameSelection.prop_trans[singular] = attrname
 
-            # add each to the property selection class
-            if singular not in selection.PropertySelection.props:
-                selection.PropertySelection.props[singular] = attrname
+        # add each to the property selection class
+        if singular not in selection.PropertySelection.props:
+            selection.PropertySelection.props[singular] = attrname
 
-            # add token to selectiondict
-            if singular not in selection._SELECTIONDICT:
-                dtype = classdict.get("dtype")
-                if dtype is not None:
-                    per_obj = classdict.get("per_object", bases[0].per_object)
+        # add token to selectiondict
+        if singular not in selection._SELECTIONDICT:
+            dtype = classdict.get("dtype")
+            if dtype is not None:
+                per_obj = classdict.get("per_object", bases[0].per_object)
 
-                    try:
-                        selection.gen_selection_class(singular, attrname,
-                                                      dtype, per_obj)
-                    except ValueError:
-                        msg = ("A selection keyword could not be "
-                               "automatically generated for the "
-                               f"{singular} attribute. If you need a "
-                               "selection keyword, define it manually "
-                               "by subclassing core.selection.Selection")
-                        warnings.warn(msg)
+                try:
+                    selection.gen_selection_class(singular, attrname,
+                                                    dtype, per_obj)
+                except ValueError:
+                    msg = ("A selection keyword could not be "
+                            "automatically generated for the "
+                            f"{singular} attribute. If you need a "
+                            "selection keyword, define it manually "
+                            "by subclassing core.selection.Selection")
+                    warnings.warn(msg)
 
 
 class TopologyAttr(object, metaclass=_TopologyAttrMeta):

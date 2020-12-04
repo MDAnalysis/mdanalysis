@@ -524,6 +524,8 @@ def test_stub_transplant_property(level, transplant_name):
     group = getattr(u, level)
     with pytest.raises(NoDataError):
         getattr(group, transplant_name)
+
+
 def test_warn_selection_for_strange_dtype():
     err = "A selection keyword could not be automatically generated"
 

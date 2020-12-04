@@ -673,7 +673,7 @@ class ResidSelection(Selection):
         lowers = []
 
         for val in values:
-            m1 = re.match(r"(\d+)(\w?)$", val)
+            m1 = re.match(f"({INT_PATTERN})(\w?)$", val)
             if not m1 is None:
                 res = m1.groups()
                 lower = int(res[0]), res[1]
@@ -681,7 +681,7 @@ class ResidSelection(Selection):
             else:
                 # check if in appropriate format 'lower:upper' or 'lower-upper'
                 # each val is one or more digits, maybe a letter
-                selrange = re.match(r"(\d+)(\w?)" + RANGE_PATTERN + r"(\d+)(\w?)", val)
+                selrange = re.match(f"({INT_PATTERN})(\w?)" + RANGE_PATTERN + f"({INT_PATTERN})(\w?)", val)
                 if selrange is None:  # re.match returns None on failure
                     raise ValueError("Failed to parse value: {0}".format(val))
                 res = selrange.groups()
