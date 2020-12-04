@@ -312,7 +312,7 @@ class _TopologyAttrMeta(type):
             else:
                 _attach_transplant_stubs(attrname, cls)
             # add each to "same attr as" class
-            
+
         if singular not in selection.SameSelection.prop_trans:
             selection.SameSelection.prop_trans[singular] = attrname
 
@@ -328,13 +328,13 @@ class _TopologyAttrMeta(type):
 
                 try:
                     selection.gen_selection_class(singular, attrname,
-                                                    dtype, per_obj)
+                                                  dtype, per_obj)
                 except ValueError:
                     msg = ("A selection keyword could not be "
-                            "automatically generated for the "
-                            f"{singular} attribute. If you need a "
-                            "selection keyword, define it manually "
-                            "by subclassing core.selection.Selection")
+                           "automatically generated for the "
+                           f"{singular} attribute. If you need a "
+                           "selection keyword, define it manually "
+                           "by subclassing core.selection.Selection")
                     warnings.warn(msg)
 
 

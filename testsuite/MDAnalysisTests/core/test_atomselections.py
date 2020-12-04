@@ -1295,11 +1295,12 @@ def test_int_sel(selstr, n_res):
 def test_negative_resid():
     # this is its own separate test because ResidSelection
     # has special matching for icodes
-    text = """\
-    ATOM      1  N   ASP A  -1      19.426  19.251   2.191  1.00 59.85           N  
-    ATOM      2  CA  ASP A  -1      20.185  18.441   1.255  1.00 54.54           C  
-    ATOM      3  C   ASP A  -1      21.660  18.901   1.297  1.00 40.12           C  
-    ATOM      4  O   ASP A  -1      21.958  19.978   1.829  1.00 35.85           O  """
+    text = """
+ATOM      1  N   ASP A  -1      19.426  19.251   2.191  1.00 59.85           N
+ATOM      2  CA  ASP A  -1      20.185  18.441   1.255  1.00 54.54           C
+ATOM      3  C   ASP A  -1      21.660  18.901   1.297  1.00 40.12           C
+ATOM      4  O   ASP A  -1      21.958  19.978   1.829  1.00 35.85           O
+"""
     u = mda.Universe(StringIO(textwrap.dedent(text)), format="PDB")
     ag = u.select_atoms("resid -1")
     assert len(ag) == 4
@@ -1328,4 +1329,3 @@ def test_error_selection_for_strange_dtype():
     with pytest.raises(ValueError, match="No base class defined for dtype"):
         MDAnalysis.core.selection.gen_selection_class("star", "stars",
                                                       dict, "atom")
-

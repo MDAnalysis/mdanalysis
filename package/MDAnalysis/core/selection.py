@@ -108,6 +108,7 @@ def grab_not_keywords(tokens):
         values.append(val)
     return values
 
+
 def join_separated_values(values):
     """Join range values that are separated by whitespace
 
@@ -673,7 +674,7 @@ class ResidSelection(Selection):
         lowers = []
 
         for val in values:
-            m1 = re.match(f"({INT_PATTERN})(\w?)$", val)
+            m1 = re.match(f"({INT_PATTERN})" + r"(\w?)$", val)
             if not m1 is None:
                 res = m1.groups()
                 lower = int(res[0]), res[1]
@@ -681,7 +682,9 @@ class ResidSelection(Selection):
             else:
                 # check if in appropriate format 'lower:upper' or 'lower-upper'
                 # each val is one or more digits, maybe a letter
-                selrange = re.match(f"({INT_PATTERN})(\w?)" + RANGE_PATTERN + f"({INT_PATTERN})(\w?)", val)
+                pattern = f"({INT_PATTERN})(\\w?){RANGE_PATTERN}"
+                pattern += f"({INT_PATTERN})(\\w?)"
+                selrange = re.match(pattern, val)
                 if selrange is None:  # re.match returns None on failure
                     raise ValueError("Failed to parse value: {0}".format(val))
                 res = selrange.groups()
@@ -783,7 +786,7 @@ class BoolSelection(Selection):
         values = grab_not_keywords(tokens)
         if not values:
             values = ["true"]
-        
+
         self.values = []
         for val in values:
             lower = val.lower()
@@ -878,12 +881,12 @@ class FloatRangeSelection(RangeSelection):
                 #                        rtol=self.rtol)
             else:
                 low, high = lower - 1, lower + 1
+                fp = "https://docs.python.org/3.8/tutorial/floatingpoint.html"
                 msg = ("Using float equality to select atoms is "
                        "not recommended because of inherent "
                        "limitations in representing numbers on "
-                       "computers (see "
-                       "https://docs.python.org/3.8/tutorial/floatingpoint.html"
-                       " for more). Instead, we recommend using a range "
+                       f"computers (see {fp} for more). "
+                       "Instead, we recommend using a range "
                        f"to select, e.g. '{self.token} {low} to {high}'. "
                        "If you still want to compare floats, use the "
                        "`atol` and `rtol` keywords to modify the tolerance "
@@ -1164,7 +1167,7 @@ class PropertySelection(Selection):
         '<': '>=', '>=': '<',
         '>': '<=', '<=': '>',
     }
-    
+
     props = {"x": "positions",
              "y": "positions",
              "z": "positions"}
@@ -1243,7 +1246,7 @@ class PropertySelection(Selection):
             attr = self.props[self.prop]
             errmsg = f"This Universe does not contain {attr} information"
             raise SelectionError(errmsg) from None
-        
+
         try:
             col = {'x': 0, 'y': 1, 'z': 2}[self.prop]
         except KeyError:
@@ -1390,7 +1393,7 @@ class SelectionParser(object):
         rtol : float, optional
             The relative tolerance parameter for float comparisons.
             Passed to :func:``numpy.isclose``.
-        
+
 
         Returns
         -------
@@ -1503,7 +1506,7 @@ def gen_selection_class(singular, attrname, dtype, per_object):
     -------
 
     The function creates a class inside ``_selectors`` and returns it::
-    
+
         >>> gen_selection_class("resname", "resnames", object, "residue")
         <class 'MDAnalysis.core.selection._selectors.ResnameSelection'>
 
