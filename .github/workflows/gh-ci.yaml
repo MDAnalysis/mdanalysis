@@ -226,10 +226,10 @@ jobs:
         UPDATE_JSON=$(pwd)/maintainer/update_json_stubs_sitemap.py
         BRANCH="${GITHUB_REF#refs/heads/}"
 
-        # the below turns off blocking as it causes large writes to stdout to fail
+        # the below turns off non-blocking as it causes large writes to stdout to fail
         # (see https://github.com/travis-ci/travis-ci/issues/4704)
-
-        python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
+        # commented out as this is not a problem with gh-actions
+        # python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
         cd package/doc/html/html
 
         # move docs into version subfolder
