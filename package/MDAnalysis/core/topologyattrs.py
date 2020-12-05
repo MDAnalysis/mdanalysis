@@ -268,8 +268,8 @@ class _TopologyAttrMeta(type):
 
     Each topology attribute is added to the top-level dictionaries
     for various record purposes. The class itself is added to
-    _TOPOLOGY_ATTRS and _TOPOLOGY_ATTRNAMES. Transplanted methods
-    are also added to _TOPOLOGY_TRANSPLANTS.
+    :data:`_TOPOLOGY_ATTRS` and :data:`_TOPOLOGY_ATTRNAMES`. Transplanted
+    methods are also added to :data:`_TOPOLOGY_TRANSPLANTS.`
 
     We also attempt to make the topology attribute selectable with
     atom selection language by automatically generating a relevant

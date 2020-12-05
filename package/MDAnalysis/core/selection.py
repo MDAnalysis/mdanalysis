@@ -51,11 +51,17 @@ import numpy as np
 
 from ..lib.util import unique_int_1d
 from ..lib import distances
-from ..exceptions import SelectionError, NoDataError
+from ..exceptions import SelectionError, NoDataError, SelectionWarning
 
-
+#: Regular expression for recognizing a floating point number in a selection.
+#: Numbers such as 1.2, 1.2e-01, -1.2 are all parsed as Python floats.
 FLOAT_PATTERN = r"-?\d*\.?\d*(?:e[-+]?\d+)?"
+
+#: Regular expression for recognizing un/signed integers in a selection.
 INT_PATTERN = r"-?\d+"
+
+#: Regular expression for recognising a range separator.
+#: Delimiters include ":", "-", "to" and can have arbitrary whitespace.
 RANGE_PATTERN = r"\s*(?:[:-]| to )\s*"
 
 def is_keyword(val):
@@ -129,14 +135,20 @@ def join_separated_values(values):
     .. versionadded:: 2.0.0
     """
     _values = []
+    DELIMITERS = ("to", ":", "-")
     while values:
         v = values.pop(0)
-        if v in ("to", ":", "-"):
+
+        if v in DELIMITERS:
             try:
                 _values[-1] = f"{_values[-1]} {v} {values.pop(0)}"
             except IndexError:
                 given = f"{' '.join(_values)} {v} {' '.join(values)}"
-                raise ValueError(f"Invalid expression given: {given}")
+                raise SelectionError(f"Invalid expression given: {given}")
+        elif v[:2] == '--':
+            _values[-1] = f"{_values[-1]} {v}"
+        elif _values and any(_values[-1].endswith(x) for x in DELIMITERS):
+            _values[-1] =f"{_values[-1]} {v}"
         else:
             _values.append(v)
     return _values
@@ -891,7 +903,7 @@ class FloatRangeSelection(RangeSelection):
                        "If you still want to compare floats, use the "
                        "`atol` and `rtol` keywords to modify the tolerance "
                        "for `np.isclose`.")
-                warnings.warn(msg)
+                warnings.warn(msg, category=SelectionWarning)
                 thismask = np.isclose(vals, lower, atol=self.atol,
                                       rtol=self.rtol)
 
@@ -1145,7 +1157,9 @@ class PropertySelection(Selection):
     x, y, z, radius, mass,
 
     .. versionchanged:: 2.0.0
-        changed == operator to use np.isclose instead of np.equals
+        changed == operator to use np.isclose instead of np.equals.
+        Added ``atol`` and ``rtol`` keywords to control ``np.isclose``
+        tolerance.
     """
     token = 'prop'
     ops = dict([
@@ -1389,10 +1403,10 @@ class SelectionParser(object):
             periodic boundary conditions
         atol : float, optional
             The absolute tolerance parameter for float comparisons.
-            Passed to :func:``numpy.isclose``.
+            Passed to :func:`numpy.isclose`.
         rtol : float, optional
             The relative tolerance parameter for float comparisons.
-            Passed to :func:``numpy.isclose``.
+            Passed to :func:`numpy.isclose`.
 
 
         Returns
@@ -1465,7 +1479,8 @@ sys.modules[_selectors.__name__] = _selectors
 def gen_selection_class(singular, attrname, dtype, per_object):
     """Selection class factory for arbitrary TopologyAttrs.
 
-    This is called by the metaclass
+    Normally this should not be used except within the codebase
+    or by developers; it is called by the metaclass
     :class:`MDAnalysis.core.topologyattrs._TopologyAttrMeta` to
     auto-generate suitable selection classes by creating a token
     with the topology attribute (singular) name. The function
@@ -1505,10 +1520,17 @@ def gen_selection_class(singular, attrname, dtype, per_object):
     Example
     -------
 
-    The function creates a class inside ``_selectors`` and returns it::
+    The function creates a class inside ``_selectors`` and returns it.
+    Normally it should not need to be manually called, as it is created
+    for each TopologyAttr::
 
         >>> gen_selection_class("resname", "resnames", object, "residue")
         <class 'MDAnalysis.core.selection._selectors.ResnameSelection'>
+    
+    Simply generating this selector is sufficient for the keyword to be
+    accessible by :meth:`~MDAnalysis.core.universe.Universe.select_atoms`,
+    as that is automatically handled by
+    :class:`~MDAnalysis.core.selections._Selectionmeta`.
 
     See also
     --------

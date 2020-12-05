@@ -34,7 +34,7 @@ import MDAnalysis as mda
 import MDAnalysis.core.selection
 from MDAnalysis.lib.distances import distance_array
 from MDAnalysis.core.selection import Parser
-from MDAnalysis import SelectionError
+from MDAnalysis import SelectionError, SelectionWarning
 
 from MDAnalysis.tests.datafiles import (
     PSF, DCD,
@@ -975,10 +975,20 @@ class TestSelectionErrors(object):
         'index or protein',
         'prop mass < 4.0 hello',  # unused token
         'prop mass > 10. and group this',  # missing group
+        # bad ranges
+        'mass 1.0 to',
+        'mass to 3.0',
+        'mass 1.0:',
+        'mass :3.0',
+        'mass 1-',
     ])
     def test_selection_fail(self, selstr, universe):
         with pytest.raises(SelectionError):
             universe.select_atoms(selstr)
+
+    def test_invalid_prop_selection(self, universe):
+        with pytest.raises(SelectionError, match="Expected one of"):
+            universe.select_atoms("prop parsnip < 2")
 
 
 def test_segid_and_resid():
@@ -1248,11 +1258,14 @@ def u_fake_masses():
     ("mass 0.8 to 1.2", 23844, {}),
     ("mass 8e-1 to 1200e-3", 23844, {}),
     ("mass -5--3", 2, {}),  # select -5 to -3
+    ("mass -5 --3", 2, {}),  # spacing
+    ("mass -5- -3", 2, {}),  # spacing
     ("mass -3 : -5", 0, {}),  # wrong way around
     # float equality
     ("mass 0.3", 5, {"rtol": 0, "atol": 0}),
     ("mass 0.3", 5, {"rtol": 1e-22, "atol": 1e-22}),
     # 0.30000000000000001 == 0.3
+    ("mass 0.3 - 0.30000000000000004", 0, {}),
     ("mass 0.30000000000000004", 5, {"rtol": 0, "atol": 0}),
     ("mass 0.3 0.30000000000000001", 5, {"rtol": 0, "atol": 0}),
     # float near-equality
@@ -1269,13 +1282,12 @@ def test_mass_sel(u_fake_masses, selstr, n_atoms, selkwargs):
     ag = u_fake_masses.select_atoms(selstr, **selkwargs)
     assert len(ag) == n_atoms
 
-
 def test_mass_sel_warning(u_fake_masses):
     warn_msg = (r"Using float equality .* is not recommended .* "
                 r"we recommend using a range .*"
                 r"'mass -0.6 to 1.4'.*"
                 r"use the `atol` and `rtol` keywords")
-    with pytest.warns(UserWarning, match=warn_msg):
+    with pytest.warns(SelectionWarning, match=warn_msg):
         u_fake_masses.select_atoms("mass 0.4")
 
 
@@ -1295,12 +1307,11 @@ def test_int_sel(selstr, n_res):
 def test_negative_resid():
     # this is its own separate test because ResidSelection
     # has special matching for icodes
-    text = """
-ATOM      1  N   ASP A  -1      19.426  19.251   2.191  1.00 59.85           N
-ATOM      2  CA  ASP A  -1      20.185  18.441   1.255  1.00 54.54           C
-ATOM      3  C   ASP A  -1      21.660  18.901   1.297  1.00 40.12           C
-ATOM      4  O   ASP A  -1      21.958  19.978   1.829  1.00 35.85           O
-"""
+    text = """\
+    ATOM      1  N   ASP A  -1      19.426  19.251   2.191  1.00 59.85           N
+    ATOM      2  CA  ASP A  -1      20.185  18.441   1.255  1.00 54.54           C
+    ATOM      3  C   ASP A  -1      21.660  18.901   1.297  1.00 40.12           C
+    ATOM      4  O   ASP A  -1      21.958  19.978   1.829  1.00 35.85           O"""
     u = mda.Universe(StringIO(textwrap.dedent(text)), format="PDB")
     ag = u.select_atoms("resid -1")
     assert len(ag) == 4

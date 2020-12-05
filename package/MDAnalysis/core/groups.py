@@ -2606,7 +2606,9 @@ class AtomGroup(GroupBase):
 
     # As with universe.select_atoms, needing to fish out specific kwargs
     # (namely, 'updating') doesn't allow a very clean signature.
-    def select_atoms(self, sel, *othersel, **selgroups):
+
+    def select_atoms(self, sel, *othersel, periodic=True, rtol=1e-05,
+                     atol=1e-08, updating=False, **selgroups):
         """Select atoms from within this Group using a selection string.
 
         Returns an :class:`AtomGroup` sorted according to their index in the
@@ -2909,10 +2911,6 @@ class AtomGroup(GroupBase):
                           UserWarning)
             return self[[]]
 
-        periodic = selgroups.pop('periodic', True)
-        rtol = selgroups.pop('rtol', 1e-05)
-        atol = selgroups.pop('atol', 1e-08)
-        updating = selgroups.pop('updating', False)
         sel_strs = (sel,) + othersel
 
         for group, thing in selgroups.items():

@@ -67,6 +67,14 @@ selection parser. The following applies to all selections:
       "myTopologyAttr True" both give all atoms with
       ``myTopologyAttr == True``.
 
+.. seealso::
+
+    Regular expression patterns
+    :data:`~MDAnalysis.core.selection.FLOAT_PATTERN` for matching floats;
+    :data:`~MDAnalysis.core.selection.INT_PATTERN` for matching integers;
+    and :data:`~MDAnalysis.core.selection.RANGE_PATTERN` for matching
+    selection ranges.
+
 
 .. _`Defined topology attributes`: https://userguide.mdanalysis.org/2.0.0-dev0/topology_system.html#format-specific-attributes
 
@@ -76,7 +84,8 @@ Simple selections
 
 This is a non-exhaustive list of the available selection keywords. As noted
 in the dot point above, keywords will be automatically generated for any
-suitable :class:`~MDAnalysis.core.topologyattrs.TopologyAttr`.
+suitable :class:`~MDAnalysis.core.topologyattrs.TopologyAttr`. A list of
+`Defined topology attributes`_ is available in the User Guide.
 
 protein, backbone, nucleic, nucleicbackbone
     selects all atoms that belong to a standard set of residues; a protein
