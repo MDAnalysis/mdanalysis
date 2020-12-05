@@ -885,12 +885,8 @@ class FloatRangeSelection(RangeSelection):
 
         for upper, lower in zip(self.uppers, self.lowers):
             if upper is not None:
-                thismask = vals > lower
-                thismask &= vals < upper
-                # thismask |= np.isclose(vals, lower, atol=self.atol,
-                #                        rtol=self.rtol)
-                # thismask |= np.isclose(vals, upper, atol=self.atol,
-                #                        rtol=self.rtol)
+                thismask = vals >= lower
+                thismask &= vals <= upper
             else:
                 low, high = lower - 1, lower + 1
                 fp = "https://docs.python.org/3.8/tutorial/floatingpoint.html"
