@@ -1258,9 +1258,16 @@ def u_fake_masses():
     ("mass 0.8 to 1.2", 23844, {}),
     ("mass 8e-1 to 1200e-3", 23844, {}),
     ("mass -5--3", 2, {}),  # select -5 to -3
-    ("mass -5 --3", 2, {}),  # spacing
-    ("mass -5- -3", 2, {}),  # spacing
     ("mass -3 : -5", 0, {}),  # wrong way around
+    # regex; spacing, delimiters, and negatives
+    ("mass -5 --3", 2, {}),
+    ("mass -5- -3", 2, {}),
+    ("mass -5 - -3", 2, {}),
+    ("mass -10:3", 34945, {}),
+    ("mass -10 :3", 34945, {}),
+    ("mass -10: 3", 34945, {}),
+    ("mass -10 : 3", 34945, {}),
+    ("mass -10 -3", 0, {}),  # separate selections, not range
     # float equality
     ("mass 0.3", 5, {"rtol": 0, "atol": 0}),
     ("mass 0.3", 5, {"rtol": 1e-22, "atol": 1e-22}),

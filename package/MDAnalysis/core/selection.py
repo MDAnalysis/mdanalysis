@@ -145,10 +145,9 @@ def join_separated_values(values):
             except IndexError:
                 given = f"{' '.join(_values)} {v} {' '.join(values)}"
                 raise SelectionError(f"Invalid expression given: {given}")
-        elif v[:2] == '--':
+        elif _values and (v[:2] in ('--', 'to') or v[0] == ":" or
+            any(_values[-1].endswith(x) for x in DELIMITERS)):
             _values[-1] = f"{_values[-1]} {v}"
-        elif _values and any(_values[-1].endswith(x) for x in DELIMITERS):
-            _values[-1] =f"{_values[-1]} {v}"
         else:
             _values.append(v)
     return _values
