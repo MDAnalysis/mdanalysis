@@ -125,7 +125,7 @@ __all__ = [
     "TRR_multi_frame",
     "merge_protein", "merge_ligand", "merge_water",
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
-    "mol2_zinc", "mol2_comments_header", "mol2_ligand",
+    "mol2_zinc", "mol2_comments_header", "mol2_ligand", "mol2_sodium_ion",
     "capping_input", "capping_output", "capping_ace", "capping_nma",
     "contacts_villin_folded", "contacts_villin_unfolded", "contacts_file",
     "LAMMPSdata", "trz4data", "LAMMPSdata_mini",
@@ -448,6 +448,8 @@ mol2_broken_molecule = resource_filename(__name__, "data/mol2/BrokenMolecule.mol
 mol2_comments_header = resource_filename(__name__, "data/mol2/Molecule_comments_header.mol2")
 # MOL2 file without substructure field
 mol2_zinc = resource_filename(__name__, "data/mol2/zinc_856218.mol2")
+# MOL2 file without bonds
+mol2_sodium_ion = resource_filename(__name__, "data/mol2/sodium_ion.mol2")
 
 capping_input = resource_filename(__name__, "data/capping/aaqaa.gro")
 capping_output = resource_filename(__name__, "data/capping/maestro_aaqaa_capped.pdb")
