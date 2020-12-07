@@ -21,7 +21,6 @@ dependencies:
   - scikit-learn
   - scipy
   - pip
-  - plotly
   - sphinx==1.8.5
   - tidynamics>=1.0.0
   - tqdm>=4.43.0
