@@ -190,7 +190,7 @@ class TriangularMatrix(object):
 
 
 class ParallelCalculation(object):
-    """
+    r"""
     Generic parallel calculation class. Can use arbitrary functions,
     arguments to functions and kwargs to functions.
 
@@ -279,7 +279,7 @@ class ParallelCalculation(object):
             results.put((i, self.functions[i](*self.args[i], **self.kwargs[i])))
 
     def run(self):
-        """
+        r"""
         Run parallel calculation.
 
         Returns

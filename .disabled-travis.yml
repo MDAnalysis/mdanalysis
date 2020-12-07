@@ -30,7 +30,7 @@ env:
     - SETUP_CMD="${PYTEST_FLAGS}"
     - BUILD_CMD="pip install -e package/ && (cd testsuite/ && python setup.py build)"
     - CONDA_MIN_DEPENDENCIES="mmtf-python biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
-    - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles tqdm>=4.43.0 tidynamics>=1.0.0 rdkit>=2020.03.1 h5py"
+    - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles tqdm>=4.43.0 tidynamics>=1.0.0 rdkit>=2020.03.1 h5py==2.10.0"
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
     - PIP_DEPENDENCIES="duecredit parmed"
@@ -38,6 +38,7 @@ env:
     - INSTALL_HOLE="true"
     - CYTHON_TRACE_NOGIL=1
     - MPLBACKEND=agg
+    - MAMBA=true
 
   matrix:
     # Run a coverage test for most versions
@@ -94,6 +95,29 @@ matrix:
            CONDA_DEPENDENCIES=${CONDA_MIN_DEPENDENCIES}
            INSTALL_HOLE="false"
            CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+
+    - os: linux
+      language: python
+      arch: arm64-graviton2
+      python:
+        - "3.7"
+      dist: focal
+      virt: vm
+      group: edge
+      before_install:
+        - python -m pip install cython numpy scipy
+        - python -m pip install --no-build-isolation hypothesis matplotlib pytest pytest-cov pytest-xdist tqdm
+      install:
+        - cd package
+        - python setup.py install
+        - cd ../testsuite
+        - python setup.py install
+        - cd ..
+      script:
+        - cd testsuite
+        - python -m pytest ./MDAnalysisTests --disable-pytest-warnings -n 8 -rsx --cov=MDAnalysis
+      after_success:
+        - echo "Override this stage for ARM64"
 
   allow_failures:
     - env: NUMPY_VERSION=dev EVENT_TYPE="cron"

@@ -15,11 +15,27 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
-         calcraven，xiki-tempula, mieczyslaw
+         calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
+         hanatok, rmeli
 
   * 2.0.0
 
 Fixes
+  * Write `CONECT` record only once in multi-model PDB files (Issue #3018)
+  * Add '.nc' as a recognised extension for the NCDFWriter (Issue #3030)
+  * PDB parser now assigns empty records for partially missing/invalid elements
+    instead of not assigning the elements attribute at all (Issue #2422)
+  * PDB writer now uses elements attribute instead of guessing elements from
+    atom name (Issue #2423)
+  * Cleanup and parametrization of test_atomgroup.py (Issue #2995)
+  * The methods provided by topology attributes now appear in the
+    documentation (Issue #1845)
+  * AtomGroup.center now works correctly for compounds + unwrapping
+    (Issue #2984)
+  * Avoid using deprecated array indexing in topology attributes
+    (Issue #2990, PR #2991)
+  * ParmedParser no longer guesses elements if they are not recognised, instead
+    empty strings are assigned (Issue #2933)
   * Instead of using ATOM for both ATOM and HETATM, HETATM record type
     keyword is properly written out by PDB writer (Issue #1753, PR #2880).
   * Change referenced PDB standard version to 3.3 (Issue #2906).
@@ -56,8 +72,17 @@ Fixes
     Universe (PR #2893)
   * ensure that unistd.h is included on macOS when compiling ENCORE's spe.c
     (Issue #2934)
+  * Fix tests for analysis.bat that could fail when run in parallel and that
+    would create a test artifact (Issue #2979, PR #2981)
 
 Enhancements
+  * Improved performance of the ParmEd converter (Issue #3028, PR #3029)
+  * Improved analysis class docstrings, and added missing classes to the 
+    `__all__` list (PR #2998)
+  * The PDB writer gives more control over how to write the atom ids
+    (Issue #1072, PR #2886)
+  * Preliminary support for the Linux ARM64 platform with minimal
+    dependencies (PR #2956)
   * Refactored analysis.helanal into analysis.helix_analysis
     (Issue #2452, PR #2622)
   * Improved MSD code to accept `AtomGroup` and reject `UpdatingAtomGroup`
@@ -88,9 +113,13 @@ Enhancements
     explicit in the topology (Issue #2468, PR #2775)
 
 Changes
+  * Continuous integration uses mamba rather than conda to install the
+    dependencies (PR #2983)
   * removes deprecated `as_Universe` function from MDAnalysis.core.universe,
     as a result :class:`MDAnalysis.analysis.leaflet.LeafletFinder` now only
     accepts Universes for its `universe` argument (Issue #2920)
+  * deprecated Python escape sequence usage has been fixed in our test suite,
+    and the test suite will now raise an error for this usage of `\` (PR #2885)
   * deprecated NumPy type aliases have been replaced with their actual types
     (see upstream NumPy PR 14882), and our pytest configuration will raise an
     error for any violation when testing with development NumPy builds

@@ -297,7 +297,7 @@ class SphericalLayerSelection(DistanceSelection):
         self.inRadius = float(tokens.popleft())
         self.exRadius = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
-    
+
     @return_empty_on_apply
     def apply(self, group):
         indices = []
@@ -604,8 +604,8 @@ class AltlocSelection(StringSelection):
 
 class AromaticSelection(Selection):
     """Select aromatic atoms.
-    
-    Aromaticity is available in the `aromaticities` attribute and is made 
+
+    Aromaticity is available in the `aromaticities` attribute and is made
     available through RDKit"""
     token = 'aromatic'
     field = 'aromaticities'
@@ -691,7 +691,7 @@ class ResidSelection(Selection):
         lowers = []
 
         for val in values:
-            m1 = re.match("(\d+)(\w?)$", val)
+            m1 = re.match(r"(\d+)(\w?)$", val)
             if not m1 is None:
                 res = m1.groups()
                 lower = int(res[0]), res[1]
@@ -699,7 +699,7 @@ class ResidSelection(Selection):
             else:
                 # check if in appropriate format 'lower:upper' or 'lower-upper'
                 # each val is one or more digits, maybe a letter
-                selrange = re.match("(\d+)(\w?)[:-](\d+)(\w?)", val)
+                selrange = re.match(r"(\d+)(\w?)[:-](\d+)(\w?)", val)
                 if selrange is None:  # re.match returns None on failure
                     raise ValueError("Failed to parse value: {0}".format(val))
                 res = selrange.groups()
@@ -811,7 +811,7 @@ class RangeSelection(Selection):
                 upper = None
             except ValueError:
                 # check if in appropriate format 'lower:upper' or 'lower-upper'
-                selrange = re.match("(\d+)[:-](\d+)", val)
+                selrange = re.match(r"(\d+)[:-](\d+)", val)
                 if not selrange:
                     errmsg = f"Failed to parse number: {val}"
                     raise ValueError(errmsg) from None
@@ -1207,7 +1207,7 @@ class SameSelection(Selection):
     Selects all atoms that have the same subkeyword value as any atom in selection
 
     .. versionchanged:: 1.0.0
-       Map :code:`"residue"` to :code:`"resindices"` and :code:`"segment"` to 
+       Map :code:`"residue"` to :code:`"resindices"` and :code:`"segment"` to
        :code:`"segindices"` (see #2669 and #2672)
     """
 

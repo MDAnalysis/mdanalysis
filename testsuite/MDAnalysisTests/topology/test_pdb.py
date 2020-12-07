@@ -23,7 +23,6 @@
 from io import StringIO
 
 import pytest
-import warnings
 import numpy as np
 from numpy.testing import assert_equal
 import MDAnalysis as mda
@@ -66,9 +65,11 @@ hybrid36 = [
     ("10267", 10267)
 ]
 
+
 @pytest.mark.parametrize('hybrid, integer', hybrid36)
 def test_hy36decode(hybrid, integer):
     assert mda.topology.PDBParser.hy36decode(5, hybrid) == integer
+
 
 class PDBBase(ParserBase):
     expected_attrs = ['ids', 'names', 'record_types', 'resids',
@@ -205,6 +206,7 @@ ATOM      4  H2  TIP3           66.986  49.547  22.931  1.00  0.00      TIP3
 ENDMDL
 """
 
+
 def test_PDB_no_resid():
     u = mda.Universe(StringIO(PDB_noresid), format='PDB')
 
@@ -212,6 +214,7 @@ def test_PDB_no_resid():
     assert len(u.residues) == 1
     # should have default resid of 1
     assert u.residues[0].resid == 1
+
 
 PDB_hex = """\
 REMARK For testing reading of hex atom numbers
@@ -225,6 +228,7 @@ HETATMA0002  H     2 L 400      20.576  40.354  60.483
 HETATMA0003  H     2 L 400      10.208  30.067  70.045
 END
 """
+
 
 def test_PDB_hex():
     u = mda.Universe(StringIO(PDB_hex), format='PDB')
@@ -298,37 +302,25 @@ def test_PDB_elements():
     assert_equal(u.atoms.elements, element_list)
 
 
-PDB_missing_ele = """\
-REMARK For testing warnings in case of absent element information
-ATOM      1  N   ASN A   1      -8.901   4.127  -0.555  1.00  0.00
-ATOM      2  CA  ASN A   1      -8.608   3.135  -1.618  1.00  0.00
-ATOM      3  C   ASN A   1      -7.117   2.964  -1.897  1.00  0.00
-ATOM      4  O   ASN A   1      -6.634   1.849  -1.758  1.00  0.00
-TER       5
-HETATM    6 CU    CU A   2      03.000  00.000  00.000  1.00 00.00
-HETATM    7 FE    FE A   3      00.000  03.000  00.000  1.00 00.00
-HETATM    8 Mg    Mg A   4      03.000  03.000  03.000  1.00 00.00
-TER       9
-"""
+def test_missing_elements_noattribute():
+    """Check that:
 
-
-def test_missing_elements_warnings():
-    """The test checks whether it returns the appropriate warning on
-    encountering missing elements.
+    1) a warning is raised if elements are missing
+    2) the elements attribute is not set
     """
-    with pytest.warns(UserWarning) as record:
-        u = mda.Universe(StringIO(PDB_missing_ele), format='PDB')
-    
-    assert len(record) == 1
-    assert record[0].message.args[0] == "Element information is absent or "\
-        "missing for a few atoms. Elements attributes will not be populated."
+    wmsg = ("Element information is missing, elements attribute will not be "
+            "populated")
+    with pytest.warns(UserWarning, match=wmsg):
+        u = mda.Universe(PDB_small)
+    with pytest.raises(AttributeError):
+        _ = u.atoms.elements
 
 
 PDB_wrong_ele = """\
 REMARK For testing warnings of wrong elements
 REMARK This file represent invalid elements in the elements column
 ATOM      1  N   ASN A   1      -8.901   4.127  -0.555  1.00  0.00           N
-ATOM      2  CA  ASN A   1      -8.608   3.135  -1.618  1.00  0.00           C
+ATOM      2  CA  ASN A   1      -8.608   3.135  -1.618  1.00  0.00
 ATOM      3  C   ASN A   1      -7.117   2.964  -1.897  1.00  0.00           C
 ATOM      4  O   ASN A   1      -6.634   1.849  -1.758  1.00  0.00           O
 ATOM      5  X   ASN A   1      -9.437   3.396  -2.889  1.00  0.00          XX
@@ -344,12 +336,12 @@ def test_wrong_elements_warnings():
     """The test checks whether there are invalid elements in the elements
     column which have been parsed and returns an appropriate warning.
     """
-    with pytest.warns(UserWarning) as record:
+    with pytest.warns(UserWarning, match='Unknown element XX found'):
         u = mda.Universe(StringIO(PDB_wrong_ele), format='PDB')
-    
-    assert len(record) == 2
-    assert record[1].message.args[0] == "Invalid elements found in the PDB "\
-        "file, elements attributes will not be populated."
+
+    expected = np.array(['N', '', 'C', 'O', '', 'Cu', 'Fe', 'Mg'],
+                        dtype=object)
+    assert_equal(u.atoms.elements, expected)
 
 
 def test_nobonds_error():

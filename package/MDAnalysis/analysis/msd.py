@@ -271,7 +271,6 @@ class EinsteinMSD(AnalysisBase):
         Number of frames included in the analysis.
     n_particles : int
         Number of particles MSD was calculated over.
-
     """
 
     def __init__(self, u, select='all', msd_type='xyz', fft=True, **kwargs):
@@ -284,13 +283,11 @@ class EinsteinMSD(AnalysisBase):
             A selection string. Defaults to "all" in which case
             all atoms are selected.
         msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'}
-            Desired dimensions to be included in the MSD. Defaults to 'xyz'.
+            Desired dimensions to be included in the MSD.
         fft : bool
             If ``True``, uses a fast FFT based algorithm for computation of
             the MSD. Otherwise, use the simple "windowed" algorithm.
             The tidynamics package is required for `fft=True`.
-            Defaults to ``True``.    
-
         """
         if isinstance(u, groups.UpdatingAtomGroup):
             raise TypeError("UpdatingAtomGroups are not valid for MSD "
