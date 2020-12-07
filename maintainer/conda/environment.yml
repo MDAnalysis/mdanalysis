@@ -1,12 +1,9 @@
 name: mda-dev
 channels:
   - defaults
-  - biobuilds
   - conda-forge
 dependencies:
-  - biopython
   - chemfiles
-  - clustalw==2.1
   - codecov
   - cython
   - griddataformats
@@ -17,26 +14,19 @@ dependencies:
   - matplotlib==3.2.2
   - mmtf-python
   - mock
-  - netcdf4
   - networkx
   - numpy>=1.17.3
   - psutil
   - pytest
   - scikit-learn
   - scipy
-  - nbsphinx
-  - nglview
   - pip
   - plotly
-  - pybtex
-  - rdkit>=2020.03.1
-  - seaborn>=0.7.0
   - sphinx==1.8.5
   - tidynamics>=1.0.0
   - tqdm>=4.43.0
   - sphinxcontrib-bibtex
   - sphinx_rtd_theme
-  - tabulate
   - pip:
       - duecredit
       - parmed
