@@ -30,10 +30,9 @@ from MDAnalysisTests.datafiles import (
     mol2_molecule,
     mol2_molecules,
 )
-from numpy.testing import assert_equal
 
 import numpy as np
-
+from io import StringIO
 
 class TestMOL2Base(ParserBase):
     parser = mda.topology.MOL2Parser.MOL2Parser
@@ -94,3 +93,28 @@ def test_elements_selection():
         np.array(["S", "S"], dtype="U3")
     )
 """
+
+# Bond information is needed
+# See #3057
+mol2_wrong_element ="""\
+@<TRIPOS>MOLECULE
+FXA101_1
+49 51 1 0 0 
+SMALL
+USER_CHARGES
+
+
+@<TRIPOS>ATOM
+  1 N1       6.8420     9.9900    22.7430 N.am  1 Q101  -0.8960
+  2 S1       8.1400     9.2310    23.3330 X.o2  1 Q101   1.3220
+@<TRIPOS>BOND
+  1   1   2  am
+"""
+
+
+def test_wrong_elements_warnings():
+    with pytest.warns(UserWarning, match='Unknown element X found'):
+        u = mda.Universe(StringIO(mol2_wrong_element), format='MOL2')
+
+    expected = np.array(['N', ''], dtype=object)
+    assert_equal(u.atoms.elements, expected)

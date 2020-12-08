@@ -61,6 +61,9 @@ from ..core.topologyattrs import (
     Segids,
 )
 from ..core.topology import Topology
+from .tables import SYMB2Z
+
+import warnings
 
 
 class MOL2Parser(TopologyReaderBase):
@@ -159,7 +162,18 @@ class MOL2Parser(TopologyReaderBase):
 
         n_atoms = len(ids)
 
-        masses = guessers.guess_masses(elements)
+        validated_elements = []
+        for elem in elements:
+            if elem.capitalize() in SYMB2Z:
+                validated_elements.append(elem.capitalize())
+            else:
+                wmsg = (f"Unknown element {elem.capitalize()} found for some "
+                        "atoms. These have been given an empty element "
+                        "record.")
+                warnings.warn(wmsg)
+                validated_elements.append('')
+
+        masses = guessers.guess_masses(validated_elements)
 
         attrs = []
         attrs.append(Atomids(np.array(ids, dtype=np.int32)))
@@ -167,7 +181,7 @@ class MOL2Parser(TopologyReaderBase):
         attrs.append(Atomtypes(np.array(types, dtype=object)))
         attrs.append(Charges(np.array(charges, dtype=np.float32)))
         attrs.append(Masses(masses, guessed=True))
-        attrs.append(Elements(np.array(elements, dtype="U3")))
+        attrs.append(Elements(np.array(validated_elements, dtype="U3")))
 
         resids = np.array(resids, dtype=np.int32)
         resnames = np.array(resnames, dtype=object)
