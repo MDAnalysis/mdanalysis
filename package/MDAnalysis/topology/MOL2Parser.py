@@ -53,6 +53,7 @@ from ..core.topologyattrs import (
     Atomtypes,
     Bonds,
     Charges,
+    Elements,
     Masses,
     Resids,
     Resnums,
@@ -91,6 +92,13 @@ class MOL2Parser(TopologyReaderBase):
         Returns
         -------
         A MDAnalysis Topology object
+
+
+        .. versionchanges: 2.0.0
+           Parse elements from atom types. The elements attribute can contain
+           MOL2-specific atom types such as Du (dummy atom), Any, Hal (halogen),
+           Het (heteroatom) and Hev (heavy atoms). Masses are "guessed" from
+           elements.
         """
         blocks = []
 
@@ -136,6 +144,7 @@ class MOL2Parser(TopologyReaderBase):
         resids = []
         resnames = []
         charges = []
+        elements = []
 
         for a in atom_lines:
             aid, name, x, y, z, atom_type, resid, resname, charge = a.split()[:9]
@@ -146,10 +155,11 @@ class MOL2Parser(TopologyReaderBase):
             resids.append(resid)
             resnames.append(resname)
             charges.append(charge)
+            elements.append(atom_type.strip(".")[0])
 
         n_atoms = len(ids)
 
-        masses = guessers.guess_masses(types)
+        masses = guessers.guess_masses(elements)
 
         attrs = []
         attrs.append(Atomids(np.array(ids, dtype=np.int32)))
@@ -157,6 +167,7 @@ class MOL2Parser(TopologyReaderBase):
         attrs.append(Atomtypes(np.array(types, dtype=object)))
         attrs.append(Charges(np.array(charges, dtype=np.float32)))
         attrs.append(Masses(masses, guessed=True))
+        attrs.append(Elements(np.array(elements, dtype="U3")))
 
         resids = np.array(resids, dtype=np.int32)
         resnames = np.array(resnames, dtype=object)
