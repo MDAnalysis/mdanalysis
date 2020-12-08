@@ -177,7 +177,7 @@ class MOL2Reader(base.ReaderBase):
                 continue
             sections[cursor].append(line)
 
-        atom_lines, bond_lines = sections["atom"], sections["bond"]
+        atom_lines = sections["atom"]
         if not len(atom_lines):
             raise Exception("The mol2 (starting at line {0}) block has no atoms"
                             "".format(block["start_line"]))
@@ -337,7 +337,7 @@ class MOL2Writer(base.WriterBase):
             bond_lines = "\n".join(bond_lines)
         else:
             bondgroup = []
-            bond_lines = "@<TRIPOS>BOND\n"
+            bond_lines = ""
 
         atom_lines = ["@<TRIPOS>ATOM"]
         atom_lines.extend("{0:>4} {1:>4} {2:>13.4f} {3:>9.4f} {4:>9.4f}"

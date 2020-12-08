@@ -123,7 +123,7 @@ class MOL2Parser(TopologyReaderBase):
                 continue
             sections[cursor].append(line)
 
-        atom_lines, bond_lines = sections["atom"], sections["bond"]
+        atom_lines, bond_lines = sections["atom"], sections.get("bond")
 
         if not len(atom_lines):
             raise ValueError("The mol2 block ({0}:{1}) has no atoms".format(
