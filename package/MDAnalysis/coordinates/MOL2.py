@@ -327,13 +327,12 @@ class MOL2Writer(base.WriterBase):
             bondgroup = obj.bonds.atomgroup_intersection(obj, strict=True)
             bonds = sorted((b[0], b[1], b.order) for b in bondgroup)
             bond_lines = ["@<TRIPOS>BOND"]
-            bond_lines.extend("{0:>5} {1:>5} {2:>5} {3:>2}"
-                            "".format(bid,
-                                        mapping[atom1],
-                                        mapping[atom2],
-                                        order)
-                            for bid, (atom1, atom2, order)in enumerate(
-                                    bonds, start=1))
+            bls = ["{0:>5} {1:>5} {2:>5} {3:>2}".format(bid,
+                                                        mapping[atom1],
+                                                        mapping[atom2],
+                                                        order)
+                   for bid, (atom1, atom2, order) in enumerate(bonds, start=1)]
+            bond_lines.extend(bls)
             bond_lines.append("\n")
             bond_lines = "\n".join(bond_lines)
         else:
