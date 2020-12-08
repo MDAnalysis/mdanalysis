@@ -78,7 +78,9 @@ Fixes
 Enhancements
   * Added automatic selection class generation for TopologyAttrs,
     FloatRangeSelection, and BoolSelection (Issues #2925, #2875; PR #2927)
-  * Added selection of negative resids (Issue #3054, PR #2927)
+  * Added 'to' operator, negatives, scientific notation, and arbitrary
+    whitespace for ranges (Issue #3054, PR #2927)
+  * Added `atol` and `rtol` keywords for float comparison (PR #2927)
   * Improved performance of the ParmEd converter (Issue #3028, PR #3029)
   * Improved analysis class docstrings, and added missing classes to the 
     `__all__` list (PR #2998)

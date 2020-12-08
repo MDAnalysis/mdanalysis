@@ -2901,9 +2901,8 @@ class AtomGroup(GroupBase):
            Removed flags affecting default behaviour for periodic selections;
            periodic are now on by default (as with default flags)
         .. versionchanged:: 2.0.0
-            Added the *smarts* selection.
-        .. versionchanged:: 2.0.0
-            Added `atol` and `rtol` keywords to select float values.
+            Added the *smarts* selection. Added `atol` and `rtol` keywords
+            to select float values.
         """
 
         if not sel:
