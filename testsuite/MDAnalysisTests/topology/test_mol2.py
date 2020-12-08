@@ -32,11 +32,14 @@ from MDAnalysisTests.datafiles import (
 )
 from numpy.testing import assert_equal
 
+import numpy as np
+
 
 class TestMOL2Base(ParserBase):
     parser = mda.topology.MOL2Parser.MOL2Parser
     expected_attrs = [
-        'ids', 'names', 'types', 'charges', 'resids', 'resnames', 'bonds'
+        'ids', 'names', 'types', 'charges', 'resids', 'resnames', 'bonds', 
+        'elements',
     ]
     guessed_attrs = ['masses']
     expected_n_atoms = 49
@@ -50,6 +53,7 @@ class TestMOL2Base(ParserBase):
         assert len(top.charges) == top.n_atoms
         assert len(top.resids) == top.n_residues
         assert len(top.resnames) == top.n_residues
+        assert len(top.elements) == top.n_atoms
 
     def test_bonds(self, top):
         assert len(top.bonds) == 49  # bonds for 49 atoms
@@ -68,3 +72,25 @@ def test_bond_orders():
     u = mda.Universe(mol2_molecule)
     orders = [bond.order for bond in u.atoms.bonds]
     assert_equal(orders, ref_orders)
+
+
+def test_elements():
+    u = mda.Universe(mol2_molecule)
+
+    assert_equal(
+        u.atoms.elements[:5],
+        np.array(["N", "S", "N", "N", "O"], dtype="U3")
+    )
+
+
+"""
+# Test for #2927
+def test_elements_selection():
+    u = mda.Universe(mol2_molecule)
+    ag = u.select_atoms("element S")
+
+    assert_equal(
+        ag.elements,
+        np.array(["S", "S"], dtype="U3")
+    )
+"""
