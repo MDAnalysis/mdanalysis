@@ -173,7 +173,7 @@ class MOL2Parser(TopologyReaderBase):
 
         if invalid_elements:
             warnings.warn("Unknown elements found for some "
-                          f"atoms: {[e for e in invalid_elements]}. "
+                          f"atoms: {invalid_elements}. "
                           "These have been given an empty element record.")
 
         masses = guessers.guess_masses(validated_elements)

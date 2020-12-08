@@ -119,6 +119,7 @@ def test_wrong_elements_warnings():
 
     # One warning from invalid elements, one from invalid masses
     assert len(record) == 2
+    print(record[0].message)
 
     expected = np.array(['N', '', ''], dtype=object)
     assert_equal(u.atoms.elements, expected)
