@@ -158,7 +158,7 @@ class MOL2Parser(TopologyReaderBase):
             resids.append(resid)
             resnames.append(resname)
             charges.append(charge)
-            elements.append(atom_type.strip(".")[0])
+            elements.append(atom_type.split(".")[0])
 
         n_atoms = len(ids)
 
@@ -168,15 +168,13 @@ class MOL2Parser(TopologyReaderBase):
             if elem.capitalize() in SYMB2Z:
                 validated_elements.append(elem.capitalize())
             else:
-                invalid_elements.add(elem.capitalize())
+                invalid_elements.add(elem)
                 validated_elements.append('')
 
-        # Print warnings about invalid elements
-        for elem in invalid_elements:
-            wmsg = (f"Unknown element {elem} found for some "
-                    "atoms. These have been given an empty element "
-                    "record.")
-            warnings.warn(wmsg)
+        if invalid_elements:
+            warnings.warn("Unknown elements found for some "
+                          f"atoms: {[e for e in invalid_elements]}. "
+                          "These have been given an empty element record.")
 
         masses = guessers.guess_masses(validated_elements)
 

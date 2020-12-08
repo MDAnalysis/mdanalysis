@@ -107,14 +107,14 @@ USER_CHARGES
 @<TRIPOS>ATOM
   1 N1       6.8420     9.9900    22.7430 N.am  1 Q101  -0.8960
   2 S1       8.1400     9.2310    23.3330 X.o2  1 Q101   1.3220
-  3 N2       4.4000     9.1300    20.4710 X.am  1 Q101  -0.3970
+  3 N2       4.4000     9.1300    20.4710 XX.am  1 Q101  -0.3970
 @<TRIPOS>BOND
   1   1   2  am
 """
 
 
 def test_wrong_elements_warnings():
-    with pytest.warns(UserWarning, match='Unknown element X found') as record:
+    with pytest.warns(UserWarning, match='Unknown elements found') as record:
         u = mda.Universe(StringIO(mol2_wrong_element), format='MOL2')
 
     # One warning from invalid elements, one from invalid masses
