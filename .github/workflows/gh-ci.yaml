@@ -15,24 +15,43 @@ defaults:
 
 env:
   MDA_CONDA_MIN_DEPS: "pip pytest mmtf-python biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
-  MDA_CONDA_EXTRA_DEPS: "seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles tqdm>=4.43.0 tidynamics>=1.0.0 rdkit>=2020.03.1 h5py==2.10.0"
+  MDA_CONDA_EXTRA_DEPS: "seaborn"
+  MDA_CONDA_PY3_DEPS: "netcdf4 scikit-learn joblib>=0.12 clustalw=2.1 chemfiles mock"
+  MDA_CONDA_PY27_DEPS: "clustalw=2.1 netcdf4=1.3.1 six=1.15.0 funcsigs<=1.0.2 mock<=3.0.5"
+  MDA_CONDA_PY35_DEPS: "netcdf4 scikit-learn joblib>=0.12 clustalw=2.1 mock<=3.0.5"
   MDA_PIP_MIN_DEPS: 'coveralls coverage<5 pytest-cov pytest-xdist'
   MDA_PIP_EXTRA_DEPS: 'duecredit parmed'
-
+  MDA_PIP_PY27_DEPS: "setuptools<45.0.0 chemfiles scikit-learn joblib>=0.12"
+  MDA_PIP_PY3_DEPS: ""
+  MDA_PIP_PY35_DEPS: ""
 
 jobs:
   main_tests:
-    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ${{ matrix.os }}
     strategy:
         fail-fast: false
         matrix:
           os: [ubuntu-latest, ]
           python-version: [3.6, 3.7, 3.8]
-          run_type: [FULL, ]
+          extra_deps: ["EXTRA PY3", ]
           install_hole: [true, ]
           codecov: [true, ]
+          conda-version: ["latest", ]
           include:
+            - name: python-2.7
+              os: ubuntu-latest
+              python-version: 2.7
+              install_hole: true
+              codecov: true
+              numpy: numpy=1.16
+              extra_deps: "EXTRA PY27"
+              conda-version: 4.7.10
+            - name: python-3.5
+              os: ubuntu-latest
+              python-version: 3.5
+              install_hole: true
+              codecov: true
+              extra_deps: "EXTRA PY35"
             - name: macOS
               os: macOS-latest
               python-version: 3.7
@@ -42,20 +61,20 @@ jobs:
             - name: minimal-ubuntu
               os: ubuntu-latest
               python-version: 3.6
-              run_type: MIN
+              extra_deps: ""
               install_hole: false
               codecov: true
             - name: numpy_min
               os: ubuntu-latest
               python-version: 3.6
-              run_type: FULL
+              extra_deps: ""
               install_hole: false
               codecov: false
               numpy: numpy=1.16.0
             - name: asv_check
               os: ubuntu-latest
               python-version: 3.7
-              run_type: FULL
+              extra_deps: "EXTRA PY3"
               install_hole: false
               codecov: false
     env:
@@ -99,21 +118,29 @@ jobs:
         python-version: ${{ matrix.python-version }}
         auto-update-conda: true
         channel-priority: flexible
-        channels: biobuilds, conda-forge
+        channels: biobuilds, conda-forge, defaults
         add-pip-as-python-dependency: true
+        miniconda-version: ${{ matrix.conda-version }}
         # TODO: mamba causes pip to segfault, switch when fixed
         #mamba-version: "*"
         architecture: x64
         
     - name: install_deps
-      env:
-        MDA_CONDA_FULL_DEPS: "${{ env.MDA_CONDA_MIN_DEPS }} ${{ env.MDA_CONDA_EXTRA_DEPS }}"
-        MDA_PIP_FULL_DEPS: "${{ env.MDA_PIP_MIN_DEPS }} ${{ env.MDA_PIP_EXTRA_DEPS }}"
       run: |
         # NOTE: vars need to be re-assigned
         # NOTE: set matrix.numpy to pin to a specific numpy version
-        conda_deps="${{ matrix.numpy }} ${MDA_CONDA_${{ matrix.run_type }}_DEPS}"
-        pip_deps=${MDA_PIP_${{ matrix.run_type }}_DEPS}
+        conda_deps="${{ matrix.numpy }} ${MDA_CONDA_MIN_DEPS}"
+        pip_deps="${MDA_PIP_MIN_DEPS}"
+
+        for dep in ${{ matrix.extra_deps }}; do
+          conda_var="MDA_CONDA_${dep}_DEPS"
+          pip_var="MDA_PIP_${dep}_DEPS"
+          echo "${!conda_var}"
+          conda_deps="$conda_deps ${!conda_var}"
+          echo $conda_deps
+          pip_deps="$pip_deps ${!pip_var}"
+        done
+
         conda install ${conda_deps}
         pip install ${pip_deps}
 
