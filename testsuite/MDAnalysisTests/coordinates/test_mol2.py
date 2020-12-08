@@ -55,10 +55,6 @@ class TestMol2(object):
         assert_equal(len(u.atoms), 297)
         assert_equal(u.trajectory.n_frames, 1)
 
-    def test_elements(self):
-        u = Universe(mol2_ligand)
-        u.elements
-
     def test_write(self, tmpdir):
         ref = Universe(mol2_molecules)
         with tmpdir.as_cwd():
