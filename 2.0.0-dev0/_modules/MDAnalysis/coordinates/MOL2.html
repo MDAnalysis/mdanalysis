@@ -306,6 +306,8 @@
 <span class="sd">    .. versionchanged:: 0.20.0</span>
 <span class="sd">       Allows for comments at top of file.</span>
 <span class="sd">       Ignores status bit strings</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       Bonds attribute is not added if no bonds are present in MOL2 file</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;MOL2&#39;</span>
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">}</span>
@@ -354,7 +356,7 @@
                 <span class="k">continue</span>
             <span class="n">sections</span><span class="p">[</span><span class="n">cursor</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
 
-        <span class="n">atom_lines</span><span class="p">,</span> <span class="n">bond_lines</span> <span class="o">=</span> <span class="n">sections</span><span class="p">[</span><span class="s2">&quot;atom&quot;</span><span class="p">],</span> <span class="n">sections</span><span class="p">[</span><span class="s2">&quot;bond&quot;</span><span class="p">]</span>
+        <span class="n">atom_lines</span> <span class="o">=</span> <span class="n">sections</span><span class="p">[</span><span class="s2">&quot;atom&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom_lines</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;The mol2 (starting at line </span><span class="si">{0}</span><span class="s2">) block has no atoms&quot;</span>
                             <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">block</span><span class="p">[</span><span class="s2">&quot;start_line&quot;</span><span class="p">]))</span>
@@ -367,10 +369,6 @@
                 <span class="s2">&quot; between frames; the current &quot;</span>
                 <span class="s2">&quot;frame has </span><span class="si">{0}</span><span class="s2">, the next frame has </span><span class="si">{1}</span><span class="s2"> atoms&quot;</span>
                 <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom_lines</span><span class="p">)))</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">bond_lines</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;The mol2 (starting at line </span><span class="si">{0}</span><span class="s2">) block has no bonds&quot;</span>
-                            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">block</span><span class="p">[</span><span class="s2">&quot;start_line&quot;</span><span class="p">]))</span>
 
         <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">atom_lines</span><span class="p">):</span>
@@ -501,20 +499,24 @@
         <span class="c1"># Need to remap atom indices to 1 based in this selection</span>
         <span class="n">mapping</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">)}</span>
 
-        <span class="c1"># Grab only bonds between atoms in the obj</span>
-        <span class="c1"># ie none that extend out of it</span>
-        <span class="n">bondgroup</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">atomgroup_intersection</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">bonds</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">((</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">b</span><span class="o">.</span><span class="n">order</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bondgroup</span><span class="p">)</span>
-        <span class="n">bond_lines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;@&lt;TRIPOS&gt;BOND&quot;</span><span class="p">]</span>
-        <span class="n">bond_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0:&gt;5}</span><span class="s2"> </span><span class="si">{1:&gt;5}</span><span class="s2"> </span><span class="si">{2:&gt;5}</span><span class="s2"> </span><span class="si">{3:&gt;2}</span><span class="s2">&quot;</span>
-                          <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bid</span><span class="p">,</span>
-                                    <span class="n">mapping</span><span class="p">[</span><span class="n">atom1</span><span class="p">],</span>
-                                    <span class="n">mapping</span><span class="p">[</span><span class="n">atom2</span><span class="p">],</span>
-                                    <span class="n">order</span><span class="p">)</span>
-                          <span class="k">for</span> <span class="n">bid</span><span class="p">,</span> <span class="p">(</span><span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span><span class="p">,</span> <span class="n">order</span><span class="p">)</span><span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
-                                  <span class="n">bonds</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-        <span class="n">bond_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">bond_lines</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bond_lines</span><span class="p">)</span>
+        <span class="c1"># only write bonds if the Bonds attribute exists (Issue #3057)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;bonds&quot;</span><span class="p">):</span>
+            <span class="c1"># Grab only bonds between atoms in the obj</span>
+            <span class="c1"># ie none that extend out of it</span>
+            <span class="n">bondgroup</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">atomgroup_intersection</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">bonds</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">((</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">b</span><span class="o">.</span><span class="n">order</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bondgroup</span><span class="p">)</span>
+            <span class="n">bond_lines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;@&lt;TRIPOS&gt;BOND&quot;</span><span class="p">]</span>
+            <span class="n">bls</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">{0:&gt;5}</span><span class="s2"> </span><span class="si">{1:&gt;5}</span><span class="s2"> </span><span class="si">{2:&gt;5}</span><span class="s2"> </span><span class="si">{3:&gt;2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bid</span><span class="p">,</span>
+                                                        <span class="n">mapping</span><span class="p">[</span><span class="n">atom1</span><span class="p">],</span>
+                                                        <span class="n">mapping</span><span class="p">[</span><span class="n">atom2</span><span class="p">],</span>
+                                                        <span class="n">order</span><span class="p">)</span>
+                   <span class="k">for</span> <span class="n">bid</span><span class="p">,</span> <span class="p">(</span><span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span><span class="p">,</span> <span class="n">order</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bonds</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
+            <span class="n">bond_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">bls</span><span class="p">)</span>
+            <span class="n">bond_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">bond_lines</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bond_lines</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bondgroup</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">bond_lines</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
         <span class="n">atom_lines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;@&lt;TRIPOS&gt;ATOM&quot;</span><span class="p">]</span>
         <span class="n">atom_lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0:&gt;4}</span><span class="s2"> </span><span class="si">{1:&gt;4}</span><span class="s2"> </span><span class="si">{2:&gt;13.4f}</span><span class="s2"> </span><span class="si">{3:&gt;9.4f}</span><span class="s2"> </span><span class="si">{4:&gt;9.4f}</span><span class="s2">&quot;</span>
