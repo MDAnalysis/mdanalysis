@@ -37,7 +37,7 @@ from io import StringIO
 class TestMOL2Base(ParserBase):
     parser = mda.topology.MOL2Parser.MOL2Parser
     expected_attrs = [
-        'ids', 'names', 'types', 'charges', 'resids', 'resnames', 'bonds', 
+        'ids', 'names', 'types', 'charges', 'resids', 'resnames', 'bonds',
         'elements',
     ]
     guessed_attrs = ['masses']
@@ -96,10 +96,10 @@ def test_elements_selection():
 
 # Bond information is needed
 # See #3057
-mol2_wrong_element ="""\
+mol2_wrong_element = """\
 @<TRIPOS>MOLECULE
 FXA101_1
-49 51 1 0 0 
+49 51 1 0 0
 SMALL
 USER_CHARGES
 
