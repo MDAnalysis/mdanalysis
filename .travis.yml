@@ -23,11 +23,11 @@ env:
     # Set default python version to avoid repetition later
     - PYTHON_VERSION=3.7
     - BUILD_DOCS=false
-    - CODECOV=false
+    - CODECOV=true
     - PYTEST_FLAGS="--disable-pytest-warnings --durations=50"
     - PYTEST_LIST="testsuite/MDAnalysisTests"
     - MAIN_CMD="pytest ${PYTEST_LIST}"
-    - SETUP_CMD="${PYTEST_FLAGS}"
+    - SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - BUILD_CMD="pip install -e package/ && (cd testsuite/ && python setup.py build)"
     - CONDA_MIN_DEPENDENCIES="mmtf-python mock biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
     - CONDA_PY2_DEPENDENCIES="six funcsigs"
@@ -42,10 +42,6 @@ env:
     - MPLBACKEND=agg
     - MAMBA=true
 
-  jobs:
-    # Run a coverage test for most versions
-    - PYTHON_VERSION=3.5 MAMBA=false CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-
 jobs:
   fast_finish: true
   include:
@@ -56,11 +52,14 @@ jobs:
     # - install chemfiles and chemfiles-lib via pip (conda times out)
     - env: NAME="python 2.7"
            PYTHON_VERSION=2.7
-           CODECOV="true"
            NUMPY_VERSION=1.16
            CONDA_DEPENDENCIES="${CONDA_STANDARD_DEPENDENCIES} ${CONDA_PY2_DEPENDENCIES}"
-           SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
            PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0 chemfiles"
+
+    - env: NAME="python 3.5"
+           PYTHON_VERSION=3.5
+           MAMBA=false
+
 
 install:
   # download hole first to use system curl
