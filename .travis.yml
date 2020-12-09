@@ -1,0 +1,81 @@
+version: ~> 1.0
+language: generic
+group: travis_latest
+
+# Only build for develop and master (and PRs)
+branches:
+  only:
+    - master
+    - develop
+
+os:
+  linux
+
+env:
+  global:
+    - secure: "VJ8cMKXuVe7e6vlBeUkd8j6wUbxYF0Yja6CHn0tmpzVGm3CCBXxoZcgvgtfyJTjf+2nqKIjsIy4FdYIkotXYaDwAX5XHHHWS/++7917pddJ2nZkBnBI069c2gLL6vU7E7jbGUzmKywsA73Of44pVsYgtGneK0F7/guLawpWBOOpLsui+pL2X4jYXZL4WHjTPGTphUN4uhQIkqKkuu9ZSR6uodzZDjzkH+q0FT5RLqmgVttnCD9ZmS2ppQsI9f0jZUd8V0M4NGaTHd439uj1UpMMriSJEzcq9DsKZEncjoJZGqfnXPUG9j5Z+jZ8TyxClma93HxeXbXa8A4B6V0wwNA2VG3ZCCeSQon2iNVl8YNZLPaMQleeoQ+uT6D4z26fHVGzk4knMeTROCfHoZo2T8as5EeFDvcbXGva82BnF+aCFxj/d9f1VC3too7bsY+gBBUu/oxVizDWDEby+2Iz2EzUGG3YltF0MjaLrFQ5ggox4vZVVgmlJo8KT6zonTNl8EdKwIzUDh1ZrpiNv3yMgt030heTFL6EJ30xRQJZkwwklJBPgDuARz2FxyKk+hO8IR7AuGLICwP1IpUASXaKeSD1K09qUnmB8W8RO5YhnLu7ABr6oghU9t63r1V0jLTCvYbO4SQIJ2muNsTay/rKo5QtzklPka/5Kud6KyIrsKb4="
+    - GH_DOC_BRANCH=develop
+    - GH_REPOSITORY=github.com/MDAnalysis/mdanalysis.git
+    - GIT_CI_USER=TravisCI
+    - GIT_CI_EMAIL=TravisCI@mdanalysis.org
+    - MDA_DOCDIR=${TRAVIS_BUILD_DIR}/package/doc/html/html
+    - MAINTAIN_DIR=${TRAVIS_BUILD_DIR}/maintainer
+    # Set default python version to avoid repetition later
+    - PYTHON_VERSION=3.7
+    - BUILD_DOCS=false
+    - CODECOV=false
+    - PYTEST_FLAGS="--disable-pytest-warnings --durations=50"
+    - PYTEST_LIST="testsuite/MDAnalysisTests"
+    - MAIN_CMD="pytest ${PYTEST_LIST}"
+    - SETUP_CMD="${PYTEST_FLAGS}"
+    - BUILD_CMD="pip install -e package/ && (cd testsuite/ && python setup.py build)"
+    - CONDA_MIN_DEPENDENCIES="mmtf-python mock biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
+    - CONDA_PY2_DEPENDENCIES="six funcsigs"
+    - CONDA_STANDARD_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 tqdm>=4.43.0"
+    - CONDA_DEPENDENCIES="${CONDA_STANDARD_DEPENDENCIES} chemfiles"
+    - CONDA_CHANNELS='biobuilds conda-forge'
+    - CONDA_CHANNEL_PRIORITY=True
+    - PIP_DEPENDENCIES="duecredit parmed"
+    - NUMPY_VERSION=stable
+    - INSTALL_HOLE="true"
+    - CYTHON_TRACE_NOGIL=1
+    - MPLBACKEND=agg
+    - MAMBA=true
+
+  jobs:
+    # Run a coverage test for most versions
+    - PYTHON_VERSION=3.5 MAMBA=false CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+
+jobs:
+  fast_finish: true
+  include:
+
+    # pin dependencies for legacy:
+    # - ensure that chemfiles can get the last netcdf4 that is still supported
+    #   see https://github.com/MDAnalysis/mdanalysis/pull/2798#issuecomment-679991785
+    # - install chemfiles and chemfiles-lib via pip (conda times out)
+    - env: NAME="python 2.7"
+           PYTHON_VERSION=2.7
+           CODECOV="true"
+           NUMPY_VERSION=1.16
+           CONDA_DEPENDENCIES="${CONDA_STANDARD_DEPENDENCIES} ${CONDA_PY2_DEPENDENCIES}"
+           SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0 chemfiles"
+
+install:
+  # download hole first to use system curl
+  # additional external tools (Issue #898) -- HOLE
+  - |
+    if [[ $INSTALL_HOLE == 'true' ]]; then \
+        bash ./maintainer/install_hole.sh $TRAVIS_OS_NAME "${HOME}"; \
+        HOLE_BINDIR="${HOME}/hole2/exe"; \
+        export PATH=${PATH}:${HOLE_BINDIR}; \
+    fi
+  - git clone git://github.com/astropy/ci-helpers.git
+  - source ci-helpers/travis/setup_conda.sh
+  - eval $BUILD_CMD
+
+script:
+  - cd ${TRAVIS_BUILD_DIR}
+  - echo $MAIN_CMD $SETUP_CMD
+  - eval $MAIN_CMD $SETUP_CMD
