@@ -75,6 +75,7 @@ Fixes
     (Issue #2934)
   * Fix tests for analysis.bat that could fail when run in parallel and that
     would create a test artifact (Issue #2979, PR #2981)
+  * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
   * Added automatic selection class generation for TopologyAttrs,
