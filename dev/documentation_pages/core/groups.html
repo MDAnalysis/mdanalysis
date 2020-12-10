@@ -1816,7 +1816,7 @@ to new coordinates <span class="math notranslate nohighlight">\(\mathbf{x}'\)</s
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.select_atoms">
-<code class="descname">select_atoms</code><span class="sig-paren">(</span><em>sel</em>, <em>*othersel</em>, <em>**selgroups</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/groups.html#AtomGroup.select_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.select_atoms" title="Permalink to this definition">¶</a></dt>
+<code class="descname">select_atoms</code><span class="sig-paren">(</span><em>sel</em>, <em>*othersel</em>, <em>periodic=True</em>, <em>rtol=1e-05</em>, <em>atol=1e-08</em>, <em>updating=False</em>, <em>**selgroups</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/groups.html#AtomGroup.select_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.select_atoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select atoms from within this Group using a selection string.</p>
 <p>Returns an <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> sorted according to their index in the
 topology (this is to ensure that there are no duplicates, which can
@@ -1831,6 +1831,10 @@ happen with complicated selections).</p>
 will be appended onto the results of the first.</li>
 <li><strong>periodic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – for geometric selections, whether to account for atoms in different
 periodic images when searching</li>
+<li><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – The absolute tolerance parameter for float comparisons.
+Passed to :func:<code class="docutils literal notranslate"><span class="pre">numpy.isclose</span></code>.</li>
+<li><strong>rtol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – The relative tolerance parameter for float comparisons.
+Passed to :func:<code class="docutils literal notranslate"><span class="pre">numpy.isclose</span></code>.</li>
 <li><strong>updating</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – force the selection to be re evaluated each time the Timestep of the
 trajectory is changed.  See section on <strong>Dynamic selections</strong> below.
 [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
@@ -2117,7 +2121,8 @@ Removed flags affecting default behaviour for periodic selections;
 periodic are now on by default (as with default flags)</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span>Added the <em>smarts</em> selection.</p>
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Added the <em>smarts</em> selection. Added <cite>atol</cite> and <cite>rtol</cite> keywords
+to select float values.</p>
 </div>
 </dd></dl>
 

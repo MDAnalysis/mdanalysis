@@ -222,16 +222,55 @@ packages with the help of <a class="reference internal" href="selections_modules
 <h2>3.1. Selection Keywords<a class="headerlink" href="#selection-keywords" title="Permalink to this headline">¶</a></h2>
 <p>The following describes all selection keywords currently understood by the
 selection parser. The following applies to all selections:</p>
-<ul class="simple">
-<li>Keywords are case sensitive.</li>
-<li>Atoms are automatically sequentially ordered in a resulting selection (see
+<ul>
+<li><p class="first">Keywords are case sensitive.</p>
+</li>
+<li><p class="first">Atoms are automatically sequentially ordered in a resulting selection (see
 notes below on <a class="reference internal" href="#ordered-selections-label"><span class="std std-ref">Ordered selections</span></a> for how to circumvent this if
-necessary).</li>
-<li>Selections are parsed left to right and parentheses can be used for
-grouping.</li>
+necessary).</p>
+</li>
+<li><p class="first">Selections are parsed left to right and parentheses can be used for
+grouping.</p>
+</li>
+<li><p class="first">You can use the singular name of any topology attribute as a selection
+keyword. <a class="reference external" href="https://userguide.mdanalysis.org/2.0.0-dev0/topology_system.html#format-specific-attributes">Defined topology attributes</a> are listed in the User Guide.
+Alternatively, you can define a
+<a class="reference internal" href="core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr" title="MDAnalysis.core.topologyattrs.TopologyAttr"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyAttr</span></code></a> yourself,
+providing that the attribute <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is one of <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">float</span></code>,
+<code class="docutils literal notranslate"><span class="pre">str</span></code> (or <code class="docutils literal notranslate"><span class="pre">object</span></code>), or <code class="docutils literal notranslate"><span class="pre">bool</span></code>.
+However, the topology must contain this attribute information for
+the selection to work.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Selections of attributes that are integers or floats can use the
+syntax “myTopologyAttr 0 - 2”, “myTopologyAttr 0:2”, or
+“myTopologyAttr 0 to 2”, to select a range with
+both ends inclusive. Whitespace and negative numbers are allowed.</li>
+<li>“myTopologyAttr 0” can be used to select all atoms
+matching the value; however, this can be tricky with floats because of
+precision differences and we recommend using a range like above when
+possible.</li>
+<li>Boolean selections default to True, so “myTopologyAttr” and
+“myTopologyAttr True” both give all atoms with
+<code class="docutils literal notranslate"><span class="pre">myTopologyAttr</span> <span class="pre">==</span> <span class="pre">True</span></code>.</li>
 </ul>
+</div></blockquote>
+</li>
+</ul>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">Regular expression patterns
+<a class="reference internal" href="core/selection.html#MDAnalysis.core.selection.FLOAT_PATTERN" title="MDAnalysis.core.selection.FLOAT_PATTERN"><code class="xref py py-data docutils literal notranslate"><span class="pre">FLOAT_PATTERN</span></code></a> for matching floats;
+<a class="reference internal" href="core/selection.html#MDAnalysis.core.selection.INT_PATTERN" title="MDAnalysis.core.selection.INT_PATTERN"><code class="xref py py-data docutils literal notranslate"><span class="pre">INT_PATTERN</span></code></a> for matching integers;
+and <a class="reference internal" href="core/selection.html#MDAnalysis.core.selection.RANGE_PATTERN" title="MDAnalysis.core.selection.RANGE_PATTERN"><code class="xref py py-data docutils literal notranslate"><span class="pre">RANGE_PATTERN</span></code></a> for matching
+selection ranges.</p>
+</div>
 <div class="section" id="simple-selections">
 <h3>3.1.1. Simple selections<a class="headerlink" href="#simple-selections" title="Permalink to this headline">¶</a></h3>
+<p>This is a non-exhaustive list of the available selection keywords. As noted
+in the dot point above, keywords will be automatically generated for any
+suitable <a class="reference internal" href="core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr" title="MDAnalysis.core.topologyattrs.TopologyAttr"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyAttr</span></code></a>. A list of
+<a class="reference external" href="https://userguide.mdanalysis.org/2.0.0-dev0/topology_system.html#format-specific-attributes">Defined topology attributes</a> is available in the User Guide.</p>
 <dl class="docutils">
 <dt>protein, backbone, nucleic, nucleicbackbone</dt>
 <dd>selects all atoms that belong to a standard set of residues; a protein
@@ -263,11 +302,15 @@ PDB or GRO file is used as a topology.</dd>
 <dd>a selector for a single atom consisting of segid resid atomname,
 e.g. <code class="docutils literal notranslate"><span class="pre">DMPC</span> <span class="pre">1</span> <span class="pre">C2</span></code> selects the C2 carbon of the first residue of the
 DMPC segment</dd>
-<dt>altloc <em>alternative-location</em></dt>
+<dt>altLoc <em>alternative-location</em></dt>
 <dd>a selection for atoms where alternative locations are available, which is
 often the case with high-resolution crystal structures
-e.g. <cite>resid 4 and resname ALA and altloc B</cite> selects only the atoms of ALA-4
-that have an altloc B record.</dd>
+e.g. <code class="docutils literal notranslate"><span class="pre">resid</span> <span class="pre">4</span> <span class="pre">and</span> <span class="pre">resname</span> <span class="pre">ALA</span> <span class="pre">and</span> <span class="pre">altLoc</span> <span class="pre">B</span></code> selects only the atoms of ALA-4
+that have an altLoc B record.</dd>
+<dt>chainID <em>chain-name</em></dt>
+<dd>a selection for atoms where chainIDs have been defined.</dd>
+<dt>element <em>element-name</em></dt>
+<dd>a selection for atoms where elements have been defined. e.g. <code class="docutils literal notranslate"><span class="pre">element</span> <span class="pre">H</span> <span class="pre">C</span></code></dd>
 <dt>moltype <em>molecule-type</em></dt>
 <dd>select by molecule type, e.g. <code class="docutils literal notranslate"><span class="pre">moltype</span> <span class="pre">Protein_A</span></code>. At the moment, only
 the TPR format defines the molecule type.</dd>
