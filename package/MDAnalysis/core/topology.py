@@ -515,7 +515,7 @@ class Topology(object):
         self.attrs.append(topologyattr)
         topologyattr.top = self
         self.__setattr__(topologyattr.attrname, topologyattr)
-    
+
     def del_TopologyAttr(self, topologyattr):
         """Remove a TopologyAttr from the Topology.
 

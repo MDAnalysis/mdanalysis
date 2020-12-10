@@ -744,7 +744,7 @@ class TestDelTopologyAttr(object):
         assert hasattr(universe.atoms, attrname)
         universe.del_TopologyAttr(todel)
         assert not hasattr(universe.atoms, attrname)
-    
+
     def test_del_attr(self, universe):
         assert hasattr(universe.atoms, "resnames")
         assert hasattr(universe.residues, "resnames")
@@ -757,7 +757,7 @@ class TestDelTopologyAttr(object):
         assert not hasattr(universe.segments, "resnames")
         assert not hasattr(universe.atoms[0], "resname")
         assert not hasattr(universe.residues[0], "resname")
-    
+
     def test_del_transplants(self, universe):
         atom = universe.atoms[0]
         assert hasattr(atom, "fragindex")

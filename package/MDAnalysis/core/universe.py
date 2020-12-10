@@ -822,7 +822,7 @@ class Universe(object):
                     raise ValueError("Topology attribute must be str or "
                                      "TopologyAttr object or class. "
                                      f"Given: {type(topologyattr)}") from None
-        
+
         try:
             topologyattr = _TOPOLOGY_ATTRS[topologyattr].attrname
         except KeyError:
