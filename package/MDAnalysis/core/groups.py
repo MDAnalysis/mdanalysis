@@ -255,6 +255,22 @@ class _TopologyAttrContainer(object):
                     property(getter, setter, None, attr.singledoc))
             cls._SETATTR_WHITELIST.add(attr.singular)
 
+    @classmethod
+    def _del_prop(cls, attr):
+        """Remove `attr` from the namespace for this class
+
+        Parameters
+        ----------
+        attr : A :class:`TopologyAttr` object
+        """
+        if hasattr(cls, attr.attrname):
+            delattr(cls, attr.attrname)
+            cls._SETATTR_WHITELIST.discard(attr.attrname)
+        if hasattr(cls, attr.singular):
+            delattr(cls, attr.singular)
+            cls._SETATTR_WHITELIST.discard(attr.singular)
+
+
     def __setattr__(self, attr, value):
         # `ag.this = 42` calls setattr(ag, 'this', 42)
         if not (attr.startswith('_') or  # 'private' allowed

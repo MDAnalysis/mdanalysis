@@ -515,6 +515,26 @@ class Topology(object):
         self.attrs.append(topologyattr)
         topologyattr.top = self
         self.__setattr__(topologyattr.attrname, topologyattr)
+    
+    def del_TopologyAttr(self, topologyattr):
+        """Remove a TopologyAttr from the Topology.
+
+        If it is not present, nothing happens.
+
+        Parameters
+        ----------
+        topologyattr : TopologyAttr
+
+        .. versionadded:: 2.0.0
+        """
+        try:
+            self.__delattr__(topologyattr.attrname)
+        except AttributeError:
+            pass
+        try:
+            self.attrs.remove(topologyattr)
+        except ValueError:
+            pass
 
     @property
     def guessed_attributes(self):

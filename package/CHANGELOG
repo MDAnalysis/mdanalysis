@@ -102,6 +102,7 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Added del_TopologyAttr function (PR #3069)
   * Added an MDAnalysis shields.io badge to the README (Issue #3227, PR #3229)
   * Added sort method to the atomgroup (Issue #2976, PR #3188) 
   * ITPParser now reads [ atomtypes ] sections in ITP files, used for charges
