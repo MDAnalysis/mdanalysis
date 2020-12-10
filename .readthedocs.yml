@@ -17,6 +17,9 @@ sphinx:
 # Optionally set the version of Python and requirements required to build your docs
 python:
   version: 3.7
+  install:
+    - method: setuptools
+      path: package
 
 conda:
   environment: maintainer/conda/environment.yml
