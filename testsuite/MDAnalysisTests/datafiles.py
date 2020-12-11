@@ -125,7 +125,7 @@ __all__ = [
     "TRR_multi_frame",
     "merge_protein", "merge_ligand", "merge_water",
     "mol2_molecules", "mol2_molecule", "mol2_broken_molecule",
-    "mol2_zinc", "mol2_comments_header", "mol2_ligand",
+    "mol2_zinc", "mol2_comments_header", "mol2_ligand", "mol2_sodium_ion",
     "capping_input", "capping_output", "capping_ace", "capping_nma",
     "contacts_villin_folded", "contacts_villin_unfolded", "contacts_file",
     "LAMMPSdata", "trz4data", "LAMMPSdata_mini",
@@ -197,8 +197,13 @@ __all__ = [
     "PDB_CHECK_RIGHTHAND_PA", # for testing right handedness of principal_axes
     "MMTF_NOCRYST", # File with meaningless CRYST1 record (Issue #2679, PR #2685)
     "FHIAIMS", # to test FHIAIMS coordinate files
+<<<<<<< HEAD
     "SDF_molecule", # MDL SDFile for rdkit
     "PDBX",  # PDBxfile
+=======
+    "SDF_molecule",  # MDL SDFile for rdkit
+    "PDB_elements",  # PDB file with elements
+>>>>>>> origin/develop
 ]
 
 from pkg_resources import resource_filename
@@ -449,6 +454,8 @@ mol2_broken_molecule = resource_filename(__name__, "data/mol2/BrokenMolecule.mol
 mol2_comments_header = resource_filename(__name__, "data/mol2/Molecule_comments_header.mol2")
 # MOL2 file without substructure field
 mol2_zinc = resource_filename(__name__, "data/mol2/zinc_856218.mol2")
+# MOL2 file without bonds
+mol2_sodium_ion = resource_filename(__name__, "data/mol2/sodium_ion.mol2")
 
 capping_input = resource_filename(__name__, "data/capping/aaqaa.gro")
 capping_output = resource_filename(__name__, "data/capping/maestro_aaqaa_capped.pdb")
@@ -545,6 +552,8 @@ ITP_no_endif = resource_filename(__name__, 'data/no_endif_spc.itp')
 NAMDBIN = resource_filename(__name__, 'data/adk_open.coor')
 
 SDF_molecule = resource_filename(__name__, 'data/molecule.sdf')
+
+PDB_elements = resource_filename(__name__, 'data/elements.pdb')
 
 PDBX = resource_filename(__name__, "data/4x8u.pdbx")
 
