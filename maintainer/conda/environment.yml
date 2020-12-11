@@ -18,6 +18,7 @@ dependencies:
   - numpy>=1.17.3
   - psutil
   - pytest
+  - python==3.7
   - scikit-learn
   - scipy
   - pip
