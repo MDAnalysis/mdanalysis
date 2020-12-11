@@ -197,13 +197,9 @@ __all__ = [
     "PDB_CHECK_RIGHTHAND_PA", # for testing right handedness of principal_axes
     "MMTF_NOCRYST", # File with meaningless CRYST1 record (Issue #2679, PR #2685)
     "FHIAIMS", # to test FHIAIMS coordinate files
-<<<<<<< HEAD
     "SDF_molecule", # MDL SDFile for rdkit
     "PDBX",  # PDBxfile
-=======
-    "SDF_molecule",  # MDL SDFile for rdkit
     "PDB_elements",  # PDB file with elements
->>>>>>> origin/develop
 ]
 
 from pkg_resources import resource_filename
