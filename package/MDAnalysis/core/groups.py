@@ -2606,7 +2606,9 @@ class AtomGroup(GroupBase):
 
     # As with universe.select_atoms, needing to fish out specific kwargs
     # (namely, 'updating') doesn't allow a very clean signature.
-    def select_atoms(self, sel, *othersel, **selgroups):
+
+    def select_atoms(self, sel, *othersel, periodic=True, rtol=1e-05,
+                     atol=1e-08, updating=False, **selgroups):
         """Select atoms from within this Group using a selection string.
 
         Returns an :class:`AtomGroup` sorted according to their index in the
@@ -2623,6 +2625,12 @@ class AtomGroup(GroupBase):
         periodic : bool (optional)
           for geometric selections, whether to account for atoms in different
           periodic images when searching
+        atol : float, optional
+            The absolute tolerance parameter for float comparisons.
+            Passed to :func:``numpy.isclose``.
+        rtol : float, optional
+            The relative tolerance parameter for float comparisons.
+            Passed to :func:``numpy.isclose``.
         updating : bool (optional)
           force the selection to be re evaluated each time the Timestep of the
           trajectory is changed.  See section on **Dynamic selections** below.
@@ -2893,7 +2901,8 @@ class AtomGroup(GroupBase):
            Removed flags affecting default behaviour for periodic selections;
            periodic are now on by default (as with default flags)
         .. versionchanged:: 2.0.0
-            Added the *smarts* selection.
+            Added the *smarts* selection. Added `atol` and `rtol` keywords
+            to select float values.
         """
 
         if not sel:
@@ -2901,9 +2910,6 @@ class AtomGroup(GroupBase):
                           UserWarning)
             return self[[]]
 
-        periodic = selgroups.pop('periodic', True)
-
-        updating = selgroups.pop('updating', False)
         sel_strs = (sel,) + othersel
 
         for group, thing in selgroups.items():
@@ -2912,7 +2918,9 @@ class AtomGroup(GroupBase):
                                 "You provided {} for group '{}'".format(
                                     thing.__class__.__name__, group))
 
-        selections = tuple((selection.Parser.parse(s, selgroups, periodic=periodic)
+        selections = tuple((selection.Parser.parse(s, selgroups,
+                                                   periodic=periodic,
+                                                   atol=atol, rtol=rtol)
                             for s in sel_strs))
         if updating:
             atomgrp = UpdatingAtomGroup(self, selections, sel_strs)
