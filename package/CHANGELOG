@@ -22,6 +22,7 @@ The rules for this file:
 
 Fixes
   * MOL2 parser populates elements attribute from SYMBL atom types (Issue #3062)
+  * MOL2 files without bonds can now be read and written (Issue #3057)
   * Write `CONECT` record only once in multi-model PDB files (Issue #3018)
   * Add '.nc' as a recognised extension for the NCDFWriter (Issue #3030)
   * PDB parser now assigns empty records for partially missing/invalid elements
