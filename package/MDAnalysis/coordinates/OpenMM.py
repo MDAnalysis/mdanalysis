@@ -129,29 +129,19 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
 
         return ts
 
-    def convert_energies_from_native(self, energy, inplace=True):
+    def convert_energies_from_native(self, energy):
         """Conversion of energies array *energy* from native to base units
 
         Parameters
         ----------
         energy: array_like
           energies to transform
-        inplace : bool (optional)
-          Whether to modify the array inplace, overwriting previous data
-
-        Note
-        ----
-        By default, the input *energy* is modified in place and also returned.
-        In-place operations improve performance because allocating new arrays
-        is avoided.
 
         """
         f = units.get_conversion_factor(
             'energy', self.units['energy'], 'kJ/mol')
         if f == 1.:
             return energy
-        if not inplace:
-            return f * energy 
         energy *= f
         return energy
 
