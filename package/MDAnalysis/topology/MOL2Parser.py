@@ -165,12 +165,13 @@ class MOL2Parser(TopologyReaderBase):
         validated_elements = []
         invalid_elements = set()
         for elem in elements:
-            if elem.capitalize() in SYMB2Z:
-                validated_elements.append(elem.capitalize())
+            if elem in SYMB2Z:
+                validated_elements.append(elem)
             else:
                 invalid_elements.add(elem)
                 validated_elements.append('')
 
+        # Print single warning for all unknown elements, if any
         if invalid_elements:
             warnings.warn("Unknown elements found for some "
                           f"atoms: {invalid_elements}. "
@@ -184,7 +185,9 @@ class MOL2Parser(TopologyReaderBase):
         attrs.append(Atomtypes(np.array(types, dtype=object)))
         attrs.append(Charges(np.array(charges, dtype=np.float32)))
         attrs.append(Masses(masses, guessed=True))
-        attrs.append(Elements(np.array(validated_elements, dtype="U3")))
+
+        if not np.all(validated_elements == ''):
+            attrs.append(Elements(np.array(validated_elements, dtype="U3")))
 
         resids = np.array(resids, dtype=np.int32)
         resnames = np.array(resnames, dtype=object)
