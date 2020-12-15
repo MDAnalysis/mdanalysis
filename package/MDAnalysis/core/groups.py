@@ -94,6 +94,7 @@ import functools
 import itertools
 import numbers
 import os
+import contextlib
 import warnings
 
 from .. import (_CONVERTERS,
@@ -257,19 +258,19 @@ class _TopologyAttrContainer(object):
 
     @classmethod
     def _del_prop(cls, attr):
-        """Remove `attr` from the namespace for this class
+        """Remove `attr` from the namespace for this class.
 
         Parameters
         ----------
         attr : A :class:`TopologyAttr` object
         """
-        if hasattr(cls, attr.attrname):
+        with contextlib.suppress(AttributeError):
             delattr(cls, attr.attrname)
-            cls._SETATTR_WHITELIST.discard(attr.attrname)
-        if hasattr(cls, attr.singular):
+        with contextlib.suppress(AttributeError):
             delattr(cls, attr.singular)
-            cls._SETATTR_WHITELIST.discard(attr.singular)
-
+        
+        cls._SETATTR_WHITELIST.discard(attr.attrname)
+        cls._SETATTR_WHITELIST.discard(attr.singular)
 
     def __setattr__(self, attr, value):
         # `ag.this = 42` calls setattr(ag, 'this', 42)

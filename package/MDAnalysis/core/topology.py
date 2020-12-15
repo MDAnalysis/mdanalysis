@@ -56,6 +56,8 @@ Helper functions
 .. autofunction:: make_downshift_arrays
 
 """
+import contextlib
+
 import numpy as np
 
 from .topologyattrs import Atomindices, Resindices, Segindices
@@ -525,16 +527,14 @@ class Topology(object):
         ----------
         topologyattr : TopologyAttr
 
+
         .. versionadded:: 2.0.0
         """
-        try:
+        with contextlib.suppress(AttributeError):
             self.__delattr__(topologyattr.attrname)
-        except AttributeError:
-            pass
-        try:
+
+        with contextlib.suppress(ValueError):
             self.attrs.remove(topologyattr)
-        except ValueError:
-            pass
 
     @property
     def guessed_attributes(self):

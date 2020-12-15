@@ -58,6 +58,7 @@ import numpy as np
 import logging
 import copy
 import warnings
+import contextlib
 import collections
 
 import MDAnalysis
@@ -806,6 +807,7 @@ class Universe(object):
         >>> hasattr(u.atoms[:3], 'bfactors')
         False
 
+
         .. versionadded:: 2.0.0
         """
 
@@ -826,14 +828,11 @@ class Universe(object):
         try:
             topologyattr = _TOPOLOGY_ATTRS[topologyattr].attrname
         except KeyError:
-            errmsg = (
-                "Unrecognised topology attribute: '{}'."
-                "  Possible values: '{}'\n"
-                "To raise an issue go to: "
-                "https://github.com/MDAnalysis/mdanalysis/issues"
-                "".format(
-                    topologyattr, ', '.join(
-                        sorted(_TOPOLOGY_ATTRS.keys()))))
+            attrs = ', '.join(sorted(_TOPOLOGY_ATTRS))
+            errmsg = (f"Unrecognised topology attribute: '{topologyattr}'."
+                      f"  Possible values: '{attrs}'\n"
+                      "To raise an issue go to: "
+                      "https://github.com/MDAnalysis/mdanalysis/issues")
             raise ValueError(errmsg) from None
 
         try:
@@ -889,14 +888,13 @@ class Universe(object):
             self._class_bases[cls]._del_prop(attr)
 
         # Group transplants
-        for cls in (Atom, Residue, Segment, GroupBase,
-                    AtomGroup, ResidueGroup, SegmentGroup):
-            for funcname, _ in attr.transplants[cls]:
-                if hasattr(self._class_bases[cls], funcname):
+        for cls, transplants in attr.transplants.items():
+            for funcname, _ in transplants:
+                with contextlib.suppress(AttributeError):
                     delattr(self._class_bases[cls], funcname)
         # Universe transplants
         for funcname, _ in attr.transplants['Universe']:
-            if hasattr(self.__class__, funcname):
+            with contextlib.suppress(AttributeError):
                 delattr(self.__class__, funcname)
 
 
