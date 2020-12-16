@@ -765,10 +765,10 @@ class TestDelTopologyAttr(object):
         assert not hasattr(atom, "fragindex")
         assert not hasattr(universe.atoms, "fragindices")
 
-    def test_del_attr_noerror(self, universe):
-        # does not raise AttributeError or ValueError
+    def test_del_attr_error(self, universe):
         assert not hasattr(universe._topology, "elements")
-        universe._topology.del_TopologyAttr("elements")
+        with pytest.raises(AttributeError):
+            universe._topology.del_TopologyAttr("elements")
     
 
 def _a_or_reversed_in_b(a, b):

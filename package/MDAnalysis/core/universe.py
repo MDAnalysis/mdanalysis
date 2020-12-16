@@ -890,12 +890,10 @@ class Universe(object):
         # Group transplants
         for cls, transplants in attr.transplants.items():
             for funcname, _ in transplants:
-                with contextlib.suppress(AttributeError):
-                    delattr(self._class_bases[cls], funcname)
+                delattr(self._class_bases[cls], funcname)
         # Universe transplants
         for funcname, _ in attr.transplants['Universe']:
-            with contextlib.suppress(AttributeError):
-                delattr(self.__class__, funcname)
+            delattr(self.__class__, funcname)
 
 
     def add_Residue(self, segment=None, **attrs):

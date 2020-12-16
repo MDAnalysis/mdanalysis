@@ -530,11 +530,8 @@ class Topology(object):
 
         .. versionadded:: 2.0.0
         """
-        with contextlib.suppress(AttributeError):
-            self.__delattr__(topologyattr.attrname)
-
-        with contextlib.suppress(ValueError):
-            self.attrs.remove(topologyattr)
+        self.__delattr__(topologyattr.attrname)
+        self.attrs.remove(topologyattr)
 
     @property
     def guessed_attributes(self):
