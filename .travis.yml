@@ -29,10 +29,10 @@ env:
     - MAIN_CMD="pytest ${PYTEST_LIST}"
     - SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - BUILD_CMD="pip install -e package/ && (cd testsuite/ && python setup.py build)"
-    - CONDA_MIN_DEPENDENCIES="mmtf-python mock biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
+    - CONDA_MIN_DEPENDENCIES="mmtf-python biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
     - CONDA_PY2_DEPENDENCIES="six funcsigs"
-    - CONDA_STANDARD_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 tqdm>=4.43.0"
-    - CONDA_DEPENDENCIES="${CONDA_STANDARD_DEPENDENCIES} chemfiles"
+    - CONDA_STANDARD_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4==1.3.1 scikit-learn joblib>=0.12 tqdm>=4.43.0"
+    - CONDA_DEPENDENCIES="${CONDA_STANDARD_DEPENDENCIES} mock chemfiles"
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
     - PIP_DEPENDENCIES="duecredit parmed"
@@ -53,8 +53,8 @@ jobs:
     - env: NAME="python 2.7"
            PYTHON_VERSION=2.7
            NUMPY_VERSION=1.16
-           CONDA_DEPENDENCIES="${CONDA_STANDARD_DEPENDENCIES} ${CONDA_PY2_DEPENDENCIES}"
-           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0 chemfiles"
+           CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} clustalw=2.1 netcdf4=1.3.1 six=1.15.0 funcsigs<=1.0.2 mock<=3.0.5 seaborn"
+           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0 chemfiles scikit-learn joblib>=0.12"
 
     - env: NAME="python 3.5"
            PYTHON_VERSION=3.5
