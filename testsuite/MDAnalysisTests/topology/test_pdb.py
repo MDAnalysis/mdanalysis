@@ -37,7 +37,6 @@ from MDAnalysisTests.datafiles import (
     PDB_singleconect,
     PDB_chainidnewres,
     PDB_sameresid_diffresname,
-    PDB_metal,
     PDB_helix,
     PDB_elements,
 )
@@ -230,8 +229,10 @@ HETATMA0003  H     2 L 400      10.208  30.067  70.045
 END
 """
 
+# this causes an error on Win64/Python 3.8 on Azure when loaded
+# in as a file instead
 PDB_metals = """\
-HETATM    1 CU    CU A   1      00.000  00.000  00.000  1.00 00.00          Cu 
+HETATM    1 CU    CU A   1      00.000  00.000  00.000  1.00 00.00          Cu
 HETATM    2 FE    FE A   2      03.000  03.000  03.000  1.00 00.00          Fe
 HETATM    3 Ca    Ca A   3      03.000  03.000  03.000  1.00 00.00          Ca
 HETATM    3 Mg    Mg A   3      03.000  03.000  03.000  1.00 00.00          Mg
