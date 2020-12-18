@@ -230,6 +230,13 @@ HETATMA0003  H     2 L 400      10.208  30.067  70.045
 END
 """
 
+PDB_metals = """\
+HETATM    1 CU    CU A   1      00.000  00.000  00.000  1.00 00.00          Cu 
+HETATM    2 FE    FE A   2      03.000  03.000  03.000  1.00 00.00          Fe
+HETATM    3 Ca    Ca A   3      03.000  03.000  03.000  1.00 00.00          Ca
+HETATM    3 Mg    Mg A   3      03.000  03.000  03.000  1.00 00.00          Mg
+"""
+
 
 def test_PDB_hex():
     u = mda.Universe(StringIO(PDB_hex), format='PDB')
@@ -245,7 +252,7 @@ def test_PDB_hex():
 def test_PDB_metals():
     from MDAnalysis.topology import tables
 
-    u = mda.Universe(PDB_metal, format='PDB')
+    u = mda.Universe(StringIO(PDB_metals), format='PDB')
 
     assert len(u.atoms) == 4
     assert u.atoms[0].mass == pytest.approx(tables.masses["CU"])
