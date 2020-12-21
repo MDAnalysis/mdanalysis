@@ -74,10 +74,13 @@ Classes
 """
 from __future__ import absolute_import
 import functools
+import itertools
+import warnings
 
 from . import base
 from ..topology.tables import SYMB2Z
 from ..core.universe import Universe
+from ..exceptions import NoDataError
 
 
 class ParmEdReader(base.SingleFrameReaderBase):
@@ -130,7 +133,7 @@ MDA2PMD = {
 }
 
 def get_indices_from_subset(i, atomgroup=None, universe=None):
-    return atomgroup.index(universe.atoms[i])
+    return atomgroup[universe.atoms[i]]
 
 class ParmEdConverter(base.ConverterBase):
     """Convert MDAnalysis AtomGroup or Universe to ParmEd :class:`~parmed.structure.Structure`.
@@ -260,8 +263,10 @@ class ParmEdConverter(base.ConverterBase):
             struct.box = None
 
         if hasattr(ag_or_ts, 'universe'):
+            atomgroup = {atom: index for index,
+                         atom in enumerate(list(ag_or_ts))}
             get_atom_indices = functools.partial(get_indices_from_subset,
-                                                 atomgroup=list(ag_or_ts),
+                                                 atomgroup=atomgroup,
                                                  universe=ag_or_ts.universe)
         else:
             get_atom_indices = lambda x: x

@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/20 richardjgowers, IAlibay, orbeckst, tylerjereddy, jbarnoud,
          yuxuanzhuang, lilyminium, VOD555, p-j-smith, bieniekmateusz,
-         calcraven, ianmkenney, rcrehuet, manuel.nuno.melo
+         calcraven, ianmkenney, rcrehuet, manuel.nuno.melo, hanatok
 
   * 1.0.1
 
@@ -54,6 +54,7 @@ Fixes
     (Issue #2934)
 
 Enhancements
+  * Improved performance of the ParmEd converter (Issue #3028, PR #3029)
   * Improved performances when parsing TPR files (PR #2804)
 
 Changes (not affecting users)
