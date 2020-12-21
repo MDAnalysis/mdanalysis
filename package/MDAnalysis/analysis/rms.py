@@ -745,7 +745,7 @@ class RMSF(AnalysisBase):
            u = mda.Universe(TPR, XTC, in_memory=True)
            protein = u.select_atoms("protein")
 
-           # 1) the current trajectory contains a protein split accross
+           # 1) the current trajectory contains a protein split across
            #    periodic boundaries, so we first make the protein whole and
            #    center it in the box using on-the-fly transformations
            import MDAnalysis.transformations as trans
