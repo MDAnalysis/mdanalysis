@@ -336,7 +336,7 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
     An automatic guessing of the optimal method to calculate the distances is
     included in the function. An optional keyword for the method is also
     provided. Users can enforce a particular method with this functionality.
-    Currently brute force, grid search, and periodic KDtree methods are
+    Currently brute force and periodic KDtree methods are
     implemented.
 
     Parameters
@@ -354,7 +354,7 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
-    method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
+    method : {'bruteforce', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
         method.
     return_distances : bool, optional
@@ -387,14 +387,19 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
 
     Note
     -----
-    Currently supports brute force, grid-based, and periodic KDtree search
+    Currently supports brute force, and periodic KDtree search
     methods.
 
     See Also
     --------
     distance_array
     MDAnalysis.lib.pkdtree.PeriodicKDTree.search
-    MDAnalysis.lib.nsgrid.FastNS.search
+
+
+    .. versionchanged:: 1.0.1
+       nsgrid was temporarily removed and replaced with pkdtree due to issues
+       relating to its reliability and accuracy (Issues #2919, #2229, #2345,
+       #2670, #2930)
     """
     if box is not None:
         box = np.asarray(box, dtype=np.float32)
@@ -430,7 +435,7 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
-    method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
+    method : {'bruteforce', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
         method.
 
@@ -438,10 +443,16 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
     -------
     function : callable
         The function implementing the guessed (or deliberatly chosen) method.
+
+
+    .. versionchanged:: 1.0.1
+       nsgrid was temporarily removed and replaced with pkdtree due to issues
+       relating to its reliability and accuracy (Issues #2919, #2229, #2345,
+       #2670, #2930)
     """
+    # TODO: add 'nsgrid': _nsgrid_capped back once fixed
     methods = {'bruteforce': _bruteforce_capped,
-               'pkdtree': _pkdtree_capped,
-               'nsgrid': _nsgrid_capped}
+               'pkdtree': _pkdtree_capped}
 
     if method is not None:
         return methods[method.lower()]
@@ -451,7 +462,8 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
     elif len(reference) * len(configuration) >= 1e8:
         # CAUTION : for large datasets, shouldnt go into 'bruteforce'
         # in any case. Arbitrary number, but can be characterized
-        return methods['nsgrid']
+        # Temporarily replace nsgrid with pkdtree Issue #2930
+        return methods['pkdtree']
     else:
         if box is None:
             min_dim = np.array([reference.min(axis=0),
@@ -467,7 +479,8 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
         if np.any(max_cutoff > 0.3*size):
             return methods['bruteforce']
         else:
-            return methods['nsgrid']
+            # Temporarily replace nsgrid with pkdtree Issue #2930
+            return methods['pkdtree']
 
 
 @check_coords('reference', 'configuration', enforce_copy=False,
@@ -741,7 +754,7 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
     An automatic guessing of the optimal method to calculate the distances is
     included in the function. An optional keyword for the method is also
     provided. Users can enforce a particular method with this functionality.
-    Currently brute force, grid search, and periodic KDtree methods are
+    Currently brute force, and periodic KDtree methods are
     implemented.
 
     Parameters
@@ -757,7 +770,7 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
-    method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
+    method : {'bruteforce', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
         method.
     return_distances : bool, optional
@@ -789,17 +802,21 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
 
     Note
     -----
-    Currently supports brute force, grid-based, and periodic KDtree search
+    Currently supports brute force, and periodic KDtree search
     methods.
 
     See Also
     --------
     self_distance_array
     MDAnalysis.lib.pkdtree.PeriodicKDTree.search
-    MDAnalysis.lib.nsgrid.FastNS.self_search
+
 
     .. versionchanged:: 0.20.0
        Added `return_distances` keyword.
+    .. versionchanged:: 1.0.1
+       nsgrid was temporarily removed and replaced with pkdtree due to issues
+       relating to its reliability and accuracy (Issues #2919, #2229, #2345,
+       #2670, #2930)
     """
     if box is not None:
         box = np.asarray(box, dtype=np.float32)
@@ -833,7 +850,7 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.
-    method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
+    method : {'bruteforce', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
         method.
 
@@ -841,10 +858,16 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
     -------
     function : callable
         The function implementing the guessed (or deliberatly chosen) method.
+
+
+    .. versionchanged:: 1.0.1
+       nsgrid was temporarily removed and replaced with pkdtree due to issues
+       relating to its reliability and accuracy (Issues #2919, #2229, #2345,
+       #2670, #2930)
     """
+    # TODO: add 'nsgrid': _nsgrid_capped back once fixed
     methods = {'bruteforce': _bruteforce_capped_self,
-               'pkdtree': _pkdtree_capped_self,
-               'nsgrid': _nsgrid_capped_self}
+               'pkdtree': _pkdtree_capped_self}
 
     if method is not None:
         return methods[method.lower()]
@@ -865,7 +888,8 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
     if max_cutoff < 0.03*size.min():
         return methods['pkdtree']
     else:
-        return methods['nsgrid']
+        # Replaced nsgrid with pkdtree temporarily #2930
+        return methods['pkdtree']
 
 
 @check_coords('reference', enforce_copy=False, reduce_result_if_single=False)

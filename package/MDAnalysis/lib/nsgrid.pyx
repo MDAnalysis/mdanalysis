@@ -34,6 +34,14 @@ Neighbor search library --- :mod:`MDAnalysis.lib.nsgrid`
 ========================================================
 
 
+.. warning::
+   The current nsgrid code can return incorrect values. Do not use it for
+   production use. We instead recommend the use of
+   :mod:`MDAnalysis.lib.pkdtree`. See issue
+   `#2930 <https://github.com/MDAnalysis/mdanalysis/issues/2930>`_ for further
+   information.
+
+
 About the code
 --------------
 
@@ -78,6 +86,7 @@ Classes
 from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from libc.math cimport sqrt
 import numpy as np
+import warnings
 from libcpp.vector cimport vector
 cimport numpy as np
 
@@ -704,6 +713,12 @@ cdef class FastNS(object):
 
     Minimum image convention is used for distance evaluations
     if pbc is set to ``True``.
+
+
+    .. warning::
+       The nsgrid code can return incorrect values and should not be used for
+       production work. We instead recommend the use of
+       :mod:`MDAnalysis.lib.pkdtree`.
     """
     cdef _PBCBox box
     cdef real[:, ::1] coords
@@ -775,6 +790,14 @@ cdef class FastNS(object):
             gridsearch = FastNS(max_cutoff, shift, box=pseudobox, pbc=False)
 
         """
+
+        with warnings.catch_warnings():
+            warnings.simplefilter('always', UserWarning)
+            wmsg = ('The current nsgrid code can return incorrect values '
+                    'and should not be used for production work. We '
+                    'instead recommend the use of MDAnalysis.lib.pkdtree. '
+                    'See issue #2930 for more details.')
+            warnings.warn(wmsg)
 
         from MDAnalysis.lib.mdamath import triclinic_vectors
 
