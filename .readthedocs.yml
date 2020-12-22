@@ -1,0 +1,24 @@
+# .readthedocs.yml
+# Read the Docs configuration file
+# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+
+# Required
+version: 2
+
+# Build documentation in with Sphinx
+sphinx:
+  configuration: package/doc/sphinx/source/conf.py
+
+# Build documentation with MkDocs
+#mkdocs:
+#  configuration: mkdocs.yml
+
+
+# Optionally set the version of Python and requirements required to build your docs
+python:
+  install:
+    - method: pip
+      path: package
+
+conda:
+  environment: maintainer/conda/environment.yml
