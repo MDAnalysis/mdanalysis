@@ -370,7 +370,7 @@ supported.</p>
 <p>An automatic guessing of the optimal method to calculate the distances is
 included in the function. An optional keyword for the method is also
 provided. Users can enforce a particular method with this functionality.
-Currently brute force, grid search, and periodic KDtree methods are
+Currently brute force and periodic KDtree methods are
 implemented.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -386,7 +386,7 @@ triclinic and must be provided in the same format as returned by
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
 <p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
 </li>
-<li><strong>method</strong> (<em>{'bruteforce'</em><em>, </em><em>'nsgrid'</em><em>, </em><em>'pkdtree'}</em><em>, </em><em>optional</em>) – Keyword to override the automatic guessing of the employed search
+<li><strong>method</strong> (<em>{'bruteforce'</em><em>, </em><em>'pkdtree'}</em><em>, </em><em>optional</em>) – Keyword to override the automatic guessing of the employed search
 method.</li>
 <li><strong>return_distances</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, distances will also be returned.</li>
 </ul>
@@ -422,12 +422,17 @@ coordinates <code class="docutils literal notranslate"><span class="pre">referen
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Currently supports brute force, grid-based, and periodic KDtree search
+<p class="last">Currently supports brute force, and periodic KDtree search
 methods.</p>
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.lib.distances.distance_array" title="MDAnalysis.lib.distances.distance_array"><code class="xref py py-func docutils literal notranslate"><span class="pre">distance_array()</span></code></a>, <a class="reference internal" href="pkdtree.html#MDAnalysis.lib.pkdtree.PeriodicKDTree.search" title="MDAnalysis.lib.pkdtree.PeriodicKDTree.search"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree.PeriodicKDTree.search()</span></code></a>, <a class="reference internal" href="nsgrid.html#MDAnalysis.lib.nsgrid.FastNS.search" title="MDAnalysis.lib.nsgrid.FastNS.search"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid.FastNS.search()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.lib.distances.distance_array" title="MDAnalysis.lib.distances.distance_array"><code class="xref py py-func docutils literal notranslate"><span class="pre">distance_array()</span></code></a>, <a class="reference internal" href="pkdtree.html#MDAnalysis.lib.pkdtree.PeriodicKDTree.search" title="MDAnalysis.lib.pkdtree.PeriodicKDTree.search"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree.PeriodicKDTree.search()</span></code></a></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.1: </span>nsgrid was temporarily removed and replaced with pkdtree due to issues
+relating to its reliability and accuracy (Issues #2919, #2229, #2345,
+#2670, #2930)</p>
 </div>
 </dd></dl>
 
@@ -443,7 +448,7 @@ supported.</p>
 <p>An automatic guessing of the optimal method to calculate the distances is
 included in the function. An optional keyword for the method is also
 provided. Users can enforce a particular method with this functionality.
-Currently brute force, grid search, and periodic KDtree methods are
+Currently brute force, and periodic KDtree methods are
 implemented.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -458,7 +463,7 @@ triclinic and must be provided in the same format as returned by
 <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
 <p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
 </li>
-<li><strong>method</strong> (<em>{'bruteforce'</em><em>, </em><em>'nsgrid'</em><em>, </em><em>'pkdtree'}</em><em>, </em><em>optional</em>) – Keyword to override the automatic guessing of the employed search
+<li><strong>method</strong> (<em>{'bruteforce'</em><em>, </em><em>'pkdtree'}</em><em>, </em><em>optional</em>) – Keyword to override the automatic guessing of the employed search
 method.</li>
 <li><strong>return_distances</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, distances will also be returned.</li>
 </ul>
@@ -492,16 +497,20 @@ coordinates <code class="docutils literal notranslate"><span class="pre">referen
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Currently supports brute force, grid-based, and periodic KDtree search
+<p class="last">Currently supports brute force, and periodic KDtree search
 methods.</p>
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p><a class="reference internal" href="#MDAnalysis.lib.distances.self_distance_array" title="MDAnalysis.lib.distances.self_distance_array"><code class="xref py py-func docutils literal notranslate"><span class="pre">self_distance_array()</span></code></a>, <a class="reference internal" href="pkdtree.html#MDAnalysis.lib.pkdtree.PeriodicKDTree.search" title="MDAnalysis.lib.pkdtree.PeriodicKDTree.search"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree.PeriodicKDTree.search()</span></code></a>, <a class="reference internal" href="nsgrid.html#MDAnalysis.lib.nsgrid.FastNS.self_search" title="MDAnalysis.lib.nsgrid.FastNS.self_search"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid.FastNS.self_search()</span></code></a></p>
-<dl class="last docutils">
-<dt><code class="xref py py-func docutils literal notranslate"><span class="pre">()</span></code></dt>
-<dd>Added <cite>return_distances</cite> keyword.</dd>
-</dl>
+<p class="last"><a class="reference internal" href="#MDAnalysis.lib.distances.self_distance_array" title="MDAnalysis.lib.distances.self_distance_array"><code class="xref py py-func docutils literal notranslate"><span class="pre">self_distance_array()</span></code></a>, <a class="reference internal" href="pkdtree.html#MDAnalysis.lib.pkdtree.PeriodicKDTree.search" title="MDAnalysis.lib.pkdtree.PeriodicKDTree.search"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree.PeriodicKDTree.search()</span></code></a></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>return_distances</cite> keyword.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.1: </span>nsgrid was temporarily removed and replaced with pkdtree due to issues
+relating to its reliability and accuracy (Issues #2919, #2229, #2345,
+#2670, #2930)</p>
 </div>
 </dd></dl>
 

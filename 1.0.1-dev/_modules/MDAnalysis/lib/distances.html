@@ -515,7 +515,7 @@
 <span class="sd">    An automatic guessing of the optimal method to calculate the distances is</span>
 <span class="sd">    included in the function. An optional keyword for the method is also</span>
 <span class="sd">    provided. Users can enforce a particular method with this functionality.</span>
-<span class="sd">    Currently brute force, grid search, and periodic KDtree methods are</span>
+<span class="sd">    Currently brute force and periodic KDtree methods are</span>
 <span class="sd">    implemented.</span>
 
 <span class="sd">    Parameters</span>
@@ -533,7 +533,7 @@
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
 <span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
-<span class="sd">    method : {&#39;bruteforce&#39;, &#39;nsgrid&#39;, &#39;pkdtree&#39;}, optional</span>
+<span class="sd">    method : {&#39;bruteforce&#39;, &#39;pkdtree&#39;}, optional</span>
 <span class="sd">        Keyword to override the automatic guessing of the employed search</span>
 <span class="sd">        method.</span>
 <span class="sd">    return_distances : bool, optional</span>
@@ -566,14 +566,19 @@
 
 <span class="sd">    Note</span>
 <span class="sd">    -----</span>
-<span class="sd">    Currently supports brute force, grid-based, and periodic KDtree search</span>
+<span class="sd">    Currently supports brute force, and periodic KDtree search</span>
 <span class="sd">    methods.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    distance_array</span>
 <span class="sd">    MDAnalysis.lib.pkdtree.PeriodicKDTree.search</span>
-<span class="sd">    MDAnalysis.lib.nsgrid.FastNS.search</span>
+
+
+<span class="sd">    .. versionchanged:: 1.0.1</span>
+<span class="sd">       nsgrid was temporarily removed and replaced with pkdtree due to issues</span>
+<span class="sd">       relating to its reliability and accuracy (Issues #2919, #2229, #2345,</span>
+<span class="sd">       #2670, #2930)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
@@ -609,7 +614,7 @@
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
 <span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
-<span class="sd">    method : {&#39;bruteforce&#39;, &#39;nsgrid&#39;, &#39;pkdtree&#39;}, optional</span>
+<span class="sd">    method : {&#39;bruteforce&#39;, &#39;pkdtree&#39;}, optional</span>
 <span class="sd">        Keyword to override the automatic guessing of the employed search</span>
 <span class="sd">        method.</span>
 
@@ -617,10 +622,16 @@
 <span class="sd">    -------</span>
 <span class="sd">    function : callable</span>
 <span class="sd">        The function implementing the guessed (or deliberatly chosen) method.</span>
+
+
+<span class="sd">    .. versionchanged:: 1.0.1</span>
+<span class="sd">       nsgrid was temporarily removed and replaced with pkdtree due to issues</span>
+<span class="sd">       relating to its reliability and accuracy (Issues #2919, #2229, #2345,</span>
+<span class="sd">       #2670, #2930)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: add &#39;nsgrid&#39;: _nsgrid_capped back once fixed</span>
     <span class="n">methods</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bruteforce&#39;</span><span class="p">:</span> <span class="n">_bruteforce_capped</span><span class="p">,</span>
-               <span class="s1">&#39;pkdtree&#39;</span><span class="p">:</span> <span class="n">_pkdtree_capped</span><span class="p">,</span>
-               <span class="s1">&#39;nsgrid&#39;</span><span class="p">:</span> <span class="n">_nsgrid_capped</span><span class="p">}</span>
+               <span class="s1">&#39;pkdtree&#39;</span><span class="p">:</span> <span class="n">_pkdtree_capped</span><span class="p">}</span>
 
     <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
@@ -630,7 +641,8 @@
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mf">1e8</span><span class="p">:</span>
         <span class="c1"># CAUTION : for large datasets, shouldnt go into &#39;bruteforce&#39;</span>
         <span class="c1"># in any case. Arbitrary number, but can be characterized</span>
-        <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;nsgrid&#39;</span><span class="p">]</span>
+        <span class="c1"># Temporarily replace nsgrid with pkdtree Issue #2930</span>
+        <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;pkdtree&#39;</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">min_dim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">reference</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
@@ -646,7 +658,8 @@
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">max_cutoff</span> <span class="o">&gt;</span> <span class="mf">0.3</span><span class="o">*</span><span class="n">size</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;bruteforce&#39;</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;nsgrid&#39;</span><span class="p">]</span>
+            <span class="c1"># Temporarily replace nsgrid with pkdtree Issue #2930</span>
+            <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;pkdtree&#39;</span><span class="p">]</span>
 
 
 <span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="s1">&#39;configuration&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -920,7 +933,7 @@
 <span class="sd">    An automatic guessing of the optimal method to calculate the distances is</span>
 <span class="sd">    included in the function. An optional keyword for the method is also</span>
 <span class="sd">    provided. Users can enforce a particular method with this functionality.</span>
-<span class="sd">    Currently brute force, grid search, and periodic KDtree methods are</span>
+<span class="sd">    Currently brute force, and periodic KDtree methods are</span>
 <span class="sd">    implemented.</span>
 
 <span class="sd">    Parameters</span>
@@ -936,7 +949,7 @@
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
 <span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
-<span class="sd">    method : {&#39;bruteforce&#39;, &#39;nsgrid&#39;, &#39;pkdtree&#39;}, optional</span>
+<span class="sd">    method : {&#39;bruteforce&#39;, &#39;pkdtree&#39;}, optional</span>
 <span class="sd">        Keyword to override the automatic guessing of the employed search</span>
 <span class="sd">        method.</span>
 <span class="sd">    return_distances : bool, optional</span>
@@ -968,17 +981,21 @@
 
 <span class="sd">    Note</span>
 <span class="sd">    -----</span>
-<span class="sd">    Currently supports brute force, grid-based, and periodic KDtree search</span>
+<span class="sd">    Currently supports brute force, and periodic KDtree search</span>
 <span class="sd">    methods.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    self_distance_array</span>
 <span class="sd">    MDAnalysis.lib.pkdtree.PeriodicKDTree.search</span>
-<span class="sd">    MDAnalysis.lib.nsgrid.FastNS.self_search</span>
+
 
 <span class="sd">    .. versionchanged:: 0.20.0</span>
 <span class="sd">       Added `return_distances` keyword.</span>
+<span class="sd">    .. versionchanged:: 1.0.1</span>
+<span class="sd">       nsgrid was temporarily removed and replaced with pkdtree due to issues</span>
+<span class="sd">       relating to its reliability and accuracy (Issues #2919, #2229, #2345,</span>
+<span class="sd">       #2670, #2930)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
@@ -1012,7 +1029,7 @@
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
 <span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
-<span class="sd">    method : {&#39;bruteforce&#39;, &#39;nsgrid&#39;, &#39;pkdtree&#39;}, optional</span>
+<span class="sd">    method : {&#39;bruteforce&#39;, &#39;pkdtree&#39;}, optional</span>
 <span class="sd">        Keyword to override the automatic guessing of the employed search</span>
 <span class="sd">        method.</span>
 
@@ -1020,10 +1037,16 @@
 <span class="sd">    -------</span>
 <span class="sd">    function : callable</span>
 <span class="sd">        The function implementing the guessed (or deliberatly chosen) method.</span>
+
+
+<span class="sd">    .. versionchanged:: 1.0.1</span>
+<span class="sd">       nsgrid was temporarily removed and replaced with pkdtree due to issues</span>
+<span class="sd">       relating to its reliability and accuracy (Issues #2919, #2229, #2345,</span>
+<span class="sd">       #2670, #2930)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: add &#39;nsgrid&#39;: _nsgrid_capped back once fixed</span>
     <span class="n">methods</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bruteforce&#39;</span><span class="p">:</span> <span class="n">_bruteforce_capped_self</span><span class="p">,</span>
-               <span class="s1">&#39;pkdtree&#39;</span><span class="p">:</span> <span class="n">_pkdtree_capped_self</span><span class="p">,</span>
-               <span class="s1">&#39;nsgrid&#39;</span><span class="p">:</span> <span class="n">_nsgrid_capped_self</span><span class="p">}</span>
+               <span class="s1">&#39;pkdtree&#39;</span><span class="p">:</span> <span class="n">_pkdtree_capped_self</span><span class="p">}</span>
 
     <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
@@ -1044,7 +1067,8 @@
     <span class="k">if</span> <span class="n">max_cutoff</span> <span class="o">&lt;</span> <span class="mf">0.03</span><span class="o">*</span><span class="n">size</span><span class="o">.</span><span class="n">min</span><span class="p">():</span>
         <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;pkdtree&#39;</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;nsgrid&#39;</span><span class="p">]</span>
+        <span class="c1"># Replaced nsgrid with pkdtree temporarily #2930</span>
+        <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="s1">&#39;pkdtree&#39;</span><span class="p">]</span>
 
 
 <span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;reference&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reduce_result_if_single</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>

@@ -207,6 +207,14 @@
             
   <span class="target" id="module-MDAnalysis.lib.nsgrid"></span><div class="section" id="neighbor-search-library-mdanalysis-lib-nsgrid">
 <h1>13.2.4. Neighbor search library — <a class="reference internal" href="#module-MDAnalysis.lib.nsgrid" title="MDAnalysis.lib.nsgrid"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a><a class="headerlink" href="#neighbor-search-library-mdanalysis-lib-nsgrid" title="Permalink to this headline">¶</a></h1>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The current nsgrid code can return incorrect values. Do not use it for
+production use. We instead recommend the use of
+<a class="reference internal" href="pkdtree.html#module-MDAnalysis.lib.pkdtree" title="MDAnalysis.lib.pkdtree"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a>. See issue
+<a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/2930">#2930</a> for further
+information.</p>
+</div>
 <div class="section" id="about-the-code">
 <h2>13.2.4.1. About the code<a class="headerlink" href="#about-the-code" title="Permalink to this headline">¶</a></h2>
 <p>This Neighbor search library is a serialized Cython version greatly
@@ -222,7 +230,7 @@ was used as reference to write this file.</p>
 <h2>13.2.4.2. About the algorithm<a class="headerlink" href="#about-the-algorithm" title="Permalink to this headline">¶</a></h2>
 <p>The neighbor search implemented here is based on
 <a class="reference external" href="https://en.wikipedia.org/wiki/Cell_lists">cell lists</a> which allow
-computation of pairs <a class="footnote-reference" href="#id2" id="id1">[1]</a> with a cost of <span class="math notranslate nohighlight">\(O(N)\)</span>, instead
+computation of pairs <a class="footnote-reference" href="#id3" id="id2">[1]</a> with a cost of <span class="math notranslate nohighlight">\(O(N)\)</span>, instead
 of <span class="math notranslate nohighlight">\(O(N^2)\)</span>. The basic algorithm is described in
 Appendix F,  Page 552 of
 <code class="docutils literal notranslate"><span class="pre">Understanding</span> <span class="pre">Molecular</span> <span class="pre">Dynamics:</span> <span class="pre">From</span> <span class="pre">Algorithm</span> <span class="pre">to</span> <span class="pre">Applications</span></code> by Frenkel and Smit.</p>
@@ -233,10 +241,10 @@ domain followed by distance evaluations within the identified cell and
 neighboring cells only. Care must be taken to ensure that <cite>cellsize</cite> is
 greater than the desired search distance, otherwise all of the neighbours might
 not reflect in the results.</p>
-<table class="docutils footnote" frame="void" id="id2" rules="none">
+<table class="docutils footnote" frame="void" id="id3" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>a pair correspond to two particles that are considered as neighbors .</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id2">[1]</a></td><td>a pair correspond to two particles that are considered as neighbors .</td></tr>
 </tbody>
 </table>
 <div class="versionadded">
@@ -254,6 +262,12 @@ not reflect in the results.</p>
 grid in an orthogonal brick shaped box.</p>
 <p>Minimum image convention is used for distance evaluations
 if pbc is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The nsgrid code can return incorrect values and should not be used for
+production work. We instead recommend the use of
+<a class="reference internal" href="pkdtree.html#module-MDAnalysis.lib.pkdtree" title="MDAnalysis.lib.pkdtree"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a>.</p>
+</div>
 <p>Initialize the grid and sort the coordinates in respective
 cells by shifting the coordinates in a brick shaped box.
 The brick shaped box is defined by <code class="xref py py-class docutils literal notranslate"><span class="pre">_PBCBox</span></code>
