@@ -924,27 +924,37 @@
 <span class="sd">           u = mda.Universe(TPR, XTC, in_memory=True)</span>
 <span class="sd">           protein = u.select_atoms(&quot;protein&quot;)</span>
 
-<span class="sd">           # 1) need a step to center and make whole: this trajectory</span>
-<span class="sd">           #    contains the protein being split across periodic boundaries</span>
-<span class="sd">           #</span>
-<span class="sd">           # TODO</span>
+<span class="sd">           # 1) the current trajectory contains a protein split across</span>
+<span class="sd">           #    periodic boundaries, so we first make the protein whole and</span>
+<span class="sd">           #    center it in the box using on-the-fly transformations</span>
+<span class="sd">           import MDAnalysis.transformations as trans</span>
+
+<span class="sd">           not_protein = u.select_atoms(&#39;not protein&#39;)</span>
+<span class="sd">           transforms = [trans.unwrap(protein),</span>
+<span class="sd">                         trans.center_in_box(protein, wrap=True),</span>
+<span class="sd">                         trans.wrap(not_protein)]</span>
+<span class="sd">           u.trajectory.add_transformations(*transforms)</span>
 
 <span class="sd">           # 2) fit to the initial frame to get a better average structure</span>
 <span class="sd">           #    (the trajectory is changed in memory)</span>
-<span class="sd">           prealigner = align.AlignTraj(u, select=&quot;protein and name CA&quot;, in_memory=True).run()</span>
+<span class="sd">           prealigner = align.AlignTraj(u, u, select=&quot;protein and name CA&quot;,</span>
+<span class="sd">                                        in_memory=True).run()</span>
 
 <span class="sd">           # 3) reference = average structure</span>
-<span class="sd">           reference_coordinates = u.trajectory.timeseries(asel=protein).mean(axis=1)</span>
-<span class="sd">           # make a reference structure (need to reshape into a 1-frame &quot;trajectory&quot;)</span>
-<span class="sd">           reference = mda.Merge(protein).load_new(</span>
-<span class="sd">                       reference_coordinates[:, None, :], order=&quot;afc&quot;)</span>
+<span class="sd">           ref_coordinates = u.trajectory.timeseries(asel=protein).mean(axis=1)</span>
+<span class="sd">           # make a reference structure (need to reshape into a 1-frame</span>
+<span class="sd">           # &quot;trajectory&quot;)</span>
+<span class="sd">           reference = mda.Merge(protein).load_new(ref_coordinates[:, None, :],</span>
+<span class="sd">                                                   order=&quot;afc&quot;)</span>
 
 <span class="sd">        We created a new universe ``reference`` that contains a single frame</span>
 <span class="sd">        with the averaged coordinates of the protein.  Now we need to fit the</span>
 <span class="sd">        whole trajectory to the reference by minimizing the RMSD. We use</span>
 <span class="sd">        :class:`MDAnalysis.analysis.align.AlignTraj`::</span>
 
-<span class="sd">           aligner = align.AlignTraj(u, reference, select=&quot;protein and name CA&quot;, in_memory=True).run()</span>
+<span class="sd">           aligner = align.AlignTraj(u, reference,</span>
+<span class="sd">                                     select=&quot;protein and name CA&quot;,</span>
+<span class="sd">                                     in_memory=True).run()</span>
 
 <span class="sd">        The trajectory is now fitted to the reference (the RMSD is stored as</span>
 <span class="sd">        `aligner.rmsd` for further inspection). Now we can calculate the RMSF::</span>
