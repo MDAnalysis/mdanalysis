@@ -358,7 +358,7 @@
 
 
 <span class="n">NUMBERS</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[0-9]&#39;</span><span class="p">)</span> <span class="c1"># match numbers</span>
-<span class="n">SYMBOLS</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[\*\+\-]&#39;</span><span class="p">)</span>  <span class="c1"># match *, +, -</span>
+<span class="n">SYMBOLS</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[*+-]&#39;</span><span class="p">)</span>  <span class="c1"># match *, +, -</span>
 
 <div class="viewcode-block" id="guess_atom_element"><a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_atom_element">[docs]</a><span class="k">def</span> <span class="nf">guess_atom_element</span><span class="p">(</span><span class="n">atomname</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Guess the element of the atom from the name.</span>
