@@ -1,0 +1,374 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>4.9.2. Principal Component Analysis (PCA) — MDAnalysis.analysis.pca &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="4.10.1. MDAnalysis.analysis.legacy — Legacy analysis code" href="legacy_modules.html" />
+    <link rel="prev" title="4.9.1. Diffusion map — MDAnalysis.analysis.diffusionmap" href="diffusionmap.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <span class="target" id="module-MDAnalysis.analysis.pca"></span><div class="section" id="principal-component-analysis-pca-mdanalysis-analysis-pca">
+<h1><span class="section-number">4.9.2. </span>Principal Component Analysis (PCA) — <a class="reference internal" href="#module-MDAnalysis.analysis.pca" title="MDAnalysis.analysis.pca"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.pca</span></code></a><a class="headerlink" href="#principal-component-analysis-pca-mdanalysis-analysis-pca" title="Permalink to this headline">¶</a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">Authors</dt>
+<dd class="field-odd"><p>John Detlefs</p>
+</dd>
+<dt class="field-even">Year</dt>
+<dd class="field-even"><p>2016</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>GNU Public License v3</p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.16.0.</span></p>
+</div>
+<p>This module contains the linear dimensions reduction method Principal Component
+Analysis (PCA). PCA sorts a simulation into 3N directions of descending
+variance, with N being the number of atoms. These directions are called
+the principal components. The dimensions to be analyzed are reduced by only
+looking at a few projections of the first principal components. To learn how to
+run a Principal Component Analysis, please refer to the <a class="reference internal" href="#pca-tutorial"><span class="std std-ref">PCA Tutorial</span></a>.</p>
+<p>The PCA problem is solved by solving the eigenvalue problem of the covariance
+matrix, a <span class="math notranslate nohighlight">\(3N \times 3N\)</span> matrix where the element <span class="math notranslate nohighlight">\((i, j)\)</span> is the
+covariance between coordinates <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span>. The principal
+components are the eigenvectors of this matrix.</p>
+<p>For each eigenvector, its eigenvalue is the variance that the eigenvector
+explains. Stored in <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.cumulated_variance" title="MDAnalysis.analysis.pca.PCA.cumulated_variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PCA.cumulated_variance</span></code></a>, a ratio for each number of
+eigenvectors up to index <span class="math notranslate nohighlight">\(i\)</span> is provided to quickly find out how many
+principal components are needed to explain the amount of variance reflected by
+those <span class="math notranslate nohighlight">\(i\)</span> eigenvectors. For most data, <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.cumulated_variance" title="MDAnalysis.analysis.pca.PCA.cumulated_variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PCA.cumulated_variance</span></code></a>
+will be approximately equal to one for some <span class="math notranslate nohighlight">\(n\)</span> that is significantly
+smaller than the total number of components, these are the components of
+interest given by Principal Component Analysis.</p>
+<p>From here, we can project a trajectory onto these principal components and
+attempt to retrieve some structure from our high dimensional data.</p>
+<p>For a basic introduction to the module, the <a class="reference internal" href="#pca-tutorial"><span class="std std-ref">PCA Tutorial</span></a> shows how
+to perform Principal Component Analysis.</p>
+<div class="section" id="pca-tutorial">
+<span id="id1"></span><h2><span class="section-number">4.9.2.1. </span>PCA Tutorial<a class="headerlink" href="#pca-tutorial" title="Permalink to this headline">¶</a></h2>
+<p>The example uses files provided as part of the MDAnalysis test suite
+(in the variables <code class="xref py py-data docutils literal notranslate"><span class="pre">PSF</span></code> and
+<code class="xref py py-data docutils literal notranslate"><span class="pre">DCD</span></code>). This tutorial shows how to use the
+PCA class.</p>
+<p>First load all modules and test data</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.pca</span> <span class="k">as</span> <span class="nn">pca</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
+</pre></div>
+</div>
+<p>Given a universe containing trajectory data we can perform Principal Component
+Analyis by using the class <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA" title="MDAnalysis.analysis.pca.PCA"><code class="xref py py-class docutils literal notranslate"><span class="pre">PCA</span></code></a> and retrieving the principal
+components.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">PSF_pca</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">PCA</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;backbone&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">PSF_pca</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Inspect the components to determine the principal components you would like
+to retain. The choice is arbitrary, but I will stop when 95 percent of the
+variance is explained by the components. This cumulated variance by the
+components is conveniently stored in the one-dimensional array attribute
+<code class="docutils literal notranslate"><span class="pre">cumulated_variance</span></code>. The value at the ith index of <cite>cumulated_variance</cite>
+is the sum of the variances from 0 to i.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">n_pcs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">PSF_pca</span><span class="o">.</span><span class="n">cumulated_variance</span> <span class="o">&gt;</span> <span class="mf">0.95</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">atomgroup</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;backbone&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pca_space</span> <span class="o">=</span> <span class="n">PSF_pca</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">n_pcs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>From here, inspection of the <code class="docutils literal notranslate"><span class="pre">pca_space</span></code> and conclusions to be drawn from the
+data are left to the user.</p>
+</div>
+<div class="section" id="classes-and-functions">
+<h2><span class="section-number">4.9.2.2. </span>Classes and Functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MDAnalysis.analysis.pca.PCA">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.analysis.pca.</code><code class="sig-name descname">PCA</code><span class="sig-paren">(</span><em class="sig-param">universe</em>, <em class="sig-param">select='all'</em>, <em class="sig-param">align=False</em>, <em class="sig-param">mean=None</em>, <em class="sig-param">n_components=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Principal component analysis on an MD trajectory.</p>
+<p>After initializing and calling method with a universe or an atom group,
+principal components ordering the atom coordinate data by decreasing
+variance will be available for analysis. As an example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;backbone&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pca_space</span> <span class="o">=</span>  <span class="n">pca</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;backbone&#39;</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>generates the principal components of the backbone of the atomgroup and
+then transforms those atomgroup coordinates by the direction of those
+variances. Please refer to the <a class="reference internal" href="#pca-tutorial"><span class="std std-ref">PCA Tutorial</span></a> for more detailed
+instructions.</p>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.pca.PCA.p_components">
+<code class="sig-name descname">p_components</code><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.p_components" title="Permalink to this definition">¶</a></dt>
+<dd><p>The principal components of the feature space,
+representing the directions of maximum variance in the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>array, (n_components, n_atoms * 3)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.pca.PCA.variance">
+<code class="sig-name descname">variance</code><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.variance" title="Permalink to this definition">¶</a></dt>
+<dd><p>The raw variance explained by each eigenvector of the covariance
+matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>array (n_components, )</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.pca.PCA.cumulated_variance">
+<code class="sig-name descname">cumulated_variance</code><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.cumulated_variance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Percentage of variance explained by the selected components and the sum
+of the components preceding it. If a subset of components is not chosen
+then all components are stored and the cumulated variance will converge
+to 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>array, (n_components, )</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.pca.PCA.pca_space">
+<code class="sig-name descname">pca_space</code><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.pca_space" title="Permalink to this definition">¶</a></dt>
+<dd><p>After running <code class="xref py py-meth docutils literal notranslate"><span class="pre">pca.transform()</span></code> the projection of the
+positions onto the principal components will exist here.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>array (n_frames, n_components)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.pca.PCA.mean_atoms">
+<code class="sig-name descname">mean_atoms</code><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.mean_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>After running <code class="xref py py-meth docutils literal notranslate"><span class="pre">PCA.run()</span></code>, the mean position of all the atoms
+used for the creation of the covariance matrix will exist here.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>MDAnalyis atomgroup</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.pca.PCA.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param">atomgroup</em>, <em class="sig-param">n_components=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Take an atomgroup or universe with the same number of atoms as was
+used for the calculation in <code class="xref py py-meth docutils literal notranslate"><span class="pre">PCA.run()</span></code> and project it onto the
+principal components.</p>
+</dd></dl>
+
+<p class="rubric">Notes</p>
+<p>Computation can be speed up by supplying a precalculated mean structure</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.19.0: </span>The start frame is used when performing selections and calculating
+mean positions.  Previously the 0th frame was always used.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe</p></li>
+<li><p><strong>select</strong> (<em>string</em><em>, </em><em>optional</em>) – A valid selection statement for choosing a subset of atoms from
+the atomgroup.</p></li>
+<li><p><strong>align</strong> (<em>boolean</em><em>, </em><em>optional</em>) – If True, the trajectory will be aligned to a reference
+structure.</p></li>
+<li><p><strong>mean</strong> (<em>MDAnalysis atomgroup</em><em>, </em><em>optional</em>) – An optional reference structure to be used as the mean of the
+covariance matrix.</p></li>
+<li><p><strong>n_components</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – The number of principal components to be saved, default saves
+all principal components, Default: None</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the
+default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.analysis.pca.cosine_content">
+<code class="sig-prename descclassname">MDAnalysis.analysis.pca.</code><code class="sig-name descname">cosine_content</code><span class="sig-paren">(</span><em class="sig-param">pca_space</em>, <em class="sig-param">i</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#cosine_content"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.cosine_content" title="Permalink to this definition">¶</a></dt>
+<dd><p>Measure the cosine content of the PCA projection.</p>
+<p>The cosine content of pca projections can be used as an indicator if a
+simulation is converged. Values close to 1 are an indicator that the
+simulation isn’t converged. For values below 0.7 no statement can be made.
+If you use this function please cite <a class="reference internal" href="#berkhess1" id="id2"><span>[BerkHess1]</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pca_space</strong> (<em>array</em><em>, </em><em>shape</em><em> (</em><em>number of frames</em><em>, </em><em>number of components</em><em>)</em>) – The PCA space to be analyzed.</p></li>
+<li><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The index of the pca_component projectection to be analyzed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>A float reflecting the cosine content of the ith projection in the PCA</em></p></li>
+<li><p><em>space. The output is bounded by 0 and 1, with 1 reflecting an agreement</em></p></li>
+<li><p><em>with cosine while 0 reflects complete disagreement.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<dl class="citation">
+<dt class="label" id="berkhess1"><span class="brackets"><a class="fn-backref" href="#id2">BerkHess1</a></span></dt>
+<dd><p>Berk Hess. Convergence of sampling in protein simulations.
+Phys. Rev. E 65, 031910 (2002).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#building-blocks-for-analysis">4.1. Building blocks for Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#distances-and-contacts">4.2. Distances and contacts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#hydrogen-bonding">4.3. Hydrogen bonding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#nucleic-acids">4.5. Nucleic acids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#polymers">4.6. Polymers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#structure">4.7. Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#volumetric-analysis">4.8. Volumetric analysis</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#dimensionality-reduction">4.9. Dimensionality Reduction</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="diffusionmap.html">4.9.1. Diffusion map — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.diffusionmap</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.9.2. Principal Component Analysis (PCA) — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.pca</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pca-tutorial">4.9.2.1. PCA Tutorial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#classes-and-functions">4.9.2.2. Classes and Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#legacy-analysis-modules">4.10. Legacy analysis modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#data">4.11. Data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a><ul>
+      <li>Previous: <a href="diffusionmap.html" title="previous chapter"><span class="section-number">4.9.1. </span>Diffusion map — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.diffusionmap</span></code></a></li>
+      <li>Next: <a href="legacy_modules.html" title="next chapter"><span class="section-number">4.10.1. </span><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.legacy</span></code> — Legacy analysis code</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/documentation_pages/analysis/pca.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

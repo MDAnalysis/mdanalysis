@@ -1,0 +1,294 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>8. Selection exporters &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="8.2.1. VMD selections" href="selections/vmd.html" />
+    <link rel="prev" title="7.5.4. Fitting transformations — MDAnalysis.transformations.fit" href="transformations/fit.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="selection-exporters">
+<span id="id1"></span><h1><span class="section-number">8. </span>Selection exporters<a class="headerlink" href="#selection-exporters" title="Permalink to this headline">¶</a></h1>
+<p>The classes in this module allow writing a selection to a file that can be read by
+<em>another program</em> to select the atoms in a MDAnalysis
+<a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a>. Such cross-package interoperability
+allows a user to combine their favourite tools with MDAnalysis for further
+visualization or simulation.</p>
+<span id="supported-selection-exporters"></span><table class="docutils align-default" id="id2">
+<caption><span class="caption-text">Table of supported exporters and recognized file name extensions.</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 14%" />
+<col style="width: 9%" />
+<col style="width: 57%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>extension</p></th>
+<th class="head"><p>IO</p></th>
+<th class="head"><p>remarks</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>vmd</p></td>
+<td><p>tcl</p></td>
+<td><p>w</p></td>
+<td><p><a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a> macros, available in Representations;
+module <a class="reference internal" href="selections/vmd.html#module-MDAnalysis.selections.vmd" title="MDAnalysis.selections.vmd"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.selections.vmd</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>pymol</p></td>
+<td><p>pml</p></td>
+<td><p>w</p></td>
+<td><p>simple <a class="reference external" href="http://www.pymol.org">PyMOL</a> selection string;
+module <a class="reference internal" href="selections/pymol.html#module-MDAnalysis.selections.pymol" title="MDAnalysis.selections.pymol"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.selections.pymol</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>gromacs</p></td>
+<td><p>ndx</p></td>
+<td><p>w</p></td>
+<td><p><a class="reference external" href="http://www.gromacs.org">Gromacs</a> index file;
+module <a class="reference internal" href="selections/gromacs.html#module-MDAnalysis.selections.gromacs" title="MDAnalysis.selections.gromacs"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.selections.gromacs</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>charmm</p></td>
+<td><p>str</p></td>
+<td><p>w</p></td>
+<td><p><a class="reference external" href="http://www.charmm.org">CHARMM</a> selection of individual atoms;
+module <a class="reference internal" href="selections/charmm.html#module-MDAnalysis.selections.charmm" title="MDAnalysis.selections.charmm"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.selections.charmm</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>jmol</p></td>
+<td><p>spt</p></td>
+<td><p>w</p></td>
+<td><p><a class="reference external" href="http://wiki.jmol.org/">Jmol</a> selection commands;
+module <a class="reference internal" href="selections/jmol.html#module-MDAnalysis.selections.jmol" title="MDAnalysis.selections.jmol"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.selections.jmol</span></code></a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="how-to-write-selections">
+<h2><span class="section-number">8.1. </span>How to write selections<a class="headerlink" href="#how-to-write-selections" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="single-atomgroup">
+<h3><span class="section-number">8.1.1. </span>Single AtomGroup<a class="headerlink" href="#single-atomgroup" title="Permalink to this headline">¶</a></h3>
+<p>The typical situation is that one has an
+<a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> and wants to work with the
+same selection of atoms in a different package, for example, to
+visualize the atoms in <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>. First create an <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> (named
+<code class="docutils literal notranslate"><span class="pre">g</span></code> in the example below) and then use its
+<a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup.write" title="MDAnalysis.core.groups.AtomGroup.write"><code class="xref py py-class docutils literal notranslate"><span class="pre">write</span></code></a> method with the
+appropriate <em>file extension</em> (see <a class="reference internal" href="#supported-selection-exporters"><span class="std std-ref">Table of supported exporters and recognized file name extensions.</span></a> for the recognized <em>extension</em>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;protein&quot;)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;selections.vmd&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mda_protein&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>, sourcing the file <code class="docutils literal notranslate"><span class="pre">selections.vmd</span></code> (written in Tcl) defines
+the “macro” <code class="docutils literal notranslate"><span class="pre">mda_protein</span></code> that contains the atom indices to select</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> selection.vmd
+<span class="k">set</span> sel <span class="k">[</span><span class="nv">atomselect</span> top mda_mdanalysis<span class="k">]</span>
+</pre></div>
+</div>
+<p>and in the GUI the macro appears in the <span class="menuselection">Graphics ‣
+Representations</span> window in the list <span class="guilabel">Selections: Singlewords</span> as
+“mda_protein”.</p>
+</div>
+<div class="section" id="multiple-selections">
+<h3><span class="section-number">8.1.2. </span>Multiple selections<a class="headerlink" href="#multiple-selections" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup.write" title="MDAnalysis.core.groups.AtomGroup.write"><code class="xref py py-class docutils literal notranslate"><span class="pre">write</span></code></a> method can take
+additional keyword arguments, including <code class="docutils literal notranslate"><span class="pre">mode</span></code>. The default is
+<code class="docutils literal notranslate"><span class="pre">mode=&quot;w&quot;</span></code>, which will overwrite the provided file. If <code class="docutils literal notranslate"><span class="pre">mode=&quot;a&quot;</span></code>
+then the selection is <em>appended</em> to the file.</p>
+<p>Alternatively, one may use the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionWriter</span></code> itself as a
+context manager and write each <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> inside the
+context. For example, to write multiple groups that were selected to
+mark different parts of a lipid bilayer to <a class="reference external" href="http://www.gromacs.org">Gromacs</a> index file named
+“leaflets.ndx”:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">mda</span><span class="o">.</span><span class="n">selections</span><span class="o">.</span><span class="n">gromacs</span><span class="o">.</span><span class="n">SelectionWriter</span><span class="p">(</span><span class="s1">&#39;leaflets.ndx&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ndx</span><span class="p">:</span>
+    <span class="n">ndx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">upper_saturated</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;upper_sat&#39;</span><span class="p">)</span>
+    <span class="n">ndx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">lower_saturated</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;lower_sat&#39;</span><span class="p">)</span>
+    <span class="n">ndx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">upper_unsaturated</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;upper_unsat&#39;</span><span class="p">)</span>
+    <span class="n">ndx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">lower_unsaturated</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;lower_unsat&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>There is a separate <code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionWriter</span></code> for each format, as
+described next.</p>
+</div>
+</div>
+<div class="section" id="selection-writers">
+<h2><span class="section-number">8.2. </span>Selection writers<a class="headerlink" href="#selection-writers" title="Permalink to this headline">¶</a></h2>
+<p>There exist different <a class="reference internal" href="selections/base.html#MDAnalysis.selections.base.SelectionWriterBase" title="MDAnalysis.selections.base.SelectionWriterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionWriterBase</span></code></a>
+classes for different packages. The
+<a class="reference internal" href="#MDAnalysis.selections.get_writer" title="MDAnalysis.selections.get_writer"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_writer()</span></code></a> function can automatically pick
+the appropriate one, based on the file name extension in the <a class="reference internal" href="#supported-selection-exporters"><span class="std std-ref">Table of supported exporters and recognized file name extensions.</span></a>.</p>
+<dl class="function">
+<dt id="MDAnalysis.selections.get_writer">
+<code class="sig-prename descclassname">MDAnalysis.selections.</code><code class="sig-name descname">get_writer</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">defaultformat</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MDAnalysis/selections.html#get_writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.selections.get_writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a SelectionWriter for <cite>filename</cite> or a <cite>defaultformat</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – name of the output file; the extension is used to guess the file format</p></li>
+<li><p><strong>defaultformat</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – if <cite>filename</cite> does not have an extension, use <cite>defaultformat</cite> instead</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>SelectionWriter</strong> – the writer <em>class</em> for the detected format</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><cite>type</cite></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.9)"><strong>NotImplementedError</strong></a> – for any format that is not defined</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Formats</p>
+<p>Each module implements a <code class="xref py py-class docutils literal notranslate"><span class="pre">SelectionWriter</span></code> for a specific format.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="selections/vmd.html">8.2.1. VMD selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections/pymol.html">8.2.2. PyMOL selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections/gromacs.html">8.2.3. Gromacs selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections/charmm.html">8.2.4. CHARMM selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections/jmol.html">8.2.5. Jmol selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections/base.html">8.2.6. Base classes for the selection writers</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../index.html">
+    <img class="logo" src="../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">8. Selection exporters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-write-selections">8.1. How to write selections</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#single-atomgroup">8.1.1. Single AtomGroup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multiple-selections">8.1.2. Multiple selections</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#selection-writers">8.2. Selection writers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="selections/vmd.html">8.2.1. VMD selections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="selections/pymol.html">8.2.2. PyMOL selections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="selections/gromacs.html">8.2.3. Gromacs selections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="selections/charmm.html">8.2.4. CHARMM selections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="selections/jmol.html">8.2.5. Jmol selections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="selections/base.html">8.2.6. Base classes for the selection writers</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="transformations/fit.html" title="previous chapter"><span class="section-number">7.5.4. </span>Fitting transformations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.fit</span></code></a></li>
+      <li>Next: <a href="selections/vmd.html" title="next chapter"><span class="section-number">8.2.1. </span>VMD selections</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/documentation_pages/selections_modules.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

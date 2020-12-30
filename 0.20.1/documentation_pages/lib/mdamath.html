@@ -1,0 +1,735 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>12.2.7. Mathematical helper functions — MDAnalysis.lib.mdamath &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="12.2.8. Homogeneous Transformation Matrices and Quaternions — MDAnalysis.lib.transformations" href="transformations.html" />
+    <link rel="prev" title="12.2.6. Setting up logging — MDAnalysis.lib.log" href="log.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <span class="target" id="module-MDAnalysis.lib.mdamath"></span><div class="section" id="mathematical-helper-functions-mdanalysis-lib-mdamath">
+<h1><span class="section-number">12.2.7. </span>Mathematical helper functions — <a class="reference internal" href="#module-MDAnalysis.lib.mdamath" title="MDAnalysis.lib.mdamath"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a><a class="headerlink" href="#mathematical-helper-functions-mdanalysis-lib-mdamath" title="Permalink to this headline">¶</a></h1>
+<p>Helper functions for common mathematical operations</p>
+<dl class="function">
+<dt id="MDAnalysis.lib.mdamath.normal">
+<code class="sig-prename descclassname">MDAnalysis.lib.mdamath.</code><code class="sig-name descname">normal</code><span class="sig-paren">(</span><em class="sig-param">vec1</em>, <em class="sig-param">vec2</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#normal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.mdamath.normal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the unit vector normal to two vectors.</p>
+<div class="math notranslate nohighlight">
+\[\hat{\mathbf{n}} = \frac{\mathbf{v}_1 \times \mathbf{v}_2}{|\mathbf{v}_1 \times \mathbf{v}_2|}\]</div>
+<p>If the two vectors are collinear, the vector <span class="math notranslate nohighlight">\(\mathbf{0}\)</span> is returned.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Moved into lib.mdamath</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.mdamath.norm">
+<code class="sig-prename descclassname">MDAnalysis.lib.mdamath.</code><code class="sig-name descname">norm</code><span class="sig-paren">(</span><em class="sig-param">v</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.mdamath.norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the norm of a vector v.</p>
+<div class="math notranslate nohighlight">
+\[v = \sqrt{\mathbf{v}\cdot\mathbf{v}}\]</div>
+<p>This version is faster then numpy.linalg.norm because it only works for a
+single vector and therefore can skip a lot of the additional fuss
+linalg.norm does.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>v</strong> (<em>array_like</em>) – 1D array of shape (N) for a vector of length N</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>norm of the vector</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.mdamath.angle">
+<code class="sig-prename descclassname">MDAnalysis.lib.mdamath.</code><code class="sig-name descname">angle</code><span class="sig-paren">(</span><em class="sig-param">a</em>, <em class="sig-param">b</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.mdamath.angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the angle between two vectors in radians</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Moved into lib.mdamath</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.mdamath.dihedral">
+<code class="sig-prename descclassname">MDAnalysis.lib.mdamath.</code><code class="sig-name descname">dihedral</code><span class="sig-paren">(</span><em class="sig-param">ab</em>, <em class="sig-param">bc</em>, <em class="sig-param">cd</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#dihedral"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.mdamath.dihedral" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the dihedral angle in radians between vectors connecting A,B,C,D.</p>
+<p>The dihedral measures the rotation around bc:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">ab</span>
+<span class="n">A</span><span class="o">----&gt;</span><span class="n">B</span>
+       \ <span class="n">bc</span>
+       <span class="n">_</span>\<span class="s1">&#39;</span>
+         <span class="n">C</span><span class="o">----&gt;</span><span class="n">D</span>
+           <span class="n">cd</span>
+</pre></div>
+</div>
+<p>The dihedral angle is restricted to the range -π &lt;= x &lt;= π.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.8.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Moved into lib.mdamath</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.mdamath.stp">
+<code class="sig-prename descclassname">MDAnalysis.lib.mdamath.</code><code class="sig-name descname">stp</code><span class="sig-paren">(</span><em class="sig-param">vec1</em>, <em class="sig-param">vec2</em>, <em class="sig-param">vec3</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#stp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.mdamath.stp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes the scalar triple product of three vectors.</p>
+<p>Returns the volume <em>V</em> of the parallel epiped spanned by the three
+vectors</p>
+<div class="math notranslate nohighlight">
+\[V = \mathbf{v}_3 \cdot (\mathbf{v}_1 \times \mathbf{v}_2)\]</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Moved into lib.mdamath</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.mdamath.sarrus_det">
+<code class="sig-prename descclassname">MDAnalysis.lib.mdamath.</code><code class="sig-name descname">sarrus_det</code><span class="sig-paren">(</span><em class="sig-param">matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#sarrus_det"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.mdamath.sarrus_det" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the determinant of a 3x3 matrix according to the
+<a class="reference external" href="https://en.wikipedia.org/wiki/Rule_of_Sarrus">rule of Sarrus</a>.</p>
+<p>If an array of 3x3 matrices is supplied, determinants are computed per
+matrix and returned as an appropriately shaped numpy array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – An array of shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">3,</span> <span class="pre">3)</span></code> with the 3x3 matrices residing in the
+last two dimensions.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>det</strong> – The determinant(s) of <cite>matrix</cite>.
+If <code class="docutils literal notranslate"><span class="pre">matrix.shape</span> <span class="pre">==</span> <span class="pre">(3,</span> <span class="pre">3)</span></code>, the determinant will be returned as a
+scalar. If <code class="docutils literal notranslate"><span class="pre">matrix.shape</span> <span class="pre">==</span> <span class="pre">(...,</span> <span class="pre">3,</span> <span class="pre">3)</span></code>, the determinants will be
+returned as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <code class="docutils literal notranslate"><span class="pre">(...,)</span></code> and dtype
+<code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError:</strong> – If <cite>matrix</cite> has less than two dimensions or its last two dimensions
+    are not of shape <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">3)</span></code>.</p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.20.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.mdamath.triclinic_box">
+<code class="sig-prename descclassname">MDAnalysis.lib.mdamath.</code><code class="sig-name descname">triclinic_box</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">z</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#triclinic_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.mdamath.triclinic_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the three triclinic box vectors to
+<code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
+<p>If the resulting box is invalid, i.e., any box length is zero or negative,
+or any angle is outside the open interval <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">180)</span></code>, a zero vector will
+be returned.</p>
+<p>All angles are in degrees and defined as follows:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">alpha</span> <span class="pre">=</span> <span class="pre">angle(y,z)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">beta</span>&#160; <span class="pre">=</span> <span class="pre">angle(x,z)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gamma</span> <span class="pre">=</span> <span class="pre">angle(x,y)</span></code></p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array_like</em>) – Array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> representing the first box vector</p></li>
+<li><p><strong>y</strong> (<em>array_like</em>) – Array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> representing the second box vector</p></li>
+<li><p><strong>z</strong> (<em>array_like</em>) – Array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> representing the third box vector</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>A numpy array of shape <code class="docutils literal notranslate"><span class="pre">(6,)</span></code> and dtype <code class="docutils literal notranslate"><span class="pre">np.float32</span></code> providing the
+unitcell dimensions in the same format as returned by
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
+<p>Invalid boxes are returned as a zero vector.</p>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Definition of angles: <a class="reference external" href="http://en.wikipedia.org/wiki/Lattice_constant">http://en.wikipedia.org/wiki/Lattice_constant</a></p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#MDAnalysis.lib.mdamath.triclinic_vectors" title="MDAnalysis.lib.mdamath.triclinic_vectors"><code class="xref py py-func docutils literal notranslate"><span class="pre">triclinic_vectors()</span></code></a></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.20.0: </span>Calculations are performed in double precision and invalid box vectors
+result in an all-zero box.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.mdamath.triclinic_vectors">
+<code class="sig-prename descclassname">MDAnalysis.lib.mdamath.</code><code class="sig-name descname">triclinic_vectors</code><span class="sig-paren">(</span><em class="sig-param">dimensions</em>, <em class="sig-param">dtype=&lt;class 'numpy.float32'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#triclinic_vectors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.mdamath.triclinic_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code> to a triclinic matrix
+representation.</p>
+<p>Original <a class="reference external" href="http://www.mail-archive.com/gmx-users&#64;gromacs.org/msg28032.html">code by Tsjerk Wassenaar</a> posted on the Gromacs mailinglist.</p>
+<p>If <cite>dimensions</cite> indicates a non-periodic system (i.e., all lengths are
+zero), zero vectors are returned. The same applies for invalid <cite>dimensions</cite>,
+i.e., any box length is zero or negative, or any angle is outside the open
+interval <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">180)</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dimensions</strong> (<em>array_like</em>) – <p>Unitcell dimensions provided in the same format as returned by
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
+</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.19)"><em>numpy.dtype</em></a>) – The data type of the returned box matrix.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>box_matrix</strong> – A numpy array of shape <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">3)</span></code> and dtype <cite>dtype</cite>,
+with <code class="docutils literal notranslate"><span class="pre">box_matrix[0]</span></code> containing the first, <code class="docutils literal notranslate"><span class="pre">box_matrix[1]</span></code> the
+second, and <code class="docutils literal notranslate"><span class="pre">box_matrix[2]</span></code> the third box vector.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>The first vector is guaranteed to point along the x-axis, i.e., it has the
+form <code class="docutils literal notranslate"><span class="pre">(lx,</span> <span class="pre">0,</span> <span class="pre">0)</span></code>.</p></li>
+<li><p>The second vector is guaranteed to lie in the x/y-plane, i.e., its
+z-component is guaranteed to be zero.</p></li>
+<li><p>If any box length is negative or zero, or if any box angle is zero, the
+box is treated as invalid and an all-zero-matrix is returned.</p></li>
+</ul>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.6: </span>Null-vectors are returned for non-periodic (or missing) unit cell.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.20.0: </span>* Calculations are performed in double precision and zero vectors are
+  also returned for invalid boxes.
+* Added optional output dtype parameter.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.mdamath.box_volume">
+<code class="sig-prename descclassname">MDAnalysis.lib.mdamath.</code><code class="sig-name descname">box_volume</code><span class="sig-paren">(</span><em class="sig-param">dimensions</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#box_volume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.mdamath.box_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the volume of the unitcell described by <cite>dimensions</cite>.</p>
+<p>The volume is computed as the product of the box matrix trace, with the
+matrix obtained from <a class="reference internal" href="#MDAnalysis.lib.mdamath.triclinic_vectors" title="MDAnalysis.lib.mdamath.triclinic_vectors"><code class="xref py py-func docutils literal notranslate"><span class="pre">triclinic_vectors()</span></code></a>.
+If the box is invalid, i.e., any box length is zero or negative, or any
+angle is outside the open interval <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">180)</span></code>, the resulting volume will
+be zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dimensions</strong> (<em>array_like</em>) – <p>Unitcell dimensions provided in the same format as returned by
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
+</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>volume</strong> – The volume of the unitcell. Will be zero for invalid boxes.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.20.0: </span>Calculations are performed in double precision and zero is returned
+for invalid dimensions.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.mdamath.make_whole">
+<code class="sig-prename descclassname">MDAnalysis.lib.mdamath.</code><code class="sig-name descname">make_whole</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.mdamath.make_whole" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move all atoms in a single molecule so that bonds don’t split over
+images.</p>
+<p>This function is most useful when atoms have been packed into the primary
+unit cell, causing breaks mid molecule, with the molecule then appearing
+on either side of the unit cell. This is problematic for operations
+such as calculating the center of mass of the molecule.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>+-----------+     +-----------+
+|           |     |           |
+| 6       3 |     |         3 | 6
+| !       ! |     |         ! | !
+|-5-8   1-2-| -&gt;  |       1-2-|-5-8
+| !       ! |     |         ! | !
+| 7       4 |     |         4 | 7
+|           |     |           |
++-----------+     +-----------+
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – The <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> to work with.
+The positions of this are modified in place.  All these atoms
+must belong in the same molecule or fragment.</p></li>
+<li><p><strong>reference_atom</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a>) – The atom around which all other atoms will be moved.
+Defaults to atom 0 in the atomgroup.</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, coordinates are modified in place.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>coords</strong> – The unwrapped atom coordinates.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – There are no bonds present.
+    (See <code class="xref py py-func docutils literal notranslate"><span class="pre">guess_bonds()</span></code>)</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – The algorithm fails to work.  This is usually
+    caused by the atomgroup not being a single fragment.
+    (ie the molecule can’t be traversed by following bonds)</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Make fragments whole:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.lib.mdamath</span> <span class="kn">import</span> <span class="n">make_whole</span>
+
+<span class="c1"># This algorithm requires bonds, these can be guessed!</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="o">......</span><span class="p">,</span> <span class="n">guess_bonds</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># MDAnalysis can split AtomGroups into their fragments</span>
+<span class="c1"># based on bonding information.</span>
+<span class="c1"># Note that this function will only handle a single fragment</span>
+<span class="c1"># at a time, necessitating a loop.</span>
+<span class="k">for</span> <span class="n">frag</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">fragments</span><span class="p">:</span>
+    <span class="n">make_whole</span><span class="p">(</span><span class="n">frag</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Alternatively, to keep a single atom in place as the anchor:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># This will mean that atomgroup[10] will NOT get moved,</span>
+<span class="c1"># and all other atoms will move (if necessary).</span>
+<span class="n">make_whole</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">,</span> <span class="n">reference_atom</span><span class="o">=</span><span class="n">atomgroup</span><span class="p">[</span><span class="mi">10</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.unwrap" title="MDAnalysis.core.groups.AtomGroup.unwrap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.unwrap()</span></code></a></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.11.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.20.0: </span>Inplace-modification of atom positions is now optional, and positions
+are returned as a numpy array.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.lib.mdamath.find_fragments">
+<code class="sig-prename descclassname">MDAnalysis.lib.mdamath.</code><code class="sig-name descname">find_fragments</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.mdamath.find_fragments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate distinct fragments from nodes (atom indices) and edges (pairs
+of atom indices).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<em>array_like</em>) – 1-D Array of atom indices (dtype will be converted to <code class="docutils literal notranslate"><span class="pre">numpy.int64</span></code>
+internally)</p></li>
+<li><p><strong>bonds</strong> (<em>array_like</em>) – 2-D array of bonds (dtype will be converted to <code class="docutils literal notranslate"><span class="pre">numpy.int32</span></code>
+internally), where <code class="docutils literal notranslate"><span class="pre">bonds[i,</span> <span class="pre">0]</span></code> and <code class="docutils literal notranslate"><span class="pre">bonds[i,</span> <span class="pre">1]</span></code> are the
+indices of atoms connected by the <code class="docutils literal notranslate"><span class="pre">i</span></code>-th bond. Any bonds referring to
+atom indices not in <cite>atoms</cite> will be ignored.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>fragments</strong> (<em>list</em>) – List of arrays, each containing the atom indices of a fragment.</p></li>
+<li><p><em>.. versionaddded:: 0.19.0</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.11.0.</span></p>
+</div>
+<dl class="function">
+<dt>
+<code class="sig-prename descclassname">MDAnalysis.lib.mdamath.</code><code class="sig-name descname">angle</code><span class="sig-paren">(</span><em class="sig-param">a</em>, <em class="sig-param">b</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#angle"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Returns the angle between two vectors in radians</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Moved into lib.mdamath</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="sig-prename descclassname">MDAnalysis.lib.mdamath.</code><code class="sig-name descname">box_volume</code><span class="sig-paren">(</span><em class="sig-param">dimensions</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#box_volume"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Return the volume of the unitcell described by <cite>dimensions</cite>.</p>
+<p>The volume is computed as the product of the box matrix trace, with the
+matrix obtained from <a class="reference internal" href="#MDAnalysis.lib.mdamath.triclinic_vectors" title="MDAnalysis.lib.mdamath.triclinic_vectors"><code class="xref py py-func docutils literal notranslate"><span class="pre">triclinic_vectors()</span></code></a>.
+If the box is invalid, i.e., any box length is zero or negative, or any
+angle is outside the open interval <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">180)</span></code>, the resulting volume will
+be zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dimensions</strong> (<em>array_like</em>) – <p>Unitcell dimensions provided in the same format as returned by
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
+</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>volume</strong> – The volume of the unitcell. Will be zero for invalid boxes.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.20.0: </span>Calculations are performed in double precision and zero is returned
+for invalid dimensions.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="sig-prename descclassname">MDAnalysis.lib.mdamath.</code><code class="sig-name descname">dihedral</code><span class="sig-paren">(</span><em class="sig-param">ab</em>, <em class="sig-param">bc</em>, <em class="sig-param">cd</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#dihedral"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Returns the dihedral angle in radians between vectors connecting A,B,C,D.</p>
+<p>The dihedral measures the rotation around bc:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">ab</span>
+<span class="n">A</span><span class="o">----&gt;</span><span class="n">B</span>
+       \ <span class="n">bc</span>
+       <span class="n">_</span>\<span class="s1">&#39;</span>
+         <span class="n">C</span><span class="o">----&gt;</span><span class="n">D</span>
+           <span class="n">cd</span>
+</pre></div>
+</div>
+<p>The dihedral angle is restricted to the range -π &lt;= x &lt;= π.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.8.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Moved into lib.mdamath</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="sig-prename descclassname">MDAnalysis.lib.mdamath.</code><code class="sig-name descname">norm</code><span class="sig-paren">(</span><em class="sig-param">v</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#norm"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Calculate the norm of a vector v.</p>
+<div class="math notranslate nohighlight">
+\[v = \sqrt{\mathbf{v}\cdot\mathbf{v}}\]</div>
+<p>This version is faster then numpy.linalg.norm because it only works for a
+single vector and therefore can skip a lot of the additional fuss
+linalg.norm does.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>v</strong> (<em>array_like</em>) – 1D array of shape (N) for a vector of length N</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>norm of the vector</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="sig-prename descclassname">MDAnalysis.lib.mdamath.</code><code class="sig-name descname">normal</code><span class="sig-paren">(</span><em class="sig-param">vec1</em>, <em class="sig-param">vec2</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#normal"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Returns the unit vector normal to two vectors.</p>
+<div class="math notranslate nohighlight">
+\[\hat{\mathbf{n}} = \frac{\mathbf{v}_1 \times \mathbf{v}_2}{|\mathbf{v}_1 \times \mathbf{v}_2|}\]</div>
+<p>If the two vectors are collinear, the vector <span class="math notranslate nohighlight">\(\mathbf{0}\)</span> is returned.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Moved into lib.mdamath</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="sig-prename descclassname">MDAnalysis.lib.mdamath.</code><code class="sig-name descname">sarrus_det</code><span class="sig-paren">(</span><em class="sig-param">matrix</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#sarrus_det"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Computes the determinant of a 3x3 matrix according to the
+<a class="reference external" href="https://en.wikipedia.org/wiki/Rule_of_Sarrus">rule of Sarrus</a>.</p>
+<p>If an array of 3x3 matrices is supplied, determinants are computed per
+matrix and returned as an appropriately shaped numpy array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>matrix</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – An array of shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">3,</span> <span class="pre">3)</span></code> with the 3x3 matrices residing in the
+last two dimensions.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>det</strong> – The determinant(s) of <cite>matrix</cite>.
+If <code class="docutils literal notranslate"><span class="pre">matrix.shape</span> <span class="pre">==</span> <span class="pre">(3,</span> <span class="pre">3)</span></code>, the determinant will be returned as a
+scalar. If <code class="docutils literal notranslate"><span class="pre">matrix.shape</span> <span class="pre">==</span> <span class="pre">(...,</span> <span class="pre">3,</span> <span class="pre">3)</span></code>, the determinants will be
+returned as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <code class="docutils literal notranslate"><span class="pre">(...,)</span></code> and dtype
+<code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError:</strong> – If <cite>matrix</cite> has less than two dimensions or its last two dimensions
+    are not of shape <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">3)</span></code>.</p>
+</dd>
+</dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.20.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="sig-prename descclassname">MDAnalysis.lib.mdamath.</code><code class="sig-name descname">stp</code><span class="sig-paren">(</span><em class="sig-param">vec1</em>, <em class="sig-param">vec2</em>, <em class="sig-param">vec3</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#stp"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Takes the scalar triple product of three vectors.</p>
+<p>Returns the volume <em>V</em> of the parallel epiped spanned by the three
+vectors</p>
+<div class="math notranslate nohighlight">
+\[V = \mathbf{v}_3 \cdot (\mathbf{v}_1 \times \mathbf{v}_2)\]</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Moved into lib.mdamath</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="sig-prename descclassname">MDAnalysis.lib.mdamath.</code><code class="sig-name descname">triclinic_box</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">z</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#triclinic_box"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Convert the three triclinic box vectors to
+<code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
+<p>If the resulting box is invalid, i.e., any box length is zero or negative,
+or any angle is outside the open interval <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">180)</span></code>, a zero vector will
+be returned.</p>
+<p>All angles are in degrees and defined as follows:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">alpha</span> <span class="pre">=</span> <span class="pre">angle(y,z)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">beta</span>&#160; <span class="pre">=</span> <span class="pre">angle(x,z)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gamma</span> <span class="pre">=</span> <span class="pre">angle(x,y)</span></code></p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array_like</em>) – Array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> representing the first box vector</p></li>
+<li><p><strong>y</strong> (<em>array_like</em>) – Array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> representing the second box vector</p></li>
+<li><p><strong>z</strong> (<em>array_like</em>) – Array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> representing the third box vector</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>A numpy array of shape <code class="docutils literal notranslate"><span class="pre">(6,)</span></code> and dtype <code class="docutils literal notranslate"><span class="pre">np.float32</span></code> providing the
+unitcell dimensions in the same format as returned by
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
+<p>Invalid boxes are returned as a zero vector.</p>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Definition of angles: <a class="reference external" href="http://en.wikipedia.org/wiki/Lattice_constant">http://en.wikipedia.org/wiki/Lattice_constant</a></p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#MDAnalysis.lib.mdamath.triclinic_vectors" title="MDAnalysis.lib.mdamath.triclinic_vectors"><code class="xref py py-func docutils literal notranslate"><span class="pre">triclinic_vectors()</span></code></a></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.20.0: </span>Calculations are performed in double precision and invalid box vectors
+result in an all-zero box.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="sig-prename descclassname">MDAnalysis.lib.mdamath.</code><code class="sig-name descname">triclinic_vectors</code><span class="sig-paren">(</span><em class="sig-param">dimensions</em>, <em class="sig-param">dtype=&lt;class 'numpy.float32'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/mdamath.html#triclinic_vectors"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Convert <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code> to a triclinic matrix
+representation.</p>
+<p>Original <a class="reference external" href="http://www.mail-archive.com/gmx-users&#64;gromacs.org/msg28032.html">code by Tsjerk Wassenaar</a> posted on the Gromacs mailinglist.</p>
+<p>If <cite>dimensions</cite> indicates a non-periodic system (i.e., all lengths are
+zero), zero vectors are returned. The same applies for invalid <cite>dimensions</cite>,
+i.e., any box length is zero or negative, or any angle is outside the open
+interval <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">180)</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dimensions</strong> (<em>array_like</em>) – <p>Unitcell dimensions provided in the same format as returned by
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
+</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.19)"><em>numpy.dtype</em></a>) – The data type of the returned box matrix.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>box_matrix</strong> – A numpy array of shape <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">3)</span></code> and dtype <cite>dtype</cite>,
+with <code class="docutils literal notranslate"><span class="pre">box_matrix[0]</span></code> containing the first, <code class="docutils literal notranslate"><span class="pre">box_matrix[1]</span></code> the
+second, and <code class="docutils literal notranslate"><span class="pre">box_matrix[2]</span></code> the third box vector.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>The first vector is guaranteed to point along the x-axis, i.e., it has the
+form <code class="docutils literal notranslate"><span class="pre">(lx,</span> <span class="pre">0,</span> <span class="pre">0)</span></code>.</p></li>
+<li><p>The second vector is guaranteed to lie in the x/y-plane, i.e., its
+z-component is guaranteed to be zero.</p></li>
+<li><p>If any box length is negative or zero, or if any box angle is zero, the
+box is treated as invalid and an all-zero-matrix is returned.</p></li>
+</ul>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.6: </span>Null-vectors are returned for non-periodic (or missing) unit cell.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.20.0: </span>* Calculations are performed in double precision and zero vectors are
+  also returned for invalid boxes.
+* Added optional output dtype parameter.</p>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#overview">12.1. Overview</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../lib_modules.html#list-of-modules">12.2. List of modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="distances.html">12.2.1. Fast distance array computation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="distances.html#low-level-modules-for-mdanalysis-lib-distances">12.2.2. Low-level modules for <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">12.2.3. Neighbor Search wrapper for MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nsgrid.html">12.2.4. Neighbor search library — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pkdtree.html">12.2.5. PeriodicKDTree — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="log.html">12.2.6. Setting up logging — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">12.2.7. Mathematical helper functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transformations.html">12.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcprot.html">12.2.9. Fast QCP RMSD structure alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="util.html">12.2.10. Helper functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">12.3. Low level file formats</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../lib_modules.html"><span class="section-number">12. </span>Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul>
+      <li>Previous: <a href="log.html" title="previous chapter"><span class="section-number">12.2.6. </span>Setting up logging — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+      <li>Next: <a href="transformations.html" title="next chapter"><span class="section-number">12.2.8. </span>Homogeneous Transformation Matrices and Quaternions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/documentation_pages/lib/mdamath.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

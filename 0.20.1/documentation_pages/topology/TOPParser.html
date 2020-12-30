@@ -1,0 +1,774 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>5.17. AMBER PRMTOP topology parser &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="5.18. Gromacs portable run input TPR format parser" href="TPRParser.html" />
+    <link rel="prev" title="5.16. PSF topology parser" href="PSFParser.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <span class="target" id="module-MDAnalysis.topology.TOPParser"></span><div class="section" id="amber-prmtop-topology-parser">
+<h1><span class="section-number">5.17. </span>AMBER PRMTOP topology parser<a class="headerlink" href="#amber-prmtop-topology-parser" title="Permalink to this headline">¶</a></h1>
+<p>Reads an AMBER top file to build the system.</p>
+<p>Amber keywords are turned into the following attributes:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 56%" />
+<col style="width: 44%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>AMBER flag</p></td>
+<td><p>MDAnalysis attribute</p></td>
+</tr>
+<tr class="row-even"><td><p>ATOM_NAME</p></td>
+<td><p>names</p></td>
+</tr>
+<tr class="row-odd"><td><p>CHARGE</p></td>
+<td><p>charges</p></td>
+</tr>
+<tr class="row-even"><td><p>ATOMIC_NUMBER</p></td>
+<td><p>elements</p></td>
+</tr>
+<tr class="row-odd"><td><p>MASS</p></td>
+<td><p>masses</p></td>
+</tr>
+<tr class="row-even"><td><p>BONDS_INC_HYDROGEN
+BONDS_WITHOUT_HYDROGEN</p></td>
+<td><p>bonds</p></td>
+</tr>
+<tr class="row-odd"><td><p>ANGLES_INC_HYDROGEN
+ANGLES_WITHOUT_HYDROGEN</p></td>
+<td><p>angles</p></td>
+</tr>
+<tr class="row-even"><td><p>DIHEDRALS_INC_HYDROGEN
+DIHEDRALS_WITHOUT_HYDROGEN</p></td>
+<td><p>dihedrals / improper</p></td>
+</tr>
+<tr class="row-odd"><td><p>ATOM_TYPE_INDEX</p></td>
+<td><p>type_indices</p></td>
+</tr>
+<tr class="row-even"><td><p>AMBER_ATOM_TYPE</p></td>
+<td><p>types</p></td>
+</tr>
+<tr class="row-odd"><td><p>RESIDUE_LABEL</p></td>
+<td><p>resnames</p></td>
+</tr>
+<tr class="row-even"><td><p>RESIDUE_POINTER</p></td>
+<td><p>residues</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Amber charge is converted to electron charges as used in
+MDAnalysis and other packages. To get back Amber charges, multiply
+by 18.2223.</p>
+</div>
+<div class="section" id="classes">
+<h2><span class="section-number">5.17.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.topology.TOPParser.</code><code class="sig-name descname">TOPParser</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads topology information from an AMBER top file.</p>
+<p>Reads the following Attributes if in topology:
+- Atomnames
+- Charges
+- Masses
+- Elements
+- Atomtypes
+- Resnames
+- Type_indices
+- Bonds
+- Angles
+- Dihedrals (inc. impropers)</p>
+<dl class="simple">
+<dt>Guesses the following attributes:</dt><dd><ul class="simple">
+<li><p>Elements (if not included in topology)</p></li>
+</ul>
+</dd>
+</dl>
+<p>The format is defined in <a class="reference external" href="http://ambermd.org/formats.html#topology">PARM parameter/topology file
+specification</a>.  The reader tries to detect if it is a newer
+(AMBER 12?) file format by looking for the flag “ATOMIC_NUMBER”.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.6: </span>parses both amber10 and amber12 formats</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.19.0: </span>parses bonds, angles, dihedrals, and impropers</p>
+</div>
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the trajectory file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.convert_forces_from_native">
+<code class="sig-name descname">convert_forces_from_native</code><span class="sig-paren">(</span><em class="sig-param">force</em>, <em class="sig-param">inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of forces array <em>force</em> from native to base units</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, the input <em>force</em> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.7.</span></p>
+</div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.convert_forces_to_native">
+<code class="sig-name descname">convert_forces_to_native</code><span class="sig-paren">(</span><em class="sig-param">force</em>, <em class="sig-param">inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of force array <em>force</em> from base to native units.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, the input <cite>force</cite> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.7.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.convert_pos_from_native">
+<code class="sig-name descname">convert_pos_from_native</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of coordinate array x from native units to base units.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, the input <cite>x</cite> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <cite>x</cite> is
+returned.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.convert_pos_to_native">
+<code class="sig-name descname">convert_pos_to_native</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of coordinate array <cite>x</cite> from base units to native units.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, the input <cite>x</cite> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <cite>x</cite> is
+returned.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.convert_time_from_native">
+<code class="sig-name descname">convert_time_from_native</code><span class="sig-paren">(</span><em class="sig-param">t</em>, <em class="sig-param">inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert time <em>t</em> from native units to base units.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, the input <cite>t</cite> is modified in place and also returned
+(although note that scalar values <cite>t</cite> are passed by value in Python and
+hence an in-place modification has no effect on the caller.)  In-place
+operations improve performance because allocating new arrays is
+avoided.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <cite>x</cite> is
+returned.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.convert_time_to_native">
+<code class="sig-name descname">convert_time_to_native</code><span class="sig-paren">(</span><em class="sig-param">t</em>, <em class="sig-param">inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert time <em>t</em> from base units to native units.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, the input <em>t</em> is modified in place and also
+returned. (Also note that scalar values <em>t</em> are passed by
+value in Python and hence an in-place modification has no
+effect on the caller.)</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
+</div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.convert_velocities_from_native">
+<code class="sig-name descname">convert_velocities_from_native</code><span class="sig-paren">(</span><em class="sig-param">v</em>, <em class="sig-param">inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of velocities array <em>v</em> from native to base units</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, the input <em>v</em> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.5.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.convert_velocities_to_native">
+<code class="sig-name descname">convert_velocities_to_native</code><span class="sig-paren">(</span><em class="sig-param">v</em>, <em class="sig-param">inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of coordinate array <cite>v</cite> from base to native units</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, the input <cite>v</cite> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.5.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse">
+<code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse Amber PRMTOP topology file <em>filename</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>A MDAnalysis Topology object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_bonded">
+<code class="sig-name descname">parse_bonded</code><span class="sig-paren">(</span><em class="sig-param">num_per_record</em>, <em class="sig-param">numlines</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_bonded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_bonded" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts bond information from PARM7 format files</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of entries for each record in section</p></li>
+<li><p><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of lines to be parsed for this section</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For the bond/angle sections of parm7 files, the atom numbers are set to
+coordinate array index values. As detailed in
+<a class="reference external" href="http://ambermd.org/formats.html">http://ambermd.org/formats.html</a> to recover the actual atom number, one
+should divide the values by 3 and add 1. Here, since we want to satisfy
+zero-indexing, we only divide by 3.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_charges">
+<code class="sig-name descname">parse_charges</code><span class="sig-paren">(</span><em class="sig-param">num_per_record</em>, <em class="sig-param">numlines</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_charges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_charges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the partial charges for each atom</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of entries for each record in section (unused input)</p></li>
+<li><p><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of lines to be parsed in current section</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>attr</strong> – A <code class="xref py py-class docutils literal notranslate"><span class="pre">Charges</span></code> instance containing the partial charges of each
+atom as defined in the parm7 file</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Charges</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_chunks">
+<code class="sig-name descname">parse_chunks</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">chunksize</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_chunks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_chunks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function to parse AMBER PRMTOP bonds/angles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>list of int</em>) – Input list of the parm7 bond/angle section, zero-indexed</p></li>
+<li><p><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of entries for each record in the input list</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>vals</strong> – A list of tuples containing the atoms involved in a given bonded
+interaction</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of int tuples</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the parm7 format this information is structured in the following
+format: [ atoms 1:n, internal index ]
+Where 1:n represent the ids of the n atoms involved in the bond/angle
+and the internal index links to a given set of FF parameters.
+Therefore, to extract the required information, we split out the list
+into chunks of size num_per_record, and only extract the atom ids.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_dihedrals">
+<code class="sig-name descname">parse_dihedrals</code><span class="sig-paren">(</span><em class="sig-param">diha</em>, <em class="sig-param">dihh</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_dihedrals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_dihedrals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combines hydrogen and non-hydrogen containing AMBER dihedral lists
+and extracts sublists for conventional dihedrals and improper angles</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>diha</strong> (<em>list of tuples</em>) – The atom ids of dihedrals not involving hydrogens</p></li>
+<li><p><strong>dihh</strong> (<em>list of tuples</em>) – The atom ids of dihedrals involving hydrogens</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>dihedrals</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dihedrals</span></code>) – A <code class="xref py py-class docutils literal notranslate"><span class="pre">Dihedrals</span></code> instance containing a list of all unique
+dihedrals as defined by the parm7 file</p></li>
+<li><p><strong>impropers</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Impropers</span></code>) – A <code class="xref py py-class docutils literal notranslate"><span class="pre">Impropers</span></code> instance containing a list of all unique
+improper dihedrals as defined by the parm7 file</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As detailed in <a class="reference external" href="http://ambermd.org/formats.html">http://ambermd.org/formats.html</a>, the dihedral sections
+of parm7 files contain information about both conventional dihedrals
+and impropers. The following must be accounted for:
+1) If the fourth atom in a dihedral entry is given a negative value,
+this indicates that it is an improper.
+2) If the third atom in a dihedral entry is given a negative value,
+this indicates that it 1-4 NB interactions are ignored for this
+dihedrals. This could be due to the dihedral within a ring, or if it is
+part of a multi-term dihedral definition or if it is an improper.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_elements">
+<code class="sig-name descname">parse_elements</code><span class="sig-paren">(</span><em class="sig-param">num_per_record</em>, <em class="sig-param">numlines</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_elements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the atomic numbers of each atom and converts to element type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of entries for each record in section(unused input)</p></li>
+<li><p><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of lines to be pasred in current section</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>attr</strong> – A <code class="xref py py-class docutils literal notranslate"><span class="pre">Elements</span></code> instance containing the element of each atom
+as defined in the parm7 file</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Elements</span></code></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the record contains atomic numbers &lt;= 0, these will be treated as
+dummy elements and an attempt will be made to guess the element based
+on atom type. See issue #2306 for more details.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_masses">
+<code class="sig-name descname">parse_masses</code><span class="sig-paren">(</span><em class="sig-param">num_per_record</em>, <em class="sig-param">numlines</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_masses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_masses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the mass of each atom</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of entries for each record in section (unused input)</p></li>
+<li><p><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of lines to be parsed in current section</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>attr</strong> – A <code class="xref py py-class docutils literal notranslate"><span class="pre">Masses</span></code> instance containing the mass of each atom as
+defined in the parm7 file</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Masses</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_names">
+<code class="sig-name descname">parse_names</code><span class="sig-paren">(</span><em class="sig-param">num_per_record</em>, <em class="sig-param">numlines</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts atoms names from parm7 file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of entries for each record in the section (unused input)</p></li>
+<li><p><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of lines to be parsed in current section</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>attr</strong> – A <code class="xref py py-class docutils literal notranslate"><span class="pre">Atomnames</span></code> instance containing the names of each atom as
+defined in the parm7 file</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Atomnames</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_residx">
+<code class="sig-name descname">parse_residx</code><span class="sig-paren">(</span><em class="sig-param">num_per_record</em>, <em class="sig-param">numlines</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_residx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_residx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the residue pointers for each atom</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of entries for each record in section (unused input)</p></li>
+<li><p><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of lines to be parsed in current section</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>vals</strong> – A list of zero-formatted residue pointers for each atom</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_resnames">
+<code class="sig-name descname">parse_resnames</code><span class="sig-paren">(</span><em class="sig-param">num_per_record</em>, <em class="sig-param">numlines</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_resnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_resnames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the names of each residue</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of entries for each recrod in section (unused input)</p></li>
+<li><p><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of lines to be parsed in current section</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>attr</strong> – A <code class="xref py py-class docutils literal notranslate"><span class="pre">Resnames</span></code> instance containing the names of each residue
+as defined in the parm7 file</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Resnames</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_type_indices">
+<code class="sig-name descname">parse_type_indices</code><span class="sig-paren">(</span><em class="sig-param">num_per_record</em>, <em class="sig-param">numlines</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_type_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_type_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the index of atom types of the each atom involved in Lennard
+Jones (6-12) interactions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of entries for each record in section (unused input)</p></li>
+<li><p><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of lines to be parsed in current section</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A <code class="xref py py-class docutils literal notranslate"><span class="pre">TypeIndices</span></code> instance containing the LJ 6-12 atom type
+index for each atom</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>attr <code class="xref py py-class docutils literal notranslate"><span class="pre">TypeIndices</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parse_types">
+<code class="sig-name descname">parse_types</code><span class="sig-paren">(</span><em class="sig-param">num_per_record</em>, <em class="sig-param">numlines</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parse_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parse_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the force field atom types of each atom</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_per_record</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of entries for each record in section (unused input)</p></li>
+<li><p><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of lines to be parsed in current section</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>attr</strong> – A <code class="xref py py-class docutils literal notranslate"><span class="pre">Atomtypes</span></code> instance containing the atom types for each
+atom as defined in the parm7 file</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Atomtypes</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.parsesection_mapper">
+<code class="sig-name descname">parsesection_mapper</code><span class="sig-paren">(</span><em class="sig-param">numlines</em>, <em class="sig-param">mapper</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.parsesection_mapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.parsesection_mapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses FORTRAN formatted section, and returns a list of all entries
+in each line</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>numlines</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The number of lines to be parsed in this section</p></li>
+<li><p><strong>mapper</strong> (<em>lambda operator</em>) – Operator to format entries in current section</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>section</strong> – A list of all entries in a given parm7 section</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.TOPParser.TOPParser.skipper">
+<code class="sig-name descname">skipper</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TOPParser.html#TOPParser.skipper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TOPParser.TOPParser.skipper" title="Permalink to this definition">¶</a></dt>
+<dd><p>TOPParser :class: helper function, skips lines of input parm7 file
+until we find the next %FLAG entry and return that</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>line</strong> – String containing the current line of the parm7 file</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="init.html">5.1. Topology readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="CRDParser.html">5.2. CRD topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DLPolyParser.html">5.3. DL Poly format Topology Readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.DLPolyParser</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DMSParser.html">5.4. DESRES Molecular Structure file format topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GMSParser.html">5.5. GAMESS Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GROParser.html">5.6. GRO topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HoomdXMLParser.html">5.7. HOOMD XML topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LAMMPSParser.html">5.8. LAMMPSParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MinimalParser.html">5.9. Minimal topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MMTFParser.html">5.10. MMTF Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MOL2Parser.html">5.11. MOL2 file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBParser.html">5.12. PDB Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExtendedPDBParser.html">5.13. Extended PDB topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBQTParser.html">5.14. PDBQT topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PQRParser.html">5.15. PQR topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PSFParser.html">5.16. PSF topology parser</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.17. AMBER PRMTOP topology parser</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#classes">5.17.1. Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="TPRParser.html">5.18. Gromacs portable run input TPR format parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TXYZParser.html">5.19. TXYZ topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="XYZParser.html">5.20. XYZ Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">5.21. Base topology reader classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">5.22. Common functions for topology building — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html">5.23. Guessing unknown Topology information — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tables.html">5.24. MDAnalysis topology tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tpr_util.html">5.25. Utility functions for the TPR topology parser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../topology_modules.html"><span class="section-number">5. </span>Topology modules</a><ul>
+      <li>Previous: <a href="PSFParser.html" title="previous chapter"><span class="section-number">5.16. </span>PSF topology parser</a></li>
+      <li>Next: <a href="TPRParser.html" title="next chapter"><span class="section-number">5.18. </span>Gromacs portable run input TPR format parser</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/documentation_pages/topology/TOPParser.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

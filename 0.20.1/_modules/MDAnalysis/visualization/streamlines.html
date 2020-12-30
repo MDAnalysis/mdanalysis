@@ -1,0 +1,494 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>MDAnalysis.visualization.streamlines &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for MDAnalysis.visualization.streamlines</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+<span class="sd">&quot;&quot;&quot;Streamplots (2D)  --- :mod:`MDAnalysis.visualization.streamlines`</span>
+<span class="sd">=================================================================</span>
+
+<span class="sd">:Authors: Tyler Reddy and Matthieu Chavent</span>
+<span class="sd">:Year: 2014</span>
+<span class="sd">:Copyright: GNU Public License v3</span>
+<span class="sd">:Citation: [Chavent2014]_</span>
+
+<span class="sd">The :func:`generate_streamlines` function can generate a 2D flow field from a</span>
+<span class="sd">MD trajectory, for instance, lipid molecules in a flat membrane. It can make</span>
+<span class="sd">use of multiple cores to perform the analyis in parallel (using</span>
+<span class="sd">:mod:`multiprocessing`).</span>
+
+<span class="sd">See Also</span>
+<span class="sd">--------</span>
+<span class="sd">MDAnalysis.visualization.streamlines_3D : streamplots in 3D</span>
+
+
+<span class="sd">.. autofunction:: generate_streamlines</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">zip</span>
+
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">matplotlib</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.path</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+        <span class="s1">&#39;2d streamplot module requires: matplotlib.path for its path.Path.contains_points method. The installation &#39;</span>
+        <span class="s1">&#39;instructions for the matplotlib module can be found here: &#39;</span>
+        <span class="s1">&#39;http://matplotlib.org/faq/installing_faq.html?highlight=install&#39;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">MDAnalysis</span>
+
+
+
+<span class="k">def</span> <span class="nf">produce_grid</span><span class="p">(</span><span class="n">tuple_of_limits</span><span class="p">,</span> <span class="n">grid_spacing</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Produce a 2D grid for the simulation system.</span>
+
+<span class="sd">    The grid is based on the tuple of Cartesian Coordinate limits calculated in</span>
+<span class="sd">    an earlier step.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tuple_of_limits : tuple</span>
+<span class="sd">        ``x_min, x_max, y_min, y_max``</span>
+<span class="sd">    grid_spacing : float</span>
+<span class="sd">        grid size in all directions in ångström</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    grid : array</span>
+<span class="sd">       ``numpy.mgrid[x_min:x_max:grid_spacing, y_min:y_max:grid_spacing]``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span> <span class="o">=</span> <span class="n">tuple_of_limits</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="n">x_min</span><span class="p">:</span><span class="n">x_max</span><span class="p">:</span><span class="n">grid_spacing</span><span class="p">,</span> <span class="n">y_min</span><span class="p">:</span><span class="n">y_max</span><span class="p">:</span><span class="n">grid_spacing</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">grid</span>
+
+
+<span class="k">def</span> <span class="nf">split_grid</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">num_cores</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Split the grid into blocks of vertices.</span>
+
+<span class="sd">    Take the overall `grid` for the system and split it into lists of</span>
+<span class="sd">    square vertices that can be distributed to each core.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    grid : numpy.array</span>
+<span class="sd">        2D array</span>
+<span class="sd">    num_cores : int</span>
+<span class="sd">        number of partitions to generate</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list_square_vertex_arrays_per_core : array of arrays</span>
+<span class="sd">         split the list of square vertices</span>
+<span class="sd">         ``[[v1,v2,v3,v4],[v1,v2,v3,v4],...,...]`` into roughly equally-sized</span>
+<span class="sd">         sublists to be distributed over the available cores on the system</span>
+<span class="sd">    list_parent_index_values : array of arrays</span>
+<span class="sd">         arrays of `[[row, column], [row, column], ...]`` for each core</span>
+<span class="sd">    current_row : int</span>
+<span class="sd">         last row + 1</span>
+<span class="sd">    current_column : int</span>
+<span class="sd">         last column + 1</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    Limited to 2D for now.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># produce an array containing the cartesian coordinates of all vertices in the grid:</span>
+    <span class="n">x_array</span><span class="p">,</span> <span class="n">y_array</span> <span class="o">=</span> <span class="n">grid</span>
+    <span class="n">grid_vertex_cartesian_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">((</span><span class="n">x_array</span><span class="p">,</span> <span class="n">y_array</span><span class="p">))</span>
+    <span class="c1">#the grid_vertex_cartesian_array has N_rows, with each row corresponding to a column of coordinates in the grid (</span>
+    <span class="c1"># so a given row has shape N_rows, 2); overall shape (N_columns_in_grid, N_rows_in_a_column, 2)</span>
+    <span class="c1">#although I&#39;ll eventually want a pure numpy/scipy/vector-based solution, for now I&#39;ll allow loops to simplify the</span>
+    <span class="c1">#  division of the cartesian coordinates into a list of the squares in the grid</span>
+    <span class="n">list_all_squares_in_grid</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># should eventually be a nested list of all the square vertices in the grid/system</span>
+    <span class="n">list_parent_index_values</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># want an ordered list of assignment indices for reconstructing the grid positions</span>
+    <span class="c1"># in the parent process</span>
+    <span class="n">current_column</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">current_column</span> <span class="o">&lt;</span> <span class="n">grid_vertex_cartesian_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="c1"># go through all the columns except the last one and account for the square vertices (the last column</span>
+        <span class="c1">#  has no &#39;right neighbour&#39;)</span>
+        <span class="n">current_row</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">current_row</span> <span class="o">&lt;</span> <span class="n">grid_vertex_cartesian_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># all rows except the top row, which doesn&#39;t have a row above it for forming squares</span>
+            <span class="n">bottom_left_vertex_current_square</span> <span class="o">=</span> <span class="n">grid_vertex_cartesian_array</span><span class="p">[</span><span class="n">current_column</span><span class="p">,</span> <span class="n">current_row</span><span class="p">]</span>
+            <span class="n">bottom_right_vertex_current_square</span> <span class="o">=</span> <span class="n">grid_vertex_cartesian_array</span><span class="p">[</span><span class="n">current_column</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">current_row</span><span class="p">]</span>
+            <span class="n">top_right_vertex_current_square</span> <span class="o">=</span> <span class="n">grid_vertex_cartesian_array</span><span class="p">[</span><span class="n">current_column</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">current_row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">top_left_vertex_current_square</span> <span class="o">=</span> <span class="n">grid_vertex_cartesian_array</span><span class="p">[</span><span class="n">current_column</span><span class="p">,</span> <span class="n">current_row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="c1">#append the vertices of this square to the overall list of square vertices:</span>
+            <span class="n">list_all_squares_in_grid</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">bottom_left_vertex_current_square</span><span class="p">,</span> <span class="n">bottom_right_vertex_current_square</span><span class="p">,</span> <span class="n">top_right_vertex_current_square</span><span class="p">,</span>
+                    <span class="n">top_left_vertex_current_square</span><span class="p">])</span>
+            <span class="n">list_parent_index_values</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">current_row</span><span class="p">,</span> <span class="n">current_column</span><span class="p">])</span>
+            <span class="n">current_row</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">current_column</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c1">#split the list of square vertices [[v1,v2,v3,v4],[v1,v2,v3,v4],...,...] into roughly equally-sized sublists to</span>
+    <span class="c1"># be distributed over the available cores on the system:</span>
+    <span class="n">list_square_vertex_arrays_per_core</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">list_all_squares_in_grid</span><span class="p">,</span> <span class="n">num_cores</span><span class="p">)</span>
+    <span class="n">list_parent_index_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">list_parent_index_values</span><span class="p">,</span> <span class="n">num_cores</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">list_square_vertex_arrays_per_core</span><span class="p">,</span> <span class="n">list_parent_index_values</span><span class="p">,</span> <span class="n">current_row</span><span class="p">,</span> <span class="n">current_column</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">per_core_work</span><span class="p">(</span><span class="n">topology_file_path</span><span class="p">,</span> <span class="n">trajectory_file_path</span><span class="p">,</span> <span class="n">list_square_vertex_arrays_this_core</span><span class="p">,</span> <span class="n">MDA_selection</span><span class="p">,</span>
+                  <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">,</span> <span class="n">reconstruction_index_list</span><span class="p">,</span> <span class="n">maximum_delta_magnitude</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Run the analysis on one core.</span>
+
+<span class="sd">    The code to perform on a given core given the list of square vertices assigned to it.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># obtain the relevant coordinates for particles of interest</span>
+    <span class="n">universe_object</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">topology_file_path</span><span class="p">,</span> <span class="n">trajectory_file_path</span><span class="p">)</span>
+    <span class="n">list_previous_frame_centroids</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">list_previous_frame_indices</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1">#define some utility functions for trajectory iteration:</span>
+
+    <span class="k">def</span> <span class="nf">produce_list_indices_point_in_polygon_this_frame</span><span class="p">(</span><span class="n">vertex_coord_list</span><span class="p">):</span>
+        <span class="n">list_indices_point_in_polygon</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">square_vertices</span> <span class="ow">in</span> <span class="n">vertex_coord_list</span><span class="p">:</span>
+            <span class="n">path_object</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">square_vertices</span><span class="p">)</span>
+            <span class="n">index_list_in_polygon</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">path_object</span><span class="o">.</span><span class="n">contains_points</span><span class="p">(</span><span class="n">relevant_particle_coordinate_array_xy</span><span class="p">))</span>
+            <span class="n">list_indices_point_in_polygon</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index_list_in_polygon</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">list_indices_point_in_polygon</span>
+
+    <span class="k">def</span> <span class="nf">produce_list_centroids_this_frame</span><span class="p">(</span><span class="n">list_indices_in_polygon</span><span class="p">):</span>
+        <span class="n">list_centroids_this_frame</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">indices</span> <span class="ow">in</span> <span class="n">list_indices_in_polygon</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># if there are no particles of interest in this particular square</span>
+                <span class="n">list_centroids_this_frame</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;empty&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">current_coordinate_array_in_square</span> <span class="o">=</span> <span class="n">relevant_particle_coordinate_array_xy</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+                <span class="n">current_square_indices_centroid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">current_coordinate_array_in_square</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">list_centroids_this_frame</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_square_indices_centroid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">list_centroids_this_frame</span>  <span class="c1"># a list of numpy xy centroid arrays for this frame</span>
+
+    <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">universe_object</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">&lt;</span> <span class="n">start_frame</span><span class="p">:</span>  <span class="c1"># don&#39;t start until first specified frame</span>
+            <span class="k">continue</span>
+        <span class="n">relevant_particle_coordinate_array_xy</span> <span class="o">=</span> <span class="n">universe_object</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">MDA_selection</span><span class="p">)</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+          <span class="c1"># only 2D / xy coords for now</span>
+        <span class="c1">#I will need a list of indices for relevant particles falling within each square in THIS frame:</span>
+        <span class="n">list_indices_in_squares_this_frame</span> <span class="o">=</span> <span class="n">produce_list_indices_point_in_polygon_this_frame</span><span class="p">(</span>
+            <span class="n">list_square_vertex_arrays_this_core</span><span class="p">)</span>
+        <span class="c1">#likewise, I will need a list of centroids of particles in each square (same order as above list):</span>
+        <span class="n">list_centroids_in_squares_this_frame</span> <span class="o">=</span> <span class="n">produce_list_centroids_this_frame</span><span class="p">(</span><span class="n">list_indices_in_squares_this_frame</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">list_previous_frame_indices</span><span class="p">:</span>  <span class="c1"># if the previous frame had indices in at least one square I will need to use</span>
+        <span class="c1">#  those indices to generate the updates to the corresponding centroids in this frame:</span>
+            <span class="n">list_centroids_this_frame_using_indices_from_last_frame</span> <span class="o">=</span> <span class="n">produce_list_centroids_this_frame</span><span class="p">(</span>
+                <span class="n">list_previous_frame_indices</span><span class="p">)</span>
+            <span class="c1">#I need to write a velocity of zero if there are any &#39;empty&#39; squares in either frame:</span>
+            <span class="n">xy_deltas_to_write</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">square_1_centroid</span><span class="p">,</span> <span class="n">square_2_centroid</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">list_centroids_this_frame_using_indices_from_last_frame</span><span class="p">,</span>
+                                                            <span class="n">list_previous_frame_centroids</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">square_1_centroid</span> <span class="o">==</span> <span class="s1">&#39;empty&#39;</span> <span class="ow">or</span> <span class="n">square_2_centroid</span> <span class="o">==</span> <span class="s1">&#39;empty&#39;</span><span class="p">:</span>
+                    <span class="n">xy_deltas_to_write</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">xy_deltas_to_write</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">square_1_centroid</span><span class="p">,</span> <span class="n">square_2_centroid</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+
+            <span class="c1">#xy_deltas_to_write = np.subtract(np.array(</span>
+            <span class="c1"># list_centroids_this_frame_using_indices_from_last_frame),np.array(list_previous_frame_centroids))</span>
+            <span class="n">xy_deltas_to_write</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xy_deltas_to_write</span><span class="p">)</span>
+            <span class="c1">#now filter the array to only contain distances in the range [-8,8] as a placeholder for dealing with PBC</span>
+            <span class="c1">#  issues (Matthieu seemed to use a limit of 8 as well);</span>
+            <span class="n">xy_deltas_to_write</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">xy_deltas_to_write</span><span class="p">,</span> <span class="o">-</span><span class="n">maximum_delta_magnitude</span><span class="p">,</span> <span class="n">maximum_delta_magnitude</span><span class="p">)</span>
+
+            <span class="c1">#with the xy and dx,dy values calculated I need to set the values from this frame to previous frame</span>
+            <span class="c1"># values in anticipation of the next frame:</span>
+            <span class="n">list_previous_frame_centroids</span> <span class="o">=</span> <span class="n">list_centroids_in_squares_this_frame</span><span class="p">[:]</span>
+            <span class="n">list_previous_frame_indices</span> <span class="o">=</span> <span class="n">list_indices_in_squares_this_frame</span><span class="p">[:]</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># either no points in squares or after the first frame I&#39;ll just reset the &#39;previous&#39; values so they</span>
+        <span class="c1"># can be used when consecutive frames have proper values</span>
+            <span class="n">list_previous_frame_centroids</span> <span class="o">=</span> <span class="n">list_centroids_in_squares_this_frame</span><span class="p">[:]</span>
+            <span class="n">list_previous_frame_indices</span> <span class="o">=</span> <span class="n">list_indices_in_squares_this_frame</span><span class="p">[:]</span>
+        <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">&gt;</span> <span class="n">end_frame</span><span class="p">:</span>
+            <span class="k">break</span>  <span class="c1"># stop here</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">reconstruction_index_list</span><span class="p">,</span> <span class="n">xy_deltas_to_write</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
+
+
+<div class="viewcode-block" id="generate_streamlines"><a class="viewcode-back" href="../../../documentation_pages/visualization/streamlines.html#MDAnalysis.visualization.streamlines.generate_streamlines">[docs]</a><span class="k">def</span> <span class="nf">generate_streamlines</span><span class="p">(</span><span class="n">topology_file_path</span><span class="p">,</span> <span class="n">trajectory_file_path</span><span class="p">,</span> <span class="n">grid_spacing</span><span class="p">,</span> <span class="n">MDA_selection</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">,</span>
+                         <span class="n">end_frame</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">maximum_delta_magnitude</span><span class="p">,</span> <span class="n">num_cores</span><span class="o">=</span><span class="s1">&#39;maximum&#39;</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Produce the x and y components of a 2D streamplot data set.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    topology_file_path : str</span>
+<span class="sd">            Absolute path to the topology file</span>
+<span class="sd">    trajectory_file_path : str</span>
+<span class="sd">            Absolute path to the trajectory file. It will normally be desirable</span>
+<span class="sd">            to filter the trajectory with a tool such as GROMACS</span>
+<span class="sd">            :program:`g_filter` (see [Chavent2014]_)</span>
+<span class="sd">    grid_spacing : float</span>
+<span class="sd">            The spacing between grid lines (angstroms)</span>
+<span class="sd">    MDA_selection : str</span>
+<span class="sd">            MDAnalysis selection string</span>
+<span class="sd">    start_frame : int</span>
+<span class="sd">            First frame number to parse</span>
+<span class="sd">    end_frame : int</span>
+<span class="sd">            Last frame number to parse</span>
+<span class="sd">    xmin : float</span>
+<span class="sd">            Minimum coordinate boundary for x-axis (angstroms)</span>
+<span class="sd">    xmax : float</span>
+<span class="sd">            Maximum coordinate boundary for x-axis (angstroms)</span>
+<span class="sd">    ymin : float</span>
+<span class="sd">            Minimum coordinate boundary for y-axis (angstroms)</span>
+<span class="sd">    ymax : float</span>
+<span class="sd">            Maximum coordinate boundary for y-axis (angstroms)</span>
+<span class="sd">    maximum_delta_magnitude : float</span>
+<span class="sd">            Absolute value of the largest displacement tolerated for the</span>
+<span class="sd">            centroid of a group of particles ( angstroms). Values above this</span>
+<span class="sd">            displacement will not count in the streamplot (treated as</span>
+<span class="sd">            excessively large displacements crossing the periodic boundary)</span>
+<span class="sd">    num_cores : int or &#39;maximum&#39; (optional)</span>
+<span class="sd">            The number of cores to use. (Default &#39;maximum&#39; uses all available</span>
+<span class="sd">            cores)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dx_array : array of floats</span>
+<span class="sd">            An array object containing the displacements in the x direction</span>
+<span class="sd">    dy_array : array of floats</span>
+<span class="sd">            An array object containing the displacements in the y direction</span>
+<span class="sd">    average_displacement : float</span>
+<span class="sd">            :math:`\frac{\sum\sqrt[]{dx^2 + dy^2}}{N}`</span>
+<span class="sd">    standard_deviation_of_displacement : float</span>
+<span class="sd">            standard deviation of :math:`\sqrt[]{dx^2 + dy^2}`</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Generate 2D streamlines and plot::</span>
+
+<span class="sd">        import matplotlib, matplotlib.pyplot, np</span>
+<span class="sd">        import MDAnalysis, MDAnalysis.visualization.streamlines</span>
+
+<span class="sd">        u1, v1, average_displacement, standard_deviation_of_displacement =</span>
+<span class="sd">            MDAnalysis.visualization.streamlines.generate_streamlines(&#39;testing.gro&#39;, &#39;testing_filtered.xtc&#39;,</span>
+<span class="sd">                    grid_spacing=20, MDA_selection=&#39;name PO4&#39;, start_frame=2, end_frame=3,</span>
+<span class="sd">                    xmin=-8.73000049591, xmax= 1225.96008301,</span>
+<span class="sd">                    ymin= -12.5799999237, ymax=1224.34008789,</span>
+<span class="sd">                    maximum_delta_magnitude=1.0, num_cores=16)</span>
+<span class="sd">        x = np.linspace(0, 1200, 61)</span>
+<span class="sd">        y = np.linspace(0, 1200, 61)</span>
+<span class="sd">        speed = np.sqrt(u1*u1 + v1*v1)</span>
+<span class="sd">        fig = matplotlib.pyplot.figure()</span>
+<span class="sd">        ax = fig.add_subplot(111, aspect=&#39;equal&#39;)</span>
+<span class="sd">        ax.set_xlabel(&#39;x ($\AA$)&#39;)</span>
+<span class="sd">        ax.set_ylabel(&#39;y ($\AA$)&#39;)</span>
+<span class="sd">        ax.streamplot(x, y, u1, v1, density=(10,10), color=speed, linewidth=3*speed/speed.max())</span>
+<span class="sd">        fig.savefig(&#39;testing_streamline.png&#39;,dpi=300)</span>
+
+<span class="sd">    .. image:: testing_streamline.png</span>
+
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [Chavent2014] Chavent, M.*, Reddy, T.*, Dahl, C.E., Goose, J., Jobard,</span>
+<span class="sd">       B., and Sansom, M.S.P. Methodologies for the analysis of instantaneous</span>
+<span class="sd">       lipid diffusion in MD simulations of large membrane systems.  *Faraday</span>
+<span class="sd">       Discussions* **169** (2014), 455–475. doi: `10.1039/c3fd00145h`_</span>
+
+<span class="sd">    .. _`10.1039/c3fd00145h`: https://doi.org/10.1039/c3fd00145h</span>
+
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># work out the number of cores to use:</span>
+    <span class="k">if</span> <span class="n">num_cores</span> <span class="o">==</span> <span class="s1">&#39;maximum&#39;</span><span class="p">:</span>
+        <span class="n">num_cores</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>  <span class="c1"># use all available cores</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">num_cores</span> <span class="o">=</span> <span class="n">num_cores</span>  <span class="c1"># use the value specified by the user</span>
+        <span class="c1">#assert isinstance(num_cores,(int,long)), &quot;The number of specified cores must (of course) be an integer.&quot;</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s1">&#39;warn&#39;</span><span class="p">,</span> <span class="n">over</span><span class="o">=</span><span class="s1">&#39;raise&#39;</span><span class="p">)</span>
+    <span class="n">parent_list_deltas</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># collect all data from child processes here</span>
+
+    <span class="k">def</span> <span class="nf">log_result_to_parent</span><span class="p">(</span><span class="n">delta_array</span><span class="p">):</span>
+        <span class="n">parent_list_deltas</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">delta_array</span><span class="p">)</span>
+
+    <span class="n">tuple_of_limits</span> <span class="o">=</span> <span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">)</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">produce_grid</span><span class="p">(</span><span class="n">tuple_of_limits</span><span class="o">=</span><span class="n">tuple_of_limits</span><span class="p">,</span> <span class="n">grid_spacing</span><span class="o">=</span><span class="n">grid_spacing</span><span class="p">)</span>
+    <span class="n">list_square_vertex_arrays_per_core</span><span class="p">,</span> <span class="n">list_parent_index_values</span><span class="p">,</span> <span class="n">total_rows</span><span class="p">,</span> <span class="n">total_columns</span> <span class="o">=</span> \
+        <span class="n">split_grid</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
+                   <span class="n">num_cores</span><span class="o">=</span><span class="n">num_cores</span><span class="p">)</span>
+    <span class="n">pool</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">num_cores</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">vertex_sublist</span><span class="p">,</span> <span class="n">index_sublist</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">list_square_vertex_arrays_per_core</span><span class="p">,</span> <span class="n">list_parent_index_values</span><span class="p">):</span>
+        <span class="n">pool</span><span class="o">.</span><span class="n">apply_async</span><span class="p">(</span><span class="n">per_core_work</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span>
+            <span class="n">topology_file_path</span><span class="p">,</span> <span class="n">trajectory_file_path</span><span class="p">,</span> <span class="n">vertex_sublist</span><span class="p">,</span> <span class="n">MDA_selection</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">,</span>
+            <span class="n">index_sublist</span><span class="p">,</span> <span class="n">maximum_delta_magnitude</span><span class="p">),</span> <span class="n">callback</span><span class="o">=</span><span class="n">log_result_to_parent</span><span class="p">)</span>
+    <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+    <span class="n">dx_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">total_rows</span><span class="p">,</span> <span class="n">total_columns</span><span class="p">))</span>
+    <span class="n">dy_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">total_rows</span><span class="p">,</span> <span class="n">total_columns</span><span class="p">))</span>
+    <span class="c1">#the parent_list_deltas is shaped like this: [ ([row_index,column_index],[dx,dy]), ... (...),...,]</span>
+    <span class="k">for</span> <span class="n">index_array</span><span class="p">,</span> <span class="n">delta_array</span> <span class="ow">in</span> <span class="n">parent_list_deltas</span><span class="p">:</span>  <span class="c1"># go through the list in the parent process and assign to the</span>
+    <span class="c1">#  appropriate positions in the dx and dy matrices:</span>
+        <span class="c1">#build in a filter to replace all values at the cap (currently between -8,8) with 0 to match Matthieu&#39;s code</span>
+        <span class="c1"># (I think eventually we&#39;ll reduce the cap to a narrower boundary though)</span>
+        <span class="n">index_1</span> <span class="o">=</span> <span class="n">index_array</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">index_2</span> <span class="o">=</span> <span class="n">index_array</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">delta_array</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="n">maximum_delta_magnitude</span><span class="p">:</span>
+            <span class="n">dx_array</span><span class="p">[</span><span class="n">index_1</span><span class="p">,</span> <span class="n">index_2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dx_array</span><span class="p">[</span><span class="n">index_1</span><span class="p">,</span> <span class="n">index_2</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">delta_array</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="n">maximum_delta_magnitude</span><span class="p">:</span>
+            <span class="n">dy_array</span><span class="p">[</span><span class="n">index_1</span><span class="p">,</span> <span class="n">index_2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dy_array</span><span class="p">[</span><span class="n">index_1</span><span class="p">,</span> <span class="n">index_2</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_array</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1">#at Matthieu&#39;s request, we now want to calculate the average and standard deviation of the displacement values:</span>
+    <span class="n">displacement_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dx_array</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">dy_array</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">average_displacement</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">displacement_array</span><span class="p">)</span>
+    <span class="n">standard_deviation_of_displacement</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">displacement_array</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">dx_array</span><span class="p">,</span> <span class="n">dy_array</span><span class="p">,</span> <span class="n">average_displacement</span><span class="p">,</span> <span class="n">standard_deviation_of_displacement</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../index.html">
+    <img class="logo" src="../../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

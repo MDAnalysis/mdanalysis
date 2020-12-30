@@ -1,0 +1,593 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>MDAnalysis.core.__init__ &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for MDAnalysis.core.__init__</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+
+<span class="sd">&quot;&quot;&quot;Core functions of MDAnalysis</span>
+<span class="sd">============================</span>
+
+<span class="sd">The basic class is an :class:`~MDAnalysis.core.groups.AtomGroup`; the whole</span>
+<span class="sd">simulation is called the</span>
+<span class="sd">:class:`~MDAnalysis.core.universe.Universe`. Selections are computed on an</span>
+<span class="sd">:class:`~MDAnalysis.core.groups.AtomGroup` and return another</span>
+<span class="sd">:class:`~MDAnalysis.core.groups.AtomGroup`.</span>
+
+<span class="sd">To get started, load the Universe::</span>
+
+<span class="sd">  u = Universe(topology_file, trajectory_file)</span>
+
+<span class="sd">A simple selection of all water oxygens within 4 A of the protein::</span>
+
+<span class="sd">  water_shell = u.select_atoms(&#39;name OH2 and around 4.0 protein&#39;)</span>
+<span class="sd">  water_shell.n_atoms           # how many waters were selected</span>
+<span class="sd">  water_shell.total_mass()       # their total mass</span>
+
+<span class="sd">:class:`~MDAnalysis.core.groups.AtomGroup` instances have various methods that</span>
+<span class="sd">allow calculation of simple properties. For more complicated analysis, obtain</span>
+<span class="sd">the coordinates as a numpy array ::</span>
+
+<span class="sd">  coords = water_shell.positions</span>
+
+<span class="sd">and write your own Python code.</span>
+
+
+<span class="sd">.. _flags-label:</span>
+
+<span class="sd">Flags</span>
+<span class="sd">-----</span>
+
+<span class="sd">.. deprecated:: 0.16.2</span>
+<span class="sd">   The flags registry will be removed in release 1.0.</span>
+<span class="sd">   Use keyword arguments for functions to obtain the desired behavior.</span>
+<span class="sd">   See issue `#782 &lt;https://github.com/MDAnalysis/mdanalysis/issues/782&gt;`_</span>
+<span class="sd">   for more details.</span>
+
+<span class="sd">(This is an advanced topic and can probably be skipped by most people.)</span>
+
+<span class="sd">There are a number flags that influence how MDAnalysis behaves. They are accessible</span>
+<span class="sd">through the pseudo-dictionary :data:`MDAnalysis.core.flags`.</span>
+
+<span class="sd">The entries appear as &#39;name&#39;-&#39;value&#39; pairs. Flags check values and illegal ones</span>
+<span class="sd">raise a :exc:`ValueError`. Documentation on all flags can be obtained with ::</span>
+
+<span class="sd"> print(MDAnalysis.core.flags.doc())</span>
+
+
+<span class="sd">List of MDAnalysis flags with default values</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">.. autoclass:: flagsDocs</span>
+
+
+<span class="sd">Classes</span>
+<span class="sd">~~~~~~~</span>
+
+<span class="sd">.. data:: flags</span>
+
+<span class="sd">.. autoclass:: Flags</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">.. autoclass:: Flag</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+
+<span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">_DEPMSG</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;use_KDTree_routines&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;This flag is obsolete, all selections now &#39;</span>
+                            <span class="s1">&#39;automatically select the fastest method&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;use_periodic_selections&#39;</span><span class="p">:</span> <span class="s1">&#39;Use periodic=True/False to select_atoms&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;convert_lengths&#39;</span><span class="p">:</span> <span class="s1">&#39;This behaviour has been deprecated&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;length_unit&#39;</span><span class="p">:</span> <span class="s1">&#39;This behaviour has been deprecated&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;time_unit&#39;</span><span class="p">:</span> <span class="s1">&#39;This behaviour has been deprecated&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;speed_unit&#39;</span><span class="p">:</span> <span class="s1">&#39;This behaviour has been deprecated&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;force_unit&#39;</span><span class="p">:</span> <span class="s1">&#39;This behaviour has been deprecated&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;charge_unit&#39;</span><span class="p">:</span> <span class="s1">&#39;This behaviour has been deprecated&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;use_pbc&#39;</span><span class="p">:</span> <span class="s1">&#39;Supply a pbc kwarg to the relevant methods&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;AtomGroup&#39;</span><span class="p">,</span> <span class="s1">&#39;Selection&#39;</span><span class="p">]</span>
+
+
+<span class="c1"># set up flags for core routines (more convoluted than strictly necessary but</span>
+<span class="c1"># should be clean to add more flags if needed)</span>
+
+<div class="viewcode-block" id="Flags"><a class="viewcode-back" href="../../../documentation_pages/core/init.html#MDAnalysis.core.__init__.Flags">[docs]</a><span class="k">class</span> <span class="nc">Flags</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Global registry of flags. Acts like a dict for item access.</span>
+
+<span class="sd">    There are a number flags defined that influence how MDAnalysis behaves. They are</span>
+<span class="sd">    accessible through the pseudo-dictionary</span>
+
+<span class="sd">      :data:`MDAnalysis.core.flags`</span>
+
+<span class="sd">    The entries appear as &#39;name&#39;-&#39;value&#39; pairs. Flags check values and illegal ones</span>
+<span class="sd">    raise a :exc:`ValueError`. Documentation on all flags can be obtained with ::</span>
+
+<span class="sd">      print(MDAnalysis.core.flags.__doc__)</span>
+
+<span class="sd">    New flags are added with the :meth:`Flags.register` method which takes a new :class:`Flag`</span>
+<span class="sd">    instance as an argument.</span>
+
+<span class="sd">    .. deprecated:: 0.16.2</span>
+<span class="sd">       The flags registry will be removed in release 1.0.</span>
+<span class="sd">       Use keyword arguments for functions to obtain the desired behavior.</span>
+<span class="sd">       See issue `#782 &lt;https://github.com/MDAnalysis/mdanalysis/issues/782&gt;`_</span>
+<span class="sd">       for more details.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;For DEVELOPERS: Initialize Flags registry with a *list* of :class:`Flag` instances.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Flags</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">([(</span><span class="n">flag</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">flag</span><span class="p">)</span> <span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">args</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">get_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Flags</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Flags.doc"><a class="viewcode-back" href="../../../documentation_pages/core/init.html#MDAnalysis.core.__init__.Flags.doc">[docs]</a>    <span class="k">def</span> <span class="nf">doc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Shows doc strings for all flags.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">flag</span><span class="o">.</span><span class="vm">__doc__</span> <span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_itervalues</span><span class="p">()])</span></div>
+
+<div class="viewcode-block" id="Flags.register"><a class="viewcode-back" href="../../../documentation_pages/core/init.html#MDAnalysis.core.__init__.Flags.register">[docs]</a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Register a new Flag instance with the Flags registry.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Flags</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">flag</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">flag</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Flags.update"><a class="viewcode-back" href="../../../documentation_pages/core/init.html#MDAnalysis.core.__init__.Flags.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">flags</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update Flags registry with a list of Flag instances.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Flags</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">([(</span><span class="n">flag</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">flag</span><span class="p">)</span> <span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">flags</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Flags.setdefault"><a class="viewcode-back" href="../../../documentation_pages/core/init.html#MDAnalysis.core.__init__.Flags.setdefault">[docs]</a>    <span class="k">def</span> <span class="nf">setdefault</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_flag</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_flag</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_itervalues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">six</span><span class="o">.</span><span class="n">itervalues</span><span class="p">(</span><span class="nb">super</span><span class="p">(</span><span class="n">Flags</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Flags</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">itervalues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_itervalues</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="n">flag</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_itervalues</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="n">flag</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">flag</span><span class="o">.</span><span class="n">value</span>
+
+<div class="viewcode-block" id="Flags.values"><a class="viewcode-back" href="../../../documentation_pages/core/init.html#MDAnalysis.core.__init__.Flags.values">[docs]</a>    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">flag</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_itervalues</span><span class="p">()]</span></div>
+
+<div class="viewcode-block" id="Flags.items"><a class="viewcode-back" href="../../../documentation_pages/core/init.html#MDAnalysis.core.__init__.Flags.items">[docs]</a>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">flag</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">flag</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_itervalues</span><span class="p">()]</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span></div>
+
+
+<span class="k">class</span> <span class="nc">FlagsDynamicDocs</span><span class="p">(</span><span class="n">Flags</span><span class="p">):</span>
+    <span class="c1"># docs are generated on the fly for interactive use; but because</span>
+    <span class="c1"># this does not work well with the sphinx documentation system</span>
+    <span class="c1"># (&quot;AttributeError: &#39;property&#39; object has no attribute</span>
+    <span class="c1"># &#39;expandtabs&#39;&quot;) we split the class...</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">__doc__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># generate dynamic docs on all flags</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">IdentityMapping</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">key</span>
+
+
+<div class="viewcode-block" id="Flag"><a class="viewcode-back" href="../../../documentation_pages/core/init.html#MDAnalysis.core.__init__.Flag">[docs]</a><span class="k">class</span> <span class="nc">Flag</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A Flag, essentially a variable that knows its default and legal values.</span>
+
+<span class="sd">    .. deprecated:: 0.16.2</span>
+<span class="sd">       The flags registry will be removed in release 1.0.</span>
+<span class="sd">       Use keyword arguments for functions to obtain the desired behavior.</span>
+<span class="sd">       See issue `#782 &lt;https://github.com/MDAnalysis/mdanalysis/issues/782&gt;`_</span>
+<span class="sd">       for more details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a new flag which will be registered with Flags.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            name of the flag, must be a legal python name</span>
+<span class="sd">        default</span>
+<span class="sd">            default value</span>
+<span class="sd">        mapping : dict</span>
+<span class="sd">            dict that maps allowed input values to canonical values;</span>
+<span class="sd">            if ``None`` then no argument checking will be performed and</span>
+<span class="sd">            all values are directly set.</span>
+<span class="sd">        doc : str</span>
+<span class="sd">            doc string; may contain string interpolation mappings for::</span>
+
+<span class="sd">                    %%(name)s        name of the flag</span>
+<span class="sd">                    %%(default)r     default value</span>
+<span class="sd">                    %%(value)r       current value</span>
+<span class="sd">                    %%(mapping)r     mapping</span>
+
+<span class="sd">            Doc strings are generated dynamically and reflect the current state.</span>
+
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        Create a new flag::</span>
+
+<span class="sd">            newflag = Flag(name, default, mapping, doc)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">default</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
+        <span class="c1"># {v1:v1,v2:v1,v3:v3, ...} mapping of allowed values to canonical ones</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span> <span class="o">=</span> <span class="n">mapping</span> <span class="ow">or</span> <span class="n">IdentityMapping</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_doctemplate</span> <span class="o">=</span> <span class="s2">&quot;**</span><span class="si">%(name)s</span><span class="s2">** = *</span><span class="si">%(value)r</span><span class="s2">*</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="p">(</span><span class="n">doc</span> <span class="ow">or</span> <span class="s2">&quot;*undocumented flag*&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.core.flags is deprecated and will be removed in version 1.0. &#39;</span>
+                      <span class="s1">&#39;&#39;</span> <span class="o">+</span> <span class="n">_DEPMSG</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">],</span>  <span class="c1"># custom message for each flag too</span>
+                      <span class="ne">DeprecationWarning</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="p">[</span><span class="n">value</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;flag must be None or one of &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Flag.prop"><a class="viewcode-back" href="../../../documentation_pages/core/init.html#MDAnalysis.core.__init__.Flag.prop">[docs]</a>    <span class="k">def</span> <span class="nf">prop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Use this for ``property(**flag.prop())``&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;fget&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">,</span> <span class="s1">&#39;fset&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">,</span> <span class="s1">&#39;doc&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">}</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;&quot;Flag(&#39;</span><span class="si">{name!s}</span><span class="s2">&#39;,</span><span class="si">{value!r}</span><span class="s2">)&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span></div>
+
+
+<span class="k">class</span> <span class="nc">_Flag</span><span class="p">(</span><span class="n">Flag</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">__doc__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># generate dynamic docs with current values</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_doctemplate</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span>
+
+
+<span class="n">_flags</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">_Flag</span><span class="p">(</span>
+        <span class="s1">&#39;use_periodic_selections&#39;</span><span class="p">,</span>
+        <span class="kc">True</span><span class="p">,</span>
+        <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determines if distance selections (AROUND, POINT) respect periodicity.</span>
+
+<span class="sd">        &gt;&gt;&gt; flags[&#39;%(name)s&#39;] = value</span>
+
+<span class="sd">        Values of flag:</span>
+<span class="sd">         * True     - periodicity is taken into account if supported</span>
+<span class="sd">         * False    - periodicity is ignored</span>
+
+<span class="sd">        The MDAnalysis preset of this flag is %(default)r.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="p">),</span>
+    <span class="n">_Flag</span><span class="p">(</span>
+        <span class="s1">&#39;use_KDTree_routines&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;fast&#39;</span><span class="p">,</span>
+        <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s1">&#39;fast&#39;</span><span class="p">,</span> <span class="s1">&#39;fast&#39;</span><span class="p">:</span> <span class="s1">&#39;fast&#39;</span><span class="p">,</span>  <span class="c1"># only KDTree if advantageous</span>
+         <span class="s1">&#39;always&#39;</span><span class="p">:</span> <span class="s1">&#39;always&#39;</span><span class="p">,</span>  <span class="c1"># always even if slower (for testing)</span>
+         <span class="kc">False</span><span class="p">:</span> <span class="s1">&#39;never&#39;</span><span class="p">,</span> <span class="s1">&#39;never&#39;</span><span class="p">:</span> <span class="s1">&#39;never&#39;</span><span class="p">},</span>  <span class="c1"># never, only use (slower) alternatives</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">           Determines which KDTree routines are used for distance selections</span>
+
+<span class="sd">           &gt;&gt;&gt; flags[&#39;%(name)s&#39;] = value</span>
+
+<span class="sd">           Values for flag:</span>
+
+<span class="sd">           * True, &#39;fast&#39;   - only use KDTree routines that are typically faster than others</span>
+<span class="sd">             -               POINT      uses distance matrix routines (with periodicity)</span>
+<span class="sd">             -               AROUND     uses KDTree routines (always ignores periodicity)</span>
+<span class="sd">           * &#39;always&#39;       - always use KDTree routines where available (eg for benchmarking)</span>
+<span class="sd">           * False, &#39;never&#39; - always use alternatives</span>
+
+<span class="sd">           The preset value for MDAnalysis is %(default)r.</span>
+
+<span class="sd">           :mod:`MDAnalysis.lib.KDTree` routines are significantly faster for some distance</span>
+<span class="sd">           selections. However, they cannot deal with periodic boxes and thus ignore</span>
+<span class="sd">           periodicity; if periodicity is crucial, disable KDTree routines with</span>
+
+<span class="sd">           &gt;&gt;&gt; MDAnalysis.core.flags[&#39;use_KDTree_routines&#39;] = False</span>
+<span class="sd">           &quot;&quot;&quot;</span>
+    <span class="p">),</span>
+    <span class="n">_Flag</span><span class="p">(</span>
+        <span class="s1">&#39;convert_lengths&#39;</span><span class="p">,</span>
+        <span class="kc">True</span><span class="p">,</span>
+        <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">           Determine if trajectory reader and writer converts length units between native and MDAnalysis default.</span>
+
+<span class="sd">           &gt;&gt;&gt; flags[&#39;%(name)s&#39;] = value</span>
+
+<span class="sd">           Some trajectories are in other length units than the MDAnalysis</span>
+<span class="sd">           default (see the flag *length_unit*); e.g. Gromacs XTC and TRR</span>
+<span class="sd">           trajectories are in nm. If ``True`` then coordinates are</span>
+<span class="sd">           automatically converted, with ``False`` the coordinate values are</span>
+<span class="sd">           presented as read from the trajectories.</span>
+
+<span class="sd">           .. Note:: The conversion of lengths also affects conversion of velocities.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="p">),</span>
+    <span class="n">_Flag</span><span class="p">(</span>
+        <span class="s1">&#39;length_unit&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Angstrom&#39;</span><span class="p">,</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;Angstrom&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;nm&#39;</span><span class="p">:</span> <span class="s1">&#39;nm&#39;</span><span class="p">,</span> <span class="s1">&#39;nano meter&#39;</span><span class="p">:</span> <span class="s1">&#39;nm&#39;</span><span class="p">,</span> <span class="s1">&#39;nanometer&#39;</span><span class="p">:</span> <span class="s1">&#39;nm&#39;</span>
+        <span class="p">},</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">           Base unit for lengths (in particular coordinates in trajectories)</span>
+
+<span class="sd">           &gt;&gt;&gt; flags[&#39;%(name)s&#39;] = value</span>
+
+<span class="sd">           .. Warning:: Do not change, only Angstrom fully supported.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="p">),</span>
+    <span class="n">_Flag</span><span class="p">(</span>
+        <span class="s1">&#39;time_unit&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ps&#39;</span><span class="p">,</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;ps&#39;</span><span class="p">:</span> <span class="s1">&#39;ps&#39;</span><span class="p">,</span> <span class="s1">&#39;pico second&#39;</span><span class="p">:</span> <span class="s1">&#39;ps&#39;</span><span class="p">,</span> <span class="s1">&#39;picosecond&#39;</span><span class="p">:</span> <span class="s1">&#39;ps&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;ns&#39;</span><span class="p">:</span> <span class="s1">&#39;ns&#39;</span><span class="p">,</span> <span class="s1">&#39;nano second&#39;</span><span class="p">:</span> <span class="s1">&#39;ns&#39;</span><span class="p">,</span> <span class="s1">&#39;nanosecond&#39;</span><span class="p">:</span> <span class="s1">&#39;ns&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;fs&#39;</span><span class="p">:</span> <span class="s1">&#39;fs&#39;</span><span class="p">,</span> <span class="s1">&#39;femto second&#39;</span><span class="p">:</span> <span class="s1">&#39;fs&#39;</span><span class="p">,</span> <span class="s1">&#39;femtosecond&#39;</span><span class="p">:</span> <span class="s1">&#39;fs&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;AKMA&#39;</span><span class="p">:</span> <span class="s1">&#39;AKMA&#39;</span><span class="p">,</span> <span class="s1">&#39;Charmm&#39;</span><span class="p">:</span> <span class="s1">&#39;AKMA&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">           Base unit for times (in particular time steps in trajectories)</span>
+
+<span class="sd">           &gt;&gt;&gt; flags[&#39;%(name)s&#39;] = value</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="p">),</span>
+    <span class="n">_Flag</span><span class="p">(</span>
+        <span class="s1">&#39;speed_unit&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Angstrom/ps&#39;</span><span class="p">,</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;Angstrom/ps&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom/ps&#39;</span><span class="p">,</span> <span class="s1">&#39;A/ps&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom/ps&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;nm/ps&#39;</span><span class="p">:</span> <span class="s1">&#39;nm/ps&#39;</span><span class="p">,</span> <span class="s1">&#39;nanometer/ps&#39;</span><span class="p">:</span> <span class="s1">&#39;nm/ps&#39;</span><span class="p">,</span> <span class="s1">&#39;nanometer/picosecond&#39;</span><span class="p">:</span> <span class="s1">&#39;nm/ps&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Angstrom/AKMA&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom/AKMA&#39;</span><span class="p">,</span> <span class="s1">&#39;A/AKMA&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom/AKMA&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;pm/ps&#39;</span><span class="p">:</span> <span class="s1">&#39;pm/ps&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;m/s&#39;</span><span class="p">:</span> <span class="s1">&#39;m/s&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">           Base unit for speed (in particular velocities in trajectories)</span>
+
+<span class="sd">           &gt;&gt;&gt; flags[&#39;%(name)s&#39;] = value</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="p">),</span>
+    <span class="n">_Flag</span><span class="p">(</span>
+        <span class="s1">&#39;force_unit&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;kJ/(mol*Angstrom)&#39;</span><span class="p">,</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;kJ/(mol*Angstrom)&#39;</span><span class="p">:</span> <span class="s1">&#39;kJ/(mol*Angstrom)&#39;</span><span class="p">,</span> <span class="s1">&#39;kJ/(mol*A)&#39;</span><span class="p">:</span> <span class="s1">&#39;kJ/(mol*Angstrom)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;kJ/(mol*nm)&#39;</span><span class="p">:</span> <span class="s1">&#39;kJ/(mol*nm)&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;kcal/(mol*Angstrom)&#39;</span><span class="p">:</span> <span class="s1">&#39;kcal/(mol*Angstrom)&#39;</span><span class="p">,</span> <span class="s1">&#39;kcal/(mol*A)&#39;</span><span class="p">:</span> <span class="s1">&#39;kcal/(mol*Angstrom)&#39;</span>
+        <span class="p">},</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">           Base unit for forces (in particular forces in trajectories)</span>
+
+<span class="sd">           &gt;&gt;&gt; flags[&#39;%(name)s&#39;] = value</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="p">),</span>
+    <span class="n">_Flag</span><span class="p">(</span>
+        <span class="s1">&#39;charge_unit&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;e&#39;</span><span class="p">,</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;e&#39;</span><span class="p">:</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;electron charge&#39;</span><span class="p">:</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Amber&#39;</span><span class="p">:</span> <span class="s1">&#39;Amber&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;Coulomb&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;As&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">           Base unit for charge</span>
+
+<span class="sd">           &gt;&gt;&gt; flags[&#39;%(name)s&#39;] = value</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="p">),</span>
+    <span class="n">_Flag</span><span class="p">(</span>
+        <span class="s1">&#39;use_pbc&#39;</span><span class="p">,</span>
+        <span class="kc">False</span><span class="p">,</span>
+        <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Choose whether to consider periodic boundary conditions when</span>
+<span class="sd">        performing many :class:`MDAnalysis.core.groups.AtomGroup` methods.</span>
+<span class="sd">        This is set to ``False`` by default but can be enabled with:</span>
+
+<span class="sd">        &gt;&gt;&gt; MDAnalysis.core.flags[&#39;use_pbc&#39;] = True</span>
+
+<span class="sd">        Values for flag:</span>
+
+<span class="sd">        * ``True`` - Move all atoms within the primary unit cell before calculation</span>
+<span class="sd">        * ``False`` - Use coordinates as supplied</span>
+
+<span class="sd">        .. Warning::</span>
+
+<span class="sd">           Changing this to ``True`` changes the default behaviour of</span>
+<span class="sd">           commonly used :class:`MDAnalysis.core.groups.AtomGroup` methods</span>
+<span class="sd">           such as :meth:`MDAnalysis.core.groups.AtomGroup.center_of_mass`</span>
+<span class="sd">           and :meth:`MDAnalysis.core.groups.AtomGroup.center_of_geometry`!</span>
+<span class="sd">        &quot;&quot;&quot;</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="c1">#: Global flag registry for :mod:`MDAnalysis.core`.</span>
+<span class="c1">#: Can be accessed like a dictionary and appears to the casual user as such.</span>
+<span class="n">flags</span> <span class="o">=</span> <span class="n">FlagsDynamicDocs</span><span class="p">(</span><span class="o">*</span><span class="n">_flags</span><span class="p">)</span>
+<span class="k">del</span> <span class="n">_flags</span>
+
+
+<span class="c1"># only for sphinx docs</span>
+<div class="viewcode-block" id="flagsDocs"><a class="viewcode-back" href="../../../documentation_pages/core/init.html#MDAnalysis.core.__init__.flagsDocs">[docs]</a><span class="k">class</span> <span class="nc">flagsDocs</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="vm">__doc__</span> <span class="o">=</span> <span class="n">flags</span><span class="o">.</span><span class="n">doc</span><span class="p">()</span></div>
+
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">groups</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">selection</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">AtomGroup</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../index.html">
+    <img class="logo" src="../../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

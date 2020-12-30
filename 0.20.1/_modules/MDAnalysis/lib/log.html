@@ -1,0 +1,524 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>MDAnalysis.lib.log &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for MDAnalysis.lib.log</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+
+<span class="sd">&quot;&quot;&quot;Setting up logging --- :mod:`MDAnalysis.lib.log`</span>
+<span class="sd">====================================================</span>
+
+<span class="sd">Configure logging for MDAnalysis. Import this module if logging is</span>
+<span class="sd">desired in application code.</span>
+
+<span class="sd">Logging to a file and the console is set up by default as described</span>
+<span class="sd">under `logging to multiple destinations`_.</span>
+
+<span class="sd">The top level logger of the library is named *MDAnalysis* by</span>
+<span class="sd">convention; a simple logger that writes to the console and logfile can</span>
+<span class="sd">be created with the :func:`create` function. This only has to be done</span>
+<span class="sd">*once*. For convenience, the default MDAnalysis logger can be created</span>
+<span class="sd">with :func:`MDAnalysis.start_logging`::</span>
+
+<span class="sd"> import MDAnalysis</span>
+<span class="sd"> MDAnalysis.start_logging()</span>
+
+<span class="sd">Once this has been done, MDAnalysis will write messages to the logfile</span>
+<span class="sd">(named `MDAnalysis.log` by default but this can be changed with the</span>
+<span class="sd">optional argument to :func:`~MDAnalysis.start_logging`).</span>
+
+<span class="sd">Any code can log to the MDAnalysis logger by using ::</span>
+
+<span class="sd"> import logging</span>
+<span class="sd"> logger = logging.getLogger(&#39;MDAnalysis.MODULENAME&#39;)</span>
+
+<span class="sd"> # use the logger, for example at info level:</span>
+<span class="sd"> logger.info(&quot;Starting task ...&quot;)</span>
+
+<span class="sd">The important point is that the name of the logger begins with</span>
+<span class="sd">&quot;MDAnalysis.&quot;.</span>
+
+<span class="sd">.. _logging to multiple destinations:</span>
+<span class="sd">   http://docs.python.org/library/logging.html?#logging-to-multiple-destinations</span>
+
+<span class="sd">Note</span>
+<span class="sd">----</span>
+<span class="sd">The :mod:`logging` module in the standard library contains in depth</span>
+<span class="sd">documentation about using logging.</span>
+
+
+<span class="sd">Convenience functions</span>
+<span class="sd">---------------------</span>
+
+<span class="sd">Two convenience functions at the top level make it easy to start and</span>
+<span class="sd">stop the default *MDAnalysis* logger.</span>
+
+<span class="sd">.. autofunction:: MDAnalysis.start_logging</span>
+<span class="sd">.. autofunction:: MDAnalysis.stop_logging</span>
+
+
+<span class="sd">Other functions and classes for logging purposes</span>
+<span class="sd">------------------------------------------------</span>
+
+<span class="sd">.. autogenerated, see Online Docs</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">version</span>
+
+
+<div class="viewcode-block" id="start_logging"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.start_logging">[docs]</a><span class="k">def</span> <span class="nf">start_logging</span><span class="p">(</span><span class="n">logfile</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.log&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="o">.</span><span class="n">__version__</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Start logging of messages to file and console.</span>
+
+<span class="sd">    The default logfile is named `MDAnalysis.log` and messages are</span>
+<span class="sd">    logged with the tag *MDAnalysis*.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">create</span><span class="p">(</span><span class="s2">&quot;MDAnalysis&quot;</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="n">logfile</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s2">&quot;MDAnalysis </span><span class="si">%s</span><span class="s2"> STARTED logging to </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">logfile</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="stop_logging"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.stop_logging">[docs]</a><span class="k">def</span> <span class="nf">stop_logging</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Stop logging to logfile and console.&quot;&quot;&quot;</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;MDAnalysis STOPPED logging&quot;</span><span class="p">)</span>
+    <span class="n">clear_handlers</span><span class="p">(</span><span class="n">logger</span><span class="p">)</span>  <span class="c1"># this _should_ do the job...</span></div>
+
+
+<div class="viewcode-block" id="create"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.create">[docs]</a><span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">logger_name</span><span class="o">=</span><span class="s2">&quot;MDAnalysis&quot;</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.log&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a top level logger.</span>
+
+<span class="sd">    - The file logger logs everything (including DEBUG).</span>
+<span class="sd">    - The console logger only logs INFO and above.</span>
+
+<span class="sd">    Logging to a file and the console as described under `logging to</span>
+<span class="sd">    multiple destinations`_.</span>
+
+<span class="sd">    The top level logger of MDAnalysis is named *MDAnalysis*.  Note</span>
+<span class="sd">    that we are configuring this logger with console output. If a root</span>
+<span class="sd">    logger also does this then we will get two output lines to the</span>
+<span class="sd">    console.</span>
+
+<span class="sd">    .. _logging to multiple destinations:</span>
+<span class="sd">       http://docs.python.org/library/logging.html?#logging-to-multiple-destinations</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">logger_name</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+    <span class="c1"># handler that writes to logfile</span>
+    <span class="n">logfile_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">logfile</span><span class="p">)</span>
+    <span class="n">logfile_formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(name)-12s</span><span class="s1"> </span><span class="si">%(levelname)-8s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">logfile_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">logfile_formatter</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">logfile_handler</span><span class="p">)</span>
+
+    <span class="c1"># define a Handler which writes INFO messages or higher to the sys.stderr</span>
+    <span class="n">console_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+    <span class="n">console_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+    <span class="c1"># set a format which is simpler for console use</span>
+    <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%(name)-12s</span><span class="s1">: </span><span class="si">%(levelname)-8s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">console_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">console_handler</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">logger</span></div>
+
+
+<div class="viewcode-block" id="clear_handlers"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.clear_handlers">[docs]</a><span class="k">def</span> <span class="nf">clear_handlers</span><span class="p">(</span><span class="n">logger</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;clean out handlers in the library top level logger</span>
+
+<span class="sd">    (only important for reload/debug cycles...)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">h</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NullHandler"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.NullHandler">[docs]</a><span class="k">class</span> <span class="nc">NullHandler</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Handler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Silent Handler.</span>
+
+<span class="sd">    Useful as a default::</span>
+
+<span class="sd">      h = NullHandler()</span>
+<span class="sd">      logging.getLogger(&quot;MDAnalysis&quot;).addHandler(h)</span>
+<span class="sd">      del h</span>
+
+<span class="sd">    see the advice on logging and libraries in</span>
+<span class="sd">    http://docs.python.org/library/logging.html?#configuring-logging-for-a-library</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="NullHandler.emit"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.NullHandler.emit">[docs]</a>    <span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="echo"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.echo">[docs]</a><span class="k">def</span> <span class="nf">echo</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Simple string output that immediately prints to the console.</span>
+
+<span class="sd">    The string `s` is modified according to the keyword arguments and then</span>
+<span class="sd">    printed to :const:`sys.stderr`, which is immediately flushed.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    s : str</span>
+<span class="sd">        The string to output.</span>
+<span class="sd">    replace : bool</span>
+<span class="sd">        If ``True``, the string will be printed on top of the current line. In</span>
+<span class="sd">        practice, ``\r`` is added at the beginning of the string.</span>
+<span class="sd">    newline : bool</span>
+<span class="sd">        If ``True``, a newline is added at the end of the string.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">replace</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">s</span>
+    <span class="k">if</span> <span class="n">newline</span><span class="p">:</span>
+        <span class="n">end</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
+
+
+<span class="k">def</span> <span class="nf">_new_format</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">variables</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Format a string that follows the {}-based syntax.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">variables</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_legacy_format</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">variables</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Format a string that follows the %-based syntax.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">template</span> <span class="o">%</span> <span class="n">variables</span>
+
+
+<span class="k">def</span> <span class="nf">_guess_string_format</span><span class="p">(</span><span class="n">template</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Guess if the template follow {}-based or %-based syntax.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;%\((step|numsteps|percentage)\)&#39;</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_new_format</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_legacy_format</span>
+
+
+<div class="viewcode-block" id="ProgressMeter"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.ProgressMeter">[docs]</a><span class="k">class</span> <span class="nc">ProgressMeter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Simple progress meter</span>
+
+<span class="sd">    The :class:`ProgressMeter` class can be used to show running progress such</span>
+<span class="sd">    as frames processed or percentage done to give the user feedback on the</span>
+<span class="sd">    duration and progress of a task. It is structures as a class that is</span>
+<span class="sd">    customized on instantation (e.g., using a custom `format` string and the</span>
+<span class="sd">    expected total number of frames to be processed). Within a processing loop,</span>
+<span class="sd">    call :meth:`echo` with the current frame number to print the output to</span>
+<span class="sd">    stderr.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    numsteps: int</span>
+<span class="sd">        total number of steps</span>
+<span class="sd">    interval: int</span>
+<span class="sd">        only calculate and print progress every `interval` steps [10]</span>
+<span class="sd">    format: str</span>
+<span class="sd">        a format string with Python variable interpolation. Allowed</span>
+<span class="sd">        values:</span>
+
+<span class="sd">        * *step*: current step</span>
+<span class="sd">        * *numsteps*: total number of steps as supplied in *numsteps*</span>
+<span class="sd">        * *percentage*: percentage of total</span>
+
+<span class="sd">        The last call to :meth:`ProgressMeter.print` will automatically</span>
+<span class="sd">        issue a newline ``\n``.</span>
+
+<span class="sd">        If *format* is ``None`` then the default is used::</span>
+
+<span class="sd">            Step {step:5d}/{numsteps} [{percentage:5.1f}%]</span>
+
+<span class="sd">    offset: int</span>
+<span class="sd">        number to add to *step*; e.g. if *step* is 0-based (as in MDAnalysis)</span>
+<span class="sd">        then one should set *offset* = 1; for 1-based steps, choose 0. [1]</span>
+<span class="sd">    verbose: bool</span>
+<span class="sd">        If ``False``, disable all output, ``True`` print all messages as</span>
+<span class="sd">        specified, [``True``]</span>
+<span class="sd">    dynamic: bool</span>
+<span class="sd">        If ``True``, each line will be printed on top of the previous one.</span>
+<span class="sd">        This is done by prepedind the format with ``\r``. [``True``]</span>
+<span class="sd">    format_handling: str</span>
+<span class="sd">        how to handle the format string. Allowed values are:</span>
+
+<span class="sd">        * *new*: the format string uses {}-based formating</span>
+<span class="sd">        * *legacy*: the format string uses %-basedd formating</span>
+<span class="sd">        * *auto*: default, try to guess how the format string should be</span>
+<span class="sd">          handled</span>
+
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    The typical use case is to show progress as frames of a trajectory are</span>
+<span class="sd">    processed::</span>
+
+<span class="sd">       u = Universe(PSF, DCD)</span>
+<span class="sd">       pm = ProgressMeter(u.trajectory.n_frames, interval=100)</span>
+<span class="sd">       for ts in u.trajectory:</span>
+<span class="sd">           pm.echo(ts.frame)</span>
+<span class="sd">           ...</span>
+
+<span class="sd">    For a trajectory with 10000 frames this will produce output such</span>
+<span class="sd">    as ::</span>
+
+<span class="sd">       Step   100/10000 [  1.0%]</span>
+<span class="sd">       Step   200/10000 [  2.0%]</span>
+<span class="sd">       ...</span>
+
+<span class="sd">    The default *format* string is::</span>
+
+<span class="sd">        Step {step:5d}/{numsteps} [{percentage:5.1f}%]</span>
+
+<span class="sd">    By default, each line of the progress meter is displayed on top of the</span>
+<span class="sd">    previous one. To prevent this behaviour, set the `dynamic` keyword to</span>
+<span class="sd">    ``False``.</span>
+
+<span class="sd">    It is possible to embed (almost) arbitrary additional data in the</span>
+<span class="sd">    format string, for example a current RMSD value::</span>
+
+<span class="sd">        format_line = &quot;RMSD {rmsd:5.2f} at {step:5d}/{numsteps} [{percentage:5.1f}%]&quot;</span>
+<span class="sd">        pm = ProgressMeter(u.trajectory.n_frames,</span>
+<span class="sd">                           interval=100, format=format_line)</span>
+<span class="sd">        for ts in u.trajectory:</span>
+<span class="sd">           pm.echo(ts.frame, rmsd=current_rmsd)</span>
+<span class="sd">           ...</span>
+
+<span class="sd">    This will print something like::</span>
+
+<span class="sd">       RMSD   1.02 at  100/10000 [  1.0%]</span>
+<span class="sd">       RMSD   1.89 at  200/10000 [  2.0%]</span>
+<span class="sd">       ...</span>
+
+<span class="sd">    .. versionchanged:: 0.8</span>
+<span class="sd">       Keyword argument *quiet* was added.</span>
+
+<span class="sd">    .. versionchanged:: 0.16</span>
+<span class="sd">       Keyword argument *dynamic* replaces ``\r`` in the format.</span>
+
+<span class="sd">    .. deprecated:: 0.16</span>
+<span class="sd">       Keyword argument *quiet* is deprecated in favor of *verbose*.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numsteps</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dynamic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">format_handling</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numsteps</span> <span class="o">=</span> <span class="n">numsteps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span> <span class="o">=</span> <span class="n">dynamic</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numouts</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="k">if</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;Step </span><span class="si">{step:5d}</span><span class="s2">/</span><span class="si">{numsteps}</span><span class="s2"> [</span><span class="si">{percentage:5.1f}</span><span class="s2">%]&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">format_handler</span> <span class="o">=</span> <span class="n">_new_format</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">format_handling</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">format_handler</span> <span class="o">=</span> <span class="n">_guess_string_format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">format_handler</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;new&#39;</span><span class="p">:</span> <span class="n">_new_format</span><span class="p">,</span>
+                                       <span class="s1">&#39;legacy&#39;</span><span class="p">:</span> <span class="n">_legacy_format</span><span class="p">}[</span><span class="n">format_handling</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="nb">format</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">percentage</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">assert</span> <span class="n">numsteps</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;numsteps step must be &gt;0&quot;</span>
+        <span class="k">assert</span> <span class="n">interval</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;interval step must be &gt;0&quot;</span>
+
+<div class="viewcode-block" id="ProgressMeter.update"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.ProgressMeter.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the state of the ProgressMeter.</span>
+
+<span class="sd">        *kwargs* are additional attributes that can be references in</span>
+<span class="sd">        the format string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">step</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">percentage</span> <span class="o">=</span> <span class="mf">100.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">numsteps</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">numouts</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="ProgressMeter.echo"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.ProgressMeter.echo">[docs]</a>    <span class="k">def</span> <span class="nf">echo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print the state to stderr, but only every *interval* steps.</span>
+
+<span class="sd">        1) calls :meth:`~ProgressMeter.update`</span>
+<span class="sd">        2) writes step and percentage to stderr with :func:`echo`,</span>
+<span class="sd">           using the format string (in :attr:`ProgressMeter.format`)</span>
+
+<span class="sd">        The last step is always shown, even if not on an *interval*, and a</span>
+<span class="sd">        carriage return is replaced with a new line for a cleaner display.</span>
+
+<span class="sd">        *kwargs* are additional attributes that can be references in</span>
+<span class="sd">        the format string.</span>
+
+<span class="sd">        .. Note:: If *verbose* = ``False`` has been set in the</span>
+<span class="sd">                  constructor or if :attr:`ProgressMeter.verbose` has</span>
+<span class="sd">                  been set to ``False``, then no messages will be</span>
+<span class="sd">                  printed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">format</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">format</span>
+        <span class="n">newline</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">numsteps</span><span class="p">:</span>
+            <span class="n">newline</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">numouts</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">echo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">format_handler</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)),</span>
+             <span class="n">replace</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="n">newline</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../index.html">
+    <img class="logo" src="../../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

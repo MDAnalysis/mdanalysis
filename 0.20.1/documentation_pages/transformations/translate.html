@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>7.5.1. Trajectory translation — MDAnalysis.transformations.translate &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="7.5.2. Trajectory rotation — MDAnalysis.transformations.rotate" href="rotate.html" />
+    <link rel="prev" title="7. Trajectory transformations (“on-the-fly” transformations)" href="../trajectory_transformations.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <span class="target" id="module-MDAnalysis.transformations.translate"></span><div class="section" id="trajectory-translation-mdanalysis-transformations-translate">
+<h1><span class="section-number">7.5.1. </span>Trajectory translation — <a class="reference internal" href="#module-MDAnalysis.transformations.translate" title="MDAnalysis.transformations.translate"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a><a class="headerlink" href="#trajectory-translation-mdanalysis-transformations-translate" title="Permalink to this headline">¶</a></h1>
+<p>Translate the coordinates of a given trajectory by a given vector.
+The vector can either be user defined, using the function <a class="reference internal" href="#MDAnalysis.transformations.translate.translate" title="MDAnalysis.transformations.translate.translate"><code class="xref py py-func docutils literal notranslate"><span class="pre">translate()</span></code></a>
+or defined by centering an AtomGroup in the unit cell using the function
+<a class="reference internal" href="#MDAnalysis.transformations.translate.center_in_box" title="MDAnalysis.transformations.translate.center_in_box"><code class="xref py py-func docutils literal notranslate"><span class="pre">center_in_box()</span></code></a></p>
+<dl class="function">
+<dt id="MDAnalysis.transformations.translate.translate">
+<code class="sig-prename descclassname">MDAnalysis.transformations.translate.</code><code class="sig-name descname">translate</code><span class="sig-paren">(</span><em class="sig-param">vector</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/translate.html#translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.translate.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translates the coordinates of a given <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
+instance by a given vector.</p>
+<p class="rubric">Example</p>
+<p>ts = MDAnalysis.transformations.translate([1,2,3])(ts)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>vector</strong> (<em>array-like</em>) – coordinates of the vector to which the coordinates will be translated</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.transformations.translate.center_in_box">
+<code class="sig-prename descclassname">MDAnalysis.transformations.translate.</code><code class="sig-name descname">center_in_box</code><span class="sig-paren">(</span><em class="sig-param">ag</em>, <em class="sig-param">center='geometry'</em>, <em class="sig-param">point=None</em>, <em class="sig-param">wrap=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/translate.html#center_in_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.translate.center_in_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translates the coordinates of a given <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
+instance so that the center of geometry/mass of the given <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
+is centered on the unit cell. The unit cell dimensions are taken from the input Timestep object.
+If a point is given, the center of the atomgroup will be translated to this point instead.</p>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">atoms</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span><span class="n">center</span><span class="o">=</span><span class="s1">&#39;mass&#39;</span><span class="p">)(</span><span class="n">ts</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ag</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – atom group to be centered on the unit cell.</p></li>
+<li><p><strong>center</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – used to choose the method of centering on the given atom group. Can be ‘geometry’
+or ‘mass’</p></li>
+<li><p><strong>point</strong> (<em>array-like</em><em>, </em><em>optional</em>) – overrides the unit cell center - the coordinates of the Timestep are translated so
+that the center of mass/geometry of the given AtomGroup is aligned to this position
+instead. Defined as an array of size 3.</p></li>
+<li><p><strong>wrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <cite>True</cite>, all the atoms from the given AtomGroup will be moved to the unit cell
+before calculating the center of mass or geometry. Default is <cite>False</cite>, no changes
+to the atom coordinates are done before calculating the center of the AtomGroup.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#workflows">7.1. Workflows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#creating-transformations">7.2. Creating transformations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#transformations-in-mdanalysis">7.3. Transformations in MDAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#how-to-transformations">7.4. How to transformations</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../trajectory_transformations.html#currently-implemented-transformations">7.5. Currently implemented transformations</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">7.5.1. Trajectory translation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rotate.html">7.5.2. Trajectory rotation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="positionaveraging.html">7.5.3. Trajectory Coordinate Averaging — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.positionaveraging</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fit.html">7.5.4. Fitting transformations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.fit</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../trajectory_transformations.html"><span class="section-number">7. </span>Trajectory transformations (“on-the-fly” transformations)</a><ul>
+      <li>Previous: <a href="../trajectory_transformations.html" title="previous chapter"><span class="section-number">7. </span>Trajectory transformations (“on-the-fly” transformations)</a></li>
+      <li>Next: <a href="rotate.html" title="next chapter"><span class="section-number">7.5.2. </span>Trajectory rotation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/documentation_pages/transformations/translate.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

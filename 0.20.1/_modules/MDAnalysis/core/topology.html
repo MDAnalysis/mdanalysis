@@ -1,0 +1,710 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>MDAnalysis.core.topology &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for MDAnalysis.core.topology</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+<span class="sd">&quot;&quot;&quot;\</span>
+<span class="sd">Core Topology object --- :mod:`MDAnalysis.core.topology`</span>
+<span class="sd">========================================================</span>
+
+<span class="sd">.. versionadded:: 0.16.0</span>
+
+<span class="sd">:class:`Topology` is the core object that holds all topology information.</span>
+
+<span class="sd">TODO: Add in-depth discussion.</span>
+
+<span class="sd">Notes</span>
+<span class="sd">-----</span>
+<span class="sd">For developers: In MDAnalysis 0.16.0 this new topology system was</span>
+<span class="sd">introduced and discussed as issue `#363`_; this issue contains key</span>
+<span class="sd">information and discussions on the new system. The issue number *363*</span>
+<span class="sd">is also being used as a short-hand in discussions to refer to the new</span>
+<span class="sd">topology system.</span>
+
+
+<span class="sd">.. _`#363`: https://github.com/MDAnalysis/mdanalysis/issues/363</span>
+
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+
+<span class="sd">.. autoclass:: Topology</span>
+<span class="sd">   :members:</span>
+<span class="sd">.. autoclass:: TransTable</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">Helper functions</span>
+<span class="sd">----------------</span>
+
+<span class="sd">.. autofunction:: make_downshift_arrays</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">zip</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.topologyattrs</span> <span class="kn">import</span> <span class="n">Atomindices</span><span class="p">,</span> <span class="n">Resindices</span><span class="p">,</span> <span class="n">Segindices</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
+
+
+<span class="c1"># TODO Notes:</span>
+<span class="c1">#   Could make downshift tables lazily built! This would</span>
+<span class="c1">#     a) Make these not get built when not used</span>
+<span class="c1">#     b) Optimise moving multiple atoms between residues as only built once</span>
+<span class="c1">#     afterwards</span>
+
+<span class="c1">#   Could optimise moves by only updating the two parent tables rather than</span>
+<span class="c1">#   rebuilding everything!</span>
+
+
+<div class="viewcode-block" id="make_downshift_arrays"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.make_downshift_arrays">[docs]</a><span class="k">def</span> <span class="nf">make_downshift_arrays</span><span class="p">(</span><span class="n">upshift</span><span class="p">,</span> <span class="n">nparents</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;From an upwards translation table, create the opposite direction</span>
+
+<span class="sd">    Turns a many to one mapping (eg atoms to residues) to a one to many mapping</span>
+<span class="sd">    (residues to atoms)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    upshift : array_like</span>
+<span class="sd">        Array of integers describing which parent each item belongs to</span>
+<span class="sd">    nparents : integer</span>
+<span class="sd">        Total number of parents that exist.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    downshift : array_like (dtype object)</span>
+<span class="sd">        An array of arrays, each containing the indices of the children</span>
+<span class="sd">        of each parent.  Length `nparents` + 1</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    To find the residue to atom mappings for a given atom to residue mapping:</span>
+
+<span class="sd">    &gt;&gt;&gt; atom2res = np.array([0, 1, 0, 2, 2, 0, 2])</span>
+<span class="sd">    &gt;&gt;&gt; make_downshift_arrays(atom2res)</span>
+<span class="sd">    array([array([0, 2, 5]), array([1]), array([3, 4, 6]), None], dtype=object)</span>
+
+<span class="sd">    Entry 0 corresponds to residue 0 and says that this contains atoms 0, 2 &amp; 5</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The final entry in the return array will be ``None`` to ensure that the</span>
+<span class="sd">    dtype of the array is :class:`object`.</span>
+
+<span class="sd">    .. warning:: This means negative indexing should **never**</span>
+<span class="sd">                 be used with these arrays.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">upshift</span><span class="p">)</span>
+
+    <span class="n">upshift_sorted</span> <span class="o">=</span> <span class="n">upshift</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+    <span class="n">borders</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">upshift_sorted</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
+
+    <span class="c1"># returns an array of arrays</span>
+    <span class="n">downshift</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="c1"># don&#39;t use enumerate, we modify counter in place</span>
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">borders</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">borders</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+        <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c1"># If parent is skipped, eg (0, 0, 2, 2, etc)</span>
+        <span class="k">while</span> <span class="n">counter</span> <span class="o">!=</span> <span class="n">upshift</span><span class="p">[</span><span class="n">order</span><span class="p">[</span><span class="n">x</span><span class="p">:</span><span class="n">y</span><span class="p">][</span><span class="mi">0</span><span class="p">]]:</span>
+            <span class="n">downshift</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">))</span>
+            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">downshift</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">order</span><span class="p">[</span><span class="n">x</span><span class="p">:</span><span class="n">y</span><span class="p">],</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)))</span>
+    <span class="c1"># Add entries for childless parents at end of range</span>
+    <span class="k">while</span> <span class="n">counter</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">nparents</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">downshift</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">))</span>
+        <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c1"># Add None to end of array to force it to be of type Object</span>
+    <span class="c1"># Without this, a rectangular array gets squashed into a single array</span>
+    <span class="n">downshift</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">downshift</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TransTable"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable">[docs]</a><span class="k">class</span> <span class="nc">TransTable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Membership tables with methods to translate indices across levels.</span>
+
+<span class="sd">    There are three levels; Atom, Residue and Segment.  Each Atom **must**</span>
+<span class="sd">    belong in a Residue, each Residue **must** belong to a Segment.</span>
+
+<span class="sd">    When translating upwards, eg finding which Segment a Residue belongs in,</span>
+<span class="sd">    a single numpy array is returned.  When translating downwards, two options</span>
+<span class="sd">    are available; a concatenated result (suffix `_1`) or a list for each parent</span>
+<span class="sd">    object (suffix `_2d`).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_atoms : int</span>
+<span class="sd">        number of atoms in topology</span>
+<span class="sd">    n_residues : int</span>
+<span class="sd">        number of residues in topology</span>
+<span class="sd">    n_segments : int</span>
+<span class="sd">        number of segments in topology</span>
+<span class="sd">    atom_resindex : 1-D array</span>
+<span class="sd">        resindex for each atom in the topology; the number of unique values in</span>
+<span class="sd">        this array must be &lt;= `n_residues`, and the array must be length</span>
+<span class="sd">        `n_atoms`; giving None defaults to placing all atoms in residue 0</span>
+<span class="sd">    residue_segindex : 1-D array</span>
+<span class="sd">        segindex for each residue in the topology; the number of unique values</span>
+<span class="sd">        in this array must be &lt;= `n_segments`, and the array must be length</span>
+<span class="sd">        `n_residues`; giving None defaults to placing all residues in segment 0</span>
+
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_atoms : int</span>
+<span class="sd">        number of atoms in topology</span>
+<span class="sd">    n_residues : int</span>
+<span class="sd">        number of residues in topology</span>
+<span class="sd">    n_segments : int</span>
+<span class="sd">        number of segments in topology</span>
+<span class="sd">    size</span>
+<span class="sd">        tuple describing the shape of the TransTable</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    atoms2residues(aix)</span>
+<span class="sd">        Returns the residue index for many atom indices</span>
+<span class="sd">    residues2atoms_1d(rix)</span>
+<span class="sd">        All atoms in the residues represented by *rix*</span>
+<span class="sd">    residues2atoms_2d(rix)</span>
+<span class="sd">        List of atom indices for each residue in *rix*</span>
+<span class="sd">    residues2segments(rix)</span>
+<span class="sd">        Segment indices for each residue in *rix*</span>
+<span class="sd">    segments2residues_1d(six)</span>
+<span class="sd">        Similar to `residues2atoms_1d`</span>
+<span class="sd">    segments2residues_2d(six)</span>
+<span class="sd">        Similar to `residues2atoms_2d`</span>
+<span class="sd">    atoms2segments(aix)</span>
+<span class="sd">        Segment indices for each atom in *aix*</span>
+<span class="sd">    segments2atoms_1d(six)</span>
+<span class="sd">        Similar to `residues2atoms_1d`</span>
+<span class="sd">    segments2atoms_2d(six)</span>
+<span class="sd">        Similar to `residues2atoms_2d`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_residues</span><span class="p">,</span> <span class="n">n_segments</span><span class="p">,</span>  <span class="c1"># Size of tables</span>
+                 <span class="n">atom_resindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">residue_segindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># Contents of tables</span>
+                 <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_residues</span> <span class="o">=</span> <span class="n">n_residues</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_segments</span> <span class="o">=</span> <span class="n">n_segments</span>
+
+        <span class="c1"># built atom-to-residue mapping, and vice-versa</span>
+        <span class="k">if</span> <span class="n">atom_resindex</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_AR</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_AR</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">atom_resindex</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_AR</span><span class="p">)</span> <span class="o">==</span> <span class="n">n_atoms</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;atom_resindex must be len n_atoms&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_RA</span> <span class="o">=</span> <span class="n">make_downshift_arrays</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_AR</span><span class="p">,</span> <span class="n">n_residues</span><span class="p">)</span>
+
+        <span class="c1"># built residue-to-segment mapping, and vice-versa</span>
+        <span class="k">if</span> <span class="n">residue_segindex</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_RS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_residues</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_RS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">residue_segindex</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_RS</span><span class="p">)</span> <span class="o">==</span> <span class="n">n_residues</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;residue_segindex must be len n_residues&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_SR</span> <span class="o">=</span> <span class="n">make_downshift_arrays</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_RS</span><span class="p">,</span> <span class="n">n_segments</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TransTable.copy"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a deepcopy of this Transtable&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_segments</span><span class="p">,</span>
+                              <span class="n">atom_resindex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_AR</span><span class="p">,</span> <span class="n">residue_segindex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_RS</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The shape of the table, (n_atoms, n_residues, n_segments)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_segments</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TransTable.atoms2residues"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.atoms2residues">[docs]</a>    <span class="k">def</span> <span class="nf">atoms2residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get residue indices for each atom.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        aix : array</span>
+<span class="sd">            atom indices</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        rix : array</span>
+<span class="sd">            residue index for each atom</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_AR</span><span class="p">[</span><span class="n">aix</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="TransTable.residues2atoms_1d"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.residues2atoms_1d">[docs]</a>    <span class="k">def</span> <span class="nf">residues2atoms_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get atom indices collectively represented by given residue indices.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rix : array</span>
+<span class="sd">            residue indices</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        aix : array</span>
+<span class="sd">            indices of atoms present in residues, collectively</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_RA</span><span class="p">[</span><span class="n">rix</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>  <span class="c1"># rix is not iterable or empty</span>
+            <span class="c1"># don&#39;t accidentally return a view!</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_RA</span><span class="p">[</span><span class="n">rix</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TransTable.residues2atoms_2d"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.residues2atoms_2d">[docs]</a>    <span class="k">def</span> <span class="nf">residues2atoms_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get atom indices represented by each residue index.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rix : array</span>
+<span class="sd">            residue indices</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        raix : list</span>
+<span class="sd">            each element corresponds to a residue index, in order given in</span>
+<span class="sd">            `rix`, with each element being an array of the atom indices present</span>
+<span class="sd">            in that residue</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_RA</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rix</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_RA</span><span class="p">[</span><span class="n">rix</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()]</span>  <span class="c1"># why would this be singular for 2d?</span></div>
+
+<div class="viewcode-block" id="TransTable.residues2segments"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.residues2segments">[docs]</a>    <span class="k">def</span> <span class="nf">residues2segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get segment indices for each residue.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rix : array</span>
+<span class="sd">            residue indices</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        six : array</span>
+<span class="sd">            segment index for each residue</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_RS</span><span class="p">[</span><span class="n">rix</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="TransTable.segments2residues_1d"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.segments2residues_1d">[docs]</a>    <span class="k">def</span> <span class="nf">segments2residues_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">six</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get residue indices collectively represented by given segment indices</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        six : array</span>
+<span class="sd">            segment indices</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        rix : array</span>
+<span class="sd">            sorted indices of residues present in segments, collectively</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_SR</span><span class="p">[</span><span class="n">six</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>  <span class="c1"># six is not iterable or empty</span>
+            <span class="c1"># don&#39;t accidentally return a view!</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SR</span><span class="p">[</span><span class="n">six</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TransTable.segments2residues_2d"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.segments2residues_2d">[docs]</a>    <span class="k">def</span> <span class="nf">segments2residues_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">six</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get residue indices represented by each segment index.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        six : array</span>
+<span class="sd">            residue indices</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        srix : list</span>
+<span class="sd">            each element corresponds to a segment index, in order given in</span>
+<span class="sd">            `six`, with each element being an array of the residue indices</span>
+<span class="sd">            present in that segment</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_SR</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">six</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_SR</span><span class="p">[</span><span class="n">six</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()]</span></div>
+
+    <span class="c1"># Compound moves, does 2 translations</span>
+<div class="viewcode-block" id="TransTable.atoms2segments"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.atoms2segments">[docs]</a>    <span class="k">def</span> <span class="nf">atoms2segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get segment indices for each atom.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        aix : array</span>
+<span class="sd">            atom indices</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        rix : array</span>
+<span class="sd">            segment index for each atom</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms2residues</span><span class="p">(</span><span class="n">aix</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues2segments</span><span class="p">(</span><span class="n">rix</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TransTable.segments2atoms_1d"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.segments2atoms_1d">[docs]</a>    <span class="k">def</span> <span class="nf">segments2atoms_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">six</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get atom indices collectively represented by given segment indices.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        six : array</span>
+<span class="sd">            segment indices</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        aix : array</span>
+<span class="sd">            sorted indices of atoms present in segments, collectively</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segments2residues_1d</span><span class="p">(</span><span class="n">six</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues2atoms_1d</span><span class="p">(</span><span class="n">rix</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TransTable.segments2atoms_2d"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.segments2atoms_2d">[docs]</a>    <span class="k">def</span> <span class="nf">segments2atoms_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">six</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get atom indices represented by each segment index.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        six : array</span>
+<span class="sd">            residue indices</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        saix : list</span>
+<span class="sd">            each element corresponds to a segment index, in order given in</span>
+<span class="sd">            `six`, with each element being an array of the atom indices present</span>
+<span class="sd">            in that segment</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># residues in EACH</span>
+        <span class="n">rixs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">segments2residues_2d</span><span class="p">(</span><span class="n">six</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">residues2atoms_1d</span><span class="p">(</span><span class="n">rix</span><span class="p">)</span> <span class="k">for</span> <span class="n">rix</span> <span class="ow">in</span> <span class="n">rixs</span><span class="p">]</span></div>
+
+    <span class="c1"># Move between different groups.</span>
+<div class="viewcode-block" id="TransTable.move_atom"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.move_atom">[docs]</a>    <span class="k">def</span> <span class="nf">move_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aix</span><span class="p">,</span> <span class="n">rix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Move aix to be in rix&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_AR</span><span class="p">[</span><span class="n">aix</span><span class="p">]</span> <span class="o">=</span> <span class="n">rix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_RA</span> <span class="o">=</span> <span class="n">make_downshift_arrays</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_AR</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TransTable.move_residue"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.move_residue">[docs]</a>    <span class="k">def</span> <span class="nf">move_residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rix</span><span class="p">,</span> <span class="n">six</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Move rix to be in six&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_RS</span><span class="p">[</span><span class="n">rix</span><span class="p">]</span> <span class="o">=</span> <span class="n">six</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_SR</span> <span class="o">=</span> <span class="n">make_downshift_arrays</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_RS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_segments</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">add_Residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">segidx</span><span class="p">):</span>
+        <span class="c1"># segidx - index of parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_residues</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_RA</span> <span class="o">=</span> <span class="n">make_downshift_arrays</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_AR</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_RS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_RS</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">segidx</span><span class="p">])])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_SR</span> <span class="o">=</span> <span class="n">make_downshift_arrays</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_RS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_segments</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_residues</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">add_Segment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_segments</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c1"># self._RS remains the same, no residues point to the new segment yet</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_SR</span> <span class="o">=</span> <span class="n">make_downshift_arrays</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_RS</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_segments</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_segments</span> <span class="o">-</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="Topology"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology">[docs]</a><span class="k">class</span> <span class="nc">Topology</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;In-memory, array-based topology database.</span>
+
+<span class="sd">    The topology model of MDanalysis features atoms, which must each be a</span>
+<span class="sd">    member of one residue. Each residue, in turn, must be a member of one</span>
+<span class="sd">    segment. The details of maintaining this heirarchy, and mappings of atoms</span>
+<span class="sd">    to residues, residues to segments, and vice-versa, are handled internally</span>
+<span class="sd">    by this object.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_res</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_seg</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">atom_resindex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">residue_segindex</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_atoms : int</span>
+<span class="sd">            number of atoms in topology. Must be larger then 1 at each level</span>
+<span class="sd">        n_residues : int</span>
+<span class="sd">            number of residues in topology. Must be larger then 1 at each level</span>
+<span class="sd">        n_segments : int</span>
+<span class="sd">            number of segments in topology. Must be larger then 1 at each level</span>
+<span class="sd">        attrs : TopologyAttr objects</span>
+<span class="sd">            components of the topology to be included</span>
+<span class="sd">        atom_resindex : array</span>
+<span class="sd">            1-D array giving the resindex of each atom in the system</span>
+<span class="sd">        residue_segindex : array</span>
+<span class="sd">            1-D array giving the segindex of each residue in the system</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tt</span> <span class="o">=</span> <span class="n">TransTable</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_res</span><span class="p">,</span> <span class="n">n_seg</span><span class="p">,</span>
+                             <span class="n">atom_resindex</span><span class="o">=</span><span class="n">atom_resindex</span><span class="p">,</span>
+                             <span class="n">residue_segindex</span><span class="o">=</span><span class="n">residue_segindex</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">attrs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">attrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># add core TopologyAttrs that give access to indices</span>
+        <span class="n">attrs</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="n">Atomindices</span><span class="p">(),</span> <span class="n">Resindices</span><span class="p">(),</span> <span class="n">Segindices</span><span class="p">()))</span>
+
+        <span class="c1"># attach the TopologyAttrs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">topologyattr</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Topology.copy"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a deepcopy of this Topology&quot;&quot;&quot;</span>
+        <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># copy the tt</span>
+        <span class="n">new</span><span class="o">.</span><span class="n">tt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c1"># remove indices</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="p">(</span><span class="n">Atomindices</span><span class="p">,</span> <span class="n">Resindices</span><span class="p">,</span> <span class="n">Segindices</span><span class="p">)):</span>
+                <span class="k">continue</span>
+            <span class="n">new</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">new</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">n_atoms</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">n_residues</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">n_segments</span>
+
+<div class="viewcode-block" id="Topology.add_TopologyAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.add_TopologyAttr">[docs]</a>    <span class="k">def</span> <span class="nf">add_TopologyAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a new TopologyAttr to the Topology.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        topologyattr : TopologyAttr</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span>
+        <span class="n">topologyattr</span><span class="o">.</span><span class="n">top</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">topologyattr</span><span class="o">.</span><span class="n">attrname</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">guessed_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A list of the guessed attributes in this topology&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">read_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A list of the attributes read from the topology&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">is_guessed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Topology.add_Residue"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.add_Residue">[docs]</a>    <span class="k">def</span> <span class="nf">add_Residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">segment</span><span class="p">,</span> <span class="o">**</span><span class="n">new_attrs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        residx of the new Residue</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        NoDataError</span>
+<span class="sd">          If not all data was provided.  This error is raised before any</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check that all data is here before making any changes</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">per_object</span> <span class="o">==</span> <span class="s1">&#39;residue&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">singular</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_attrs</span><span class="p">:</span>
+                <span class="n">missing</span> <span class="o">=</span> <span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">singular</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span>
+                           <span class="k">if</span> <span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">per_object</span> <span class="o">==</span> <span class="s1">&#39;residue&#39;</span> <span class="ow">and</span>
+                               <span class="n">attr</span><span class="o">.</span><span class="n">singular</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_attrs</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Missing the following attributes for the new&quot;</span>
+                                  <span class="s2">&quot; Residue: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing</span><span class="p">)))</span>
+
+        <span class="c1"># Resize topology table</span>
+        <span class="n">residx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">add_Residue</span><span class="p">(</span><span class="n">segment</span><span class="o">.</span><span class="n">segindex</span><span class="p">)</span>
+
+        <span class="c1"># Add new value to each attribute</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">per_object</span> <span class="o">==</span> <span class="s1">&#39;residue&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">newval</span> <span class="o">=</span> <span class="n">new_attrs</span><span class="p">[</span><span class="n">attr</span><span class="o">.</span><span class="n">singular</span><span class="p">]</span>
+            <span class="n">attr</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">attr</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">newval</span><span class="p">])])</span>
+
+        <span class="k">return</span> <span class="n">residx</span></div>
+
+    <span class="k">def</span> <span class="nf">add_Segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">new_attrs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">per_object</span> <span class="o">==</span> <span class="s1">&#39;segment&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">singular</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_attrs</span><span class="p">:</span>
+                    <span class="n">missing</span> <span class="o">=</span> <span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">singular</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span>
+                               <span class="k">if</span> <span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">per_object</span> <span class="o">==</span> <span class="s1">&#39;segment&#39;</span> <span class="ow">and</span>
+                                   <span class="n">attr</span><span class="o">.</span><span class="n">singular</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_attrs</span><span class="p">))</span>
+                    <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Missing the following attributes for the&quot;</span>
+                                      <span class="s2">&quot; new Segment: </span><span class="si">{}</span><span class="s2">&quot;</span>
+                                      <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing</span><span class="p">)))</span>
+
+        <span class="n">segidx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tt</span><span class="o">.</span><span class="n">add_Segment</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">per_object</span> <span class="o">==</span> <span class="s1">&#39;segment&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">newval</span> <span class="o">=</span> <span class="n">new_attrs</span><span class="p">[</span><span class="n">attr</span><span class="o">.</span><span class="n">singular</span><span class="p">]</span>
+            <span class="n">attr</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">attr</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">newval</span><span class="p">])])</span>
+
+        <span class="k">return</span> <span class="n">segidx</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../index.html">
+    <img class="logo" src="../../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

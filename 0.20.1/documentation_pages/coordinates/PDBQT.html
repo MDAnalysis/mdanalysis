@@ -1,0 +1,414 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>6.14. PDBQT structure files in MDAnalysis — MDAnalysis.coordinates.PDBQT &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="6.15. PQR file format — MDAnalysis.coordinates.PQR" href="PQR.html" />
+    <link rel="prev" title="6.13. PDB structure files in MDAnalysis — MDAnalysis.coordinates.PDB" href="PDB.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <span class="target" id="module-MDAnalysis.coordinates.PDBQT"></span><div class="section" id="pdbqt-structure-files-in-mdanalysis-mdanalysis-coordinates-pdbqt">
+<h1><span class="section-number">6.14. </span>PDBQT structure files in MDAnalysis — <a class="reference internal" href="#module-MDAnalysis.coordinates.PDBQT" title="MDAnalysis.coordinates.PDBQT"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a><a class="headerlink" href="#pdbqt-structure-files-in-mdanalysis-mdanalysis-coordinates-pdbqt" title="Permalink to this headline">¶</a></h1>
+<p>MDAnalysis reads coordinates from <a class="reference external" href="http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file">PDBQT</a> files and additional optional
+data such as B-factors, partial charge and <a class="reference external" href="http://autodock.scripps.edu/">AutoDock</a> atom types.  It
+is also possible to substitute a PDBQT file for a PSF file in order to
+define the list of atoms (but no connectivity information will be
+available in this case).</p>
+<dl class="class">
+<dt id="MDAnalysis.coordinates.PDBQT.PDBQTReader">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.coordinates.PDBQT.</code><code class="sig-name descname">PDBQTReader</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">convert_units=None</em>, <em class="sig-param">n_atoms=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>PDBQTReader that reads a PDBQT-formatted file, no frills.</p>
+<dl class="simple">
+<dt>Records read:</dt><dd><ul class="simple">
+<li><p>CRYST1 for unitcell A,B,C, alpha,beta,gamm</p></li>
+<li><p>ATOM. HETATM for x,y,z</p></li>
+</ul>
+</dd>
+</dl>
+<p>Original <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html">PDB format documentation</a> with <a class="reference external" href="http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file">AutoDOCK extensions</a></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 15%" />
+<col style="width: 14%" />
+<col style="width: 56%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>COLUMNS</p></th>
+<th class="head"><p>DATA  TYPE</p></th>
+<th class="head"><p>FIELD</p></th>
+<th class="head"><p>DEFINITION</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1 -  6</p></td>
+<td><p>Record name</p></td>
+<td><p>“CRYST1”</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>7 - 15</p></td>
+<td><p>Real(9.3)</p></td>
+<td><p>a</p></td>
+<td><p>a (Angstroms).</p></td>
+</tr>
+<tr class="row-even"><td><p>16 - 24</p></td>
+<td><p>Real(9.3)</p></td>
+<td><p>b</p></td>
+<td><p>b (Angstroms).</p></td>
+</tr>
+<tr class="row-odd"><td><p>25 - 33</p></td>
+<td><p>Real(9.3)</p></td>
+<td><p>c</p></td>
+<td><p>c (Angstroms).</p></td>
+</tr>
+<tr class="row-even"><td><p>34 - 40</p></td>
+<td><p>Real(7.2)</p></td>
+<td><p>alpha</p></td>
+<td><p>alpha (degrees).</p></td>
+</tr>
+<tr class="row-odd"><td><p>41 - 47</p></td>
+<td><p>Real(7.2)</p></td>
+<td><p>beta</p></td>
+<td><p>beta (degrees).</p></td>
+</tr>
+<tr class="row-even"><td><p>48 - 54</p></td>
+<td><p>Real(7.2)</p></td>
+<td><p>gamma</p></td>
+<td><p>gamma (degrees).</p></td>
+</tr>
+<tr class="row-odd"><td><p>1 -  6</p></td>
+<td><p>Record name</p></td>
+<td><p>“ATOM  “</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>7 - 11</p></td>
+<td><p>Integer</p></td>
+<td><p>serial</p></td>
+<td><p>Atom  serial number.</p></td>
+</tr>
+<tr class="row-odd"><td><p>13 - 16</p></td>
+<td><p>Atom</p></td>
+<td><p>name</p></td>
+<td><p>Atom name.</p></td>
+</tr>
+<tr class="row-even"><td><p>17</p></td>
+<td><p>Character</p></td>
+<td><p>altLoc</p></td>
+<td><p>Alternate location indicator. IGNORED</p></td>
+</tr>
+<tr class="row-odd"><td><p>18 - 21</p></td>
+<td><p>Residue name</p></td>
+<td><p>resName</p></td>
+<td><p>Residue name.</p></td>
+</tr>
+<tr class="row-even"><td><p>22</p></td>
+<td><p>Character</p></td>
+<td><p>chainID</p></td>
+<td><p>Chain identifier.</p></td>
+</tr>
+<tr class="row-odd"><td><p>23 - 26</p></td>
+<td><p>Integer</p></td>
+<td><p>resSeq</p></td>
+<td><p>Residue sequence number.</p></td>
+</tr>
+<tr class="row-even"><td><p>27</p></td>
+<td><p>AChar</p></td>
+<td><p>iCode</p></td>
+<td><p>Code for insertion of residues. IGNORED</p></td>
+</tr>
+<tr class="row-odd"><td><p>31 - 38</p></td>
+<td><p>Real(8.3)</p></td>
+<td><p>x</p></td>
+<td><p>Orthogonal coordinates for X in Angstroms.</p></td>
+</tr>
+<tr class="row-even"><td><p>39 - 46</p></td>
+<td><p>Real(8.3)</p></td>
+<td><p>y</p></td>
+<td><p>Orthogonal coordinates for Y in Angstroms.</p></td>
+</tr>
+<tr class="row-odd"><td><p>47 - 54</p></td>
+<td><p>Real(8.3)</p></td>
+<td><p>z</p></td>
+<td><p>Orthogonal coordinates for Z in Angstroms.</p></td>
+</tr>
+<tr class="row-even"><td><p>55 - 60</p></td>
+<td><p>Real(6.2)</p></td>
+<td><p>occupancy</p></td>
+<td><p>Occupancy.</p></td>
+</tr>
+<tr class="row-odd"><td><p>61 - 66</p></td>
+<td><p>Real(6.2)</p></td>
+<td><p>tempFactor</p></td>
+<td><p>Temperature  factor.</p></td>
+</tr>
+<tr class="row-even"><td><p>67 - 76</p></td>
+<td><p>Real(10.4)</p></td>
+<td><p>partialChrg</p></td>
+<td><p>Gasteiger PEOE partial charge <em>q</em>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>79 - 80</p></td>
+<td><p>LString(2)</p></td>
+<td><p>atomType</p></td>
+<td><p>AutoDOCK atom type <em>t</em>.</p></td>
+</tr>
+</tbody>
+</table>
+<p>We ignore torsion notation and just pull the partial charge and atom type columns:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">COMPND</span>    <span class="n">NSC7810</span>
+<span class="n">REMARK</span>  <span class="mi">3</span> <span class="n">active</span> <span class="n">torsions</span><span class="p">:</span>
+<span class="n">REMARK</span>  <span class="n">status</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;A&#39;</span> <span class="k">for</span> <span class="n">Active</span><span class="p">;</span> <span class="s1">&#39;I&#39;</span> <span class="k">for</span> <span class="n">Inactive</span><span class="p">)</span>
+<span class="n">REMARK</span>    <span class="mi">1</span>  <span class="n">A</span>    <span class="n">between</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">A7_7</span>  <span class="ow">and</span>  <span class="n">C22_23</span>
+<span class="n">REMARK</span>    <span class="mi">2</span>  <span class="n">A</span>    <span class="n">between</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">A9_9</span>  <span class="ow">and</span>  <span class="n">A11_11</span>
+<span class="n">REMARK</span>    <span class="mi">3</span>  <span class="n">A</span>    <span class="n">between</span> <span class="n">atoms</span><span class="p">:</span> <span class="n">A17_17</span>  <span class="ow">and</span>  <span class="n">C21_21</span>
+<span class="n">ROOT</span>
+<span class="mf">123456789.123456789</span><span class="o">.</span><span class="mf">123456789.123456789</span><span class="o">.</span><span class="mf">123456789.123456789</span><span class="o">.</span><span class="mf">123456789.123456789</span><span class="o">.</span> <span class="p">(</span><span class="n">column</span> <span class="n">reference</span><span class="p">)</span>
+<span class="n">ATOM</span>      <span class="mi">1</span>  <span class="n">A1</span>  <span class="n">INH</span> <span class="n">I</span>           <span class="mf">1.054</span>   <span class="mf">3.021</span>   <span class="mf">1.101</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>     <span class="mf">0.002</span> <span class="n">A</span>
+<span class="n">ATOM</span>      <span class="mi">2</span>  <span class="n">A2</span>  <span class="n">INH</span> <span class="n">I</span>           <span class="mf">1.150</span>   <span class="mf">1.704</span>   <span class="mf">0.764</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>     <span class="mf">0.012</span> <span class="n">A</span>
+<span class="n">ATOM</span>      <span class="mi">3</span>  <span class="n">A3</span>  <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">0.006</span>   <span class="mf">0.975</span>   <span class="mf">0.431</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>    <span class="o">-</span><span class="mf">0.024</span> <span class="n">A</span>
+<span class="n">ATOM</span>      <span class="mi">4</span>  <span class="n">A4</span>  <span class="n">INH</span> <span class="n">I</span>           <span class="mf">0.070</span>  <span class="o">-</span><span class="mf">0.385</span>   <span class="mf">0.081</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>     <span class="mf">0.012</span> <span class="n">A</span>
+<span class="n">ATOM</span>      <span class="mi">5</span>  <span class="n">A5</span>  <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">1.062</span>  <span class="o">-</span><span class="mf">1.073</span>  <span class="o">-</span><span class="mf">0.238</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>     <span class="mf">0.002</span> <span class="n">A</span>
+<span class="n">ATOM</span>      <span class="mi">6</span>  <span class="n">A6</span>  <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">2.306</span>  <span class="o">-</span><span class="mf">0.456</span>  <span class="o">-</span><span class="mf">0.226</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>     <span class="mf">0.019</span> <span class="n">A</span>
+<span class="n">ATOM</span>      <span class="mi">7</span>  <span class="n">A7</span>  <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">2.426</span>   <span class="mf">0.885</span>   <span class="mf">0.114</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>     <span class="mf">0.052</span> <span class="n">A</span>
+<span class="n">ATOM</span>      <span class="mi">8</span>  <span class="n">A8</span>  <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">1.265</span>   <span class="mf">1.621</span>   <span class="mf">0.449</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>     <span class="mf">0.002</span> <span class="n">A</span>
+<span class="n">ATOM</span>      <span class="mi">9</span>  <span class="n">A9</span>  <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">1.339</span>   <span class="mf">2.986</span>   <span class="mf">0.801</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>    <span class="o">-</span><span class="mf">0.013</span> <span class="n">A</span>
+<span class="n">ATOM</span>     <span class="mi">10</span>  <span class="n">A10</span> <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">0.176</span>   <span class="mf">3.667</span>   <span class="mf">1.128</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>     <span class="mf">0.013</span> <span class="n">A</span>
+<span class="n">ENDROOT</span>
+<span class="n">BRANCH</span>   <span class="mi">9</span>  <span class="mi">11</span>
+<span class="n">ATOM</span>     <span class="mi">11</span>  <span class="n">A11</span> <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">2.644</span>   <span class="mf">3.682</span>   <span class="mf">0.827</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>    <span class="o">-</span><span class="mf">0.013</span> <span class="n">A</span>
+<span class="n">ATOM</span>     <span class="mi">12</span>  <span class="n">A16</span> <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">3.007</span>   <span class="mf">4.557</span>  <span class="o">-</span><span class="mf">0.220</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>     <span class="mf">0.002</span> <span class="n">A</span>
+<span class="n">ATOM</span>     <span class="mi">13</span>  <span class="n">A12</span> <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">3.522</span>   <span class="mf">3.485</span>   <span class="mf">1.882</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>     <span class="mf">0.013</span> <span class="n">A</span>
+<span class="n">ATOM</span>     <span class="mi">14</span>  <span class="n">A15</span> <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">4.262</span>   <span class="mf">5.209</span>  <span class="o">-</span><span class="mf">0.177</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>    <span class="o">-</span><span class="mf">0.024</span> <span class="n">A</span>
+<span class="n">ATOM</span>     <span class="mi">15</span>  <span class="n">A17</span> <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">2.144</span>   <span class="mf">4.784</span>  <span class="o">-</span><span class="mf">1.319</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>     <span class="mf">0.052</span> <span class="n">A</span>
+<span class="n">ATOM</span>     <span class="mi">16</span>  <span class="n">A14</span> <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">5.122</span>   <span class="mf">4.981</span>   <span class="mf">0.910</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>     <span class="mf">0.012</span> <span class="n">A</span>
+<span class="n">ATOM</span>     <span class="mi">17</span>  <span class="n">A20</span> <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">4.627</span>   <span class="mf">6.077</span>  <span class="o">-</span><span class="mf">1.222</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>     <span class="mf">0.012</span> <span class="n">A</span>
+<span class="n">ATOM</span>     <span class="mi">18</span>  <span class="n">A13</span> <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">4.749</span>   <span class="mf">4.135</span>   <span class="mf">1.912</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>     <span class="mf">0.002</span> <span class="n">A</span>
+<span class="n">ATOM</span>     <span class="mi">19</span>  <span class="n">A19</span> <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">3.777</span>   <span class="mf">6.285</span>  <span class="o">-</span><span class="mf">2.267</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>     <span class="mf">0.002</span> <span class="n">A</span>
+<span class="n">ATOM</span>     <span class="mi">20</span>  <span class="n">A18</span> <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">2.543</span>   <span class="mf">5.650</span>  <span class="o">-</span><span class="mf">2.328</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>     <span class="mf">0.019</span> <span class="n">A</span>
+<span class="n">BRANCH</span>  <span class="mi">15</span>  <span class="mi">21</span>
+<span class="n">ATOM</span>     <span class="mi">21</span>  <span class="n">C21</span> <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">0.834</span>   <span class="mf">4.113</span>  <span class="o">-</span><span class="mf">1.388</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>     <span class="mf">0.210</span> <span class="n">C</span>
+<span class="n">ATOM</span>     <span class="mi">22</span>  <span class="n">O1</span>  <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">0.774</span>   <span class="mf">2.915</span>  <span class="o">-</span><span class="mf">1.581</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>    <span class="o">-</span><span class="mf">0.644</span> <span class="n">OA</span>
+<span class="n">ATOM</span>     <span class="mi">23</span>  <span class="n">O3</span>  <span class="n">INH</span> <span class="n">I</span>           <span class="mf">0.298</span>   <span class="mf">4.828</span>  <span class="o">-</span><span class="mf">1.237</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>    <span class="o">-</span><span class="mf">0.644</span> <span class="n">OA</span>
+<span class="n">ENDBRANCH</span>  <span class="mi">15</span>  <span class="mi">21</span>
+<span class="n">ENDBRANCH</span>   <span class="mi">9</span>  <span class="mi">11</span>
+<span class="n">BRANCH</span>   <span class="mi">7</span>  <span class="mi">24</span>
+<span class="n">ATOM</span>     <span class="mi">24</span>  <span class="n">C22</span> <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">3.749</span>   <span class="mf">1.535</span>   <span class="mf">0.125</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>     <span class="mf">0.210</span> <span class="n">C</span>
+<span class="n">ATOM</span>     <span class="mi">25</span>  <span class="n">O2</span>  <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">4.019</span>   <span class="mf">2.378</span>  <span class="o">-</span><span class="mf">0.708</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>    <span class="o">-</span><span class="mf">0.644</span> <span class="n">OA</span>
+<span class="n">ATOM</span>     <span class="mi">26</span>  <span class="n">O4</span>  <span class="n">INH</span> <span class="n">I</span>          <span class="o">-</span><span class="mf">4.659</span>   <span class="mf">1.196</span>   <span class="mf">1.059</span>  <span class="mf">0.00</span>  <span class="mf">0.00</span>    <span class="o">-</span><span class="mf">0.644</span> <span class="n">OA</span>
+<span class="n">ENDBRANCH</span>   <span class="mi">7</span>  <span class="mi">24</span>
+<span class="n">TORSDOF</span> <span class="mi">3</span>
+<span class="mf">123456789.123456789</span><span class="o">.</span><span class="mf">123456789.123456789</span><span class="o">.</span><span class="mf">123456789.123456789</span><span class="o">.</span><span class="mf">123456789.123456789</span><span class="o">.</span> <span class="p">(</span><span class="n">column</span> <span class="n">reference</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based</p>
+</div>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.PDBQT.PDBQTReader.Writer">
+<code class="sig-name descname">Writer</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTReader.Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTReader.Writer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a permissive (simple) PDBQTWriter for <em>filename</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – filename of the output PDBQT file</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter" title="MDAnalysis.coordinates.PDBQT.PDBQTWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDBQTWriter</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.PDBQT.PDBQTWriter">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.coordinates.PDBQT.</code><code class="sig-name descname">PDBQTWriter</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>PDBQT writer that implements a subset of the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html">PDB</a> 3.2 standard and the <a class="reference external" href="http://autodock.scripps.edu/faqs-help/faq/what-is-the-format-of-a-pdbqt-file">PDBQT</a> spec.</p>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.PDBQT.PDBQTWriter.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTWriter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the trajectory file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.PDBQT.PDBQTWriter.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">selection</em>, <em class="sig-param">frame=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDBQT.html#PDBQTWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDBQT.PDBQTWriter.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write selection at current trajectory frame to file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>selection</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – The selection to be written</p></li>
+<li><p><strong>frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – optionally move to frame index <cite>frame</cite> before writing; the default
+is to write the current trajectory frame</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The first letter of the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">segid</span></code> is used as the PDB
+chainID.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="init.html">6.1. Trajectory Readers and Writers  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="CRD.html">6.2. CRD structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.CRD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DCD.html">6.3. DCD trajectory I/O  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DCD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DLPoly.html">6.4. DL_Poly format reader <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DLPoly</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DMS.html">6.5. DESRES file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GMS.html">6.6. GAMESS trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GSD.html">6.7. GSD trajectory reader  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GSD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GRO.html">6.8. GRO file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="INPCRD.html">6.9. INPCRD structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.INPCRD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="LAMMPS.html">6.10. LAMMPS DCD trajectory and DATA I/O  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="MMTF.html">6.11. MMTF trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MMTF</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="MOL2.html">6.12. MOL2 file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDB.html">6.13. PDB structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">6.14. PDBQT structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PQR.html">6.15. PQR file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRJ.html">6.16. AMBER trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRR.html">6.17. TRR trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TXYZ.html">6.18. TXYZ file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TXYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XTC.html">6.19. XTC trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XYZ.html">6.20. XYZ trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRZ.html">6.21. TRZ trajectory I/O  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory.html">6.22. Reading trajectories from memory — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="null.html">6.23. Null output — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">6.24. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">6.25. Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">6.26. ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.27. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../coordinates_modules.html"><span class="section-number">6. </span>Coordinates modules</a><ul>
+      <li>Previous: <a href="PDB.html" title="previous chapter"><span class="section-number">6.13. </span>PDB structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></li>
+      <li>Next: <a href="PQR.html" title="next chapter"><span class="section-number">6.15. </span>PQR file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/documentation_pages/coordinates/PDBQT.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

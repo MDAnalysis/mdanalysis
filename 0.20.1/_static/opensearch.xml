@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>MDAnalysis</ShortName>
+  <Description>Search MDAnalysis 0.20.1 documentation</Description>
+  <InputEncoding>utf-8</InputEncoding>
+  <Url type="text/html" method="get"
+       template="https://docs.mdanalysis.org/search.html?q={searchTerms}"/>
+  <LongName>MDAnalysis 0.20.1 documentation</LongName>
+  <Image height="16" width="16" type="image/x-icon">https://docs.mdanalysis.org/_static/mdanalysis-logo.ico</Image>
+  
+</OpenSearchDescription>

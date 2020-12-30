@@ -1,0 +1,1349 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>5.25. Utility functions for the TPR topology parser &#8212; MDAnalysis 0.20.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 0.20.1 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="6. Coordinates modules" href="../coordinates_modules.html" />
+    <link rel="prev" title="5.24. MDAnalysis topology tables" href="tables.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="utility-functions-for-the-tpr-topology-parser">
+<h1><span class="section-number">5.25. </span>Utility functions for the TPR topology parser<a class="headerlink" href="#utility-functions-for-the-tpr-topology-parser" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="#module-MDAnalysis.topology.tpr" title="MDAnalysis.topology.tpr"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.tpr</span></code></a> module contains classes and
+functions on which the Gromacs TPR topology reader
+<a class="reference internal" href="TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser" title="MDAnalysis.topology.TPRParser.TPRParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">TPRParser</span></code></a> is built.</p>
+<span class="target" id="module-MDAnalysis.topology.tpr"></span><div class="section" id="tpr-support">
+<h2><span class="section-number">5.25.1. </span>TPR support<a class="headerlink" href="#tpr-support" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="#module-MDAnalysis.topology.tpr" title="MDAnalysis.topology.tpr"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.tpr</span></code></a> module is required for the
+<a class="reference internal" href="TPRParser.html#module-MDAnalysis.topology.TPRParser" title="MDAnalysis.topology.TPRParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.TPRParser</span></code></a> module.</p>
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.SUPPORTED_VERSIONS">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.</code><code class="sig-name descname">SUPPORTED_VERSIONS</code><em class="property"> = (58, 73, 83, 100, 103, 110, 112, 116)</em><a class="headerlink" href="#MDAnalysis.topology.tpr.SUPPORTED_VERSIONS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Built-in immutable sequence.</p>
+<p>If no argument is given, the constructor returns an empty tuple.
+If iterable is specified the tuple is initialized from iterable’s items.</p>
+<p>If the argument is a tuple, the return value is the same object.</p>
+</dd></dl>
+
+<p class="rubric">Sub-modules</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#module-MDAnalysis.topology.tpr.setting" title="MDAnalysis.topology.tpr.setting"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.tpr.setting</span></code></a></p></li>
+<li><p><a class="reference internal" href="#module-MDAnalysis.topology.tpr.obj" title="MDAnalysis.topology.tpr.obj"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.tpr.obj</span></code></a></p></li>
+<li><p><a class="reference internal" href="#module-MDAnalysis.topology.tpr.utils" title="MDAnalysis.topology.tpr.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.tpr.utils</span></code></a></p></li>
+</ul>
+</div>
+<span class="target" id="module-MDAnalysis.topology.tpr.setting"></span><div class="section" id="tprparser-settings">
+<h2><span class="section-number">5.25.2. </span>TPRParser settings<a class="headerlink" href="#tprparser-settings" title="Permalink to this headline">¶</a></h2>
+<p>Definition of constants.</p>
+<p>The currently read file format versions are defined in
+<a class="reference internal" href="#MDAnalysis.topology.tpr.setting.SUPPORTED_VERSIONS" title="MDAnalysis.topology.tpr.setting.SUPPORTED_VERSIONS"><code class="xref py py-data docutils literal notranslate"><span class="pre">SUPPORTED_VERSIONS</span></code></a>.</p>
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_ANGLES">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_ANGLES</code><em class="property"> = 10</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_ANGLES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_ANGRES">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_ANGRES</code><em class="property"> = 58</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_ANGRES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_ANGRESZ">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_ANGRESZ</code><em class="property"> = 59</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_ANGRESZ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_ANHARM_POL">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_ANHARM_POL</code><em class="property"> = 51</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_ANHARM_POL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_BHAM">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_BHAM</code><em class="property"> = 38</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_BHAM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_BHAM_LR">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_BHAM_LR</code><em class="property"> = 40</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_BHAM_LR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_BONDS">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_BONDS</code><em class="property"> = 0</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_BONDS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_CBTDIHS">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_CBTDIHS</code><em class="property"> = 22</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_CBTDIHS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_CMAP">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_CMAP</code><em class="property"> = 27</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_CMAP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_COM_PULL">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_COM_PULL</code><em class="property"> = 73</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_COM_PULL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_CONNBONDS">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_CONNBONDS</code><em class="property"> = 4</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_CONNBONDS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_CONSTR">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_CONSTR</code><em class="property"> = 62</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_CONSTR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_CONSTRNC">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_CONSTRNC</code><em class="property"> = 63</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_CONSTRNC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_COUL14">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_COUL14</code><em class="property"> = 34</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_COUL14" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_COUL_LR">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_COUL_LR</code><em class="property"> = 43</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_COUL_LR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_COUL_RECIP">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_COUL_RECIP</code><em class="property"> = 45</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_COUL_RECIP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_COUL_SR">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_COUL_SR</code><em class="property"> = 42</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_COUL_SR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_CROSS_BOND_ANGLES">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_CROSS_BOND_ANGLES</code><em class="property"> = 15</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_CROSS_BOND_ANGLES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_CROSS_BOND_BONDS">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_CROSS_BOND_BONDS</code><em class="property"> = 14</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_CROSS_BOND_BONDS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_CUBICBONDS">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_CUBICBONDS</code><em class="property"> = 3</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_CUBICBONDS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_DHDL_CON">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_DHDL_CON</code><em class="property"> = 83</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DHDL_CON" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_DIHRES">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_DIHRES</code><em class="property"> = 60</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DIHRES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_DIHRESVIOL">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_DIHRESVIOL</code><em class="property"> = 61</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DIHRESVIOL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_DISPCORR">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_DISPCORR</code><em class="property"> = 41</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DISPCORR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_DISRES">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_DISRES</code><em class="property"> = 54</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DISRES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_DISRESVIOL">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_DISRESVIOL</code><em class="property"> = 55</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DISRESVIOL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_DKDL">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_DKDL</code><em class="property"> = 85</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DKDL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_DPD">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_DPD</code><em class="property"> = 47</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DPD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_DVDL">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_DVDL</code><em class="property"> = 84</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DVDL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_DVDL_BONDED">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_DVDL_BONDED</code><em class="property"> = 88</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DVDL_BONDED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_DVDL_COUL">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_DVDL_COUL</code><em class="property"> = 86</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DVDL_COUL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_DVDL_RESTRAINT">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_DVDL_RESTRAINT</code><em class="property"> = 89</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DVDL_RESTRAINT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_DVDL_TEMPERATURE">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_DVDL_TEMPERATURE</code><em class="property"> = 90</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DVDL_TEMPERATURE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_DVDL_VDW">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_DVDL_VDW</code><em class="property"> = 87</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DVDL_VDW" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_ECONSERVED">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_ECONSERVED</code><em class="property"> = 78</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_ECONSERVED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_EKIN">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_EKIN</code><em class="property"> = 76</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_EKIN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_EPOT">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_EPOT</code><em class="property"> = 75</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_EPOT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_EQM">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_EQM</code><em class="property"> = 74</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_EQM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_ETOT">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_ETOT</code><em class="property"> = 77</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_ETOT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_FBPOSRES">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_FBPOSRES</code><em class="property"> = 53</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_FBPOSRES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_FENEBONDS">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_FENEBONDS</code><em class="property"> = 6</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_FENEBONDS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_FOURDIHS">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_FOURDIHS</code><em class="property"> = 23</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_FOURDIHS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_G96ANGLES">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_G96ANGLES</code><em class="property"> = 11</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_G96ANGLES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_G96BONDS">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_G96BONDS</code><em class="property"> = 1</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_G96BONDS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_GB12">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_GB12</code><em class="property"> = 28</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_GB12" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_GB13">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_GB13</code><em class="property"> = 29</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_GB13" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_GB14">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_GB14</code><em class="property"> = 30</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_GB14" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_GBPOL">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_GBPOL</code><em class="property"> = 31</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_GBPOL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_HARMONIC">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_HARMONIC</code><em class="property"> = 5</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_HARMONIC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_IDIHS">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_IDIHS</code><em class="property"> = 24</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_IDIHS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_LINEAR_ANGLES">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_LINEAR_ANGLES</code><em class="property"> = 13</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_LINEAR_ANGLES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_LJ">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_LJ</code><em class="property"> = 37</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_LJ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_LJ14">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_LJ14</code><em class="property"> = 33</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_LJ14" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_LJC14_Q">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_LJC14_Q</code><em class="property"> = 35</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_LJC14_Q" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_LJC_PAIRS_NB">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_LJC_PAIRS_NB</code><em class="property"> = 36</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_LJC_PAIRS_NB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_LJ_LR">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_LJ_LR</code><em class="property"> = 39</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_LJ_LR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_LJ_RECIP">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_LJ_RECIP</code><em class="property"> = 46</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_LJ_RECIP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_MORSE">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_MORSE</code><em class="property"> = 2</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_MORSE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_NPSOLVATION">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_NPSOLVATION</code><em class="property"> = 32</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_NPSOLVATION" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_NRE">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_NRE</code><em class="property"> = 91</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_NRE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_ORIRES">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_ORIRES</code><em class="property"> = 56</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_ORIRES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_ORIRESDEV">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_ORIRESDEV</code><em class="property"> = 57</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_ORIRESDEV" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_PDIHS">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_PDIHS</code><em class="property"> = 19</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_PDIHS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_PDISPCORR">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_PDISPCORR</code><em class="property"> = 81</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_PDISPCORR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_PIDIHS">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_PIDIHS</code><em class="property"> = 25</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_PIDIHS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_POLARIZATION">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_POLARIZATION</code><em class="property"> = 48</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_POLARIZATION" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_POSRES">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_POSRES</code><em class="property"> = 52</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_POSRES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_PRES">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_PRES</code><em class="property"> = 82</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_PRES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_QUARTIC_ANGLES">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_QUARTIC_ANGLES</code><em class="property"> = 17</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_QUARTIC_ANGLES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_RBDIHS">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_RBDIHS</code><em class="property"> = 20</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_RBDIHS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_RESTRANGLES">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_RESTRANGLES</code><em class="property"> = 12</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_RESTRANGLES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_RESTRBONDS">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_RESTRBONDS</code><em class="property"> = 9</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_RESTRBONDS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_RESTRDIHS">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_RESTRDIHS</code><em class="property"> = 21</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_RESTRDIHS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_RF_EXCL">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_RF_EXCL</code><em class="property"> = 44</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_RF_EXCL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_SETTLE">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_SETTLE</code><em class="property"> = 64</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_SETTLE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_TABANGLES">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_TABANGLES</code><em class="property"> = 18</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_TABANGLES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_TABBONDS">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_TABBONDS</code><em class="property"> = 7</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_TABBONDS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_TABBONDSNC">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_TABBONDSNC</code><em class="property"> = 8</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_TABBONDSNC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_TABDIHS">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_TABDIHS</code><em class="property"> = 26</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_TABDIHS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_TEMP">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_TEMP</code><em class="property"> = 79</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_TEMP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_THOLE_POL">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_THOLE_POL</code><em class="property"> = 50</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_THOLE_POL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_UREY_BRADLEY">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_UREY_BRADLEY</code><em class="property"> = 16</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_UREY_BRADLEY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_VSITE2">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_VSITE2</code><em class="property"> = 65</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_VSITE3">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_VSITE3</code><em class="property"> = 66</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_VSITE3FAD">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_VSITE3FAD</code><em class="property"> = 68</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE3FAD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_VSITE3FD">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_VSITE3FD</code><em class="property"> = 67</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE3FD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_VSITE3OUT">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_VSITE3OUT</code><em class="property"> = 69</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE3OUT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_VSITE4FD">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_VSITE4FD</code><em class="property"> = 70</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE4FD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_VSITE4FDN">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_VSITE4FDN</code><em class="property"> = 71</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE4FDN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_VSITEN">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_VSITEN</code><em class="property"> = 72</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITEN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_VTEMP_NOLONGERUSED">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_VTEMP_NOLONGERUSED</code><em class="property"> = 80</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VTEMP_NOLONGERUSED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_WATER_POL">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">F_WATER_POL</code><em class="property"> = 49</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_WATER_POL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.SUPPORTED_VERSIONS">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">SUPPORTED_VERSIONS</code><em class="property"> = (58, 73, 83, 100, 103, 110, 112, 116)</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.SUPPORTED_VERSIONS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gromacs TPR file format versions that can be read by the TPRParser.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.ftupd">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">ftupd</code><em class="property"> = [(20, 3), (20, 4), (20, 5), (34, 6), (43, 7), (43, 8), (70, 9), (98, 12), (76, 13), (30, 14), (30, 15), (30, 16), (34, 17), (43, 18), (98, 21), (98, 22), (26, 23), (26, 25), (43, 26), (65, 27), (60, 28), (61, 29), (61, 30), (72, 31), (72, 32), (41, 35), (41, 36), (32, 40), (32, 44), (32, 45), (93, 46), (46, 47), (30, 48), (36, 50), (90, 53), (22, 55), (22, 56), (22, 57), (26, 60), (26, 61), (49, 71), (50, 72), (46, 73), (20, 74), (46, 78), (69, 80), (66, 81), (54, 83), (76, 51), (79, 86), (79, 87), (79, 88), (79, 89), (79, 90)]</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.ftupd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/src/gmxlib/tpxio.c</span></code></p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.interaction_types">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.setting.</code><code class="sig-name descname">interaction_types</code><em class="property"> = [('BONDS', 'Bond', 2), ('G96BONDS', 'G96Bond', 2), ('MORSE', 'Morse', 2), ('CUBICBONDS', 'Cubic Bonds', 2), ('CONNBONDS', 'Connect Bonds', 2), ('HARMONIC', 'Harmonic Pot.', 2), ('FENEBONDS', 'FENE Bonds', 2), ('TABBONDS', 'Tab. Bonds', 2), ('TABBONDSNC', 'Tab. Bonds NC', 2), ('RESTRAINTPOT', 'Restraint Pot.', 2), ('ANGLES', 'Angle', 3), ('G96ANGLES', 'G96Angle', 3), ('RESTRANGLES', 'Restricted Angles', 3), ('LINEAR_ANGLES', 'Lin. Angle', 3), ('CROSS_BOND_BOND', 'Bond-Cross', 3), ('CROSS_BOND_ANGLE', 'BA-Cross', 3), ('UREY_BRADLEY', 'U-B', 3), ('QANGLES', 'Quartic Angles', 3), ('TABANGLES', 'Tab. Angles', 3), ('PDIHS', 'Proper Dih.', 4), ('RBDIHS', 'Ryckaert-Bell.', 4), ('RESTRDIHS', 'Restricted Dih.', 4), ('CBTDIHS', 'CBT Dih.', 4), ('FOURDIHS', 'Fourier Dih.', 4), ('IDIHS', 'Improper Dih.', 4), ('PIDIHS', 'Improper Dih.', 4), ('TABDIHS', 'Tab. Dih.', 4), ('CMAP', 'CMAP Dih.', 5), ('GB12', 'GB 1-2 Pol.', 2), ('GB13', 'GB 1-3 Pol.', 2), ('GB14', 'GB 1-4 Pol.', 2), ('GBPOL', 'GB Polarization', None), ('NPSOLVATION', 'Nonpolar Sol.', None), ('LJ14', 'LJ-14', 2), ('COUL14', 'Coulomb-14', None), ('LJC14_Q', 'LJC-14 q', 2), ('LJC_NB', 'LJC Pairs NB', 2), ('LJ_SR', 'LJ (SR)', 2), ('BHAM', 'Buck.ham (SR)', 2), ('LJ_LR', 'LJ (LR)', None), ('BHAM_LR', 'Buck.ham (LR)', None), ('DISPCORR', 'Disper. corr.', None), ('COUL_SR', 'Coulomb (SR)', None), ('COUL_LR', 'Coulomb (LR)', None), ('RF_EXCL', 'RF excl.', None), ('COUL_RECIP', 'Coul. recip.', None), ('LJ_RECIP', 'LJ recip.', None), ('DPD', 'DPD', None), ('POLARIZATION', 'Polarization', 2), ('WATERPOL', 'Water Pol.', 5), ('THOLE', 'Thole Pol.', 4), ('ANHARM_POL', 'Anharm. Pol.', 2), ('POSRES', 'Position Rest.', 1), ('FBPOSRES', 'Flat-bottom posres', 1), ('DISRES', 'Dis. Rest.', 2), ('DISRESVIOL', 'D.R.Viol. (nm)', None), ('ORIRES', 'Orient. Rest.', 2), ('ORDEV', 'Ori. R. RMSD', None), ('ANGRES', 'Angle Rest.', 4), ('ANGRESZ', 'Angle Rest. Z', 2), ('DIHRES', 'Dih. Rest.', 4), ('DIHRESVIOL', 'Dih. Rest. Viol.', None), ('CONSTR', 'Constraint', 2), ('CONSTRNC', 'Constr. No Conn.', 2), ('SETTLE', 'Settle', 3), ('VSITE2', 'Virtual site 2', 3), ('VSITE3', 'Virtual site 3', 4), ('VSITE3FD', 'Virtual site 3fd', 4), ('VSITE3FAD', 'Virtual site 3fad', 4), ('VSITE3OUT', 'Virtual site 3out', 4), ('VSITE4FD', 'Virtual site 4fd', 5), ('VSITE4FDN', 'Virtual site 4fdn', 5), ('VSITEN', 'Virtual site N', 2), ('COM_PULL', 'COM Pull En.', None), ('EQM', 'Quantum En.', None), ('EPOT', 'Potential', None), ('EKIN', 'Kinetic En.', None), ('ETOT', 'Total Energy', None), ('ECONS', 'Conserved En.', None), ('TEMP', 'Temperature', None), ('VTEMP', 'Vir. Temp. (not used)', None), ('PDISPCORR', 'Pres. DC', None), ('PRES', 'Pressure', None), ('DH/DL_CON', 'dH/dl constr.', None), ('DV/DL', 'dVremain/dl', None), ('DK/DL', 'dEkin/dl', None), ('DVC/DL', 'dVcoul/dl', None), ('DVV/DL', 'dVvdw/dl', None), ('DVB/DL', 'dVbonded/dl', None), ('DVR/DL', 'dVrestraint/dl', None), ('DVT/DL', 'dVtemperature/dl', None)]</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.interaction_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interaction types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/gmxlib/ifunc.c</span></code></p>
+</dd></dl>
+
+</div>
+<span class="target" id="module-MDAnalysis.topology.tpr.obj"></span><div class="section" id="class-definitions-for-the-tprparser">
+<h2><span class="section-number">5.25.3. </span>Class definitions for the TPRParser<a class="headerlink" href="#class-definitions-for-the-tprparser" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MDAnalysis.topology.tpr.obj.Atom">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.topology.tpr.obj.</code><code class="sig-name descname">Atom</code><span class="sig-paren">(</span><em class="sig-param">m</em>, <em class="sig-param">q</em>, <em class="sig-param">mB</em>, <em class="sig-param">qB</em>, <em class="sig-param">tp</em>, <em class="sig-param">typeB</em>, <em class="sig-param">ptype</em>, <em class="sig-param">resind</em>, <em class="sig-param">atomnumber</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of Atom(m, q, mB, qB, tp, typeB, ptype, resind, atomnumber)</p>
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Atom.atomnumber">
+<em class="property">property </em><code class="sig-name descname">atomnumber</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atom.atomnumber" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 8</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Atom.m">
+<em class="property">property </em><code class="sig-name descname">m</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atom.m" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Atom.mB">
+<em class="property">property </em><code class="sig-name descname">mB</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atom.mB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Atom.ptype">
+<em class="property">property </em><code class="sig-name descname">ptype</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atom.ptype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 6</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Atom.q">
+<em class="property">property </em><code class="sig-name descname">q</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atom.q" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Atom.qB">
+<em class="property">property </em><code class="sig-name descname">qB</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atom.qB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Atom.resind">
+<em class="property">property </em><code class="sig-name descname">resind</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atom.resind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 7</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Atom.tp">
+<em class="property">property </em><code class="sig-name descname">tp</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atom.tp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Atom.typeB">
+<em class="property">property </em><code class="sig-name descname">typeB</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atom.typeB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.topology.tpr.obj.AtomKind">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.topology.tpr.obj.</code><code class="sig-name descname">AtomKind</code><span class="sig-paren">(</span><em class="sig-param">id</em>, <em class="sig-param">name</em>, <em class="sig-param">type</em>, <em class="sig-param">resid</em>, <em class="sig-param">resname</em>, <em class="sig-param">mass</em>, <em class="sig-param">charge</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/obj.html#AtomKind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.AtomKind" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.topology.tpr.obj.Atoms">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.topology.tpr.obj.</code><code class="sig-name descname">Atoms</code><span class="sig-paren">(</span><em class="sig-param">atoms</em>, <em class="sig-param">nr</em>, <em class="sig-param">nres</em>, <em class="sig-param">type</em>, <em class="sig-param">typeB</em>, <em class="sig-param">atomnames</em>, <em class="sig-param">resnames</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of Atoms(atoms, nr, nres, type, typeB, atomnames, resnames)</p>
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Atoms.atomnames">
+<em class="property">property </em><code class="sig-name descname">atomnames</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atoms.atomnames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Atoms.atoms">
+<em class="property">property </em><code class="sig-name descname">atoms</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atoms.atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Atoms.nr">
+<em class="property">property </em><code class="sig-name descname">nr</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atoms.nr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Atoms.nres">
+<em class="property">property </em><code class="sig-name descname">nres</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atoms.nres" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Atoms.resnames">
+<em class="property">property </em><code class="sig-name descname">resnames</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atoms.resnames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 6</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Atoms.type">
+<em class="property">property </em><code class="sig-name descname">type</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atoms.type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Atoms.typeB">
+<em class="property">property </em><code class="sig-name descname">typeB</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atoms.typeB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.topology.tpr.obj.Box">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.topology.tpr.obj.</code><code class="sig-name descname">Box</code><span class="sig-paren">(</span><em class="sig-param">size</em>, <em class="sig-param">rel</em>, <em class="sig-param">v</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of Box(size, rel, v)</p>
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Box.rel">
+<em class="property">property </em><code class="sig-name descname">rel</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Box.rel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Box.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Box.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Box.v">
+<em class="property">property </em><code class="sig-name descname">v</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Box.v" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.topology.tpr.obj.Ilist">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.topology.tpr.obj.</code><code class="sig-name descname">Ilist</code><span class="sig-paren">(</span><em class="sig-param">nr</em>, <em class="sig-param">ik</em>, <em class="sig-param">iatoms</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Ilist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of Ilist(nr, ik, iatoms)</p>
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Ilist.iatoms">
+<em class="property">property </em><code class="sig-name descname">iatoms</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Ilist.iatoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Ilist.ik">
+<em class="property">property </em><code class="sig-name descname">ik</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Ilist.ik" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Ilist.nr">
+<em class="property">property </em><code class="sig-name descname">nr</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Ilist.nr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.topology.tpr.obj.InteractionKind">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.topology.tpr.obj.</code><code class="sig-name descname">InteractionKind</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">long_name</em>, <em class="sig-param">natoms</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/obj.html#InteractionKind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.InteractionKind" title="Permalink to this definition">¶</a></dt>
+<dd><p>natoms: number of atoms involved in this type of interaction</p>
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.InteractionKind.process">
+<code class="sig-name descname">process</code><span class="sig-paren">(</span><em class="sig-param">atom_ndx</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/obj.html#InteractionKind.process"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.InteractionKind.process" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.topology.tpr.obj.Molblock">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.topology.tpr.obj.</code><code class="sig-name descname">Molblock</code><span class="sig-paren">(</span><em class="sig-param">molb_type</em>, <em class="sig-param">molb_nmol</em>, <em class="sig-param">molb_natoms_mol</em>, <em class="sig-param">molb_nposres_xA</em>, <em class="sig-param">molb_nposres_xB</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Molblock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of Molblock(molb_type, molb_nmol, molb_natoms_mol, molb_nposres_xA, molb_nposres_xB)</p>
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Molblock.molb_natoms_mol">
+<em class="property">property </em><code class="sig-name descname">molb_natoms_mol</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Molblock.molb_natoms_mol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Molblock.molb_nmol">
+<em class="property">property </em><code class="sig-name descname">molb_nmol</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Molblock.molb_nmol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Molblock.molb_nposres_xA">
+<em class="property">property </em><code class="sig-name descname">molb_nposres_xA</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Molblock.molb_nposres_xA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Molblock.molb_nposres_xB">
+<em class="property">property </em><code class="sig-name descname">molb_nposres_xB</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Molblock.molb_nposres_xB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Molblock.molb_type">
+<em class="property">property </em><code class="sig-name descname">molb_type</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Molblock.molb_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.topology.tpr.obj.MoleculeKind">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.topology.tpr.obj.</code><code class="sig-name descname">MoleculeKind</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">atomkinds</em>, <em class="sig-param">bonds=None</em>, <em class="sig-param">angles=None</em>, <em class="sig-param">dihe=None</em>, <em class="sig-param">impr=None</em>, <em class="sig-param">donors=None</em>, <em class="sig-param">acceptors=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/obj.html#MoleculeKind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.MoleculeKind" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.MoleculeKind.number_of_atoms">
+<code class="sig-name descname">number_of_atoms</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/obj.html#MoleculeKind.number_of_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.MoleculeKind.number_of_atoms" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.MoleculeKind.number_of_residues">
+<code class="sig-name descname">number_of_residues</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/obj.html#MoleculeKind.number_of_residues"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.MoleculeKind.number_of_residues" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.MoleculeKind.remap_angles">
+<code class="sig-name descname">remap_angles</code><span class="sig-paren">(</span><em class="sig-param">atom_start_ndx</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/obj.html#MoleculeKind.remap_angles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.MoleculeKind.remap_angles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.MoleculeKind.remap_bonds">
+<code class="sig-name descname">remap_bonds</code><span class="sig-paren">(</span><em class="sig-param">atom_start_ndx</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/obj.html#MoleculeKind.remap_bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.MoleculeKind.remap_bonds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.MoleculeKind.remap_dihe">
+<code class="sig-name descname">remap_dihe</code><span class="sig-paren">(</span><em class="sig-param">atom_start_ndx</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/obj.html#MoleculeKind.remap_dihe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.MoleculeKind.remap_dihe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.MoleculeKind.remap_impr">
+<code class="sig-name descname">remap_impr</code><span class="sig-paren">(</span><em class="sig-param">atom_start_ndx</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/obj.html#MoleculeKind.remap_impr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.MoleculeKind.remap_impr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.topology.tpr.obj.Mtop">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.topology.tpr.obj.</code><code class="sig-name descname">Mtop</code><span class="sig-paren">(</span><em class="sig-param">nmoltype</em>, <em class="sig-param">moltypes</em>, <em class="sig-param">nmolblock</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Mtop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of Mtop(nmoltype, moltypes, nmolblock)</p>
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Mtop.moltypes">
+<em class="property">property </em><code class="sig-name descname">moltypes</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Mtop.moltypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Mtop.nmolblock">
+<em class="property">property </em><code class="sig-name descname">nmolblock</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Mtop.nmolblock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Mtop.nmoltype">
+<em class="property">property </em><code class="sig-name descname">nmoltype</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Mtop.nmoltype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.topology.tpr.obj.Params">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.topology.tpr.obj.</code><code class="sig-name descname">Params</code><span class="sig-paren">(</span><em class="sig-param">atnr</em>, <em class="sig-param">ntypes</em>, <em class="sig-param">functype</em>, <em class="sig-param">reppow</em>, <em class="sig-param">fudgeQQ</em>, <em class="sig-param">iparams</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of Params(atnr, ntypes, functype, reppow, fudgeQQ, iparams)</p>
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Params.atnr">
+<em class="property">property </em><code class="sig-name descname">atnr</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Params.atnr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Params.fudgeQQ">
+<em class="property">property </em><code class="sig-name descname">fudgeQQ</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Params.fudgeQQ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Params.functype">
+<em class="property">property </em><code class="sig-name descname">functype</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Params.functype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Params.iparams">
+<em class="property">property </em><code class="sig-name descname">iparams</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Params.iparams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Params.ntypes">
+<em class="property">property </em><code class="sig-name descname">ntypes</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Params.ntypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.Params.reppow">
+<em class="property">property </em><code class="sig-name descname">reppow</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Params.reppow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.topology.tpr.obj.TpxHeader">
+<em class="property">class </em><code class="sig-prename descclassname">MDAnalysis.topology.tpr.obj.</code><code class="sig-name descname">TpxHeader</code><span class="sig-paren">(</span><em class="sig-param">ver_str</em>, <em class="sig-param">precision</em>, <em class="sig-param">fver</em>, <em class="sig-param">fgen</em>, <em class="sig-param">file_tag</em>, <em class="sig-param">natoms</em>, <em class="sig-param">ngtc</em>, <em class="sig-param">fep_state</em>, <em class="sig-param">lamb</em>, <em class="sig-param">bIr</em>, <em class="sig-param">bTop</em>, <em class="sig-param">bX</em>, <em class="sig-param">bV</em>, <em class="sig-param">bF</em>, <em class="sig-param">bBox</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of TpxHeader(ver_str, precision, fver, fgen, file_tag, natoms, ngtc, fep_state, lamb, bIr, bTop, bX, bV, bF, bBox)</p>
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.TpxHeader.bBox">
+<em class="property">property </em><code class="sig-name descname">bBox</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader.bBox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 14</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.TpxHeader.bF">
+<em class="property">property </em><code class="sig-name descname">bF</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader.bF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 13</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.TpxHeader.bIr">
+<em class="property">property </em><code class="sig-name descname">bIr</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader.bIr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 9</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.TpxHeader.bTop">
+<em class="property">property </em><code class="sig-name descname">bTop</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader.bTop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 10</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.TpxHeader.bV">
+<em class="property">property </em><code class="sig-name descname">bV</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader.bV" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 12</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.TpxHeader.bX">
+<em class="property">property </em><code class="sig-name descname">bX</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader.bX" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 11</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.TpxHeader.fep_state">
+<em class="property">property </em><code class="sig-name descname">fep_state</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader.fep_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 7</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.TpxHeader.fgen">
+<em class="property">property </em><code class="sig-name descname">fgen</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader.fgen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.TpxHeader.file_tag">
+<em class="property">property </em><code class="sig-name descname">file_tag</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader.file_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.TpxHeader.fver">
+<em class="property">property </em><code class="sig-name descname">fver</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader.fver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.TpxHeader.lamb">
+<em class="property">property </em><code class="sig-name descname">lamb</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader.lamb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 8</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.TpxHeader.natoms">
+<em class="property">property </em><code class="sig-name descname">natoms</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader.natoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.TpxHeader.ngtc">
+<em class="property">property </em><code class="sig-name descname">ngtc</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader.ngtc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 6</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.TpxHeader.precision">
+<em class="property">property </em><code class="sig-name descname">precision</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader.precision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.tpr.obj.TpxHeader.ver_str">
+<em class="property">property </em><code class="sig-name descname">ver_str</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.TpxHeader.ver_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<span class="target" id="module-MDAnalysis.topology.tpr.utils"></span><div class="section" id="utilities-for-the-tprparser">
+<h2><span class="section-number">5.25.4. </span>Utilities for the TPRParser<a class="headerlink" href="#utilities-for-the-tprparser" title="Permalink to this headline">¶</a></h2>
+<p>Function calling order:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">TPRParser</span><span class="o">.</span><span class="n">py</span> <span class="n">call</span> <span class="n">do_mtop</span><span class="p">)</span>
+<span class="n">do_mtop</span> <span class="o">-&gt;</span> <span class="n">do_symtab</span>
+        <span class="o">-&gt;</span> <span class="n">do_ffparams</span> <span class="o">-&gt;</span> <span class="n">do_iparams</span>
+        <span class="o">-&gt;</span> <span class="n">do_moltype</span>  <span class="o">-&gt;</span> <span class="n">do_atoms</span>  <span class="o">-&gt;</span> <span class="n">do_atom</span>
+                                    <span class="o">-&gt;</span> <span class="n">do_resinfo</span>
+                       <span class="o">-&gt;</span> <span class="n">do_ilists</span>
+                       <span class="o">-&gt;</span> <span class="n">do_block</span>
+                       <span class="o">-&gt;</span> <span class="n">do_blocka</span>
+        <span class="o">-&gt;</span> <span class="n">do_molblock</span>
+</pre></div>
+</div>
+<p>Then compose the stuffs in the format <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> reads in.</p>
+<p>The module also contains the <a class="reference internal" href="#MDAnalysis.topology.tpr.utils.do_inputrec" title="MDAnalysis.topology.tpr.utils.do_inputrec"><code class="xref py py-func docutils literal notranslate"><span class="pre">do_inputrec()</span></code></a> to read the TPR header with.</p>
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.define_unpack_real">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">define_unpack_real</code><span class="sig-paren">(</span><em class="sig-param">prec</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#define_unpack_real"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.define_unpack_real" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define an unpack_real method of data based on the float precision used</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_atom">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">do_atom</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">fver</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_atom" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_atoms">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">do_atoms</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">symtab</em>, <em class="sig-param">fver</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_atoms" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_atomtypes">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">do_atomtypes</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_atomtypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_atomtypes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_block">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">do_block</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_block" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_blocka">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">do_blocka</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_blocka"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_blocka" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_ffparams">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">do_ffparams</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">fver</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_ffparams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_ffparams" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_groups">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">do_groups</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">symtab</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_groups" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_grps">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">do_grps</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_grps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_grps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_harm">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">do_harm</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_harm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_harm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_ilists">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">do_ilists</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">fver</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_ilists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_ilists" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_inputrec">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">do_inputrec</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_inputrec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_inputrec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read through header information from TPR file <em>data</em> structure.</p>
+<p>Note that this function does not return any useful data itself. If
+your are interested in using the header information, use this
+functions as a starting point for your own code.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_iparams">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">do_iparams</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">functypes</em>, <em class="sig-param">fver</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_iparams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_iparams" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_molblock">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">do_molblock</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_molblock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_molblock" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_moltype">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">do_moltype</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">symtab</em>, <em class="sig-param">fver</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_moltype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_moltype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_mtop">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">do_mtop</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">fver</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_mtop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_mtop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_resinfo">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">do_resinfo</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">symtab</em>, <em class="sig-param">fver</em>, <em class="sig-param">nres</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_resinfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_resinfo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_rvec">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">do_rvec</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_rvec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_rvec" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_string">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">do_string</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Emulate gmx_fio_do_string</p>
+<p>gmx_fio_do_string reads a string from a XDR file. On the contraty to the
+python unpack_string, gmx_fio_do_string reads the size as an unsigned
+interger before reading the actual string.</p>
+<p>See &lt;gromacs-2016-src&gt;/src/gromacs/fileio/gmx_system_xdr.c:454</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_symstr">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">do_symstr</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">symtab</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_symstr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_symstr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.do_symtab">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">do_symtab</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#do_symtab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.do_symtab" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.extract_box_info">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">extract_box_info</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">fileVersion</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#extract_box_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.extract_box_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.fileVersion_err">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">fileVersion_err</code><span class="sig-paren">(</span><em class="sig-param">fver</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#fileVersion_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.fileVersion_err" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.ndo_int">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">ndo_int</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">n</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#ndo_int"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.ndo_int" title="Permalink to this definition">¶</a></dt>
+<dd><p>mimic of gmx_fio_ndo_real in gromacs</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.ndo_ivec">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">ndo_ivec</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">n</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#ndo_ivec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.ndo_ivec" title="Permalink to this definition">¶</a></dt>
+<dd><p>mimic of gmx_fio_ndo_rvec in gromacs</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.ndo_real">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">ndo_real</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">n</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#ndo_real"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.ndo_real" title="Permalink to this definition">¶</a></dt>
+<dd><p>mimic of gmx_fio_ndo_real in gromacs</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.ndo_rvec">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">ndo_rvec</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">n</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#ndo_rvec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.ndo_rvec" title="Permalink to this definition">¶</a></dt>
+<dd><p>mimic of gmx_fio_ndo_rvec in gromacs</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.tpr.utils.read_tpxheader">
+<code class="sig-prename descclassname">MDAnalysis.topology.tpr.utils.</code><code class="sig-name descname">read_tpxheader</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#read_tpxheader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.read_tpxheader" title="Permalink to this definition">¶</a></dt>
+<dd><p>this function is now compatible with do_tpxheader in tpxio.cpp</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/logos/mdanalysis-logo-200x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=MDAnalysis&repo=mdanalysis&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="init.html">5.1. Topology readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="CRDParser.html">5.2. CRD topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DLPolyParser.html">5.3. DL Poly format Topology Readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.DLPolyParser</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DMSParser.html">5.4. DESRES Molecular Structure file format topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GMSParser.html">5.5. GAMESS Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GROParser.html">5.6. GRO topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HoomdXMLParser.html">5.7. HOOMD XML topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LAMMPSParser.html">5.8. LAMMPSParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MinimalParser.html">5.9. Minimal topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MMTFParser.html">5.10. MMTF Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MOL2Parser.html">5.11. MOL2 file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBParser.html">5.12. PDB Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExtendedPDBParser.html">5.13. Extended PDB topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBQTParser.html">5.14. PDBQT topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PQRParser.html">5.15. PQR topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PSFParser.html">5.16. PSF topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TOPParser.html">5.17. AMBER PRMTOP topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TPRParser.html">5.18. Gromacs portable run input TPR format parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TXYZParser.html">5.19. TXYZ topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="XYZParser.html">5.20. XYZ Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">5.21. Base topology reader classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">5.22. Common functions for topology building — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html">5.23. Guessing unknown Topology information — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tables.html">5.24. MDAnalysis topology tables</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.25. Utility functions for the TPR topology parser</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tpr-support">5.25.1. TPR support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tprparser-settings">5.25.2. TPRParser settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#class-definitions-for-the-tprparser">5.25.3. Class definitions for the TPRParser</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#utilities-for-the-tprparser">5.25.4. Utilities for the TPRParser</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../topology_modules.html"><span class="section-number">5. </span>Topology modules</a><ul>
+      <li>Previous: <a href="tables.html" title="previous chapter"><span class="section-number">5.24. </span>MDAnalysis topology tables</a></li>
+      <li>Next: <a href="../coordinates_modules.html" title="next chapter"><span class="section-number">6. </span>Coordinates modules</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2005-2017, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik 'Rathann' Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/documentation_pages/topology/tpr_util.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/MDAnalysis/mdanalysis" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
