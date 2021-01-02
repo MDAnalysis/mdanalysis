@@ -180,11 +180,16 @@ class TestAtomnames(TestAtomAttr):
     single_value = 'Ca2'
     attrclass = tpattrs.Atomnames
 
-class TestemptyAtomnames(object): 
-    u = make_Universe() 
-    attrclass = tpattrs.Atomnames
-    assert_equal(attrclass._get_prev_residues_by_resid(u.residues[[]]),u.residues[[]])  
-    assert_equal(attrclass._get_next_residues_by_resid(u.residues[[]]),u.residues[[]]) 
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(PSF, DCD)
+
+    def test_prev_emptyresidue(self,u):
+        assert_equal(u.residues[[]]._get_prev_residues_by_resid(),u.residues[[]])
+
+    def test_next_emptyresidue(self,u):
+        assert_equal(u.residues[[]]._get_next_residues_by_resid(),u.residues[[]])
+           
 
 class AggregationMixin(TestAtomAttr):
     def test_get_residues(self, attr):
