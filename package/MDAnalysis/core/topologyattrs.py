@@ -920,7 +920,7 @@ class Atomnames(_AtomStringAttr):
         try:
             u = residues[0].universe
         except IndexError:
-            return residues        
+            return residues
         pvres = np.array([None]*len(residues))
         pvres[:] = prev = u.residues[residues.ix-1]
         rsid = residues.segids

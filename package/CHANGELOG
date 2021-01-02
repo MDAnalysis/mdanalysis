@@ -21,6 +21,7 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * atommethods(_get_prev/next_residues_by_resid) returns empty residue group when given empty residue group (Issue #3089)
   * MOL2 files without bonds can now be read and written (Issue #3057)
   * Write `CONECT` record only once in multi-model PDB files (Issue #3018)
   * Add '.nc' as a recognised extension for the NCDFWriter (Issue #3030)
