@@ -180,7 +180,7 @@ class TestAtomnames(TestAtomAttr):
     single_value = 'Ca2'
     attrclass = tpattrs.Atomnames
 
-class TestemptyAtomnames(TestAtomAttr): 
+class TestemptyAtomnames(object): 
     u = make_Universe() 
     attrclass = tpattrs.Atomnames
     assert_equal(attrclass._get_prev_residues_by_resid(u.residues[[]]),u.residues[[]])  
