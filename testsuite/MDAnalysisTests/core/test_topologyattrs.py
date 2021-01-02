@@ -180,6 +180,11 @@ class TestAtomnames(TestAtomAttr):
     single_value = 'Ca2'
     attrclass = tpattrs.Atomnames
 
+class TestemptyAtomnames(TestAtomAttr): 
+    u = make_Universe() 
+    attrclass = tpattrs.Atomnames
+    assert_equal(attrclass._get_prev_residues_by_resid(u.residues[[]]),u.residues[[]])  
+    assert_equal(attrclass._get_next_residues_by_resid(u.residues[[]]),u.residues[[]]) 
 
 class AggregationMixin(TestAtomAttr):
     def test_get_residues(self, attr):
