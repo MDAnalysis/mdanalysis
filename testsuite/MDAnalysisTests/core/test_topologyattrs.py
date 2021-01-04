@@ -186,11 +186,11 @@ class TestAtomnames(TestAtomAttr):
 
     def test_prev_emptyresidue(self, u):
         assert_equal(u.residues[[]]._get_prev_residues_by_resid(),
-                           u.residues[[]])
+                     u.residues[[]])
 
     def test_next_emptyresidue(self, u):
         assert_equal(u.residues[[]]._get_next_residues_by_resid(),
-                           u.residues[[]])
+                     u.residues[[]])
 
 
 class AggregationMixin(TestAtomAttr):
