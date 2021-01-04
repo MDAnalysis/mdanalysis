@@ -874,7 +874,10 @@ class Atomnames(_AtomStringAttr):
 
         .. versionadded:: 1.0.0
         """
-        u = residues[0].universe
+        try:
+            u = residues[0].universe
+        except IndexError:
+            return residues
         nxres = np.array([None]*len(residues), dtype=object)
         ix = np.arange(len(residues))
         # no guarantee residues is ordered or unique
@@ -914,7 +917,10 @@ class Atomnames(_AtomStringAttr):
 
         .. versionadded:: 1.0.0
         """
-        u = residues[0].universe
+        try:
+            u = residues[0].universe
+        except IndexError:
+            return residues
         pvres = np.array([None]*len(residues))
         pvres[:] = prev = u.residues[residues.ix-1]
         rsid = residues.segids
