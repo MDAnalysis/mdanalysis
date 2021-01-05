@@ -16,12 +16,13 @@ The rules for this file:
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
-         hanatok, rmeli, aditya-kamath
+         hanatok, rmeli, aditya-kamath, tirkarthi
 
   * 2.0.0
 
 Fixes
-  * atommethods(_get_prev/next_residues_by_resid) returns empty residue group when given empty residue group (Issue #3089)
+  * atommethods (_get_prev/next_residues_by_resid) returns empty residue group 
+    when given empty residue group (Issue #3089)
   * MOL2 files without bonds can now be read and written (Issue #3057)
   * Write `CONECT` record only once in multi-model PDB files (Issue #3018)
   * Add '.nc' as a recognised extension for the NCDFWriter (Issue #3030)
@@ -76,6 +77,7 @@ Fixes
     (Issue #2934)
   * Fix tests for analysis.bat that could fail when run in parallel and that
     would create a test artifact (Issue #2979, PR #2981)
+  * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
   * Added automatic selection class generation for TopologyAttrs,
