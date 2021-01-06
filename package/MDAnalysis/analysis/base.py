@@ -139,7 +139,7 @@ class AnalysisBase(object):
         self.start = start
         self.stop = stop
         self.step = step
-        self.frame_indices = np.arange(start, stop, step, dtype=int)
+        self.frame_indices = np.arange(start, stop, step)
         self.n_frames = len(self.frame_indices)
         self.frames = np.zeros(self.n_frames, dtype=int)
         self.times = np.zeros(self.n_frames)
@@ -191,6 +191,7 @@ class AnalysisBase(object):
             self.times[i] = ts.time
             # logger.info("--> Doing frame {} of {}".format(i+1, self.n_frames))
             self._single_frame()
+        self._trajectory[0]  # reset
         logger.info("Finishing up")
         self._conclude()
         return self
