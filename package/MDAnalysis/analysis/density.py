@@ -384,6 +384,11 @@ class DensityAnalysis(AnalysisBase):
         self._zdim = zdim
 
     def _prepare(self):
+        if len(self._atomgroup)==0:
+            msg = ("No atoms in selection over whole trajectory")
+            warnings.warn(msg)
+            logger.warning(msg)
+            return
         coord = self._atomgroup.positions
         if self._gridcenter is not None:
             # Issue 2372: padding is ignored, defaults to 2.0 therefore warn
@@ -424,6 +429,11 @@ class DensityAnalysis(AnalysisBase):
         self.density = None
 
     def _single_frame(self):
+        if len(self._atomgroup)==0:
+            msg = ("No atoms in selection over whole trajectory")
+            warnings.warn(msg)
+            logger.warning(msg)
+            return    
         h, _ = np.histogramdd(self._atomgroup.positions,
                               bins=self._bins, range=self._arange,
                               normed=False)
@@ -434,6 +444,11 @@ class DensityAnalysis(AnalysisBase):
         self._grid += h
 
     def _conclude(self):
+        if len(self._atomgroup)==0:
+            msg = ("No atoms in selection over whole trajectory")
+            warnings.warn(msg)
+            logger.warning(msg)
+            return
         # average:
         self._grid /= float(self.n_frames)
         density = Density(grid=self._grid, edges=self._edges,
