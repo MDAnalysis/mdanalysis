@@ -186,7 +186,7 @@ class AnalysisBase(object):
         self._prepare()
         for i, frame in enumerate(ProgressBar(self.frame_indices, verbose=verbose)):
             self._frame_index = i
-            self._ts = self._trajectory[frame]
+            self._ts = ts = self._trajectory[frame]
             self.frames[i] = ts.frame
             self.times[i] = ts.time
             # logger.info("--> Doing frame {} of {}".format(i+1, self.n_frames))
