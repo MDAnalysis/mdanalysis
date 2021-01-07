@@ -1474,7 +1474,7 @@ class TestStaticVariables(object):
 
         @static_variables(foo=0, bar={'test': x})
         def myfunc():
-            assert myfunc.foo is 0
+            assert myfunc.foo == 0
             assert type(myfunc.bar) is type(dict())
             if 'test2' not in myfunc.bar:
                 myfunc.bar['test2'] = "a"
@@ -1488,14 +1488,14 @@ class TestStaticVariables(object):
 
         y = myfunc()
         assert y is x
-        assert x[0] is 1
-        assert myfunc.bar['test'][0] is 1
+        assert x[0] == 1
+        assert myfunc.bar['test'][0] == 1
         assert myfunc.bar['test2'] == "a"
 
         x = [0]
         y = myfunc()
         assert y is not x
-        assert myfunc.bar['test'][0] is 2
+        assert myfunc.bar['test'][0] == 2
         assert myfunc.bar['test2'] == "aa"
 
 
@@ -1536,7 +1536,7 @@ class TestWarnIfNotUnique(object):
         assert atoms.isunique
         with pytest.warns(None) as w:
             x = outer(atoms)
-            assert x is 0
+            assert x == 0
             assert not w.list
 
         # Check that a warning is raised for a group with duplicates:
@@ -1548,7 +1548,7 @@ class TestWarnIfNotUnique(object):
             # Assert that the "warned" state is restored:
             assert warn_if_not_unique.warned is False
             # Check correct function execution:
-            assert x is 0
+            assert x == 0
             # Only one warning must have been raised:
             assert len(w) == 1
             # For whatever reason pytest.warns(DuplicateWarning, match=msg)
@@ -1602,7 +1602,7 @@ class TestWarnIfNotUnique(object):
             # Assert that the "warned" state is restored:
             assert warn_if_not_unique.warned is False
             # Check correct function execution:
-            assert x is 0
+            assert x == 0
             # Only one warning must have been raised:
             assert len(w) == 1
             assert w[0].message.args[0] == msg
