@@ -63,9 +63,9 @@ from ..core.topology import Topology
 
 
 class MOL2Parser(TopologyReaderBase):
-    """Read topology from a Tripos_ MOL2_ file.
+    """Reads topology from a Tripos_ MOL2_ file.
 
-    Create the following Attributes:
+    Creates the following Attributes:
      - Atomids
      - Atomnames
      - Atomtypes
@@ -82,6 +82,8 @@ class MOL2Parser(TopologyReaderBase):
     .. versionchanged:: 0.20.0
        Allows for comments at the top of the file
        Ignores status bit strings
+    .. versionchanged:: 2.0.0
+       Bonds attribute is not added if no bonds are present in MOL2 file
     """
     format = 'MOL2'
 
@@ -121,13 +123,10 @@ class MOL2Parser(TopologyReaderBase):
                 continue
             sections[cursor].append(line)
 
-        atom_lines, bond_lines = sections["atom"], sections["bond"]
+        atom_lines, bond_lines = sections["atom"], sections.get("bond")
 
         if not len(atom_lines):
             raise ValueError("The mol2 block ({0}:{1}) has no atoms".format(
-                os.path.basename(self.filename), block["start_line"]))
-        if not len(bond_lines):
-            raise ValueError("The mol2 block ({0}:{1}) has no bonds".format(
                 os.path.basename(self.filename), block["start_line"]))
 
         ids = []
@@ -170,17 +169,19 @@ class MOL2Parser(TopologyReaderBase):
 
         attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
 
-        bonds = []
-        bondorder = []
-        for b in bond_lines:
-            # bond_type can be: 1, 2, am, ar
-            bid, a0, a1, bond_type = b.split()[:4]
+        # don't add Bonds if there are none (Issue #3057)
+        if bond_lines:
+            bonds = []
+            bondorder = []
+            for b in bond_lines:
+                # bond_type can be: 1, 2, am, ar
+                bid, a0, a1, bond_type = b.split()[:4]
 
-            a0, a1 = int(a0) - 1, int(a1) - 1
-            bond = tuple(sorted([a0, a1]))
-            bondorder.append(bond_type)
-            bonds.append(bond)
-        attrs.append(Bonds(bonds, order=bondorder))
+                a0, a1 = int(a0) - 1, int(a1) - 1
+                bond = tuple(sorted([a0, a1]))
+                bondorder.append(bond_type)
+                bonds.append(bond)
+            attrs.append(Bonds(bonds, order=bondorder))
 
         top = Topology(n_atoms, n_residues, 1,
                        attrs=attrs,

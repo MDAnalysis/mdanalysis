@@ -15,11 +15,28 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
-         calcraven，xiki-tempula, mieczyslaw
+         calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
+         hanatok, rmeli, aditya-kamath, tirkarthi
 
   * 2.0.0
 
 Fixes
+  * atommethods (_get_prev/next_residues_by_resid) returns empty residue group 
+    when given empty residue group (Issue #3089)
+  * MOL2 files without bonds can now be read and written (Issue #3057)
+  * Write `CONECT` record only once in multi-model PDB files (Issue #3018)
+  * Add '.nc' as a recognised extension for the NCDFWriter (Issue #3030)
+  * PDB parser now assigns empty records for partially missing/invalid elements
+    instead of not assigning the elements attribute at all (Issue #2422)
+  * PDB writer now uses elements attribute instead of guessing elements from
+    atom name (Issue #2423)
+  * Cleanup and parametrization of test_atomgroup.py (Issue #2995)
+  * The methods provided by topology attributes now appear in the
+    documentation (Issue #1845)
+  * AtomGroup.center now works correctly for compounds + unwrapping
+    (Issue #2984)
+  * Avoid using deprecated array indexing in topology attributes
+    (Issue #2990, PR #2991)
   * ParmedParser no longer guesses elements if they are not recognised, instead
     empty strings are assigned (Issue #2933)
   * Instead of using ATOM for both ATOM and HETATM, HETATM record type
@@ -58,8 +75,23 @@ Fixes
     Universe (PR #2893)
   * ensure that unistd.h is included on macOS when compiling ENCORE's spe.c
     (Issue #2934)
+  * Fix tests for analysis.bat that could fail when run in parallel and that
+    would create a test artifact (Issue #2979, PR #2981)
+  * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Added automatic selection class generation for TopologyAttrs,
+    FloatRangeSelection, and BoolSelection (Issues #2925, #2875; PR #2927)
+  * Added 'to' operator, negatives, scientific notation, and arbitrary
+    whitespace for ranges (Issue #3054, PR #2927)
+  * Added `atol` and `rtol` keywords for float comparison (PR #2927)
+  * Improved performance of the ParmEd converter (Issue #3028, PR #3029)
+  * Improved analysis class docstrings, and added missing classes to the 
+    `__all__` list (PR #2998)
+  * The PDB writer gives more control over how to write the atom ids
+    (Issue #1072, PR #2886)
+  * Preliminary support for the Linux ARM64 platform with minimal
+    dependencies (PR #2956)
   * Refactored analysis.helanal into analysis.helix_analysis
     (Issue #2452, PR #2622)
   * Improved MSD code to accept `AtomGroup` and reject `UpdatingAtomGroup`
@@ -88,8 +120,10 @@ Enhancements
     'protein' selection (#2751 PR #2755)
   * Added an RDKit converter that works for any input with all hydrogens
     explicit in the topology (Issue #2468, PR #2775)
-
+  
 Changes
+  * Continuous integration uses mamba rather than conda to install the
+    dependencies (PR #2983)
   * removes deprecated `as_Universe` function from MDAnalysis.core.universe,
     as a result :class:`MDAnalysis.analysis.leaflet.LeafletFinder` now only
     accepts Universes for its `universe` argument (Issue #2920)

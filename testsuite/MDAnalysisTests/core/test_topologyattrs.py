@@ -180,6 +180,18 @@ class TestAtomnames(TestAtomAttr):
     single_value = 'Ca2'
     attrclass = tpattrs.Atomnames
 
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(PSF, DCD)
+
+    def test_prev_emptyresidue(self, u):
+        assert_equal(u.residues[[]]._get_prev_residues_by_resid(),
+                     u.residues[[]])
+
+    def test_next_emptyresidue(self, u):
+        assert_equal(u.residues[[]]._get_next_residues_by_resid(),
+                     u.residues[[]])
+
 
 class AggregationMixin(TestAtomAttr):
     def test_get_residues(self, attr):
@@ -501,3 +513,37 @@ def test_static_typing_from_empty():
 
     assert isinstance(u._topology.masses.values, np.ndarray)
     assert isinstance(u.atoms[0].mass, float)
+
+
+@pytest.mark.parametrize('level, transplant_name', (
+    ('atoms', 'center_of_mass'),
+    ('atoms', 'total_charge'),
+    ('residues', 'total_charge'),
+))
+def test_stub_transplant_methods(level, transplant_name):
+    u = mda.Universe.empty(n_atoms=2)
+    group = getattr(u, level)
+    with pytest.raises(NoDataError):
+        getattr(group, transplant_name)()
+
+
+@pytest.mark.parametrize('level, transplant_name', (
+    ('universe', 'models'),
+    ('atoms', 'n_fragments'),
+))
+def test_stub_transplant_property(level, transplant_name):
+    u = mda.Universe.empty(n_atoms=2)
+    group = getattr(u, level)
+    with pytest.raises(NoDataError):
+        getattr(group, transplant_name)
+
+
+def test_warn_selection_for_strange_dtype():
+    err = "A selection keyword could not be automatically generated"
+
+    with pytest.warns(UserWarning, match=err):
+        class Star(tpattrs.TopologyAttr):
+            singular = "star"  # turns out test_imports doesn't like emoji
+            attrname = "stars"  # :(
+            per_object = "atom"
+            dtype = dict

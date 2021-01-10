@@ -21,6 +21,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import os
+import textwrap
+from io import StringIO
 import itertools
 import numpy as np
 from numpy.testing import(
@@ -32,7 +34,7 @@ import MDAnalysis as mda
 import MDAnalysis.core.selection
 from MDAnalysis.lib.distances import distance_array
 from MDAnalysis.core.selection import Parser
-from MDAnalysis import SelectionError
+from MDAnalysis import SelectionError, SelectionWarning
 
 from MDAnalysis.tests.datafiles import (
     PSF, DCD,
@@ -43,6 +45,7 @@ from MDAnalysis.tests.datafiles import (
     PDB_icodes,
     PDB_HOLE,
     PDB_helix,
+    PDB_elements,
 )
 from MDAnalysisTests import make_Universe
 
@@ -972,10 +975,20 @@ class TestSelectionErrors(object):
         'index or protein',
         'prop mass < 4.0 hello',  # unused token
         'prop mass > 10. and group this',  # missing group
+        # bad ranges
+        'mass 1.0 to',
+        'mass to 3.0',
+        'mass 1.0:',
+        'mass :3.0',
+        'mass 1-',
     ])
     def test_selection_fail(self, selstr, universe):
         with pytest.raises(SelectionError):
             universe.select_atoms(selstr)
+
+    def test_invalid_prop_selection(self, universe):
+        with pytest.raises(SelectionError, match="Expected one of"):
+            universe.select_atoms("prop parsnip < 2")
 
 
 def test_segid_and_resid():
@@ -1218,3 +1231,119 @@ def test_record_type_sel():
 
     assert len(u.select_atoms('name CA and not record_type HETATM')) == 30
     assert len(u.select_atoms('name CA and record_type HETATM')) == 2
+
+
+def test_element_sel():
+    # test auto-topattr addition of string
+    u = mda.Universe(PDB_elements)
+    assert len(u.select_atoms("element H")) == 8
+    assert len(u.select_atoms("same element as index 12")) == 8
+
+
+def test_chain_sel():
+    u = mda.Universe(PDB_elements)
+    assert len(u.select_atoms("chainID A")) == len(u.atoms)
+
+
+@pytest.fixture()
+def u_fake_masses():
+    u = mda.Universe(TPR)
+    u.atoms[-10:].masses = - (np.arange(10) + 1.001)
+    u.atoms[:5].masses = 0.1 * 3  # 0.30000000000000004
+    u.atoms[5:10].masses = 0.30000000000000001
+    return u
+
+
+@pytest.mark.parametrize("selstr,n_atoms, selkwargs", [
+    ("mass 0.8 to 1.2", 23844, {}),
+    ("mass 8e-1 to 1200e-3", 23844, {}),
+    ("mass -5--3", 2, {}),  # select -5 to -3
+    ("mass -3 : -5", 0, {}),  # wrong way around
+    # regex; spacing, delimiters, and negatives
+    ("mass -5 --3", 2, {}),
+    ("mass -5- -3", 2, {}),
+    ("mass -5 - -3", 2, {}),
+    ("mass -10:3", 34945, {}),
+    ("mass -10 :3", 34945, {}),
+    ("mass -10: 3", 34945, {}),
+    ("mass -10 : 3", 34945, {}),
+    ("mass -10 -3", 0, {}),  # separate selections, not range
+    # float equality
+    ("mass 0.3", 5, {"rtol": 0, "atol": 0}),
+    ("mass 0.3", 5, {"rtol": 1e-22, "atol": 1e-22}),
+    # 0.30000000000000001 == 0.3
+    ("mass 0.3 - 0.30000000000000004", 10, {}),
+    ("mass 0.30000000000000004", 5, {"rtol": 0, "atol": 0}),
+    ("mass 0.3 0.30000000000000001", 5, {"rtol": 0, "atol": 0}),
+    # float near-equality
+    ("mass 0.3", 10, {}),
+    ("mass 0.30000000000000004", 10, {}),
+    ("mass 0.3 0.30000000000000001", 10, {}),
+    # prop thingy
+    ("prop mass == 0.3", 10, {}),
+    ("prop mass == 0.30000000000000004", 10, {}),
+    ("prop mass == 0.30000000000000004", 5, {"rtol": 0, "atol": 0}),
+])
+def test_mass_sel(u_fake_masses, selstr, n_atoms, selkwargs):
+    # test auto-topattr addition of float (FloatRangeSelection)
+    ag = u_fake_masses.select_atoms(selstr, **selkwargs)
+    assert len(ag) == n_atoms
+
+def test_mass_sel_warning(u_fake_masses):
+    warn_msg = (r"Using float equality .* is not recommended .* "
+                r"we recommend using a range .*"
+                r"'mass -0.6 to 1.4'.*"
+                r"use the `atol` and `rtol` keywords")
+    with pytest.warns(SelectionWarning, match=warn_msg):
+        u_fake_masses.select_atoms("mass 0.4")
+
+
+@pytest.mark.parametrize("selstr,n_res", [
+    ("resnum -10 to 3", 14),
+    ("resnum -5--3", 3),  # select -5 to -3
+    ("resnum -3 : -5", 0),  # wrong way around
+])
+def test_int_sel(selstr, n_res):
+    # test auto-topattr addition of int (IntRangeSelection)
+    u = mda.Universe(TPR)
+    u.residues[-10:].resnums = - (np.arange(10) + 1)
+    ag = u.select_atoms(selstr).residues
+    assert len(ag) == n_res
+
+
+def test_negative_resid():
+    # this is its own separate test because ResidSelection
+    # has special matching for icodes
+    text = """\
+    ATOM      1  N   ASP A  -1      19.426  19.251   2.191  1.00 59.85           N
+    ATOM      2  CA  ASP A  -1      20.185  18.441   1.255  1.00 54.54           C
+    ATOM      3  C   ASP A  -1      21.660  18.901   1.297  1.00 40.12           C
+    ATOM      4  O   ASP A  -1      21.958  19.978   1.829  1.00 35.85           O"""
+    u = mda.Universe(StringIO(textwrap.dedent(text)), format="PDB")
+    ag = u.select_atoms("resid -1")
+    assert len(ag) == 4
+
+
+@pytest.mark.parametrize("selstr, n_atoms", [
+    ("aromaticity", 5),
+    ("aromaticity true", 5),
+    ("not aromaticity", 15),
+    ("aromaticity False", 15),
+])
+def test_bool_sel(selstr, n_atoms):
+    pytest.importorskip("rdkit.Chem")
+    u = MDAnalysis.Universe.from_smiles("Nc1cc(C[C@H]([O-])C=O)c[nH]1")
+    assert len(u.select_atoms(selstr)) == n_atoms
+
+
+def test_bool_sel_error():
+    pytest.importorskip("rdkit.Chem")
+    u = MDAnalysis.Universe.from_smiles("Nc1cc(C[C@H]([O-])C=O)c[nH]1")
+    with pytest.raises(SelectionError, match="'fragrant' is an invalid value"):
+        u.select_atoms("aromaticity fragrant")
+
+
+def test_error_selection_for_strange_dtype():
+    with pytest.raises(ValueError, match="No base class defined for dtype"):
+        MDAnalysis.core.selection.gen_selection_class("star", "stars",
+                                                      dict, "atom")

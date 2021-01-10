@@ -41,7 +41,8 @@ import itertools
 import numbers
 import numpy as np
 import warnings
-
+import textwrap
+from inspect import signature as inspect_signature
 
 from ..lib.util import (cached, convert_aa_code, iterable, warn_if_not_unique,
                         unique_int_1d)
@@ -163,8 +164,125 @@ def _wronglevel_error(attr, group):
     ))
 
 
+def _build_stub(method_name, method, attribute_name):
+    """
+    Build a stub for a transplanted method.
+
+    A transplanted stub is a dummy method that gets attached to a core class
+    (usually from :mod:`MDAnalysis.core.groups`) and raises a
+    :exc:`NoDataError`.
+    The stub mimics the original method for everything that has traits with the
+    documentation (docstring, name, signature). It gets overwritten by the
+    actual method when the latter is transplanted at universe creation.
+
+    Parameters
+    ----------
+    method_name: str
+        The name of the attribute in the destination class.
+    method: Callable
+        The method to be mimicked.
+    attribute_name: str
+        The name topology attribute that is required for the method to be
+        relevant (e.g. masses, charges, ...)
+
+    Returns
+    -------
+    The stub.
+    """
+    def stub_method(self, *args, **kwargs):
+        message = (
+            '{class_name}.{method_name}() '
+            'not available; this requires {attribute_name}'
+        ).format(
+            class_name=self.__class__.__name__,
+            method_name=method_name,
+            attribute_name=attribute_name,
+        )
+        raise NoDataError(message)
+
+    annotation = textwrap.dedent("""\
+        .. note::
+
+          This requires the underlying topology to have {}. Otherwise, a
+          :exc:`~MDAnalysis.exceptions.NoDataError` is raised.
+
+
+    """.format(attribute_name))
+    # The first line of the original docstring is not indented, but the
+    # subsequent lines are. We want to dedent the whole docstring.
+    first_line, other_lines = method.__doc__.split('\n', 1)
+    stub_method.__doc__ = (
+        first_line + '\n'
+        + textwrap.dedent(other_lines)
+        + '\n\n' + annotation
+    )
+    stub_method.__name__ = method_name
+    stub_method.__signature__ = inspect_signature(method)
+    return stub_method
+
+
+def _attach_transplant_stubs(attribute_name, topology_attribute_class):
+    """
+    Transplant a stub for every method that will be transplanted from a
+    topology attribute.
+
+    Parameters
+    ----------
+    attribute_name: str
+        User-facing name of the topology attribute (e.g. masses, charges, ...)
+    topology_attribute_class:
+        Topology attribute class to inspect for transplant methods.
+
+    """
+    transplants = topology_attribute_class.transplants
+    for dest_class, methods in transplants.items():
+        if dest_class == 'Universe':
+            # Cannot be imported at the top level, it creates issues with
+            # circular imports.
+            from .universe import Universe
+            dest_class = Universe
+        for method_name, method_callback in methods:
+            # Methods the name of which is prefixed by _ should not be accessed
+            # directly by a user, we do not transplant a stub as the stubs are
+            # only relevant for user-facing method and properties. Also,
+            # methods _-prefixed can be operator methods, and we do not want
+            # to overwrite these with a stub.
+            if method_name.startswith('_'):
+                continue
+
+            is_property = False
+            try:
+                method_callback = method_callback.fget
+                is_property = True
+            except AttributeError:
+                pass
+            stub = _build_stub(method_name, method_callback, attribute_name)
+            if is_property:
+                setattr(dest_class, method_name, property(stub, None, None))
+            else:
+                setattr(dest_class, method_name, stub)
+
+
 class _TopologyAttrMeta(type):
-    # register TopologyAttrs
+    r"""Register TopologyAttrs on class creation
+
+    Each topology attribute is added to the top-level dictionaries
+    for various record purposes. The class itself is added to
+    :data:`_TOPOLOGY_ATTRS` and :data:`_TOPOLOGY_ATTRNAMES`. Transplanted
+    methods are also added to :data:`_TOPOLOGY_TRANSPLANTS.`
+
+    We also attempt to make the topology attribute selectable with
+    atom selection language by automatically generating a relevant
+    selection class with the singular name (``singular``) as the
+    selection token. Only certain ``dtype``\ s are supported; if a
+    selection class cannot be generated, a warning will be raised
+    but no error.
+
+    See also
+    --------
+    :func:`MDAnalysis.core.selection.gen_selection_class`
+
+    """
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
         attrname = classdict.get('attrname')
@@ -185,6 +303,39 @@ class _TopologyAttrMeta(type):
                     _TOPOLOGY_TRANSPLANTS[name] = [attrname, method, clstype]
                     clean = name.lower().replace('_', '')
                     _TOPOLOGY_ATTRNAMES[clean] = name
+
+        for attr in ['singular', 'attrname']:
+            try:
+                attrname = classdict[attr]
+            except KeyError:
+                pass
+            else:
+                _attach_transplant_stubs(attrname, cls)
+            # add each to "same attr as" class
+
+        if singular not in selection.SameSelection.prop_trans:
+            selection.SameSelection.prop_trans[singular] = attrname
+
+        # add each to the property selection class
+        if singular not in selection.PropertySelection.props:
+            selection.PropertySelection.props[singular] = attrname
+
+        # add token to selectiondict
+        if singular not in selection._SELECTIONDICT:
+            dtype = classdict.get("dtype")
+            if dtype is not None:
+                per_obj = classdict.get("per_object", bases[0].per_object)
+
+                try:
+                    selection.gen_selection_class(singular, attrname,
+                                                  dtype, per_obj)
+                except ValueError:
+                    msg = ("A selection keyword could not be "
+                           "automatically generated for the "
+                           f"{singular} attribute. If you need a "
+                           "selection keyword, define it manually "
+                           "by subclassing core.selection.Selection")
+                    warnings.warn(msg)
 
 
 class TopologyAttr(object, metaclass=_TopologyAttrMeta):
@@ -335,6 +486,7 @@ class Atomindices(TopologyAttr):
     attrname = 'indices'
     singular = 'index'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom]
+    dtype = int
 
     def __init__(self):
         self._guessed = False
@@ -367,6 +519,7 @@ class Resindices(TopologyAttr):
     attrname = 'resindices'
     singular = 'resindex'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
+    dtype = int
 
     def __init__(self):
         self._guessed = False
@@ -399,6 +552,7 @@ class Segindices(TopologyAttr):
     """
     attrname = 'segindices'
     singular = 'segindex'
+    dtype = int
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
                       Atom, Residue, Segment]
 
@@ -720,7 +874,10 @@ class Atomnames(_AtomStringAttr):
 
         .. versionadded:: 1.0.0
         """
-        u = residues[0].universe
+        try:
+            u = residues[0].universe
+        except IndexError:
+            return residues
         nxres = np.array([None]*len(residues), dtype=object)
         ix = np.arange(len(residues))
         # no guarantee residues is ordered or unique
@@ -760,7 +917,10 @@ class Atomnames(_AtomStringAttr):
 
         .. versionadded:: 1.0.0
         """
-        u = residues[0].universe
+        try:
+            u = residues[0].universe
+        except IndexError:
+            return residues
         pvres = np.array([None]*len(residues))
         pvres[:] = prev = u.residues[residues.ix-1]
         rsid = residues.segids
@@ -1116,7 +1276,7 @@ class Masses(AtomAttr):
 
         if isinstance(rg._ix, numbers.Integral):
             # for a single residue
-            masses = self.values[resatoms].sum()
+            masses = self.values[tuple(resatoms)].sum()
         else:
             # for a residuegroup
             masses = np.empty(len(rg))
@@ -1342,15 +1502,6 @@ class Masses(AtomAttr):
             calculation. [``False``]
 
 
-        References
-        ----------
-        .. [Dima2004a] Dima, R. I., & Thirumalai, D. (2004). Asymmetry
-           in the shapes of folded and denatured states of
-           proteins. *J Phys Chem B*, 108(21),
-           6564-6570. doi:`10.1021/jp037128y
-           <https://doi.org/10.1021/jp037128y>`_
-
-
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8 Added *pbc* keyword
 
@@ -1394,16 +1545,6 @@ class Masses(AtomAttr):
             If ``True``, compounds will be unwrapped before computing their centers.
         compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
             Which type of component to keep together during unwrapping.
-
-
-        References
-        ----------
-
-        .. [Dima2004b] Dima, R. I., & Thirumalai, D. (2004). Asymmetry
-           in the shapes of folded and denatured states of
-           proteins. *J Phys Chem B*, 108(21),
-           6564-6570. doi:`10.1021/jp037128y
-           <https://doi.org/10.1021/jp037128y>`_
 
 
         .. versionadded:: 0.7.7
@@ -1537,7 +1678,7 @@ class Charges(AtomAttr):
         resatoms = self.top.tt.residues2atoms_2d(rg.ix)
 
         if isinstance(rg._ix, numbers.Integral):
-            charges = self.values[resatoms].sum()
+            charges = self.values[tuple(resatoms)].sum()
         else:
             charges = np.empty(len(rg))
             for i, row in enumerate(resatoms):
@@ -2258,11 +2399,6 @@ class Bonds(_Connection):
         :class:`~MDAnalysis.core.topologyattrs.Bonds.fragment` this
         :class:`~MDAnalysis.core.groups.Atom` is part of.
 
-        Note
-        ----
-        This property is only accessible if the underlying topology contains
-        bond information.
-
 
         .. versionadded:: 0.20.0
         """
@@ -2277,11 +2413,6 @@ class Bonds(_Connection):
         A :class:`numpy.ndarray` with
         :attr:`~numpy.ndarray.shape`\ ``=(``\ :attr:`~AtomGroup.n_atoms`\ ``,)``
         and :attr:`~numpy.ndarray.dtype`\ ``=numpy.int64``.
-
-        Note
-        ----
-        This property is only accessible if the underlying topology contains
-        bond information.
 
 
         .. versionadded:: 0.20.0
@@ -2300,11 +2431,6 @@ class Bonds(_Connection):
         or more :class:`~MDAnalysis.core.topologyattrs.Bonds` between any pair
         of :class:`Atoms<MDAnalysis.core.groups.Atom>`
         within a fragment. Thus, a fragment typically corresponds to a molecule.
-
-        Note
-        ----
-        This property is only accessible if the underlying topology contains
-        bond information.
 
 
         .. versionadded:: 0.9.0
@@ -2329,8 +2455,6 @@ class Bonds(_Connection):
 
         Note
         ----
-        * This property is only accessible if the underlying topology contains
-          bond information.
         * The contents of the fragments may extend beyond the contents of this
           :class:`~MDAnalysis.core.groups.AtomGroup`.
 
@@ -2346,11 +2470,6 @@ class Bonds(_Connection):
         :class:`~MDAnalysis.core.topologyattrs.Bonds.fragments` the
         :class:`Atoms<MDAnalysis.core.groups.Atom>` of this
         :class:`~MDAnalysis.core.groups.AtomGroup` are part of.
-
-        Note
-        ----
-        This property is only accessible if the underlying topology contains
-        bond information.
 
 
         .. versionadded:: 0.20.0
