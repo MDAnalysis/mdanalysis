@@ -560,7 +560,7 @@ class Universe(object):
         return self
 
     def transfer_to_memory(self, start=None, stop=None, step=None,
-                           verbose=False):
+                           frames=None, verbose=False):
         """Transfer the trajectory to in memory representation.
 
         Replaces the current trajectory reader object with one of type
@@ -584,46 +584,49 @@ class Universe(object):
         """
         from ..coordinates.memory import MemoryReader
 
-        if not isinstance(self.trajectory, MemoryReader):
-            n_frames = len(range(
-                *self.trajectory.check_slice_indices(start, stop, step)
-            ))
-            n_atoms = len(self.atoms)
-            coordinates = np.zeros((n_frames, n_atoms, 3), dtype=np.float32)
-            ts = self.trajectory.ts
-            has_vels = ts.has_velocities
-            has_fors = ts.has_forces
-            has_dims = ts.dimensions is not None
+        if isinstance(self.trajectory, MemoryReader):
+            return
 
-            velocities = np.zeros_like(coordinates) if has_vels else None
-            forces = np.zeros_like(coordinates) if has_fors else None
-            dimensions = (np.zeros((n_frames, 6), dtype=np.float32)
-                          if has_dims else None)
+        if frames is None:
+            sss = self.trajectory.check_slice_indices(start, stop, step)
+            frames = range(*sss)
 
-            for i, ts in enumerate(ProgressBar(self.trajectory[start:stop:step],
-                                               verbose=verbose,
-                                               desc="Loading frames")):
-                np.copyto(coordinates[i], ts.positions)
-                if has_vels:
-                    np.copyto(velocities[i], ts.velocities)
-                if has_fors:
-                    np.copyto(forces[i], ts.forces)
-                if has_dims:
-                    np.copyto(dimensions[i], ts.dimensions)
+        n_frames = len(frames)
+        n_atoms = len(self.atoms)
+        coordinates = np.zeros((n_frames, n_atoms, 3), dtype=np.float32)
+        ts = self.trajectory.ts
+        has_vels = ts.has_velocities
+        has_fors = ts.has_forces
+        has_dims = ts.dimensions is not None
 
-            # Overwrite trajectory in universe with an MemoryReader
-            # object, to provide fast access and allow coordinates
-            # to be manipulated
-            if step is None:
-                step = 1
-            self.trajectory = MemoryReader(
-                coordinates,
-                dimensions=dimensions,
-                dt=self.trajectory.ts.dt * step,
-                filename=self.trajectory.filename,
-                velocities=velocities,
-                forces=forces,
-            )
+        velocities = np.zeros_like(coordinates) if has_vels else None
+        forces = np.zeros_like(coordinates) if has_fors else None
+        dimensions = (np.zeros((n_frames, 6), dtype=np.float32)
+                        if has_dims else None)
+
+        for i, frame in enumerate(ProgressBar(frames, verbose=verbose,
+                                              desc="Loading frames")):
+            ts = self.trajectory[frame]
+            np.copyto(coordinates[i], ts.positions)
+            if has_vels:
+                np.copyto(velocities[i], ts.velocities)
+            if has_fors:
+                np.copyto(forces[i], ts.forces)
+            if has_dims:
+                np.copyto(dimensions[i], ts.dimensions)
+
+        # Overwrite trajectory in universe with an MemoryReader
+        # object, to provide fast access and allow coordinates
+        # to be manipulated
+        step = frames[1] - frames[0]
+        self.trajectory = MemoryReader(
+            coordinates,
+            dimensions=dimensions,
+            dt=self.trajectory.ts.dt * step,
+            filename=self.trajectory.filename,
+            velocities=velocities,
+            forces=forces,
+        )
 
     # python 2 doesn't allow an efficient splitting of kwargs in function
     # argument signatures.

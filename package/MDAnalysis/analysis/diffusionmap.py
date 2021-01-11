@@ -237,7 +237,7 @@ class DistanceMatrix(AnalysisBase):
         # remember that this must be called before referencing self.n_frames
         super(DistanceMatrix, self).__init__(self._u.trajectory, **kwargs)
 
-        self.atoms = self._u.select_atoms(select)
+        self.atoms = self._u.select_atoms(select).atoms
         self._metric = metric
         self._cutoff = cutoff
         self._weights = weights
@@ -247,19 +247,20 @@ class DistanceMatrix(AnalysisBase):
         self.dist_matrix = np.zeros((self.n_frames, self.n_frames))
 
     def _single_frame(self):
-        iframe = self._ts.frame
         i_ref = self.atoms.positions
+        i = self._frame_index
+        iframe = self.frame_indices[self._frame_index]
+        i_frame = self._ts.frame
         # diagonal entries need not be calculated due to metric(x,x) == 0 in
         # theory, _ts not updated properly. Possible savings by setting a
         # cutoff for significant decimal places to sparsify matrix
-        for j, ts in enumerate(self._u.trajectory[iframe:self.stop:self.step]):
-            self._ts = ts
+        for j, jframe in enumerate(self.frame_indices[:i]):
+            self._ts = self._u.trajectory[jframe]
             j_ref = self.atoms.positions
             dist = self._metric(i_ref, j_ref, weights=self._weights)
-            self.dist_matrix[self._frame_index, j+self._frame_index] = (
-                dist if dist > self._cutoff else 0)
-            self.dist_matrix[j+self._frame_index, self._frame_index] = (
-                self.dist_matrix[self._frame_index, j+self._frame_index])
+            if dist <= self._cutoff:
+                dist = 0
+            self.dist_matrix[i, j] = self.dist_matrix[j, i] = dist
         self._ts = self._u.trajectory[iframe]
 
     def _conclude(self):

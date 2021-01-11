@@ -286,6 +286,8 @@ def harmonic_ensemble_similarity(sigma1,
     # Difference between average vectors
     d_avg = x1 - x2
 
+    
+
     # Distance measure
     trace = np.trace(np.dot(sigma1, sigma2_inv) +
                         np.dot(sigma2, sigma1_inv)
@@ -294,6 +296,16 @@ def harmonic_ensemble_similarity(sigma1,
     d_hes = 0.25 * (np.dot(np.transpose(d_avg),
                               np.dot(sigma1_inv + sigma2_inv,
                                         d_avg)) + trace)
+    print(d_avg.shape)
+    print((sigma1_inv + sigma2_inv).shape)
+    print((np.dot(sigma1_inv + sigma2_inv,
+                                        d_avg)).shape)
+    print(np.dot(sigma1, sigma2_inv).shape)
+    print((np.dot(np.transpose(d_avg),
+                              np.dot(sigma1_inv + sigma2_inv,
+                                        d_avg)).shape))
+    print(trace)
+    raise ValueError()
     return d_hes
 
 
@@ -345,6 +357,9 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
     # Exclude clusters which have 0 elements in both ensembles
     pA = tmpA[tmpA + tmpB > EPSILON]
     pB = tmpB[tmpA + tmpB > EPSILON]
+
+    print(pA, pB)
+    raise ValueError()
 
     return discrete_jensen_shannon_divergence(pA, pB)
 

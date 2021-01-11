@@ -29,6 +29,14 @@ from ..lib import util
 from ..coordinates.base import ProtoReader
 
 
+class AtomsWrapper:
+    def __init__(self, ensemble):
+        self.ensemble = ensemble
+
+    def __getattr__(self, attr):
+        return getattr(self.ensemble._atoms, attr)
+
+
 class Ensemble(object):
     """
     Should be able to plug this into any AnalysisBase class.
@@ -37,25 +45,14 @@ class Ensemble(object):
     def __init__(self, universes, select=None, labels=None, frames=None):
         # set universe info
         universes = util.asiterable(universes)
+        self.atoms = AtomsWrapper(self)
         try:
             self.universes = [u.universe for u in universes]
         except AttributeError:
             raise ValueError('universes must be a list of Universes '
                              'or AtomGroups')
         self.n_universes = len(universes)
-        if frames is None:
-            frame_ix = [np.arange(len(u.trajectory)) for u in self.universes]
-            frames = []
-            for ix in frame_ix:
-                frames.extend(ix+len(frames))
-        self.frames = np.asarray(frames, dtype=int)
-        self.n_frames = len(self.frames)
-        self.traj_frames = tuple([len(u.trajectory) for u in self.universes])
-        self._frame_edges = np.r_[0, np.cumsum(self.traj_frames)]
-        self._universe_frames = np.zeros((self.n_frames, 2), dtype=int)
-        for i, f in enumerate(self.frames):
-            n_u = self._get_universe_from_frame(f)
-            self._universe_frames[i] = n_u, f-self._frame_edges[n_u]
+        self._set_frames(frames)
 
         # set atom info
         if select is None:
@@ -88,7 +85,9 @@ class Ensemble(object):
                 try:
                     l = u.trajectory.filename
                 except AttributeError:
-                    l = 'Universe'
+                    pass
+            if l is None:
+                l = 'Universe'
 
             if l in self._universe_labels:
                 if l not in _ctr:
@@ -102,6 +101,17 @@ class Ensemble(object):
         # pretend to be Universe
         self.trajectory = self
         self._ts_u = 0
+
+    def __getattr__(self, attr):
+        try:
+            return getattr(self.atoms, attr)
+        except AttributeError:
+            try:
+                return getattr(self.universe, attr)
+            except AttributeError:
+                pass
+        raise AttributeError(f"{type(self).__name__} does not have "
+                             f"attribute {attr}")
 
     def __len__(self):
         return self.n_frames
@@ -128,7 +138,11 @@ class Ensemble(object):
             yield self.ts
 
     @property
-    def atoms(self):
+    def filename(self):
+        return self.universe.trajectory.filename
+
+    @property
+    def _atoms(self):
         return self._ags[self._ts_u]
 
     @property
@@ -145,23 +159,64 @@ class Ensemble(object):
 
     check_slice_indices = ProtoReader.check_slice_indices
 
-    def iterate_over_atomgroups(self, start=None, stop=None, step=None,
-                                frames=None):
+    def _set_frames(self, frames=None):
+        if frames is None:
+            frame_ix = [np.arange(len(u.trajectory)) for u in self.universes]
+            frames = []
+            for ix in frame_ix:
+                frames.extend(ix+len(frames))
+        self.frames = np.asarray(frames, dtype=int)
+        self.n_frames = len(self.frames)
+        self.traj_frames = tuple([len(u.trajectory) for u in self.universes])
+        self._frame_edges = np.r_[0, np.cumsum(self.traj_frames)]
+        self._universe_frames = np.zeros((self.n_frames, 2), dtype=int)
+        for i, f in enumerate(self.frames):
+            n_u = self._get_universe_from_frame(f)
+            self._universe_frames[i] = n_u, f-self._frame_edges[n_u]
+
+    def _prepare_frames(self, start=None, stop=None, step=None,
+                        frames=None):
         if frames is None:
             if start is None:
                 start = 0
             if stop is None:
-                stop = self.n_frames-1
+                stop = self.n_frames
             stop = max(self.n_frames-1, stop)
             if step is None:
                 step = 1
             frames = range(start, stop, step)
+        return frames
+
+    def _prepare_frames_by_universe(self, start=None, stop=None, step=None,
+                                    frames=None):
+        frames = np.array(self._prepare_frames(start=start, stop=stop,
+                                               step=step, frames=frames))
+        u_frames = self._universe_frames[frames]
+        splix = np.where(np.ediff1d(u_frames[:, 0]))[0] + 1
+        return np.split(u_frames[:, 1], splix)
+
+        # bins = np.searchsorted(self._frame_edges[1:], frames)
+        # for i in range(self.n_universes):
+        #     yield frames[bins == i]
+
+    def iterate_over_atomgroups(self, start=None, stop=None, step=None,
+                                frames=None):
+        frames = self._prepare_frames(start=start, stop=stop, step=step,
+                                      frames=frames)
 
         for i in frames:
             n_u, f = self._universe_frames[i]
             self._ts_u = n_u
             self.universe.trajectory[f]
             yield self._ags[n_u]
+
+    def iterate_over_universes(self, start=None, stop=None, step=None,
+                               frames=None):
+        frames_ = self._prepare_frames_by_universe(start=start, stop=stop,
+                                                   step=step, frames=frames)
+        for ag, label, fr in zip(self._ags, self.labels, frames_):
+            yield type(self)([ag], labels=[label], frames=fr)
+
 
     def _get_relative_frame(self, i):
         if not isinstance(i, (int, np.integer)):
@@ -187,3 +242,17 @@ class Ensemble(object):
         if sel:
             ags = [ag.select_atoms(*sel) for ag in ags]
         return type(self)(ags, select=None, labels=self.labels)
+
+    def split_array(self, arr):
+        for i in range(self.n_universes):
+            yield arr[self._frame_edges[i]:self._frame_edges[i+1]]
+    
+    def transfer_to_memory(self, start=None, stop=None, step=None,
+                           frames=None):
+
+        frames_ = self._prepare_frames_by_universe(start=start, stop=stop,
+                                                   step=step, frames=frames)
+        frames = np.array(list(frames_))
+        for u, fr in zip(self.universes, frames):
+            u.transfer_to_memory(frames=fr)
+        self._set_frames()

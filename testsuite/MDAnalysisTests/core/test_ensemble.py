@@ -28,6 +28,7 @@ from numpy.testing import assert_almost_equal, assert_equal
 import MDAnalysis as mda
 from MDAnalysis.tests.datafiles import PSF, DCD, PDB, TPR, XTC
 from MDAnalysis.coordinates.base import Timestep
+from MDAnalysis.analysis import align, diffusionmap
 
 @pytest.fixture()
 def u1():
@@ -47,8 +48,43 @@ def u3():
 @pytest.fixture()
 def ens(u1, u2, u3):
     return mda.Ensemble([u1, u2, u3])
-
 class TestEnsemble(object):
+
+    def test_analysis_multiple_same(self, u3):
+        ens = mda.Ensemble([u3, u3]).select_atoms("name CA")
+        dist_mat = diffusionmap.DistanceMatrix(ens).run()
+        dm = dist_mat.dist_matrix
+        assert dm[0, 0] == 0
+        assert dm[0, 9] != 0
+        assert dm[0, 19] != 0
+        assert dm[19, 10] != 0
+        assert dm[0, 10] == 0
+        assert dm[10, 0] == 0
+        assert dm[-1, -2] != 0
+        assert dm[1, 2] == dm[1, 12]
+
+
+    def test_analysis_multiple_same_in_memory(self, u3):
+        ens = mda.Ensemble([u3, u3])
+        ens.transfer_to_memory()
+        dist_mat = diffusionmap.DistanceMatrix(ens).run()
+        dm = dist_mat.dist_matrix
+        assert dm[0, 0] == 0
+        assert dm[0, 9] != 0
+        assert dm[0, 19] != 0
+        assert dm[19, 10] != 0
+        assert dm[0, 10] == 0
+        assert dm[10, 0] == 0
+        assert dm[-1, -2] != 0
+        assert dm[1, 2] == dm[1, 12]
+
+    def test_analysis_multiple_in_memory(self, u1, u3):
+        ens = mda.Ensemble([u1, u3])
+        ens.transfer_to_memory()
+        dist_mat = diffusionmap.DistanceMatrix(ens).run()
+        dm = dist_mat.dist_matrix
+        assert dm[-1, -2] != 0
+
 
     def test_from_universe(self, u1):
         ens = mda.Ensemble(u1)

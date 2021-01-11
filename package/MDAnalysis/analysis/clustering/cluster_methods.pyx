@@ -26,18 +26,18 @@ Cython wrapper for the C implementation of the Affinity Perturbation clustering 
 :Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
 
 """
-from ..utils import TriangularMatrix
-import logging
-import numpy
-cimport numpy
+import warnings
+
+import numpy as np
+cimport numpy as np
 cimport cython
 
 cdef extern from "ap.h":
-    int CAffinityPropagation(float*, int, float, int, int, bint, long*)
+    int CAffinityPropagation(float*, int, float, int, int, int, long*)
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def AffinityPropagation(s, preference, float lam, int max_iterations, int convergence, int noise=1):
+def affinity_propagation(similarity, preference, float lam, int max_iter, int conv_threshold, bint noise=True):
     """Affinity propagation clustering algorithm. This class is a Cython wrapper around the Affinity propagation algorithm, which is implement as a C library (see ap.c). The implemented algorithm is described in the paper:
 
     Clustering by Passing Messages Between Data Points.
@@ -46,11 +46,8 @@ def AffinityPropagation(s, preference, float lam, int max_iterations, int conver
 
     Parameters
     ----------
-    s : encore.utils.TriangularMatrix object
-        Triangular matrix containing the similarity values for each pair of
-        clustering elements. Notice that the current implementation does not
-        allow for asymmetric values (i.e. similarity(a,b) is assumed to be
-        equal to similarity(b,a))
+    similarity : ndarray
+        Square array
     preference : numpy.array of floats or float
         Preference values, which the determine the number of clusters. If a
         single value is given, all the preference values are set to that.
@@ -77,66 +74,31 @@ def AffinityPropagation(s, preference, float lam, int max_iterations, int conver
         classes for more details.
 
     """
-    cdef int cn = s.size
-    cdef float cpreference = preference
+    
+    cdef int cn = len(similarity)
+    cdef int n_iter
 
-    # Assign preference values to diagonal
-    try:
-        for i in xrange(s.size):
-            s[i,i] = <float>preference[i]
-    except:
-        pass
+    similarity[np.diag_indices(cn)] = preference
+    indices = np.tril_indices(cn)
 
-    if type(preference) == float:
-        for i in xrange(s.size):
-            s[i,i] = <float>preference
-    else:
-        raise TypeError ("Preference should be of type float")
+    # print(similarity)
+    # print(np.tril(similarity))
+    
+    cdef np.ndarray[np.float32_t, ndim=1] sim = np.ravel(similarity[indices]).astype(np.float32)
+    # sim = np.ascontiguousarray(sim)
 
-    logging.info("Preference %3.2f: starting Affinity Propagation" % (preference))
+    print(similarity[-2:])
 
-    # Prepare input and ouput arrays
-    cdef numpy.ndarray[numpy.float32_t,  ndim=1] matndarray = numpy.ascontiguousarray(s._elements, dtype=numpy.float32)
-
-    print(matndarray)
-    cdef numpy.ndarray[long,   ndim=1] clusters   = numpy.zeros((s.size),dtype=long)
+    cdef np.ndarray[long, ndim=1] clusters = np.zeros((cn), dtype=long)
 
     # run C module Affinity Propagation
-    iterations = CAffinityPropagation(<float*>matndarray.data, cn, lam, max_iterations, convergence, noise, <long*>clusters.data)
+    n_iter = CAffinityPropagation(<float*>sim.data, cn, lam, max_iter, conv_threshold,
+                                  noise, <long*>clusters.data)
 
     # Provide warning in case of lack of convergence
-    if iterations == 0:
-        logging.info("Preference %3.2f: could not converge in %d iterations" % (preference, -iterations))
-        import warnings
-        warnings.warn("Clustering with preference {0:3.2f} did not fully converge in {1:d} iterations".format(preference, -iterations))
-
-    # Find centroids
-    centroids = numpy.unique(clusters)
-    for k in numpy.arange(centroids.shape[0]):
-        ii = numpy.where(clusters == centroids[k])[0]
-        small_mat = numpy.zeros((ii.shape[0], ii.shape[0]))
-        for ii1 in numpy.arange(ii.shape[0]):
-            for ii2 in numpy.arange(ii.shape[0]):
-                small_mat[ii1,ii2] = s[ ii[ii1], ii[ii2] ]
-        j = numpy.argmax(numpy.sum(small_mat, axis=0))
-
-        centroids[k] = ii[j]
-
-    # Similarity to centroids
-    S_centroids = numpy.zeros((s.size, centroids.shape[0]))
-    for line in numpy.arange(s.size):
-        for c in numpy.arange(centroids.shape[0]):
-            S_centroids[line,c] = s[line, centroids[c]]
-
-    # Center values for each observation
-    c = numpy.argmax(S_centroids, axis=1)
-
-    # Centroids should point to themselves
-    c[centroids] = numpy.arange(centroids.shape[0])
-
-    # Assign centroid indices to all observables
-    clusters = centroids[c]
-
-    logging.info("Preference %3.2f: converged in %d iterations" % (preference, iterations))
+    if n_iter == 0:
+        msg = ("Clustering with preference {:3.2f} "
+               "did not fully converge in {:d} iterations")
+        warnings.warn(msg.format(preference, -n_iter))
 
     return clusters
