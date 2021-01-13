@@ -21,6 +21,7 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * MOL2 files without bonds can now be read and written (Issue #3057)
   * Write `CONECT` record only once in multi-model PDB files (Issue #3018)
   * Add '.nc' as a recognised extension for the NCDFWriter (Issue #3030)
   * PDB parser now assigns empty records for partially missing/invalid elements
@@ -76,6 +77,11 @@ Fixes
     would create a test artifact (Issue #2979, PR #2981)
 
 Enhancements
+  * Added automatic selection class generation for TopologyAttrs,
+    FloatRangeSelection, and BoolSelection (Issues #2925, #2875; PR #2927)
+  * Added 'to' operator, negatives, scientific notation, and arbitrary
+    whitespace for ranges (Issue #3054, PR #2927)
+  * Added `atol` and `rtol` keywords for float comparison (PR #2927)
   * Improved performance of the ParmEd converter (Issue #3028, PR #3029)
   * Improved analysis class docstrings, and added missing classes to the 
     `__all__` list (PR #2998)
@@ -111,7 +117,7 @@ Enhancements
     'protein' selection (#2751 PR #2755)
   * Added an RDKit converter that works for any input with all hydrogens
     explicit in the topology (Issue #2468, PR #2775)
-
+  
 Changes
   * Continuous integration uses mamba rather than conda to install the
     dependencies (PR #2983)
