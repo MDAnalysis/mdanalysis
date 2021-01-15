@@ -80,14 +80,12 @@ def affinity_propagation(similarity, preference, float lam, int max_iter, int co
 
     similarity[np.diag_indices(cn)] = preference
     indices = np.tril_indices(cn)
-
-    # print(similarity)
-    # print(np.tril(similarity))
+    
     
     cdef np.ndarray[np.float32_t, ndim=1] sim = np.ravel(similarity[indices]).astype(np.float32)
     # sim = np.ascontiguousarray(sim)
 
-    print(similarity[-2:])
+    print(sim)
 
     cdef np.ndarray[long, ndim=1] clusters = np.zeros((cn), dtype=long)
 

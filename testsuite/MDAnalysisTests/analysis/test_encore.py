@@ -250,23 +250,23 @@ class TestEncore(object):
 #         result_value_custom = results_custom[0, 1]
 #         assert_almost_equal(result_value, result_value_custom)
 
-#     def test_hes_align(self, ens1, ens2):
-#         # This test is massively sensitive!
-#         # Get 5260 when masses were float32?
-#         results, details = encore.hes([ens1, ens2], align=True)
-#         result_value = results[0,1]
-#         expected_value = 2047.05
-#         assert_almost_equal(result_value, expected_value, decimal=-3,
-#                             err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
+    # def test_hes_align(self, ens1, ens2):
+    #     # This test is massively sensitive!
+    #     # Get 5260 when masses were float32?
+    #     results, details = encore.hes([ens1, ens2], align=True)
+    #     result_value = results[0,1]
+    #     expected_value = 2047.05
+    #     assert_almost_equal(result_value, expected_value, decimal=-3,
+    #                         err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
-    def test_ces_to_self(self, ens1):
-        results, details = \
-            encore.ces([ens1, ens1],
-            clustering_method=encore.AffinityPropagationNative(preference = -3.0))
-        result_value = results[0,1]
-        expected_value = 0.
-        assert_almost_equal(result_value, expected_value,
-                            err_msg="ClusteringEnsemble Similarity to itself not zero: {0:f}".format(result_value))
+    # def test_ces_to_self(self, ens1):
+    #     results, details = \
+    #         encore.ces([ens1, ens1],
+    #         clustering_method=encore.AffinityPropagationNative(preference = -3.0))
+    #     result_value = results[0,1]
+    #     expected_value = 0.
+    #     assert_almost_equal(result_value, expected_value,
+    #                         err_msg="ClusteringEnsemble Similarity to itself not zero: {0:f}".format(result_value))
 
     # def test_ces(self, ens1, ens2):
     #     results, details = encore.ces([ens1, ens2])
@@ -275,12 +275,12 @@ class TestEncore(object):
     #     assert_almost_equal(result_value, expected_value, decimal=2,
     #                         err_msg="Unexpected value for Cluster Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
-#     def test_dres_to_self(self, ens1):
-#         results, details = encore.dres([ens1, ens1])
-#         result_value = results[0,1]
-#         expected_value = 0.
-#         assert_almost_equal(result_value, expected_value, decimal=2,
-#                             err_msg="Dim. Reduction Ensemble Similarity to itself not zero: {0:f}".format(result_value))
+    def test_dres_to_self(self, ens1):
+        results, details = encore.dres([ens1, ens1])
+        result_value = results[0,1]
+        expected_value = 0.
+        assert_almost_equal(result_value, expected_value, decimal=2,
+                            err_msg="Dim. Reduction Ensemble Similarity to itself not zero: {0:f}".format(result_value))
 
 #     def test_dres(self, ens1, ens2):
 #         results, details = encore.dres([ens1, ens2], select="name CA and resnum 1-10")

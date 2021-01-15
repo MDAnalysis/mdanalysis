@@ -231,13 +231,12 @@ class DistanceMatrix(AnalysisBase):
              Show detailed progress of the calculation if set to ``True``; the
              default is ``False``.
         """
-        self._u = u
+        self.atoms = u.select_atoms(select).atoms
+        self._u = self.atoms.universe
         traj = self._u.trajectory
 
         # remember that this must be called before referencing self.n_frames
         super(DistanceMatrix, self).__init__(self._u.trajectory, **kwargs)
-
-        self.atoms = self._u.select_atoms(select).atoms
         self._metric = metric
         self._cutoff = cutoff
         self._weights = weights

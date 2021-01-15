@@ -84,8 +84,11 @@ def discrete_js_matrix(matrix):
 def max_likelihood_covariance(coordinates, center=True):
     if center:
         coordinates -= coordinates.mean(axis=0)
-
-    cov = np.einsum('ij,ik->jk', coordinates, coordinates)
+    _, y = coordinates.shape
+    cov = np.zeros((y, y))
+    for frame in coordinates:
+        cov += np.outer(frame, frame)
+    # np.einsum('ij,ik->jk', coordinates, coordinates, out=cov)
     cov /= coordinates.shape[0]
     return cov
 
@@ -110,7 +113,7 @@ def shrinkage_covariance(coordinates, shrinkage_parameter=None):
 
     if shrinkage_parameter is None:
         c = np.linalg.norm(sample - prior, ord="fro") ** 2
-        inv_t = 1/len(offset)
+        inv_t = 1/t
         y = offset ** 2
         p = inv_t * (y.T @ y).sum() - (sample ** 2).sum()
         rdiag = inv_t * (y ** 2).sum() - np.trace(sample ** 2)
@@ -126,7 +129,10 @@ def shrinkage_covariance(coordinates, shrinkage_parameter=None):
         k = (p - r) / c
         shrinkage_parameter = max(0, min(1, k * inv_t))
     
-    return shrinkage_parameter * prior + (1 - shrinkage_parameter) * sample
+    # print("shrinkage_parameter", shrinkage_parameter)
+    
+    cov = shrinkage_parameter * prior + (1 - shrinkage_parameter) * sample
+    return cov
 
 
 def get_bootstrap_frames(frames, n_samples=100):

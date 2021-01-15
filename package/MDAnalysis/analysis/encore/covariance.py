@@ -62,12 +62,14 @@ def ml_covariance_estimator(coordinates, reference_coordinates=None):
     else:
         # Normal covariance calculation: distance to the average
         coordinates_offset = coordinates - np.average(coordinates, axis=0)
+    # print(coordinates_offset[-10:])
 
     # Calculate covariance manually
     coordinates_cov = np.zeros((coordinates.shape[1],
                                 coordinates.shape[1]))
     for frame in coordinates_offset:
         coordinates_cov += np.outer(frame, frame)
+    # print("cov", coordinates_cov[:10])
     coordinates_cov /= coordinates.shape[0]
 
     return coordinates_cov
@@ -121,6 +123,7 @@ def shrinkage_covariance_estimator( coordinates,
     # Call maximum likelihood estimator (note the additional column)
     sample = ml_covariance_estimator(np.hstack([x, xmkt[:, np.newaxis]]), 0)
     sample *= (t-1)/float(t)
+    # print("sample", sample[:10])
 
 
     # Split covariance matrix into components
@@ -131,6 +134,7 @@ def shrinkage_covariance_estimator( coordinates,
     # Prior
     prior = np.outer(covmkt, covmkt)/varmkt
     prior[np.ma.make_mask(np.eye(n))] = np.diag(sample)
+    
 
     # If shrinkage parameter is not set, estimate it
     if shrinkage_parameter is None:
@@ -162,7 +166,10 @@ def shrinkage_covariance_estimator( coordinates,
         # Shrinkage constant
         k = (p-r)/c
         shrinkage_parameter = max(0, min(1, k/float(t)))
-    
+    # print(prior[0])
+    # print("shrinkage_parameter", shrinkage_parameter)
+    # raise ValueError()
+
     # calculate covariance matrix
     sigma = shrinkage_parameter*prior+(1-shrinkage_parameter)*sample
 
@@ -222,6 +229,7 @@ def covariance_matrix(ensemble,
         reference_coordinates = reference_coordinates.flatten()
 
     sigma = estimator(coordinates, reference_coordinates)
+    # print(sigma[:5, :5])
 
     # Optionally correct with weights
     if weights is not None:

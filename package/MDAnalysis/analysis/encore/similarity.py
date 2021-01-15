@@ -286,8 +286,6 @@ def harmonic_ensemble_similarity(sigma1,
     # Difference between average vectors
     d_avg = x1 - x2
 
-    
-
     # Distance measure
     trace = np.trace(np.dot(sigma1, sigma2_inv) +
                         np.dot(sigma2, sigma1_inv)
@@ -296,16 +294,13 @@ def harmonic_ensemble_similarity(sigma1,
     d_hes = 0.25 * (np.dot(np.transpose(d_avg),
                               np.dot(sigma1_inv + sigma2_inv,
                                         d_avg)) + trace)
-    print(d_avg.shape)
-    print((sigma1_inv + sigma2_inv).shape)
-    print((np.dot(sigma1_inv + sigma2_inv,
-                                        d_avg)).shape)
-    print(np.dot(sigma1, sigma2_inv).shape)
-    print((np.dot(np.transpose(d_avg),
-                              np.dot(sigma1_inv + sigma2_inv,
-                                        d_avg)).shape))
+    # print((sigma1_inv + sigma2_inv)[:10])
+    print((np.dot(sigma1, sigma2_inv) +
+                        np.dot(sigma2, sigma1_inv))[:10])
     print(trace)
-    raise ValueError()
+    # print(sigma1[:5, :5])
+    # print(sigma2[:5, :5])
+    # print((sigma1_inv + sigma2_inv).dtype)
     return d_hes
 
 
@@ -562,7 +557,12 @@ def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
         ln_P1P2_exp_P1 = np.average(np.log(
             0.5 * (kde1.evaluate(resamples1) + kde2.evaluate(resamples1))))
         ln_P1P2_exp_P2 = np.average(np.log(
-            0.5 * (kde1.evaluate(resamples2) + kde2.evaluate(resamples2))))
+            0.5 * (kde1.evaluate(resamples2) + 
+                   kde2.evaluate(resamples2))))
+    
+    print(ln_P1_exp_P1)
+    print(ln_P2_exp_P2)
+    print(ln_P1P2_exp_P1+ln_P1P2_exp_P2)
 
     return 0.5 * (
         ln_P1_exp_P1 - ln_P1P2_exp_P1 + ln_P2_exp_P2 - ln_P1P2_exp_P2)
@@ -952,6 +952,7 @@ def hes(ensembles,
                                              sigma2=sigmas[j])
         values[i, j] = value
         values[j, i] = value
+    
 
     # Save details as required
     details = {}
@@ -1495,6 +1496,7 @@ def dres(ensembles,
     if allow_collapsed_result and not hasattr(dimensionality_reduction_method,
                                               '__iter__'):
         values = values[0]
+    raise ValueError()
 
     return values, details
 

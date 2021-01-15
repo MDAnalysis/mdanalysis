@@ -4,7 +4,8 @@ import numpy as np
 from scipy.stats import gaussian_kde
 
 from ...core.ensemble import Ensemble
-from .. import align
+from ..align import AlignTraj
+from ..pca import PCA
 from . import utils
 
 def clusters_to_indices(clusters, outlier_label=-1, outlier_index=-1):
@@ -38,39 +39,50 @@ def ces(ensemble, clusters, outlier_label=-1, outlier_index=-1):
     outlier_i = n_cl  # marker for new outlier columns
     for row, data in zip(frames_per_cl, ensemble.split_array(i_labels)):
         labels_, counts_ = np.unique(data, return_counts=True)
+        # treat outliers as individual clusters
         if labels_[0] == outlier_index:
             n_outlier_ = counts_[0]
             row[outlier_i:outlier_i + n_outlier_] = 1
             outlier_i += n_outlier_
             labels_ = labels_[1:]
             counts_ = counts_[1:]
-    
         # normalise over number of frames
         row[labels_] = counts_
-        row /= len(data)
-    print(clusters[:20])
-    print(clusters[20:])
-    print(frames_per_cl)
-
-            
+        row /= len(data)            
     return utils.discrete_js_matrix(frames_per_cl)
 
 
-def dres(ensemble, subspace, n_components=None, n_resample=1e3):
+def dres(ensemble, subspace=PCA, n_components=3, n_resample=1000,
+         start=None, stop=None, step=None, **kwargs):
+    if isinstance(subspace, type):
+        subspace = subspace(ensemble, **kwargs)
+    if isinstance(subspace, PCA):
+        if not subspace._calculated:
+            subspace.run(start=start, stop=stop, step=step)
+        subspace = subspace.transform(subspace._atoms,
+                                      n_components=n_components,
+                                      start=start, stop=stop,
+                                      step=step)
     if n_components is not None:
         subspace = subspace[:, :n_components]
-    
+
     n_u = ensemble.n_universes
     kdes = [gaussian_kde(x.T) for x in ensemble.split_array(subspace)]
-    resamples = np.concatenate([k.resample(size=n_resample) for k in kdes],
-                               axis=1)  # (n_dim, n_u*n_samples)
-    pdfs = np.array([k.evaluate(resamples) for k in kdes])
-    pdfs = pdfs.reshape((n_u, n_resample))
-    logpdfs = np.broadcast_to(np.log(pdfs).mean(axis=1), (n_u, n_u))
+    resamples = [k.resample(size=n_resample) for k in kdes]
+    # resamples = np.concatenate([k.resample(size=n_resample) for k in kdes],
+    #                            axis=1)  # (n_dim, n_u*n_samples)
+    # pdfs = np.array([k.evaluate(resamples) for k in kdes])
+    # pdfs = np.array(np.split(pdfs, n_u, axis=1)) #pdfs.reshape((n_u, n_u, n_resample))
+    pdfs = np.zeros((n_u, n_u, n_resample))
+    for i, k in enumerate(kdes):
+        pdfs[i] = [k.evaluate(x) for x in resamples]
+    logpdfs = np.log(pdfs).mean(axis=-1)
+    pdfsT = pdfs.transpose((1, 0, 2))
 
-    pdfs_ = np.broadcast_to(pdfs, (n_u, n_u, n_resample))
-    sum_pdfs = pdfs_ + np.transpose(pdfs_, axes=(1, 0, 2))
-    ln_pq_exp_pq = np.log(0.5 * sum_pdfs).mean(axis=-1)
+    sum_pdfs = pdfs + pdfsT
+    ln_pq_exp_pq = np.log(0.5 * (pdfs + pdfsT)).mean(axis=-1)
+    print(pdfs.shape)
+    print(logpdfs)
 
     return 0.5 * (logpdfs + logpdfs.T - ln_pq_exp_pq - ln_pq_exp_pq.T)
 
@@ -116,7 +128,8 @@ def hes(ensemble, weights="mass", estimator="shrinkage", align=False,
 
     ensemble.transfer_to_memory()
     if align:
-        align.AlignTraj(ensemble, ensemble, weights=weights[0]).run()
+        AlignTraj(ensemble, ensemble, weights=weights[0],
+                  in_memory=True).run()
 
     frames = [u.trajectory.timeseries(ag, order="fac")
               for ag, u in zip(ensemble._ags, ensemble.universes)]
@@ -136,24 +149,41 @@ def hes(ensemble, weights="mass", estimator="shrinkage", align=False,
         for i, (coords, w) in enumerate(zip(frames[s], weights3)):
             avgs[s, i] = coords.mean(axis=0).flatten()
             cov = estimator(coords.reshape(len(coords), -1))
+            # print(cov[:5, :5])
             try:
                 cov = np.dot(w, np.dot(cov, w))
             except ValueError:
                 raise ValueError("weights dimensions don't match selected atoms")
+            # print(cov[:5, :5])
             covs[s, i] = cov
     
     inv_covs = np.zeros((n_s, n_u, n_u, n_a3, n_a3))
     for i, sub in enumerate(covs):
         for j, arr in enumerate(sub):
             inv_covs[i, j] = np.linalg.pinv(arr[0])
+            # if j == 0:
+            #     print(arr[0])
+            #     print(inv_covs[i, j])
 
+    # print(avgs.shape)
     diff = avgs - avgs.transpose((0, 2, 1, 3))
-    cov_prod = covs @ inv_covs
+
+    # print(avgs[0, 0, 0][:10])
+    # print(avgs[0, 1, 0][:10])
+    # print((avgs[0, 0, 0] - avgs[0, 1, 0])[:10])
+
+    # print(diff[0][0, 1][:20])
+
+    cov_prod = covs @ inv_covs.transpose((0, 2, 1, 3, 4))
     cov_prod += cov_prod.transpose((0, 2, 1, 3, 4))
-    trace = np.trace(cov_prod, axis1=-2, axis2=-1) - (2 * n_a3)
+    # print(cov_prod[0, 0, 1, : 10])
+    # trace = np.trace(cov_prod - 2 * np.identity(n_a3), axis1=-1, axis2=-2)
+    trace = np.trace(cov_prod, axis1=-1, axis2=-2) - (2 * n_a3)
+    # print(trace)
 
     inv_cov_ = inv_covs + inv_covs.transpose((0, 2, 1, 3, 4))
-    prod = np.einsum('ijklm,ijkl->ijkl', inv_covs, diff)
+    # print(inv_cov_.dtype)
+    prod = np.einsum('ijklm,ijkl->ijkl', inv_cov_, diff)
     similarity = np.einsum('ijkl,ijkl->ijk', diff, prod)
     similarity = 0.25 * (similarity + trace)
     if estimate_error:

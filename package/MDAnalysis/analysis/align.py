@@ -338,7 +338,6 @@ def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,
     """
     R, min_rmsd = rotation_matrix(mobile_coordinates, ref_coordinates,
                                   weights=weights)
-
     mobile_atoms.translate(-mobile_com)
     mobile_atoms.rotate(R)
     mobile_atoms.translate(ref_com)
@@ -629,9 +628,9 @@ class AlignTraj(AnalysisBase):
 
         """
         select = rms.process_selection(select)
-        self.ref_atoms = reference.select_atoms(*select['reference'])
-        self.mobile_atoms = mobile.select_atoms(*select['mobile'])
-        if in_memory or isinstance(mobile.trajectory, MemoryReader):
+        self.ref_atoms = reference.select_atoms(*select['reference']).atoms
+        self.mobile_atoms = mobile.select_atoms(*select['mobile']).atoms
+        if in_memory or not isinstance(mobile.trajectory, MemoryReader):
             mobile.transfer_to_memory()
             filename = None
             logger.info("Moved mobile trajectory to in-memory representation")

@@ -83,6 +83,7 @@ class TestEnsemble(object):
         ens.transfer_to_memory()
         dist_mat = diffusionmap.DistanceMatrix(ens).run()
         dm = dist_mat.dist_matrix
+        # print(dm[-2:])
         assert dm[-1, -2] != 0
 
 

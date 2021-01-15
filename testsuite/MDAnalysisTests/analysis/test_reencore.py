@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import MDAnalysis as mda
-from MDAnalysis.analysis import encore, reencore, align
+from MDAnalysis.analysis import encore, reencore, align, pca
 from MDAnalysis.analysis.diffusionmap import DistanceMatrix
 
 from MDAnalysis.analysis.clustering import Clusters, methods
@@ -46,7 +46,7 @@ import MDAnalysis.analysis.align as align
 
 @pytest.fixture()
 def data():
-    return np.arange(24, dtype=float).reshape((4, 6))
+    return np.arange(24, dtype=np.float64).reshape((4, 6))
 
 
 def test_max_likelihood_estimator(data):
@@ -115,42 +115,11 @@ class TestEncore(object):
         a = align.AlignTraj(ens, ens, in_memory=True).run()
         return ens
 
-    @pytest.fixture()
-    def rmsd_mat(self, ensemble_aligned):
-        dist_mat = DistanceMatrix(ensemble_aligned, select="name CA").run()
-        return dist_mat.dist_matrix
-    
-    @pytest.fixture()
-    def rmsd_mat1(self, ensemble1_aligned):
-        dist_mat = DistanceMatrix(ensemble1_aligned).run()
-        return dist_mat.dist_matrix
-
     def test_affinity_propagation(self, ens1):
         dist_mat = encore.get_distance_matrix(ens1).as_array()
-        # u = mda.Universe(PSF, DCD)
-        # u.transfer_to_memory(step=5)
-        # a = align.AlignTraj(u, u, select_atoms="name CA", in_memory=True).run()
-        # dist_mat = DistanceMatrix(u, select="name CA").run().dist_matrix
         clusters = Clusters(methods.AffinityPropagation)
         clusters.run(-dist_mat)
         assert len(clusters.cluster_indices) == 7
-
-
-    def test_ces_to_self(self, ensemble1, rmsd_mat1):
-        clusters = Clusters(methods.AffinityPropagation(preference=-3.0))
-        clusters.run(-rmsd_mat1)
-        result_value = reencore.ces(ensemble1, clusters)[0, 1]
-        assert_almost_equal(result_value, 0,
-                            err_msg=f"ces() to itself not zero: {result_value}")
-
-    def test_ces(self, ensemble, rmsd_mat):
-        clusters = Clusters(methods.AffinityPropagation)
-        print(rmsd_mat[-2:])
-        clusters.run(-rmsd_mat)
-        result_value = reencore.ces(ensemble, clusters)[0, 1]
-        assert_almost_equal(result_value, 0.51,
-                            err_msg=f"unexpected value")
-    
 
     def test_hes_to_self(self, ensemble1):
         result_value = reencore.hes(ensemble1)[0, 1]
@@ -161,3 +130,43 @@ class TestEncore(object):
         result = reencore.hes(ensemble, weights='mass')[0, 1]
         min_bound = 1E5
         assert result > min_bound, "Unexpected value for Harmonic Ensemble Similarity"
+
+    def test_hes_align(self, ens1, ens2):
+        ensemble = mda.Ensemble([ens1, ens2]).select_atoms("name CA")
+        result_value = reencore.hes(ensemble, align=True)[0, 1]
+        old, _ = encore.hes(ensemble.universes)
+        assert_almost_equal(result_value, old[0, 1], decimal=-2)
+
+    def test_ces_to_self(self, ensemble1_aligned):
+        dm = DistanceMatrix(ensemble1_aligned, select="name CA").run()
+        rmsd_mat1 = dm.dist_matrix
+        dm = DistanceMatrix(ensemble1_aligned).run()
+        clusters = Clusters(methods.AffinityPropagation(preference=-3.0))
+        clusters.run(-rmsd_mat1)
+        result_value = reencore.ces(ensemble1_aligned, clusters)[0, 1]
+        assert_almost_equal(result_value, 0,
+                            err_msg=f"ces() to itself not zero: {result_value}")
+
+    def test_ces_rmsd_enc(self, ensemble_aligned):
+        rmsd_mat_enc = encore.get_distance_matrix(ensemble_aligned).as_array()
+        clusters = Clusters(methods.AffinityPropagation())
+        clusters.run(-rmsd_mat_enc)
+        result_value = reencore.ces(ensemble_aligned, clusters)[0, 1]
+        assert_almost_equal(result_value, 0.51, decimal=2,
+                            err_msg=f"unexpected value")
+    
+    def test_ces(self, ensemble_aligned):
+        dm = DistanceMatrix(ensemble_aligned, select="name CA").run()
+        rmsd_mat = dm.dist_matrix
+        clusters = Clusters(methods.AffinityPropagation())
+        clusters.run(-rmsd_mat)
+        result_value = reencore.ces(ensemble_aligned, clusters)[0, 1]
+        assert_almost_equal(result_value, 0.69, decimal=2,
+                            err_msg=f"unexpected value")
+    
+    def test_dres_to_self(self, ensemble1_aligned):
+        result = reencore.dres(ensemble1_aligned)[0, 1]
+        assert_almost_equal(result, 0)
+        
+
+
