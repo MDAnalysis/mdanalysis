@@ -62,14 +62,12 @@ def ml_covariance_estimator(coordinates, reference_coordinates=None):
     else:
         # Normal covariance calculation: distance to the average
         coordinates_offset = coordinates - np.average(coordinates, axis=0)
-    # print(coordinates_offset[-10:])
 
     # Calculate covariance manually
     coordinates_cov = np.zeros((coordinates.shape[1],
                                 coordinates.shape[1]))
     for frame in coordinates_offset:
         coordinates_cov += np.outer(frame, frame)
-    # print("cov", coordinates_cov[:10])
     coordinates_cov /= coordinates.shape[0]
 
     return coordinates_cov
@@ -121,10 +119,8 @@ def shrinkage_covariance_estimator( coordinates,
     xmkt = np.average(x, axis=1)
 
     # Call maximum likelihood estimator (note the additional column)
-    sample = ml_covariance_estimator(np.hstack([x, xmkt[:, np.newaxis]]), 0)
-    sample *= (t-1)/float(t)
-    # print("sample", sample[:10])
-
+    sample = ml_covariance_estimator(np.hstack([x, xmkt[:, np.newaxis]]), 0)\
+        * (t-1)/float(t)
 
     # Split covariance matrix into components
     covmkt = sample[0:n, n]
@@ -138,7 +134,6 @@ def shrinkage_covariance_estimator( coordinates,
 
     # If shrinkage parameter is not set, estimate it
     if shrinkage_parameter is None:
-
         # Frobenius norm
         c = np.linalg.norm(sample - prior, ord='fro')**2
 
@@ -166,9 +161,6 @@ def shrinkage_covariance_estimator( coordinates,
         # Shrinkage constant
         k = (p-r)/c
         shrinkage_parameter = max(0, min(1, k/float(t)))
-    # print(prior[0])
-    # print("shrinkage_parameter", shrinkage_parameter)
-    # raise ValueError()
 
     # calculate covariance matrix
     sigma = shrinkage_parameter*prior+(1-shrinkage_parameter)*sample
@@ -229,7 +221,6 @@ def covariance_matrix(ensemble,
         reference_coordinates = reference_coordinates.flatten()
 
     sigma = estimator(coordinates, reference_coordinates)
-    # print(sigma[:5, :5])
 
     # Optionally correct with weights
     if weights is not None:
@@ -253,4 +244,5 @@ def covariance_matrix(ensemble,
 
         weight_matrix = np.sqrt(np.identity(len(weights))*weights)
         sigma = np.dot(weight_matrix, np.dot(sigma, weight_matrix))
+    
     return sigma

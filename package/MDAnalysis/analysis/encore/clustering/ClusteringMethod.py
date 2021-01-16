@@ -158,9 +158,9 @@ class AffinityPropagationNative(ClusteringMethod):
             max_iterations = self.max_iter,
             convergence = self.convergence_iter,
             noise=int(self.add_noise))
-        print(clusters)
-        raise ValueError()
+        
         return clusters
+
 if sklearn:
 
     class AffinityPropagation(ClusteringMethod):

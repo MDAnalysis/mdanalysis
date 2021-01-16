@@ -294,13 +294,6 @@ def harmonic_ensemble_similarity(sigma1,
     d_hes = 0.25 * (np.dot(np.transpose(d_avg),
                               np.dot(sigma1_inv + sigma2_inv,
                                         d_avg)) + trace)
-    # print((sigma1_inv + sigma2_inv)[:10])
-    print((np.dot(sigma1, sigma2_inv) +
-                        np.dot(sigma2, sigma1_inv))[:10])
-    print(trace)
-    # print(sigma1[:5, :5])
-    # print(sigma2[:5, :5])
-    # print((sigma1_inv + sigma2_inv).dtype)
     return d_hes
 
 
@@ -352,9 +345,6 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
     # Exclude clusters which have 0 elements in both ensembles
     pA = tmpA[tmpA + tmpB > EPSILON]
     pB = tmpB[tmpA + tmpB > EPSILON]
-
-    print(pA, pB)
-    raise ValueError()
 
     return discrete_jensen_shannon_divergence(pA, pB)
 
@@ -557,13 +547,8 @@ def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
         ln_P1P2_exp_P1 = np.average(np.log(
             0.5 * (kde1.evaluate(resamples1) + kde2.evaluate(resamples1))))
         ln_P1P2_exp_P2 = np.average(np.log(
-            0.5 * (kde1.evaluate(resamples2) + 
-                   kde2.evaluate(resamples2))))
+            0.5 * (kde1.evaluate(resamples2) + kde2.evaluate(resamples2))))
     
-    print(ln_P1_exp_P1)
-    print(ln_P2_exp_P2)
-    print(ln_P1P2_exp_P1+ln_P1P2_exp_P2)
-
     return 0.5 * (
         ln_P1_exp_P1 - ln_P1P2_exp_P1 + ln_P2_exp_P2 - ln_P1P2_exp_P2)
 
@@ -953,7 +938,6 @@ def hes(ensembles,
         values[i, j] = value
         values[j, i] = value
     
-
     # Save details as required
     details = {}
     for i in range(out_matrix_eln):
@@ -1496,7 +1480,6 @@ def dres(ensembles,
     if allow_collapsed_result and not hasattr(dimensionality_reduction_method,
                                               '__iter__'):
         values = values[0]
-    raise ValueError()
 
     return values, details
 

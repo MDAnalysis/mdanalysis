@@ -96,7 +96,7 @@ class TestEnsemble(object):
         assert ens.trajectory is ens
         assert ens._ts_u == 0
         assert ens.n_atoms == 3341
-        assert ens._ags == [u1.atoms]
+        assert ens._ags == (u1.atoms,)
         assert_equal(ens._ag_indices, [u1.atoms.ix])
         assert_equal(ens.frames, np.arange(98))
         assert_equal(ens.traj_frames, (98,))
@@ -111,7 +111,7 @@ class TestEnsemble(object):
         assert ens.trajectory is ens
         assert ens._ts_u == 0
         assert ens.n_atoms == 3341
-        assert ens._ags == [u1.atoms, u2.atoms[:3341], u3.atoms[:3341]]
+        assert ens._ags == (u1.atoms, u2.atoms[:3341], u3.atoms[:3341])
         assert_equal(ens._ag_indices, [u1.atoms.ix]*3)
         assert_equal(ens.frames, np.arange(109))
         assert_equal(ens.traj_frames, (98, 1, 10))
@@ -124,7 +124,7 @@ class TestEnsemble(object):
         assert ens.labels == [XTC, DCD, PDB]
         assert ens._universe_labels == {DCD: 1, PDB: 2, XTC: 0}
         assert ens.n_atoms == 214
-        assert ens._ags == prot
+        assert ens._ags == tuple(prot)
         assert_equal(ens._frame_edges, [0, 10, 108, 109])
     
     @pytest.mark.parametrize('start,stop,step', [
@@ -192,7 +192,7 @@ class TestEnsemble(object):
         assert ens2._ts_u == n_universe, 'incorrect Universe selected'
         assert ens2.ts is ts4, 'incorrect frame selected'
         assert ens2.ts.frame == frame4, 'incorrect frame selected'
-        assert ens._ts_u == 0, 'initial Ensemble has persisting changes'
+        assert ens._ts_u == n_universe, 'initial Ensemble does not have persisting changes'
 
     def test_select_atoms_creation(self, u1, u2):
         sel = 'name CA'

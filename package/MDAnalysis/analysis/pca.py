@@ -289,7 +289,7 @@ class PCA(AnalysisBase):
         self._n_components = n
 
     def transform(self, atomgroup, n_components=None, start=None, stop=None,
-                  step=None):
+                  step=None, frames=None):
         """Apply the dimensionality reduction on a trajectory
 
         Parameters
@@ -335,15 +335,18 @@ class PCA(AnalysisBase):
             warnings.warn('Atom types do not match with types used to fit PCA')
 
         traj = atomgroup.universe.trajectory
-        start, stop, step = traj.check_slice_indices(start, stop, step)
-        n_frames = len(range(start, stop, step))
+        if frames is None:
+            start, stop, step = traj.check_slice_indices(start, stop, step)
+            frames = np.arange(start, stop, step)
+        n_frames = len(frames)
 
         dim = (n_components if n_components is not None else
                self.p_components.shape[1])
 
         dot = np.zeros((n_frames, dim))
 
-        for i, ts in enumerate(traj[start:stop:step]):
+        for i, fr in enumerate(frames):
+            traj[fr]
             xyz = atomgroup.positions.ravel() - self.mean
             dot[i] = np.dot(xyz, self._p_components[:, :dim])
 

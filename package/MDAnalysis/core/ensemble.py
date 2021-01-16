@@ -30,6 +30,10 @@ from ..coordinates.base import ProtoReader
 
 
 class AtomsWrapper:
+    """
+    Wrap AtomGroup to access properties such as positions
+    when they update across Universe trajectories.
+    """
     def __init__(self, ensemble):
         self.ensemble = ensemble
         self.universe = ensemble
@@ -57,13 +61,19 @@ class AtomsWrapper:
 
 class Ensemble(object):
     """
+    Wrap multiple Universes so they can be treated as one for the purposes
+    of running an analysis.
+
     Should be able to plug this into any AnalysisBase class.
     """
 
     def __init__(self, universes, select=None, labels=None, frames=None,
                  _ts_u=0, links=None):
+        # Point universe attributes to self
         self.ensemble = self
         self.universe = self
+        self.trajectory = self
+
         # set universe info
         universes = util.asiterable(universes)
         self.atoms = AtomsWrapper(self)
@@ -87,7 +97,6 @@ class Ensemble(object):
             err = ('select must be None, a string, or an iterable of strings '
                    'with the same length as universes')
             raise ValueError(err)
-
         self._ag_indices = [ag.ix for ag in self._ags]
         self._ags = tuple(self._ags)
         self.n_atoms = len(self._ags[0])
@@ -120,10 +129,11 @@ class Ensemble(object):
             self.labels.append(l)
             self._universe_labels[l] = i
 
-        # pretend to be Universe
-        self.trajectory = self
+        # new Ensembles created from select_atoms
+        # need to have their frames / current Universe
+        # updated when this one is.
+        # TODO: could definitely do this better
         self._ts_u = _ts_u
-        
         if links is None:
             links = set()
         self.links = links
@@ -137,12 +147,15 @@ class Ensemble(object):
 
     def __getattr__(self, attr):
         try:
-            return getattr(self.atoms, attr)
+            return getattr(self._atoms, attr)
         except AttributeError:
             try:
-                return getattr(self.universe, attr)
+                return getattr(self._universe, attr)
             except AttributeError:
-                pass
+                try:
+                    return getattr(self.ts, attr)
+                except AttributeError:
+                    pass
         raise AttributeError(f"{type(self).__name__} does not have "
                              f"attribute {attr}")
 
@@ -186,7 +199,7 @@ class Ensemble(object):
         try:
             return u_ix[np.in1d(u_ix, fr_ix)][0]
         except IndexError:
-            return None
+            return self.ts.frame
 
     @property
     def positions(self):
@@ -205,6 +218,7 @@ class Ensemble(object):
 
     def timeseries(self, atomgroup=None, start=None, stop=None, step=None,
                    frames=None, order="afc"):
+        # TODO: what to do about atomgroup?
         n_atoms = self.n_atoms
         frames = np.array(self._prepare_frames(start=start, stop=stop,
                                                step=step, frames=frames))
@@ -228,7 +242,7 @@ class Ensemble(object):
 
     @property
     def filename(self):
-        return self.universe.trajectory.filename
+        return self._universe.trajectory.filename
 
     @property
     def _atoms(self):
@@ -280,10 +294,6 @@ class Ensemble(object):
         splix = np.where(np.ediff1d(u_frames[:, 0]))[0] + 1
         return np.split(u_frames[:, 1], splix)
 
-        # bins = np.searchsorted(self._frame_edges[1:], frames)
-        # for i in range(self.n_universes):
-        #     yield frames[bins == i]
-
     def iterate_over_atomgroups(self, start=None, stop=None, step=None,
                                 frames=None):
         frames = self._prepare_frames(start=start, stop=stop, step=step,
@@ -301,7 +311,6 @@ class Ensemble(object):
         for ag, label, fr in zip(self._ags, self.labels, frames_):
             yield type(self)([ag], labels=[label], frames=fr, _ts_u=self._ts_u,
                              links=self.links)
-
 
     def _get_relative_frame(self, i):
         if not isinstance(i, (int, np.integer)):
@@ -323,23 +332,26 @@ class Ensemble(object):
                           _ts_u=self._ts_u, links=self.links)
 
     def select_atoms(self, *sel):
+        """Return new Ensemble with Atoms selected"""
         sel = [s for s in sel if s is not None]
         ags = self._ags
         if sel:
             ags = [ag.select_atoms(*sel) for ag in ags]
         return type(self)(ags, select=None, labels=self.labels,
-                          _ts_u=self._ts_u, links=self.links)
+                          _ts_u=self._ts_u, links=self.links, frames=self.frames)
 
     def split_array(self, arr):
+        """Convenience function to split arrays of data by Universe
+        into an iterable of data arrays"""
         for i in range(self.n_universes):
-            yield arr[self._frame_edges[i]:self._frame_edges[i+1]]
+            ix = np.where(self._universe_frames[:, 0] == i)[0]
+            yield arr[ix[0]:ix[-1]+1]
     
     def transfer_to_memory(self, start=None, stop=None, step=None,
                            frames=None):
-
-        frames_ = self._prepare_frames_by_universe(start=start, stop=stop,
-                                                   step=step, frames=frames)
-        frames = np.array(list(frames_))
+        """Transfer specified frames to memory"""
+        frames = self._prepare_frames_by_universe(start=start, stop=stop,
+                                                  step=step, frames=frames)
         for u, fr in zip(self.universes, frames):
             u.transfer_to_memory(frames=fr)
         self._set_frames()

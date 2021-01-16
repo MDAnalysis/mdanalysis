@@ -22,9 +22,6 @@
 #
 """
 Cython wrapper for the C implementation of the Affinity Perturbation clustering algorithm.
-
-:Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen
-
 """
 import warnings
 
@@ -83,10 +80,6 @@ def affinity_propagation(similarity, preference, float lam, int max_iter, int co
     
     
     cdef np.ndarray[np.float32_t, ndim=1] sim = np.ravel(similarity[indices]).astype(np.float32)
-    # sim = np.ascontiguousarray(sim)
-
-    print(sim)
-
     cdef np.ndarray[long, ndim=1] clusters = np.zeros((cn), dtype=long)
 
     # run C module Affinity Propagation

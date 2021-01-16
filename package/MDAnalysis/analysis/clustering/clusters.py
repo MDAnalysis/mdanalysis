@@ -59,6 +59,7 @@ class Clusters:
         self.clusters_by_size = []
         self.outlier_indices = []
         self.data_labels = []
+        self._data = None
 
     def __len__(self):
         return len(self.cluster_indices)
@@ -80,6 +81,7 @@ class Clusters:
         if not iterable(self.data_labels):
             raise ValueError("predictor must return an iterable "
                              "of labels")
+        self._data = data
         ix = np.argsort(self.data_labels)
         indices = np.arange(len(data))
         splix = np.where(np.ediff1d(self.data_labels[ix]))[0] + 1

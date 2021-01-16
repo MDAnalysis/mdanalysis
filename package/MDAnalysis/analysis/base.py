@@ -113,7 +113,7 @@ class AnalysisBase(object):
         self._trajectory = trajectory
         self._verbose = verbose
 
-    def _setup_frames(self, trajectory, start=None, stop=None, step=None):
+    def _setup_frames(self, trajectory, start=None, stop=None, step=None, frames=None):
         """
         Pass a Reader object and define the desired iteration pattern
         through the trajectory
@@ -139,7 +139,9 @@ class AnalysisBase(object):
         self.start = start
         self.stop = stop
         self.step = step
-        self.frame_indices = np.arange(start, stop, step)
+        if frames is None:
+            frames = np.arange(start, stop, step)
+        self.frame_indices = frames
         self.n_frames = len(self.frame_indices)
         self.frames = np.zeros(self.n_frames, dtype=int)
         self.times = np.zeros(self.n_frames)
@@ -162,7 +164,7 @@ class AnalysisBase(object):
         """
         pass  # pylint: disable=unnecessary-pass
 
-    def run(self, start=None, stop=None, step=None, verbose=None):
+    def run(self, start=None, stop=None, step=None, frames=None, verbose=None):
         """Perform the calculation
 
         Parameters
@@ -181,7 +183,7 @@ class AnalysisBase(object):
         verbose = getattr(self, '_verbose',
                           False) if verbose is None else verbose
 
-        self._setup_frames(self._trajectory, start, stop, step)
+        self._setup_frames(self._trajectory, start, stop, step, frames)
         logger.info("Starting preparation")
         self._prepare()
         for i, frame in enumerate(ProgressBar(self.frame_indices, verbose=verbose)):

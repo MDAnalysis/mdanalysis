@@ -413,10 +413,8 @@ def extensions(config):
                                  sources=['MDAnalysis/analysis/clustering/cluster_methods' + source_suffix,
                                           'MDAnalysis/analysis/encore/clustering/src/ap.c'],
                                  include_dirs=include_dirs+['MDAnalysis/analysis/encore/clustering/include'],
-                                #  language='c++',
                                  define_macros=define_macros,
                                  extra_compile_args=extra_compile_args,)
-                                #  extra_link_args= cpp_extra_link_args)
     spe_dimred = MDAExtension('MDAnalysis.analysis.encore.dimensionality_reduction.stochasticproxembed',
                               sources=['MDAnalysis/analysis/encore/dimensionality_reduction/stochasticproxembed' + source_suffix,
                                        'MDAnalysis/analysis/encore/dimensionality_reduction/src/spe.c'],
@@ -454,7 +452,7 @@ def extensions(config):
         #Let's check early for missing .c files
         extensions = pre_exts
         for ext in extensions:
-            for source in ext.sources: 
+            for source in ext.sources:
                 if not (os.path.isfile(source) and
                         os.access(source, os.R_OK)):
                     raise IOError("Source file '{}' not found. This might be "

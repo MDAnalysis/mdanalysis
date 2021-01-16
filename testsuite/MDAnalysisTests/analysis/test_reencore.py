@@ -27,6 +27,7 @@ from MDAnalysis.analysis.diffusionmap import DistanceMatrix
 from MDAnalysis.analysis.clustering import Clusters, methods
 from MDAnalysis.analysis.encore.covariance import (ml_covariance_estimator,
                                                    shrinkage_covariance_estimator)
+from MDAnalysis.analysis.encore.dimensionality_reduction import DimensionalityReductionMethod as drm
 
 import importlib
 import tempfile
@@ -43,6 +44,8 @@ from MDAnalysisTests import block_import
 
 import MDAnalysis.analysis.rms as rms
 import MDAnalysis.analysis.align as align
+
+np.random.seed(0)
 
 @pytest.fixture()
 def data():
@@ -102,7 +105,7 @@ class TestEncore(object):
         u2 = mda.Universe(PSF, DCD2)
         u2.transfer_to_memory(step=5)
         ens = mda.Ensemble([u1, u2]).select_atoms("name CA")
-        a = align.AlignTraj(ens, ens).run()
+        a = align.AlignTraj(ens, ens, in_memory=True).run()
         return ens
     
     @pytest.fixture()
@@ -114,6 +117,21 @@ class TestEncore(object):
         ens = mda.Ensemble([u1, u2]).select_atoms("name CA")
         a = align.AlignTraj(ens, ens, in_memory=True).run()
         return ens
+
+    @pytest.fixture()
+    def ens1_aligned(self):
+        u = mda.Universe(PSF, DCD)
+        u.transfer_to_memory(step=5)
+        align.AlignTraj(u, u, select="name CA", in_memory=True).run()
+        return u
+
+    @pytest.fixture()
+    def dist_mat(self, ensemble_aligned):
+        return encore.get_distance_matrix(ensemble_aligned)
+
+    @pytest.fixture()
+    def dist_mat1(self, ensemble1_aligned):
+        return encore.get_distance_matrix(ensemble1_aligned)
 
     def test_affinity_propagation(self, ens1):
         dist_mat = encore.get_distance_matrix(ens1).as_array()
@@ -136,19 +154,27 @@ class TestEncore(object):
         result_value = reencore.hes(ensemble, align=True)[0, 1]
         old, _ = encore.hes(ensemble.universes)
         assert_almost_equal(result_value, old[0, 1], decimal=-2)
+    
+    def test_hes_estimate_error(self, ensemble1):
+        omean, ostd = encore.hes(ensemble1.universes, estimate_error=True,
+                                 bootstrapping_samples=10,
+                                 select="name CA and resnum 1-10")
+        mean, std = reencore.hes(ensemble1, estimate_error=True,
+                                 select="name CA and resnum 1-10",
+                                 n_bootstrap_samples=10)
+        assert_almost_equal(mean[0, 1], mean[0, 1], decimal=1)
+        assert_almost_equal(std[0, 1], std[0, 1], decimal=1)
 
-    def test_ces_to_self(self, ensemble1_aligned):
-        dm = DistanceMatrix(ensemble1_aligned, select="name CA").run()
-        rmsd_mat1 = dm.dist_matrix
-        dm = DistanceMatrix(ensemble1_aligned).run()
+
+    def test_ces_to_self(self, ensemble1_aligned, dist_mat1):
         clusters = Clusters(methods.AffinityPropagation(preference=-3.0))
-        clusters.run(-rmsd_mat1)
+        clusters.run(-dist_mat1.as_array())
         result_value = reencore.ces(ensemble1_aligned, clusters)[0, 1]
         assert_almost_equal(result_value, 0,
                             err_msg=f"ces() to itself not zero: {result_value}")
 
-    def test_ces_rmsd_enc(self, ensemble_aligned):
-        rmsd_mat_enc = encore.get_distance_matrix(ensemble_aligned).as_array()
+    def test_ces_rmsd_enc(self, ensemble_aligned, dist_mat):
+        rmsd_mat_enc = dist_mat.as_array()
         clusters = Clusters(methods.AffinityPropagation())
         clusters.run(-rmsd_mat_enc)
         result_value = reencore.ces(ensemble_aligned, clusters)[0, 1]
@@ -161,12 +187,84 @@ class TestEncore(object):
         clusters = Clusters(methods.AffinityPropagation())
         clusters.run(-rmsd_mat)
         result_value = reencore.ces(ensemble_aligned, clusters)[0, 1]
-        assert_almost_equal(result_value, 0.69, decimal=2,
+        assert_almost_equal(result_value, 0.51, decimal=2,
                             err_msg=f"unexpected value")
+
+    def test_ces_estimate_error(self, ensemble1_aligned, dist_mat1):
+        omean, ostd = encore.ces(ensemble1_aligned.universes,
+                                 estimate_error=True,
+                                 bootstrapping_samples=10,
+                                 clustering_method=encore.AffinityPropagationNative(preference=-2.0),
+                                 select="name CA and resnum 1-10")
+        rmsd_mat_enc = dist_mat1.as_array()
+        clusters = Clusters(methods.AffinityPropagation(preference=-2.0))
+        clusters.run(-rmsd_mat_enc)
+        mean, std = reencore.ces(ensemble1_aligned, clusters, estimate_error=True,
+                                 select="name CA and resnum 1-10",
+                                 n_bootstrap_samples=10)
+        assert_almost_equal(mean[0, 1], mean[0, 1])
+        assert_almost_equal(std[0, 1], std[0, 1])
+
     
     def test_dres_to_self(self, ensemble1_aligned):
-        result = reencore.dres(ensemble1_aligned)[0, 1]
+        result = reencore.dres(ensemble1_aligned, pca.PCA, n_components=3)[0, 1]
         assert_almost_equal(result, 0)
-        
+    
+    def test_dres(self, ensemble_aligned, dist_mat):
+        spe = drm.StochasticProximityEmbeddingNative(dimension=3,
+                                                     distance_cutoff=1.5,
+                                                     min_lam=0.1,
+                                                     max_lam=2.0,
+                                                     ncycle=100,
+                                                     nstep=10000)
+        dimred, _ = spe(dist_mat)
+        old, _ = encore.dres(ensemble_aligned.universes)
+        new = reencore.dres(ensemble_aligned, dimred.T, seed=0)
+        assert_almost_equal(old[0, 1], new[0, 1], decimal=1)
+
+    def test_dres_estimate_error(self, ensemble1_aligned):
+        omean, ostd = encore.dres(ensemble1_aligned.universes,
+                                 estimate_error=True,
+                                 bootstrapping_samples=10,
+                                 select="name CA and resnum 1-10")
+        mean, std = reencore.dres(ensemble1_aligned, estimate_error=True,
+                                  select="name CA and resnum 1-10",
+                                  n_bootstrap_samples=10)
+        assert_almost_equal(mean[0, 1], mean[0, 1])
+        assert_almost_equal(std[0, 1], std[0, 1])
+    
+    def test_ces_convergence(self, ens1_aligned):
+        # clusters
+        dm = DistanceMatrix(ens1_aligned, select="name CA").run()
+        rmsd_mat = dm.dist_matrix
+        clusters = Clusters(methods.AffinityPropagation())
+        clusters.run(-rmsd_mat)
+
+        results = reencore.ces_convergence(ens1_aligned, clusters,
+                                           window_size=5)
+        exp = np.array([0.34, 0.19, 0.07,  0.])
+        assert_almost_equal(results, exp, decimal=2)
+
+    def test_dres_convergence(self, ens1_aligned):
+        results = reencore.dres_convergence(ens1_aligned, pca.PCA,
+                                            window_size=10,
+                                            select="name CA",
+                                            n_components=3,
+                                            seed=0)
+        exp = np.array([0.5, 0.])
+        assert_almost_equal(results, exp, decimal=1)
+
+    def test_dres_convergence_spe(self, ens1_aligned):
+        dist_mat = encore.get_distance_matrix(ens1_aligned)
+        spe = drm.StochasticProximityEmbeddingNative(dimension=3,
+                                                     nstep=10000)
+        dimred, _ = spe(dist_mat)
+        results = reencore.dres_convergence(ens1_aligned, dimred.T,
+                                            window_size=10)
+        exp = np.array([0.3, 0.])
+        assert_almost_equal(results, exp, decimal=1)
+
+
+
 
 

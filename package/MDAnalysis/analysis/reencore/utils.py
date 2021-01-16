@@ -1,3 +1,26 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- https://www.mdanalysis.org
+# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
+
 import numpy as np
 import scipy
 
@@ -8,8 +31,6 @@ xlogy = np.vectorize(
 
 def discrete_kl_div(a, b):
     return np.sum(xlogy(a, a / b))
-    # return scipy.special.rel_entr(a, b).sum()
-
 
 def discrete_js_div(a, b):
     ab = (a+b) * 0.5
@@ -20,75 +41,32 @@ def discrete_js_div(a, b):
     return 0.5 * (discrete_kl_div(a, ab) + discrete_kl_div(b, ab))
 
 
-# def discrete_kl_matrix(matrix):
-#     log = np.log(matrix)
-#     cross_entropy = -(matrix @ log.T)
-#     # print(cross_entropy)
-#     entropy = -np.einsum('ij,ij->i', matrix, log)
-#     # print(entropy)
-#     kl = cross_entropy - entropy[..., None]
-#     # kl[np.isnan(kl)] = 0
-#     return kl
-
-
 def discrete_kl_matrix(matrix):
-    x, y = matrix.shape
-    matrix = np.array([matrix] * x)
-    div = matrix / matrix.transpose((1, 0, 2))
-    # div[~np.isfinite(div)] = 0
-    log = np.log(div)
-    log[~np.isfinite(div)] = 0
-    log[log == -np.inf] = 0
-    div[~np.isfinite(div)] = 0
-    div[div == -np.inf] = 0
-    
-    # logab = np.broadcast_to(log, (x, x, y))
-    # logdiff = logab - logab.transpose((1, 0, 2))
-    prod = matrix * log
-
-    # prod[(div < EPS) & (matrix < EPS)] = 0
-    # prod[prod < EPS] = 0
-    return prod.sum(axis=-1)
-    
-
-
-
-
+    log = np.log(matrix)
+    cross_entropy = -(matrix @ log.T)
+    entropy = -np.einsum('ij,ij->i', matrix, log)
+    kl = cross_entropy - entropy[..., None]
+    return kl
 
 
 def discrete_js_matrix(matrix):
-    value = np.zeros((len(matrix), len(matrix)))
-    for i, row1 in enumerate(matrix):
-        for j, row2 in enumerate(matrix[i:], i):
-            value[i][j] = value[j][i] = discrete_js_div(row1, row2)
-    return value
-    # x = matrix.shape[0]
-    # matrix = np.array([matrix] * x)
-    # matrixT = matrix.transpose((1, 0, 2))
-    # half = (matrix + matrixT) * 0.5
-    
-    # pB = matrix / half
-    # loghalf = np.log(pB)
-    # kl = (matrix * loghalf)
-    # mask = (half < EPS) | (matrix < EPS) | (pB < EPS)
-    # kl[mask] = 0
-    # # kl[half < EPS] = 0
-    # klsum = kl.sum(axis=-1)
-    # print(klsum.shape)
-    # print(klsum)
-
-    # # kl = discrete_kl_matrix(matrix)
-    # return 0.5 * (klsum + klsum.T)
+    x = matrix.shape[0]
+    matrix = np.array([matrix] * x)
+    matrixT = matrix.transpose((1, 0, 2))
+    half = (matrix + matrixT) * 0.5
+    pB = matrix / half
+    loghalf = np.log(pB)
+    kl = (matrix * loghalf)
+    mask = (half < EPS) | (matrix < EPS) | (pB < EPS)
+    kl[mask] = 0
+    klsum = kl.sum(axis=-1)
+    return 0.5 * (klsum + klsum.T)
 
 
 def max_likelihood_covariance(coordinates, center=True):
     if center:
         coordinates -= coordinates.mean(axis=0)
-    _, y = coordinates.shape
-    cov = np.zeros((y, y))
-    for frame in coordinates:
-        cov += np.outer(frame, frame)
-    # np.einsum('ij,ik->jk', coordinates, coordinates, out=cov)
+    cov = np.einsum('ij,ik->jk', coordinates, coordinates)
     cov /= coordinates.shape[0]
     return cov
 
@@ -128,14 +106,13 @@ def shrinkage_covariance(coordinates, shrinkage_parameter=None):
         r = rdiag + roff
         k = (p - r) / c
         shrinkage_parameter = max(0, min(1, k * inv_t))
-    
-    # print("shrinkage_parameter", shrinkage_parameter)
-    
+        
     cov = shrinkage_parameter * prior + (1 - shrinkage_parameter) * sample
     return cov
 
 
 def get_bootstrap_frames(frames, n_samples=100):
     n = len(frames)
-    indices = [np.random.randit(0, high=n, size=n) for i in range(n_samples)]
-    return [frames[x] for x in indices]
+    indices = [np.random.randint(0, high=n, size=n) for i in range(n_samples)]
+    arr = np.array([frames[x] for x in indices])
+    return arr
