@@ -21,8 +21,8 @@ The rules for this file:
   * 2.0.0
 
 Fixes
-
-  * UserWarning displayed when empty atomgroup is given to DensityAnalysis (Issue #3055)
+  * UserWarning displayed when empty atomgroup is given 
+    to DensityAnalysis (Issue #3055)
   * atommethods (_get_prev/next_residues_by_resid) returns empty residue group 
     when given empty residue group (Issue #3089)
   * MOL2 files without bonds can now be read and written (Issue #3057)

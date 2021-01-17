@@ -120,7 +120,8 @@ class DensityParameters(object):
     topology = TPR
     trajectory = XTC
     delta = 2.0
-    selections = {'static': "name OW",
+    selections = {'none': "byres resname LIG and around 8 protein", #this selection yields nothing
+                  'static': "name OW",
                   'dynamic': "name OW and around 4 (protein and resid 1-10)",
                   'solute': "protein and not name H*",
                   }
@@ -253,6 +254,14 @@ class TestDensityAnalysis(DensityParameters):
                 universe.select_atoms(self.selections['static']),
                 delta=self.delta, xdim="MDAnalysis", ydim=10.0, zdim=10.0,
                 gridcenter=self.gridcenters['static_defined']).run(step=5)
+
+    def test_warn_noatomgroup(self, universe):
+        regex = ("No atoms in selection at current frame, running user grid")
+        with pytest.warns(UserWarning, match=regex):
+            D = density.DensityAnalysis(
+                universe.select_atoms(self.selections['none']),
+                delta=self.delta, xdim=1.0, ydim=2.0, zdim=2.0, padding=0.0,
+                gridcenter=self.gridcenters['static_defined']).run(step=5)        
 
 
 class TestGridImport(object):

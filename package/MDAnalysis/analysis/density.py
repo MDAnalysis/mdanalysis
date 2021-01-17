@@ -384,18 +384,7 @@ class DensityAnalysis(AnalysisBase):
         self._ydim = ydim
         self._zdim = zdim
 
-    def _checkinput(self):
-        if len(self._atomgroup) == 0:
-            msg = ("No atoms in selection over whole trajectory")
-            warnings.warn(msg)
-            logger.warning(msg)
-            return 1
-        else:
-            return 0
-
     def _prepare(self):
-        if _checkinput(self) == 1:
-            return
         coord = self._atomgroup.positions
         if self._gridcenter is not None:
             # Issue 2372: padding is ignored, defaults to 2.0 therefore warn
@@ -406,8 +395,15 @@ class DensityAnalysis(AnalysisBase):
                 logger.warning(msg)
             # Generate a copy of smin/smax from coords to later check if the
             # defined box might be too small for the selection
-            smin = np.min(coord, axis=0)
-            smax = np.max(coord, axis=0)
+            try: 
+                smin = np.min(coord, axis=0)
+                smax = np.max(coord, axis=0)
+            except ValueError as err:
+                msg = ("No atoms in selection at current frame, running user grid")
+                warnings.warn(msg)
+                logger.warning(msg)
+                smin = self._gridcenter 
+                smax = self._gridcenter 
             # Overwrite smin/smax with user defined values
             smin, smax = self._set_user_grid(self._gridcenter, self._xdim,
                                              self._ydim, self._zdim, smin,
@@ -420,8 +416,20 @@ class DensityAnalysis(AnalysisBase):
             # ideal solution would use images: implement 'looking across the
             # periodic boundaries' but that gets complicated when the box
             # rotates due to RMS fitting.
-            smin = np.min(coord, axis=0) - self._padding
-            smax = np.max(coord, axis=0) + self._padding
+            try:
+                smin = np.min(coord, axis=0) 
+                smax = np.max(coord, axis=0) 
+            except ValueError as err:
+                msg = ("No atoms in selection at current frame, running user grid")
+                warnings.warn(msg)
+                logger.warning(msg)
+                smin = self._gridcenter 
+                smax = self._gridcenter  
+                smin, smax = self._set_user_grid(self._gridcenter, self._xdim,
+                                                 self._ydim, self._zdim, smin,
+                                                 smax)
+            smin = smin - self._padding
+            smax = smax + self._padding
         BINS = fixedwidth_bins(self._delta, smin, smax)
         arange = np.transpose(np.vstack((BINS['min'], BINS['max'])))
         bins = BINS['Nbins']
@@ -436,8 +444,6 @@ class DensityAnalysis(AnalysisBase):
         self.density = None
 
     def _single_frame(self):
-        if _checkinput(self) == 1:
-            return
         h, _ = np.histogramdd(self._atomgroup.positions,
                               bins=self._bins, range=self._arange,
                               normed=False)
@@ -448,8 +454,6 @@ class DensityAnalysis(AnalysisBase):
         self._grid += h
 
     def _conclude(self):
-        if _checkinput(self) == 1:
-            return
         # average:
         self._grid /= float(self.n_frames)
         density = Density(grid=self._grid, edges=self._edges,
