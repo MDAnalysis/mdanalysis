@@ -360,10 +360,12 @@ def write_dcd(in_name, out_name, remarks='testing', header=None):
     alphabet=string.printable, min_size=0,
     max_size=239))  # handle the printable ASCII strings
 @example(remarks='')
-def test_written_remarks_property(remarks, tmpdir, dcd):
+def test_written_remarks_property(remarks, tmpdir_factory):
     # property based testing for writing of a wide range of string
     # values to REMARKS field
-    testfile = str(tmpdir.join('test.dcd'))
+    dcd = DCDFile(DCD)
+    dirname = str(id(remarks)) + "_"
+    testfile = str(tmpdir_factory.mktemp(dirname).join('test.dcd'))
     header = dcd.header
     header['remarks'] = remarks
     write_dcd(DCD, testfile, header=header)
