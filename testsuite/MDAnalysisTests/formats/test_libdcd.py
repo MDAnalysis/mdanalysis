@@ -24,6 +24,7 @@ import platform
 
 import hypothesis.strategies as strategies
 from hypothesis import example, given
+import hypothesis
 import numpy as np
 
 from numpy.testing import (assert_array_almost_equal, assert_equal,
@@ -356,6 +357,8 @@ def write_dcd(in_name, out_name, remarks='testing', header=None):
                     and sys.maxsize <= 2**32) or
                     platform.machine() == 'aarch64',
                    reason="occasional fail on 32-bit windows and ARM")
+# occasionally fails due to unreliable test timings
+@hypothesis.settings(deadline=None)  # see Issue 3096
 @given(remarks=strategies.text(
     alphabet=string.printable, min_size=0,
     max_size=239))  # handle the printable ASCII strings
