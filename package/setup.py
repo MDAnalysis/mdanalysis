@@ -550,7 +550,7 @@ if __name__ == '__main__':
 
     try:
         # when building from repository for creating the distribution
-        LONG_DESCRIPTION = long_description("../README.rst")
+        LONG_DESCRIPTION = long_description("pypi-README.rst")
     except OSError:
         # when building from a tar file for installation
         # (LONG_DESCRIPTION is not really needed)
