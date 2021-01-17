@@ -47,6 +47,7 @@ import MDAnalysis.analysis.align as align
 
 np.random.seed(0)
 
+
 @pytest.fixture()
 def data():
     return np.arange(24, dtype=np.float64).reshape((4, 6))
@@ -56,6 +57,7 @@ def test_max_likelihood_estimator(data):
     old = ml_covariance_estimator(data, 0)
     new = reencore.utils.max_likelihood_covariance(data, False)
     assert_almost_equal(new, old)
+
 
 def test_accurate_default(data):
     old = shrinkage_covariance_estimator(data)
@@ -93,7 +95,7 @@ class TestEncore(object):
     @pytest.fixture()
     def ensemble(self, ens1, ens2):
         return mda.Ensemble([ens1, ens2]).select_atoms("name CA")
-    
+
     @pytest.fixture()
     def ensemble1(self, ens1):
         return mda.Ensemble([ens1, ens1]).select_atoms("name CA")
@@ -107,7 +109,7 @@ class TestEncore(object):
         ens = mda.Ensemble([u1, u2]).select_atoms("name CA")
         a = align.AlignTraj(ens, ens, in_memory=True).run()
         return ens
-    
+
     @pytest.fixture()
     def ensemble1_aligned(self):
         u1 = mda.Universe(PSF, DCD)
@@ -142,19 +144,20 @@ class TestEncore(object):
     def test_hes_to_self(self, ensemble1):
         result_value = reencore.hes(ensemble1)[0, 1]
         assert_almost_equal(result_value, 0,
-                            err_msg=f"hes() to itself not zero: {result_value}")
-    
+                            err_msg=("hes() to itself not zero: "
+                                     f"{result_value}"))
+
     def test_hes(self, ensemble):
         result = reencore.hes(ensemble, weights='mass')[0, 1]
         min_bound = 1E5
-        assert result > min_bound, "Unexpected value for Harmonic Ensemble Similarity"
+        assert result > min_bound
 
     def test_hes_align(self, ens1, ens2):
         ensemble = mda.Ensemble([ens1, ens2]).select_atoms("name CA")
         result_value = reencore.hes(ensemble, align=True)[0, 1]
         old, _ = encore.hes(ensemble.universes)
         assert_almost_equal(result_value, old[0, 1], decimal=-2)
-    
+
     def test_hes_estimate_error(self, ensemble1):
         omean, ostd = encore.hes(ensemble1.universes, estimate_error=True,
                                  bootstrapping_samples=10,
@@ -165,13 +168,13 @@ class TestEncore(object):
         assert_almost_equal(mean[0, 1], mean[0, 1], decimal=1)
         assert_almost_equal(std[0, 1], std[0, 1], decimal=1)
 
-
     def test_ces_to_self(self, ensemble1_aligned, dist_mat1):
         clusters = Clusters(methods.AffinityPropagation(preference=-3.0))
         clusters.run(-dist_mat1.as_array())
         result_value = reencore.ces(ensemble1_aligned, clusters)[0, 1]
         assert_almost_equal(result_value, 0,
-                            err_msg=f"ces() to itself not zero: {result_value}")
+                            err_msg=("ces() to itself not zero: "
+                                    f"{result_value}"))
 
     def test_ces_rmsd_enc(self, ensemble_aligned, dist_mat):
         rmsd_mat_enc = dist_mat.as_array()
@@ -180,7 +183,7 @@ class TestEncore(object):
         result_value = reencore.ces(ensemble_aligned, clusters)[0, 1]
         assert_almost_equal(result_value, 0.51, decimal=2,
                             err_msg=f"unexpected value")
-    
+
     def test_ces(self, ensemble_aligned):
         dm = DistanceMatrix(ensemble_aligned, select="name CA").run()
         rmsd_mat = dm.dist_matrix
@@ -191,25 +194,27 @@ class TestEncore(object):
                             err_msg=f"unexpected value")
 
     def test_ces_estimate_error(self, ensemble1_aligned, dist_mat1):
+        method = encore.AffinityPropagationNative(preference=-2.0)
         omean, ostd = encore.ces(ensemble1_aligned.universes,
                                  estimate_error=True,
                                  bootstrapping_samples=10,
-                                 clustering_method=encore.AffinityPropagationNative(preference=-2.0),
+                                 clustering_method=method,
                                  select="name CA and resnum 1-10")
         rmsd_mat_enc = dist_mat1.as_array()
         clusters = Clusters(methods.AffinityPropagation(preference=-2.0))
         clusters.run(-rmsd_mat_enc)
-        mean, std = reencore.ces(ensemble1_aligned, clusters, estimate_error=True,
+        mean, std = reencore.ces(ensemble1_aligned, clusters,
+                                 estimate_error=True,
                                  select="name CA and resnum 1-10",
                                  n_bootstrap_samples=10)
         assert_almost_equal(mean[0, 1], mean[0, 1])
         assert_almost_equal(std[0, 1], std[0, 1])
 
-    
     def test_dres_to_self(self, ensemble1_aligned):
-        result = reencore.dres(ensemble1_aligned, pca.PCA, n_components=3)[0, 1]
+        result = reencore.dres(ensemble1_aligned, pca.PCA, n_components=3)
+        result = result[0, 1]
         assert_almost_equal(result, 0)
-    
+
     def test_dres(self, ensemble_aligned, dist_mat):
         spe = drm.StochasticProximityEmbeddingNative(dimension=3,
                                                      distance_cutoff=1.5,
@@ -224,15 +229,15 @@ class TestEncore(object):
 
     def test_dres_estimate_error(self, ensemble1_aligned):
         omean, ostd = encore.dres(ensemble1_aligned.universes,
-                                 estimate_error=True,
-                                 bootstrapping_samples=10,
-                                 select="name CA and resnum 1-10")
+                                  estimate_error=True,
+                                  bootstrapping_samples=10,
+                                  select="name CA and resnum 1-10")
         mean, std = reencore.dres(ensemble1_aligned, estimate_error=True,
                                   select="name CA and resnum 1-10",
                                   n_bootstrap_samples=10)
         assert_almost_equal(mean[0, 1], mean[0, 1])
         assert_almost_equal(std[0, 1], std[0, 1])
-    
+
     def test_ces_convergence(self, ens1_aligned):
         # clusters
         dm = DistanceMatrix(ens1_aligned, select="name CA").run()
@@ -263,8 +268,3 @@ class TestEncore(object):
                                             window_size=10)
         exp = np.array([0.3, 0.])
         assert_almost_equal(results, exp, decimal=1)
-
-
-
-
-

@@ -600,10 +600,10 @@ class Universe(object):
             velocities = np.zeros_like(coordinates) if has_vels else None
             forces = np.zeros_like(coordinates) if has_fors else None
             dimensions = (np.zeros((n_frames, 6), dtype=np.float32)
-                            if has_dims else None)
+                          if has_dims else None)
 
             for i, frame in enumerate(ProgressBar(frames, verbose=verbose,
-                                                desc="Loading frames")):
+                                                  desc="Loading frames")):
                 ts = self.trajectory[frame]
                 np.copyto(coordinates[i], ts.positions)
                 if has_vels:

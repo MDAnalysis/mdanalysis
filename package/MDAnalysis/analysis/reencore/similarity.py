@@ -34,6 +34,7 @@ from ..diffusionmap import DistanceMatrix
 from ..pca import PCA
 from . import utils
 
+
 def clusters_to_indices(clusters, outlier_label=-1, outlier_index=-1):
     # convert labels to indices for ease
     cl_ids, cl_inv = np.unique(clusters, return_inverse=True)
@@ -55,16 +56,17 @@ def clusters_to_indices(clusters, outlier_label=-1, outlier_index=-1):
 def prepare_frames(ensemble, frames=None, start=None, stop=None, step=None,
                    estimate_error=False, n_bootstrap_samples=10,):
     if frames is None:
-        start, stop, step = ensemble.trajectory.check_slice_indices(start, stop, step)
-        frames = np.arange(start, stop, step)
+        sss = ensemble.trajectory.check_slice_indices(start, stop, step)
+        frames = np.arange(*sss)
 
     frames = np.array([frames])
 
     if estimate_error:
         edges = ensemble._frame_edges
-        indices = [np.arange(edges[i], edges[i+1]) for i in range(len(edges)-1)]
-
-        bs = [utils.get_bootstrap_frames(x, n_samples=n_bootstrap_samples) for x in indices]
+        indices = [np.arange(edges[i], edges[i+1])
+                   for i in range(len(edges)-1)]
+        bs = [utils.get_bootstrap_frames(x, n_samples=n_bootstrap_samples)
+              for x in indices]
         bs = [np.concatenate(x) for x in zip(*bs)]
         frames = np.concatenate([frames, bs])
 
@@ -89,7 +91,8 @@ def prepare_ces(ensemble, clusters, start=None, stop=None, step=None,
             if clusters._data is not None:
                 similarity_matrix = clusters._data
             else:
-                dist_mat = DistanceMatrix(ensemble, metric=metric, **kwargs).run()
+                dist_mat = DistanceMatrix(ensemble, metric=metric, **kwargs)
+                dist_mat.run()
                 similarity_matrix = -dist_mat.dist_matrix
 
         for i, fr in enumerate(frames):
@@ -99,9 +102,9 @@ def prepare_ces(ensemble, clusters, start=None, stop=None, step=None,
     else:
         for i, fr in enumerate(frames):
             data[i] = clusters[fr]
-        
+
     return data
-    
+
 
 def ces(ensemble, clusters=methods.AffinityPropagation,
         select=None,
@@ -112,11 +115,12 @@ def ces(ensemble, clusters=methods.AffinityPropagation,
     clusters = prepare_ces(ensemble, clusters, estimate_error=estimate_error,
                            **kwargs)
 
-    results = np.zeros((len(clusters), ensemble.n_universes, ensemble.n_universes))
+    n_u = ensemble.n_universes
+    results = np.zeros((len(clusters), n_u, n_u))
     for i, group in enumerate(clusters):
         results[i] = _ces(ensemble, group, outlier_label=outlier_label,
                           outlier_index=outlier_index)
-    
+
     if estimate_error:
         return results.mean(axis=0), results.std(axis=0)
 
@@ -125,7 +129,7 @@ def ces(ensemble, clusters=methods.AffinityPropagation,
 
 def _ces(ensemble, data, outlier_label=-1, outlier_index=-1):
     i_labels, n_cl, n_outliers = clusters_to_indices(data, outlier_label)
-    
+
     # count membership in each cluster
     frames_per_cl = np.zeros((ensemble.n_universes, n_cl + n_outliers),
                              dtype=float)
@@ -141,7 +145,7 @@ def _ces(ensemble, data, outlier_label=-1, outlier_index=-1):
             counts_ = counts_[1:]
         # normalise over number of frames
         row[labels_] = counts_
-        row /= len(data)            
+        row /= len(data)
     return utils.discrete_js_matrix(frames_per_cl)
 
 
@@ -198,15 +202,17 @@ def dres(ensemble, subspace=PCA, select=None,
     subspaces = prepare_dres(ensemble, subspace,
                              estimate_error=estimate_error, **kwargs)
 
-    results = np.zeros((len(subspaces), ensemble.n_universes, ensemble.n_universes))
+    n_u = ensemble.n_universes
+    results = np.zeros((len(subspaces), n_u, n_u))
     for i, space in enumerate(subspaces):
         data = [x.T for x in ensemble.split_array(space)]
         results[i] = _dres(data, n_resample=n_resample, seed=seed)
-    
+
     if estimate_error:
         return results.mean(axis=0), results.std(axis=0)
 
     return results[0]
+
 
 def _dres(data, n_resample=1000, seed=None):
     n_u = len(data)
@@ -239,7 +245,7 @@ def hes(ensemble, select=None, weights="mass", estimator="shrinkage",
         if not callable(estimator):
             raise ValueError("estimator must be 'shrinkage', "
                              "'maximum_likelihood' or be callable.")
-    
+
     n_u = ensemble.n_universes
     n_a = ensemble.n_atoms
     n_a3 = n_a * 3
@@ -257,7 +263,7 @@ def hes(ensemble, select=None, weights="mass", estimator="shrinkage",
                 raise ValueError("Weights must be provided for every "
                                  f"Universe. Given {n_w} weights for "
                                  f"{n_u} universes.")
-    
+
     # make weight matrix
     weights_ = np.repeat(np.array(weights), 3, axis=1)
     n_f, n_w = weights_.shape
@@ -277,14 +283,14 @@ def hes(ensemble, select=None, weights="mass", estimator="shrinkage",
         bs = [utils.get_bootstrap_frames(f, n_samples=n_bootstrap_samples)
               for f in frames]
         frames = [np.array(list(x)) for x in zip(*bs)]
-    
+
     else:
         frames = [frames]
 
     n_s = len(frames)
     avgs = np.zeros((n_s, n_u, n_u, n_a3), dtype=np.float64)
     covs = np.zeros((n_s, n_u, n_u, n_a3, n_a3), dtype=np.float64)
-    
+
     for s in range(n_s):
         for i, (coords, w) in enumerate(zip(frames[s], weights3)):
             avgs[s, i] = coords.mean(axis=0).flatten()
@@ -292,9 +298,10 @@ def hes(ensemble, select=None, weights="mass", estimator="shrinkage",
             try:
                 cov = np.dot(w, np.dot(cov, w))
             except ValueError:
-                raise ValueError("weights dimensions don't match selected atoms")
+                raise ValueError("weights dimensions don't match selected "
+                                 "atoms")
             covs[s, i] = cov
-    
+
     inv_covs = np.zeros((n_s, n_u, n_u, n_a3, n_a3))
     for i, sub in enumerate(covs):
         for j, arr in enumerate(sub):
@@ -311,6 +318,7 @@ def hes(ensemble, select=None, weights="mass", estimator="shrinkage",
     if estimate_error:
         return similarity.mean(axis=0), similarity.std(axis=0)
     return similarity[0]
+
 
 def gen_window_indices(universe, window_size=10):
     n_frames = len(universe.trajectory)

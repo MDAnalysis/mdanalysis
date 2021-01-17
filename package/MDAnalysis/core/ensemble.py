@@ -42,7 +42,7 @@ class AtomsWrapper:
         return len(self.ensemble._atoms)
 
     def __getattr__(self, attr):
-        try:      
+        try:
             return getattr(self.ensemble._atoms, attr)
         except AttributeError:
             return getattr(self.ensemble, attr)
@@ -53,7 +53,7 @@ class AtomsWrapper:
     @property
     def positions(self):
         return self.ensemble._atoms.positions
-    
+
     @positions.setter
     def positions(self, value):
         self.ensemble._atoms.positions = value
@@ -111,23 +111,23 @@ class Ensemble(object):
         self.labels = []
         self._universe_labels = {}
         _ctr = {}
-        for i, (l, u) in enumerate(zip(labels, self.universes)):
-            if l is None:
+        for i, (lb, u) in enumerate(zip(labels, self.universes)):
+            if lb is None:
                 try:
-                    l = u.trajectory.filename
+                    lb = u.trajectory.filename
                 except AttributeError:
                     pass
-            if l is None:
-                l = 'Universe'
+            if lb is None:
+                lb = 'Universe'
 
-            if l in self._universe_labels:
-                if l not in _ctr:
-                    _ctr[l] = 1
-                _ctr[l] += 1
-                l += ' {}'.format(_ctr[l])
-                
-            self.labels.append(l)
-            self._universe_labels[l] = i
+            if lb in self._universe_labels:
+                if lb not in _ctr:
+                    _ctr[lb] = 1
+                _ctr[lb] += 1
+                lb += ' {}'.format(_ctr[lb])
+
+            self.labels.append(lb)
+            self._universe_labels[lb] = i
 
         # new Ensembles created from select_atoms
         # need to have their frames / current Universe
@@ -183,7 +183,7 @@ class Ensemble(object):
         if ts_u is not None:
             for ens in self.links:
                 ens._ts_u = ts_u
-        
+
         if n_frame is not None:
             self._universe.trajectory[n_frame]
             for ens in self.links:
@@ -208,7 +208,6 @@ class Ensemble(object):
     @positions.setter
     def positions(self, value):
         self._atoms.positions = value
-
 
     def __iter__(self):
         for n_u, f in self._universe_frames:
@@ -238,7 +237,6 @@ class Ensemble(object):
         elif order == "acf":
             fac = fac.transpose((1, 2, 0))
         return fac
-        
 
     @property
     def filename(self):
@@ -338,7 +336,8 @@ class Ensemble(object):
         if sel:
             ags = [ag.select_atoms(*sel) for ag in ags]
         return type(self)(ags, select=None, labels=self.labels,
-                          _ts_u=self._ts_u, links=self.links, frames=self.frames)
+                          _ts_u=self._ts_u, links=self.links,
+                          frames=self.frames)
 
     def split_array(self, arr):
         """Convenience function to split arrays of data by Universe
@@ -346,7 +345,7 @@ class Ensemble(object):
         for i in range(self.n_universes):
             ix = np.where(self._universe_frames[:, 0] == i)[0]
             yield arr[ix[0]:ix[-1]+1]
-    
+
     def transfer_to_memory(self, start=None, stop=None, step=None,
                            frames=None):
         """Transfer specified frames to memory"""

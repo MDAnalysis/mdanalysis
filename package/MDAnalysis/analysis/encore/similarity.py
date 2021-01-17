@@ -548,7 +548,7 @@ def dimred_ensemble_similarity(kde1, resamples1, kde2, resamples2,
             0.5 * (kde1.evaluate(resamples1) + kde2.evaluate(resamples1))))
         ln_P1P2_exp_P2 = np.average(np.log(
             0.5 * (kde1.evaluate(resamples2) + kde2.evaluate(resamples2))))
-    
+
     return 0.5 * (
         ln_P1_exp_P1 - ln_P1P2_exp_P1 + ln_P2_exp_P2 - ln_P1P2_exp_P2)
 
@@ -937,7 +937,7 @@ def hes(ensembles,
                                              sigma2=sigmas[j])
         values[i, j] = value
         values[j, i] = value
-    
+
     # Save details as required
     details = {}
     for i in range(out_matrix_eln):

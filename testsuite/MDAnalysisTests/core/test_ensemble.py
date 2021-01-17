@@ -30,26 +30,31 @@ from MDAnalysis.tests.datafiles import PSF, DCD, PDB, TPR, XTC
 from MDAnalysis.coordinates.base import Timestep
 from MDAnalysis.analysis import align, diffusionmap
 
+
 @pytest.fixture()
 def u1():
     # 3341 atoms, 98 frames
     return mda.Universe(PSF, DCD)
+
 
 @pytest.fixture()
 def u2():
     # 47681 atoms, 1 frame
     return mda.Universe(PDB)
 
+
 @pytest.fixture()
 def u3():
     # 47681 atoms, 10 frames
     return mda.Universe(TPR, XTC)
 
+
 @pytest.fixture()
 def ens(u1, u2, u3):
     return mda.Ensemble([u1, u2, u3])
-class TestEnsemble(object):
 
+
+class TestEnsemble(object):
     def test_analysis_multiple_same(self, u3):
         ens = mda.Ensemble([u3, u3]).select_atoms("name CA")
         dist_mat = diffusionmap.DistanceMatrix(ens).run()
@@ -62,7 +67,6 @@ class TestEnsemble(object):
         assert dm[10, 0] == 0
         assert dm[-1, -2] != 0
         assert dm[1, 2] == dm[1, 12]
-
 
     def test_analysis_multiple_same_in_memory(self, u3):
         ens = mda.Ensemble([u3, u3])
@@ -83,9 +87,7 @@ class TestEnsemble(object):
         ens.transfer_to_memory()
         dist_mat = diffusionmap.DistanceMatrix(ens).run()
         dm = dist_mat.dist_matrix
-        # print(dm[-2:])
         assert dm[-1, -2] != 0
-
 
     def test_from_universe(self, u1):
         ens = mda.Ensemble(u1)
@@ -126,7 +128,7 @@ class TestEnsemble(object):
         assert ens.n_atoms == 214
         assert ens._ags == tuple(prot)
         assert_equal(ens._frame_edges, [0, 10, 108, 109])
-    
+
     @pytest.mark.parametrize('start,stop,step', [
         (0, 10, None),  # default
         (10, 109, None),  # slice within universe
@@ -178,7 +180,7 @@ class TestEnsemble(object):
         assert ts is ens.ts
         assert ts.frame == frame
         assert ens._ts_u == n_universe
-        
+
     @pytest.mark.parametrize('start,stop,step,n_universe,frame4', [
         (0, 10, None, 0, 3),  # default
         (10, 109, None, 0, 13),  # slice within universe
@@ -192,7 +194,7 @@ class TestEnsemble(object):
         assert ens2._ts_u == n_universe, 'incorrect Universe selected'
         assert ens2.ts is ts4, 'incorrect frame selected'
         assert ens2.ts.frame == frame4, 'incorrect frame selected'
-        assert ens._ts_u == n_universe, 'initial Ensemble does not have persisting changes'
+        assert ens._ts_u == n_universe, "changes don't persist"
 
     def test_select_atoms_creation(self, u1, u2):
         sel = 'name CA'
@@ -235,4 +237,3 @@ class TestEnsemble(object):
                                                             step=step,
                                                             frames=frames)):
             assert_almost_equal(ag.positions, iag.positions)
-

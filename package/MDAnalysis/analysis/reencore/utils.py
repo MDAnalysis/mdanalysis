@@ -32,6 +32,7 @@ xlogy = np.vectorize(
 def discrete_kl_div(a, b):
     return np.sum(xlogy(a, a / b))
 
+
 def discrete_js_div(a, b):
     ab = (a+b) * 0.5
     mask = ab > 0
@@ -106,7 +107,7 @@ def shrinkage_covariance(coordinates, shrinkage_parameter=None):
         r = rdiag + roff
         k = (p - r) / c
         shrinkage_parameter = max(0, min(1, k * inv_t))
-        
+
     cov = shrinkage_parameter * prior + (1 - shrinkage_parameter) * sample
     return cov
 

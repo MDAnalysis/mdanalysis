@@ -25,6 +25,7 @@ import numpy as np
 
 from ...lib.util import iterable
 
+
 class Clusters:
     """
     Class used to contain groups of clusters. Used in
@@ -36,7 +37,7 @@ class Clusters:
         The associated predictor with the data. Must be provided
         if you want to use the ``run`` method
 
-    
+
     Attributes
     ----------
     predictor: function, class or object
@@ -63,7 +64,7 @@ class Clusters:
 
     def __len__(self):
         return len(self.cluster_indices)
-    
+
     def run(self, data, **kwargs):
         """
         Run the given predictor on the given data,
@@ -72,12 +73,12 @@ class Clusters:
         try:
             self.data_labels = self.predictor.fit_predict(data)
         except AttributeError:
-            # try:
-            self.data_labels = self.predictor(data, **kwargs)
-            # except TypeError:
-            #     raise ValueError("predictor must have a `fit_predict` or be a "
-            #                     "method that returns an iterable of labels. "
-            #                     f"Given {self.predictor}")
+            try:
+                self.data_labels = self.predictor(data, **kwargs)
+            except TypeError:
+                raise ValueError("predictor must have a `fit_predict` or be "
+                                "a method that returns an iterable of "
+                                f"labels. Given {self.predictor}")
         if not iterable(self.data_labels):
             raise ValueError("predictor must return an iterable "
                              "of labels")

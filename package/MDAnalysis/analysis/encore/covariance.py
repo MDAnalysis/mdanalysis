@@ -130,7 +130,7 @@ def shrinkage_covariance_estimator( coordinates,
     # Prior
     prior = np.outer(covmkt, covmkt)/varmkt
     prior[np.ma.make_mask(np.eye(n))] = np.diag(sample)
-    
+
 
     # If shrinkage parameter is not set, estimate it
     if shrinkage_parameter is None:
@@ -244,5 +244,5 @@ def covariance_matrix(ensemble,
 
         weight_matrix = np.sqrt(np.identity(len(weights))*weights)
         sigma = np.dot(weight_matrix, np.dot(sigma, weight_matrix))
-    
+
     return sigma

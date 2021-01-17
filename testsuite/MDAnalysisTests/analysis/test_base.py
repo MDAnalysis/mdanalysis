@@ -147,8 +147,9 @@ def test_filter_baseanalysis_kwargs():
     assert len(base_kwargs) == 1
     assert base_kwargs['verbose'] is False
 
+
 class TestEnsemble(object):
-    
+
     @pytest.fixture()
     def ens(self, u):
         u2 = mda.Universe(TPR, XTC)
@@ -173,12 +174,12 @@ class TestEnsemble(object):
         an = FrameAnalysis(ens.trajectory).run(start=10)
         assert an.n_frames == 206
         assert_equal(an.frames, frames[10:])
-    
+
     def test_step(self, ens, frames):
         an = FrameAnalysis(ens.trajectory).run(step=3)
         assert an.n_frames == 72
         assert_equal(an.frames, frames[::3])
-        
+
 
 def simple_function(mobile):
     return mobile.center_of_geometry()
