@@ -120,7 +120,7 @@ class DensityParameters(object):
     topology = TPR
     trajectory = XTC
     delta = 2.0
-    selections = {'none': "byres resname LIG and around 8 protein", #this selection yields nothing
+    selections = {'none': "resname None", 
                   'static': "name OW",
                   'dynamic': "name OW and around 4 (protein and resid 1-10)",
                   'solute': "protein and not name H*",

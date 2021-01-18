@@ -395,15 +395,16 @@ class DensityAnalysis(AnalysisBase):
                 logger.warning(msg)
             # Generate a copy of smin/smax from coords to later check if the
             # defined box might be too small for the selection
-            try: 
+            try:
                 smin = np.min(coord, axis=0)
                 smax = np.max(coord, axis=0)
             except ValueError as err:
-                msg = ("No atoms in selection at current frame, running user grid")
+                msg = ("No atoms in selection at current frame,"
+                       "running user grid")
                 warnings.warn(msg)
                 logger.warning(msg)
-                smin = self._gridcenter 
-                smax = self._gridcenter 
+                smin = self._gridcenter
+                smax = self._gridcenter
             # Overwrite smin/smax with user defined values
             smin, smax = self._set_user_grid(self._gridcenter, self._xdim,
                                              self._ydim, self._zdim, smin,
@@ -417,14 +418,15 @@ class DensityAnalysis(AnalysisBase):
             # periodic boundaries' but that gets complicated when the box
             # rotates due to RMS fitting.
             try:
-                smin = np.min(coord, axis=0) 
-                smax = np.max(coord, axis=0) 
+                smin = np.min(coord, axis=0)
+                smax = np.max(coord, axis=0)
             except ValueError as err:
-                msg = ("No atoms in selection at current frame, running user grid")
+                msg = ("No atoms in selection at current frame,"
+                       "running user grid")
                 warnings.warn(msg)
                 logger.warning(msg)
-                smin = self._gridcenter 
-                smax = self._gridcenter  
+                smin = self._gridcenter
+                smax = self._gridcenter
                 smin, smax = self._set_user_grid(self._gridcenter, self._xdim,
                                                  self._ydim, self._zdim, smin,
                                                  smax)
@@ -849,4 +851,4 @@ class Density(Grid):
             grid_type = 'density'
         else:
             grid_type = 'histogram'
-            return f"<Density {grid_type} with {self.grid.shape} bins>"
+        return f"<Density {grid_type} with {self.grid.shape} bins>"
