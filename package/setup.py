@@ -538,7 +538,7 @@ def long_description(readme):
     # remove top heading that messes up pypi display
     m = re.search('====*\n[^\n]*README[^\n]*\n=====*\n', buffer,
                   flags=re.DOTALL)
-    assert m, "README.rst does not contain a level-1 heading"
+    assert m, "pypi-description.rst does not contain a level-1 heading"
     return buffer[m.end():]
 
 
@@ -550,7 +550,7 @@ if __name__ == '__main__':
 
     try:
         # when building from repository for creating the distribution
-        LONG_DESCRIPTION = long_description("pypi-README.rst")
+        LONG_DESCRIPTION = long_description("pypi-description.rst")
     except OSError:
         # when building from a tar file for installation
         # (LONG_DESCRIPTION is not really needed)

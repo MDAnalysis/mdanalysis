@@ -5,7 +5,7 @@ global-include *.h
 global-include *.cpp
 include MDAnalysis/lib/src/transformations/*
 recursive-include doc * 
-include README INSTALL CHANGELOG LICENSE AUTHORS
+include README INSTALL CHANGELOG LICENSE AUTHORS pypi-description.rst
 include setup.py
 global-exclude doc/html/html
 global-exclude *.pyc
