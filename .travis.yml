@@ -40,7 +40,7 @@ env:
     - INSTALL_HOLE="true"
     - CYTHON_TRACE_NOGIL=1
     - MPLBACKEND=agg
-    - MAMBA=true
+    - MAMBA=false
 
 jobs:
   fast_finish: true
