@@ -120,7 +120,7 @@ class DensityParameters(object):
     topology = TPR
     trajectory = XTC
     delta = 2.0
-    selections = {'none': "resname None", 
+    selections = {'none': "resname None",
                   'static': "name OW",
                   'dynamic': "name OW and around 4 (protein and resid 1-10)",
                   'solute': "protein and not name H*",
@@ -261,11 +261,11 @@ class TestDensityAnalysis(DensityParameters):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['none']),
                 delta=self.delta, xdim=1.0, ydim=2.0, zdim=2.0, padding=0.0,
-                gridcenter=self.gridcenters['static_defined']).run(step=5)   
-        with pytest.raises(ValueError, match="No atoms in selection at current frame"
-                                             " and no user defined grid"):
+                gridcenter=self.gridcenters['static_defined']).run(step=5)
+        with pytest.raises(ValueError, match="No atoms in selection at current"
+                                             " frame and no user defined grid"):
             D = density.DensityAnalysis(
-                universe.select_atoms(self.selections['none'])).run(step=5)              
+                universe.select_atoms(self.selections['none'])).run(step=5)
 
 class TestGridImport(object):
 
