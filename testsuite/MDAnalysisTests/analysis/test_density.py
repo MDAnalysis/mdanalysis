@@ -261,8 +261,11 @@ class TestDensityAnalysis(DensityParameters):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['none']),
                 delta=self.delta, xdim=1.0, ydim=2.0, zdim=2.0, padding=0.0,
-                gridcenter=self.gridcenters['static_defined']).run(step=5)        
-
+                gridcenter=self.gridcenters['static_defined']).run(step=5)   
+        with pytest.raises(ValueError, match="No atoms in selection at current frame"
+                                             " and no user defined grid"):
+            D = density.DensityAnalysis(
+                universe.select_atoms(self.selections['none'])).run(step=5)              
 
 class TestGridImport(object):
 

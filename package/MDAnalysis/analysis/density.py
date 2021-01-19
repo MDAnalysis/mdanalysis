@@ -400,7 +400,7 @@ class DensityAnalysis(AnalysisBase):
                 smax = np.max(coord, axis=0)
             except ValueError as err:
                 msg = ("No atoms in selection at current frame,"
-                       "running user grid")
+                       " running user grid")
                 warnings.warn(msg)
                 logger.warning(msg)
                 smin = self._gridcenter
@@ -422,7 +422,7 @@ class DensityAnalysis(AnalysisBase):
                 smax = np.max(coord, axis=0)
             except ValueError as err:
                 errmsg = ("No atoms in selection at current frame"
-                          "and no user defined grid")
+                          " and no user defined grid")
                 raise ValueError(errmsg) from err
             smin = smin - self._padding
             smax = smax + self._padding
