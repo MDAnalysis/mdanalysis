@@ -399,8 +399,10 @@ class DensityAnalysis(AnalysisBase):
                 smin = np.min(coord, axis=0)
                 smax = np.max(coord, axis=0)
             except ValueError as err:
-                msg = ("No atoms in selection at current frame,"
-                       " running user grid")
+                msg = ("No atoms in AtomGroup at input time frame. "
+                       "Grid for density could not be automatically"
+                       " generated. A user defined grid was found"
+                       " and is being used as the density grid")
                 warnings.warn(msg)
                 logger.warning(msg)
                 smin = self._gridcenter
@@ -418,14 +420,15 @@ class DensityAnalysis(AnalysisBase):
             # periodic boundaries' but that gets complicated when the box
             # rotates due to RMS fitting.
             try:
-                smin = np.min(coord, axis=0)
-                smax = np.max(coord, axis=0)
+                smin = np.min(coord, axis=0) - self._padding
+                smax = np.max(coord, axis=0) + self._padding
             except ValueError as err:
-                errmsg = ("No atoms in selection at current frame"
-                          " and no user defined grid")
+                errmsg = ("No atoms in AtomGroup at input time frame. "
+                          "Grid for density could not be automatically"
+                          " generated. If this is expected, a user"
+                          " defined grid will need to be "
+                          "provided instead.")
                 raise ValueError(errmsg) from err
-            smin = smin - self._padding
-            smax = smax + self._padding
         BINS = fixedwidth_bins(self._delta, smin, smax)
         arange = np.transpose(np.vstack((BINS['min'], BINS['max'])))
         bins = BINS['Nbins']

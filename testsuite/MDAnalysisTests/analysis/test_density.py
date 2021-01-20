@@ -256,14 +256,22 @@ class TestDensityAnalysis(DensityParameters):
                 gridcenter=self.gridcenters['static_defined']).run(step=5)
 
     def test_warn_noatomgroup(self, universe):
-        regex = ("No atoms in selection at current frame, running user grid")
+        regex = ("No atoms in AtomGroup at input time frame. "
+                 "Grid for density could not be automatically"
+                 " generated. A user defined grid was found"
+                 " and is being used as the density grid")
         with pytest.warns(UserWarning, match=regex):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['none']),
                 delta=self.delta, xdim=1.0, ydim=2.0, zdim=2.0, padding=0.0,
                 gridcenter=self.gridcenters['static_defined']).run(step=5)
-        with pytest.raises(ValueError, match="No atoms in selection at current"
-                                             " frame and no user defined grid"):
+
+    def test_ValueError_noatomgroup(self,universe):        
+        with pytest.raises(ValueError, match="No atoms in AtomGroup at input time frame. "
+                                             "Grid for density could not be automatically"
+                                             " generated. If this is expected, a user"
+                                             " defined grid will need to be "
+                                             "provided instead."):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['none'])).run(step=5)
 
