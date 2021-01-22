@@ -39,6 +39,12 @@ jobs:
               run_type: FULL
               install_hole: true
               codecov: true
+            - name: macOS_11
+              os: macos-11.0
+              python-version: 3.8
+              run_type: FULL
+              install_hole: true
+              codecov: true
             - name: minimal-ubuntu
               os: ubuntu-latest
               python-version: 3.6
