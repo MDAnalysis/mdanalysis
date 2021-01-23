@@ -2,4 +2,4 @@ scanner:
   diff_only: True
 
 pycodestyle:
-  max-line-length: 100
+  max-line-length: 79
