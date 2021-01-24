@@ -21,7 +21,7 @@ The rules for this file:
   * 2.0.0
 
 Fixes
-  * ITPParser now accepts relative paths
+  * ITPParser now accepts relative paths (Issue #3037)
   * atommethods (_get_prev/next_residues_by_resid) returns empty residue group 
     when given empty residue group (Issue #3089)
   * MOL2 files without bonds can now be read and written (Issue #3057)
