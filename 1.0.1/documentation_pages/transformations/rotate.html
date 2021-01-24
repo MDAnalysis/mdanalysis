@@ -215,19 +215,23 @@ custom coordinates.</p>
 <p class="rubric">Examples</p>
 <p>e.g. rotate the coordinates by 90 degrees on a axis formed by the [0,0,1] vector and
 the center of geometry of a given AtomGroup:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">transformations</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
 <span class="n">angle</span> <span class="o">=</span> <span class="mi">90</span>
-<span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">()</span>
+<span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span>
 <span class="n">d</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">rotated</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">d</span><span class="p">,</span> <span class="n">ag</span><span class="o">=</span><span class="n">ag</span><span class="p">)(</span><span class="n">ts</span><span class="p">)</span>
+<span class="n">rotated</span> <span class="o">=</span> <span class="n">transformations</span><span class="o">.</span><span class="n">rotate</span><span class="o">.</span><span class="n">rotateby</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">d</span><span class="p">,</span> <span class="n">ag</span><span class="o">=</span><span class="n">ag</span><span class="p">)(</span><span class="n">ts</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>e.g. rotate the coordinates by a custom axis:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">transformations</span>
+
+<span class="n">ts</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
 <span class="n">angle</span> <span class="o">=</span> <span class="mi">90</span>
 <span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
 <span class="n">d</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">rotated</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">d</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="n">point</span><span class="p">)(</span><span class="n">ts</span><span class="p">)</span>
+<span class="n">rotated</span> <span class="o">=</span> <span class="n">transformations</span><span class="o">.</span><span class="n">rotate</span><span class="o">.</span><span class="n">rotateby</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">d</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="n">p</span><span class="p">)(</span><span class="n">ts</span><span class="p">)</span>
 </pre></div>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
