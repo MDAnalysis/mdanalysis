@@ -268,7 +268,7 @@ class GmxTopIterator:
             path = path.name
         except AttributeError:
             pass
-
+        path = os.path.abspath(path)
         current_dir = os.path.dirname(current_file)
         dir_path = os.path.join(current_dir, path)
         if os.path.exists(dir_path):
