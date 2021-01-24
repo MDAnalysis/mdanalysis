@@ -626,7 +626,7 @@ if __name__ == '__main__':
                         ],
           },
           ext_modules=exts,
-          python_requires=">=2.7,!=3.0,!=3.1,!=3.2,!=3.3,!=3.4,!=3.5",
+          python_requires=">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3,!=3.4.*,<3.9",
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
