@@ -79,10 +79,6 @@ import numpy as np
 from libcpp.vector cimport vector
 from libc.math cimport floor
 
-# Useful Functions
-cdef float rvec_norm2(const float* a) nogil:
-    return a[0]*a[0] + a[1]*a[1] + a[2]*a[2]
-
 
 cdef extern from "calc_distances.h" nogil:
     void minimum_image(double* x, float* box, float* inverse_box)
