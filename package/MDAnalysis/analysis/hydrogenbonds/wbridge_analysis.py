@@ -187,14 +187,14 @@ The cut-off values `angle` and `distance` can be set as keywords to
 
 Donor and acceptor heavy atoms are detected from atom names. The current
 defaults are appropriate for the CHARMM27 and GLYCAM06 force fields as defined
-in Table `Default atom names for hydrogen bonding analysis`_.
+in Table `Default atom names for water bridge analysis`_.
 
 Hydrogen atoms bonded to a donor are searched based on its distance to the
 donor. The algorithm searches for all hydrogens
 (name "H*" or name "[123]H" or type "H") in the same residue as the donor atom
 within a cut-off distance of 1.2 Å.
 
-.. _Default atom names for hydrogen bonding analysis:
+.. _Default atom names for water bridge analysis:
 
 .. table:: Default heavy atom names for CHARMM27 force field.
 
@@ -702,7 +702,7 @@ class WaterBridgeAnalysis(AnalysisBase):
     # DEFAULT_DONORS and DEFAULT_ACCEPTORS should simply be tuples.
 
     #: default heavy atom names whose hydrogens are treated as *donors*
-    #: (see :ref:`Default atom names for hydrogen bonding analysis`);
+    #: (see :ref:`Default atom names for water bridge analysis`);
     #: use the keyword `donors` to add a list of additional donor names.
     DEFAULT_DONORS = {
         'CHARMM27': tuple(
@@ -712,7 +712,7 @@ class WaterBridgeAnalysis(AnalysisBase):
         'other': tuple(set([]))}
 
     #: default atom names that are treated as hydrogen *acceptors*
-    #: (see :ref:`Default atom names for hydrogen bonding analysis`);
+    #: (see :ref:`Default atom names for water bridge analysis`);
     #: use the keyword `acceptors` to add a list of additional acceptor names.
     DEFAULT_ACCEPTORS = {
         'CHARMM27': tuple(
