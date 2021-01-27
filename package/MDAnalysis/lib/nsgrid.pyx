@@ -79,6 +79,7 @@ import numpy as np
 from libcpp.vector cimport vector
 from libc.math cimport floor
 
+DEF END = 1
 
 cdef extern from "calc_distances.h" nogil:
     void minimum_image(double* x, float* box, float* inverse_box)
@@ -207,7 +208,7 @@ cdef class _NSGrid(object):
     cdef float[3] inverse_dimensions
     cdef float[9] triclinic_dimensions
     # are we periodic in the X, Y and Z dimension?
-    cdef bint periodicX, periodicY, periodicZ
+    cdef bint periodic[3]
     
     def __init__(self, float[:, ::1] coords, double cutoff, box, bint pbc):
         """
@@ -219,7 +220,8 @@ cdef class _NSGrid(object):
             Minimum desired cutoff radius
         box : numpy ndarray shape=(6,)
             Box info, [lx, ly, lz, alpha, beta, gamma]
-        pbc : is this NSGrid periodic at all?
+        pbc : bool
+            is this NSGrid periodic at all?
         """
         cdef int i, j
         cdef double relative_cutoff_margin
@@ -261,18 +263,19 @@ cdef class _NSGrid(object):
         self.ncells[0] = <int> floor(self.triclinic_dimensions[0] / cutoff)
         self.ncells[1] = <int> floor(self.triclinic_dimensions[4] / cutoff)
         self.ncells[2] = <int> floor(self.triclinic_dimensions[8] / cutoff)
-        for i in range(3):
-            if self.ncells[i] == 0:
-                self.ncells[i] = 1
-
-        if not pbc:
-            self.periodicX = False
-            self.periodicY = False
-            self.periodicZ = False
+        # If there aren't enough cells in a given dimension it's equivalent to one
+        if pbc:
+            for i in range(3):
+                if self.ncells[i] <= 3:
+                    self.ncells[i] = 1
+                    self.periodic[i] = False
+                else:
+                    self.periodic[i] = True
         else:
-            self.periodicX = self.ncells[0] > 2
-            self.periodicY = self.ncells[0] > 2
-            self.periodicZ = self.ncells[0] > 2
+            for i in range(3):
+                if self.ncells[i] <= 2:
+                    self.ncells[i] = 1
+                self.periodic[i] = False
 
         self.cellsize[0] = self.triclinic_dimensions[0] / <double> self.ncells[0]
         self.cellsize[1] = self.triclinic_dimensions[4] / <double> self.ncells[1]
@@ -291,11 +294,8 @@ cdef class _NSGrid(object):
 
         # Assign coordinates into cells
         # Linked list for each cell
-        head_id = np.full(self.size, -1, dtype=np.int32)
-        next_id = np.full(coords.shape[0], -1, dtype=np.int32)
-
-        self.head_id = head_id
-        self.next_id = next_id
+        self.head_id = np.full(self.size, END, dtype=np.int32)
+        self.next_id = np.full(coords.shape[0], END, dtype=np.int32)
 
         for i in range(coords.shape[0]):
             j = self.coord2cellid(&coords[i][0])
@@ -330,37 +330,37 @@ cdef class _NSGrid(object):
         xyz[2] = cz
 
     cdef int cellxyz2cellid(self, int cx, int cy, int cz) nogil:
-        """Convert cell coordinate to cell id, -1 for out of bounds"""
+        """Convert cell coordinate to cell id, END for out of bounds"""
         if cx < 0:
-            if self.periodicX:
+            if self.periodic[0]:
                 cx = self.ncells[0] - 1
             else:
-                return -1
+                return END
         elif cx == self.ncells[0]:
-            if self.periodicX:
+            if self.periodic[0]:
                 cx = 0
             else:
-                return -1
+                return END
         if cy < 0:
-            if self.periodicY:
+            if self.periodic[1]:
                 cy = self.ncells[1] - 1
             else:
-                return -1
+                return END
         elif cy == self.ncells[1]:
-            if self.periodicY:
+            if self.periodic[1]:
                 cy = 0
             else:
-                return -1
+                return END
         if cz < 0:
-            if self.periodicZ:
+            if self.periodic[2]:
                 cz = self.ncells[2] - 1
             else:
-                return -1
+                return END
         elif cz == self.ncells[2]:
-            if self.periodicZ:
+            if self.periodic[2]:
                 cz = 0
             else:
-                return -1
+                return END
 
         return cx + cy * self.cell_offsets[1] + cz * self.cell_offsets[2]
 
@@ -375,7 +375,6 @@ cdef class FastNS(object):
     cdef readonly double cutoff
 
     cdef _NSGrid grid
-    cdef bint periodic
 
     def __init__(self, cutoff, coords, box, pbc=True):
         """
@@ -443,8 +442,6 @@ cdef class FastNS(object):
 
         if np.allclose(box[:3], 0.0):
             raise ValueError("Any of the box dimensions cannot be 0")
-
-        self.periodic = pbc
 
         # TODO: Probably don't wrap these if pbc=False?
         self.coords_bbox = distances.apply_PBC(coords, box)
@@ -527,12 +524,12 @@ cdef class FastNS(object):
                         cz = cellcoord[2] - 1 + zi
                         cellid = self.grid.cellxyz2cellid(cx, cy, cz)
 
-                        if not self.periodic and cellid == -1:  # out of bounds
+                        if cellid == END:  # out of bounds
                             continue
 
                         # for loop over atoms in searchcoord
                         j = self.grid.head_id[cellid]
-                        while (j > 0):
+                        while (j != END):
                             if self.grid.triclinic:
                                 d2 = calc_dist_triclinic(&searchcoords_bbox[i][0], &self.coords_bbox[j][0],
                                                          &self.grid.triclinic_dimensions[0])
@@ -588,13 +585,13 @@ cdef class FastNS(object):
                     for cz in range(self.grid.ncells[2]):
                         ci = cx + cy*self.grid.cell_offsets[1] + cz*self.grid.cell_offsets[2]                    
                         i = self.grid.head_id[ci]
-                        if (i < 0):  # empty cell?
+                        if (i == END):  # empty cell?
                             continue
 
                         # pairwise within this cell
-                        while (i != -1):
+                        while (i != END):
                             j = self.grid.next_id[i]
-                            while (j != -1):
+                            while (j != END):
                                 if self.grid.triclinic:
                                     d2 = calc_dist_triclinic(&self.coords_bbox[i][0], &self.coords_bbox[j][0],
                                                              &self.grid.triclinic_dimensions[0])
@@ -613,11 +610,11 @@ cdef class FastNS(object):
                             oz = cz + route[nj][2]
 
                             cj = self.grid.cellxyz2cellid(ox, oy, oz)
-                            if not self.periodic and cj == -1:
+                            if cj == END:
                                 continue
 
                             j = self.grid.head_id[cj]
-                            while (j != 0):
+                            while (j != END):
                                 if self.grid.triclinic:
                                     d2 = calc_dist_triclinic(&self.coords_bbox[i][0], &self.coords_bbox[j][0],
                                                              &self.grid.triclinic_dimensions[0])
