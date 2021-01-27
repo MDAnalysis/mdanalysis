@@ -586,7 +586,7 @@ modified by supplying an analysis function.
 Suppose we want to count
 
   - the **number** of water molecules involved in bridging selection 1 to
-  selection 2.
+    selection 2.
   - only if water bridge terminates in atom name **OD1 of ASP**.
   - only when water bridge is joined by less than **two** water.
 
