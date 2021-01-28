@@ -25,29 +25,44 @@
 r"""Water Bridge analysis ---
 mod:`MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis`
 ===============================================================================
+
 :Author: Zhiyi Wu
 :Year: 2017-2018
 :Copyright: GNU Public License v3
 :Maintainer: Zhiyi Wu <zhiyi.wu@gtc.ox.ac.uk>,  `@xiki-tempula`_ on GitHub
+
+
 .. _`@xiki-tempula`: https://github.com/xiki-tempula
+
+
 Given a :class:`~MDAnalysis.core.universe.Universe` (simulation
 trajectory with 1 or more frames) measure all water bridges for each
 frame between selections 1 and 2.
 Water bridge is defined as a bridging water which simultaneously forms
 two hydrogen bonds with atoms from both selection 1 and selection 2.
+
 A water bridge can form between two hydrogen bond acceptors.
+
 e.g. -CO\ :sub:`2`\ :sup:`-`:···H−O−H···:\ :sup:`-`\ O\ :sub:`2`\ C-
+
 A water bridge can also form between two hydrogen bond donors.
+
 e.g. -NH···:O:···HN- (where O is the oxygen of a bridging water)
+
 A hydrogen bond acceptor and another hydrogen bond donor can be bridged by a
 water.
+
 e.g. -CO\ :sub:`2`\ :sup:`-`:···H−O:···HN- (where H−O is part of **H−O**\ −H)
+
 A higher order water bridge is defined as more than one water bridging
 hydrogen bond acceptor and donor. An example of a second order water bridge:
+
 e.g. -CO\ :sub:`2`\ :sup:`-`:···H−O:···H−O:···HN-
 (where H−O is part of **H−O**\ −H)
+
 The following keyword arguments are important to control the behaviour of the
 water bridge analysis:
+
  - *water_selection* (``resname SOL``): the selection string for the bridging
    water
  - *order* the maximum number of water bridging both ends
@@ -55,17 +70,22 @@ water bridge analysis:
  - Angle *cutoff* (degrees): 120.0
  - *forcefield* to switch between default values for different force fields
  - *donors* and *acceptors* atom types (to add additional atom names)
+
 Theory
 ------
+
 This module attempts to find multi-order water bridge by an approach similar
 to breadth-first search, where the first solvation shell of selection 1 is
 selected, followed by the selection of the second solvation shell as well as
 any hydrogen bonding partner from selection 1. After that, the third solvation
 shell, as well as any binding partners from selection 2, are detected. This
 process is repeated until the maximum order of water bridges is reached.
+
 .. _wb_Analysis_Network:
+
 Output as Network
 -----------------
+
 Since the waters connecting the two ends of the selections are by nature a
 network. We provide a network representation of the water network. Water bridge
 data are returned per frame, which is stored in
@@ -73,10 +93,12 @@ data are returned per frame, which is stored in
 where the keys are the hydrogen bonds originating from selection 1 and the
 values are new dictionaries representing the hydrogen bonds coming out of the
 corresponding molecules making hydrogen bonds with selection 1.
+
 As for the hydrogen bonds which reach the selection 2, the values of the
 corresponding keys are None. One example where selection 1 and selection 2 are
 joined by one water molecule (A) which also hydrogen bond to another water (B)
 which also hydrogen bond to selection 2 would be represented as ::
+
     # (selection 1)-O:···H-O(water 1):···H-(selection 2)
     #                      |             :
     #                      H·············O-H(water2)
@@ -90,13 +112,17 @@ which also hydrogen bond to selection 2 would be represented as ::
               distance, angle): None}
           },
     }
+
 The atoms are represented by atom index and if the atom is hydrogen bond donor,
 it is followed by the index of the corresponding heavy atom
 ``(donor_proton, donor_heavy_atom)``.
 If the atom is a hydrogen bond acceptor, it is followed by none.
+
 .. _wb_Analysis_Timeseries:
+
 Output as Timeseries
 --------------------
+
 For lower order water bridges, it might be desirable to represent the
 connections as :attr:`WaterBridgeAnalysis.timeseries`. The results are returned
 per frame and are a list of hydrogen bonds between the selection 1 or selection
@@ -106,19 +132,24 @@ both third and fourth order water bridge, the hydrogen bonds in the
 :attr:`WaterBridgeAnalysis.timeseries` attribute are generated in a depth-first
 search manner to avoid duplication. Example code of how
 :attr:`WaterBridgeAnalysis.timeseries` is generated::
+
     def network2timeseries(network, timeseries):
         '''Traverse the network in a depth-first fashion.
         expand_timeseries will expand the compact representation to the
         familiar timeseries representation.'''
+
         if network is None:
             return
         else:
             for node in network:
                 timeseries.append(expand_timeseries(node))
                 network2timeseries(network[node], timeseries)
+
     timeseries = []
     network2timeseries(network, timeseries)
+
 An example would be. ::
+
     results = [
         [ # frame 1
            [ <donor index>, <acceptor index>,
@@ -133,35 +164,47 @@ An example would be. ::
         ],
         ...
     ]
+
 Using the :meth:`WaterBridgeAnalysis.generate_table` method one can reformat
 the results as a flat "normalised" table that is easier to import into a
 database or dataframe for further processing.
+
 Detection of water bridges
 --------------------------
 Water bridges are recorded if a bridging water simultaneously forms
 hydrogen bonds with selection 1 and selection 2.
+
 Hydrogen bonds are detected based on a geometric criterion:
+
 1. The distance between acceptor and hydrogen is less than or equal to
    `distance` (default is 3 Å).
+
 2. The angle between donor-hydrogen-acceptor is greater than or equal to
    `angle` (default is 120º).
+
 The cut-off values `angle` and `distance` can be set as keywords to
 :class:`WaterBridgeAnalysis`.
+
 Donor and acceptor heavy atoms are detected from atom names. The current
 defaults are appropriate for the CHARMM27 and GLYCAM06 force fields as defined
 in Table `Default atom names for water bridge analysis`_.
+
 Hydrogen atoms bonded to a donor are searched based on its distance to the
 donor. The algorithm searches for all hydrogens
 (name "H*" or name "[123]H" or type "H") in the same residue as the donor atom
 within a cut-off distance of 1.2 Å.
+
 .. _Default atom names for water bridge analysis:
+
 .. table:: Default heavy atom names for CHARMM27 force field.
+
    =========== ==============  =========== ====================================
    group       donor           acceptor    comments
    =========== ==============  =========== ====================================
    main chain  N               O, OC1, OC2 OC1, OC2 from amber99sb-ildn
                                            (Gromacs)
    water       OH2, OW         OH2, OW     SPC, TIP3P, TIP4P (CHARMM27,Gromacs)
+
    ARG         NE, NH1, NH2
    ASN         ND2             OD1
    ASP                         OD1, OD2
@@ -180,7 +223,9 @@ within a cut-off distance of 1.2 Å.
    TRP         NE1
    TYR         OH              OH
    =========== ==============  =========== ====================================
+
 .. table:: Heavy atom types for GLYCAM06 force field.
+
    =========== =========== ==================
    element     donor       acceptor
    =========== =========== ==================
@@ -188,15 +233,19 @@ within a cut-off distance of 1.2 Å.
    O           OH,OW       O,O2,OH,OS,OW,OY
    S                       SM
    =========== =========== ==================
+
 Donor and acceptor names for the CHARMM27 force field will also work for e.g.
 OPLS/AA or amber (tested in Gromacs). Residue names in the table are for
 information only and are not taken into account when determining acceptors and
 donors. This can potentially lead to some ambiguity in the assignment of
 donors/acceptors for residues such as histidine or cytosine.
+
 For more information about the naming convention in GLYCAM06 have a look at the
 `Carbohydrate Naming Convention in Glycam`_.
+
 .. _`Carbohydrate Naming Convention in Glycam`:
    http://glycam.ccrc.uga.edu/documents/FutureNomenclature.htm
+
 The lists of donor and acceptor names can be extended by providing lists of
 atom names in the `donors` and `acceptors` keywords to
 :class:`WaterBridgeAnalysis`. If the lists are entirely inappropriate
@@ -204,33 +253,45 @@ atom names in the `donors` and `acceptors` keywords to
 different atom names) then one should either use the value "other" for
 `forcefield` to set no default values or derive a new class and set the
 default list oneself::
+
  class WaterBridgeAnalysis_OtherFF(WaterBridgeAnalysis):
        DEFAULT_DONORS = {"OtherFF": tuple(set([...]))}
        DEFAULT_ACCEPTORS = {"OtherFF": tuple(set([...]))}
+
 Then simply use the new class instead of the parent class and call it with
 ```forcefield` = "OtherFF"``. Please also consider contributing the list of
 heavy atom names to MDAnalysis.
+
 How to perform WaterBridgeAnalysis
 ----------------------------------
+
 All water bridges between arginine and aspartic acid can be analysed with ::
+
   import MDAnalysis
   import MDAnalysis.analysis.hbonds
+
   u = MDAnalysis.Universe('topology', 'trajectory')
   w = MDAnalysis.analysis.hbonds.WaterBridgeAnalysis(u, 'resname ARG',
   'resname ASP')
   w.run()
+
 The maximum number of bridging waters detected can be changed using the order
 keyword. ::
+
   w = MDAnalysis.analysis.hbonds.WaterBridgeAnalysis(u, 'resname ARG',
   'resname ASP', order=3)
+
 Thus, a maximum of three bridging waters will be detected.
+
 An example of using the :attr:`~WaterBridgeAnalysis` would be
 detecting the percentage of time a certain water bridge exits.
+
 Trajectory :code:`u` has two frames, where the first frame contains a water
 bridge from the oxygen of the first arginine to one of the oxygens in the
 carboxylic group of aspartate (ASP3:OD1). In the second frame, the same water
 bridge forms but is between the oxygen of the arginine and the other oxygen in
 the carboxylic group (ASP3:OD2). ::
+
   # index residue id residue name atom name
   #     0          1          ARG         O
   #     1          2          SOL        OW
@@ -239,7 +300,9 @@ the carboxylic group (ASP3:OD2). ::
   #     4          3          ASP       OD1
   #     5          3          ASP       OD2
   print(w.timeseries)
+
 prints out. ::
+
   [ # frame 1
     # A water bridge SOL2 links O from ARG1 to the carboxylic group OD1 of ASP3
    [[0,2,('ARG',1,  'O'),('SOL',2,'HW1'),  3.0,180],
@@ -252,28 +315,39 @@ prints out. ::
     [3,5,('SOL',2,'HW2'),('ASP',3,'OD2'),  3.0,180],
    ],
   ]
+
+
 .. _wb_count_by_type:
+
 Use count_by_type
 -----------------
+
 We can use the :meth:`~WaterBridgeAnalysis.count_by_type` to
 generate the frequence of all water bridges in the simulation. ::
+
   w.count_by_type()
+
 Returns ::
+
   [(0, 3, 'ARG', 1, 'O', 'ASP', 3, 'OD1', 0.5),
    (0, 4, 'ARG', 1, 'O', 'ASP', 3, 'OD2', 0.5),]
+
 You might think that the OD1 and OD2 are the same oxygen and the aspartate has
 just flipped and thus, they should be counted as the same type of water bridge.
 The type of the water bridge can be customised by supplying an analysis
 function to :meth:`~WaterBridgeAnalysis.count_by_type`.
+
 The analysis function has two parameters. The current and the output. The
 current is a list of hydrogen bonds from selection 1 to selection 2, formatted
 in the same fashion as :attr:`WaterBridgeAnalysis.network`, and an example will
 be ::
+
   [
   # sele1 acceptor idx,   , water donor index, donor heavy atom idx, dist, ang.
    [                 0, None,                 2,                   1, 3.0,180],
   # water donor idx, donor heavy atom idx, sele2 acceptor idx, distance, angle.
    [              3,                    1,                  4, None, 3.0,180],]
+
 Where ``current[0]`` is the first hydrogen bond originating from selection 1
 and ``current[-1]`` is the final hydrogen bond ending in selection 2. The
 output sums up all the information in the current frame and is a dictionary
@@ -282,9 +356,11 @@ During the analysis phase, the function analysis iterates through all the water
 bridges and modify the output in-place. At the end of the analysis, the keys
 from all the frames are collected and the corresponding values will be summed
 up and returned. ::
+
   def analysis(current, output, u):
       r'''This function defines how the type of water bridge should be
       specified.
+
         Parameters
         ----------
         current : list
@@ -296,6 +372,7 @@ up and returned. ::
             water bridge.
         u : MDAnalysis.universe
             The current Universe for looking up atoms.'''
+
       # decompose the first hydrogen bond.
       sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle =
       current[0]
@@ -317,13 +394,19 @@ up and returned. ::
       key = (s1_resname, s1_resid, s1_name, s2_resname, s2_resid, s2_name)
       # The number of this type of water bridge is incremented by 1.
       output[key] += 1
+
   w.count_by_type(analysis_func=analysis)
+
 Returns ::
+
   [(('ARG', 1, 'O', 'ASP', 3, 'OD'), 1.0),]
+
 Note that the result is arranged in the format of
 ``(key, the proportion of time)``. When no custom analysis function is supplied
 , the key is expanded and is formatted as ::
+
   [('ARG', 1, 'O', 'ASP', 3, 'OD', 1.0),]
+
 Some people might only interested in contacts between residues and pay no
 attention to the details regarding the atom name. However, since multiple water
 bridges can exist between two residues, which sometimes can give a result such
@@ -332,9 +415,11 @@ might be a desirable result for some people, others might want the water bridge
 between two residues to be only counted once per frame. This can also be
 achieved by supplying an analysis function to
 :meth:`~WaterBridgeAnalysis.count_by_type`. ::
+
   def analysis(current, output, u):
       '''This function defines how the type of water bridge should be specified
       .
+
         Parameters
         ----------
         current : list
@@ -347,6 +432,7 @@ achieved by supplying an analysis function to
         u : MDAnalysis.universe
             The current Universe for looking up atoms.
       '''
+
       # decompose the first hydrogen bond.
       sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle =
       current[0]
@@ -362,18 +448,25 @@ achieved by supplying an analysis function to
       sele2.name)
       # s1_name and s2_name are not included in the key
       key = (s1_resname, s1_resid, s2_resname, s2_resid)
+
       # Each residue is only counted once per frame
       output[key] = 1
+
   w.count_by_type(analysis_func=analysis)
+
 Returns ::
+
   [(('ARG', 1, 'ASP', 3), 1.0),]
+
 On the other hand, other people may insist that the first order and
 second-order water bridges shouldn't be mixed together, which can also be
 achieved by supplying an analysis function to
 :meth:`~WaterBridgeAnalysis.count_by_type`.  ::
+
   def analysis(current, output, u):
       '''This function defines how the type of water bridge should be specified
       .
+
         Parameters
         ----------
         current : list
@@ -386,6 +479,7 @@ achieved by supplying an analysis function to
         u : MDAnalysis.universe
             The current Universe for looking up atoms.
       '''
+
       # decompose the first hydrogen bond.
       sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle =
       current[0]
@@ -405,16 +499,22 @@ achieved by supplying an analysis function to
       key = (s1_resname, s1_resid, s2_resname, s2_resid, order_of_water_bridge)
       # The number of this type of water bridge is incremented by 1.
       output[key] += 1
+
   w.count_by_type(analysis_func=analysis)
+
 The extra number 1 precede the 1.0 indicate that this is a first order water
 bridge ::
+
   [(('ARG', 1, 'ASP', 3, 1), 1.0),]
+
 Some people might not be interested in the interactions related to arginine.
 The undesirable interactions can be discarded by supplying an analysis function
 to :meth:`~WaterBridgeAnalysis.count_by_type`.  ::
+
   def analysis(current, output, u):
       '''This function defines how the type of water bridge should be
       specified.
+
         Parameters
         ----------
         current : list
@@ -427,6 +527,7 @@ to :meth:`~WaterBridgeAnalysis.count_by_type`.  ::
         u : MDAnalysis.universe
             The current Universe for looking up atoms.
       '''
+
       # decompose the first hydrogen bond.
       sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle =
       current[0]
@@ -443,39 +544,58 @@ to :meth:`~WaterBridgeAnalysis.count_by_type`.  ::
       if not s1_resname == 'ARG':
           key = (s1_resname, s1_resid, s2_resname, s2_resid)
           output[key] += 1
+
   w.count_by_type(analysis_func=analysis)
+
 Returns nothing in this case ::
+
   [,]
+
 Additional keywords can be supplied to the analysis function by passing through
 :meth:`~WaterBridgeAnalysis.count_by_type`.  ::
+
   def analysis(current, output, **kwargs):
       ...
   w.count_by_type(analysis_func=analysis, **kwargs)
+
+
 .. _wb_count_by_time:
+
 Use count_by_time
 -----------------
+
 :meth:`~WaterBridgeAnalysis.count_by_type` aggregates data across frames, which
 might be desirable in some cases but not the others.
 :meth:`~WaterBridgeAnalysis.count_by_time` provides additional functionality
 for aggregating results for each frame.
+
 The default behaviour of :meth:`~WaterBridgeAnalysis.count_by_time` is counting
 the number of water bridges from selection 1 to selection 2 for each frame.
 Take the previous ASP, ARG salt bridge for example:  ::
+
   w.count_by_time()
+
 As one water bridge is found in both frames, the method returns ::
+
   [(1.0, 1), (2.0, 1), ]
+
 Similar to :meth:`~WaterBridgeAnalysis.count_by_type`
 The behaviour of :meth:`~WaterBridgeAnalysis.count_by_time` can also be
 modified by supplying an analysis function.
+
 Suppose we want to count
+
   - the **number** of water molecules involved in bridging selection 1 to
     selection 2.
   - only if water bridge terminates in atom name **OD1 of ASP**.
   - only when water bridge is joined by less than **two** water.
+
 The analysis function can be written as::
+
   def analysis(current, output, u, **kwargs):
       '''This function defines how the counting of water bridge should be
       specified.
+
         Parameters
         ----------
         current : list
@@ -488,6 +608,7 @@ The analysis function can be written as::
         u : MDAnalysis.universe
             The current Universe for looking up atoms.
       '''
+
       # decompose the first hydrogen bond.
       sele1_index, sele1_heavy_index, atom2, heavy_atom2, dist, angle =
       current[0]
@@ -501,6 +622,7 @@ The analysis function can be written as::
       (sele1.resname, sele1.resid, sele1.name)
       (s2_resname, s2_resid, s2_name) =
       (sele2.resname, sele2.resid, sele2.name)
+
       # only the residue name is ASP and the atom name is OD1,
       if s2_resname == 'ASP' and s2_name == 'OD1':
           # only if the order of water bridge is less than 2
@@ -511,6 +633,7 @@ The analysis function can be written as::
               (to_resname, to_resid, to_name), dist, angle = current[0]
               key = (to_resname, to_resid)
               output[key] = 1
+
               # extract all the waters between selection 1 and selection 2
               for hbond in current[1:-1]:
                   # decompose the hydrogen bond.
@@ -522,22 +645,31 @@ The analysis function can be written as::
                   # add second water
                   key2 = (to_resname, to_resid)
                   output[key2] = 1
+
               # extract the last water to selection 2
               from_index, s2_index, (from_resname, from_resid, from_name),
               (s2_resname, s2_resid, s2_name), dist, angle = current[-1]
               key = (from_resname, from_resid)
               output[key] = 1
+
   w.count_by_time(analysis_func=analysis)
+
 Returns ::
+
   [(1.0, 1), (2.0, 0),]
+
 Classes
 -------
+
 .. autoclass:: WaterBridgeAnalysis
    :members:
+
    .. attribute:: timesteps
+
       List of the times of each timestep. This can be used together with
       :attr:`~WaterBridgeAnalysis.timeseries` to find the specific time point
       of a water bridge existence.
+
 """
 from collections import defaultdict
 import logging
@@ -555,11 +687,15 @@ logger = logging.getLogger('MDAnalysis.analysis.WaterBridgeAnalysis')
 
 class WaterBridgeAnalysis(AnalysisBase):
     """Perform a water bridge analysis
+
     The analysis of the trajectory is performed with the
     :meth:`WaterBridgeAnalysis.run` method. The result is stored in
     :attr:`WaterBridgeAnalysis.timeseries`. See
     :meth:`~WaterBridgeAnalysis.run` for the format.
+
+
     .. versionadded:: 0.17.0
+
     """
     # use tuple(set()) here so that one can just copy&paste names from the
     # table; set() takes care for removing duplicates. At the end the
@@ -604,14 +740,17 @@ class WaterBridgeAnalysis(AnalysisBase):
                  pbc=False, **kwargs):
         """Set up the calculation of water bridges between two selections in a
         universe.
+
         The timeseries is accessible as the attribute
         :attr:`WaterBridgeAnalysis.timeseries`.
+
         If no hydrogen bonds are detected or if the initial check fails, look
         at the log output (enable with :func:`MDAnalysis.start_logging` and set
         `verbose` ``=True``). It is likely that the default names for donors
         and acceptors are not suitable (especially for non-standard
         ligands). In this case, either change the `forcefield` or use
         customized `donors` and/or `acceptors`.
+
         Parameters
         ----------
         universe : Universe
@@ -627,12 +766,14 @@ class WaterBridgeAnalysis(AnalysisBase):
             The default selection assumes that the water molecules have residue
             name "SOL". Change it to the appropriate selection for your
             specific force field.
+
             However, in theory, this selection can be anything which forms
             a hydrogen bond with selection 1 and selection 2.
         order : int (optional)
             The maximum number of water bridges linking both selections.
             if the order is set to 3, then all the residues linked with less
             than three water molecules will be detected. [1]
+
             Computation of high order water bridges can be very time-consuming.
             Think carefully before running the calculation, do you really want
             to compute the 20th order water bridge between domain A and domain
@@ -656,6 +797,7 @@ class WaterBridgeAnalysis(AnalysisBase):
             **only** recommended when the total amount of water molecules in
             the simulation are small and when water molecules remain static
             across the simulation.
+
             However, in normal simulations, only a tiny proportion of water is
             engaged in the formation of water bridge. It is recommended to
             update the water selection and set keyword `filter_first` to
@@ -707,21 +849,26 @@ class WaterBridgeAnalysis(AnalysisBase):
         verbose : bool (optional)
             Toggle progress output. (Can also be given as keyword argument to
             :meth:`run`.)
+
         Notes
         -----
         In order to speed up processing, atoms are filtered by a coarse
         distance criterion before a detailed hydrogen bonding analysis is
         performed (`filter_first` = ``True``).
+
         If selection 1 and selection 2 are very mobile during the simulation
         and the contact surface is constantly changing (i.e. residues are
         moving farther than 4 Å + `order` * (2 Å + `distance`)), you might
         consider setting the `update_selection` keywords to ``True``
         to ensure correctness.
+
         .. versionchanged 0.20.0
            The :attr:`WaterBridgeAnalysis.timeseries` has been updated
            see :attr:`WaterBridgeAnalysis.timeseries` for detail.
            This class is now based on
            :class:`~MDAnalysis.analysis.base.AnalysisBase`.
+
+
         """
         super(WaterBridgeAnalysis, self).__init__(universe.trajectory,
                                                   **kwargs)
@@ -930,19 +1077,24 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     def _get_bonded_hydrogens(self, atom):
         """Find hydrogens bonded within cutoff to `atom`.
+
         Hydrogens are detected by either name ("H*", "[123]H*") or type ("H");
         this is not fool-proof as the atom type is not always a character but
         the name pattern should catch most typical occurrences.
+
         The distance from `atom` is calculated for all hydrogens in the residue
         and only those within a cutoff are kept. The cutoff depends on the
         heavy atom (more precisely, on its element, which is taken as the first
         letter of its name ``atom.name[0]``) and is parameterized in
         :attr:`WaterBridgeAnalysis.r_cov`. If no match is found then the
         default of 1.5 Å is used.
+
+
         Parameters
         ----------
         atom : groups.Atom
              heavy atom
+
         Returns
         -------
         hydrogen_atoms : AtomGroup or []
@@ -1266,12 +1418,15 @@ class WaterBridgeAnalysis(AnalysisBase):
         :attr:`output_format`.
         If `output_format` is 'sele1_sele2', the output will be the old water
         bridge analysis format::
+
           # donor from selection 1 to acceptor in selection 2
           [sele1_index, sele2_index,
            (sele1_resname, sele1_resid, sele1_name),
            (sele2_resname, sele2_resid, sele2_name), dist, angle]
+
         If `output_format` is 'donor_acceptor', the output will be the old
         hydrogen bond analysis format::
+
           # From donor to acceptor
           [donor_index, acceptor_index,
            (donor_resname, donor_resid, donor_name),
@@ -1307,28 +1462,35 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     def _generate_timeseries(self, output_format=None):
         r'''Time series of water bridges.
+
         The output is generated per frame as is explained in
         :ref:`wb_Analysis_Timeseries`. The format of output can be changed via
         the output_format selection. If ``output_format="sele1_sele2"``, the
         hydrogen bond forms a directional link from selection 1 to selection 2.
         If ``output_format="donor_acceptor"``, for each hydrogen bond, the
         donor is always written before the acceptor.
+
         Note
         ----
         To find an acceptor atom in :attr:`Universe.atoms` by
         *index* one would use ``u.atoms[acceptor_index]``.
+
         The :attr:`timeseries` is a managed attribute and it is generated
         from the underlying data in :attr:`_network` every time the
         attribute is accessed. It is therefore costly to call and if
         :attr:`timeseries` is needed repeatedly it is recommended that you
         assign to a variable::
+
            w = WaterBridgeAnalysis(u)
            w.run()
            timeseries = w.timeseries
+
         .. versionchanged 0.20.0
            The :attr:`WaterBridgeAnalysis.timeseries` has been updated where
            the donor and acceptor string has been changed to tuple
            (resname string, resid, name_string).
+
+
         '''
         output_format = output_format or self.output_format
 
@@ -1351,18 +1513,26 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     def _get_network(self):
         r'''Network representation of the water network.
+
         The output is generated per frame as is explained in
         :ref:`wb_Analysis_Network`. Each hydrogen bond has a compact
         representation of ::
+
           [sele1_acceptor_idx, None, sele2_donor_idx, donor_heavy_idx,
           distance, angle]
+
         or ::
+
           [sele1_donor_idx, donor_heavy_idx, sele1_acceptor_idx, None,
           distance, angle]
+
         The donor_heavy_idx is the heavy atom bonding to the proton and atoms
         can be retrived from the universe::
+
           atom = u.atoms[idx]
+
         .. versionadded:: 0.20.0
+
         '''
         return self._network
 
@@ -1417,13 +1587,16 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     def count_by_type(self, analysis_func=None, **kwargs):
         """Counts the frequency of water bridge of a specific type.
+
         If one atom *A* from *selection 1* is linked to atom *B* from
         *selection 2* through one or more bridging waters, an entity will be
         created and the proportion of time that this linkage exists in the
         whole simulation will be calculated.
+
         The identification of a specific type of water bridge can be modified
         by supplying the analysis_func function. See :ref:`wb_count_by_type`
         for detail.
+
         Returns
         -------
         counts : list
@@ -1432,6 +1605,8 @@ class WaterBridgeAnalysis(AnalysisBase):
             and the fraction of the total time during which the water bridge
             was detected. This method returns None if method
             :meth:`WaterBridgeAnalysis.run` was not executed first.
+
+
         """
         output = None
         if analysis_func is None:
@@ -1475,13 +1650,16 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     def count_by_time(self, analysis_func=None, **kwargs):
         """Counts the number of water bridges per timestep.
+
         The counting behaviour can be adjusted by supplying analysis_func.
         See :ref:`wb_count_by_time` for details.
+
         Returns
         -------
         counts : list
              Returns a time series ``N(t)`` where ``N`` is the total
              number of observed water bridges at time ``t``.
+
         """
         if analysis_func is None:
             analysis_func = self._count_by_time_analysis
@@ -1514,16 +1692,20 @@ class WaterBridgeAnalysis(AnalysisBase):
     def timesteps_by_type(self, analysis_func=None, **kwargs):
         """Frames during which each water bridges existed, sorted by each water
         bridges.
+
         Processes :attr:`WaterBridgeAnalysis._network` and returns a
         :class:`list` containing atom indices, residue names, residue
         numbers (from selection 1 and selection 2) and each timestep at which
         the water bridge was detected.
+
         Similar to :meth:`~WaterBridgeAnalysis.count_by_type` and
         :meth:`~WaterBridgeAnalysis.count_by_time`, the behavior can be
         adjusted by supplying an analysis_func.
+
         Returns
         -------
         data : list
+
         """
         output = None
         if analysis_func is None:
@@ -1558,8 +1740,10 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     def generate_table(self, output_format=None):
         """Generate a normalised table of the results.
+
         The table is stored as a :class:`numpy.recarray` in the
         attribute :attr:`~WaterBridgeAnalysis.table`.
+
         The output format of :attr:`~WaterBridgeAnalysis.table` can also be
         changed using output_format in a fashion similar to
         :attr:`WaterBridgeAnalysis.timeseries`
