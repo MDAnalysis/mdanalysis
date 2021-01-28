@@ -1,6 +1,7 @@
 from __future__ import print_function, absolute_import
 from six import StringIO
 from collections import defaultdict
+from importlib import reload
 
 from numpy.testing import (
     assert_equal, assert_array_equal,)
@@ -8,15 +9,12 @@ import pytest
 
 import MDAnalysis
 import MDAnalysis.analysis.hbonds
-from MDAnalysis.analysis.hbonds.wbridge_analysis import WaterBridgeAnalysis
+from MDAnalysis.analysis.hydrogenbonds.wbridge_analysis import WaterBridgeAnalysis
 
-def test_import_from_hbonds():
-    try:
-        from MDAnalysis.analysis.hbonds import WaterBridgeAnalysis
-    except ImportError:
-        raise AssertionError("Issue #2064 not fixed: "
-                             "importing WaterBridgeAnalysis from "
-                             "MDAnalysis.analysis.hbonds failed.'")
+def test_import_warning():
+    wmsg = 'Please use MDAnalysis.analysis.hydrogenbonds.wbridge_analysis'
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        reload(MDAnalysis.analysis.hbonds.wbridge_analysis)
 
 class TestWaterBridgeAnalysis(object):
     @staticmethod
