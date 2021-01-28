@@ -79,7 +79,14 @@ import numpy as np
 from libcpp.vector cimport vector
 from libc.math cimport floor
 
-DEF END = 1
+DEF END = -1
+
+DEF XX = 0
+DEF XY = 3
+DEF YY = 4
+DEF XZ = 6
+DEF YZ = 7
+DEL ZZ = 8
 
 cdef extern from "calc_distances.h" nogil:
     void minimum_image(double* x, float* box, float* inverse_box)
@@ -198,7 +205,7 @@ cdef class _NSGrid(object):
     cdef int[3] cell_offsets  # Cell Multipliers
     # cellsize MUST be double precision, otherwise coord2cellid() may fail for
     # coordinates very close to the upper box boundaries! See Issue #2132
-    cdef double[3] cellsize  # cell size in every dimension
+    cdef double[9] cellsize  # cell size in every dimension
     cdef double max_cutoff2  # maximum allowable cutoff
     
     cdef int[::1] head_id  # first coord id for a given cell
@@ -234,14 +241,14 @@ cdef class _NSGrid(object):
         
         from MDAnalysis.lib.mdamath import triclinic_vectors
 
-        for i in range(6):
-            self.dimensions[i] = box[i]
         for i in range(3):
+            self.dimensions[i] = box[i]
             self.inverse_dimensions[i] = 1.0 / box[i]
+
         self.triclinic_dimensions = triclinic_vectors(box).reshape((9,))
-        self.triclinic = (self.triclinic_dimensions[3] > 0 or
-                          self.triclinic_dimensions[6] > 0 or
-                          self.triclinic_dimensions[7] > 0)
+        self.triclinic = (self.triclinic_dimensions[XY] > 0 or
+                          self.triclinic_dimensions[XZ] > 0 or
+                          self.triclinic_dimensions[YZ] > 0)
         # TODO: Something smart about defining the maximum cutoff for a given boxsize
         if cutoff < 0:
             raise ValueError("Cutoff must be positive")
@@ -260,9 +267,9 @@ cdef class _NSGrid(object):
             relative_cutoff_margin *= 10.0
 
         # TODO: Check this is correct
-        self.ncells[0] = <int> floor(self.triclinic_dimensions[0] / cutoff)
-        self.ncells[1] = <int> floor(self.triclinic_dimensions[4] / cutoff)
-        self.ncells[2] = <int> floor(self.triclinic_dimensions[8] / cutoff)
+        self.ncells[0] = <int> floor(self.triclinic_dimensions[XX] / cutoff)
+        self.ncells[1] = <int> floor(self.triclinic_dimensions[YY] / cutoff)
+        self.ncells[2] = <int> floor(self.triclinic_dimensions[ZZ] / cutoff)
         # If there aren't enough cells in a given dimension it's equivalent to one
         if pbc:
             for i in range(3):
@@ -277,15 +284,21 @@ cdef class _NSGrid(object):
                     self.ncells[i] = 1
                 self.periodic[i] = False
 
-        self.cellsize[0] = self.triclinic_dimensions[0] / <double> self.ncells[0]
-        self.cellsize[1] = self.triclinic_dimensions[4] / <double> self.ncells[1]
-        self.cellsize[2] = self.triclinic_dimensions[8] / <double> self.ncells[2]
+        self.cellsize[XX] = self.triclinic_dimensions[XX] / <double> self.ncells[0]
+        # [YX] and [ZX] are 0
+        self.cellsize[XY] = self.triclinic_dimensions[XY] / <double> self.ncells[1]
+        self.cellsize[YY] = self.triclinic_dimensions[YY] / <double> self.ncells[1]
+        # [ZY] is zero
+        self.cellsize[XZ] = self.triclinic_dimensions[XZ] / <double> self.ncells[2]
+        self.cellsize[YZ] = self.triclinic_dimensions[YZ] / <double> self.ncells[2]
+        self.cellsize[ZZ] = self.triclinic_dimensions[ZZ] / <double> self.ncells[2]
 
-        self.max_cutoff2 = 0.0
-        for i in range(3):
-            if (0.25 * self.cellsize[i] * self.cellsize[i]) > self.max_cutoff2:
-                self.max_cutoff2 = 0.25 * self.cellsize[i] * self.cellsize[i]
-        
+        self.max_cutoff2 = 0.25 * self.cellsize[ZZ] * self.cellsize[ZZ]
+        if (0.25 * self.cellsize[YY] * self.cellsize[YY] < self.max_cutoff2):
+            self.max_cutoff2 = 0.25 * self.cellsize[YY] * self.cellsize[YY]
+        if (0.25 * self.cellsize[XX] * self.cellsize[XX] < self.max_cutoff2):
+            self.max_cutoff2 = 0.25 * self.cellsize[XX] * self.cellsize[XX]
+
         self.size = self.ncells[0] * self.ncells[1] * self.ncells[2]
         
         self.cell_offsets[0] = 0
@@ -310,7 +323,6 @@ cdef class _NSGrid(object):
         Assumes the coordinate is already inside the primary unit cell.
         Return wrong cell-id if this is not the case
         """
-        # TODO: Check optimising for orthogonal cells
         cdef int xyz[3]
 
         self.coord2cellxyz(coord, xyz)
@@ -321,9 +333,9 @@ cdef class _NSGrid(object):
         """Calculate cell coordinate for coord"""
         cdef int cx, cy, cz
         
-        cz = <int> (coord[2] / self.cellsize[2])
-        cy = <int> ((coord[1] - cz * self.triclinic_dimensions[7]) / self.cellsize[1])
-        cx = <int> ((coord[0] - cy * self.triclinic_dimensions[3] - cz * self.triclinic_dimensions[6]) / self.cellsize[0])
+        cz = <int> (coord[2] / self.cellsize[ZZ])
+        cy = <int> ((coord[1] - cz * self.cellsize[YZ]) / self.cellsize[YY])
+        cx = <int> ((coord[0] - cy * self.cellsize[XY] - cz * self.cellsize[XZ]) / self.cellsize[XX])
         
         xyz[0] = cx
         xyz[1] = cy
