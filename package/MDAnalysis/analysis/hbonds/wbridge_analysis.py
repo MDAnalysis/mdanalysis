@@ -22,6 +22,9 @@
 #
 
 # Water Bridge Analysis
+import warnings
+
+
 with warnings.catch_warnings():
     warnings.simplefilter('always', DeprecationWarning)
     warnings.warn(("This module has been moved to "
