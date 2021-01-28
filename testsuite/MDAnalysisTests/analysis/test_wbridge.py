@@ -14,7 +14,7 @@ from MDAnalysis.analysis.hydrogenbonds.wbridge_analysis import (
 
 
 def test_import_warning():
-    wmsg = 'Please use MDAnalysis.analysis.hydrogenbonds.wbridge_analysis'
+    wmsg = 'This module has been moved to'
     with pytest.warns(DeprecationWarning, match=wmsg):
         reload(MDAnalysis.analysis.hbonds.wbridge_analysis)
 
