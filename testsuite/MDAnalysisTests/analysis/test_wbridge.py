@@ -9,7 +9,9 @@ import pytest
 
 import MDAnalysis
 import MDAnalysis.analysis.hbonds
-from MDAnalysis.analysis.hydrogenbonds.wbridge_analysis import WaterBridgeAnalysis
+from MDAnalysis.analysis.hydrogenbonds.wbridge_analysis import (
+    WaterBridgeAnalysis, )
+
 
 def test_import_warning():
     wmsg = 'Please use MDAnalysis.analysis.hydrogenbonds.wbridge_analysis'
