@@ -21,7 +21,7 @@ The rules for this file:
   * 2.0.0
 
 Fixes
-  * Removed missing `rdf_s` package from analysis `__all__` list (PR #3013)
+  * Fixed import of several `__all__` lists (PR #3013)
   * atommethods (_get_prev/next_residues_by_resid) returns empty residue group 
     when given empty residue group (Issue #3089)
   * MOL2 files without bonds can now be read and written (Issue #3057)

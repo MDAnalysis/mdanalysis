@@ -21,7 +21,14 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-__all__ = ['StochasticProximityEmbeddingNative', 'PrincipalComponentAnalysis']
+from .DimensionalityReductionMethod import StochasticProximityEmbeddingNative
 
-from .DimensionalityReductionMethod import StochasticProximityEmbeddingNative, \
-                                           PrincipalComponentAnalysis
+__all__ = ['StochasticProximityEmbeddingNative']
+
+
+try:
+    from .DimensionalityReductionMethod import PrincipalComponentAnalysis
+    __all__.append('PrincipalComponentAnalysis')
+except ImportError as err:
+    import warnings
+    warnings.warn("{}".format(err), category=ImportWarning)
