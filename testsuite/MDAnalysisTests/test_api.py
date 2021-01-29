@@ -24,8 +24,6 @@
 Test the user facing API is as we expect...
 """
 
-import importlib
-
 import MDAnalysis as mda
 import pytest
 
