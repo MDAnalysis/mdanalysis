@@ -86,7 +86,7 @@ DEF XY = 3
 DEF YY = 4
 DEF XZ = 6
 DEF YZ = 7
-DEL ZZ = 8
+DEF ZZ = 8
 
 cdef extern from "calc_distances.h" nogil:
     void minimum_image(double* x, float* box, float* inverse_box)
@@ -206,7 +206,7 @@ cdef class _NSGrid(object):
     # cellsize MUST be double precision, otherwise coord2cellid() may fail for
     # coordinates very close to the upper box boundaries! See Issue #2132
     cdef double[9] cellsize  # cell size in every dimension
-    cdef double max_cutoff2  # maximum allowable cutoff
+    cdef double max_cutoff  # maximum allowable cutoff
     
     cdef int[::1] head_id  # first coord id for a given cell
     cdef int[::1] next_id  # next coord id after a given cell
@@ -231,8 +231,6 @@ cdef class _NSGrid(object):
             is this NSGrid periodic at all?
         """
         cdef int i, j
-        cdef double relative_cutoff_margin
-        cdef double original_cutoff
 
         if box.shape != (6,):
             raise ValueError("Box must be a numpy array of [lx, ly, lz, alpha, beta, gamma]")
@@ -249,27 +247,13 @@ cdef class _NSGrid(object):
         self.triclinic = (self.triclinic_dimensions[XY] > 0 or
                           self.triclinic_dimensions[XZ] > 0 or
                           self.triclinic_dimensions[YZ] > 0)
-        # TODO: Something smart about defining the maximum cutoff for a given boxsize
         if cutoff < 0:
             raise ValueError("Cutoff must be positive")
-        
-        # Calculate best cutoff, with 0.01A minimum
         cutoff = max(cutoff, 0.01)
-        original_cutoff = cutoff
-        
-        # TODO: Not sure about this tbh
-        # First, we add a small margin to the cell size so that we can safely
-        # use the condition d <= cutoff (instead of d < cutoff) for neighbor
-        # search.
-        relative_cutoff_margin = 1.0e-8
-        while cutoff == original_cutoff:
-            cutoff = cutoff * (1.0 + relative_cutoff_margin)
-            relative_cutoff_margin *= 10.0
 
-        # TODO: Check this is correct
-        self.ncells[0] = <int> floor(self.triclinic_dimensions[XX] / cutoff)
-        self.ncells[1] = <int> floor(self.triclinic_dimensions[YY] / cutoff)
-        self.ncells[2] = <int> floor(self.triclinic_dimensions[ZZ] / cutoff)
+        self.ncells[0] = <int> floor(self.triclinic_dimensions[XX] / (cutoff + 0.001))
+        self.ncells[1] = <int> floor(self.triclinic_dimensions[YY] / (cutoff + 0.001))
+        self.ncells[2] = <int> floor(self.triclinic_dimensions[ZZ] / (cutoff + 0.001))
         # If there aren't enough cells in a given dimension it's equivalent to one
         if pbc:
             for i in range(3):
@@ -293,11 +277,11 @@ cdef class _NSGrid(object):
         self.cellsize[YZ] = self.triclinic_dimensions[YZ] / <double> self.ncells[2]
         self.cellsize[ZZ] = self.triclinic_dimensions[ZZ] / <double> self.ncells[2]
 
-        self.max_cutoff2 = 0.25 * self.cellsize[ZZ] * self.cellsize[ZZ]
-        if (0.25 * self.cellsize[YY] * self.cellsize[YY] < self.max_cutoff2):
-            self.max_cutoff2 = 0.25 * self.cellsize[YY] * self.cellsize[YY]
-        if (0.25 * self.cellsize[XX] * self.cellsize[XX] < self.max_cutoff2):
-            self.max_cutoff2 = 0.25 * self.cellsize[XX] * self.cellsize[XX]
+        self.max_cutoff = self.cellsize[ZZ]
+        if self.cellsize[YY] < self.max_cutoff:
+            self.max_cutoff = self.cellsize[YY]
+        if self.cellsize[XX] < self.max_cutoff:
+            self.max_cutoff = self.cellsize[XX]
 
         self.size = self.ncells[0] * self.ncells[1] * self.ncells[2]
         
@@ -463,12 +447,9 @@ cdef class FastNS(object):
         # due to optimization
         self.grid = _NSGrid(self.coords_bbox, self.cutoff, box, pbc)
         
-        if self.cutoff < 0:
-            raise ValueError("Cutoff must be positive!")
-
-        if self.cutoff * cutoff > self.grid.max_cutoff2:
+        if self.cutoff > self.grid.max_cutoff:
             raise ValueError("Cutoff greater than maximum cutoff ({:.3f}) given the PBC"
-                             "".format(np.sqrt(self.grid.max_cutoff2)))
+                             "".format(self.grid.max_cutoff))
 
     def search(self, search_coords):
         """Search a group of atoms against initialized coordinates
