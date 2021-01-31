@@ -200,6 +200,8 @@ cdef class _NSGrid(object):
         This class is not meant to be used by end users.
 
     """
+    cdef float[:, ::1] coords_bbox
+
     cdef int size  # total cells
     cdef int[3] ncells  # individual cells in every dimension
     cdef int[3] cell_offsets  # Cell Multipliers
@@ -231,6 +233,8 @@ cdef class _NSGrid(object):
             is this NSGrid periodic at all?
         """
         cdef int i, j
+        cdef int xyz[3]
+        cdef float coordcopy[3]
 
         if box.shape != (6,):
             raise ValueError("Box must be a numpy array of [lx, ly, lz, alpha, beta, gamma]")
@@ -242,6 +246,9 @@ cdef class _NSGrid(object):
         for i in range(3):
             self.dimensions[i] = box[i]
             self.inverse_dimensions[i] = 1.0 / box[i]
+        self.dimensions[3] = box[3]
+        self.dimensions[4] = box[4]
+        self.dimensions[5] = box[5]
 
         self.triclinic_dimensions = triclinic_vectors(box).reshape((9,))
         self.triclinic = (self.triclinic_dimensions[XY] > 0 or
@@ -294,8 +301,15 @@ cdef class _NSGrid(object):
         self.head_id = np.full(self.size, END, dtype=np.int32)
         self.next_id = np.full(coords.shape[0], END, dtype=np.int32)
 
+        self.coords_bbox = np.empty_like(coords)
         for i in range(coords.shape[0]):
-            j = self.coord2cellid(&coords[i][0])
+            self.coords_bbox[i][0] = coords[i][0]
+            self.coords_bbox[i][1] = coords[i][1]
+            self.coords_bbox[i][2] = coords[i][2]
+            self.coordintoprimarycell(&self.coords_bbox[i][0])
+
+            j = self.coord2cellid(&self.coords_bbox[i][0])
+
             self.next_id[i] = self.head_id[j]
             self.head_id[j] = i
 
@@ -315,8 +329,9 @@ cdef class _NSGrid(object):
 
     cdef void coord2cellxyz(self, const float* coord, int* xyz) nogil:
         """Calculate cell coordinate for coord"""
-        cdef int cx, cy, cz
-        
+        cdef int cx, cy, cz  # cell shifts
+
+        # This assumes coordinate is inside the primary unit cell
         cz = <int> (coord[2] / self.cellsize[ZZ])
         cy = <int> ((coord[1] - cz * self.cellsize[YZ]) / self.cellsize[YY])
         cx = <int> ((coord[0] - cy * self.cellsize[XY] - cz * self.cellsize[XZ]) / self.cellsize[XX])
@@ -324,6 +339,37 @@ cdef class _NSGrid(object):
         xyz[0] = cx
         xyz[1] = cy
         xyz[2] = cz
+
+    cdef void coordintoprimarycell(self, float* coord) nogil:
+        cdef float dydz, dxdz, dxdy
+        cdef float adj_cy, adj_cx
+
+        dydz = self.triclinic_dimensions[YZ] / self.triclinic_dimensions[ZZ]
+        dxdz = self.triclinic_dimensions[XZ] / self.triclinic_dimensions[ZZ]
+        dxdy = self.triclinic_dimensions[XY] / self.triclinic_dimensions[YY]
+
+        while (coord[2] >= self.triclinic_dimensions[ZZ]):
+            coord[2] -= self.triclinic_dimensions[ZZ]
+            coord[1] -= self.triclinic_dimensions[YZ]
+            coord[0] -= self.triclinic_dimensions[XZ]
+        while (coord[2] < 0):
+            coord[2] += self.triclinic_dimensions[ZZ]
+            coord[1] += self.triclinic_dimensions[YZ]
+            coord[0] += self.triclinic_dimensions[XZ]
+
+        adj_cy = coord[2] * dydz
+        while ((coord[1] - adj_cy) >= self.triclinic_dimensions[YY]):
+            coord[1] -= self.triclinic_dimensions[YY]
+            coord[0] -= self.triclinic_dimensions[XY]
+        while ((coord[1] - adj_cy) < 0):
+            coord[1] += self.triclinic_dimensions[YY]
+            coord[0] += self.triclinic_dimensions[XY]
+
+        adj_cx = coord[2] * dxdz + coord[1] * dxdy
+        while ((coord[0] - adj_cx) >= self.triclinic_dimensions[XX]):
+            coord[0] -= self.triclinic_dimensions[XX]
+        while ((coord[0] - adj_cx) < 0):
+            coord[0] += self.triclinic_dimensions[XX]
 
     cdef int cellxyz2cellid(self, int cx, int cy, int cz) nogil:
         """Convert cell coordinate to cell id, END for out of bounds"""
@@ -367,7 +413,6 @@ cdef class FastNS(object):
     Minimum image convention is used for distance evaluations
     if pbc is set to ``True``.
     """
-    cdef float[:, ::1] coords_bbox
     cdef readonly double cutoff
 
     cdef _NSGrid grid
@@ -430,8 +475,6 @@ cdef class FastNS(object):
             gridsearch = FastNS(max_cutoff, shift, box=pseudobox, pbc=False)
 
         """
-        from MDAnalysis.lib import distances
-
         if (coords.ndim != 2 or coords.shape[1] != 3):
             raise ValueError("coords must have a shape of (n, 3), got {}."
                              "".format(coords.shape))
@@ -439,19 +482,16 @@ cdef class FastNS(object):
         if np.allclose(box[:3], 0.0):
             raise ValueError("Any of the box dimensions cannot be 0")
 
-        # TODO: Probably don't wrap these if pbc=False?
-        self.coords_bbox = distances.apply_PBC(coords, box)
-
         self.cutoff = cutoff
         # Note that self.cutoff might be different from self.grid.cutoff
         # due to optimization
-        self.grid = _NSGrid(self.coords_bbox, self.cutoff, box, pbc)
+        self.grid = _NSGrid(coords, self.cutoff, box, pbc)
         
         if self.cutoff > self.grid.max_cutoff:
             raise ValueError("Cutoff greater than maximum cutoff ({:.3f}) given the PBC"
                              "".format(self.grid.max_cutoff))
 
-    def search(self, search_coords):
+    def search(self, float[:, :] search_coords):
         """Search a group of atoms against initialized coordinates
 
         Creates a new grid with the query atoms and searches
@@ -483,31 +523,31 @@ cdef class FastNS(object):
         if any of the query coordinates lies outside the `box` supplied to
         :class:`~MDAnalysis.lib.nsgrid.FastNS`.
         """
-        from MDAnalysis.lib import distances
-
         cdef int i, j, size_search
         cdef int cx, cy, cz
         cdef int cellid
         cdef int xi, yi, zi
         cdef int cellcoord[3], searchcoord[3]
+        cdef float tmpcoord[3]
         
         cdef NSResults results
         cdef double d2, cutoff2
-        cdef float[:, ::1] searchcoords_bbox
-        
+
         cutoff2 = self.cutoff * self.cutoff
 
         if (search_coords.ndim != 2 or search_coords.shape[1] != 3):
             raise ValueError("search_coords must have a shape of (n, 3), got "
                              "{}.".format(search_coords.shape))
 
-        searchcoords_bbox =  distances.apply_PBC(search_coords, self.grid.dimensions)
         size_search = search_coords.shape[0]
         results = NSResults()
 
         for i in range(size_search):
+            for j in range(3):
+                tmpcoord[j] = search_coords[i][j]
+            self.grid.coordintoprimarycell(tmpcoord)
             # which cell is atom *i* in
-            self.grid.coord2cellxyz(&searchcoords_bbox[i][0], &cellcoord[0])
+            self.grid.coord2cellxyz(&tmpcoord[0], &cellcoord[0])
             # loop over all 27 neighbouring cells
             for xi in range(3):
                 for yi in range(3):
@@ -519,15 +559,14 @@ cdef class FastNS(object):
 
                         if cellid == END:  # out of bounds
                             continue
-
                         # for loop over atoms in searchcoord
                         j = self.grid.head_id[cellid]
                         while (j != END):
                             if self.grid.triclinic:
-                                d2 = calc_dist_triclinic(&searchcoords_bbox[i][0], &self.coords_bbox[j][0],
+                                d2 = calc_dist_triclinic(&tmpcoord[0], &self.grid.coords_bbox[j][0],
                                                          &self.grid.triclinic_dimensions[0])
                             else:
-                                d2 = calc_dist(&searchcoords_bbox[i][0], &self.coords_bbox[j][0],
+                                d2 = calc_dist(&tmpcoord[0], &self.grid.coords_bbox[j][0],
                                                &self.grid.dimensions[0], &self.grid.inverse_dimensions[0])
 
                             if d2 <= cutoff2:
@@ -563,7 +602,7 @@ cdef class FastNS(object):
 
         cdef double cutoff2 = self.cutoff * self.cutoff
 
-        size_search = self.coords_bbox.shape[0]
+        size_search = self.grid.coords_bbox.shape[0]
         results = NSResults()
 
         # loop over 13 neighbouring pairs
@@ -586,10 +625,10 @@ cdef class FastNS(object):
                             j = self.grid.next_id[i]
                             while (j != END):
                                 if self.grid.triclinic:
-                                    d2 = calc_dist_triclinic(&self.coords_bbox[i][0], &self.coords_bbox[j][0],
+                                    d2 = calc_dist_triclinic(&self.grid.coords_bbox[i][0], &self.grid.coords_bbox[j][0],
                                                              &self.grid.triclinic_dimensions[0])
                                 else:
-                                    d2 = calc_dist(&self.coords_bbox[i][0], &self.coords_bbox[j][0],
+                                    d2 = calc_dist(&self.grid.coords_bbox[i][0], &self.grid.coords_bbox[j][0],
                                                    &self.grid.dimensions[0], &self.grid.inverse_dimensions[0])
                                 if d2 <= cutoff2:
                                     results.add_neighbors(i, j, d2)
@@ -609,10 +648,10 @@ cdef class FastNS(object):
                             j = self.grid.head_id[cj]
                             while (j != END):
                                 if self.grid.triclinic:
-                                    d2 = calc_dist_triclinic(&self.coords_bbox[i][0], &self.coords_bbox[j][0],
+                                    d2 = calc_dist_triclinic(&self.grid.coords_bbox[i][0], &self.grid.coords_bbox[j][0],
                                                              &self.grid.triclinic_dimensions[0])
                                 else:
-                                    d2 = calc_dist(&self.coords_bbox[i][0], &self.coords_bbox[j][0],
+                                    d2 = calc_dist(&self.grid.coords_bbox[i][0], &self.grid.coords_bbox[j][0],
                                                    &self.grid.dimensions[0], &self.grid.inverse_dimensions[0])
                                 if d2 <= cutoff2:
                                     results.add_neighbors(i, j, d2)
