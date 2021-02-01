@@ -336,9 +336,9 @@ cdef class _NSGrid(object):
         dxdy = self.triclinic_dimensions[XY] / self.triclinic_dimensions[YY]
 
         # This assumes coordinate is inside the primary unit cell
-        xyz[0] = <int> (coord[2] / self.cellsize[ZZ])
+        xyz[2] = <int> (coord[2] / self.cellsize[ZZ])
         xyz[1] = <int> ((coord[1] - coord[2] * dydz) / self.cellsize[YY])
-        xyz[2] = <int> ((coord[0] - coord[1] * dxdy - coord[2] * dydz) / self.cellsize[XX])
+        xyz[0] = <int> ((coord[0] - coord[1] * dxdy - coord[2] * dydz) / self.cellsize[XX])
 
     cdef void coordintoprimarycell(self, float* coord) nogil:
         cdef float dydz, dxdz, dxdy
