@@ -329,16 +329,16 @@ cdef class _NSGrid(object):
 
     cdef void coord2cellxyz(self, const float* coord, int* xyz) nogil:
         """Calculate cell coordinate for coord"""
-        cdef int cx, cy, cz  # cell shifts
+        cdef float dydz, dxdz, dxdy
+
+        dydz = self.triclinic_dimensions[YZ] / self.triclinic_dimensions[ZZ]
+        dxdz = self.triclinic_dimensions[XZ] / self.triclinic_dimensions[ZZ]
+        dxdy = self.triclinic_dimensions[XY] / self.triclinic_dimensions[YY]
 
         # This assumes coordinate is inside the primary unit cell
-        cz = <int> (coord[2] / self.cellsize[ZZ])
-        cy = <int> ((coord[1] - cz * self.cellsize[YZ]) / self.cellsize[YY])
-        cx = <int> ((coord[0] - cy * self.cellsize[XY] - cz * self.cellsize[XZ]) / self.cellsize[XX])
-        
-        xyz[0] = cx
-        xyz[1] = cy
-        xyz[2] = cz
+        xyz[0] = <int> (coord[2] / self.cellsize[ZZ])
+        xyz[1] = <int> ((coord[1] - coord[2] * dydz) / self.cellsize[YY])
+        xyz[2] = <int> ((coord[0] - coord[1] * dxdy - coord[2] * dydz) / self.cellsize[XX])
 
     cdef void coordintoprimarycell(self, float* coord) nogil:
         cdef float dydz, dxdz, dxdy
