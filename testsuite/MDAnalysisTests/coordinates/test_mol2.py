@@ -31,7 +31,7 @@ from numpy.testing import (
 
 from MDAnalysisTests.datafiles import (
     mol2_molecules, mol2_molecule, mol2_broken_molecule,
-    mol2_zinc, mol2_comments_header, mol2_ligand
+    mol2_zinc, mol2_comments_header, mol2_ligand, mol2_sodium_ion
 )
 from MDAnalysis import Universe
 import MDAnalysis as mda
@@ -105,6 +105,17 @@ class TestMol2(object):
         assert_equal(u.trajectory.n_frames, 2)
         u.trajectory[1]
         assert_array_almost_equal(u.atoms.positions[2], [-12.2710, -1.9540, -16.0480])
+
+    def test_no_bonds(self, tmpdir):
+        # Issue #3057
+        u = Universe(mol2_sodium_ion)
+        ag = u.atoms
+        assert not hasattr(ag, "bonds")
+        with tmpdir.as_cwd():
+            outfile = 'test.mol2'
+            ag.write(outfile)
+            u2 = Universe(outfile)
+        assert not hasattr(u2.atoms, "bonds")
 
 
 class TestMol2_traj(TestCase):

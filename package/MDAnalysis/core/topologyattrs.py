@@ -264,7 +264,25 @@ def _attach_transplant_stubs(attribute_name, topology_attribute_class):
 
 
 class _TopologyAttrMeta(type):
-    # register TopologyAttrs
+    r"""Register TopologyAttrs on class creation
+
+    Each topology attribute is added to the top-level dictionaries
+    for various record purposes. The class itself is added to
+    :data:`_TOPOLOGY_ATTRS` and :data:`_TOPOLOGY_ATTRNAMES`. Transplanted
+    methods are also added to :data:`_TOPOLOGY_TRANSPLANTS.`
+
+    We also attempt to make the topology attribute selectable with
+    atom selection language by automatically generating a relevant
+    selection class with the singular name (``singular``) as the
+    selection token. Only certain ``dtype``\ s are supported; if a
+    selection class cannot be generated, a warning will be raised
+    but no error.
+
+    See also
+    --------
+    :func:`MDAnalysis.core.selection.gen_selection_class`
+
+    """
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
         attrname = classdict.get('attrname')
@@ -293,6 +311,31 @@ class _TopologyAttrMeta(type):
                 pass
             else:
                 _attach_transplant_stubs(attrname, cls)
+            # add each to "same attr as" class
+
+        if singular not in selection.SameSelection.prop_trans:
+            selection.SameSelection.prop_trans[singular] = attrname
+
+        # add each to the property selection class
+        if singular not in selection.PropertySelection.props:
+            selection.PropertySelection.props[singular] = attrname
+
+        # add token to selectiondict
+        if singular not in selection._SELECTIONDICT:
+            dtype = classdict.get("dtype")
+            if dtype is not None:
+                per_obj = classdict.get("per_object", bases[0].per_object)
+
+                try:
+                    selection.gen_selection_class(singular, attrname,
+                                                  dtype, per_obj)
+                except ValueError:
+                    msg = ("A selection keyword could not be "
+                           "automatically generated for the "
+                           f"{singular} attribute. If you need a "
+                           "selection keyword, define it manually "
+                           "by subclassing core.selection.Selection")
+                    warnings.warn(msg)
 
 
 class TopologyAttr(object, metaclass=_TopologyAttrMeta):
@@ -443,6 +486,7 @@ class Atomindices(TopologyAttr):
     attrname = 'indices'
     singular = 'index'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom]
+    dtype = int
 
     def __init__(self):
         self._guessed = False
@@ -475,6 +519,7 @@ class Resindices(TopologyAttr):
     attrname = 'resindices'
     singular = 'resindex'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
+    dtype = int
 
     def __init__(self):
         self._guessed = False
@@ -507,6 +552,7 @@ class Segindices(TopologyAttr):
     """
     attrname = 'segindices'
     singular = 'segindex'
+    dtype = int
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
                       Atom, Residue, Segment]
 
@@ -828,7 +874,10 @@ class Atomnames(_AtomStringAttr):
 
         .. versionadded:: 1.0.0
         """
-        u = residues[0].universe
+        try:
+            u = residues[0].universe
+        except IndexError:
+            return residues
         nxres = np.array([None]*len(residues), dtype=object)
         ix = np.arange(len(residues))
         # no guarantee residues is ordered or unique
@@ -868,7 +917,10 @@ class Atomnames(_AtomStringAttr):
 
         .. versionadded:: 1.0.0
         """
-        u = residues[0].universe
+        try:
+            u = residues[0].universe
+        except IndexError:
+            return residues
         pvres = np.array([None]*len(residues))
         pvres[:] = prev = u.residues[residues.ix-1]
         rsid = residues.segids

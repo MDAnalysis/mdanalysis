@@ -1,0 +1,330 @@
+name: mda_gh_ci
+on:
+  push:
+    branches:
+      - develop
+      - master
+  pull_request:
+    branches:
+      - develop
+      - master
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+env:
+  MDA_CONDA_MIN_DEPS: "pip pytest==6.1.2 mmtf-python biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
+  MDA_CONDA_EXTRA_DEPS: "seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles tqdm>=4.43.0 tidynamics>=1.0.0 rdkit>=2020.03.1 h5py==2.10.0"
+  MDA_PIP_MIN_DEPS: 'coveralls coverage<5 pytest-cov pytest-xdist'
+  MDA_PIP_EXTRA_DEPS: 'duecredit parmed'
+
+
+jobs:
+  main_tests:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    runs-on: ${{ matrix.os }}
+    strategy:
+        fail-fast: false
+        matrix:
+          os: [ubuntu-latest, ]
+          python-version: [3.6, 3.7, 3.8]
+          run_type: [FULL, ]
+          install_hole: [true, ]
+          codecov: [true, ]
+          include:
+            - name: macOS
+              os: macOS-latest
+              python-version: 3.7
+              run_type: FULL
+              install_hole: true
+              codecov: true
+            - name: minimal-ubuntu
+              os: ubuntu-latest
+              python-version: 3.6
+              run_type: MIN
+              install_hole: false
+              codecov: true
+            - name: numpy_min
+              os: ubuntu-latest
+              python-version: 3.6
+              run_type: FULL
+              install_hole: false
+              codecov: false
+              numpy: numpy=1.16.0
+            - name: asv_check
+              os: ubuntu-latest
+              python-version: 3.7
+              run_type: FULL
+              install_hole: false
+              codecov: false
+    env:
+      CYTHON_TRACE_NOGIL: 1
+      MPLBACKEND: agg
+      GH_OS: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: setup_osx
+      if: startsWith(matrix.os, 'macOS')
+      run: |
+        # Set OS specific vars and compiler flags
+        echo "OS_NAME=osx" >> $GITHUB_ENV
+        # TODO: work out why this is necessary (from CI helpers)
+        echo "MACOSX_DEPLOYMENT_TARGET=10.9" >> $GITHUB_ENV
+        ulimit -S -n 2048
+        clang -v
+        echo "CC=clang" >> $GITHUB_ENV
+        clang++ -v
+        echo "CXX=clang++" >> $GITHUB_ENV
+        gfortran-9 -v
+        echo "FC=gfortran-9" >> $GITHUB_ENV
+
+    - name: setup_linux
+      if: startsWith(matrix.os, 'ubuntu')
+      run: |
+        # Set OS specific vars and compiler flags
+        echo "OS_NAME=linux" >> $GITHUB_ENV
+        gcc -v
+        echo "CC=gcc" >> $GITHUB_ENV
+        g++ -v
+        echo "CXX=g++" >> $GITHUB_ENV
+        gfortran -v
+        echo "FC=gfortran" >> $GITHUB_ENV
+
+    - name: setup_miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+        auto-update-conda: true
+        channel-priority: flexible
+        channels: biobuilds, conda-forge
+        add-pip-as-python-dependency: true
+        # TODO: mamba causes pip to segfault, switch when fixed
+        #mamba-version: "*"
+        architecture: x64
+        
+    - name: install_deps
+      env:
+        MDA_CONDA_FULL_DEPS: "${{ env.MDA_CONDA_MIN_DEPS }} ${{ env.MDA_CONDA_EXTRA_DEPS }}"
+        MDA_PIP_FULL_DEPS: "${{ env.MDA_PIP_MIN_DEPS }} ${{ env.MDA_PIP_EXTRA_DEPS }}"
+      run: |
+        # NOTE: vars need to be re-assigned
+        # NOTE: set matrix.numpy to pin to a specific numpy version
+        conda_deps="${{ matrix.numpy }} ${MDA_CONDA_${{ matrix.run_type }}_DEPS}"
+        pip_deps=${MDA_PIP_${{ matrix.run_type }}_DEPS}
+        conda install ${conda_deps}
+        pip install ${pip_deps}
+
+        # also install asv if required
+        if [ ${{ matrix.name }} = "asv_check" ]; then
+          pip install asv
+        fi
+    
+    - name: check_setup
+      run: |
+        # Check OS and python setup
+        echo "OS: ${OS_NAME}"
+        which python
+        which pip
+        pip list
+        conda info
+        conda list
+
+    - name: install_hole
+      if : matrix.install_hole
+      run: |
+        # We manually build hole2 to avoid OS incompatibilities
+        git clone https://github.com/MDAnalysis/hole2.git
+        cd hole2/src
+        source ../source.apache
+        (make FC=${FC}) && (make PREFIX=${HOME}/hole2 FC=${FC} install)
+        source ../source.unset
+        echo "HOLE_BINDIR=${HOME}/hole2/bin" >> $GITHUB_ENV
+        echo "${HOME}/hole2/bin" >> $GITHUB_PATH
+
+    - name: install_mda
+      run: |
+        # TODO: using install instead of develop here causes coverage to drop
+        # for .pyx file. If possible a solution for this should be found.
+        (cd package/ && python setup.py develop) && (cd testsuite/ && python setup.py install)
+
+    - name: run_tests
+      if: contains(matrix.name, 'asv_check') != true
+      run: |
+        PYTEST_FLAGS="--disable-pytest-warnings --durations=50"
+        if [ ${{ matrix.codecov }} = "true" ]; then
+          PYTEST_FLAGS="${PYTEST_FLAGS} --cov=MDAnalysis --cov-report=xml"
+        fi
+        echo $PYTEST_FLAGS
+        pytest -n 2 testsuite/MDAnalysisTests $PYTEST_FLAGS
+
+    - name: run_asv
+      if: contains(matrix.name, 'asv_check')
+      run: |
+        cd benchmarks
+        time python -m asv check -E existing
+
+    - name: codecov
+      if: matrix.codecov
+      uses: codecov/codecov-action@v1
+      with:
+        file: coverage.xml
+        fail_ci_if_error: True
+        verbose: True
+
+
+  build_docs:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    runs-on: ubuntu-latest
+    env:
+      CYTHON_TRACE_NOGIL: 1
+      MPLBACKEND: agg
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: setup_miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        python-version: 3.7
+        auto-update-conda: true
+        channel-priority: flexible
+        channels: biobuilds, conda-forge
+        add-pip-as-python-dependency: true
+        architecture: x64
+
+    - name: install_deps
+      run: |
+        conda_deps="${{ env.MDA_CONDA_MIN_DEPS }} ${{ env.MDA_CONDA_EXTRA_DEPS}}"
+        pip_deps="${{ env.MDA_PIP_MIN_DEPS}} ${{ env.MDA_PIP_EXTRA_DEPS }} sphinx==1.8.5 sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0"
+        conda install ${conda_deps}
+        pip install ${pip_deps}
+
+    - name: install_mda
+      run: |
+        cd package && python setup.py develop
+
+    - name: build_docs
+      run: |
+        cd package && python setup.py build_sphinx -E
+
+    - name: deploy_docs
+      if: github.event_name != 'pull_request'
+      env:
+        GH_USER: github-actions
+        GH_EMAIL: "github-action@users.noreply.github.com"
+        GH_REPOSITORY: "github.com/${{ github.repository }}.git"
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        URL: https://docs.mdanalysis.org
+
+      run: |
+        # set up environment variables
+        # cannot execute bash to make variables in env section
+        # export URL for the Python script $UPDATE_JSON
+        export URL
+        export VERSION=$(cd package/MDAnalysis; python -c 'import version; print(version.__version__)')
+        UPDATE_JSON=$(pwd)/maintainer/update_json_stubs_sitemap.py
+        BRANCH="${GITHUB_REF#refs/heads/}"
+
+        # the below turns off non-blocking as it causes large writes to stdout to fail
+        # (see https://github.com/travis-ci/travis-ci/issues/4704)
+        # commented out as this is not a problem with gh-actions
+        # python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
+        cd package/doc/html/html
+
+        # move docs into version subfolder
+        mkdir ../${VERSION} && mv * ../${VERSION} && mv ../${VERSION} $VERSION
+
+        # set up git
+        REV=$(git rev-parse --short HEAD)
+        git init
+        git config user.name $GH_USER
+        git config user.email $GH_EMAIL
+        git remote add upstream "https://${GH_USER}:${GH_TOKEN}@${GH_REPOSITORY}"
+        git fetch --depth 50 upstream $BRANCH gh-pages
+        git reset upstream/gh-pages
+
+        # redirects and copies
+        mkdir latest
+        python $UPDATE_JSON
+        touch .
+        touch .nojekyll
+
+        git add -A ${VERSION}/
+        git add .nojekyll versions.json *.xml *.html index.html latest
+
+        for dirname in dev stable documentation_pages ; do
+          if [ -d $dirname ]; then git add $dirname; fi
+        done
+
+        # check for anything to commit
+        # https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommited-changes
+        git diff-index --quiet HEAD -- || git commit -m "rebuilt html docs for version ${VERSION} from branch ${BRANCH} with sphinx at ${REV}"
+        git push -q upstream HEAD:gh-pages
+
+
+  pylint_check:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: setup_miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        python-version: 3.7
+        auto-update-conda: true
+        channel-priority: flexible
+        channels: conda-forge
+        add-pip-as-python-dependency: true
+        mamba-version: "*"
+        architecture: x64
+
+    - name: install
+      run: |
+        which pip
+        which python
+        pip install pylint
+
+    - name: pylint
+      env:
+        PYLINTRC: package/.pylintrc
+      run: |
+        pylint --py3k package/MDAnalysis && pylint --py3k testsuite/MDAnalysisTests
+
+
+  pypi_check:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: setup_miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        python-version: 3.7
+        auto-update-conda: true
+        channel-priority: flexible
+        channels: conda-forge
+        add-pip-as-python-dependency: true
+        mamba-version: "*"
+        architecture: x64
+
+    - name: install_conda
+      run: |
+        conda install setuptools cython numpy twine
+
+    - name: install_mdanalysis
+      run: |
+        cd package && python setup.py sdist
+
+    - name: check_package_build
+      run: |
+        DISTRIBUTION=$(ls -t1 package/dist/MDAnalysis-*.tar.gz | head -n 1)
+        test -n "${DISTRIBUTION}" || { echo "no distribution package/dist/MDAnalysis-*.tar.gz found"; exit 1; }
+        echo "twine check $DISTRIBUTION"
+        twine check $DISTRIBUTION
