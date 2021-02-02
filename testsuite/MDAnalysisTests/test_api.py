@@ -60,6 +60,7 @@ def test_SegmentGroup():
 
 
 def init_files():
+    """A generator yielding all MDAnalysis __init__ files."""
     os.chdir(mda_dirname)
     for root, dirs, files in os.walk("."):
         if "__init__.py" in files:
@@ -77,4 +78,5 @@ def test_all_import(submodule):
                 if name not in module.__dict__.keys()
                     and name not in [os.path.splitext(f)[0] for
                                         f in os.listdir(module_path)]]
-        assert_equal(missing, [], err_msg="{} has errors in __all__ list.".format(submodule))
+        assert_equal(missing, [], err_msg="{}".format(submodule) +
+                                          "has errors in __all__ list.")
