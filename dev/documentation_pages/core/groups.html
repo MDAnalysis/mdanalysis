@@ -246,7 +246,7 @@ slice:</p>
 <p>returns an <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> of every second element, corresponding to
 indices 0, 2, and 4.</p>
 <p>It also supports “advanced slicing” when the argument is a
-<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>:</p>
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aslice</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="n">ag</span><span class="p">[</span><span class="n">aslice</span><span class="p">]</span>
 </pre></div>
@@ -475,7 +475,7 @@ accumulation is performed along the first axis.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>attribute</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array_like</em>) – Attribute or array of values to accumulate.
-If a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (or compatible) is provided, its first
+If a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (or compatible) is provided, its first
 dimension must have the same length as the total number of atoms in
 the group.</li>
 <li><strong>function</strong> (<em>callable</em><em>, </em><em>optional</em>) – The function performing the accumulation. It must take the array of
@@ -502,7 +502,7 @@ the other dimensions of the returned array will be of the original
 shape (without the first dimension).</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
@@ -660,7 +660,7 @@ before calculation. [<code class="docutils literal notranslate"><span class="pre
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>corners</strong> – 2x3 array giving corners of bounding box as
 <code class="docutils literal notranslate"><span class="pre">[[xmin,</span> <span class="pre">ymin,</span> <span class="pre">zmin],</span> <span class="pre">[xmax,</span> <span class="pre">ymax,</span> <span class="pre">zmax]]</span></code>.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
 </tr>
 </tbody>
 </table>
@@ -764,7 +764,7 @@ If <cite>compound</cite> was set to <code class="docutils literal notranslate"><
 of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
@@ -842,7 +842,7 @@ output will be a 2d array of shape <code class="docutils literal notranslate"><s
 number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -907,7 +907,7 @@ output will be a 2d coordinate array of shape <code class="docutils literal notr
 is the number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -976,7 +976,7 @@ output will be a 2d array of shape <code class="docutils literal notranslate"><s
 number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -1151,9 +1151,9 @@ duplicate elements</td>
 <dt id="MDAnalysis.core.groups.AtomGroup.forces">
 <code class="descname">forces</code><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.forces" title="Permalink to this definition">¶</a></dt>
 <dd><p>Forces on each <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> in the <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.</p>
-<p>A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with
-<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.19)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">shape</span></code></a><code class="docutils literal notranslate"><span class="pre">=(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">n_atoms</span></code></a><code class="docutils literal notranslate"><span class="pre">,</span> <span class="pre">3)</span></code>
-and <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.dtype.html#numpy.ndarray.dtype" title="(in NumPy v1.19)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dtype</span></code></a><code class="docutils literal notranslate"><span class="pre">=numpy.float32</span></code>.</p>
+<p>A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.20)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">shape</span></code></a><code class="docutils literal notranslate"><span class="pre">=(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">n_atoms</span></code></a><code class="docutils literal notranslate"><span class="pre">,</span> <span class="pre">3)</span></code>
+and <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.dtype.html#numpy.ndarray.dtype" title="(in NumPy v1.20)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dtype</span></code></a><code class="docutils literal notranslate"><span class="pre">=numpy.float32</span></code>.</p>
 <p>The forces can be changed by assigning an array of the appropriate
 shape, i.e. either <code class="docutils literal notranslate"><span class="pre">(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">n_atoms</span></code></a><code class="docutils literal notranslate"><span class="pre">,</span> <span class="pre">3)</span></code> to assign
 individual forces or <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> to assign the <em>same</em> force to all
@@ -1177,9 +1177,9 @@ contain <a class="reference internal" href="../coordinates/base.html#MDAnalysis.
 <a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.fragindex" title="MDAnalysis.core.topologyattrs.Bonds.fragindex"><code class="xref py py-class docutils literal notranslate"><span class="pre">fragment</span> <span class="pre">indices</span></code></a>
 of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in this
 <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.</p>
-<p>A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with
-<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.19)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">shape</span></code></a><code class="docutils literal notranslate"><span class="pre">=(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">n_atoms</span></code></a><code class="docutils literal notranslate"><span class="pre">,)</span></code>
-and <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.dtype.html#numpy.ndarray.dtype" title="(in NumPy v1.19)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dtype</span></code></a><code class="docutils literal notranslate"><span class="pre">=numpy.int64</span></code>.</p>
+<p>A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.20)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">shape</span></code></a><code class="docutils literal notranslate"><span class="pre">=(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">n_atoms</span></code></a><code class="docutils literal notranslate"><span class="pre">,)</span></code>
+and <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.dtype.html#numpy.ndarray.dtype" title="(in NumPy v1.20)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dtype</span></code></a><code class="docutils literal notranslate"><span class="pre">=numpy.int64</span></code>.</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.20.0.</span></p>
 </div>
@@ -1594,7 +1594,7 @@ timestep dimensions.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>coords</strong> – Shifted atom coordinates.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -1631,9 +1631,9 @@ keywords.</p>
 <dt id="MDAnalysis.core.groups.AtomGroup.positions">
 <code class="descname">positions</code><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.positions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Coordinates of the <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.</p>
-<p>A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with
-<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.19)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">shape</span></code></a><code class="docutils literal notranslate"><span class="pre">=(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">n_atoms</span></code></a><code class="docutils literal notranslate"><span class="pre">,</span> <span class="pre">3)</span></code>
-and <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.dtype.html#numpy.ndarray.dtype" title="(in NumPy v1.19)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dtype</span></code></a><code class="docutils literal notranslate"><span class="pre">=numpy.float32</span></code>.</p>
+<p>A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.20)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">shape</span></code></a><code class="docutils literal notranslate"><span class="pre">=(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">n_atoms</span></code></a><code class="docutils literal notranslate"><span class="pre">,</span> <span class="pre">3)</span></code>
+and <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.dtype.html#numpy.ndarray.dtype" title="(in NumPy v1.20)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dtype</span></code></a><code class="docutils literal notranslate"><span class="pre">=numpy.float32</span></code>.</p>
 <p>The positions can be changed by assigning an array of the appropriate
 shape, i.e., either <code class="docutils literal notranslate"><span class="pre">(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">n_atoms</span></code></a><code class="docutils literal notranslate"><span class="pre">,</span> <span class="pre">3)</span></code> to
 assign individual coordinates, or <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> to assign the <em>same</em>
@@ -2280,7 +2280,7 @@ If <cite>compound</cite> was set to <code class="docutils literal notranslate"><
 value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
 where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
 </tr>
 </tbody>
 </table>
@@ -2319,7 +2319,7 @@ If <cite>compound</cite> was set to <code class="docutils literal notranslate"><
 value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
 where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
 </tr>
 </tbody>
 </table>
@@ -2528,7 +2528,7 @@ If <code class="docutils literal notranslate"><span class="pre">None</span></cod
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>coords</strong> – Unwrapped atom coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code>.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
@@ -2588,9 +2588,9 @@ can be created with:</p>
 <dt id="MDAnalysis.core.groups.AtomGroup.velocities">
 <code class="descname">velocities</code><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.velocities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Velocities of the <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.</p>
-<p>A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with
-<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.19)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">shape</span></code></a><code class="docutils literal notranslate"><span class="pre">=(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">n_atoms</span></code></a><code class="docutils literal notranslate"><span class="pre">,</span> <span class="pre">3)</span></code>
-and <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.dtype.html#numpy.ndarray.dtype" title="(in NumPy v1.19)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dtype</span></code></a><code class="docutils literal notranslate"><span class="pre">=numpy.float32</span></code>.</p>
+<p>A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.shape.html#numpy.ndarray.shape" title="(in NumPy v1.20)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">shape</span></code></a><code class="docutils literal notranslate"><span class="pre">=(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">n_atoms</span></code></a><code class="docutils literal notranslate"><span class="pre">,</span> <span class="pre">3)</span></code>
+and <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.dtype.html#numpy.ndarray.dtype" title="(in NumPy v1.20)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dtype</span></code></a><code class="docutils literal notranslate"><span class="pre">=numpy.float32</span></code>.</p>
 <p>The velocities can be changed by assigning an array of the appropriate
 shape, i.e. either <code class="docutils literal notranslate"><span class="pre">(</span></code><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.n_atoms" title="MDAnalysis.core.groups.AtomGroup.n_atoms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">n_atoms</span></code></a><code class="docutils literal notranslate"><span class="pre">,</span> <span class="pre">3)</span></code> to assign
 individual velocities or <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> to assign the <em>same</em> velocity to all
@@ -2642,7 +2642,7 @@ dimensions of the current time step.</li>
 <code class="docutils literal notranslate"><span class="pre">(len(self.atoms.n_atoms),</span> <span class="pre">3)</span></code></p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
@@ -2698,7 +2698,7 @@ information from the current
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>The method only acts on atoms <em>belonging to the group</em> and returns
-the wrapped positions as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>.
+the wrapped positions as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>.
 Added optional argument <cite>inplace</cite>.</p>
 </div>
 </dd></dl>
@@ -2791,7 +2791,7 @@ accumulation is performed along the first axis.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>attribute</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array_like</em>) – Attribute or array of values to accumulate.
-If a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (or compatible) is provided, its first
+If a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (or compatible) is provided, its first
 dimension must have the same length as the total number of atoms in
 the group.</li>
 <li><strong>function</strong> (<em>callable</em><em>, </em><em>optional</em>) – The function performing the accumulation. It must take the array of
@@ -2818,7 +2818,7 @@ the other dimensions of the returned array will be of the original
 shape (without the first dimension).</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
@@ -2949,7 +2949,7 @@ before calculation. [<code class="docutils literal notranslate"><span class="pre
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>corners</strong> – 2x3 array giving corners of bounding box as
 <code class="docutils literal notranslate"><span class="pre">[[xmin,</span> <span class="pre">ymin,</span> <span class="pre">zmin],</span> <span class="pre">[xmax,</span> <span class="pre">ymax,</span> <span class="pre">zmax]]</span></code>.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
 </tr>
 </tbody>
 </table>
@@ -3035,7 +3035,7 @@ If <cite>compound</cite> was set to <code class="docutils literal notranslate"><
 of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
@@ -3113,7 +3113,7 @@ output will be a 2d array of shape <code class="docutils literal notranslate"><s
 number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -3178,7 +3178,7 @@ output will be a 2d coordinate array of shape <code class="docutils literal notr
 is the number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -3247,7 +3247,7 @@ output will be a 2d array of shape <code class="docutils literal notranslate"><s
 number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -3732,7 +3732,7 @@ timestep dimensions.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>coords</strong> – Shifted atom coordinates.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -4224,7 +4224,7 @@ If <cite>compound</cite> was set to <code class="docutils literal notranslate"><
 value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
 where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
 </tr>
 </tbody>
 </table>
@@ -4263,7 +4263,7 @@ If <cite>compound</cite> was set to <code class="docutils literal notranslate"><
 value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
 where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
 </tr>
 </tbody>
 </table>
@@ -4457,7 +4457,7 @@ If <code class="docutils literal notranslate"><span class="pre">None</span></cod
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>coords</strong> – Unwrapped atom coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code>.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
@@ -4529,7 +4529,7 @@ dimensions of the current time step.</li>
 <code class="docutils literal notranslate"><span class="pre">(len(self.atoms.n_atoms),</span> <span class="pre">3)</span></code></p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
@@ -4585,7 +4585,7 @@ information from the current
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>The method only acts on atoms <em>belonging to the group</em> and returns
-the wrapped positions as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>.
+the wrapped positions as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>.
 Added optional argument <cite>inplace</cite>.</p>
 </div>
 </dd></dl>
@@ -4626,7 +4626,7 @@ accumulation is performed along the first axis.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>attribute</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>array_like</em>) – Attribute or array of values to accumulate.
-If a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (or compatible) is provided, its first
+If a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (or compatible) is provided, its first
 dimension must have the same length as the total number of atoms in
 the group.</li>
 <li><strong>function</strong> (<em>callable</em><em>, </em><em>optional</em>) – The function performing the accumulation. It must take the array of
@@ -4653,7 +4653,7 @@ the other dimensions of the returned array will be of the original
 shape (without the first dimension).</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
@@ -4785,7 +4785,7 @@ before calculation. [<code class="docutils literal notranslate"><span class="pre
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>corners</strong> – 2x3 array giving corners of bounding box as
 <code class="docutils literal notranslate"><span class="pre">[[xmin,</span> <span class="pre">ymin,</span> <span class="pre">zmin],</span> <span class="pre">[xmax,</span> <span class="pre">ymax,</span> <span class="pre">zmax]]</span></code>.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
 </tr>
 </tbody>
 </table>
@@ -4871,7 +4871,7 @@ If <cite>compound</cite> was set to <code class="docutils literal notranslate"><
 of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
@@ -4949,7 +4949,7 @@ output will be a 2d array of shape <code class="docutils literal notranslate"><s
 number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -5014,7 +5014,7 @@ output will be a 2d coordinate array of shape <code class="docutils literal notr
 is the number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -5083,7 +5083,7 @@ output will be a 2d array of shape <code class="docutils literal notranslate"><s
 number of compounds.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -5498,7 +5498,7 @@ timestep dimensions.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>coords</strong> – Shifted atom coordinates.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -5829,7 +5829,7 @@ If <cite>compound</cite> was set to <code class="docutils literal notranslate"><
 value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
 where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
 </tr>
 </tbody>
 </table>
@@ -5868,7 +5868,7 @@ If <cite>compound</cite> was set to <code class="docutils literal notranslate"><
 value. Otherwise, the output will be a 1d array of shape <code class="docutils literal notranslate"><span class="pre">(n,)</span></code>
 where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number of compounds.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
 </tr>
 </tbody>
 </table>
@@ -6062,7 +6062,7 @@ If <code class="docutils literal notranslate"><span class="pre">None</span></cod
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>coords</strong> – Unwrapped atom coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code>.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
@@ -6134,7 +6134,7 @@ dimensions of the current time step.</li>
 <code class="docutils literal notranslate"><span class="pre">(len(self.atoms.n_atoms),</span> <span class="pre">3)</span></code></p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
@@ -6190,7 +6190,7 @@ information from the current
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>The method only acts on atoms <em>belonging to the group</em> and returns
-the wrapped positions as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>.
+the wrapped positions as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>.
 Added optional argument <cite>inplace</cite>.</p>
 </div>
 </dd></dl>
