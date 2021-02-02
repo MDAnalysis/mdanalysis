@@ -26,6 +26,7 @@
 
 # cython: cdivision=True
 # cython: boundscheck=False
+# cython: wraparound=False
 # cython: initializedcheck=False
 # cython: embedsignature=True
 
@@ -88,34 +89,11 @@ DEF XZ = 6
 DEF YZ = 7
 DEF ZZ = 8
 
+
 cdef extern from "calc_distances.h" nogil:
     void minimum_image(double* x, float* box, float* inverse_box)
     void minimum_image_triclinic(double* dx, float* box)
 
-
-cdef double calc_dist(float* a, float* b, float* box, float* ibox) nogil:
-    cdef double dx[3]
-
-    dx[0] = a[0] - b[0]
-    dx[1] = a[1] - b[1]
-    dx[2] = a[2] - b[2]
-
-    minimum_image(dx, box, ibox)
-
-    return dx[0]*dx[0] + dx[1]*dx[1] + dx[2]*dx[2]
-
-
-cdef double calc_dist_triclinic(float* a, float* b, float* box) nogil:
-    cdef double dx[3]
-
-    dx[0] = a[0] - b[0]
-    dx[1] = a[1] - b[1]
-    dx[2] = a[2] - b[2]
-
-    minimum_image_triclinic(dx, box)
-
-    return dx[0]*dx[0] + dx[1]*dx[1] + dx[2]*dx[2]
-    
 
 cdef class NSResults(object):
     """Class to store the results
@@ -306,6 +284,7 @@ cdef class _NSGrid(object):
             self.coords_bbox[i][0] = coords[i][0]
             self.coords_bbox[i][1] = coords[i][1]
             self.coords_bbox[i][2] = coords[i][2]
+
             self.coordintoprimarycell(&self.coords_bbox[i][0])
 
             j = self.coord2cellid(&self.coords_bbox[i][0])
@@ -405,6 +384,20 @@ cdef class _NSGrid(object):
                 return END
 
         return cx + cy * self.cell_offsets[1] + cz * self.cell_offsets[2]
+
+    cdef double calc_distsq(self, const float* a, const float* b):
+        cdef double dx[3]
+
+        dx[0] = a[0] - b[0]
+        dx[1] = a[1] - b[1]
+        dx[2] = a[2] - b[2]
+
+        if self.triclinic:
+            minimum_image_triclinic(dx, &self.triclinic_dimensions[0])
+        else:
+            minimum_image(dx, &self.dimensions[0], &self.inverse_dimensions[0])
+
+        return dx[0]*dx[0] + dx[1]*dx[1] + dx[2]*dx[2]
 
 
 cdef class FastNS(object):
@@ -562,13 +555,7 @@ cdef class FastNS(object):
                         # for loop over atoms in searchcoord
                         j = self.grid.head_id[cellid]
                         while (j != END):
-                            if self.grid.triclinic:
-                                d2 = calc_dist_triclinic(&tmpcoord[0], &self.grid.coords_bbox[j][0],
-                                                         &self.grid.triclinic_dimensions[0])
-                            else:
-                                d2 = calc_dist(&tmpcoord[0], &self.grid.coords_bbox[j][0],
-                                               &self.grid.dimensions[0], &self.grid.inverse_dimensions[0])
-
+                            d2 = self.grid.calc_distsq(&tmpcoord[0], &self.grid.coords_bbox[j][0])
                             if d2 <= cutoff2:
                                 # place self.coords index first then search_coords
                                 results.add_neighbors(j, i, d2)
@@ -593,47 +580,34 @@ cdef class FastNS(object):
            :meth:`~NSResults.get_pair_distances`.
         """
         cdef int cx, cy, cz, ox, oy, oz
-        cdef int ci, cj, i, j, nj, size_search
+        cdef int ci, cj, i, j, nj
         cdef int cellindex, cellindex_probe
         cdef int xi, yi, zi
-
-        cdef NSResults results
+        cdef int[:, ::1] route
+        cdef NSResults results = NSResults()
         cdef double d2
-
         cdef double cutoff2 = self.cutoff * self.cutoff
 
-        size_search = self.grid.coords_bbox.shape[0]
-        results = NSResults()
-
-        # loop over 13 neighbouring pairs
-        cdef int[:, ::1] route
+        # route over 13 neighbouring cells
         route = np.array([[1, 0, 0], [1, 1, 0], [0, 1, 0], [-1, 1, 0],
                           [1, 0, -1], [1, 1, -1], [0, 1, -1], [-1, 1, -1],
                           [1, 0, 1], [1, 1, 1], [0, 1, 1], [-1, 1, 1], [0, 0, 1]], dtype=np.int32)
 
-        with nogil:
-            for cx in range(self.grid.ncells[0]):
-                for cy in range(self.grid.ncells[1]):
-                    for cz in range(self.grid.ncells[2]):
-                        ci = cx + cy*self.grid.cell_offsets[1] + cz*self.grid.cell_offsets[2]                    
-                        i = self.grid.head_id[ci]
-                        if (i == END):  # empty cell?
-                            continue
+        for cx in range(self.grid.ncells[0]):
+            for cy in range(self.grid.ncells[1]):
+                for cz in range(self.grid.ncells[2]):
+                    ci = self.grid.cellxyz2cellid(cx, cy, cz)
 
+                    i = self.grid.head_id[ci]
+                    while (i != END):
                         # pairwise within this cell
-                        while (i != END):
-                            j = self.grid.next_id[i]
-                            while (j != END):
-                                if self.grid.triclinic:
-                                    d2 = calc_dist_triclinic(&self.grid.coords_bbox[i][0], &self.grid.coords_bbox[j][0],
-                                                             &self.grid.triclinic_dimensions[0])
-                                else:
-                                    d2 = calc_dist(&self.grid.coords_bbox[i][0], &self.grid.coords_bbox[j][0],
-                                                   &self.grid.dimensions[0], &self.grid.inverse_dimensions[0])
-                                if d2 <= cutoff2:
-                                    results.add_neighbors(i, j, d2)
-                                j = self.grid.next_id[j]
-                            i = self.grid.next_id[i]
+                        j = self.grid.next_id[i]
+                        while (j != END):
+                            d2 = self.grid.calc_distsq(&self.grid.coords_bbox[i][0],
+                                                       &self.grid.coords_bbox[j][0])
+                            if d2 <= cutoff2:
+                                results.add_neighbors(i, j, d2)
+                            j = self.grid.next_id[j]
 
                         # loop over 13 neighbouring cells
                         for nj in range(13):
@@ -647,14 +621,14 @@ cdef class FastNS(object):
 
                             j = self.grid.head_id[cj]
                             while (j != END):
-                                if self.grid.triclinic:
-                                    d2 = calc_dist_triclinic(&self.grid.coords_bbox[i][0], &self.grid.coords_bbox[j][0],
-                                                             &self.grid.triclinic_dimensions[0])
-                                else:
-                                    d2 = calc_dist(&self.grid.coords_bbox[i][0], &self.grid.coords_bbox[j][0],
-                                                   &self.grid.dimensions[0], &self.grid.inverse_dimensions[0])
+                                d2 = self.grid.calc_distsq(&self.grid.coords_bbox[i][0],
+                                                           &self.grid.coords_bbox[j][0])
                                 if d2 <= cutoff2:
                                     results.add_neighbors(i, j, d2)
                                 j = self.grid.next_id[j]
+
+                        # move to next position in cell *ci*
+                        i = self.grid.next_id[i]
+
 
         return results
