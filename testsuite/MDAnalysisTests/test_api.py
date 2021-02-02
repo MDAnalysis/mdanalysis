@@ -24,8 +24,15 @@
 Test the user facing API is as we expect...
 """
 
-import MDAnalysis as mda
+import importlib
+import os
+from pathlib import PurePath
+
 import pytest
+from numpy.testing import assert_equal
+
+import MDAnalysis as mda
+mda_dirname = os.path.dirname(mda.__file__)
 
 
 def test_Universe():
@@ -52,31 +59,22 @@ def test_SegmentGroup():
     assert mda.SegmentGroup is mda.core.groups.SegmentGroup
 
 
-@pytest.mark.parametrize('module',
-                         ('',
-                          '.analysis',
-                          '.analysis.data.filenames',
-                          '.analysis.distances',
-                          '.analysis.encore',
-                          '.analysis.encore.dimensionality_reduction',
-                          '.analysis.hbonds',
-                          '.analysis.hydrogenbonds',
-                          '.coordinates',
-                          '.core',
-                          '.lib._augment',
-                          '.lib._cutil',
-                          '.lib.formats',
-                          '.lib.pkdtree',
-                          '.topology',
-                          '.topology.tpr',
-                          '.visualization'
-                          )
-                         )
-def test_import_star(module):
-    try:
-        # This is really bad and ugly but I haven't found a way to run this
-        # using `importlib.import_module...`
-        exec("from MDAnalysis{} import *".format(module))
-    except (ImportError, AttributeError) as error:
-        # We want the test to fail, not to error
-        raise AssertionError(error)
+def init_files():
+    os.chdir(mda_dirname)
+    for root, dirs, files in os.walk("."):
+        if "__init__.py" in files:
+            submodule = ".".join(PurePath(root).parts)
+            submodule = "."*(len(submodule) > 0) + submodule
+            yield submodule
+
+
+@pytest.mark.parametrize('submodule', init_files())
+def test_all_import(submodule):
+    module = importlib.import_module("MDAnalysis" + submodule)
+    module_path = os.path.join(mda_dirname, *submodule.split("."))
+    if hasattr(module, "__all__"):
+        missing = [name for name in module.__all__
+                if name not in module.__dict__.keys()
+                    and name not in [os.path.splitext(f)[0] for
+                                        f in os.listdir(module_path)]]
+        assert_equal(missing, [], err_msg="{} has errors in __all__ list.".format(submodule))
