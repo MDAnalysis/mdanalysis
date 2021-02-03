@@ -74,8 +74,6 @@ not reflect in the results.
 Classes
 -------
 """
-
-# Used to handle memory allocation
 import numpy as np
 from libcpp.vector cimport vector
 from libc.math cimport floor
@@ -555,7 +553,7 @@ cdef class FastNS(object):
                             d2 = self.grid.calc_distsq(&tmpcoord[0], &self.grid.coords_bbox[j][0])
                             if d2 <= cutoff2:
                                 # place self.coords index first then search_coords
-                                results.add_neighbors(j, i, d2)
+                                results.add_neighbors(i, j, d2)
                             j = self.grid.next_id[j]
 
         return results

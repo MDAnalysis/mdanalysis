@@ -75,8 +75,6 @@ def test_ns_grid_noneighbor(universe):
     results_grid = run_grid_search(universe, ref_id, cutoff)
 
     # same indices will be selected as neighbour here
-    assert len(results_grid.get_distances()[0]) == 1
-    assert len(results_grid.get_indices()[0]) == 1
     assert len(results_grid.get_pairs()) == 1
     assert len(results_grid.get_pair_distances()) == 1
 
@@ -84,8 +82,9 @@ def test_ns_grid_noneighbor(universe):
 def test_nsgrid_PBC_rect():
     """Check that nsgrid works with rect boxes and PBC"""
     ref_id = 191
+    # Atomid are from gmx select so there start from 1 and not 0. hence -1!
     results = np.array([191, 192, 672, 682, 683, 684, 995, 996, 2060, 2808, 3300, 3791,
-                        3792]) - 1  # Atomid are from gmx select so there start from 1 and not 0. hence -1!
+                        3792]) - 1
 
     universe = mda.Universe(Martini_membrane_gro)
     cutoff = 7
@@ -93,26 +92,26 @@ def test_nsgrid_PBC_rect():
     # FastNS is called differently to max coverage
     searcher = nsgrid.FastNS(cutoff, universe.atoms.positions, box=universe.dimensions)
 
-    results_grid = searcher.search(universe.atoms.positions[ref_id][None, :]).get_indices()[0]
+    results_grid = searcher.search(universe.atoms.positions[ref_id][None, :]).get_pairs()
+    other_ix = sorted(i for (_, i) in results_grid)
 
-    results_grid2 = searcher.search(universe.atoms.positions).get_indices()  # call without specifying any ids, should do NS for all beads
-
-    assert_equal(np.sort(results), np.sort(results_grid))
-    assert_equal(len(universe.atoms), len(results_grid2))
-    assert searcher.cutoff == 7
-    assert_equal(np.sort(results_grid), np.sort(results_grid2[ref_id]))
+    assert len(results) == len(results_grid)
+    assert other_ix == sorted(results)
 
 
 def test_nsgrid_PBC(universe):
     """Check that grid search works when PBC is needed"""
-
+    # Atomid are from gmx select so there start from 1 and not 0. hence -1!
     ref_id = 13937
     results = np.array([4398, 4401, 13938, 13939, 13940, 13941, 17987, 23518, 23519, 23521, 23734,
-                        47451]) - 1  # Atomid are from gmx select so there start from 1 and not 0. hence -1!
+                        47451]) - 1
 
-    results_grid = run_grid_search(universe, ref_id).get_indices()[0]
+    results_grid = run_grid_search(universe, ref_id).get_pairs()
 
-    assert_equal(np.sort(results), np.sort(results_grid))
+    other_ix = sorted(i for (_, i) in results_grid)
+
+    assert len(results) == len(other_ix)
+    assert other_ix == sorted(results)
 
 
 def test_nsgrid_pairs(universe):
@@ -144,12 +143,12 @@ def test_nsgrid_pair_distances(universe):
 
 def test_nsgrid_distances(universe):
     """Check that grid search returns the proper distances"""
-
+    # These distances where obtained by gmx distance so they are in nm
     ref_id = 13937
     results = np.array([0.0, 0.270, 0.285, 0.096, 0.096, 0.015, 0.278, 0.268, 0.179, 0.259, 0.290,
-                        0.270]) * 10  # These distances where obtained by gmx distance so they are in nm
+                        0.270]) * 10
 
-    results_grid = run_grid_search(universe, ref_id).get_distances()[0]
+    results_grid = run_grid_search(universe, ref_id).get_pair_distances()
 
     assert_allclose(np.sort(results), np.sort(results_grid), atol=1e-2)
 
