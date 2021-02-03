@@ -180,7 +180,6 @@ cdef class _NSGrid(object):
     """
     cdef float[:, ::1] coords_bbox
 
-    cdef int size  # total cells
     cdef int[3] ncells  # individual cells in every dimension
     cdef int[3] cell_offsets  # Cell Multipliers
     # cellsize MUST be double precision, otherwise coord2cellid() may fail for
@@ -268,15 +267,13 @@ cdef class _NSGrid(object):
         if self.cellsize[XX] < self.max_cutoff:
             self.max_cutoff = self.cellsize[XX]
 
-        self.size = self.ncells[0] * self.ncells[1] * self.ncells[2]
-        
         self.cell_offsets[0] = 0
         self.cell_offsets[1] = self.ncells[0]
         self.cell_offsets[2] = self.ncells[0] * self.ncells[1]
 
         # Assign coordinates into cells
         # Linked list for each cell
-        self.head_id = np.full(self.size, END, dtype=np.int32)
+        self.head_id = np.full(self.cell_offsets[2] * self.ncells[2], END, dtype=np.int32)
         self.next_id = np.full(coords.shape[0], END, dtype=np.int32)
 
         self.coords_bbox = np.empty_like(coords)
