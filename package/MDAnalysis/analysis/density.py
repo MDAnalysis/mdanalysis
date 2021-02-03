@@ -228,7 +228,10 @@ class DensityAnalysis(AnalysisBase):
     around 4.0 (protein and not name H*)", i.e., the water oxygen atoms that
     are within 4 Å of the protein heavy atoms) then create an
     :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` (see Examples).
-
+    
+    If the 'AtomGroup' instance does not contain any selection of atoms and
+    user defined box limits are provided, it is necessary to ensure that the
+    provided limits encompass all atoms in selection on future frames.   
 
     Examples
     --------
@@ -400,9 +403,9 @@ class DensityAnalysis(AnalysisBase):
                 smax = np.max(coord, axis=0)
             except ValueError as err:
                 msg = ("No atoms in AtomGroup at input time frame. "
-                       "Grid for density could not be automatically"
-                       " generated. A user defined grid was found"
-                       " and is being used as the density grid")
+                       "This may be intended; please ensure that "
+                       "your grid selection covers the atomic "
+                       "positions you wish to capture.")
                 warnings.warn(msg)
                 logger.warning(msg)
                 smin = self._gridcenter
@@ -676,7 +679,7 @@ class Density(Grid):
 
         parameters = kwargs.pop('parameters', {})
         if (len(args) > 0 and isinstance(args[0], str) or
-                isinstance(kwargs.get('grid', None), str)):
+            isinstance(kwargs.get('grid', None), str)):
             # try to be smart: when reading from a file then it is likely that
             # this is a density
             parameters.setdefault('isDensity', True)

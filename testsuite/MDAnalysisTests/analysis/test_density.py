@@ -257,9 +257,9 @@ class TestDensityAnalysis(DensityParameters):
 
     def test_warn_noatomgroup(self, universe):
         regex = ("No atoms in AtomGroup at input time frame. "
-                 "Grid for density could not be automatically"
-                 " generated. A user defined grid was found"
-                 " and is being used as the density grid")
+                 "This may be intended; please ensure that "
+                 "your grid selection covers the atomic "
+                 "positions you wish to capture.")
         with pytest.warns(UserWarning, match=regex):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['none']),
