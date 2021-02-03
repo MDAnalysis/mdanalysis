@@ -231,8 +231,9 @@ cdef class _NSGrid(object):
                           self.triclinic_dimensions[YZ] > 0)
         if cutoff < 0:
             raise ValueError("Cutoff must be positive")
-        cutoff = max(cutoff, 0.01)
-
+        cutoff = max(cutoff, 1.0)
+        # add 0.001 here to avoid floating point errors will make cells slightly too large
+        # as a result
         self.ncells[0] = <int> floor(self.triclinic_dimensions[XX] / (cutoff + 0.001))
         self.ncells[1] = <int> floor(self.triclinic_dimensions[YY] / (cutoff + 0.001))
         self.ncells[2] = <int> floor(self.triclinic_dimensions[ZZ] / (cutoff + 0.001))
