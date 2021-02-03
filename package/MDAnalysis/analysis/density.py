@@ -228,10 +228,10 @@ class DensityAnalysis(AnalysisBase):
     around 4.0 (protein and not name H*)", i.e., the water oxygen atoms that
     are within 4 Å of the protein heavy atoms) then create an
     :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` (see Examples).
-    
+
     If the 'AtomGroup' instance does not contain any selection of atoms and
     user defined box limits are provided, it is necessary to ensure that the
-    provided limits encompass all atoms in selection on future frames.   
+    provided limits encompass all atoms in selection on future frames.
 
     Examples
     --------
