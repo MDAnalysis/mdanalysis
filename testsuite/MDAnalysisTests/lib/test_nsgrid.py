@@ -179,7 +179,7 @@ def test_nsgrid_search(box, results):
     else:
         searcher = nsgrid.FastNS(cutoff, points, box)
         searchresults = searcher.search(query)
-    indices = searchresults.get_indices()[0]
+    indices = searchresults.get_pairs()[:, 1]
     assert_equal(np.sort(indices), results)
 
 
@@ -211,7 +211,7 @@ def test_nsgrid_selfsearch(box, result):
         searcher = nsgrid.FastNS(cutoff, points, box=box)
         searchresults = searcher.self_search()
     pairs = searchresults.get_pairs()
-    assert_equal(len(pairs)//2, result)
+    assert_equal(len(pairs), result)
 
 def test_nsgrid_probe_close_to_box_boundary():
     # FastNS.search used to segfault with this box, cutoff and reference
