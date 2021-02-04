@@ -165,13 +165,7 @@ cdef class NSResults(object):
 
 
 cdef class _NSGrid(object):
-    """Constructs a uniform cuboidal grid for a brick-shaped box
-
-    The domain is subdivided into number of cells based on the desired search
-    radius.  An optimization of cutoff is imposed to limit the size of data
-    structure such that the cellsize is always greater than or
-    equal to cutoff distance.
-
+    """
     .. warning::
         This class is not meant to be used by end users.
 
@@ -182,7 +176,9 @@ cdef class _NSGrid(object):
     cdef int[3] cell_offsets  # Cell Multipliers
     # cellsize MUST be double precision, otherwise coord2cellid() may fail for
     # coordinates very close to the upper box boundaries! See Issue #2132
-    cdef double[9] cellsize  # cell size in every dimension
+    # diagonal stores the cell width, off diagonal elements are the "tilt"
+    # i.e. cellsize[3] is the dxdy tilt (box[XY] / box[YY])
+    cdef double[9] cellsize
     cdef double max_cutoff  # maximum allowable cutoff
     
     cdef int[::1] head_id  # first coord id for a given cell
@@ -192,6 +188,7 @@ cdef class _NSGrid(object):
     cdef float[3] inverse_dimensions
     cdef float[9] triclinic_dimensions
     # are we periodic in the X, Y and Z dimension?
+    cdef bint pbc  # periodic at all?
     cdef bint periodic[3]
     
     def __init__(self, float[:, ::1] coords, double cutoff, box, bint pbc):
@@ -199,7 +196,7 @@ cdef class _NSGrid(object):
         Parameters
         ----------
         coords : np.ndarray float of shape (ncoords, 3)
-            Coordinates to fill inside the brick shaped box
+            Coordinates to populate the box
         cutoff : float
             Minimum desired cutoff radius
         box : numpy ndarray shape=(6,)
@@ -231,12 +228,15 @@ cdef class _NSGrid(object):
                           self.triclinic_dimensions[YZ] > 0)
         if cutoff < 0:
             raise ValueError("Cutoff must be positive")
-        cutoff = max(cutoff, 1.0)
-        # add 0.001 here to avoid floating point errors will make cells slightly too large
-        # as a result
+        cutoff = max(cutoff, 1.0)  # TODO: Figure out max ncells and stick to that
+
+        # add 0.001 here to avoid floating point errors
+        # will make cells slightly too large as a result, ah well
         self.ncells[0] = <int> floor(self.triclinic_dimensions[XX] / (cutoff + 0.001))
         self.ncells[1] = <int> floor(self.triclinic_dimensions[YY] / (cutoff + 0.001))
         self.ncells[2] = <int> floor(self.triclinic_dimensions[ZZ] / (cutoff + 0.001))
+
+        self.pbc = pbc
         # If there aren't enough cells in a given dimension it's equivalent to one
         if pbc:
             for i in range(3):
@@ -253,11 +253,11 @@ cdef class _NSGrid(object):
 
         self.cellsize[XX] = self.triclinic_dimensions[XX] / <double> self.ncells[0]
         # [YX] and [ZX] are 0
-        self.cellsize[XY] = self.triclinic_dimensions[XY] / <double> self.ncells[1]
+        self.cellsize[XY] = self.triclinic_dimensions[XY] / self.triclinic_dimensions[YY]
         self.cellsize[YY] = self.triclinic_dimensions[YY] / <double> self.ncells[1]
         # [ZY] is zero
-        self.cellsize[XZ] = self.triclinic_dimensions[XZ] / <double> self.ncells[2]
-        self.cellsize[YZ] = self.triclinic_dimensions[YZ] / <double> self.ncells[2]
+        self.cellsize[XZ] = self.triclinic_dimensions[XZ] / self.triclinic_dimensions[ZZ]
+        self.cellsize[YZ] = self.triclinic_dimensions[YZ] / self.triclinic_dimensions[ZZ]
         self.cellsize[ZZ] = self.triclinic_dimensions[ZZ] / <double> self.ncells[2]
 
         self.max_cutoff = self.cellsize[ZZ]
@@ -289,7 +289,7 @@ cdef class _NSGrid(object):
             self.head_id[j] = i
 
     cdef int coord2cellid(self, const float* coord) nogil:
-        """Finds the cell-id for the given coordinate inside the brick shaped box
+        """Finds the cell-id for the given coordinate
 
         Note
         ----
@@ -304,24 +304,14 @@ cdef class _NSGrid(object):
 
     cdef void coord2cellxyz(self, const float* coord, int* xyz) nogil:
         """Calculate cell coordinate for coord"""
-        cdef float dydz, dxdz, dxdy
-
-        dydz = self.triclinic_dimensions[YZ] / self.triclinic_dimensions[ZZ]
-        dxdz = self.triclinic_dimensions[XZ] / self.triclinic_dimensions[ZZ]
-        dxdy = self.triclinic_dimensions[XY] / self.triclinic_dimensions[YY]
-
         # This assumes coordinate is inside the primary unit cell
         xyz[2] = <int> (coord[2] / self.cellsize[ZZ])
-        xyz[1] = <int> ((coord[1] - coord[2] * dydz) / self.cellsize[YY])
-        xyz[0] = <int> ((coord[0] - coord[1] * dxdy - coord[2] * dxdz) / self.cellsize[XX])
+        xyz[1] = <int> ((coord[1] - coord[2] * self.cellsize[YZ]) / self.cellsize[YY])
+        xyz[0] = <int> ((coord[0] - coord[1] * self.cellsize[XY]
+                         - coord[2] * self.cellsize[XZ]) / self.cellsize[XX])
 
     cdef void coordintoprimarycell(self, float* coord) nogil:
-        cdef float dydz, dxdz, dxdy
         cdef float adj_cy, adj_cx
-
-        dydz = self.triclinic_dimensions[YZ] / self.triclinic_dimensions[ZZ]
-        dxdz = self.triclinic_dimensions[XZ] / self.triclinic_dimensions[ZZ]
-        dxdy = self.triclinic_dimensions[XY] / self.triclinic_dimensions[YY]
 
         while (coord[2] >= self.triclinic_dimensions[ZZ]):
             coord[2] -= self.triclinic_dimensions[ZZ]
@@ -332,7 +322,7 @@ cdef class _NSGrid(object):
             coord[1] += self.triclinic_dimensions[YZ]
             coord[0] += self.triclinic_dimensions[XZ]
 
-        adj_cy = coord[2] * dydz
+        adj_cy = coord[2] * self.cellsize[YZ]
         while ((coord[1] - adj_cy) >= self.triclinic_dimensions[YY]):
             coord[1] -= self.triclinic_dimensions[YY]
             coord[0] -= self.triclinic_dimensions[XY]
@@ -340,7 +330,7 @@ cdef class _NSGrid(object):
             coord[1] += self.triclinic_dimensions[YY]
             coord[0] += self.triclinic_dimensions[XY]
 
-        adj_cx = coord[2] * dxdz + coord[1] * dxdy
+        adj_cx = coord[2] * self.cellsize[XZ] + coord[1] * self.cellsize[XY]
         while ((coord[0] - adj_cx) >= self.triclinic_dimensions[XX]):
             coord[0] -= self.triclinic_dimensions[XX]
         while ((coord[0] - adj_cx) < 0):
@@ -388,16 +378,17 @@ cdef class _NSGrid(object):
         dx[1] = a[1] - b[1]
         dx[2] = a[2] - b[2]
 
-        if self.triclinic:
-            minimum_image_triclinic(dx, &self.triclinic_dimensions[0])
-        else:
-            minimum_image(dx, &self.dimensions[0], &self.inverse_dimensions[0])
+        if self.pbc:
+            if self.triclinic:
+                minimum_image_triclinic(dx, &self.triclinic_dimensions[0])
+            else:
+                minimum_image(dx, &self.dimensions[0], &self.inverse_dimensions[0])
 
         return dx[0]*dx[0] + dx[1]*dx[1] + dx[2]*dx[2]
 
 
 cdef class FastNS(object):
-    """Grid based search between two group of atoms
+    """Grid based search between positions
 
     Minimum image convention is used for distance evaluations
     if pbc is set to ``True``.
@@ -408,12 +399,6 @@ cdef class FastNS(object):
 
     def __init__(self, cutoff, coords, box, pbc=True):
         """
-        Initialize the grid and sort the coordinates in respective
-        cells by shifting the coordinates in a brick shaped box.
-        The brick shaped box is defined by :class:`_PBCBox`
-        and cuboidal grid is initialize by :class:`_NSGrid`.
-        If box is supplied, periodic shifts along box vectors are used
-        to contain all the coordinates inside the brick shaped box.
         If box is not supplied, the range of coordinates i.e.
         ``[xmax, ymax, zmax] - [xmin, ymin, zmin]`` should be used
         to construct a pseudo box. Subsequently, the origin should also be
@@ -516,7 +501,8 @@ cdef class FastNS(object):
         cdef int cx, cy, cz
         cdef int cellid
         cdef int xi, yi, zi
-        cdef int cellcoord[3], searchcoord[3]
+        cdef int cellcoord[3]
+        cdef int searchcoord[3]
         cdef float tmpcoord[3]
         
         cdef NSResults results
