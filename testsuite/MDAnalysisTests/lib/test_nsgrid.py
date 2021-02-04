@@ -23,12 +23,16 @@
 
 import pytest
 
+from collections import defaultdict, Counter
 from numpy.testing import assert_equal, assert_allclose
 import numpy as np
 
 import MDAnalysis as mda
-from MDAnalysisTests.datafiles import GRO, Martini_membrane_gro, PDB
+from MDAnalysisTests.datafiles import (
+    GRO, Martini_membrane_gro, PDB, PDB_xvf, SURFACE_PDB,
+)
 from MDAnalysis.lib import nsgrid
+from MDAnalysis.transformations.translate import center_in_box
 
 
 @pytest.fixture
@@ -272,3 +276,77 @@ def test_around_overlapping():
     #                                         box=u.dimensions)
     # assert np.count_nonzero(np.any(dist <= 0.0, axis=0)) == 48
     assert u.select_atoms('around 0.0 index 0:11').n_atoms == 48
+
+
+def test_issue_2229_part1():
+    # reproducing first case in GH issue 2229
+    u = mda.Universe.empty(2, trajectory=True)
+
+    u.dimensions = [57.45585, 5.00000, 5.00000, 90, 90, 90]
+
+    u.atoms[0].position = [0, 0, 0]
+    u.atoms[1].position = [55.00, 0, 0]
+
+    g = mda.lib.nsgrid.FastNS(3.0, u.atoms[[0]].positions, box=u.dimensions)
+    assert len(g.search(u.atoms[[1]].positions).get_pairs()) == 1
+
+    g = mda.lib.nsgrid.FastNS(3.0, u.atoms[[1]].positions, box=u.dimensions)
+    assert len(g.search(u.atoms[[0]].positions).get_pairs()) == 1
+
+
+def test_issue_2229_part2():
+    u = mda.Universe.empty(2, trajectory=True)
+
+    u.dimensions = [45.0000, 55.0000, 109.8375, 90, 90, 90]
+
+    u.atoms[0].position = [0, 0, 29.29]
+    u.atoms[1].position = [0, 0, 28.23]
+
+    g = mda.lib.nsgrid.FastNS(3.0, u.atoms[[0]].positions, box=u.dimensions, pbc=False)
+    assert len(g.search(u.atoms[[1]].positions).get_pairs()) == 1
+
+    g = mda.lib.nsgrid.FastNS(3.0, u.atoms[[1]].positions, box=u.dimensions)
+    assert len(g.search(u.atoms[[0]].positions).get_pairs()) == 1
+
+
+def test_issue_2919():
+    # regression test reported in issue 2919
+    # other methods will also give 1115 or 2479 results
+    u = mda.Universe(PDB_xvf)
+    ag = u.select_atoms('index 0')
+    u.trajectory.ts = center_in_box(ag)(u.trajectory.ts)
+
+    box = u.dimensions
+    reference = u.select_atoms('protein')
+    configuration = u.select_atoms('not protein')
+
+    for cutoff, expected in [(2.8, 1115), (3.2, 2497)]:
+        pairs, distances = mda.lib.distances.capped_distance(
+            reference.positions,
+            configuration.positions,
+            max_cutoff=cutoff,
+            box=box,
+            method='nsgrid',
+            return_distances=True,
+        )
+        assert len(pairs) == expected
+
+
+def test_issue_2345():
+    # another example of NSGrid being wrong
+    # this is a 111 FCC slab
+    # coordination numbers for atoms should be either 9 or 12, 50 of each
+    u = mda.Universe(SURFACE_PDB)
+
+    g = mda.lib.nsgrid.FastNS(2.9, u.atoms.positions, box=u.dimensions)
+
+    cn = defaultdict(list)
+
+    idx = g.self_search().get_pairs()
+    # count number of contacts for each atom
+    for (i, j) in idx:
+        cn[i].append(j)
+        cn[j].append(i)
+    c = Counter(len(v) for v in cn.values())
+
+    assert c == {9: 50, 12: 50}
