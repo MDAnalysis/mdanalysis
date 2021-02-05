@@ -157,6 +157,7 @@ Changes
     `__call__` (Issue #2860, PR #2859)
   * deprecated ``analysis.helanal`` module has been removed in favour of
     ``analysis.helix_analysis`` (PR #2929)
+  * Move water bridge analysis from hbonds to hydrogenbonds (Issue #2739 PR #2913)
 
 Deprecations
 
