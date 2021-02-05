@@ -22,7 +22,7 @@
 #
 
 __all__ = [
-    'HydrogenBondAnalysis'
+    'HydrogenBondAnalysis',
     'WaterBridgeAnalysis'
 ]
 
