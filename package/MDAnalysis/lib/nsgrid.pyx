@@ -70,6 +70,9 @@ not reflect in the results.
 .. [#] a pair correspond to two particles that are considered as neighbors .
 
 .. versionadded:: 0.19.0
+.. versionchanged:: 2.0.0
+   Rewrote module
+
 
 Classes
 -------
@@ -169,6 +172,9 @@ cdef class FastNS(object):
 
     Minimum image convention is used for distance evaluations
     if pbc is set to ``True``.
+
+    .. versionchanged::  2.0.0
+       Rewrote to fix bugs with triclinic boxes
     """
     cdef readonly double cutoff
     cdef float[:, ::1] coords_bbox
@@ -251,7 +257,7 @@ cdef class FastNS(object):
                              "".format(box))
         if np.allclose(box[:3], 0.0):
             raise ValueError("Any of the box dimensions cannot be 0")
-        if cutoff < 0:
+        if cutoff <= 0:
             raise ValueError("Cutoff must be positive")
         self.cutoff = cutoff
         # Note that self.cutoff might be different from self.cutoff
@@ -526,7 +532,7 @@ cdef class FastNS(object):
                         while (j != END):
                             d2 = self.calc_distsq(&tmpcoord[0], &self.coords_bbox[j][0])
                             if d2 <= cutoff2:
-                                # place self.coords index first then search_coords
+                                # place search_coords then self.bbox_coords
                                 results.add_neighbors(i, j, d2)
                             j = self.next_id[j]
 
@@ -598,6 +604,5 @@ cdef class FastNS(object):
 
                         # move to next position in cell *ci*
                         i = self.next_id[i]
-
 
         return results
