@@ -266,11 +266,13 @@ class TestDensityAnalysis(DensityParameters):
                 delta=self.delta, xdim=1.0, ydim=2.0, zdim=2.0, padding=0.0,
                 gridcenter=self.gridcenters['static_defined']).run(step=5)
 
-    def test_ValueError_noatomgroup(self, universe):        
-        with pytest.raises(ValueError, match="No atoms in AtomGroup at input time "
-                                             "frame. Grid for density could not be"
-                                             " automatically generated. If this is"
-                                             " expected, a user defined grid will "
+    def test_ValueError_noatomgroup(self, universe):
+        with pytest.raises(ValueError, match="No atoms in AtomGroup at input"
+                                             " time frame. Grid for density"
+                                             " could not be automatically"
+                                             " generated. If this is"
+                                             " expected, a user"
+                                             " defined grid will "
                                              "need to be provided instead."):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['none'])).run(step=5)
