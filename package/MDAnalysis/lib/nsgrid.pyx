@@ -96,6 +96,27 @@ cdef extern from "calc_distances.h" nogil:
     void minimum_image_triclinic(double* dx, float* box)
 
 
+cdef inline float fmax(float a, float b):
+    if a > b:
+        return a
+    else:
+        return b
+
+
+cdef inline float fmin(float a, float b):
+    if a < b:
+        return a
+    else:
+        return b
+
+cdef inline float degsin(float deg):
+    # sin in degrees
+    if (deg > 90):
+        deg = 180 - deg
+    deg *= math.M_PI / 180.
+    return math.sin(deg)
+
+
 cdef class NSResults(object):
     """Class to store the results
 
@@ -257,30 +278,31 @@ cdef class FastNS(object):
                              "".format(box))
         if np.allclose(box[:3], 0.0):
             raise ValueError("Any of the box dimensions cannot be 0")
-        if cutoff <= 0:
+        if cutoff < 0:
             raise ValueError("Cutoff must be positive")
         self.cutoff = cutoff
-        # Note that self.cutoff might be different from self.cutoff
-        # due to optimization
-        self._pack_grid(coords, self.cutoff, box, pbc)
+        max_cutoff = self._prepare_box(box, pbc)
+        if cutoff > max_cutoff:
+            raise ValueError("Cutoff {} too large for box (max {})".format(cutoff, max_cutoff))
+        self._pack_grid(coords)
 
-    cdef void _pack_grid(self, float[:, ::1] coords, double cutoff, box, bint pbc):
+    cdef float _prepare_box(self, box, bint pbc):
         """
         Parameters
         ----------
-        coords : np.ndarray float of shape (ncoords, 3)
-            Coordinates to populate the box
-        cutoff : float
-            Minimum desired cutoff radius
         box : numpy ndarray shape=(6,)
             Box info, [lx, ly, lz, alpha, beta, gamma]
         pbc : bool
             is this NSGrid periodic at all?
+
+        Returns
+        -------
+        max_cutoff : float
+           the maximum allowable cutoff given the box shape and size
         """
-        cdef int i, j
-        cdef int xyz[3]
-        cdef float coordcopy[3]
+        cdef float cutoff, max_cutoff
         cdef float angle, newcutoff
+        cdef int i
 
         from MDAnalysis.lib.mdamath import triclinic_vectors
 
@@ -292,24 +314,33 @@ cdef class FastNS(object):
         self.dimensions[5] = box[5]
 
         self.triclinic_dimensions = triclinic_vectors(box).reshape((9,))
-        self.triclinic = (self.triclinic_dimensions[XY] > 0 or
-                          self.triclinic_dimensions[XZ] > 0 or
-                          self.triclinic_dimensions[YZ] > 0)
-        cutoff = max(cutoff, 1.0)  # TODO: Figure out max ncells and stick to that
+        self.triclinic = (self.triclinic_dimensions[XY] != 0 or
+                          self.triclinic_dimensions[XZ] != 0 or
+                          self.triclinic_dimensions[YZ] != 0)
+        cutoff = max(self.cutoff, 1.0)  # TODO: Figure out max ncells and stick to that
+        max_cutoff = math.HUGE_VALF
+        for i in range(3):
+            # alpha
+            max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[YY] * degsin(self.dimensions[3]))
+            max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[ZZ] * degsin(self.dimensions[3]))
+            # beta
+            max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[XX] * degsin(self.dimensions[4]))
+            max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[ZZ] * degsin(self.dimensions[4]))
+            # gamma
+            max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[XX] * degsin(self.dimensions[5]))
+            max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[YY] * degsin(self.dimensions[5]))
+        max_cutoff /= 2
+
         # for triclinic cells, we need to worry about the shortest path across the parallelogram
         if self.triclinic:
             for i in range(3, 6):
                 angle = self.dimensions[i]
-                if (angle > 90):
-                    angle = 90 - angle
-                angle *= math.M_PI / 180  # to radians
-                newcutoff = cutoff / math.sin(angle)
-                if newcutoff > cutoff:
-                    cutoff = newcutoff
+                newcutoff = cutoff / degsin(angle)
+                cutoff = fmax(newcutoff, cutoff)
+
         # add 0.001 here to avoid floating point errors
         # will make cells slightly too large as a result, ah well
         cutoff += 0.001
-
         self.ncells[0] = <int> math.floor(self.triclinic_dimensions[XX] / cutoff)
         self.ncells[1] = <int> math.floor(self.triclinic_dimensions[YY] / cutoff)
         self.ncells[2] = <int> math.floor(self.triclinic_dimensions[ZZ] / cutoff)
@@ -342,23 +373,37 @@ cdef class FastNS(object):
         self.cell_offsets[1] = self.ncells[0]
         self.cell_offsets[2] = self.ncells[0] * self.ncells[1]
 
-        # Assign coordinates into cells
+        return max_cutoff
+
+    cdef void _pack_grid(self, float[:, :] coords):
+        """Assigns coordinates into cells
+
+        Parameters
+        ----------
+        coords : np.ndarray float of shape (ncoords, 3)
+            Coordinates to populate the box
+        """
+        cdef int i, j
+
         # Linked list for each cell
+        # Starting coordinate index for each cell (END if empty cell)
         self.head_id = np.full(self.cell_offsets[2] * self.ncells[2], END, dtype=np.int32, order='C')
+        # Next coordinate index in cell for each coordinate (END if end of sequence)
         self.next_id = np.full(coords.shape[0], END, dtype=np.int32, order='C')
 
         self.coords_bbox = np.empty_like(coords, order='C')
-        for i in range(coords.shape[0]):
-            self.coords_bbox[i][0] = coords[i][0]
-            self.coords_bbox[i][1] = coords[i][1]
-            self.coords_bbox[i][2] = coords[i][2]
+        with nogil:
+            for i in range(coords.shape[0]):
+                self.coords_bbox[i][0] = coords[i][0]
+                self.coords_bbox[i][1] = coords[i][1]
+                self.coords_bbox[i][2] = coords[i][2]
 
-            self.coordintoprimarycell(&self.coords_bbox[i][0])
+                self.coordintoprimarycell(&self.coords_bbox[i][0])
 
-            j = self.coord2cellid(&self.coords_bbox[i][0])
+                j = self.coord2cellid(&self.coords_bbox[i][0])
 
-            self.next_id[i] = self.head_id[j]
-            self.head_id[j] = i
+                self.next_id[i] = self.head_id[j]
+                self.head_id[j] = i
 
     cdef int coord2cellid(self, const float* coord) nogil:
         """Finds the cell-id for the given coordinate
