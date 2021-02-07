@@ -282,7 +282,7 @@ def test_issue_2229_part1():
     # reproducing first case in GH issue 2229
     u = mda.Universe.empty(2, trajectory=True)
 
-    u.dimensions = [57.45585, 5.00000, 5.00000, 90, 90, 90]
+    u.dimensions = [57.45585, 50.0000, 50.0000, 90, 90, 90]
 
     u.atoms[0].position = [0, 0, 0]
     u.atoms[1].position = [55.00, 0, 0]
