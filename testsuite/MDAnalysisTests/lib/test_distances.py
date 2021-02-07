@@ -84,8 +84,8 @@ def test_capped_distance_noresults():
 
 npoints_1 = (1, 100)
 
-boxes_1 = (np.array([1, 2, 3, 90, 90, 90], dtype=np.float32),  # ortho
-           np.array([1, 2, 3, 30, 45, 60], dtype=np.float32),  # tri_box
+boxes_1 = (np.array([10, 20, 30, 90, 90, 90], dtype=np.float32),  # ortho
+           np.array([10, 20, 30, 30, 45, 60], dtype=np.float32),  # tri_box
            None,  # Non Periodic
            )
 
@@ -108,7 +108,7 @@ def test_capped_distance_checkbrute(npoints, box, query, method, min_cutoff):
     np.random.seed(90003)
     points = (np.random.uniform(low=0, high=1.0,
                         size=(npoints, 3))*(boxes_1[0][:3])).astype(np.float32)
-    max_cutoff = 0.3
+    max_cutoff = 2.5
     # capped distance should be able to handle array of vectors
     # as well as single vectors.
     pairs, dist = distances.capped_distance(query, points, max_cutoff,
