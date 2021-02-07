@@ -235,7 +235,7 @@ cdef class FastNS(object):
             ``dtype=numpy.float32``. For Non-PBC calculations,
             all the coords must be within the bounding box specified
             by ``box``
-        box : numpy.ndarray or None
+        box : numpy.ndarray
             Box dimension of shape (6, ). The dimensions must be
             provided in the same format as returned
             by :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
@@ -300,8 +300,7 @@ cdef class FastNS(object):
         max_cutoff : float
            the maximum allowable cutoff given the box shape and size
         """
-        cdef float cutoff, max_cutoff
-        cdef float angle, newcutoff
+        cdef float cutoff, min_cellsize, max_cutoff, new_cellsize
         cdef int i
 
         from MDAnalysis.lib.mdamath import triclinic_vectors
@@ -318,35 +317,38 @@ cdef class FastNS(object):
                           self.triclinic_dimensions[XZ] != 0 or
                           self.triclinic_dimensions[YZ] != 0)
         cutoff = max(self.cutoff, 1.0)  # TODO: Figure out max ncells and stick to that
-        max_cutoff = math.HUGE_VALF
-        for i in range(3):
-            # alpha
-            max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[YY] * degsin(self.dimensions[3]))
-            max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[ZZ] * degsin(self.dimensions[3]))
-            # beta
-            max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[XX] * degsin(self.dimensions[4]))
-            max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[ZZ] * degsin(self.dimensions[4]))
-            # gamma
-            max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[XX] * degsin(self.dimensions[5]))
-            max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[YY] * degsin(self.dimensions[5]))
+        # Find maximum allowable cutoff
+        # For orthogonal cell this is just half the shortest boxlength (sine values all 1.0)
+        # For triclinic the box tilt creates a shorter path across the box we must account for
+        # alpha
+        max_cutoff = self.triclinic_dimensions[YY] * degsin(self.dimensions[3])
+        max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[ZZ] * degsin(self.dimensions[3]))
+        # beta
+        max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[XX] * degsin(self.dimensions[4]))
+        max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[ZZ] * degsin(self.dimensions[4]))
+        # gamma
+        max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[XX] * degsin(self.dimensions[5]))
+        max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[YY] * degsin(self.dimensions[5]))
         max_cutoff /= 2
 
         # for triclinic cells, we need to worry about the shortest path across the parallelogram
+        min_cellsize = cutoff
         if self.triclinic:
             for i in range(3, 6):
-                angle = self.dimensions[i]
-                newcutoff = cutoff / degsin(angle)
-                cutoff = fmax(newcutoff, cutoff)
+                new_cellsize = cutoff / degsin(self.dimensions[i])
+                min_cellsize = fmax(new_cellsize, min_cellsize)
 
         # add 0.001 here to avoid floating point errors
         # will make cells slightly too large as a result, ah well
-        cutoff += 0.001
-        self.ncells[0] = <int> math.floor(self.triclinic_dimensions[XX] / cutoff)
-        self.ncells[1] = <int> math.floor(self.triclinic_dimensions[YY] / cutoff)
-        self.ncells[2] = <int> math.floor(self.triclinic_dimensions[ZZ] / cutoff)
+        min_cellsize += 0.001
+        self.ncells[0] = <int> math.floor(self.triclinic_dimensions[XX] / min_cellsize)
+        self.ncells[1] = <int> math.floor(self.triclinic_dimensions[YY] / min_cellsize)
+        self.ncells[2] = <int> math.floor(self.triclinic_dimensions[ZZ] / min_cellsize)
 
         self.pbc = pbc
         # If there aren't enough cells in a given dimension it's equivalent to one
+        # this prevents double counting of results if a cell would have the same
+        # neighbour above and below
         if pbc:
             for i in range(3):
                 if self.ncells[i] <= 3:
@@ -359,7 +361,7 @@ cdef class FastNS(object):
                 if self.ncells[i] <= 2:
                     self.ncells[i] = 1
                 self.periodic[i] = False
-
+        # Off diagonal cellsizes are actually the tilt, i.e. dy/dz or similar
         self.cellsize[XX] = self.triclinic_dimensions[XX] / <double> self.ncells[0]
         # [YX] and [ZX] are 0
         self.cellsize[XY] = self.triclinic_dimensions[XY] / self.triclinic_dimensions[YY]
