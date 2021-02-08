@@ -22,7 +22,9 @@
 #
 
 __all__ = [
-    'HydrogenBondAnalysis'
+    'HydrogenBondAnalysis',
+    'WaterBridgeAnalysis'
 ]
 
 from .hbond_analysis import HydrogenBondAnalysis
+from .wbridge_analysis import WaterBridgeAnalysis
