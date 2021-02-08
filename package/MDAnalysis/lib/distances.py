@@ -1521,3 +1521,43 @@ def apply_PBC(coords, box, backend="serial"):
         _run("triclinic_pbc", args=(coords, box), backend=backend)
 
     return coords
+
+
+def minimize_periodic_vector(reference_point, center_position, box, backend="serial"):
+    """Returns the periodic image of center_position which is closest to the reference_point
+    Parameters
+    ----------
+    reference_point : numpy.ndarray
+        Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the
+        position of reference_point (dtype is arbitrary, will be converted to
+        ``numpy.float32`` internally)
+    center_position : numpy.ndarray
+       Coordinate array of shape ``(3,)`` or ``(n, 3)`` containing the
+        position of centre (dtype is arbitrary, will be converted to
+        ``numpy.float32`` internally)
+    box : numpy.ndarray
+        The unitcell dimensions of the system, which can be orthogonal or
+        triclinic and must be provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        ``[lx, ly, lz, alpha, beta, gamma]``.
+    backend : {'serial', 'OpenMP'}, optional
+        Keyword selecting the type of acceleration.
+    Returns
+    -------
+    results : numpy.ndarray
+        Coordinate of the periodic image of center_position which is closest to
+        the reference_point
+    """
+    dx = reference_point - center_position
+
+    if len(dx) == 0:
+        return dx
+    result = np.array([0, 0, 0], dtype=np.float32)
+    boxtype, box = check_box(box)
+
+    if boxtype == 'ortho':
+        _run("translate_periodic_ortho", args=(reference_point, center_position, result, box[:3]), backend=backend)
+    else:
+        _run("translate_periodic_triclinic", args=(reference_point, center_position, result, box), backend=backend)
+
+    return result

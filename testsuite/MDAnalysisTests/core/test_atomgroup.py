@@ -30,6 +30,7 @@ from numpy.testing import (
     assert_almost_equal,
     assert_equal,
     assert_array_almost_equal,
+    assert_array_less
 )
 
 import MDAnalysis as mda
@@ -292,6 +293,10 @@ class TestWriteGRO(_WriteAtoms):
 
 class TestAtomGroupTransformations(object):
 
+    target_pos = (np.array([50, 50, 4.5], dtype=np.float32),
+                           np.array([15.1, 15.45, 15.67], dtype=np.float32),
+                           np.array([-42, -53, -16.76], dtype=np.float32))
+
     @pytest.fixture()
     def u(self):
         return mda.Universe(PSF, DCD)
@@ -312,6 +317,32 @@ class TestAtomGroupTransformations(object):
         cog = u.atoms.center_of_geometry()
         diff = cog - center_of_geometry
         assert_almost_equal(diff, disp, decimal=5)
+
+    @pytest.mark.parametrize('target_position', target_pos)
+    def test_arrange_closest(self, target_position):
+        universe = mda.Universe(TRZ_psf, TRZ)
+        group = universe.residues[0:1]
+        masses = group.atoms.masses
+        masses[0] = 10
+        group.atoms.masses = masses
+        cog_before = group.center_of_geometry()
+        com_before = group.center_of_mass()
+
+        group.arrange_closest(target_position=target_position, reference='cog')
+        cog_after = group.center_of_geometry()
+        translation_cog = np.divide(cog_after - cog_before, group.dimensions[:3])
+        assert_almost_equal(translation_cog - np.around(translation_cog), np.zeros(3), decimal=4)
+        assert_array_less(np.abs(cog_after - target_position), group.dimensions[:3]/2)
+
+        group.arrange_closest(target_position=target_position, reference='com')
+        com_after = group.center_of_mass()
+        translation_com = np.divide(com_after - com_before, group.dimensions[:3])
+        assert_almost_equal(translation_com - np.around(translation_com), np.zeros(3), decimal=4)
+        assert_array_less(np.abs(com_after - target_position), group.dimensions[:3]/2)
+
+        group.atoms.masses = np.zeros(341)
+        with pytest.raises(ValueError):
+            group.arrange_closest(target_position=target_position, reference='com')
 
     def test_rotate(self, u, coords):
         # ensure that selection isn't centered at 0, 0, 0
