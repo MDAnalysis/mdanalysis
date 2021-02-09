@@ -55,7 +55,7 @@ def run_grid_search(u, ref_id, cutoff=3):
     np.zeros((3, 3)),  # Collapsed box
     np.array([[0, 0, 0], [0, 1, 0], [0, 0, 1]]),  # 2D box
     np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),  # Box provided as array of integers
-    np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),  # Box provided as array of double
+    np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]], dtype=np.float64),  # Box provided as array of double
 ])
 def test_pbc_box(box):
     """Check that PBC box accepts only well-formated boxes"""

@@ -111,8 +111,6 @@ cdef inline float fmin(float a, float b):
 
 cdef inline float degsin(float deg):
     # sin in degrees
-    if (deg > 90):
-        deg = 180 - deg
     deg *= math.M_PI / 180.
     return math.sin(deg)
 
@@ -128,10 +126,7 @@ cdef class NSResults(object):
     cdef vector[int] pairs
     cdef vector[double] distances2
 
-    def __init__(self):
-        pass
-
-    cdef void add_neighbors(self, int beadid_i, int beadid_j, double distance2):
+    cdef void add_neighbors(self, int beadid_i, int beadid_j, double distance2) nogil:
         """Internal function to add pairs and distances to buffers
 
         The buffers populated using this method are used by
@@ -276,7 +271,7 @@ cdef class FastNS(object):
         if box.shape != (6,):
             raise ValueError("Box must be a numpy array of [lx, ly, lz, alpha, beta, gamma], got {}"
                              "".format(box))
-        if np.allclose(box[:3], 0.0):
+        if (box[:3] == 0.0).any():
             raise ValueError("Any of the box dimensions cannot be 0")
         if cutoff < 0:
             raise ValueError("Cutoff must be positive")
@@ -331,10 +326,11 @@ cdef class FastNS(object):
         max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[YY] * degsin(self.dimensions[5]))
         max_cutoff /= 2
 
-        # for triclinic cells, we need to worry about the shortest path across the parallelogram
+        # for triclinic cells, we need to worry about the shortest path across the cells
         min_cellsize = cutoff
         if self.triclinic:
             for i in range(3, 6):
+                # cutoff/sin(theta) to elongate the XX/YY/ZZ dimension to make smallest diagonal large enough
                 new_cellsize = cutoff / degsin(self.dimensions[i])
                 min_cellsize = fmax(new_cellsize, min_cellsize)
 
@@ -527,8 +523,7 @@ cdef class FastNS(object):
         -------
         results : NSResults
            An :class:`NSResults` object holding neighbor search results, which
-           can be accessed by its methods :meth:`~NSResults.get_indices`,
-           :meth:`~NSResults.get_distances`, :meth:`~NSResults.get_pairs`, and
+           can be accessed by its methods :meth:`~NSResults.get_pairs` and
            :meth:`~NSResults.get_pair_distances`.
 
         Note
@@ -542,10 +537,9 @@ cdef class FastNS(object):
         cdef int cellid
         cdef int xi, yi, zi
         cdef int cellcoord[3]
-        cdef int searchcoord[3]
         cdef float tmpcoord[3]
         
-        cdef NSResults results
+        cdef NSResults results = NSResults()
         cdef double d2, cutoff2
 
         cutoff2 = self.cutoff * self.cutoff
@@ -554,34 +548,33 @@ cdef class FastNS(object):
             raise ValueError("search_coords must have a shape of (n, 3), got "
                              "{}.".format(search_coords.shape))
 
-        size_search = search_coords.shape[0]
-        results = NSResults()
+        with nogil:
+            size_search = search_coords.shape[0]
+            for i in range(size_search):
+                for j in range(3):
+                    tmpcoord[j] = search_coords[i][j]
+                self.coordintoprimarycell(tmpcoord)
+                # which cell is atom *i* in
+                self.coord2cellxyz(tmpcoord, cellcoord)
+                # loop over all 27 neighbouring cells
+                for xi in range(3):
+                    for yi in range(3):
+                        for zi in range(3):
+                            cx = cellcoord[0] - 1 + xi
+                            cy = cellcoord[1] - 1 + yi
+                            cz = cellcoord[2] - 1 + zi
+                            cellid = self.cellxyz2cellid(cx, cy, cz)
 
-        for i in range(size_search):
-            for j in range(3):
-                tmpcoord[j] = search_coords[i][j]
-            self.coordintoprimarycell(tmpcoord)
-            # which cell is atom *i* in
-            self.coord2cellxyz(tmpcoord, cellcoord)
-            # loop over all 27 neighbouring cells
-            for xi in range(3):
-                for yi in range(3):
-                    for zi in range(3):
-                        cx = cellcoord[0] - 1 + xi
-                        cy = cellcoord[1] - 1 + yi
-                        cz = cellcoord[2] - 1 + zi
-                        cellid = self.cellxyz2cellid(cx, cy, cz)
-
-                        if cellid == END:  # out of bounds
-                            continue
-                        # for loop over atoms in searchcoord
-                        j = self.head_id[cellid]
-                        while (j != END):
-                            d2 = self.calc_distsq(&tmpcoord[0], &self.coords_bbox[j][0])
-                            if d2 <= cutoff2:
-                                # place search_coords then self.bbox_coords
-                                results.add_neighbors(i, j, d2)
-                            j = self.next_id[j]
+                            if cellid == END:  # out of bounds
+                                continue
+                            # for loop over atoms in searchcoord
+                            j = self.head_id[cellid]
+                            while (j != END):
+                                d2 = self.calc_distsq(&tmpcoord[0], &self.coords_bbox[j][0])
+                                if d2 <= cutoff2:
+                                    # place search_coords then self.bbox_coords
+                                    results.add_neighbors(i, j, d2)
+                                j = self.next_id[j]
 
         return results
 
@@ -597,23 +590,20 @@ cdef class FastNS(object):
         -------
         results : NSResults
            An :class:`NSResults` object holding neighbor search results, which
-           can be accessed by its methods :meth:`~NSResults.get_indices`,
-           :meth:`~NSResults.get_distances`, :meth:`~NSResults.get_pairs`, and
+           can be accessed by its methods :meth:`~NSResults.get_pairs` and
            :meth:`~NSResults.get_pair_distances`.
         """
         cdef int cx, cy, cz, ox, oy, oz
         cdef int ci, cj, i, j, nj
         cdef int cellindex, cellindex_probe
         cdef int xi, yi, zi
-        cdef int[:, ::1] route
         cdef NSResults results = NSResults()
         cdef double d2
         cdef double cutoff2 = self.cutoff * self.cutoff
-
         # route over 13 neighbouring cells
-        route = np.array([[1, 0, 0], [1, 1, 0], [0, 1, 0], [-1, 1, 0],
-                          [1, 0, -1], [1, 1, -1], [0, 1, -1], [-1, 1, -1],
-                          [1, 0, 1], [1, 1, 1], [0, 1, 1], [-1, 1, 1], [0, 0, 1]], dtype=np.int32)
+        cdef int[13][3] route = [[1, 0, 0], [1, 1, 0], [0, 1, 0], [-1, 1, 0],
+                                 [1, 0, -1], [1, 1, -1], [0, 1, -1], [-1, 1, -1],
+                                 [1, 0, 1], [1, 1, 1], [0, 1, 1], [-1, 1, 1], [0, 0, 1]]
 
         for cx in range(self.ncells[0]):
             for cy in range(self.ncells[1]):
