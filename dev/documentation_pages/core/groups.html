@@ -752,7 +752,10 @@ of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" tit
 will be returned as an array of position vectors, i.e. a 2d array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
-<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers. The position of the first atom of each compound will be
+taken as the reference to unwrap from; as such, results may differ
+for the same <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> if atoms are ordered differently.</li>
 </ul>
 </td>
 </tr>
@@ -2514,7 +2517,7 @@ operations such as calculating the center of mass of the molecule.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
-Which type of component to unwrap. Note that, in any case, all
+Which type of compound to unwrap. Note that, in any case, all
 atoms within each compound must be interconnected by bonds, i.e.,
 compounds must correspond to (parts of) molecules.</li>
 <li><strong>reference</strong> (<em>{'com'</em><em>, </em><em>'cog'</em><em>, </em><em>None}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'com'</span></code> (center of mass) or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> (center of geometry), the
@@ -2623,7 +2626,7 @@ compound together during the process. If <cite>compound</cite> is different from
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>compound</strong> (<em>{'atoms'</em><em>, </em><em>'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
-Which type of component to keep together during wrapping. Note that,
+Which type of compound to keep together during wrapping. Note that,
 in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
 <li><strong>center</strong> (<em>{'com'</em><em>, </em><em>'cog'}</em>) – How to define the center of a given group of atoms. If <cite>compound</cite> is
@@ -2678,8 +2681,8 @@ the compound.
 Be aware of the fact that only atoms <em>belonging to the group</em> will be
 taken into account!</p>
 <p><cite>center</cite> allows to define how the center of each group is computed.
-This can be either <code class="docutils literal notranslate"><span class="pre">'com'</span></code> for center of mass, or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> for center
-of geometry.</p>
+This can be either <code class="docutils literal notranslate"><span class="pre">'com'</span></code> for center of mass, or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> for
+center of geometry.</p>
 <p><cite>box</cite> allows a unit cell to be given for the transformation. If not
 specified, the <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dimensions</span></code></a>
 information from the current
@@ -3023,7 +3026,10 @@ of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" tit
 will be returned as an array of position vectors, i.e. a 2d array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
-<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers. The position of the first atom of each compound will be
+taken as the reference to unwrap from; as such, results may differ
+for the same <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> if atoms are ordered differently.</li>
 </ul>
 </td>
 </tr>
@@ -4443,7 +4449,7 @@ operations such as calculating the center of mass of the molecule.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
-Which type of component to unwrap. Note that, in any case, all
+Which type of compound to unwrap. Note that, in any case, all
 atoms within each compound must be interconnected by bonds, i.e.,
 compounds must correspond to (parts of) molecules.</li>
 <li><strong>reference</strong> (<em>{'com'</em><em>, </em><em>'cog'</em><em>, </em><em>None}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'com'</span></code> (center of mass) or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> (center of geometry), the
@@ -4510,7 +4516,7 @@ compound together during the process. If <cite>compound</cite> is different from
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>compound</strong> (<em>{'atoms'</em><em>, </em><em>'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
-Which type of component to keep together during wrapping. Note that,
+Which type of compound to keep together during wrapping. Note that,
 in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
 <li><strong>center</strong> (<em>{'com'</em><em>, </em><em>'cog'}</em>) – How to define the center of a given group of atoms. If <cite>compound</cite> is
@@ -4565,8 +4571,8 @@ the compound.
 Be aware of the fact that only atoms <em>belonging to the group</em> will be
 taken into account!</p>
 <p><cite>center</cite> allows to define how the center of each group is computed.
-This can be either <code class="docutils literal notranslate"><span class="pre">'com'</span></code> for center of mass, or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> for center
-of geometry.</p>
+This can be either <code class="docutils literal notranslate"><span class="pre">'com'</span></code> for center of mass, or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> for
+center of geometry.</p>
 <p><cite>box</cite> allows a unit cell to be given for the transformation. If not
 specified, the <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dimensions</span></code></a>
 information from the current
@@ -4859,7 +4865,10 @@ of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" tit
 will be returned as an array of position vectors, i.e. a 2d array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
-<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers. The position of the first atom of each compound will be
+taken as the reference to unwrap from; as such, results may differ
+for the same <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> if atoms are ordered differently.</li>
 </ul>
 </td>
 </tr>
@@ -6048,7 +6057,7 @@ operations such as calculating the center of mass of the molecule.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
-Which type of component to unwrap. Note that, in any case, all
+Which type of compound to unwrap. Note that, in any case, all
 atoms within each compound must be interconnected by bonds, i.e.,
 compounds must correspond to (parts of) molecules.</li>
 <li><strong>reference</strong> (<em>{'com'</em><em>, </em><em>'cog'</em><em>, </em><em>None}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'com'</span></code> (center of mass) or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> (center of geometry), the
@@ -6115,7 +6124,7 @@ compound together during the process. If <cite>compound</cite> is different from
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>compound</strong> (<em>{'atoms'</em><em>, </em><em>'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
-Which type of component to keep together during wrapping. Note that,
+Which type of compound to keep together during wrapping. Note that,
 in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
 <li><strong>center</strong> (<em>{'com'</em><em>, </em><em>'cog'}</em>) – How to define the center of a given group of atoms. If <cite>compound</cite> is
@@ -6170,8 +6179,8 @@ the compound.
 Be aware of the fact that only atoms <em>belonging to the group</em> will be
 taken into account!</p>
 <p><cite>center</cite> allows to define how the center of each group is computed.
-This can be either <code class="docutils literal notranslate"><span class="pre">'com'</span></code> for center of mass, or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> for center
-of geometry.</p>
+This can be either <code class="docutils literal notranslate"><span class="pre">'com'</span></code> for center of mass, or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> for
+center of geometry.</p>
 <p><cite>box</cite> allows a unit cell to be given for the transformation. If not
 specified, the <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dimensions</span></code></a>
 information from the current
