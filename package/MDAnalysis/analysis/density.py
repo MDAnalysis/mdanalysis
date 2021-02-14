@@ -513,8 +513,8 @@ class DensityAnalysis(AnalysisBase):
             raise ValueError("xdim, ydim, and zdim must be numbers") from err
 
         # Set min/max by shifting by half the edge length of each dimension
-        umin = gridcenter - xyzdim / 2
-        umax = gridcenter + xyzdim / 2
+        umin = gridcenter - xyzdim/2
+        umax = gridcenter + xyzdim/2
 
         # Here we test if coords of selection fall outside of the defined grid
         # if this happens, we warn users they may want to resize their grids
@@ -720,9 +720,8 @@ class Density(Grid):
         """
         # all this unit crap should be a class...
         try:
-            for unit_type, value in u.items():
-                # check here, too iffy to use dictionary[None]=None
-                if value is None:
+            for unit_type, value in u.items():     
+                if value is None: # check here, too iffy to use dictionary[None]=None
                     self.units[unit_type] = None
                     continue
                 try:
@@ -790,8 +789,7 @@ class Density(Grid):
         """
         if unit == self.units['length']:
             return
-        cvnfact = units.get_conversion_factor(
-            'length', self.units['length'], unit)
+        cvnfact = units.get_conversion_factor('length', self.units['length'], unit)
         self.edges = [x * cvnfact for x in self.edges]
         self.units['length'] = unit
         self._update()  # needed to recalculate midpoints and origin
@@ -842,8 +840,8 @@ class Density(Grid):
         if unit == self.units['density']:
             return
         try:
-            self.grid *= units.get_conversion_factor(
-                'density', self.units['density'], unit)
+            self.grid *= units.get_conversion_factor('density',
+                                                     self.units['density'], unit)
         except KeyError:
             errmsg = (f"The name of the unit ({unit} supplied) must be one "
                       f"of:\n{units.conversion_factor['density'].keys()}")
@@ -855,4 +853,4 @@ class Density(Grid):
             grid_type = 'density'
         else:
             grid_type = 'histogram'
-        return f"<Density {grid_type} with {self.grid.shape} bins>"
+        return '<Density ' + grid_type + ' with ' + str(self.grid.shape) + 'bins>'
