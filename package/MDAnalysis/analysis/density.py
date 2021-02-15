@@ -229,12 +229,12 @@ class DensityAnalysis(AnalysisBase):
     are within 4 Å of the protein heavy atoms) then create an
     :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` (see Examples).
 
-    If the 'AtomGroup' instance does not contain any selection of atoms and 
+    If the 'AtomGroup' instance does not contain any selection of atoms and
     'updating' is set to true, an empty :class: UpdatingAtomGroup is returned.
-    If an instance of this class is passed onto DensityAnalysis without any 
-    user-defined grid, DensityAnalysis will fail because it cannot predict 
-    selection bounds for future frames in the trajectory. In such a situation, 
-    user defined box limits should be provided ensuring that the provided 
+    If an instance of this class is passed onto DensityAnalysis without any
+    user-defined grid, DensityAnalysis will fail because it cannot predict
+    selection bounds for future frames in the trajectory. In such a situation,
+    user defined box limits should be provided ensuring that the provided
     limits encompass all atoms in selection on future frames.
 
     Examples
@@ -720,8 +720,8 @@ class Density(Grid):
         """
         # all this unit crap should be a class...
         try:
-            for unit_type, value in u.items():     
-                if value is None: # check here, too iffy to use dictionary[None]=None
+            for unit_type, value in u.items():
+                if value is None:  # check here, too iffy to use dictionary[None]=None
                     self.units[unit_type] = None
                     continue
                 try:
