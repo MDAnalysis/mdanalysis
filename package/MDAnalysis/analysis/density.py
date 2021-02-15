@@ -229,13 +229,11 @@ class DensityAnalysis(AnalysisBase):
     are within 4 Å of the protein heavy atoms) then create an
     :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` (see Examples).
 
-    If the 'AtomGroup' instance does not contain any selection of atoms and
-    'updating' is set to true, an empty :class: UpdatingAtomGroup is returned.
-    If an instance of this class is passed onto DensityAnalysis without any
-    user-defined grid, DensityAnalysis will fail because it cannot predict
-    selection bounds for future frames in the trajectory. In such a situation,
-    user defined box limits should be provided ensuring that the provided
-    limits encompass all atoms in selection on future frames.
+    DensityAnalysis will fail when the `AtomGroup` instance does not contain 
+    any selection of atoms, even when `updating` is set to True. In such a 
+    situation, user defined box limits can be provided to generate 
+    a `Density`. Although, it should be ensured that the provided 
+    grid limits encompass atoms to be selected on all trajectory frames.
 
     Examples
     --------
@@ -392,6 +390,16 @@ class DensityAnalysis(AnalysisBase):
         self._zdim = zdim
 
     def _prepare(self):
+        """Function to prepare Density
+
+        Raises 
+        ------
+        ValueError
+            if AtomGroup is empty and no user defined grid is provided
+        UserWarning
+            if AtomGroup is empty and a user defined grid is provided    
+            
+        """
         coord = self._atomgroup.positions
         if self._gridcenter is not None:
             # Issue 2372: padding is ignored, defaults to 2.0 therefore warn
