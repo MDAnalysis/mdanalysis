@@ -229,10 +229,10 @@ class DensityAnalysis(AnalysisBase):
     are within 4 Å of the protein heavy atoms) then create an
     :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` (see Examples).
 
-    DensityAnalysis will fail when the `AtomGroup` instance does not contain 
-    any selection of atoms, even when `updating` is set to True. In such a 
-    situation, user defined box limits can be provided to generate 
-    a `Density`. Although, it should be ensured that the provided 
+    DensityAnalysis will fail when the `AtomGroup` instance does not contain
+    any selection of atoms, even when `updating` is set to True. In such a
+    situation, user defined box limits can be provided to generate
+    a `Density`. Although, it should be ensured that the provided
     grid limits encompass atoms to be selected on all trajectory frames.
 
     Examples
@@ -392,13 +392,13 @@ class DensityAnalysis(AnalysisBase):
     def _prepare(self):
         """Function to prepare Density
 
-        Raises 
+        Raises
         ------
         ValueError
             if AtomGroup is empty and no user defined grid is provided
         UserWarning
-            if AtomGroup is empty and a user defined grid is provided    
-            
+            if AtomGroup is empty and a user defined grid is provided
+
         """
         coord = self._atomgroup.positions
         if self._gridcenter is not None:
@@ -861,4 +861,4 @@ class Density(Grid):
             grid_type = 'density'
         else:
             grid_type = 'histogram'
-        return '<Density ' + grid_type + ' with ' + str(self.grid.shape) + 'bins>'
+        return f"<Density {grid_type} with {self.grid.shape} bins>"
