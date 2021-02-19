@@ -20,18 +20,47 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 """
-Reading trajectory with Chemfiles --- :mod:`MDAnalysis.coordinates.chemfiles`
-=============================================================================
+Reading trajectory with *chemfiles* --- :mod:`MDAnalysis.coordinates.chemfiles`
+===============================================================================
 
-Classes to read and write files using the `chemfiles`_ library. This library
-provides C++ implementation of multiple formats readers and writers, the full
-list if available `here <formats>`_.
+MDAnalysis interoperates with the `chemfiles`_ library. The *Chemfiles* C++ library 
+supports an expanding set of file formats, some of which are not natively supported by
+MDAnalysis. Using the *CHEMFILES* reader you can use  `chemfiles`_ for the low-level 
+file reading. Check the list of `chemfile-supported file formats <formats>`_.
 
 .. _chemfiles: https://chemfiles.org
-.. _formats: http://chemfiles.org/chemfiles/latest/formats.html
+.. _formats: https://chemfiles.org/chemfiles/latest/formats.html#list-of-supported-formats
+
+Using the CHEMFILES reader
+--------------------------
+
+When reading, set the ``format="CHEMFILES"`` keyword argument and I/O is delegated to 
+`chemfiles`_. For example::
+
+   >>> import MDAnalysis as mda
+   >>> from MDAnalysis.tests import datafiles as data
+   >>> u = mda.Universe(data.TPR, data.TRR, format="CHEMFILES")
+   >>> print(u.trajectory)
+   <ChemfilesReader ~/anaconda3/envs/mda3/lib/python3.8/site-packages/MDAnalysisTests/data/adk_oplsaa.trr with 10 frames of 47681 atoms>
+
+You can then use the :class:`~MDAnalysis.core.universe.Universe` as usual while chemfiles
+is handling the I/O transparently in the background.
+
+`chemfiles`_ can also *write* a number of formats for which there are no Writers in
+MDAnalysis. For example, to *write a mol2 file*::
+
+   >>> u = mda.Universe(data.mol2_ligand)
+   >>> with mda.Writer("ligand.mol2", format="CHEMFILES") as W:
+   ...     W.write(u.atoms)
+
+
+
 
 Classes
 -------
+
+Classes to read and write files using the `chemfiles`_ library. This library
+provides C++ implementation of multiple formats readers and writers.
 
 .. autoclass:: ChemfilesReader
 
