@@ -205,34 +205,8 @@ except ImportError:
 else:
     HAS_H5PY = True
 
-
-class Timestep(base.Timestep):
-    """H5MD Timestep
-    """
-    order = 'C'
-
-    def _init_unitcell(self):
-        return np.zeros((3, 3), dtype=np.float32)
-
-    @property
-    def dimensions(self):
-        """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
-
-        lengths *A*, *B*, *C* are in the MDAnalysis length unit (Å), and
-        angles are in degrees.
-
-        Setting dimensions will populate the underlying native format
-        description (triclinic box vectors). If `edges
-        <https://nongnu.org/h5md/h5md.html#simulation-box>`_ is a matrix,
-        the box is of triclinic shape with the edge vectors given by
-        the rows of the matrix.
-        """
-        if self._unitcell is not None:
-            return core.triclinic_box(*self._unitcell)
-
-    @dimensions.setter
-    def dimensions(self, box):
-        self._unitcell[:] = core.triclinic_vectors(box)
+# legacy reasons
+Timestep = base.Timestep
 
 
 class H5MDReader(base.ReaderBase):
@@ -379,7 +353,6 @@ class H5MDReader(base.ReaderBase):
             'kcal mol-1 A-1': 'kcal/(mol*Angstrom)'
         }
     }
-    _Timestep = Timestep
 
     def __init__(self, filename,
                  convert_units=True,
@@ -615,11 +588,10 @@ class H5MDReader(base.ReaderBase):
 
         # Sets frame box dimensions
         # Note: H5MD files must contain 'box' group in each 'particles' group
-        if 'edges' in particle_group['box'] and ts._unitcell is not None:
-            ts._unitcell[:] = particle_group['box/edges/value'][frame, :]
+        if 'edges' in particle_group['box'] and ts.dimensions is not None:
+            ts.dimensions = core.triclinic_box(*particle_group['box/edges/value'][frame, :])
         else:
-            # sets ts.dimensions = None
-            ts._unitcell = None
+            ts.dimensions = None
 
         # set the timestep positions, velocities, and forces with
         # current frame dataset

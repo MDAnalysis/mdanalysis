@@ -715,7 +715,11 @@ class GroupBase(_MutableBase):
     @property
     def dimensions(self):
         """Obtain a copy of the dimensions of the currently loaded Timestep"""
-        return self.universe.trajectory.ts.dimensions.copy()
+        dims = self.universe.trajectory.ts.dimensions
+        if dims is None:
+            return dims
+        else:
+            return dims.copy()
 
     @dimensions.setter
     def dimensions(self, dimensions):

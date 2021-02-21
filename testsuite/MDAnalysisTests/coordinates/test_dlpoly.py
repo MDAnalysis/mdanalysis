@@ -46,10 +46,10 @@ class _DLPConfig(object):
         return rd.ts
 
     def test_read_unitcell(self, ts):
-        ref = np.array([[18.6960000000, 0.0000000000, 0.0000000000
-                         ], [0.0000000000, 18.6960000000, 0.0000000000],
+        ref = np.array([[18.6960000000, 0.0000000000, 0.0000000000],
+                        [0.0000000000, 18.6960000000, 0.0000000000],
                         [0.0000000000, 0.0000000000, 18.6960000000]])
-        assert_allclose(ts._unitcell, ref)
+        assert_allclose(ts.dimensions, mda.coordinates.core.triclinic_box(*ref))
 
     def test_positions(self, ts):
         ref = np.array([-7.608595309, -7.897790000, -7.892053559])
@@ -186,7 +186,7 @@ class _DLHistory(object):
                           ], [-0.0108333201, 16.5270298891, 0.0011094612],
                          [0.0014948739, 0.0011058349, 16.5725517831]])
         for ts, r in zip(u.trajectory, [ref1, ref2, ref3]):
-            assert_allclose(ts._unitcell, r)
+            assert_allclose(ts.dimensions, mda.coordinates.core.triclinic_box(*r))
 
 
 class TestDLPolyHistory(_DLHistory):

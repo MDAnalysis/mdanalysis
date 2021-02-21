@@ -429,10 +429,9 @@ class PDBReader(base.ReaderBase):
                         # FIXME: This might change with Issue #2698
                         warnings.warn("1 A^3 CRYST1 record,"
                                       " this is usually a placeholder."
-                                      " Unit cell dimensions will be set"
-                                      " to zeros.")
+                                      " Unit cell dimensions will be set as None")
                     else:
-                        self.ts._unitcell[:] = cell_dims
+                        self.ts.dimensions = cell_dims
 
         # check if atom number changed
         if pos != self.n_atoms:
@@ -449,7 +448,8 @@ class PDBReader(base.ReaderBase):
         if self.convert_units:
             # both happen inplace
             self.convert_pos_from_native(self.ts._pos)
-            self.convert_pos_from_native(self.ts._unitcell[:3])
+            if not self.ts.dimensions is None:
+                self.convert_pos_from_native(self.ts.dimensions[:3])
         self.ts.frame = frame
         self.ts.data['occupancy'] = occupancy
         return self.ts

@@ -133,5 +133,6 @@ def test_atomgroup_dims_access(uni):
 
     # dimensions from AtomGroup should be equal
     assert_equal(dims, ts.dimensions)
-    # but not identical
-    assert dims is not ts.dimensions
+    # but if np array shouldn't be the same object, i.e. it should have been copied
+    if dims is not None:
+        assert dims is not ts.dimensions

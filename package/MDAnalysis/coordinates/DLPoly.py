@@ -36,18 +36,8 @@ from ..lib import util
 
 _DLPOLY_UNITS = {'length': 'Angstrom', 'velocity': 'Angstrom/ps', 'time': 'ps'}
 
-
-class Timestep(base.Timestep):
-    def _init_unitcell(self):
-        return np.zeros((3, 3), dtype=np.float32, order='F')
-
-    @property
-    def dimensions(self):
-        return core.triclinic_box(*self._unitcell)
-
-    @dimensions.setter
-    def dimensions(self, new):
-        self._unitcell[:] = core.triclinic_vectors(new)
+# legacy reasons
+Timestep = base.Timestep
 
 
 class ConfigReader(base.SingleFrameReaderBase):
@@ -57,7 +47,6 @@ class ConfigReader(base.SingleFrameReaderBase):
     """
     format = 'CONFIG'
     units = _DLPOLY_UNITS
-    _Timestep = Timestep
 
     def _read_first_frame(self):
         unitcell = np.zeros((3, 3), dtype=np.float32, order='F')
@@ -132,7 +121,7 @@ class ConfigReader(base.SingleFrameReaderBase):
         if has_forces:
             ts._forces = forces
         if not imcon == 0:
-            ts._unitcell = unitcell
+            ts.dimensions = core.triclinic_box(*unitcell)
 
         ts.frame = 0
 
@@ -144,7 +133,6 @@ class HistoryReader(base.ReaderBase):
     """
     format = 'HISTORY'
     units = _DLPOLY_UNITS
-    _Timestep = Timestep
 
     def __init__(self, filename, **kwargs):
         super(HistoryReader, self).__init__(filename, **kwargs)
@@ -170,9 +158,11 @@ class HistoryReader(base.ReaderBase):
         if not line.startswith('timestep'):
             raise IOError
         if not self._imcon == 0:
-            ts._unitcell[0] = self._file.readline().split()
-            ts._unitcell[1] = self._file.readline().split()
-            ts._unitcell[2] = self._file.readline().split()
+            unitcell = np.zeros((3, 3))
+            unitcell[0][:] = self._file.readline().split()
+            unitcell[1][:] = self._file.readline().split()
+            unitcell[2][:] = self._file.readline().split()
+            ts.dimensions = core.triclinic_box(*unitcell)
 
         # If ids are given, put them in here
         # and later sort by them

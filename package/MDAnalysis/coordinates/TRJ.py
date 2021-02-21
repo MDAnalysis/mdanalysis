@@ -272,8 +272,7 @@ class TRJReader(base.ReaderBase):
         if self.periodic:
             line = next(self.trjfile)
             box = self.box_line_parser.read(line)
-            ts._unitcell[:3] = np.array(box, dtype=np.float32)
-            ts._unitcell[3:] = [90., 90., 90.]  # assumed
+            ts.dimensions = box + [90., 90., 90.]  # assumed
 
         # probably slow ... could be optimized by storing the coordinates in
         # X,Y,Z lists or directly filling the array; the array/reshape is not
@@ -321,11 +320,9 @@ class TRJReader(base.ReaderBase):
         nentries = self.default_line_parser.number_of_matches(line)
         if nentries == 3:
             self.periodic = True
-            ts._unitcell[:3] = self.box_line_parser.read(line)
-            ts._unitcell[3:] = [90., 90., 90.]  # assumed
+            ts.dimensions = self.box_line_parser.read(line) + [90., 90., 90.]
         else:
             self.periodic = False
-            ts._unitcell = np.zeros(6, np.float32)
         self.close()
         return self.periodic
 
@@ -664,10 +661,13 @@ class NCDFReader(base.ReaderBase):
             ts._forces[:] = (self.trjfile.variables['forces'][frame] *
                              self.scale_factors['forces'])
         if self.periodic:
-            ts._unitcell[:3] = (self.trjfile.variables['cell_lengths'][frame] *
-                                self.scale_factors['cell_lengths'])
-            ts._unitcell[3:] = (self.trjfile.variables['cell_angles'][frame] *
-                                self.scale_factors['cell_angles'])
+            unitcell = np.zeros(6)
+            unitcell[:3] = (self.trjfile.variables['cell_lengths'][frame] *
+                            self.scale_factors['cell_lengths'])
+            unitcell[3:] = (self.trjfile.variables['cell_angles'][frame] *
+                            self.scale_factors['cell_angles'])
+            ts.dimensions = unitcell
+
         if self.convert_units:
             self.convert_pos_from_native(ts._pos)  # in-place !
             self.convert_time_from_native(
@@ -678,8 +678,8 @@ class NCDFReader(base.ReaderBase):
             if self.has_forces:
                 self.convert_forces_from_native(ts._forces, inplace=True)
             if self.periodic:
-                self.convert_pos_from_native(
-                    ts._unitcell[:3])  # in-place ! (only lengths)
+                # in-place ! (only lengths)
+                self.convert_pos_from_native(ts.dimensions[:3])
         ts.frame = frame  # frame labels are 0-based
         self._current_frame = frame
         return ts

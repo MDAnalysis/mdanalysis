@@ -116,47 +116,39 @@ from ..exceptions import NoDataError
 from ..lib import util
 
 
-class Timestep(base.Timestep):
-    _ts_order_x = [0, 3, 4]
-    _ts_order_y = [5, 1, 6]
-    _ts_order_z = [7, 8, 2]
+"""unitcell dimensions (A, B, C, alpha, beta, gamma)
 
-    def _init_unitcell(self):
-        return np.zeros(9, dtype=np.float32)
+GRO::
 
-    @property
-    def dimensions(self):
-        """unitcell dimensions (A, B, C, alpha, beta, gamma)
+  8.00170   8.00170   5.65806   0.00000   0.00000   0.00000   0.00000   4.00085   4.00085
 
-        GRO::
+PDB::
 
-          8.00170   8.00170   5.65806   0.00000   0.00000   0.00000   0.00000   4.00085   4.00085
+  CRYST1   80.017   80.017   80.017  60.00  60.00  90.00 P 1           1
 
-        PDB::
+XTC: c.trajectory.ts._unitcell::
 
-          CRYST1   80.017   80.017   80.017  60.00  60.00  90.00 P 1           1
+  array([[ 80.00515747,   0.        ,   0.        ],
+         [  0.        ,  80.00515747,   0.        ],
+         [ 40.00257874,  40.00257874,  56.57218552]], dtype=float32)
+"""
+# unit cell line (from http://manual.gromacs.org/current/online/gro.html)
+# v1(x) v2(y) v3(z) v1(y) v1(z) v2(x) v2(z) v3(x) v3(y)
+# 0     1     2      3     4     5     6    7     8
+# This information now stored as _ts_order_x/y/z to keep DRY
+_TS_ORDER_X = [0, 3, 4]
+_TS_ORDER_Y = [5, 1, 6]
+_TS_ORDER_Z = [7, 8, 2]
 
-        XTC: c.trajectory.ts._unitcell::
+def _gmx_to_dimensions(box):
+    # convert gromacs ordered box to [lx, ly, lz, alpha, beta, gamma] form
+    x = box[_TS_ORDER_X]
+    y = box[_TS_ORDER_Y]
+    z = box[_TS_ORDER_Z]  # this ordering is correct! (checked it, OB)
+    return triclinic_box(x, y, z)
 
-          array([[ 80.00515747,   0.        ,   0.        ],
-                 [  0.        ,  80.00515747,   0.        ],
-                 [ 40.00257874,  40.00257874,  56.57218552]], dtype=float32)
-        """
-        # unit cell line (from http://manual.gromacs.org/current/online/gro.html)
-        # v1(x) v2(y) v3(z) v1(y) v1(z) v2(x) v2(z) v3(x) v3(y)
-        # 0     1     2      3     4     5     6    7     8
-        # This information now stored as _ts_order_x/y/z to keep DRY
-        x = self._unitcell[self._ts_order_x]
-        y = self._unitcell[self._ts_order_y]
-        z = self._unitcell[self._ts_order_z]  # this ordering is correct! (checked it, OB)
-        return triclinic_box(x, y, z)
 
-    @dimensions.setter
-    def dimensions(self, box):
-        x, y, z = triclinic_vectors(box)
-        np.put(self._unitcell, self._ts_order_x, x)
-        np.put(self._unitcell, self._ts_order_y, y)
-        np.put(self._unitcell, self._ts_order_z, z)
+Timestep = base.Timestep
 
 
 class GROReader(base.SingleFrameReaderBase):
@@ -195,6 +187,7 @@ class GROReader(base.SingleFrameReaderBase):
                 # Remember that we got this error
                 missed_vel = True
 
+            # TODO: Handle missing unitcell?
             for pos, line in enumerate(grofile, start=1):
                 # 2 header lines, 1 box line at end
                 if pos == n_atoms:
@@ -223,15 +216,19 @@ class GROReader(base.SingleFrameReaderBase):
         if len(unitcell) == 3:
             # special case: a b c --> (a 0 0) (b 0 0) (c 0 0)
             # see Timestep.dimensions() above for format (!)
-            self.ts._unitcell[:3] = unitcell
+            self.ts.dimensions = unitcell + [90, 90, 90]
         elif len(unitcell) == 9:
-            self.ts._unitcell[:] = unitcell  # fill all
+            self.ts.dimensions = _gmx_to_dimensions(unitcell)
         else:  # or maybe raise an error for wrong format??
             warnings.warn("GRO unitcell has neither 3 nor 9 entries --- might be wrong.")
-            self.ts._unitcell[:len(unitcell)] = unitcell  # fill linearly ... not sure about this
+            # fill linearly ... not sure about this
+            unitcell2 = np.zeros(9)
+            unitcell2[:len(unitcell)] = unitcell
+            self.ts.dimensions = _gmx_to_dimensions(unitcell2)
+
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
-            self.convert_pos_from_native(self.ts._unitcell)  # in-place ! (all are lengths)
+            self.convert_pos_from_native(self.ts.dimensions[:3])  # in-place!
             if self.ts.has_velocities:
                 # converts nm/ps to A/ps units
                 self.convert_velocities_from_native(self.ts._velocities)

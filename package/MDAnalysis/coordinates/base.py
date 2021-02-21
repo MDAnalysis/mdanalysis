@@ -292,6 +292,7 @@ class Timestep(object):
         self._has_positions = False
         self._has_velocities = False
         self._has_forces = False
+        self._has_dimensions = False
 
         # These will allocate the arrays if the has flag
         # gets set to True
@@ -299,7 +300,7 @@ class Timestep(object):
         self.has_velocities = kwargs.get('velocities', False)
         self.has_forces = kwargs.get('forces', False)
 
-        self._unitcell = self._init_unitcell()
+        self._unitcell = None
 
         # set up aux namespace for adding auxiliary data
         self.aux = Namespace()
@@ -567,7 +568,7 @@ class Timestep(object):
             velocities=vel,
             forces=force)
 
-        new_TS._unitcell = self._unitcell.copy()
+        new_TS.dimensions = self.dimensions
 
         new_TS.frame = self.frame
 
@@ -781,7 +782,7 @@ class Timestep(object):
 
     @property
     def dimensions(self):
-        """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
+        """View of unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
 
         lengths *a*, *b*, *c* are in the MDAnalysis length unit (Å), and
         angles are in degrees.
@@ -797,7 +798,12 @@ class Timestep(object):
 
     @dimensions.setter
     def dimensions(self, box):
-        self._unitcell[:] = box
+        if box is None:
+            self._unitcell = None
+        else:
+            if self._unitcell is None:
+                self._unitcell = self._init_unitcell()
+            self._unitcell[:] = box
 
     @property
     def volume(self):
@@ -1615,7 +1621,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         # self._jump_to_frame(frame)
         # ts = self.ts
         # ts.frame = self._read_next_frame(ts._x, ts._y, ts._z,
-        #                                  ts._unitcell, 1)
+        #                                  ts.dimensions, 1)
         # return ts
 
     def _read_frame_with_aux(self, frame):
@@ -2207,7 +2213,10 @@ class WriterBase(IOBase, metaclass=_Writermeta):
         """
         # override if the native trajectory format does NOT use
         # [A,B,C,alpha,beta,gamma]
-        lengths, angles = ts.dimensions[:3], ts.dimensions[3:]
+        if ts.dimensions is None:
+            lengths, angles = np.zeros(3), np.zeros(3)
+        else:
+            lengths, angles = ts.dimensions[:3], ts.dimensions[3:]
         if not inplace:
             lengths = lengths.copy()
         lengths = self.convert_pos_to_native(lengths)

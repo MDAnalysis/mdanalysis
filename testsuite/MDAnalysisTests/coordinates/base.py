@@ -664,6 +664,8 @@ class BaseTimestepTest(object):
         ts = self.Timestep(self.size)
         ts.frame += 1
         ts.positions = self.refpos
+        ts.dimensions = self.newbox
+
         return ts
 
     def test_getitem(self, ts):
@@ -715,17 +717,15 @@ class BaseTimestepTest(object):
     # Timestep does do them, should return values properly
     def test_dimensions(self, ts):
         if self.has_box:
-            assert_allclose(ts.dimensions, np.zeros(6, dtype=np.float32))
+            assert_allclose(ts.dimensions, self.newbox)
         else:
-            with pytest.raises(NotImplementedError):
-                getattr(ts, "dimensions")
+            assert ts.dimensions is None
 
     @pytest.mark.parametrize('dtype', (int, np.float32, np.float64))
     def test_dimensions_set_box(self, ts, dtype):
         if self.set_box:
             ts.dimensions = self.newbox.astype(dtype)
             assert ts.dimensions.dtype == np.float32
-            assert_equal(ts._unitcell, self.unitcell)
             assert_allclose(ts.dimensions, self.newbox)
         else:
             pass
@@ -973,8 +973,11 @@ class BaseTimestepTest(object):
         # - positions, vels and forces
         assert ref_ts == ts2
 
-        assert_array_almost_equal(ref_ts.dimensions, ts2.dimensions,
-                                  decimal=4)
+        if not ref_ts.dimensions is None:
+            assert_array_almost_equal(ref_ts.dimensions, ts2.dimensions,
+                                      decimal=4)
+        else:
+            assert ref_ts.dimensions == ts2.dimensions
 
         # Check things not covered by eq
         for d in ref_ts.data:
@@ -995,7 +998,8 @@ class BaseTimestepTest(object):
             self._check_array(ts.velocities, ts2.velocities)
         if ts.has_forces:
             self._check_array(ts.forces, ts2.forces)
-        self._check_array(ts.dimensions, ts2.dimensions)
+        if not ts.dimensions is None:
+            self._check_array(ts.dimensions, ts2.dimensions)
 
     def _check_array(self, arr1, arr2):
         """Check modifying one array doesn't change other"""
