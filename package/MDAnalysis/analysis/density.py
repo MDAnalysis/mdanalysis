@@ -107,7 +107,7 @@ atomgroup.
       After the analysis (see the :meth:`~DensityAnalysis.run` method), the resulting density is
       stored in the :attr:`density` attribute as a :class:`Density` instance.
 
-   .. automethod:: _set_user_grid
+   .. automethod:: _prepare, _set_user_grid
 
 
 Density object
@@ -400,6 +400,9 @@ class DensityAnalysis(AnalysisBase):
         UserWarning
             if AtomGroup is empty and a user defined grid is provided
 
+        .. versionadded:: 1.0.0    
+        .. versionchanged:: 2.0.0
+           Now a method of :class:`DensityAnalysis`.
         """
         coord = self._atomgroup.positions
         if self._gridcenter is not None:
