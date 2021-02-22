@@ -748,7 +748,6 @@ class BaseTimestepTest(object):
         ref_vec = triclinic_vectors(self.newbox)
         ts.triclinic_dimensions = ref_vec
         assert_equal(ts.dimensions, self.newbox)
-        assert_allclose(ts._unitcell, self.unitcell)
 
     def test_coordinate_getter_shortcuts(self, ts):
         """testing that reading _x, _y, and _z works as expected

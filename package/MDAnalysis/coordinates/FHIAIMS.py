@@ -305,7 +305,7 @@ class FHIAIMSWriter(base.WriterBase):
             except AttributeError:  # for Timestep
                 tri_dims = obj.triclinic_dimensions
             # full output
-            if np.any(tri_dims != 0):
+            if tri_dims is not None:
                 output_fhiaims.write(
                     self.fmt['box_triclinic'].format(box=tri_dims.flatten()))
 

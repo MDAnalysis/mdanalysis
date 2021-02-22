@@ -87,9 +87,6 @@ class TestDMSTimestep(BaseTimestepTest):
     Timestep = mda.coordinates.DMS.Timestep
     name = "DMS"
     has_box = True
-    unitcell = {'x': np.array([10., 0, 0]),
-                'y': np.array([0, 11., 0]),
-                'z': np.array([0, 0, 12.])}
     uni_args = (DMS,)
 
     @pytest.mark.parametrize('dtype', (int, np.float32, np.float64))
@@ -97,10 +94,8 @@ class TestDMSTimestep(BaseTimestepTest):
         ts.dimensions = self.newbox.astype(dtype)
         assert ts.dimensions.dtype == np.float32
         assert_equal(ts.dimensions, self.newbox)
-        assert_equal(ts._unitcell, self.unitcell)
 
     def test_set_triclinic_vectors(self, ts):
         ref_vec = triclinic_vectors(self.newbox)
         ts.triclinic_dimensions = ref_vec
         assert_equal(ts.dimensions, self.newbox)
-        assert_equal(ts._unitcell, self.unitcell)

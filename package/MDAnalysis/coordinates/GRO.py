@@ -216,7 +216,7 @@ class GROReader(base.SingleFrameReaderBase):
         if len(unitcell) == 3:
             # special case: a b c --> (a 0 0) (b 0 0) (c 0 0)
             # see Timestep.dimensions() above for format (!)
-            self.ts.dimensions = unitcell + [90, 90, 90]
+            self.ts.dimensions = np.r_[unitcell, [90., 90., 90.]]
         elif len(unitcell) == 9:
             self.ts.dimensions = _gmx_to_dimensions(unitcell)
         else:  # or maybe raise an error for wrong format??

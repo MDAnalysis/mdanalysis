@@ -846,7 +846,10 @@ class Timestep(object):
 
         .. versionadded:: 0.11.0
         """
-        return core.triclinic_vectors(self.dimensions)
+        if self.dimensions is None:
+            return None
+        else:
+            return core.triclinic_vectors(self.dimensions)
 
     @triclinic_dimensions.setter
     def triclinic_dimensions(self, new):
