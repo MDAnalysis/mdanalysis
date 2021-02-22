@@ -50,7 +50,7 @@ You can then use the :class:`~MDAnalysis.core.universe.Universe` as usual while 
 is handling the I/O transparently in the background.
 
 `chemfiles`_ can also *write* a number of formats for which there are no Writers in
-MDAnalysis. For example, to *write a mol2 file*::
+MDAnalysis. For example, to write a mol2 file::
 
    >>> u = mda.Universe(data.mol2_ligand)
    >>> with mda.Writer("ligand.mol2", format="CHEMFILES") as W:
