@@ -107,7 +107,7 @@ atomgroup.
       After the analysis (see the :meth:`~DensityAnalysis.run` method), the resulting density is
       stored in the :attr:`density` attribute as a :class:`Density` instance.
 
-   .. automethod:: _prepare, _set_user_grid
+   .. automethod:: _set_user_grid
 
 
 Density object
@@ -217,6 +217,14 @@ class DensityAnalysis(AnalysisBase):
             A :class:`Density` instance containing a physical density of units
             :math:`Angstrom^{-3}`.
 
+    Raises
+    ------
+    ValueError
+        if AtomGroup is empty and no user defined grid is provided
+    UserWarning
+        if AtomGroup is empty and a user defined grid is provided
+
+
     See Also
     --------
     pmda.density.DensityAnalysis for a parallel version
@@ -231,7 +239,7 @@ class DensityAnalysis(AnalysisBase):
 
     :class:`DensityAnalysis` will fail when the :class:`AtomGroup` instance
     does not contain any selection of atoms, even when `updating` is set to
-    True. In such a situation, user defined box limits can be provided to
+    ``True``. In such a situation, user defined box limits can be provided to
     generate a `Density`. Although, it remains the user's responsibility
     to ensure that the provided grid limits encompass atoms to be selected
     on all trajectory frames.
@@ -391,19 +399,6 @@ class DensityAnalysis(AnalysisBase):
         self._zdim = zdim
 
     def _prepare(self):
-        r"""Function to prepare Density
-
-        Raises
-        ------
-        ValueError
-            if AtomGroup is empty and no user defined grid is provided
-        UserWarning
-            if AtomGroup is empty and a user defined grid is provided
-
-        .. versionadded:: 1.0.0    
-        .. versionchanged:: 2.0.0
-           Now a method of :class:`DensityAnalysis`.
-        """
         coord = self._atomgroup.positions
         if self._gridcenter is not None:
             # Issue 2372: padding is ignored, defaults to 2.0 therefore warn
@@ -424,8 +419,8 @@ class DensityAnalysis(AnalysisBase):
                        "positions you wish to capture.")
                 warnings.warn(msg)
                 logger.warning(msg)
-                smin = self._gridcenter
-                smax = self._gridcenter
+                smin = self._gridcenter     #assigns limits to be later -
+                smax = self._gridcenter     #overwritten by _set_user_grid
             # Overwrite smin/smax with user defined values
             smin, smax = self._set_user_grid(self._gridcenter, self._xdim,
                                              self._ydim, self._zdim, smin,
