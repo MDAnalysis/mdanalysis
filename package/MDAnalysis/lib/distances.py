@@ -400,6 +400,8 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
        nsgrid was temporarily removed and replaced with pkdtree due to issues
        relating to its reliability and accuracy (Issues #2919, #2229, #2345,
        #2670, #2930)
+    .. versionchanged:: 1.0.2
+       nsgrid enabled again
     """
     if box is not None:
         box = np.asarray(box, dtype=np.float32)
@@ -449,10 +451,13 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
        nsgrid was temporarily removed and replaced with pkdtree due to issues
        relating to its reliability and accuracy (Issues #2919, #2229, #2345,
        #2670, #2930)
+    .. versionchanged:: 1.0.2
+       enabled nsgrid again
     """
-    # TODO: add 'nsgrid': _nsgrid_capped back once fixed
     methods = {'bruteforce': _bruteforce_capped,
-               'pkdtree': _pkdtree_capped}
+               'pkdtree': _pkdtree_capped,
+               'nsgrid': _nsgrid_capped,
+    }
 
     if method is not None:
         return methods[method.lower()]
@@ -462,8 +467,7 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
     elif len(reference) * len(configuration) >= 1e8:
         # CAUTION : for large datasets, shouldnt go into 'bruteforce'
         # in any case. Arbitrary number, but can be characterized
-        # Temporarily replace nsgrid with pkdtree Issue #2930
-        return methods['pkdtree']
+        return methods['nsgrid']
     else:
         if box is None:
             min_dim = np.array([reference.min(axis=0),
@@ -479,8 +483,7 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
         if np.any(max_cutoff > 0.3*size):
             return methods['bruteforce']
         else:
-            # Temporarily replace nsgrid with pkdtree Issue #2930
-            return methods['pkdtree']
+            return methods['nsgrid']
 
 
 @check_coords('reference', 'configuration', enforce_copy=False,
@@ -817,6 +820,8 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
        nsgrid was temporarily removed and replaced with pkdtree due to issues
        relating to its reliability and accuracy (Issues #2919, #2229, #2345,
        #2670, #2930)
+    .. versionchanged:: 1.0.2
+       enabled nsgrid again
     """
     if box is not None:
         box = np.asarray(box, dtype=np.float32)
@@ -864,10 +869,13 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
        nsgrid was temporarily removed and replaced with pkdtree due to issues
        relating to its reliability and accuracy (Issues #2919, #2229, #2345,
        #2670, #2930)
+    .. versionchanged:: 1.0.2
+       enabled nsgrid again
     """
-    # TODO: add 'nsgrid': _nsgrid_capped back once fixed
     methods = {'bruteforce': _bruteforce_capped_self,
-               'pkdtree': _pkdtree_capped_self}
+               'pkdtree': _pkdtree_capped_self,
+               'nsgrid': _nsgrid_capped_self,
+    }
 
     if method is not None:
         return methods[method.lower()]
@@ -888,8 +896,7 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
     if max_cutoff < 0.03*size.min():
         return methods['pkdtree']
     else:
-        # Replaced nsgrid with pkdtree temporarily #2930
-        return methods['pkdtree']
+        return methods['nsgrid']
 
 
 @check_coords('reference', enforce_copy=False, reduce_result_if_single=False)
