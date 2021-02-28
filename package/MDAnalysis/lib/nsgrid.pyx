@@ -34,15 +34,6 @@
 Neighbor search library --- :mod:`MDAnalysis.lib.nsgrid`
 ========================================================
 
-
-.. warning::
-   The current nsgrid code can return incorrect values. Do not use it for
-   production use. We instead recommend the use of
-   :mod:`MDAnalysis.lib.pkdtree`. See issue
-   `#2930 <https://github.com/MDAnalysis/mdanalysis/issues/2930>`_ for further
-   information.
-
-
 About the code
 --------------
 
@@ -86,7 +77,7 @@ Classes
 -------
 """
 import numpy as np
-import warnings
+
 from libcpp.vector cimport vector
 from libc cimport math
 
