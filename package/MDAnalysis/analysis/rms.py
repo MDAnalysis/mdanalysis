@@ -380,7 +380,9 @@ class RMSD(AnalysisBase):
              corresponding atom in `select`, and assumes ``None`` for `groupselections`.
 
         weights_groupselections : False or list of {"mass", ``None`` or array_like} (optional)
-             1. ``False`` will apply imposed weights to `groupselections` from ``weights`` option.
+             1. ``False`` will apply imposed weights to `groupselections` from ``weights`` option
+             if `weights` is iterable. Otherwise it will apply a list of size equal to size of 
+             `groupselections` filled with ``None`` values.
 
              2. A list of {"mass", ``None`` or array_like} with the length of `groupselections`
              will apply the weights to `groupselections` correspondingly.
