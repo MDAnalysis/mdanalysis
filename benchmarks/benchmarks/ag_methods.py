@@ -404,6 +404,7 @@ class FragmentFinding(object):
     def time_find_fragments(self, universe_type):
         frags = self.u.atoms.fragments
 
+
 class FragmentCaching(FragmentFinding):
     """Test how quickly we find cached fragments"""
     def setup(self, universe_type):
