@@ -168,7 +168,7 @@ For citations of included algorithms and sub-modules please see the references_.
 
 .. |build| image:: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci.yaml/badge.svg
    :alt: Build Status
-   :target: https://github.com/MDAnalsis/mdanalysis/actions/workflows/gh-ci.yaml
+   :target: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci.yaml
 
 .. |cov|   image:: https://codecov.io/gh/MDAnalysis/mdanalysis/branch/develop/graph/badge.svg
    :alt: Coverage Status
