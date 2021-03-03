@@ -860,4 +860,4 @@ class Density(Grid):
             grid_type = 'density'
         else:
             grid_type = 'histogram'
-        return f"<Density {grid_type} with {self.grid.shape} bins>"
+        return '<Density ' + grid_type + ' with ' + str(self.grid.shape) + ' bins>'
