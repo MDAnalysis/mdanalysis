@@ -166,9 +166,9 @@ For citations of included algorithms and sub-modules please see the references_.
    :alt: Powered by NumFOCUS
    :target: https://www.numfocus.org/
 
-.. |build| image:: https://travis-ci.com/MDAnalysis/mdanalysis.svg?branch=develop
+.. |build| image:: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci.yaml/badge.svg
    :alt: Build Status
-   :target: https://travis-ci.com/MDAnalysis/mdanalysis
+   :target: https://github.com/MDAnalsis/mdanalysis/actions/workflows/gh-ci.yaml
 
 .. |cov|   image:: https://codecov.io/gh/MDAnalysis/mdanalysis/branch/develop/graph/badge.svg
    :alt: Coverage Status
