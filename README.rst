@@ -167,7 +167,7 @@ For citations of included algorithms and sub-modules please see the references_.
    :target: https://www.numfocus.org/
 
 .. |build| image:: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci.yaml/badge.svg
-   :alt: Build Status
+   :alt: Github Actions Build Status
    :target: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci.yaml
 
 .. |cov|   image:: https://codecov.io/gh/MDAnalysis/mdanalysis/branch/develop/graph/badge.svg
