@@ -15,7 +15,7 @@ class DistancesBench(object):
     """Benchmarks for MDAnalysis.analysis.distances
     functions.
     """
-
+    timeout = 200
     # TODO: eventually we should include box / pbc
     # unit cell information in the benchmarks
     params = (10, 100, 1000, 10000)
