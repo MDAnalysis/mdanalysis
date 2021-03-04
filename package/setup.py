@@ -269,7 +269,7 @@ def extensions(config):
                               '-fsigned-zeros']
     else:
         extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops',
-                              '-fsigned-zeros']  # see #2722
+                              '-fsigned-zeros', '-march=native', '-mtune=native']  # see #2722
     define_macros = []
     if config.get('debug_cflags', default=False):
         extra_compile_args.extend(['-Wall', '-pedantic'])
