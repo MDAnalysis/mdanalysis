@@ -1266,9 +1266,10 @@ otherwise the original object is passed back.</p>
 <h2>13.2.10.8. Class decorators<a class="headerlink" href="#class-decorators" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.cached">
-<code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">cached</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#cached"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.cached" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">cached</code><span class="sig-paren">(</span><em>key</em>, <em>universe_validation=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#cached"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.cached" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cache a property within a class.</p>
-<p>Requires the Class to have a cache dict called <code class="docutils literal notranslate"><span class="pre">_cache</span></code>.</p>
+<p>Requires the Class to have a cache dict <code class="xref py py-attr docutils literal notranslate"><span class="pre">_cache</span></code> and, with
+<cite>universe_validation</cite>, a <code class="xref py py-attr docutils literal notranslate"><span class="pre">universe</span></code> with a cache dict <code class="xref py py-attr docutils literal notranslate"><span class="pre">_cache</span></code>.</p>
 <p class="rubric">Example</p>
 <p>How to add a cache for a variable to a class by using the <cite>&#64;cached</cite>
 decorator:</p>
@@ -1279,10 +1280,22 @@ decorator:</p>
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;keyname&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># This code gets ran only if the lookup of keyname fails</span>
-        <span class="c1"># After this code has been ran once, the result is stored in</span>
+        <span class="c1"># This code gets run only if the lookup of keyname fails</span>
+        <span class="c1"># After this code has been run once, the result is stored in</span>
         <span class="c1"># _cache with the key: &#39;keyname&#39;</span>
-        <span class="n">size</span> <span class="o">=</span> <span class="mf">10.0</span>
+        <span class="k">return</span> <span class="mf">10.0</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;keyname&#39;</span><span class="p">,</span> <span class="n">universe_validation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">othersize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># This code gets run only if the lookup</span>
+        <span class="c1"># id(self) is not in the validation set under</span>
+        <span class="c1"># self.universe._cache[&#39;_valid&#39;][&#39;keyname&#39;]</span>
+        <span class="c1"># After this code has been run once, id(self) is added to that</span>
+        <span class="c1"># set. The validation set can be centrally invalidated at the</span>
+        <span class="c1"># universe level (say, if a topology change invalidates specific</span>
+        <span class="c1"># caches).</span>
+        <span class="k">return</span> <span class="mf">20.0</span>
 </pre></div>
 </div>
 <div class="versionadded">

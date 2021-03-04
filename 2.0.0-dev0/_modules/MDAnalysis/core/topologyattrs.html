@@ -2588,7 +2588,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_fragdict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span></div>
 
-<div class="viewcode-block" id="Bonds.fragindices"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.groups.Bonds.fragindices">[docs]</a>    <span class="k">def</span> <span class="nf">fragindices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Bonds.fragindices"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.groups.Bonds.fragindices">[docs]</a>    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;fragindices&#39;</span><span class="p">,</span> <span class="n">universe_validation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">fragindices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;The</span>
 <span class="sd">        :class:`fragment indices&lt;MDAnalysis.core.topologyattrs.Bonds.fragindex&gt;`</span>
 <span class="sd">        of all :class:`Atoms&lt;MDAnalysis.core.groups.Atom&gt;` in this</span>
@@ -2621,7 +2622,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_fragdict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">fragment</span></div>
 
-<div class="viewcode-block" id="Bonds.fragments"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.groups.Bonds.fragments">[docs]</a>    <span class="k">def</span> <span class="nf">fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Bonds.fragments"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.groups.Bonds.fragments">[docs]</a>    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;fragments&#39;</span><span class="p">,</span> <span class="n">universe_validation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">fragments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read-only :class:`tuple` of</span>
 <span class="sd">        :class:`fragments&lt;MDAnalysis.core.topologyattrs.Bonds.fragment&gt;`.</span>
 

@@ -386,6 +386,7 @@
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
 <span class="kn">import</span> <span class="nn">textwrap</span>
+<span class="kn">import</span> <span class="nn">weakref</span>
 
 <span class="kn">import</span> <span class="nn">mmtf</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -1680,10 +1681,18 @@
         <span class="k">return</span> <span class="n">s</span></div>
 
 
-<div class="viewcode-block" id="cached"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.cached">[docs]</a><span class="k">def</span> <span class="nf">cached</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+<span class="c1"># A dummy, empty, cheaply-hashable object class to use with weakref caching.</span>
+<span class="c1"># (class object doesn&#39;t allow weakrefs to its instances, but user-defined</span>
+<span class="c1">#  classes do)</span>
+<span class="k">class</span> <span class="nc">_CacheKey</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="cached"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.cached">[docs]</a><span class="k">def</span> <span class="nf">cached</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">universe_validation</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Cache a property within a class.</span>
 
-<span class="sd">    Requires the Class to have a cache dict called ``_cache``.</span>
+<span class="sd">    Requires the Class to have a cache dict :attr:`_cache` and, with</span>
+<span class="sd">    `universe_validation`, a :attr:`universe` with a cache dict :attr:`_cache`.</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
@@ -1697,23 +1706,54 @@
 <span class="sd">           @property</span>
 <span class="sd">           @cached(&#39;keyname&#39;)</span>
 <span class="sd">           def size(self):</span>
-<span class="sd">               # This code gets ran only if the lookup of keyname fails</span>
-<span class="sd">               # After this code has been ran once, the result is stored in</span>
+<span class="sd">               # This code gets run only if the lookup of keyname fails</span>
+<span class="sd">               # After this code has been run once, the result is stored in</span>
 <span class="sd">               # _cache with the key: &#39;keyname&#39;</span>
-<span class="sd">               size = 10.0</span>
+<span class="sd">               return 10.0</span>
+
+<span class="sd">           @property</span>
+<span class="sd">           @cached(&#39;keyname&#39;, universe_validation=True)</span>
+<span class="sd">           def othersize(self):</span>
+<span class="sd">               # This code gets run only if the lookup</span>
+<span class="sd">               # id(self) is not in the validation set under</span>
+<span class="sd">               # self.universe._cache[&#39;_valid&#39;][&#39;keyname&#39;]</span>
+<span class="sd">               # After this code has been run once, id(self) is added to that</span>
+<span class="sd">               # set. The validation set can be centrally invalidated at the</span>
+<span class="sd">               # universe level (say, if a topology change invalidates specific</span>
+<span class="sd">               # caches).</span>
+<span class="sd">               return 20.0</span>
 
 
 <span class="sd">    .. versionadded:: 0.9.0</span>
 
+<span class="sd">    .. versionchanged::2.0.0</span>
+<span class="sd">        Added the `universe_validation` keyword.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">cached_lookup</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
         <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">universe_validation</span><span class="p">:</span>  <span class="c1"># Universe-level cache validation</span>
+                    <span class="n">u_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;_valid&#39;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">())</span>
+                    <span class="c1"># A WeakSet is used so that keys from out-of-scope/deleted</span>
+                    <span class="c1"># objects don&#39;t clutter it.</span>
+                    <span class="n">valid_caches</span> <span class="o">=</span> <span class="n">u_cache</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">weakref</span><span class="o">.</span><span class="n">WeakSet</span><span class="p">())</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_caches</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">KeyError</span>
+                    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>  <span class="c1"># No _cache_key yet</span>
+                        <span class="c1"># Must create a reference key for the validation set.</span>
+                        <span class="c1"># self could be used itself as a weakref but set()</span>
+                        <span class="c1"># requires hashing it, which can be slow for AGs. Using</span>
+                        <span class="c1"># id(self) fails because ints can&#39;t be weak-referenced.</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_cache_key</span> <span class="o">=</span> <span class="n">_CacheKey</span><span class="p">()</span>
+                        <span class="k">raise</span> <span class="ne">KeyError</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">universe_validation</span><span class="p">:</span>
+                    <span class="n">valid_caches</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cache_key</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">ret</span>
 
         <span class="k">return</span> <span class="n">wrapper</span>
