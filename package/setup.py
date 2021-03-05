@@ -581,20 +581,31 @@ if __name__ == '__main__':
     config = Config()
     exts, cythonfiles = extensions(config)
 
-    install_requires = [
-          'numpy>=1.13.3,<1.17',
-          'biopython>=1.71,<1.77', # to support Py 2
-          'networkx>=1.0',
-          'GridDataFormats>=0.4.0',
-          'six>=1.4.0',            # to support Py 2
-          'mmtf-python>=1.0.0',
-          'joblib>=0.12,<0.15.0',  # to support Py 2
-          'scipy>=1.0.0',
-          'matplotlib>=1.5.1',
-          'mock',
-          'tqdm>=4.43.0',
-          'funcsigs',              # to support Py 2
-    ]
+    if sys.version_info[:2] < (3, 6):
+        # pinned to support deprecated python versions
+        install_requires = [
+                'numpy>=1.13.3,<1.17',
+                'biopython>=1.71,<1.77',
+                'joblib>=0.12,<0.15.0']
+    else:
+        # should we pin max versions for the final 1.0.x release?
+        install_requires = [
+                'numpy>=1.13.3',
+                'biopython>=1.71',
+                'joblib>=0.12']
+
+    install_requires.extend([
+        'networkx>=1.0',
+        'GridDataFormats>=0.4.0',
+        'six>=1.4.0',            # to support Py 2
+        'mmtf-python>=1.0.0',
+        'scipy>=1.0.0',
+        'matplotlib>=1.5.1',
+        'mock',
+        'tqdm>=4.43.0',
+        'funcsigs',              # to support Py 2
+    ])
+
     if not os.name == 'nt':
         install_requires.append('gsd>=1.4.0')
     else:
@@ -626,12 +637,10 @@ if __name__ == '__main__':
                         ],
           },
           ext_modules=exts,
-          python_requires=">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3,!=3.4.*,<3.9",
+          python_requires=">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,<3.9",
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
-          setup_requires=[
-              'numpy>=1.13.3,<1.17',
-          ],
+          setup_requires=['numpy>=1.13.3,<1.17'] if sys.version_info[:2] < (3, 6) else ['numpy>=1.13.3'],
           install_requires=install_requires,
           # extras can be difficult to install through setuptools and/or
           # you might prefer to use the version available through your
