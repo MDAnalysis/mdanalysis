@@ -49,15 +49,16 @@ jobs:
     # - ensure that chemfiles can get the last netcdf4 that is still supported
     #   see https://github.com/MDAnalysis/mdanalysis/pull/2798#issuecomment-679991785
     # - install chemfiles and chemfiles-lib via pip (conda times out)
+    # - numpy: 3.5->1.15.2 (max conda version, 2.7 -> 1.16.6 (max version)
     - env: NAME="python 2.7"
            PYTHON_VERSION=2.7
-           NUMPY_VERSION=1.16.6 # pin to max version
+           NUMPY_VERSION=1.16.6
            CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} clustalw=2.1 netcdf4>1.0 funcsigs<=1.0.2 mock<=3.0.5 seaborn"
            PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0 chemfiles scikit-learn joblib>=0.12"
 
     - env: NAME="python 3.5"
            PYTHON_VERSION=3.5
-           NUMPY_VERSION=1.15.2 # for some reason this is the max conda version
+           NUMPY_VERSION=1.15.2
 
 
 install:
