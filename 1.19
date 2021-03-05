@@ -1,0 +1,40 @@
+Collecting package metadata (current_repodata.json): ...working... done
+Solving environment: ...working... done
+
+## Package Plan ##
+
+  environment location: /home/bioc1523/software/anaconda/install/envs/mda-dev
+
+  added / updated specs:
+    - numpy
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    numpy-1.18.1               |   py38h8854b6b_1         5.3 MB  conda-forge
+    ------------------------------------------------------------
+                                           Total:         5.3 MB
+
+The following NEW packages will be INSTALLED:
+
+  libblas            conda-forge/linux-64::libblas-3.9.0-8_openblas
+  libcblas           conda-forge/linux-64::libcblas-3.9.0-8_openblas
+  libgfortran-ng     conda-forge/linux-64::libgfortran-ng-7.5.0-h14aa051_18
+  libgfortran4       conda-forge/linux-64::libgfortran4-7.5.0-h14aa051_18
+  liblapack          conda-forge/linux-64::liblapack-3.9.0-8_openblas
+  libopenblas        conda-forge/linux-64::libopenblas-0.3.12-pthreads_hb3c22a3_1
+  numpy              conda-forge/linux-64::numpy-1.18.1-py38h8854b6b_1
+  python_abi         conda-forge/linux-64::python_abi-3.8-1_cp38
+
+The following packages will be UPDATED:
+
+  certifi            pkgs/main::certifi-2020.12.5-py38h06a~ --> conda-forge::certifi-2020.12.5-py38h578d9bd_1
+
+The following packages will be SUPERSEDED by a higher-priority channel:
+
+  ca-certificates    pkgs/main::ca-certificates-2021.1.19-~ --> conda-forge::ca-certificates-2020.12.5-ha878542_0
+
+
+Proceed ([y]/n)? 
