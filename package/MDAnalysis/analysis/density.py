@@ -1459,7 +1459,7 @@ class BfactorDensityCreator(object):
         pos = np.where(grid != 0)  # position in histogram (as bin numbers)
         for iwat in range(len(pos[0])):  # super-ugly loop
             p = tuple([wp[iwat] for wp in pos])
-            g += grid[p] * np.fromfunction(self._gaussian, grid.shape, dtype=np.int, p=p, sigma=sigma)
+            g += grid[p] * np.fromfunction(self._gaussian, grid.shape, dtype=int, p=p, sigma=sigma)
             # print("Smearing out atom position {0:4d}/{1:5d} with RMSF {2:4.2f} A\r".format(iwat + 1, len(pos[0]), sigma),)
         return g
 
@@ -1471,7 +1471,7 @@ class BfactorDensityCreator(object):
         for iwat, coord in enumerate(coordinates):
             if rmsf[iwat] == 0:
                 continue
-            g += np.fromfunction(self._gaussian_cartesian, grid.shape, dtype=np.int,
+            g += np.fromfunction(self._gaussian_cartesian, grid.shape, dtype=int,
                                     c=coord, sigma=rmsf[iwat])
             # print("Smearing out atom position {0:4d}/{1:5d} with RMSF {2:4.2f} A\r".format(iwat + 1, N, rmsf[iwat]),)
         return g

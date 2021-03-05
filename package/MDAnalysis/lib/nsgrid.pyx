@@ -672,7 +672,7 @@ cdef class _NSGrid(object):
 
         cdef ns_int i, cellindex = -1
         cdef ns_int ncoords = coords.shape[0]
-        cdef ns_int[:] beadcounts = np.empty(self.size, dtype=np.int)
+        cdef ns_int[:] beadcounts = np.empty(self.size, dtype=int)
 
         with nogil:
             # Initialize buffers
