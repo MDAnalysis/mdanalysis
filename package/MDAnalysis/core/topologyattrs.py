@@ -2115,6 +2115,15 @@ class Molnums(ResidueAttr):
     singular = 'molnum'
     dtype = np.intp
 
+    # Right now this is the only TopologyAttr that should invalidate caches
+    # when being set. If more attrs become like this it may make sense to
+    # create a specific class for them that centrally invalidates caches.
+    def set_residues(self, rg, values):
+        super(Molnums, self).set_residues(rg, values)
+        # AtomGroup-level caches involving molnums are no longer valid
+        rg.universe._cache['_valid'].pop('molecules', None)
+
+
 # segment attributes
 
 
@@ -2404,7 +2413,7 @@ class Bonds(_Connection):
         """
         return self.universe._fragdict[self.ix].ix
 
-    @cached('fragindices', universe_validation=True)
+    @cached('fragindices', universe_validation='bonds')
     def fragindices(self):
         r"""The
         :class:`fragment indices<MDAnalysis.core.topologyattrs.Bonds.fragindex>`
@@ -2438,7 +2447,7 @@ class Bonds(_Connection):
         """
         return self.universe._fragdict[self.ix].fragment
 
-    @cached('fragments', universe_validation=True)
+    @cached('fragments', universe_validation='bonds')
     def fragments(self):
         """Read-only :class:`tuple` of
         :class:`fragments<MDAnalysis.core.topologyattrs.Bonds.fragment>`.

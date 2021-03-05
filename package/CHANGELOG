@@ -87,6 +87,9 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Optimizes AtomGroup.unwrap by pre-screening for large fragments relative to
+    the box vectors. Also streamlined com vs cog unwrapping references,
+    incidently partly fixing dummy particle unwrapping (Issue #3168, PR #3169)
   * Added a ValueError raised when not given a gridcenter while
     providing grid dimensions to DensityAnalysis, also added
     check for NaN in the input (Issue #3148, PR #3154)

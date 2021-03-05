@@ -44,7 +44,7 @@ def PSFDCD():
     return mda.Universe(PSF, DCD)
 
 class TestTopologyObjects(object):
-    """Test the base TopologyObject funtionality
+    """Test the base TopologyObject functionality
 
     init
     repr

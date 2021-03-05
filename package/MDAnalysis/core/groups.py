@@ -89,6 +89,7 @@ that two objects are of the same level, or to access a particular class::
 
 """
 from collections import namedtuple
+import weakref
 import numpy as np
 import functools
 import itertools
@@ -704,6 +705,64 @@ class GroupBase(_MutableBase):
         #    return ``not np.any(mask)`` here but using the following is faster:
         return not np.count_nonzero(mask)
 
+    def _check_universe_cache_validity(self, key, universe_key=None):
+        """Pre-checks validity at the universe level before a cache lookup.
+
+        Certain caches in :class:`*Groups<~MDAnalysis.core.groups.GroupBase>`,
+        such as fragments, are only valid if some aspects of the topology
+        remain unchanged (bonds, in the fragments example).
+
+        To enable centralized invalidation of those caches, a validity registry
+        is stored under
+        :attr:`MDAnalysis.core.groups.GroupBase.universe._cache['_valid']`.
+        This method pre-checks that validity registry and clears any invalid
+        local caches.
+
+        Topology-changing methods, such as
+        :meth:`~MDAnalysis.core.universe.Universe.add_bonds`, must invalidate
+        any affected caches by clearing the relevant
+        :attr:`~MDAnalysis.core.universe.Universe._cache['_valid']` entries.
+
+        Parameters
+        ----------
+        key : str
+            The cache dictionary key of the property to be checked and possibly
+            invalidated.
+        universe_key : str (optional, defaults to the same as `key`)
+            The key of the validty dictionary under universe.
+
+        Returns
+        -------
+        was_valid : bool
+            Whether the cache was valid or not (in which case it has been
+            cleared).
+
+        .. versionadded:: 2.0.0
+        """
+
+        if universe_key is None:
+            universe_key = key
+        u_cache = self.universe._cache['_valid']
+
+        # A WeakSet is used so that keys from out-of-scope/deleted
+        # objects don't clutter it.
+        valid_caches = u_cache.setdefault(universe_key, weakref.WeakSet())
+        try:
+            if self._cache_key in valid_caches:
+                # cache is valid
+                return True
+        except AttributeError:
+            # No _cache_key yet. Must create one for the validity registry.
+            # self could be used itself as a weakref, but set() requires
+            # hashing it, which can be slow for AGs. Using id(self) fails
+            # because ints can't be weak-referenced.
+            self._cache_key = _CacheKey()
+
+        # invalidate cache but mark it already as valid for future lookups
+        self._cache.pop(key, None)
+        valid_caches.add(self._cache_key)
+        return False
+
     def _get_compound_indices(self, compound):
         if compound == 'residues':
             compound_indices = self.atoms.resindices
@@ -731,6 +790,9 @@ class GroupBase(_MutableBase):
                              " or 'fragments'.".format(compound))
         return compound_indices
 
+    # This function implements its own custom caching, under _cache and with
+    # central validation under universe._cache['valid'], but independently of
+    # the @cached decorator.
     def _split_by_compound_indices(self, compound, stable_sort=False):
         """Splits a group's compounds into groups of equal compound size.
 
@@ -748,7 +810,7 @@ class GroupBase(_MutableBase):
          array([[1, 2, 3, 0],
                 [8, 7, 6, 9]])]
 
-        (Note that atom order within component submasks may be lost unless a
+        (Note that atom order within compound submasks may be lost unless a
         `stable_sort` is requested)
         These submasks can be used directly to fancy-index arrays of the same
         length as self (including :class:`AtomGroups<AtomGroup>`).
@@ -782,12 +844,25 @@ class GroupBase(_MutableBase):
         n_compounds : int
             The number of individual compounds.
         """
-        # Caching would help here, especially when repeating the operation
-        # over different frames, since these masks are coordinate-independent.
-        # However, cache must be invalidated whenever new compound indices are
-        # modified, which is not yet implemented.
-        # Also, should we include here the grouping for 'group', which is
-        # essentially a non-split?
+
+        # Should we include here the grouping for 'group', which is essentially
+        # a non-split?
+
+        # The local cache key must avoid collision with existing cache names,
+        # but the Universe one needn't.
+        local_cache_key = f'{compound}_splits'
+        self._check_universe_cache_validity(local_cache_key,
+                                            universe_key=compound)
+        try:
+            masks, is_stable = self._cache[local_cache_key]
+            # Cached masks come tupled with a bool indicating whether they
+            # originate from a stable sort of compound indices.
+            # Stably sorted is stricter; if it's not requested then any mask
+            # will do
+            if not stable_sort or (stable_sort and is_stable):
+                return masks
+        except KeyError:
+            pass
 
         compound_indices = self._get_compound_indices(compound)
         # Are we already sorted? argsorting and fancy-indexing can be expensive
@@ -818,7 +893,9 @@ class GroupBase(_MutableBase):
                 atom_masks.append(np.where(size_per_atom == compound_size)[0]
                                    .reshape(-1, compound_size))
 
-        return atom_masks, compound_masks, len(compound_sizes)
+        masks = (atom_masks, compound_masks, len(compound_sizes))
+        self._cache[local_cache_key] = (masks, stable_sort)
+        return masks
 
     @warn_if_not_unique
     @check_pbc_and_unwrap
@@ -925,14 +1002,12 @@ class GroupBase(_MutableBase):
             weights = weights.astype(dtype, copy=False)
             return (coords * weights[:, None]).sum(axis=0) / weights.sum()
 
-        # When compound split caching gets implemented it will be clever to
-        # preempt at this point whether or not stable sorting will be needed
-        # later for unwrap (so that we don't split now with non-stable sort,
-        # only to have to re-split with stable sort if unwrap is requested).
+        # Since unwrapping needs a stable sort, we ask for it here already so
+        # it stays in cache and we save time a couple lines ahead.
         (atom_masks,
          compound_masks,
-         n_compounds) = self._split_by_compound_indices(comp)
-
+         n_compounds) = self._split_by_compound_indices(comp,
+                                                        stable_sort=unwrap)
         # Unwrap Atoms
         if unwrap:
             coords = atoms.unwrap(compound=comp, reference=None, inplace=False)
@@ -1415,6 +1490,30 @@ class GroupBase(_MutableBase):
         ``'atoms'``, each compound as a whole will be shifted so that its
         `center` lies within the primary unit cell.
 
+        Wrapping when `compound` is ``'atoms'``::
+
+           +-----------+               +-----------+
+           |           |               |           |
+           |           | 3 6           | 3 6       |
+           |           | ! !           | ! !       |
+           |         1-|-2-5-8  ==>    |-2-5-8   1-|
+           |           | ! !           | ! !       |
+           |           | 4 7           | 4 7       |
+           |           |               |           |
+           +-----------+               +-----------+
+
+        Wrapping when `compound` is ``'fragments'``::
+
+           +-----------+               +-----------+
+           |           |               |           |
+           |           | 3 6           | 3 6       |
+           |           | ! !           | ! !       |
+           |         1-|-2-5-8  ==>  1-|-2-5-8     |
+           |           | ! !           | ! !       |
+           |           | 4 7           | 4 7       |
+           |           |               |           |
+           +-----------+               +-----------+
+
         Parameters
         ----------
         compound : {'atoms', 'group', 'segments', 'residues', 'molecules', \
@@ -1423,8 +1522,9 @@ class GroupBase(_MutableBase):
             in any case, *only* the positions of :class:`Atoms<Atom>`
             *belonging to the group* will be taken into account.
         center : {'com', 'cog'}
-            How to define the center of a given group of atoms. If `compound` is
-            ``'atoms'``, this parameter is meaningless and therefore ignored.
+            How to define the center of a given group of atoms. If `compound`
+            is ``'atoms'``, this parameter is meaningless and therefore
+            ignored.
         box : array_like, optional
             The unitcell dimensions of the system, which can be orthogonal or
             triclinic and must be provided in the same format as returned by
@@ -1589,7 +1689,9 @@ class GroupBase(_MutableBase):
         This function is most useful when atoms have been packed into the
         primary unit cell, causing breaks mid-molecule, with the molecule then
         appearing on either side of the unit cell. This is problematic for
-        operations such as calculating the center of mass of the molecule. ::
+        operations such as calculating the center of mass of the molecule.
+
+        Unwrapping when `compound` is ``'fragments'``::
 
            +-----------+       +-----------+
            |           |       |           |
@@ -1654,10 +1756,13 @@ class GroupBase(_MutableBase):
         .. versionadded:: 0.20.0
         """
         atoms = self.atoms
-        # bail out early if no bonds in topology:
-        if not hasattr(atoms, 'bonds'):
-            raise NoDataError("{}.unwrap() not available; this requires Bonds"
-                              "".format(self.__class__.__name__))
+
+        # An early check for bonds here turns out to incurr in a major
+        # performance penalty. It's better to let this fail in the make_whole
+        # call because intermediate steps have negligible run-time.
+        #if not hasattr(atoms, 'bonds'):
+        #    raise NoDataError("{}.unwrap() not available; this requires Bonds"
+        #                      "".format(self.__class__.__name__))
         unique_atoms = atoms.unique
 
         # Parameter sanity checking
@@ -1687,15 +1792,14 @@ class GroupBase(_MutableBase):
         if comp == 'group':
             positions = mdamath.make_whole(unique_atoms, inplace=False)
             # Apply reference shift if required:
-            if reference is not None and len(positions) > 0:
-                if reference == 'com':
-                    masses = unique_atoms.masses
-                    total_mass = masses.sum()
+            if reference is not None and len(positions):
+                if reference == 'com' and len(positions) > 1:
+                    total_mass = unique_atoms.masses.sum()
                     if np.isclose(total_mass, 0.0):
                         raise ValueError("Cannot perform unwrap with "
                                          "reference='com' because the total "
                                          "mass of the group is zero.")
-                    refpos = np.sum(positions * masses[:, None], axis=0)
+                    refpos = np.sum(positions * unique_atoms.masses[:, None], axis=0)
                     refpos /= total_mass
                 else:  # reference == 'cog'
                     refpos = positions.mean(axis=0)
@@ -1710,29 +1814,63 @@ class GroupBase(_MutableBase):
             atom_masks = unique_atoms._split_by_compound_indices(comp,
                                               stable_sort=reference is None)[0]
             positions = unique_atoms.positions
+            # We preselect where to spend the expensive unwrap effort by
+            # vectorially calculating the spread of all the compounds of the
+            # same size. If a compound doesn't spread over half a box vector,
+            # then it doesn't need unwrapping.
             for atom_mask in atom_masks:
-                for mask in atom_mask:
-                    positions[mask] = mdamath.make_whole(unique_atoms[mask],
-                                                         inplace=False)
-                # Apply reference shift if required:
-                if reference is not None:
-                    if reference == 'com':
-                        masses = unique_atoms.masses[atom_mask]
-                        total_mass = masses.sum(axis=1)
-                        if np.any(np.isclose(total_mass, 0.0)):
-                            raise ValueError("Cannot perform unwrap with "
-                                             "reference='com' because the "
-                                             "total mass of at least one of "
-                                             "the {} is zero.".format(comp))
-                        refpos = np.sum(positions[atom_mask]
-                                        * masses[:, :, None], axis=1)
-                        refpos /= total_mass[:, None]
-                    else:  # reference == 'cog'
-                        refpos = positions[atom_mask].mean(axis=1)
+
+                # Shortcut for single-particle compounds. Will not error even
+                # if they are massless and com shifts are requested.
+                if atom_mask.shape[-1] == 1:
+                    if reference is not None:
+                        # Same operation, regardless of cog vs com shifting.
+                        positions[atom_mask[:, 0]] = distances.apply_PBC(
+                                                    positions[atom_mask[:, 0]],
+                                                    self.dimensions)
+                    continue
+
+                # For performance, trying to do as little fancy-indexing as
+                # possible. For positions, one at the start of the loop and one
+                # at the end; for the atoms, one per AtomGroup to unwrap; and
+                # and one for the masses, if doing COM.
+                pos = positions[atom_mask]
+                spreads = pos.ptp(axis=1)
+                spreads = distances.transform_RtoS(spreads, self.dimensions)
+                to_unwrap = np.where(np.any(spreads > .5, axis=1))[0]
+
+                # i is the index to unwrap within the same-sized chunk of
+                # compounds. Because these are just views, this'll change pos
+                # in-place.
+                for i, mask in zip(to_unwrap, atom_mask[to_unwrap]):
+                    ats_to_unwrap = unique_atoms[mask]
+                    pos[i] = mdamath.make_whole(ats_to_unwrap, inplace=False)
+
+                # If we don't need to do reference shifting, we're done
+                if reference is None:
+                    positions[atom_mask] = pos
+                    continue
+
+                # Apply reference shift
+                if reference == 'com':
+                    try:
+                        weights = np.broadcast_to(
+                            unique_atoms.masses[atom_mask, None], pos.shape)
+                        refpos = np.average(pos, axis=1, weights=weights)
+                    except ZeroDivisionError:
+                        raise ValueError("Cannot perform unwrap with "
+                                         "reference='com' because the "
+                                         "total mass of at least one "
+                                         "of the {} is zero."
+                                         .format(comp))
+                    # Masses come as float64 and upconvert the result
                     refpos = refpos.astype(np.float32, copy=False)
-                    target = distances.apply_PBC(refpos, self.dimensions)
-                    positions[atom_mask] += (target[:, None, :]
-                                             - refpos[:, None, :])
+                else:  # reference == 'cog'
+                    refpos = pos.mean(axis=1)
+
+                target = distances.apply_PBC(refpos, self.dimensions)
+                positions[atom_mask] = pos + (target[:, None, :]
+                                              - refpos[:, None, :])
         if inplace:
             unique_atoms.positions = positions
         if not atoms.isunique:
@@ -2327,7 +2465,7 @@ class AtomGroup(GroupBase):
     (e.g. as a tuple, or as attributes of the object to be pickled), or the
     implicit new Universe (`AtomGroup.Universe`) needs to be used.
     Second, When multiple AtomGroup need to be pickled, they will recognize if
-    they belong to the same Univese or not.
+    they belong to the same Universe or not.
     Also keep in mind that they need to be pickled together.
 
     See Also
@@ -2418,6 +2556,9 @@ class AtomGroup(GroupBase):
         # comprehension isn't terrible.
         for at, r in zip(self, r_ix):
             self.universe._topology.tt.move_atom(at.ix, r)
+
+        # AtomGroup-level caches involving resindices are no longer valid
+        self.universe._cache['_valid'].pop('residues', None)
 
     @property
     def n_residues(self):
@@ -3436,6 +3577,9 @@ class ResidueGroup(GroupBase):
         for r, s in zip(self, s_ix):
             self.universe._topology.tt.move_residue(r.ix, s)
 
+        # AtomGroup-level caches involving segindices are no longer valid
+        self.universe._cache['_valid'].pop('segments', None)
+
     @property
     def n_segments(self):
         """Number of unique segments present in the ResidueGroup.
@@ -3789,6 +3933,9 @@ class Atom(ComponentBase):
                             "".format(type(new)))
         self.universe._topology.tt.move_atom(self.ix, new.resindex)
 
+        # AtomGroup-level caches involving resindices are no longer valid
+        self.universe._cache['_valid'].pop('residues', None)
+
     @property
     def segment(self):
         return self.universe.segments[self.universe._topology.segindices[self]]
@@ -3913,6 +4060,9 @@ class Residue(ComponentBase):
             raise TypeError("Can only set Residue segment to Segment, not {}"
                             "".format(type(new)))
         self.universe._topology.tt.move_residue(self.ix, new.segindex)
+
+        # AtomGroup-level caches involving segindices are no longer valid
+        self.universe._cache['_valid'].pop('segments', None)
 
 
 class Segment(ComponentBase):
@@ -4192,6 +4342,13 @@ Residue.level = RESIDUELEVEL
 ResidueGroup.level = RESIDUELEVEL
 Segment.level = SEGMENTLEVEL
 SegmentGroup.level = SEGMENTLEVEL
+
+
+# A dummy, empty, cheaply-hashable object class to use with weakref caching.
+# (class object doesn't allow weakrefs to its instances, but user-defined
+#  classes do)
+class _CacheKey:
+    pass
 
 
 def requires(*attrs):

@@ -1358,8 +1358,8 @@ class TestAttributeGetting(object):
     def test_unwrap_without_bonds(self, universe):
         with pytest.raises(NoDataError) as exc:
             universe.atoms.unwrap()
-        err = ('AtomGroup.unwrap() not available; '
-               'this requires Bonds')
+        err = ('Cannot use compound=\'fragments\': No bond information in '
+               'topology.')
         assert str(exc.value) == err
 
     def test_get_absent_attr_method(self, universe):
@@ -1447,7 +1447,7 @@ class TestInitGroup(object):
 
 class TestDecorator(object):
     @groups.check_pbc_and_unwrap
-    def dummy_funtion(cls, compound="group", pbc=True, unwrap=True):
+    def dummy_function(cls, compound="group", pbc=True, unwrap=True):
         return 0
 
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
@@ -1458,6 +1458,83 @@ class TestDecorator(object):
 
         if compound == 'group' and pbc and unwrap:
             with pytest.raises(ValueError):
-                self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap)
+                self.dummy_function(compound=compound, pbc=pbc, unwrap=unwrap)
         else:
-            assert_equal(self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap), 0)
+            assert_equal(self.dummy_function(compound=compound, pbc=pbc,
+                                             unwrap=unwrap), 0)
+
+
+class TestUniverseCaching(object):
+
+    @staticmethod
+    def indices_splits_equal(splits_a, splits_b):
+        # easy case
+        if splits_a is splits_b:
+            return True
+        # we compare from the end, which has lower complexity
+        if splits_a[-1] != splits_b[-1]:
+            return False
+        for arrlist_a, arrlist_b in zip(splits_a[1::-1], splits_b[1::-1]):
+            for arr_a, arr_b in zip(arrlist_a, arrlist_b):
+                if not np.array_equal(arr_a, arr_b):
+                    return False
+        return True
+
+    @pytest.mark.parametrize('group, subgroup', (('segments', 'residues'),
+                                                 ('residues', 'atoms')))
+    def test_indices_invalidation(self, group, subgroup):
+        u = make_Universe()
+        u_group = getattr(u, group)
+        u_subgroup = getattr(u, subgroup)
+        local_cache_key = f'{group}_splits'
+
+        splits1 = u.atoms._split_by_compound_indices(group, stable_sort=True)
+        # both the cache and its validation under universe should be set by now
+        assert local_cache_key in u.atoms._cache
+        assert u.atoms._check_universe_cache_validity(group)
+        # new splits are fetched from cache
+        splits2 = u.atoms._split_by_compound_indices(group, stable_sort=True)
+        assert splits2 is splits1
+
+        # let's break indices
+        # equivalent to u.residues[-1:].segments = u.segments[0]
+        setattr(u_subgroup[-1:], group, u_group[0])
+
+        # cache should now be invalid, even though it exists in the ag._cache
+        assert local_cache_key in u.atoms._cache
+        assert not u.atoms._check_universe_cache_validity(local_cache_key,
+                                                          group)
+        # the check should have cleared the cache
+        assert local_cache_key not in u.atoms._cache
+
+        splits3 = u.atoms._split_by_compound_indices(group, stable_sort=True)
+        assert splits3 is not splits1
+        assert not self.indices_splits_equal(splits1, splits3)
+
+        # let's put everything back
+        setattr(u_subgroup[-1:], group, u_group[-1])
+
+        # the splits should be back to initial arrays, but not the same object
+        splits4 = u.atoms._split_by_compound_indices(group, stable_sort=True)
+        assert splits4 is not splits1
+        assert self.indices_splits_equal(splits1, splits4)
+
+    def test_molnum_invalidation(self):
+        u = make_Universe()
+        u.add_TopologyAttr('molnums', values=np.zeros(len(u.residues)))
+        u.residues[-2:].molnums = 1
+        group = 'molecules'
+        local_cache_key = f'{group}_splits'
+
+        splits1 = u.atoms._split_by_compound_indices(group)
+        # both the cache and its validation under universe should be set by now
+        assert local_cache_key in u.atoms._cache
+        assert u.atoms._check_universe_cache_validity(group)
+        # new splits are fetched from cache
+        splits2 = u.atoms._split_by_compound_indices(group)
+        assert splits2 is splits1
+
+        # let's break indices
+        u.residues[-1:].molnums = 2
+        # cache should now be invalid
+        assert not u.atoms._check_universe_cache_validity(group)

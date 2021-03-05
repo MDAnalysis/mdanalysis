@@ -202,6 +202,26 @@ class AtomGroupMethodsBench(object):
         self.ag.wrap()
 
 
+class AtomGroupUnwrapBench(object):
+    """Benchmarks for the atomgroup unwrap method, which requires bonds.
+    """
+
+    params = (10, 100, 1000, 10000)
+    param_names = ['num_atoms']
+
+    def setup(self, num_atoms):
+        self.u = MDAnalysis.Universe(TPR, GRO)
+        # The massless TIP4P MWs break the unwrap in some versions
+        self.ag = self.u.select_atoms('not name MW')[:num_atoms]
+        # Prime the cache
+        self.ag.unwrap(inplace=False)
+
+    def time_unwrap(self, num_atoms):
+        """Benchmark unwrap() operation on atomgroup fragments.
+        """
+        self.ag.unwrap()
+
+
 
 class AtomGroupAttrsBench(object):
     """Benchmarks for the various MDAnalysis

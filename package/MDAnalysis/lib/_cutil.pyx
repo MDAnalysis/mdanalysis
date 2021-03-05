@@ -113,15 +113,15 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
     on either side of the unit cell. This is problematic for operations
     such as calculating the center of mass of the molecule. ::
 
-       +-----------+     +-----------+
-       |           |     |           |
-       | 6       3 |     |         3 | 6
-       | !       ! |     |         ! | !
-       |-5-8   1-2-| ->  |       1-2-|-5-8
-       | !       ! |     |         ! | !
-       | 7       4 |     |         4 | 7
-       |           |     |           |
-       +-----------+     +-----------+
+       +-----------+        +-----------+
+       |           |        |           |
+       | 6       3 |        |         3 | 6
+       | !       ! |        |         ! | !
+       |-5-8   1-2-|  ==>   |       1-2-|-5-8
+       | !       ! |        |         ! | !
+       | 7       4 |        |         4 | 7
+       |           |        |           |
+       +-----------+        +-----------+
 
 
     Parameters
