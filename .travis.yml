@@ -21,7 +21,7 @@ env:
     - MDA_DOCDIR=${TRAVIS_BUILD_DIR}/package/doc/html/html
     - MAINTAIN_DIR=${TRAVIS_BUILD_DIR}/maintainer
     # Set default python version to avoid repetition later
-    - PYTHON_VERSION=3.7
+    - PYTHON_VERSION=2.7
     - BUILD_DOCS=false
     - CODECOV=true
     - PYTEST_FLAGS="--disable-pytest-warnings --durations=50"
@@ -29,7 +29,7 @@ env:
     - MAIN_CMD="pytest ${PYTEST_LIST}"
     - SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - BUILD_CMD="pip install -e package/ && (cd testsuite/ && python setup.py build)"
-    - CONDA_MIN_DEPENDENCIES="pip<21.0 mmtf-python>=1.0.0 biopython>=1.71,<1.77 networkx>=1.0 cython matplotlib>=1.5.1 scipy griddataformats>=0.4.0 hypothesis gsd codecov six>=1.4.0 tqdm>=4.43.0"
+    - CONDA_MIN_DEPENDENCIES="pip<21.0 mmtf-python>=1.0.0 biopython>=1.71,<1.77 networkx>=1.0 cython matplotlib>=1.5.1 scipy griddataformats>=0.4.0 hypothesis gsd codecov six>=1.4.0 tqdm>=4.43.0 pytest>=3.3.0 psutil>=4.0.2"
     - CONDA_STANDARD_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} funcsigs joblib>=0.12 seaborn>=0.7.0 clustalw=2.1 netcdf4>1.0 scikit-learn"
     - CONDA_DEPENDENCIES="${CONDA_STANDARD_DEPENDENCIES} mock chemfiles"
     - CONDA_CHANNELS='biobuilds conda-forge'
@@ -53,7 +53,7 @@ jobs:
     - env: NAME="python 2.7"
            PYTHON_VERSION=2.7
            NUMPY_VERSION=1.16.6
-           CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} clustalw=2.1 netcdf4>1.0 funcsigs<=1.0.2 mock<=3.0.5 seaborn"
+           CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} clustalw=2.1 netcdf4>1.0 funcsigs<=1.0.2 mock>=2.0.0 seaborn"
            PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0 chemfiles scikit-learn joblib>=0.12"
 
     - env: NAME="python 3.5"
@@ -71,7 +71,7 @@ install:
         export PATH=${PATH}:${HOLE_BINDIR}; \
     fi
   - git clone git://github.com/astropy/ci-helpers.git
-  - travis_wait source ci-helpers/travis/setup_conda.sh
+  - source ci-helpers/travis/setup_conda.sh
   - eval $BUILD_CMD
 
 script:
