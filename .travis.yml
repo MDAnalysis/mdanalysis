@@ -71,7 +71,7 @@ install:
         export PATH=${PATH}:${HOLE_BINDIR}; \
     fi
   - git clone git://github.com/astropy/ci-helpers.git
-  - source ci-helpers/travis/setup_conda.sh
+  - travis_wait source ci-helpers/travis/setup_conda.sh
   - eval $BUILD_CMD
 
 script:
