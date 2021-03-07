@@ -1367,7 +1367,7 @@ def get_weights(atoms, weights):
     if iterable(weights):
         if len(np.asarray(weights, dtype=object).shape) != 1:
             raise ValueError("weights must be a 1D array, not with shape "
-                            "{0}".format(
+                             "{0}".format(
                                 np.asarray(weights, dtype=object).shape))
         elif len(weights) != len(atoms):
             raise ValueError("weights (length {0}) must be of same length as "

@@ -545,8 +545,8 @@ class RMSD(AnalysisBase):
         # check weights type
         acceptable_dtypes = (np.dtype('float64'), np.dtype('int64'))
         msg = ("weights should only be 'mass', None or 1D float array."
-              "For weights on groupselections, "
-              "use **weight_groupselections**")
+               "For weights on groupselections, "
+               "use **weight_groupselections**")
 
         if iterable(self.weights):
             element_lens = []
