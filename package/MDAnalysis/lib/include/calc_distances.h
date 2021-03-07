@@ -31,7 +31,7 @@ typedef float coordinate[3];
   #define USED_OPENMP 0
 #endif
 
-static void minimum_image(double* x, float* box, float* inverse_box)
+void minimum_image(double* x, float* box, float* inverse_box)
 {
   int i;
   double s;
@@ -43,7 +43,7 @@ static void minimum_image(double* x, float* box, float* inverse_box)
   }
 }
 
-static void minimum_image_triclinic(double* dx, float* box)
+void minimum_image_triclinic(double* dx, float* box)
 {
    /*
     * Minimum image convention for triclinic systems, modelled after domain.cpp

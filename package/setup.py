@@ -74,7 +74,7 @@ else:
     from commands import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "1.0.1"
+RELEASE = "1.0.2-dev0"
 
 is_release = 'dev' not in RELEASE
 
@@ -425,7 +425,7 @@ def extensions(config):
                               extra_compile_args=extra_compile_args)
     nsgrid = MDAExtension('MDAnalysis.lib.nsgrid',
                              ['MDAnalysis/lib/nsgrid' + cpp_source_suffix],
-                             include_dirs=include_dirs,
+                             include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                              language='c++',
                              define_macros=define_macros,
                              extra_compile_args=cpp_extra_compile_args,
@@ -665,7 +665,7 @@ if __name__ == '__main__':
     )
 
     # Releases keep their cythonized stuff for shipping.
-    if not config.get('keep_cythonized', default=is_release) and not cython_linetrace:
+    if False: # not config.get('keep_cythonized', default=is_release) and not cython_linetrace:
         for cythonized in cythonfiles:
             try:
                 os.unlink(cythonized)
