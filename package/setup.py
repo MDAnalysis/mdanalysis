@@ -588,7 +588,6 @@ if __name__ == '__main__':
                 'biopython>=1.71,<1.77',
                 'joblib>=0.12,<0.15.0']
     else:
-        # should we pin max versions for the final 1.0.x release?
         install_requires = [
                 'numpy>=1.13.3',
                 'biopython>=1.71',
