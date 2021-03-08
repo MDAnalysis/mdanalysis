@@ -22,7 +22,7 @@ env:
 
 jobs:
   main_tests:
-    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    # if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ${{ matrix.os }}
     strategy:
         fail-fast: false
@@ -42,6 +42,12 @@ jobs:
             - name: minimal-ubuntu
               os: ubuntu-latest
               python-version: 3.6
+              run_type: MIN
+              install_hole: false
+              codecov: true
+            - name: minimal-py2.7
+              os: ubuntu-latest
+              python-version: 2.7
               run_type: MIN
               install_hole: false
               codecov: true
