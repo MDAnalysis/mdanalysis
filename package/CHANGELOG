@@ -81,8 +81,11 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Caches can now undergo central validation at the Universe level, opening
+    the door to more useful caching. Already applied to fragment caching
+    (Issue #2376, PR #3135)
   * Code for operations on compounds refactored, centralized and optimized for
-    performance (Issue #3000)
+    performance (Issue #3000, PR #3005)
   * Added automatic selection class generation for TopologyAttrs,
     FloatRangeSelection, and BoolSelection (Issues #2925, #2875; PR #2927)
   * Added 'to' operator, negatives, scientific notation, and arbitrary
