@@ -200,7 +200,7 @@ jobs:
 
     - name: install_deps
       run: |
-          conda install "numpy<1.17" cython scipy
+          conda install "numpy<1.17" cython scipy "matplotlib<3.4"
 
     - name: install_mda
       run: |
