@@ -45,12 +45,6 @@ jobs:
               run_type: MIN
               install_hole: false
               codecov: true
-            - name: minimal-py2.7
-              os: ubuntu-latest
-              python-version: 2.7
-              run_type: MIN
-              install_hole: false
-              codecov: true
             - name: numpy_min
               os: ubuntu-latest
               python-version: 3.6
@@ -180,6 +174,43 @@ jobs:
         fail_ci_if_error: True
         verbose: True
 
+  legacy_tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ]
+        python-version: [2.7, 3.5]
+    env:
+      CYTHON_TRACE_NOGIL: 1
+      MPLBACKEND: agg
+      GH_OS: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: setup_miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+        auto-update-conda: true
+        channel-priority: flexible
+        channels: biobuilds, conda-forge
+        add-pip-as-python-dependency: true
+        architecture: x64
+
+    - name: install_deps
+      run: |
+          conda install "numpy<1.17" cython scipy
+
+    - name: install_mda
+      run: |
+          (cd package/ && python setup.py develop) && (cd testsuite/ && python setup.py install)
+
+    - name: run_tests
+      run: |
+        PYTEST_FLAGS="--disable-pytest-warnings --durations=50"
+        echo $PYTEST_FLAGS
+        pytest -n 2 testsuite/MDAnalysisTests $PYTEST_FLAGS
 
   build_docs:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
