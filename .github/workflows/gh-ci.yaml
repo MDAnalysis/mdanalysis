@@ -231,6 +231,7 @@ jobs:
         # Check OS and python setup
         echo "OS: ${OS_NAME}"
         which python
+        python -V
         which pip
         pip list
         conda info
