@@ -22,7 +22,7 @@ env:
 
 jobs:
   main_tests:
-    # if: "github.repository == 'MDAnalysis/mdanalysis'"
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ${{ matrix.os }}
     strategy:
         fail-fast: false
@@ -175,6 +175,7 @@ jobs:
         verbose: True
 
   legacy_tests:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -202,6 +203,26 @@ jobs:
       run: |
           conda install pip cython "numpy<1.17" "biopython>=1.71,<1.77" "joblib>=0.12,<0.15.0" "matplotlib>=1.5.1,<3.4" "networkx>=1.0" "GridDataFormats>=0.4.0" "six>=1.4.0" "mmtf-python>=1.0.0" "scipy>=1.0.0" "tqdm>=4.43.0" funcsigs "pytest<6.2" hypothesis "networkx<2.5" mock "gsd>=1.4.0" "netcdf4==1.3.1" "clustalw=2.1" scikit-learn "seaborn>=0.7.0" chemfiles
           pip install pytest-xdist
+
+    - name: install_hole
+      run: |
+        # We manually build hole2 to avoid OS incompatibilities
+        git clone https://github.com/MDAnalysis/hole2.git
+        cd hole2/src
+        source ../source.apache
+        (make FC=${FC}) && (make PREFIX=${HOME}/hole2 FC=${FC} install)
+        source ../source.unset
+        echo "HOLE_BINDIR=${HOME}/hole2/bin" >> $GITHUB_ENV
+        echo "${HOME}/hole2/bin" >> $GITHUB_PATH
+
+    - name: check_setup
+      run: |
+        # Check OS and python setup
+        echo "OS: ${OS_NAME}"
+        which python
+        which pip
+        pip list
+        conda info
 
     - name: install_mda
       run: |
