@@ -586,12 +586,14 @@ if __name__ == '__main__':
         install_requires = [
                 'numpy>=1.13.3,<1.17',
                 'biopython>=1.71,<1.77',
-                'joblib>=0.12,<0.15.0']
+                'joblib>=0.12,<0.15.0',
+                'matplotlib>=1.5.1,<3.4']
     else:
         install_requires = [
                 'numpy>=1.13.3',
                 'biopython>=1.71',
-                'joblib>=0.12']
+                'joblib>=0.12',
+                'matplotlib>=1.5.1']
 
     install_requires.extend([
         'networkx>=1.0',
@@ -599,7 +601,6 @@ if __name__ == '__main__':
         'six>=1.4.0',            # to support Py 2
         'mmtf-python>=1.0.0',
         'scipy>=1.0.0',
-        'matplotlib>=1.5.1',
         'mock',
         'tqdm>=4.43.0',
         'funcsigs',              # to support Py 2
