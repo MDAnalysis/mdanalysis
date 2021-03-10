@@ -468,15 +468,15 @@ class TestAlignmentProcessing(object):
     seq = FASTA
     ref = FASTA_NOGAP_ref
     tgt = FASTA_NOGAP_tgt
+    error_msg = "selection string has unexpected length"
 
     def test_fasta2select_aligned(self):
         """test align.fasta2select() on aligned FASTA (Issue 112)"""
         sel = align.fasta2select(self.seq, is_aligned=True)
         # length of the output strings, not residues or anything real...
-        assert len(sel['reference']) == 30623, ("selection string has"
-                                                "unexpected length")
+        assert len(sel['reference']) == 30623, self.error_msg
         assert len(
-            sel['mobile']) == 30623, "selection string has unexpected length"
+            sel['mobile']) == 30623, self.error_msg
 
     @pytest.mark.skipif(executable_not_found("clustalw2"),
                         reason="Test skipped because clustalw2 executable not found")
@@ -486,10 +486,8 @@ class TestAlignmentProcessing(object):
         with tmpdir.as_cwd():
             sel = align.fasta2select(self.seq, is_aligned=False,
                                      alnfilename=None, treefilename=None)
-            assert len(sel['reference']) == 23080, ("selection string has"
-                                                    "unexpected length")
-            assert len(sel['mobile']) == 23090, ("selection string has"
-                                                 "unexpected length")
+            assert len(sel['reference']) == 23080, self.error_msg
+            assert len(sel['mobile']) == 23090, self.error_msg
 
     @pytest.mark.skipif(executable_not_found("clustalw2"),
                         reason="Test skipped because clustalw2 executable not found")
@@ -503,22 +501,19 @@ class TestAlignmentProcessing(object):
         # numbers computed from alignment with clustalw 2.1 on Mac OS X
         # [orbeckst] length of the output strings, not residues or anything
         # real...
-        assert len(sel['reference']) == 23080, ("selection string has"
-                                                "unexpected length")
+        assert len(sel['reference']) == 23080, self.error_msg
         assert len(
-            sel['mobile']) == 23090, "selection string has unexpected length"
+            sel['mobile']) == 23090, self.error_msg
 
     def test_fasta2select_nogap(self, tmpdir):
         """test align.fasta2select() on aligned FASTA with no gap in residue
         (Issue #3124)"""
         reference = mda.Universe(self.ref).select_atoms('all')
         target = mda.Universe(self.tgt).select_atoms('all')
-        ref_resids = [a.resid for a in
-                      reference.select_atoms('protein').select_atoms(
-                          'name CA and not altloc B')]
-        target_resids = [a.resid for a in
-                         target.select_atoms('protein').select_atoms(
-                             'name CA and not altloc B')]
+        CA_ref = reference.select_atoms('protein and name CA and not altloc B')
+        CA_target = target.select_atoms('protein and name CA and not altloc B')
+        ref_resids = [a.resid for a in CA_ref]
+        target_resids = [a.resid for a in CA_target]
         alignment = align.sequence_alignment(
             target.select_atoms('protein and not altloc B'),
             reference.select_atoms('protein and not altloc B'))
@@ -530,10 +525,9 @@ class TestAlignmentProcessing(object):
                                      is_aligned=True,
                                      ref_resids=ref_resids,
                                      target_resids=target_resids)
-        assert len(sel['reference']) == 5455, ("selection string has"
-                                                "unexpected length")
+        assert len(sel['reference']) == 5455, self.error_msg
         assert len(
-            sel['mobile']) == 5455, "selection string has unexpected length"
+            sel['mobile']) == 5455, self.error_msg
 
 def test_sequence_alignment():
     u = mda.Universe(PSF)
