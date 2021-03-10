@@ -31,7 +31,8 @@ import pytest
 from MDAnalysis import SelectionError, SelectionWarning
 from MDAnalysisTests import executable_not_found
 from MDAnalysisTests.datafiles import (PSF, DCD, CRD, FASTA, ALIGN_BOUND,
-                                       ALIGN_UNBOUND, FASTA_ref, FASTA_tgt)
+                                       ALIGN_UNBOUND, FASTA_NOGAP_ref,
+                                       FASTA_NOGAP_tgt)
 from numpy.testing import (
     assert_almost_equal,
     assert_equal,
@@ -465,8 +466,8 @@ class TestAverageStructure(object):
 
 class TestAlignmentProcessing(object):
     seq = FASTA
-    ref = FASTA_ref
-    tgt = FASTA_tgt
+    ref = FASTA_NOGAP_ref
+    tgt = FASTA_NOGAP_tgt
 
     def test_fasta2select_aligned(self):
         """test align.fasta2select() on aligned FASTA (Issue 112)"""
@@ -508,34 +509,31 @@ class TestAlignmentProcessing(object):
             sel['mobile']) == 23090, "selection string has unexpected length"
 
     def test_fasta2select_nogap(self, tmpdir):
-        """test align.fasta2select() on aligned FASTA with no gap (Issue #3124)"""
-        try:
-            reference = mda.Universe(self.ref).select_atoms('all')
-            target = mda.Universe(self.tgt).select_atoms('all')
-            # Rename histidine and remove alt conformation to permit alignment
-            for residue_reference in reference.residues:
-                if residue_reference.resname in ['HIP', 'HIE', 'HID']:
-                    residue_reference.resname = 'HIS'
-            for residue_target in target.residues:
-                if residue_target.resname in ['HIP', 'HIE', 'HID']:
-                    residue_target.resname = 'HIS'
-            with tmpdir.as_cwd():
-                alignment = align.sequence_alignment(target.select_atoms('protein and not altloc B'),
-                                                     reference.select_atoms('protein and not altloc B'))
-                fasta = '>ref\n{}\n>mobile\n{}'.format(alignment[0], alignment[1])
-                file_fasta = open('alignment.aln', "w+")
-                file_fasta.write(fasta)
-                file_fasta.close()
-                ref_resids = [a.resid for a in
-                              reference.select_atoms('protein').select_atoms('name CA and not altloc B')]
-                target_resids = [a.resid for a in
-                                 target.select_atoms('protein').select_atoms('name CA and not altloc B')]
-                sel = align.fasta2select('alignment.aln',
-                                         is_aligned=True,
-                                         ref_resids=ref_resids,
-                                         target_resids=target_resids)
-        except UnboundLocalError:
-            pytest.fail('UnboundLocalError: GAP variable referenced before assignment')
+        """test align.fasta2select() on aligned FASTA with no gap in residue
+        (Issue #3124)"""
+        reference = mda.Universe(self.ref).select_atoms('all')
+        target = mda.Universe(self.tgt).select_atoms('all')
+        ref_resids = [a.resid for a in
+                      reference.select_atoms('protein').select_atoms(
+                          'name CA and not altloc B')]
+        target_resids = [a.resid for a in
+                         target.select_atoms('protein').select_atoms(
+                             'name CA and not altloc B')]
+        alignment = align.sequence_alignment(
+            target.select_atoms('protein and not altloc B'),
+            reference.select_atoms('protein and not altloc B'))
+        with tmpdir.as_cwd():
+            fasta = f">ref\n{alignment[0]}\n>mobile\n{alignment[1]}"
+            with open('alignment.aln', "w+") as f:
+                f.write(fasta)
+            sel = align.fasta2select('alignment.aln',
+                                     is_aligned=True,
+                                     ref_resids=ref_resids,
+                                     target_resids=target_resids)
+        assert len(sel['reference']) == 5455, ("selection string has"
+                                                "unexpected length")
+        assert len(
+            sel['mobile']) == 5455, "selection string has unexpected length"
 
 def test_sequence_alignment():
     u = mda.Universe(PSF)

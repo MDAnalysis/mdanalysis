@@ -198,8 +198,8 @@ __all__ = [
     "FHIAIMS", # to test FHIAIMS coordinate files
     "SDF_molecule",  # MDL SDFile for rdkit
     "PDB_elements",  # PDB file with elements
-    "FASTA_ref",  # Alignment reference file with no gap (Issue #3124)
-    "FASTA_tgt",  # Alignment target file with no gap (Issue #3124)
+    "FASTA_NOGAP_ref",  # Alignment reference file with no gap (Issue #3124)
+    "FASTA_NOGAP_tgt",  # Alignment target file with no gap (Issue #3124)
 ]
 
 from pkg_resources import resource_filename
@@ -550,9 +550,9 @@ SDF_molecule = resource_filename(__name__, 'data/molecule.sdf')
 
 PDB_elements = resource_filename(__name__, 'data/elements.pdb')
 
-FASTA_ref = resource_filename(__name__, 'data/5s8s.pdb')
+FASTA_NOGAP_ref = resource_filename(__name__, 'data/5s8s.pdb.gz')
 
-FASTA_tgt = resource_filename(__name__, 'data/5s8r.pdb')
+FASTA_NOGAP_tgt = resource_filename(__name__, 'data/5s8r.pdb.gz')
 
 # This should be the last line: clean up namespace
 del resource_filename
