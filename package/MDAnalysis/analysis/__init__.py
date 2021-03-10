@@ -139,7 +139,6 @@ __all__ = [
     'pca',
     'psa',
     'rdf',
-    'rdf_s',
     'rms',
     'waterdynamics',
 ]

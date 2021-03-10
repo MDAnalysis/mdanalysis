@@ -22,6 +22,7 @@ The rules for this file:
 
 Fixes
   * ITPParser now accepts relative paths (Issue #3037)
+  * Fixed import of several `__all__` lists (PR #3013)
   * atommethods (_get_prev/next_residues_by_resid) returns empty residue group 
     when given empty residue group (Issue #3089)
   * MOL2 files without bonds can now be read and written (Issue #3057)
@@ -81,6 +82,11 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Caches can now undergo central validation at the Universe level, opening
+    the door to more useful caching. Already applied to fragment caching
+    (Issue #2376, PR #3135)
+  * Code for operations on compounds refactored, centralized and optimized for
+    performance (Issue #3000, PR #3005)
   * Added automatic selection class generation for TopologyAttrs,
     FloatRangeSelection, and BoolSelection (Issues #2925, #2875; PR #2927)
   * Added 'to' operator, negatives, scientific notation, and arbitrary
@@ -157,6 +163,7 @@ Changes
     `__call__` (Issue #2860, PR #2859)
   * deprecated ``analysis.helanal`` module has been removed in favour of
     ``analysis.helix_analysis`` (PR #2929)
+  * Move water bridge analysis from hbonds to hydrogenbonds (Issue #2739 PR #2913)
 
 Deprecations
 

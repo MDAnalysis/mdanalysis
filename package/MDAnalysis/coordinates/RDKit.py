@@ -480,9 +480,9 @@ def _add_mda_attr_to_rdkit(attr, value, mi):
 
 def _set_atom_property(atom, attr, value):
     """Saves any attribute and value into an RDKit atom property"""
-    if isinstance(value, (float, np.float)):
+    if isinstance(value, (float, np.floating)):
         atom.SetDoubleProp(attr, float(value))
-    elif isinstance(value, (int, np.int)):
+    elif isinstance(value, (int, np.integer)):
         atom.SetIntProp(attr, int(value))
     else:
         atom.SetProp(attr, value)
