@@ -22,6 +22,9 @@ The rules for this file:
 
 Fixes
   * ITPParser now accepts relative paths (Issue #3037)
+  * ValueError raised when empty atomgroup is given to DensityAnalysis
+    without a user defined grid. UserWarning displayed when user defined 
+    grid is provided. (Issue #3055)
   * Fixed import of several `__all__` lists (PR #3013)
   * atommethods (_get_prev/next_residues_by_resid) returns empty residue group 
     when given empty residue group (Issue #3089)
