@@ -21,8 +21,10 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * Fixed UnboundLocalError in fasta2align function (Issue #3124)
+    changed authors and changelog
   * ValueError raised when empty atomgroup is given to DensityAnalysis
-    without a user defined grid. UserWarning displayed when user defined 
+    without a user defined grid. UserWarning displayed when user defined
     grid is provided. (Issue #3055)
   * Fixed import of several `__all__` lists (PR #3013)
   * atommethods (_get_prev/next_residues_by_resid) returns empty residue group 
