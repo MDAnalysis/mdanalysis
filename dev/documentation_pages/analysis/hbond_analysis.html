@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>4.3.2. Hydrogen Bond analysis (Deprecated) — MDAnalysis.analysis.hbonds.hbond_analysis &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>4.3.2. Hydrogen Bond analysis (Deprecated) — MDAnalysis.analysis.hbonds.hbond_analysis &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,7 +43,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -117,7 +117,14 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="hbond_autocorrel.html">4.3.3. Hydrogen bond autocorrelation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_autocorrel</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="wbridge_analysis.html">4.3.4. Water Bridge analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.WaterBridgeAnalysis</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="wbridge_analysis.html">4.3.4. Theory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wbridge_analysis.html#output-as-network">4.3.5. Output as Network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wbridge_analysis.html#output-as-timeseries">4.3.6. Output as Timeseries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wbridge_analysis.html#detection-of-water-bridges">4.3.7. Detection of water bridges</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wbridge_analysis.html#how-to-perform-waterbridgeanalysis">4.3.8. How to perform WaterBridgeAnalysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wbridge_analysis.html#use-count-by-type">4.3.9. Use count_by_type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wbridge_analysis.html#use-count-by-time">4.3.10. Use count_by_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wbridge_analysis.html#classes">4.3.11. Classes</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a></li>
@@ -876,7 +883,7 @@ and added <em>kwargs</em> so that it can be used instead of
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS">
-<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('O', 'ND1', 'OD1', 'OC2', 'OE1', 'OD2', 'OC1', 'OH', 'NE2', 'OH2', 'SG', 'OG', 'OW', 'SD', 'OE2', 'OG1'), 'GLYCAM06': ('O', 'SM', 'O2', 'OS', 'OY', 'N', 'NT', 'OW', 'OH'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('OC1', 'OD2', 'O', 'SG', 'NE2', 'OH', 'OE2', 'OG1', 'OH2', 'SD', 'OG', 'OC2', 'ND1', 'OD1', 'OE1', 'OW'), 'GLYCAM06': ('O', 'OS', 'OH', 'N', 'SM', 'OY', 'O2', 'OW', 'NT'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default atom names that are treated as hydrogen <em>acceptors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>acceptors</cite> to add a list of additional acceptor names.</p>
@@ -884,7 +891,7 @@ use the keyword <cite>acceptors</cite> to add a list of additional acceptor name
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS">
-<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('ND1', 'SG', 'NH2', 'OG', 'NE1', 'OH2', 'OH', 'N', 'ND2', 'NE2', 'OW', 'NH1', 'NZ', 'NE', 'OG1'), 'GLYCAM06': ('N3', 'N', 'NT', 'OW', 'OH'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('NH1', 'SG', 'ND2', 'NE2', 'N', 'OH', 'OG1', 'OH2', 'NZ', 'OG', 'NH2', 'ND1', 'NE1', 'OW', 'NE'), 'GLYCAM06': ('OH', 'N', 'N3', 'OW', 'NT'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>donors</cite> to add a list of additional donor names.</p>
@@ -1010,8 +1017,8 @@ the trajectory (if supported) [<code class="docutils literal notranslate"><span 
 <li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – last trajectory frame for analysis, <code class="docutils literal notranslate"><span class="pre">None</span></code> is the last one [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
 <li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – read every <cite>step</cite> between <cite>start</cite> (included) and <cite>stop</cite> (excluded),
 <code class="docutils literal notranslate"><span class="pre">None</span></code> selects 1. [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – toggle progress meter output <a class="reference internal" href="../lib/log.html#MDAnalysis.lib.log.ProgressMeter" title="MDAnalysis.lib.log.ProgressMeter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressMeter</span></code></a>
-[<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – toggle progress meter output
+<a class="reference internal" href="../lib/log.html#MDAnalysis.lib.log.ProgressBar" title="MDAnalysis.lib.log.ProgressBar"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressBar</span></code></a> [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
 <li><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – enable detailed logging of debugging information; this can create
 <em>very big</em> log files so it is disabled (<code class="docutils literal notranslate"><span class="pre">False</span></code>) by default; setting
 <cite>debug</cite> toggles the debug status for <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">HydrogenBondAnalysis</span></code></a>,
@@ -1167,10 +1174,18 @@ replaced in favor of zero-based indices.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -1187,7 +1202,7 @@ replaced in favor of zero-based indices.</p>
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

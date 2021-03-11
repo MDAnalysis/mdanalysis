@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>MDAnalysis.topology.guessers &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>MDAnalysis.topology.guessers &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,7 +43,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -211,9 +211,75 @@
 <span class="sd">In general `guess_atom_X` returns the guessed value for a single value,</span>
 <span class="sd">while `guess_Xs` will work on an array of many atoms.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
+<span class="sd">Example uses of guessers</span>
+<span class="sd">------------------------</span>
+
+<span class="sd">Guessing elements from atom names</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">Currently, it is possible to guess elements from atom names using</span>
+<span class="sd">:func:`guess_atom_element` (or the synonymous :func:`guess_atom_type`). This can</span>
+<span class="sd">be done in the following manner::</span>
+
+<span class="sd">  import MDAnalysis as mda</span>
+<span class="sd">  from MDAnalysis.topology.guessers import guess_atom_element</span>
+<span class="sd">  from MDAnalysisTests.datafiles import PRM7</span>
+
+<span class="sd">  u = mda.Universe(PRM7)</span>
+
+<span class="sd">  print(u.atoms.names[1])  # returns the atom name H1</span>
+
+<span class="sd">  element = guess_atom_element(u.atoms.names[1])</span>
+
+<span class="sd">  print(element)  # returns element H</span>
+
+<span class="sd">In the above example, we take an atom named H1 and use</span>
+<span class="sd">:func:`guess_atom_element` to guess the element hydrogen (i.e. H). It is</span>
+<span class="sd">important to note that element guessing is not always accurate. Indeed in cases</span>
+<span class="sd">where the atom type is not recognised, we may end up with the wrong element.</span>
+<span class="sd">For example::</span>
+
+<span class="sd">  import MDAnalysis as mda</span>
+<span class="sd">  from MDAnalysis.topology.guessers import guess_atom_element</span>
+<span class="sd">  from MDAnalysisTests.datafiles import PRM19SBOPC</span>
+
+<span class="sd">  u = mda.Universe(PRM19SBOPC)</span>
+
+<span class="sd">  print(u.atoms.names[-1])  # returns the atom name EPW</span>
+
+<span class="sd">  element = guess_atom_element(u.atoms.names[-1])</span>
+
+<span class="sd">  print(element)  # returns element P</span>
+
+<span class="sd">Here we find that virtual site atom &#39;EPW&#39; was given the element P, which</span>
+<span class="sd">would not be an expected result. We therefore always recommend that users</span>
+<span class="sd">carefully check the outcomes of any guessers.</span>
+
+<span class="sd">In some cases, one may want to guess elements for an entire universe and add</span>
+<span class="sd">this guess as a topology attribute. This can be done using :func:`guess_types`</span>
+<span class="sd">in the following manner::</span>
+
+<span class="sd">  import MDAnalysis as mda</span>
+<span class="sd">  from MDAnalysis.topology.guessers import guess_types</span>
+<span class="sd">  from MDAnalysisTests.datafiles import PRM7</span>
+
+<span class="sd">  u = mda.Universe(PRM7)</span>
+
+<span class="sd">  guessed_elements = guess_types(u.atoms.names)</span>
+
+<span class="sd">  u.add_TopologyAttr(&#39;elements&#39;, guessed_elements)</span>
+
+<span class="sd">  print(u.atoms.elements)  # returns an array of guessed elements</span>
+
+<span class="sd">More information on adding topology attributes can found in the `user guide`_.</span>
+
+
+<span class="sd">.. Links</span>
+
+<span class="sd">.. _user guide: https://www.mdanalysis.org/UserGuide/examples/constructing_universe.html#Adding-topology-attributes</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">re</span>
@@ -297,7 +363,7 @@
 
 
 <span class="n">NUMBERS</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[0-9]&#39;</span><span class="p">)</span> <span class="c1"># match numbers</span>
-<span class="n">SYMBOLS</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[\*\+\-]&#39;</span><span class="p">)</span>  <span class="c1"># match *, +, -</span>
+<span class="n">SYMBOLS</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[*+-]&#39;</span><span class="p">)</span>  <span class="c1"># match *, +, -</span>
 
 <div class="viewcode-block" id="guess_atom_element"><a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_atom_element">[docs]</a><span class="k">def</span> <span class="nf">guess_atom_element</span><span class="p">(</span><span class="n">atomname</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Guess the element of the atom from the name.</span>
@@ -604,10 +670,18 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -624,7 +698,7 @@
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

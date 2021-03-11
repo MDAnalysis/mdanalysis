@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>4.7.3. Radial Distribution Functions — MDAnalysis.analysis.rdf &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>4.7.2.1. Radial Distribution Functions — MDAnalysis.analysis.rdf &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,12 +43,12 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="4.7.4. Dihedral angles analysis — MDAnalysis.analysis.dihedrals" href="dihedrals.html" />
-    <link rel="prev" title="4.7.2. HELANAL (Deprecated) — analysis of protein helices" href="helanal.html" /> 
+    <link rel="next" title="4.7.2.2. Mean Squared Displacement — MDAnalysis.analysis.msd" href="msd.html" />
+    <link rel="prev" title="4.7.1.3. Dihedral angles analysis — MDAnalysis.analysis.dihedrals" href="dihedrals.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -112,14 +112,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#nucleic-acids">4.5. Nucleic acids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#polymers">4.6. Polymers</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#structure">4.7. Structure</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="gnm.html">4.7.1. Elastic network analysis of MD trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="helanal.html">4.7.2. HELANAL (Deprecated) — analysis of protein helices</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">4.7.3. Radial Distribution Functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#average-radial-distribution-function">4.7.3.1. Average radial distribution function</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#site-specific-radial-distribution-function">4.7.3.2. Site-specific radial distribution function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../analysis_modules.html#macromolecules">4.7.1. Macromolecules</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../analysis_modules.html#liquids">4.7.2. Liquids</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">4.7.2.1. Radial Distribution Functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="msd.html">4.7.2.2. Mean Squared Displacement — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.msd</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="dihedrals.html">4.7.4. Dihedral angles analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#volumetric-analysis">4.8. Volumetric analysis</a></li>
@@ -191,7 +189,7 @@
         
           <li><a href="../analysis_modules.html">4. Analysis modules</a> &raquo;</li>
         
-      <li>4.7.3. Radial Distribution Functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></li>
+      <li>4.7.2.1. Radial Distribution Functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -211,7 +209,7 @@
            <div itemprop="articleBody">
             
   <span class="target" id="module-MDAnalysis.analysis.rdf"></span><div class="section" id="radial-distribution-functions-mdanalysis-analysis-rdf">
-<h1>4.7.3. Radial Distribution Functions — <a class="reference internal" href="#module-MDAnalysis.analysis.rdf" title="MDAnalysis.analysis.rdf"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a><a class="headerlink" href="#radial-distribution-functions-mdanalysis-analysis-rdf" title="Permalink to this headline">¶</a></h1>
+<h1>4.7.2.1. Radial Distribution Functions — <a class="reference internal" href="#module-MDAnalysis.analysis.rdf" title="MDAnalysis.analysis.rdf"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a><a class="headerlink" href="#radial-distribution-functions-mdanalysis-analysis-rdf" title="Permalink to this headline">¶</a></h1>
 <p>This module contains two classes to calculate radial
 <a class="reference external" href="https://en.wikipedia.org/wiki/Pair_distribution_function">pair distribution functions</a> (<a class="reference external" href="https://en.wikipedia.org/wiki/Radial_distribution_function">radial distribution functions</a> or “RDF”).
 The RDF <span class="math notranslate nohighlight">\(g_{ab}(r)\)</span> between types of particles <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span> is</p>
@@ -239,7 +237,7 @@ distance <span class="math notranslate nohighlight">\(r\)</span> around a <span 
 <div class="math notranslate nohighlight" id="equation-nab">
 \[n_{ab}(r) = \rho g_{ab}(r)\]</div>
 <div class="section" id="average-radial-distribution-function">
-<h2>4.7.3.1. Average radial distribution function<a class="headerlink" href="#average-radial-distribution-function" title="Permalink to this headline">¶</a></h2>
+<h2>4.7.2.1.1. Average radial distribution function<a class="headerlink" href="#average-radial-distribution-function" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF" title="MDAnalysis.analysis.rdf.InterRDF"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterRDF</span></code></a> is a tool to calculate average radial distribution functions
 between two groups of atoms. Suppose we have two AtomGroups <code class="docutils literal notranslate"><span class="pre">A</span></code> and
 <code class="docutils literal notranslate"><span class="pre">B</span></code>. <code class="docutils literal notranslate"><span class="pre">A</span></code> contains atom <code class="docutils literal notranslate"><span class="pre">A1</span></code>, <code class="docutils literal notranslate"><span class="pre">A2</span></code>, and <code class="docutils literal notranslate"><span class="pre">B</span></code> contains <code class="docutils literal notranslate"><span class="pre">B1</span></code>,
@@ -265,12 +263,11 @@ from the calculations.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>g1</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – First AtomGroup</li>
 <li><strong>g2</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – Second AtomGroup</li>
-<li><strong>nbins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of bins in the histogram [75]</li>
-<li><strong>range</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em> (</em><em>optional</em><em>)</em>) – The size of the RDF [0.0, 15.0]</li>
+<li><strong>nbins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of bins in the histogram</li>
+<li><strong>range</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em> (</em><em>optional</em><em>)</em>) – The size of the RDF</li>
 <li><strong>exclusion_block</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em> (</em><em>optional</em><em>)</em>) – A tuple representing the tile to exclude from the distance
-array. [None]</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the
-default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
+array.</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code></li>
 </ul>
 </td>
 </tr>
@@ -350,7 +347,7 @@ the raw counts, for all <a class="reference internal" href="#MDAnalysis.analysis
 
 </div>
 <div class="section" id="site-specific-radial-distribution-function">
-<h2>4.7.3.2. Site-specific radial distribution function<a class="headerlink" href="#site-specific-radial-distribution-function" title="Permalink to this headline">¶</a></h2>
+<h2>4.7.2.1.2. Site-specific radial distribution function<a class="headerlink" href="#site-specific-radial-distribution-function" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s" title="MDAnalysis.analysis.rdf.InterRDF_s"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterRDF_s</span></code></a> calculates site-specific radial distribution
 functions. Instead of two groups of atoms it takes as input a list of pairs of
 AtomGroup, <code class="docutils literal notranslate"><span class="pre">[[A,</span> <span class="pre">B],</span> <span class="pre">[C,</span> <span class="pre">D],</span> <span class="pre">...]</span></code>. Given the same <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> to
@@ -372,11 +369,11 @@ protein.</p>
 <li><strong>u</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – a Universe that contains atoms in <cite>ags</cite></li>
 <li><strong>ags</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – a list of pairs of <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
 instances</li>
-<li><strong>nbins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of bins in the histogram [75]</li>
-<li><strong>range</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em> (</em><em>optional</em><em>)</em>) – The size of the RDF [0.0, 15.0]</li>
+<li><strong>nbins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of bins in the histogram</li>
+<li><strong>range</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em> (</em><em>optional</em><em>)</em>) – The size of the RDF</li>
 <li><strong>density</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <p><code class="docutils literal notranslate"><span class="pre">False</span></code>: calculate <span class="math notranslate nohighlight">\(g_{ab}(r)\)</span>; <code class="docutils literal notranslate"><span class="pre">True</span></code>: calculate
 the true <a class="reference internal" href="#equation-nab"><span class="std std-ref">single particle density</span></a>
-<span class="math notranslate nohighlight">\(n_{ab}(r)\)</span>. The default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<span class="math notranslate nohighlight">\(n_{ab}(r)\)</span>.</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 1.0.1: </span>This keyword was available since 0.19.0 but was not
 documented. Furthermore, it had the opposite
@@ -527,18 +524,26 @@ radius, i.e., <span class="math notranslate nohighlight">\(N_{ab}(r)\)</span>.</
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="dihedrals.html" class="btn btn-neutral float-right" title="4.7.4. Dihedral angles analysis — MDAnalysis.analysis.dihedrals" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="helanal.html" class="btn btn-neutral float-left" title="4.7.2. HELANAL (Deprecated) — analysis of protein helices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="msd.html" class="btn btn-neutral float-right" title="4.7.2.2. Mean Squared Displacement — MDAnalysis.analysis.msd" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="dihedrals.html" class="btn btn-neutral float-left" title="4.7.1.3. Dihedral angles analysis — MDAnalysis.analysis.dihedrals" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -555,7 +560,7 @@ radius, i.e., <span class="math notranslate nohighlight">\(N_{ab}(r)\)</span>.</
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

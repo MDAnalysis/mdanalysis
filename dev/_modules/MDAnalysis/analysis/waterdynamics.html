@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>MDAnalysis.analysis.waterdynamics &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>MDAnalysis.analysis.waterdynamics &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,7 +43,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -265,52 +265,12 @@
 <span class="sd">HydrogenBondLifetimes</span>
 <span class="sd">~~~~~~~~~~~~~~~~~~~~~</span>
 
-<span class="sd">Analyzing hydrogen bond lifetimes (HBL) :class:`HydrogenBondLifetimes`, both</span>
-<span class="sd">continuos and intermittent. In this case we are analyzing how residue 38</span>
-<span class="sd">interact with a water sphere of radius 6.0 centered on the geometric center of</span>
-<span class="sd">protein and residue 42. If the hydrogen bond lifetimes are very stable, we can</span>
-<span class="sd">assume that residue 38 is hydrophilic, on the other hand, if the are very</span>
-<span class="sd">unstable, we can assume that residue 38 is hydrophobic::</span>
+<span class="sd">To analyse hydrogen bond lifetime, use</span>
+<span class="sd">:meth:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.liftetime`.</span>
 
-<span class="sd">  import MDAnalysis</span>
-<span class="sd">  from MDAnalysis.analysis.waterdynamics import HydrogenBondLifetimes as HBL</span>
-
-<span class="sd">  u = MDAnalysis.Universe(pdb, trajectory)</span>
-<span class="sd">  selection1 = &quot;byres name OH2 and sphzone 6.0 protein and resid 42&quot;</span>
-<span class="sd">  selection2 = &quot;resid 38&quot;</span>
-<span class="sd">  HBL_analysis = HBL(universe, selection1, selection2, 0, 2000, 30)</span>
-<span class="sd">  HBL_analysis.run()</span>
-<span class="sd">  time = 0</span>
-<span class="sd">  #now we print the data ready to plot. The first two columns are the HBLc vs t</span>
-<span class="sd">  #plot and the second two columns are the HBLi vs t graph</span>
-<span class="sd">  for HBLc, HBLi in HBL_analysis.timeseries:</span>
-<span class="sd">      print(&quot;{time} {HBLc} {time} {HBLi}&quot;.format(time=time, HBLc=HBLc, HBLi=HBLi))</span>
-<span class="sd">      time += 1</span>
-
-<span class="sd">  #we can also plot our data</span>
-<span class="sd">  plt.figure(1,figsize=(18, 6))</span>
-
-<span class="sd">  #HBL continuos</span>
-<span class="sd">  plt.subplot(121)</span>
-<span class="sd">  plt.xlabel(&#39;time&#39;)</span>
-<span class="sd">  plt.ylabel(&#39;HBLc&#39;)</span>
-<span class="sd">  plt.title(&#39;HBL Continuos&#39;)</span>
-<span class="sd">  plt.plot(range(0,time),[column[0] for column in HBL_analysis.timeseries])</span>
-
-<span class="sd">  #HBL intermitent</span>
-<span class="sd">  plt.subplot(122)</span>
-<span class="sd">  plt.xlabel(&#39;time&#39;)</span>
-<span class="sd">  plt.ylabel(&#39;HBLi&#39;)</span>
-<span class="sd">  plt.title(&#39;HBL Intermitent&#39;)</span>
-<span class="sd">  plt.plot(range(0,time),[column[1] for column in HBL_analysis.timeseries])</span>
-
-<span class="sd">  plt.show()</span>
-
-<span class="sd">where HBLc is the value for the continuos hydrogen bond lifetimes and HBLi is</span>
-<span class="sd">the value for the intermittent hydrogen bond lifetime, t0 = 0, tf = 2000 and</span>
-<span class="sd">dtmax = 30. In this way we create 30 windows timestep (30 values in x</span>
-<span class="sd">axis). The continuos hydrogen bond lifetimes should decay faster than</span>
-<span class="sd">intermittent.</span>
+<span class="sd">See Also</span>
+<span class="sd">--------</span>
+<span class="sd">:mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis`</span>
 
 
 <span class="sd">WaterOrientationalRelaxation</span>
@@ -533,23 +493,6 @@
 <span class="sd">Output</span>
 <span class="sd">------</span>
 
-<span class="sd">HydrogenBondLifetimes</span>
-<span class="sd">~~~~~~~~~~~~~~~~~~~~~</span>
-
-<span class="sd">Hydrogen bond lifetimes (HBL) data is returned per window timestep, which is</span>
-<span class="sd">stored in :attr:`HydrogenBondLifetimes.timeseries` (in all the following</span>
-<span class="sd">descriptions, # indicates comments that are not part of the output)::</span>
-
-<span class="sd">    results = [</span>
-<span class="sd">        [ # time t0</span>
-<span class="sd">            &lt;HBL_c&gt;, &lt;HBL_i&gt;</span>
-<span class="sd">        ],</span>
-<span class="sd">        [ # time t1</span>
-<span class="sd">            &lt;HBL_c&gt;, &lt;HBL_i&gt;</span>
-<span class="sd">        ],</span>
-<span class="sd">        ...</span>
-<span class="sd">     ]</span>
-
 <span class="sd">WaterOrientationalRelaxation</span>
 <span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
 
@@ -612,10 +555,6 @@
 <span class="sd">Classes</span>
 <span class="sd">--------</span>
 
-<span class="sd">.. autoclass:: HydrogenBondLifetimes</span>
-<span class="sd">   :members:</span>
-<span class="sd">   :inherited-members:</span>
-
 <span class="sd">.. autoclass:: WaterOrientationalRelaxation</span>
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
@@ -633,11 +572,9 @@
 <span class="sd">   :inherited-members:</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
-
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.correlations</span> <span class="kn">import</span> <span class="n">autocorrelation</span><span class="p">,</span> <span class="n">correct_intermittency</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis.analysis.hbonds</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span><span class="p">,</span> <span class="n">zip_longest</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">zip_longest</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -645,203 +582,6 @@
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.analysis.waterdynamics&#39;</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="kn">import</span> <span class="n">ProgressBar</span>
-
-
-<div class="viewcode-block" id="HydrogenBondLifetimes"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes">[docs]</a><span class="k">class</span> <span class="nc">HydrogenBondLifetimes</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Hydrogen bond lifetime analysis</span>
-
-<span class="sd">    This is a autocorrelation function that gives the &quot;Hydrogen Bond Lifetimes&quot;</span>
-<span class="sd">    (HBL) proposed by D.C. Rapaport [Rapaport1983]_. From this function we can</span>
-<span class="sd">    obtain the continuous and intermittent behavior of hydrogen bonds in</span>
-<span class="sd">    time. A fast decay in these parameters indicate a fast change in HBs</span>
-<span class="sd">    connectivity. A slow decay indicate very stables hydrogen bonds, like in</span>
-<span class="sd">    ice. The HBL is also know as &quot;Hydrogen Bond Population Relaxation&quot;</span>
-<span class="sd">    (HBPR). In the continuos case we have:</span>
-
-<span class="sd">    .. math::</span>
-<span class="sd">       C_{HB}^c(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h&#39;_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}</span>
-
-<span class="sd">    where :math:`h&#39;_{ij}(t_0+\tau)=1` if there is a H-bond between a pair</span>
-<span class="sd">    :math:`ij` during time interval :math:`t_0+\tau` (continuos) and</span>
-<span class="sd">    :math:`h&#39;_{ij}(t_0+\tau)=0` otherwise. In the intermittent case we have:</span>
-
-<span class="sd">    .. math::</span>
-<span class="sd">       C_{HB}^i(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}</span>
-
-<span class="sd">    where :math:`h_{ij}(t_0+\tau)=1` if there is a H-bond between a pair</span>
-<span class="sd">    :math:`ij` at time :math:`t_0+\tau` (intermittent) and</span>
-<span class="sd">    :math:`h_{ij}(t_0+\tau)=0` otherwise.</span>
-
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    universe : Universe</span>
-<span class="sd">      Universe object</span>
-<span class="sd">    selection1 : str</span>
-<span class="sd">      Selection string for first selection [‘byres name OH2’].</span>
-<span class="sd">      It could be any selection available in MDAnalysis, not just water.</span>
-<span class="sd">    selection2 : str</span>
-<span class="sd">      Selection string to analize its HBL against selection1</span>
-<span class="sd">    t0 : int</span>
-<span class="sd">      frame  where analysis begins</span>
-<span class="sd">    tf : int</span>
-<span class="sd">      frame where analysis ends</span>
-<span class="sd">    dtmax : int</span>
-<span class="sd">      Maximum dt size, `dtmax` &lt; `tf` or it will crash.</span>
-
-
-<span class="sd">    .. versionadded:: 0.11.0</span>
-<span class="sd">    .. versionchanged:: 1.0.0</span>
-<span class="sd">       The ``nproc`` keyword was removed as it linked to a portion of code that</span>
-<span class="sd">       may have failed in some cases.</span>
-<span class="sd">    .. deprecated:: 1.0.1</span>
-<span class="sd">       ``waterdynamics.HydrogenBondLifetimes`` is deprecated and will be</span>
-<span class="sd">       removed in 2.0.0. Instead, please use (available in 2.0.0)</span>
-<span class="sd">       :meth:`MDAnalysis.analysis.hydrogenbonds.HydrogenBondAnalysis.lifetime`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection1</span><span class="p">,</span> <span class="n">selection2</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dtmax</span><span class="p">,</span>
-                 <span class="n">nproc</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;The waterdynamics.HydrogenBondLifetimes class is deprecated in 1.0.1. &quot;</span>
-            <span class="s2">&quot;This class will be removed in 2.0.0; please prepare to use &quot;</span>
-            <span class="s2">&quot;MDAnalysis.analysis.hydrogenbonds.HydrogenBondAnalysis.lifetime (in 2.0.0)&quot;</span><span class="p">,</span>
-            <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selection1</span> <span class="o">=</span> <span class="n">selection1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selection2</span> <span class="o">=</span> <span class="n">selection2</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">t0</span> <span class="o">=</span> <span class="n">t0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tf</span> <span class="o">=</span> <span class="n">tf</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span> <span class="o">=</span> <span class="n">dtmax</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">def</span> <span class="nf">_getC_i</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This function give the intermitent Hydrogen Bond Lifetime</span>
-<span class="sd">        C_i = &lt;h(t0)h(t)&gt;/&lt;h(t0)&gt; between t0 and t</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">C_i</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">HBP</span><span class="p">[</span><span class="n">t0</span><span class="p">])):</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">HBP</span><span class="p">[</span><span class="n">t</span><span class="p">])):</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">HBP</span><span class="p">[</span><span class="n">t0</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">HBP</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">HBP</span><span class="p">[</span><span class="n">t0</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">HBP</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">]):</span>
-                    <span class="n">C_i</span> <span class="o">+=</span> <span class="mi">1</span>
-                    <span class="k">break</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">HBP</span><span class="p">[</span><span class="n">t0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mf">0.0</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">C_i</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">HBP</span><span class="p">[</span><span class="n">t0</span><span class="p">])</span>
-
-    <span class="k">def</span> <span class="nf">_getC_c</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This function give the continous Hydrogen Bond Lifetime</span>
-<span class="sd">        C_c = &lt;h(t0)h&#39;(t)&gt;/&lt;h(t0)&gt; between t0 and t</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">C_c</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">dt</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">begt0</span> <span class="o">=</span> <span class="n">t0</span>
-        <span class="n">HBP_cp</span> <span class="o">=</span> <span class="n">HBP</span>
-        <span class="n">HBP_t0</span> <span class="o">=</span> <span class="n">HBP</span><span class="p">[</span><span class="n">t0</span><span class="p">]</span>
-        <span class="n">newHBP</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="n">t0</span> <span class="o">==</span> <span class="n">t</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mf">1.0</span>
-        <span class="k">while</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">&lt;=</span> <span class="n">t</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">HBP_t0</span><span class="p">)):</span>
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">HBP_cp</span><span class="p">[</span><span class="n">t0</span> <span class="o">+</span> <span class="n">dt</span><span class="p">])):</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">HBP_t0</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">HBP_cp</span><span class="p">[</span><span class="n">t0</span> <span class="o">+</span> <span class="n">dt</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span>
-                        <span class="n">HBP_t0</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">HBP_cp</span><span class="p">[</span><span class="n">t0</span> <span class="o">+</span> <span class="n">dt</span><span class="p">][</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">]):</span>
-                        <span class="n">newHBP</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">HBP_t0</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                        <span class="k">break</span>
-            <span class="n">C_c</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">newHBP</span><span class="p">)</span>
-            <span class="n">t0</span> <span class="o">+=</span> <span class="n">dt</span>
-            <span class="n">HBP_t0</span> <span class="o">=</span> <span class="n">newHBP</span>
-            <span class="n">newHBP</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">HBP</span><span class="p">[</span><span class="n">begt0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">0</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">C_c</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">HBP</span><span class="p">[</span><span class="n">begt0</span><span class="p">]))</span>
-
-    <span class="k">def</span> <span class="nf">_intervC_c</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This function gets all the data for the h(t0)h(t0+dt)&#39;, where</span>
-<span class="sd">        t0 = 1,2,3,...,tf. This function give us one point of the final plot</span>
-<span class="sd">        HBL vs t</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">HBP</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">t0</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">&lt;=</span> <span class="n">tf</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">t0</span> <span class="o">==</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">dt</span><span class="p">:</span>
-                    <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getC_c</span><span class="p">(</span><span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t0</span><span class="p">)</span>
-                    <span class="k">break</span>
-                <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getC_c</span><span class="p">(</span><span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">dt</span><span class="p">)</span>
-                <span class="n">t0</span> <span class="o">+=</span> <span class="n">dt</span>
-                <span class="n">a</span> <span class="o">+=</span> <span class="n">b</span>
-                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mf">1.0</span>
-        <span class="k">return</span> <span class="n">a</span> <span class="o">/</span> <span class="n">count</span>
-
-    <span class="k">def</span> <span class="nf">_intervC_i</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This function gets all the data for the h(t0)h(t0+dt), where</span>
-<span class="sd">        t0 = 1,2,3,...,tf. This function give us a point of the final plot</span>
-<span class="sd">        HBL vs t</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">HBP</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">t0</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">&lt;=</span> <span class="n">tf</span><span class="p">):</span>
-                <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getC_i</span><span class="p">(</span><span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t0</span> <span class="o">+</span> <span class="n">dt</span><span class="p">)</span>
-                <span class="n">t0</span> <span class="o">+=</span> <span class="n">dt</span>
-                <span class="n">a</span> <span class="o">+=</span> <span class="n">b</span>
-                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="n">a</span> <span class="o">/</span> <span class="n">count</span>
-
-    <span class="k">def</span> <span class="nf">_finalGraphGetC_i</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">maxdt</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This function gets the final data of the C_i graph.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">maxdt</span><span class="p">):</span>
-            <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_intervC_i</span><span class="p">(</span><span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
-            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">output</span>
-
-    <span class="k">def</span> <span class="nf">_finalGraphGetC_c</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">maxdt</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This function gets the final data of the C_c graph.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">dt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">maxdt</span><span class="p">):</span>
-            <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_intervC_c</span><span class="p">(</span><span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
-            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">output</span>
-
-    <span class="k">def</span> <span class="nf">_getGraphics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">maxdt</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Function that join all the results into a plot.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finalGraphGetC_c</span><span class="p">(</span><span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">maxdt</span><span class="p">)</span>
-        <span class="n">inte</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_finalGraphGetC_i</span><span class="p">(</span><span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">maxdt</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cont</span><span class="p">)):</span>
-            <span class="n">fix</span> <span class="o">=</span> <span class="p">[</span><span class="n">cont</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">inte</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
-            <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fix</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">a</span>
-
-
-<div class="viewcode-block" id="HydrogenBondLifetimes.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Analyze trajectory and produce timeseries&quot;&quot;&quot;</span>
-        <span class="n">h_list</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">hbonds</span><span class="o">.</span><span class="n">HydrogenBondAnalysis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span>
-                                                                 <span class="bp">self</span><span class="o">.</span><span class="n">selection1</span><span class="p">,</span>
-                                                                 <span class="bp">self</span><span class="o">.</span><span class="n">selection2</span><span class="p">,</span>
-                                                                 <span class="n">distance</span><span class="o">=</span><span class="mf">3.5</span><span class="p">,</span>
-                                                                 <span class="n">angle</span><span class="o">=</span><span class="mf">120.0</span><span class="p">)</span>
-        <span class="n">h_list</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getGraphics</span><span class="p">(</span><span class="n">h_list</span><span class="o">.</span><span class="n">timeseries</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t0</span><span class="p">,</span>
-                                            <span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="WaterOrientationalRelaxation"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation">[docs]</a><span class="k">class</span> <span class="nc">WaterOrientationalRelaxation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -1386,7 +1126,7 @@
 <span class="sd">       Using the MDAnalysis.lib.correlations.py to carry out the intermittency</span>
 <span class="sd">       and autocorrelation calculations.</span>
 <span class="sd">       Changed `selection` keyword to `select`.</span>
-<span class="sd">       Removed support for the deprecated `t0`, `tf`, and `dtmax` keywords.</span>
+<span class="sd">       Removed support for the deprecated `t0`, `tf`, and `dtmax` keywords. </span>
 <span class="sd">       These should instead be passed to :meth:`SurvivalProbability.run` as</span>
 <span class="sd">       the `start`, `stop`, and `tau_max` keywords respectively.</span>
 <span class="sd">       The `stop` keyword as passed to :meth:`SurvivalProbability.run` has now</span>
@@ -1535,10 +1275,18 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -1555,7 +1303,7 @@
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

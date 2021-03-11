@@ -1,1 +1,1 @@
-.. automodule:: MDAnalysis.analysis.hbonds.wbridge_analysis
+.. automodule:: MDAnalysis.analysis.hydrogenbonds.wbridge_analysis

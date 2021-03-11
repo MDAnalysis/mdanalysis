@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>5.28. Utility functions for the TPR topology parser &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>5.28. Utility functions for the TPR topology parser &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,7 +43,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -900,8 +900,17 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.topology.tpr.obj.AtomKind">
-<em class="property">class </em><code class="descclassname">MDAnalysis.topology.tpr.obj.</code><code class="descname">AtomKind</code><span class="sig-paren">(</span><em>id</em>, <em>name</em>, <em>type</em>, <em>resid</em>, <em>resname</em>, <em>mass</em>, <em>charge</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/obj.html#AtomKind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.AtomKind" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property">class </em><code class="descclassname">MDAnalysis.topology.tpr.obj.</code><code class="descname">AtomKind</code><span class="sig-paren">(</span><em>id</em>, <em>name</em>, <em>type</em>, <em>resid</em>, <em>resname</em>, <em>mass</em>, <em>charge</em>, <em>atomic_number</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/obj.html#AtomKind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.AtomKind" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="MDAnalysis.topology.tpr.obj.AtomKind.element_symbol">
+<code class="descname">element_symbol</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.AtomKind.element_symbol" title="Permalink to this definition">¶</a></dt>
+<dd><p>The symbol of the atom element.</p>
+<p>The symbol corresponding to the atomic number. If the atomic number
+is not recognized, which happens if a particle is not really an
+atom (e.g a coarse-grained particle), an empty string is returned.</p>
+</dd></dl>
+
+</dd></dl>
 
 <dl class="class">
 <dt id="MDAnalysis.topology.tpr.obj.Atoms">
@@ -1107,8 +1116,8 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.topology.tpr.obj.Params">
-<em class="property">class </em><code class="descclassname">MDAnalysis.topology.tpr.obj.</code><code class="descname">Params</code><span class="sig-paren">(</span><em>atnr</em>, <em>ntypes</em>, <em>functype</em>, <em>reppow</em>, <em>fudgeQQ</em>, <em>iparams</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Params" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create new instance of Params(atnr, ntypes, functype, reppow, fudgeQQ, iparams)</p>
+<em class="property">class </em><code class="descclassname">MDAnalysis.topology.tpr.obj.</code><code class="descname">Params</code><span class="sig-paren">(</span><em>atnr</em>, <em>ntypes</em>, <em>functype</em>, <em>reppow</em>, <em>fudgeQQ</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new instance of Params(atnr, ntypes, functype, reppow, fudgeQQ)</p>
 <dl class="attribute">
 <dt id="MDAnalysis.topology.tpr.obj.Params.atnr">
 <code class="descname">atnr</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Params.atnr" title="Permalink to this definition">¶</a></dt>
@@ -1125,12 +1134,6 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 <dt id="MDAnalysis.topology.tpr.obj.Params.functype">
 <code class="descname">functype</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Params.functype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias for field number 2</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="MDAnalysis.topology.tpr.obj.Params.iparams">
-<code class="descname">iparams</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Params.iparams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Alias for field number 5</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1444,7 +1447,7 @@ functions as a starting point for your own code.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.topology.tpr.utils.extract_box_info">
-<code class="descclassname">MDAnalysis.topology.tpr.utils.</code><code class="descname">extract_box_info</code><span class="sig-paren">(</span><em>data</em>, <em>fileVersion</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#extract_box_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.extract_box_info" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.utils.</code><code class="descname">extract_box_info</code><span class="sig-paren">(</span><em>data</em>, <em>fver</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/utils.html#extract_box_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.utils.extract_box_info" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
@@ -1499,10 +1502,18 @@ functions as a starting point for your own code.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -1519,7 +1530,7 @@ functions as a starting point for your own code.</p>
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

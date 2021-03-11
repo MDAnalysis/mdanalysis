@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>11.2.3. Topology attribute objects — MDAnalysis.core.topologyattrs &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>11.2.3. Topology attribute objects — MDAnalysis.core.topologyattrs &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,7 +43,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -226,6 +226,18 @@ E.g.,  <cite>[(0, 1, 2), (1, 2, 3), (2, 3, 4)]</cite></p>
 </dd></dl>
 
 <dl class="class">
+<dt id="MDAnalysis.core.topologyattrs.Aromaticities">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Aromaticities</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Aromaticities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Aromaticities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Aromaticity (RDKit)</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Aromaticities.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Aromaticities.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.bool</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="MDAnalysis.core.topologyattrs.AtomAttr">
 <em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">AtomAttr</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#AtomAttr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.AtomAttr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for atom attributes.</p>
@@ -293,6 +305,12 @@ topology, and it is not alterable.</p>
 <p>If the group is a ResidueGroup or SegmentGroup, then this gives the indices
 of each atom represented in the group in a 1-D array, in the order of the
 elements in that group.</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Atomindices.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomindices.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.int</span></code></p>
+</dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.core.topologyattrs.Atomindices.get_atoms">
 <code class="descname">get_atoms</code><span class="sig-paren">(</span><em>ag</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomindices.get_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomindices.get_atoms" title="Permalink to this definition">¶</a></dt>
@@ -755,7 +773,8 @@ accordingly.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If ‘group’, the total charge of all atoms in the group will
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If ‘group’, the total charge of all atoms in the group will
 be returned as a single value. Otherwise, the total charges per
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code>, molecule, or fragment
 will be returned as a 1d array.
@@ -931,7 +950,8 @@ centers of mass of each compound will be calculated without moving
 any atoms to keep the compounds intact. Instead, the resulting
 center-of-mass position vectors will be moved to the primary unit
 cell after calculation.</li>
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
 be returned as a single position vector. Otherwise, the centers of
 mass of each <code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code>, molecule, or
 fragment will be returned as an array of position vectors, i.e. a 2d
@@ -1104,7 +1124,8 @@ accordingly.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the total mass of all atoms in the group will be
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the total mass of all atoms in the group will be
 returned as a single value. Otherwise, the total masses per
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code>, molecule, or fragment will be
 returned as a 1d array.
@@ -1130,8 +1151,7 @@ where <code class="docutils literal notranslate"><span class="pre">n</span></cod
 <dl class="class">
 <dt id="MDAnalysis.core.topologyattrs.Molnums">
 <em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Molnums</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Molnums"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Molnums" title="Permalink to this definition">¶</a></dt>
-<dd><p>Name of the molecule type</p>
-<p>Two molecules that share a molecule type share a common template topology.</p>
+<dd><p>Index of molecule from 0</p>
 <dl class="attribute">
 <dt id="MDAnalysis.core.topologyattrs.Molnums.dtype">
 <code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Molnums.dtype" title="Permalink to this definition">¶</a></dt>
@@ -1293,6 +1313,12 @@ Resetting these values changes the residue membership of the atoms.</p>
 <p>If the group is a ResidueGroup or SegmentGroup, then this gives the
 resindices of each residue represented in the group in a 1-D array, in the
 order of the elements in that group.</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Resindices.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Resindices.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.int</span></code></p>
+</dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.core.topologyattrs.Resindices.get_atoms">
 <code class="descname">get_atoms</code><span class="sig-paren">(</span><em>ag</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Resindices.get_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Resindices.get_atoms" title="Permalink to this definition">¶</a></dt>
@@ -1454,6 +1480,12 @@ attribute of each atom’s residue.</p>
 <p>If the group is a ResidueGroup or SegmentGroup, then this gives the
 segindices of each segment represented in the group in a 1-D array, in the
 order of the elements in that group.</p>
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Segindices.dtype">
+<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Segindices.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.int</span></code></p>
+</dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.core.topologyattrs.Segindices.get_atoms">
 <code class="descname">get_atoms</code><span class="sig-paren">(</span><em>ag</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Segindices.get_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Segindices.get_atoms" title="Permalink to this definition">¶</a></dt>
@@ -1724,10 +1756,18 @@ appropriate exceptions.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -1744,7 +1784,7 @@ appropriate exceptions.</p>
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

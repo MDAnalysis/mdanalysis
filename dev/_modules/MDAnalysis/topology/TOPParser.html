@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>MDAnalysis.topology.TOPParser &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>MDAnalysis.topology.TOPParser &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,7 +43,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -253,8 +253,13 @@
 <span class="sd">   by 18.2223.</span>
 
 <span class="sd">   Chamber-style Amber topologies (i.e. topologies generated via parmed</span>
-<span class="sd">   conversion of a CHARMM topology to an AMBER one) are not currently supported.</span>
-<span class="sd">   Support will likely be added in future MDAnalysis releases.</span>
+<span class="sd">   conversion of a CHARMM topology to an AMBER one) are not currently</span>
+<span class="sd">   supported. Support will likely be added in future MDAnalysis releases.</span>
+
+<span class="sd">   As of version 2.0.0, elements are no longer guessed if ATOMIC_NUMBER records</span>
+<span class="sd">   are missing. In those scenarios, if elements are necessary, users will have</span>
+<span class="sd">   to invoke the element guessers after parsing the topology file. Please see</span>
+<span class="sd">   :mod:`MDAnalysis.topology.guessers` for more details.</span>
 
 <span class="sd">.. _`PARM parameter/topology file specification`:</span>
 <span class="sd">   http://ambermd.org/formats.html#topology</span>
@@ -267,16 +272,9 @@
 <span class="sd">   :inherited-members:</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span>
-
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">zip</span>
-<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">raise_from</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">functools</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">guessers</span>
 <span class="kn">from</span> <span class="nn">.tables</span> <span class="kn">import</span> <span class="n">Z2SYMB</span>
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">openany</span><span class="p">,</span> <span class="n">FORTRANReader</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span>
@@ -327,9 +325,6 @@
 <span class="sd">    - Angles</span>
 <span class="sd">    - Dihedrals (inc. impropers)</span>
 
-<span class="sd">    Guesses the following attributes:</span>
-<span class="sd">     - Elements (if not included in topology)</span>
-
 <span class="sd">    The format is defined in `PARM parameter/topology file</span>
 <span class="sd">    specification`_.  The reader tries to detect if it is a newer</span>
 <span class="sd">    (AMBER 12?) file format by looking for the flag &quot;ATOMIC_NUMBER&quot;.</span>
@@ -337,12 +332,20 @@
 <span class="sd">    .. _`PARM parameter/topology file specification`:</span>
 <span class="sd">       http://ambermd.org/formats.html#topology</span>
 
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Elements are obtained from the atomic numbers (if present). If a given</span>
+<span class="sd">    input atomic number does not belong to an element (usually either -1 or 0),</span>
+<span class="sd">    the element will be assigned an empty record.</span>
+
 <span class="sd">    .. versionchanged:: 0.7.6</span>
 <span class="sd">      parses both amber10 and amber12 formats</span>
 <span class="sd">    .. versionchanged:: 0.19.0</span>
 <span class="sd">      parses bonds, angles, dihedrals, and impropers</span>
 <span class="sd">    .. versionchanged:: 1.0.0</span>
-<span class="sd">      warns users that chamber-style topologies are not current supported</span>
+<span class="sd">      warns users that chamber-style topologies are not currently supported</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">      no longer guesses elements if missing</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TOP&#39;</span><span class="p">,</span> <span class="s1">&#39;PRMTOP&#39;</span><span class="p">,</span> <span class="s1">&#39;PARM7&#39;</span><span class="p">]</span>
 
@@ -359,7 +362,8 @@
             <span class="s2">&quot;CHARGE&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_charges</span><span class="p">,</span> <span class="s2">&quot;charge&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
             <span class="s2">&quot;ATOMIC_NUMBER&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_elements</span><span class="p">,</span> <span class="s2">&quot;elements&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
             <span class="s2">&quot;MASS&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_masses</span><span class="p">,</span> <span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-            <span class="s2">&quot;ATOM_TYPE_INDEX&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_type_indices</span><span class="p">,</span> <span class="s2">&quot;type_indices&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">&quot;ATOM_TYPE_INDEX&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_type_indices</span><span class="p">,</span> <span class="s2">&quot;type_indices&quot;</span><span class="p">,</span>
+                                <span class="mi">0</span><span class="p">),</span>
             <span class="s2">&quot;AMBER_ATOM_TYPE&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_types</span><span class="p">,</span> <span class="s2">&quot;types&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
             <span class="s2">&quot;RESIDUE_LABEL&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_resnames</span><span class="p">,</span> <span class="s2">&quot;resname&quot;</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span>
             <span class="s2">&quot;RESIDUE_POINTER&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_residx</span><span class="p">,</span> <span class="s2">&quot;respoint&quot;</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span>
@@ -434,11 +438,9 @@
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">next_section</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%F</span><span class="s2">LAG&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                     <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-                        <span class="n">raise_from</span><span class="p">(</span>
-                            <span class="ne">IndexError</span><span class="p">((</span>
-                                <span class="s2">&quot;</span><span class="si">%F</span><span class="s2">LAG section not found, formatting error &quot;</span>
-                                <span class="s2">&quot;for PARM7 file </span><span class="si">{0}</span><span class="s2"> &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)),</span>
-                                <span class="kc">None</span><span class="p">)</span>
+                        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;%FLAG section not found, formatting error &quot;</span>
+                                  <span class="sa">f</span><span class="s2">&quot;for PARM7 file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2"> &quot;</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
         <span class="c1"># strip out a few values to play with them</span>
         <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
@@ -461,27 +463,20 @@
         <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;dihedrals&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;impropers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_dihedrals</span><span class="p">(</span>
                               <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;diha&#39;</span><span class="p">),</span> <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;dihh&#39;</span><span class="p">))</span>
 
-        <span class="c1"># Guess elements if not in topology or if any dummy atoms are found</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;elements&#39;</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ATOMIC_NUMBER record not found, guessing atom elements &quot;</span>
-                   <span class="s2">&quot;based on their atom types&quot;</span><span class="p">)</span>
+        <span class="c1"># Warn user if elements not in topology</span>
+        <span class="k">if</span> <span class="s1">&#39;elements&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ATOMIC_NUMBER record not found, elements attribute will &quot;</span>
+                   <span class="s2">&quot;not be populated. If needed these can be guessed using &quot;</span>
+                   <span class="s2">&quot;MDAnalysis.topology.guessers.&quot;</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-            <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Elements</span><span class="p">(</span>
-                <span class="n">guessers</span><span class="o">.</span><span class="n">guess_types</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;types&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">),</span>
-                <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="s2">&quot;DUMMY&quot;</span><span class="p">):</span>
-            <span class="c1"># This approach assumes np.any is much faster than np.where</span>
-            <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">_guessed</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">for</span> <span class="n">dummy_idx</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="s1">&#39;DUMMY&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span>
-                <span class="n">atom_type</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;types&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">dummy_idx</span><span class="p">]</span>
-                <span class="n">atom_ele</span> <span class="o">=</span> <span class="n">guessers</span><span class="o">.</span><span class="n">guess_atom_element</span><span class="p">(</span><span class="n">atom_type</span><span class="p">)</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Unknown ATOMIC_NUMBER value found, guessing atom &quot;</span>
-                       <span class="s2">&quot;element from type: </span><span class="si">{0}</span><span class="s2"> assigned to </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">atom_type</span><span class="p">,</span> <span class="n">atom_ele</span><span class="p">))</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-                <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">dummy_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">atom_ele</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+            <span class="c1"># only send out one warning that some elements are unknown</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Unknown ATOMIC_NUMBER value found for some atoms, these &quot;</span>
+                   <span class="s2">&quot;have been given an empty element record. If needed these &quot;</span>
+                   <span class="s2">&quot;can be guessed using MDAnalysis.topology.guessers.&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
         <span class="c1"># atom ids are mandatory</span>
         <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;atomids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Atomids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -610,14 +605,18 @@
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
-<span class="sd">        If the record contains atomic numbers &lt;= 0, these will be treated as</span>
-<span class="sd">        dummy elements and an attempt will be made to guess the element based</span>
-<span class="sd">        on atom type. See issue #2306 for more details.</span>
+<span class="sd">        If the record contains unknown atomic numbers (e.g. &lt;= 0), these will</span>
+<span class="sd">        be treated as unknown elements and assigned an empty string value. See</span>
+<span class="sd">        issues #2306 and #2651 for more details.</span>
+
+<span class="sd">        .. versionchanged:: 2.0.0</span>
+<span class="sd">           Unrecognised elements will now return a empty string. The parser</span>
+<span class="sd">           will no longer attempt to guess the element by default.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span>
                 <span class="n">numlines</span><span class="p">,</span>
-                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">Z2SYMB</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;DUMMY&quot;</span><span class="p">)</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">Z2SYMB</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">attr</span> <span class="o">=</span> <span class="n">Elements</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">attr</span></div>
 
@@ -816,10 +815,18 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -836,7 +843,7 @@
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

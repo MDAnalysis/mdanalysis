@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>13.2.10. Helper functions — MDAnalysis.lib.util &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>13.2.10. Helper functions — MDAnalysis.lib.util &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,7 +43,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -140,6 +140,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="correlations.html">13.2.11. Correlations utilities — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="picklable_file_io.html">13.2.12. Picklable read-only I/O classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">13.3. Low level file formats</a></li>
@@ -315,7 +316,7 @@ default, a stream is reset to its start if possible (via
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>datasource</strong> – a file (from <code class="xref py py-class docutils literal notranslate"><span class="pre">file</span></code> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#open" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a>) or a stream (e.g. from
-<code class="xref py py-func docutils literal notranslate"><span class="pre">urllib2.urlopen()</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">cStringIO.StringIO</span></code>)</li>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">urllib2.urlopen()</span></code> or <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.StringIO</span></code></a>)</li>
 <li><strong>mode</strong> (<em>{'r'</em><em>, </em><em>'w'</em><em>, </em><em>'a'}</em><em> (</em><em>optional</em><em>)</em>) – Open in r(ead), w(rite) or a(ppen) mode. More complicated
 modes (‘r+’, ‘w+’, …) are not supported; only the first letter of
 <cite>mode</cite> is used and thus any additional modifiers are silently ignored.</li>
@@ -341,6 +342,12 @@ modes (‘r+’, ‘w+’, …) are not supported; only the first letter of
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.9.0: </span>Only returns the <code class="docutils literal notranslate"><span class="pre">stream</span></code> and tries to set <code class="docutils literal notranslate"><span class="pre">stream.name</span> <span class="pre">=</span> <span class="pre">filename</span></code> instead of the previous
 behavior to return a tuple <code class="docutils literal notranslate"><span class="pre">(stream,</span> <span class="pre">filename)</span></code>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>New read handlers support pickle functionality
+if <cite>datasource</cite> is a filename.
+They return a custom picklable file stream in
+<a class="reference internal" href="picklable_file_io.html#module-MDAnalysis.lib.picklable_file_io" title="MDAnalysis.lib.picklable_file_io"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io</span></code></a>.</p>
 </div>
 </dd></dl>
 
@@ -502,7 +509,7 @@ at for a hint to the format</td>
 <p>Many of the readers are not restricted to just reading files. They can
 also use gzip-compressed or bzip2-compressed files (through the
 internal use of <a class="reference internal" href="#MDAnalysis.lib.util.openany" title="MDAnalysis.lib.util.openany"><code class="xref py py-func docutils literal notranslate"><span class="pre">openany()</span></code></a>). It is also possible to provide more
-general streams as inputs, such as a <code class="xref py py-func docutils literal notranslate"><span class="pre">cStringIO.StringIO()</span></code>
+general streams as inputs, such as a <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.StringIO</span></code></a>
 instances (essentially, a memory buffer) by wrapping these instances
 into a <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a>. This <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a> can then be
 used in place of an ordinary file name (typically, with a
@@ -511,10 +518,10 @@ class:<cite>~MDAnalysis.core.universe.Universe</cite> but it is also possible to
 <p>In the following example, we use a PDB stored as a string <code class="docutils literal notranslate"><span class="pre">pdb_s</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">NamedStream</span>
-<span class="kn">import</span> <span class="nn">cStringIO</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
 
-<span class="n">pdb_s</span> <span class="o">=</span> <span class="s2">&quot;TITLE     Lonely Ion</span><span class="se">\n</span><span class="s2">ATOM      1  NA  NA+     1      81.260  64.982  10.926  1.00  0.00</span><span class="se">\n</span><span class="s2">&quot;</span>
-<span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">(</span><span class="n">cStringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">pdb_s</span><span class="p">),</span> <span class="s2">&quot;ion.pdb&quot;</span><span class="p">))</span>
+<span class="n">pdb_s</span> <span class="o">=</span> <span class="s2">&quot;TITLE     Lonely Ion</span><span class="se">\\</span><span class="s2">nATOM      1  NA  NA+     1      81.260  64.982  10.926  1.00  0.00</span><span class="se">\\</span><span class="s2">n&quot;</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">pdb_s</span><span class="p">),</span> <span class="s2">&quot;ion.pdb&quot;</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
 <span class="c1">#  &lt;Universe with 1 atoms&gt;</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
@@ -529,7 +536,7 @@ provide the <code class="docutils literal notranslate"><span class="pre">format=
 <p>The use of streams becomes more interesting when MDAnalysis is used as glue
 between different analysis packages and when one can arrange things so that
 intermediate frames (typically in the PDB format) are not written to disk but
-remain in memory via e.g. <code class="xref py py-mod docutils literal notranslate"><span class="pre">cStringIO</span></code> buffers.</p>
+remain in memory via e.g. <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.StringIO</span></code></a> buffers.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">A remote connection created by <code class="xref py py-func docutils literal notranslate"><span class="pre">urllib2.urlopen()</span></code> is not seekable
@@ -551,10 +558,10 @@ work with a <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream
 and <a class="reference external" href="https://docs.python.org/3/library/os.path.html#os.path.expanduser" title="(in Python v3.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.expanduser()</span></code></a>, which will return the <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream" title="MDAnalysis.lib.util.NamedStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedStream</span></code></a>
 itself instead of a string if no substitutions were made.</p>
 <p class="rubric">Example</p>
-<p>Wrap a <code class="xref py py-func docutils literal notranslate"><span class="pre">cStringIO.StringIO()</span></code> instance to write to:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cStringIO</span>
+<p>Wrap a <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.StringIO</span></code></a> instance to write to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
 <span class="kn">import</span> <span class="nn">os.path</span>
-<span class="n">stream</span> <span class="o">=</span> <span class="n">cStringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+<span class="n">stream</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
 <span class="n">f</span> <span class="o">=</span> <span class="n">NamedStream</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="s2">&quot;output.pdb&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
 </pre></div>
@@ -595,7 +602,7 @@ the keyword <cite>reset</cite> is set to <code class="docutils literal notransla
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>stream</strong> (<em>stream</em>) – an open stream (e.g. <code class="xref py py-class docutils literal notranslate"><span class="pre">file</span></code> or <code class="xref py py-func docutils literal notranslate"><span class="pre">cStringIO.StringIO()</span></code>)</li>
+<li><strong>stream</strong> (<em>stream</em>) – an open stream (e.g. <code class="xref py py-class docutils literal notranslate"><span class="pre">file</span></code> or <a class="reference external" href="https://docs.python.org/3/library/io.html#io.StringIO" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.StringIO</span></code></a>)</li>
 <li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the filename that should be associated with the stream</li>
 <li><strong>reset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – start the stream from the beginning (either <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.reset" title="MDAnalysis.lib.util.NamedStream.reset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">reset()</span></code></a> or <a class="reference internal" href="#MDAnalysis.lib.util.NamedStream.seek" title="MDAnalysis.lib.util.NamedStream.seek"><code class="xref py py-meth docutils literal notranslate"><span class="pre">seek()</span></code></a>)
 when the class instance is constructed</li>
@@ -931,6 +938,30 @@ be zero, resulting in an empty view!</p>
 </div>
 </dd></dl>
 
+<dl class="function">
+<dt id="MDAnalysis.lib.util.group_same_or_consecutive_integers">
+<code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">group_same_or_consecutive_integers</code><span class="sig-paren">(</span><em>arr</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#group_same_or_consecutive_integers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.group_same_or_consecutive_integers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split an array of integers into a list of same or consecutive
+sequences.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>arr</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li>list of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></li>
+<li><em>Examples</em></li>
+<li><em>&gt;&gt;&gt; arr = np.array([ 2,  3,  4,  7,  8,  9, 10, 11, 15, 16])</em></li>
+<li><em>&gt;&gt;&gt; group_same_or_consecutive_integers(arr)</em></li>
+<li><em>[array([2, 3, 4]), array([ 7,  8,  9, 10, 11]), array([15, 16])]</em></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="file-parsing">
 <h2>13.2.10.5. File parsing<a class="headerlink" href="#file-parsing" title="Permalink to this headline">¶</a></h2>
@@ -1235,9 +1266,10 @@ otherwise the original object is passed back.</p>
 <h2>13.2.10.8. Class decorators<a class="headerlink" href="#class-decorators" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.cached">
-<code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">cached</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#cached"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.cached" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">cached</code><span class="sig-paren">(</span><em>key</em>, <em>universe_validation=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#cached"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.cached" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cache a property within a class.</p>
-<p>Requires the Class to have a cache dict called <code class="docutils literal notranslate"><span class="pre">_cache</span></code>.</p>
+<p>Requires the Class to have a cache dict <code class="xref py py-attr docutils literal notranslate"><span class="pre">_cache</span></code> and, with
+<cite>universe_validation</cite>, a <code class="xref py py-attr docutils literal notranslate"><span class="pre">universe</span></code> with a cache dict <code class="xref py py-attr docutils literal notranslate"><span class="pre">_cache</span></code>.</p>
 <p class="rubric">Example</p>
 <p>How to add a cache for a variable to a class by using the <cite>&#64;cached</cite>
 decorator:</p>
@@ -1248,10 +1280,22 @@ decorator:</p>
     <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;keyname&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># This code gets ran only if the lookup of keyname fails</span>
-        <span class="c1"># After this code has been ran once, the result is stored in</span>
+        <span class="c1"># This code gets run only if the lookup of keyname fails</span>
+        <span class="c1"># After this code has been run once, the result is stored in</span>
         <span class="c1"># _cache with the key: &#39;keyname&#39;</span>
-        <span class="n">size</span> <span class="o">=</span> <span class="mf">10.0</span>
+        <span class="k">return</span> <span class="mf">10.0</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;keyname&#39;</span><span class="p">,</span> <span class="n">universe_validation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">othersize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># This code gets run only if the lookup</span>
+        <span class="c1"># id(self) is not in the validation set under</span>
+        <span class="c1"># self.universe._cache[&#39;_valid&#39;][&#39;keyname&#39;]</span>
+        <span class="c1"># After this code has been run once, id(self) is added to that</span>
+        <span class="c1"># set. The validation set can be centrally invalidated at the</span>
+        <span class="c1"># universe level (say, if a topology change invalidates specific</span>
+        <span class="c1"># caches).</span>
+        <span class="k">return</span> <span class="mf">20.0</span>
 </pre></div>
 </div>
 <div class="versionadded">
@@ -1470,7 +1514,7 @@ warning and contain the deprecation note in the do string.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;0.19.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span>
            <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Do it yourself instead.&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">func</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Just pass&quot;&quot;&quot;</span>
+    \<span class="s2">&quot;</span><span class="se">\&quot;\&quot;</span><span class="s2">Just pass</span><span class="se">\&quot;\&quot;\&quot;</span>
     <span class="k">pass</span>
 </pre></div>
 </div>
@@ -1544,11 +1588,10 @@ the shape of the array and whether all angles are 90 degrees.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>box</strong> (<em>array_like</em>) – <p>The unitcell dimensions of the system, which can be orthogonal or
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>box</strong> (<em>array_like</em>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
-<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
-</td>
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul>
 <li><strong>boxtype</strong> ({<code class="docutils literal notranslate"><span class="pre">'ortho'</span></code>, <code class="docutils literal notranslate"><span class="pre">'tri_vecs'</span></code>}) – String indicating the box type (orthogonal or triclinic).</li>
@@ -1612,10 +1655,18 @@ close it.</td></tr>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -1632,7 +1683,7 @@ close it.</td></tr>
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

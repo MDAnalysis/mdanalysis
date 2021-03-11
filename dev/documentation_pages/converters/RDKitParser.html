@@ -1,0 +1,985 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>7.3. RDKit topology parser &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="8. Trajectory transformations (“on-the-fly” transformations)" href="../trajectory_transformations.html" />
+    <link rel="prev" title="7.1. ParmEd topology parser" href="ParmEdParser.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0-dev0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../converters.html">7. Converter modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ParmEdParser.html">7.1. ParmEd topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ParmEdParser.html#parmed-structure-i-o-mdanalysis-coordinates-parmed">7.2. ParmEd structure I/O — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.ParmEd</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">7.3. RDKit topology parser</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#classes">7.3.1. Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#rdkit-molecule-i-o-mdanalysis-coordinates-rdkit">7.4. RDKit molecule I/O — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.RDKit</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">7.4.1. Classes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../converters.html">7. Converter modules</a> &raquo;</li>
+        
+      <li>7.3. RDKit topology parser</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/documentation_pages/converters/RDKitParser.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-MDAnalysis.topology.RDKitParser"></span><div class="section" id="rdkit-topology-parser">
+<h1>7.3. RDKit topology parser<a class="headerlink" href="#rdkit-topology-parser" title="Permalink to this headline">¶</a></h1>
+<p>Converts an <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol">RDKit</a> <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> into a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.Topology</span></code>.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#module-MDAnalysis.coordinates.RDKit" title="MDAnalysis.coordinates.RDKit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.RDKit</span></code></a></p>
+</div>
+<div class="section" id="classes">
+<h2>7.3.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MDAnalysis.topology.RDKitParser.RDKitParser">
+<em class="property">class </em><code class="descclassname">MDAnalysis.topology.RDKitParser.</code><code class="descname">RDKitParser</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/RDKitParser.html#RDKitParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.RDKitParser.RDKitParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>For RDKit structures</p>
+<dl class="docutils">
+<dt>Creates the following Attributes:</dt>
+<dd><ul class="first last simple">
+<li>Atomids</li>
+<li>Atomnames</li>
+<li>Aromaticities</li>
+<li>Elements</li>
+<li>Masses</li>
+<li>Bonds</li>
+<li>Resids</li>
+<li>Resnums</li>
+<li>Segids</li>
+</ul>
+</dd>
+<dt>Guesses the following:</dt>
+<dd><ul class="first last simple">
+<li>Atomtypes</li>
+</ul>
+</dd>
+<dt>Depending on RDKit’s input, the following Attributes might be present:</dt>
+<dd><ul class="first last simple">
+<li>Charges</li>
+<li>Resnames</li>
+<li>AltLocs</li>
+<li>ChainIDs</li>
+<li>ICodes</li>
+<li>Occupancies</li>
+<li>Tempfactors</li>
+</ul>
+</dd>
+</dl>
+<p>Attributes table:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="64%" />
+<col width="36%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">RDKit attribute</th>
+<th class="head">MDAnalysis equivalent</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>atom.GetMonomerInfo().GetAltLoc()</td>
+<td>altLocs</td>
+</tr>
+<tr class="row-odd"><td>atom.GetIsAromatic()</td>
+<td>aromaticities</td>
+</tr>
+<tr class="row-even"><td>atom.GetMonomerInfo().GetChainId()</td>
+<td>chainIDs</td>
+</tr>
+<tr class="row-odd"><td>atom.GetDoubleProp(‘_GasteigerCharge’)
+atom.GetDoubleProp(‘_TriposPartialCharge’)</td>
+<td>charges</td>
+</tr>
+<tr class="row-even"><td>atom.GetSymbol()</td>
+<td>elements</td>
+</tr>
+<tr class="row-odd"><td>atom.GetMonomerInfo().GetInsertionCode()</td>
+<td>icodes</td>
+</tr>
+<tr class="row-even"><td>atom.GetIdx()</td>
+<td>indices</td>
+</tr>
+<tr class="row-odd"><td>atom.GetMass()</td>
+<td>masses</td>
+</tr>
+<tr class="row-even"><td>atom.GetMonomerInfo().GetName()
+atom.GetProp(‘_TriposAtomName’)</td>
+<td>names</td>
+</tr>
+<tr class="row-odd"><td>atom.GetMonomerInfo().GetOccupancy()</td>
+<td>occupancies</td>
+</tr>
+<tr class="row-even"><td>atom.GetMonomerInfo().GetResidueName()</td>
+<td>resnames</td>
+</tr>
+<tr class="row-odd"><td>atom.GetMonomerInfo().GetResidueNumber()</td>
+<td>resnums</td>
+</tr>
+<tr class="row-even"><td>atom.GetMonomerInfo().GetTempFactor()</td>
+<td>tempfactors</td>
+</tr>
+<tr class="row-odd"><td>atom.GetProp(‘_TriposAtomType’)</td>
+<td>types</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+<dl class="method">
+<dt id="MDAnalysis.topology.RDKitParser.RDKitParser.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.RDKitParser.RDKitParser.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the trajectory file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.RDKitParser.RDKitParser.convert_forces_from_native">
+<code class="descname">convert_forces_from_native</code><span class="sig-paren">(</span><em>force</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.RDKitParser.RDKitParser.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of forces array <em>force</em> from native to base units</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>force</strong> (<em>array_like</em>) – Forces to transform</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>By default, the input <em>force</em> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+<div class="last versionadded">
+<p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.RDKitParser.RDKitParser.convert_forces_to_native">
+<code class="descname">convert_forces_to_native</code><span class="sig-paren">(</span><em>force</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.RDKitParser.RDKitParser.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of force array <em>force</em> from base to native units.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>force</strong> (<em>array_like</em>) – Forces to transform</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, the input <cite>force</cite> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.RDKitParser.RDKitParser.convert_pos_from_native">
+<code class="descname">convert_pos_from_native</code><span class="sig-paren">(</span><em>x</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.RDKitParser.RDKitParser.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of coordinate array x from native units to base units.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>array_like</em>) – Positions to transform</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, the input <cite>x</cite> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <cite>x</cite> is
+returned.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.RDKitParser.RDKitParser.convert_pos_to_native">
+<code class="descname">convert_pos_to_native</code><span class="sig-paren">(</span><em>x</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.RDKitParser.RDKitParser.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of coordinate array <cite>x</cite> from base units to native units.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>array_like</em>) – Positions to transform</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, the input <cite>x</cite> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <cite>x</cite> is
+returned.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.RDKitParser.RDKitParser.convert_time_from_native">
+<code class="descname">convert_time_from_native</code><span class="sig-paren">(</span><em>t</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.RDKitParser.RDKitParser.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert time <em>t</em> from native units to base units.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>t</strong> (<em>array_like</em>) – Time values to transform</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, the input <cite>t</cite> is modified in place and also returned
+(although note that scalar values <cite>t</cite> are passed by value in Python and
+hence an in-place modification has no effect on the caller.)  In-place
+operations improve performance because allocating new arrays is
+avoided.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <cite>x</cite> is
+returned.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.RDKitParser.RDKitParser.convert_time_to_native">
+<code class="descname">convert_time_to_native</code><span class="sig-paren">(</span><em>t</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.RDKitParser.RDKitParser.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert time <em>t</em> from base units to native units.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>t</strong> (<em>array_like</em>) – Time values to transform</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>By default, the input <em>t</em> is modified in place and also
+returned. (Also note that scalar values <em>t</em> are passed by
+value in Python and hence an in-place modification has no
+effect on the caller.)</p>
+<div class="last versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
+</div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.RDKitParser.RDKitParser.convert_velocities_from_native">
+<code class="descname">convert_velocities_from_native</code><span class="sig-paren">(</span><em>v</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.RDKitParser.RDKitParser.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of velocities array <em>v</em> from native to base units</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>v</strong> (<em>array_like</em>) – Velocities to transform</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, the input <em>v</em> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.5.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.RDKitParser.RDKitParser.convert_velocities_to_native">
+<code class="descname">convert_velocities_to_native</code><span class="sig-paren">(</span><em>v</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.RDKitParser.RDKitParser.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of coordinate array <cite>v</cite> from base to native units</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>v</strong> (<em>array_like</em>) – Velocities to transform</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, the input <cite>v</cite> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.5.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.topology.RDKitParser.RDKitParser.parse">
+<code class="descname">parse</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/RDKitParser.html#RDKitParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.RDKitParser.RDKitParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse RDKit into Topology</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">MDAnalysis Topology object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<span class="target" id="module-MDAnalysis.coordinates.RDKit"></span><div class="section" id="rdkit-molecule-i-o-mdanalysis-coordinates-rdkit">
+<h1>7.4. RDKit molecule I/O — <a class="reference internal" href="#module-MDAnalysis.coordinates.RDKit" title="MDAnalysis.coordinates.RDKit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.RDKit</span></code></a><a class="headerlink" href="#rdkit-molecule-i-o-mdanalysis-coordinates-rdkit" title="Permalink to this headline">¶</a></h1>
+<p>Read coordinates data from an <a class="reference external" href="https://www.rdkit.org/docs/">RDKit</a> <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> with
+<a class="reference internal" href="#MDAnalysis.coordinates.RDKit.RDKitReader" title="MDAnalysis.coordinates.RDKit.RDKitReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">RDKitReader</span></code></a> into an MDAnalysis Universe. Convert it back to a
+<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">rdkit.Chem.rdchem.Mol</span></code></a> with <a class="reference internal" href="#MDAnalysis.coordinates.RDKit.RDKitConverter" title="MDAnalysis.coordinates.RDKit.RDKitConverter"><code class="xref py py-class docutils literal notranslate"><span class="pre">RDKitConverter</span></code></a>.</p>
+<p class="rubric">Example</p>
+<p>To read an RDKit molecule and then convert the AtomGroup back to an RDKit
+molecule:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromMol2File</span><span class="p">(</span><span class="s2">&quot;docking_poses.mol2&quot;</span><span class="p">,</span> <span class="n">removeHs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span>
+<span class="go">&lt;Universe with 42 atoms&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span>
+<span class="go">&lt;RDKitReader with 10 frames of 42 atoms&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s2">&quot;RDKIT&quot;</span><span class="p">)</span>
+<span class="go">&lt;rdkit.Chem.rdchem.Mol object at 0x7fcebb958148&gt;</span>
+</pre></div>
+</div>
+<div class="section" id="id1">
+<h2>7.4.1. Classes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MDAnalysis.coordinates.RDKit.RDKitReader">
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.RDKit.</code><code class="descname">RDKitReader</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/RDKit.html#RDKitReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.RDKit.RDKitReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coordinate reader for RDKit.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+<p>Read coordinates from an RDKit molecule.
+Each conformer in the original RDKit molecule will be read as a frame
+in the resulting universe.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.09)"><em>rdkit.Chem.rdchem.Mol</em></a>) – RDKit molecule</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.RDKit.RDKitConverter">
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.RDKit.</code><code class="descname">RDKitConverter</code><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/RDKit.html#RDKitConverter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.RDKit.RDKitConverter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert MDAnalysis <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or
+<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> to RDKit
+<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mol</span></code></a></p>
+<p>MDanalysis attributes are stored in each RDKit
+<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom" title="(in The RDKit v2020.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> of the resulting molecule in two different
+ways:</p>
+<ul class="simple">
+<li>in an <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.AtomPDBResidueInfo" title="(in The RDKit v2020.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomPDBResidueInfo</span></code></a> object available
+through the <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom.GetMonomerInfo" title="(in The RDKit v2020.09)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">GetMonomerInfo()</span></code></a> method if it’s
+an attribute that is typically found in a PDB file,</li>
+<li>directly as an atom property available through the
+<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Atom.GetProp" title="(in The RDKit v2020.09)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">GetProp()</span></code></a> methods for the others.</li>
+</ul>
+<p>Supported attributes:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="35%" />
+<col width="65%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">MDAnalysis attribute</th>
+<th class="head">RDKit</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>altLocs</td>
+<td>atom.GetMonomerInfo().GetAltLoc()</td>
+</tr>
+<tr class="row-odd"><td>chainIDs</td>
+<td>atom.GetMonomerInfo().GetChainId()</td>
+</tr>
+<tr class="row-even"><td>icodes</td>
+<td>atom.GetMonomerInfo().GetInsertionCode()</td>
+</tr>
+<tr class="row-odd"><td>names</td>
+<td>atom.GetMonomerInfo().GetName()</td>
+</tr>
+<tr class="row-even"><td>occupancies</td>
+<td>atom.GetMonomerInfo().GetOccupancy()</td>
+</tr>
+<tr class="row-odd"><td>resnames</td>
+<td>atom.GetMonomerInfo().GetResidueName()</td>
+</tr>
+<tr class="row-even"><td>resids</td>
+<td>atom.GetMonomerInfo().GetResidueNumber()</td>
+</tr>
+<tr class="row-odd"><td>segindices</td>
+<td>atom.GetMonomerInfo().GetSegmentNumber()</td>
+</tr>
+<tr class="row-even"><td>tempfactors</td>
+<td>atom.GetMonomerInfo().GetTempFactor()</td>
+</tr>
+<tr class="row-odd"><td>bfactors</td>
+<td>atom.GetMonomerInfo().GetTempFactor()</td>
+</tr>
+<tr class="row-even"><td>charges</td>
+<td>atom.GetDoubleProp(“_MDAnalysis_charge”)</td>
+</tr>
+<tr class="row-odd"><td>indices</td>
+<td>atom.GetIntProp(“_MDAnalysis_index”)</td>
+</tr>
+<tr class="row-even"><td>segids</td>
+<td>atom.GetProp(“_MDAnalysis_segid”)</td>
+</tr>
+<tr class="row-odd"><td>types</td>
+<td>atom.GetProp(“_MDAnalysis_type”)</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<p>To access MDAnalysis properties:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PDB_full</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB_full</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mol</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname DMS&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s1">&#39;RDKIT&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">GetMonomerInfo</span><span class="p">()</span><span class="o">.</span><span class="n">GetResidueName</span><span class="p">()</span>
+<span class="go">&#39;DMS&#39;</span>
+</pre></div>
+</div>
+<p>To create a molecule for each frame of a trajectory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem.Descriptors3D</span> <span class="kn">import</span> <span class="n">Asphericity</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<span class="n">elements</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">topology</span><span class="o">.</span><span class="n">guessers</span><span class="o">.</span><span class="n">guess_types</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="s1">&#39;elements&#39;</span><span class="p">,</span> <span class="n">elements</span><span class="p">)</span>
+<span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;resid 1-10&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
+    <span class="n">mol</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s2">&quot;RDKIT&quot;</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">Asphericity</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<p>The converter requires the <a class="reference internal" href="../core/topologyattrs.html#MDAnalysis.core.topologyattrs.Elements" title="MDAnalysis.core.topologyattrs.Elements"><code class="xref py py-class docutils literal notranslate"><span class="pre">Elements</span></code></a>
+attribute to be present in the topology, else it will fail.</p>
+<p>It also requires the <cite>bonds</cite> attribute, although they will be automatically
+guessed if not present.</p>
+<p>If both <code class="docutils literal notranslate"><span class="pre">tempfactors</span></code> and <code class="docutils literal notranslate"><span class="pre">bfactors</span></code> attributes are present, the
+conversion will fail, since only one of these should be present.
+Refer to Issue #1901 for a solution</p>
+<p>Hydrogens should be explicit in the topology file. If this is not the case,
+use the parameter <code class="docutils literal notranslate"><span class="pre">NoImplicit=False</span></code> when using the converter to allow
+implicit hydrogens and disable inferring bond orders and charges.</p>
+<p>Since one of the main use case of the converter is converting trajectories
+and not just a topology, creating a new molecule from scratch for every
+frame would be too slow so the converter uses a caching system. The cache
+only remembers the id of the last AtomGroup that was converted, as well
+as the arguments that were passed to the converter. This means that using
+<code class="docutils literal notranslate"><span class="pre">u.select_atoms(&quot;protein&quot;).convert_to(&quot;RDKIT&quot;)</span></code> will not benefit from the
+cache since the selection is deleted from memory as soon as the conversion
+is finished. Instead, users should do this in two steps by first saving the
+selection in a variable and then converting the saved AtomGroup. It also
+means that <code class="docutils literal notranslate"><span class="pre">ag.convert_to(&quot;RDKIT&quot;)</span></code> followed by
+<code class="docutils literal notranslate"><span class="pre">ag.convert_to(&quot;RDKIT&quot;,</span> <span class="pre">NoImplicit=False)</span></code> will not use the cache.
+Finally if you’re modifying the AtomGroup in place between two conversions,
+the id of the AtomGroup won’t change and thus the converter will use the
+cached molecule. For this reason, you can pass a <code class="docutils literal notranslate"><span class="pre">cache=False</span></code> argument
+to the converter to bypass the caching system.
+Note that the cached molecule doesn’t contain the coordinates of the atoms.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.RDKit.RDKitConverter.atomgroup_to_mol">
+<code class="descname">atomgroup_to_mol</code><span class="sig-paren">(</span><em>ag</em>, <em>NoImplicit=True</em>, <em>max_iter=200</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/RDKit.html#RDKitConverter.atomgroup_to_mol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.RDKit.RDKitConverter.atomgroup_to_mol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an AtomGroup to an RDKit molecule.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ag</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>MDAnalysis.core.groups.AtomGroup</em></a>) – The AtomGroup to convert</li>
+<li><strong>NoImplicit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Prevent adding hydrogens to the molecule</li>
+<li><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Maximum number of iterations to standardize conjugated systems.
+See <a class="reference internal" href="#MDAnalysis.coordinates.RDKit._rebuild_conjugated_bonds" title="MDAnalysis.coordinates.RDKit._rebuild_conjugated_bonds"><code class="xref py py-func docutils literal notranslate"><span class="pre">_rebuild_conjugated_bonds()</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.RDKit.RDKitConverter.convert">
+<code class="descname">convert</code><span class="sig-paren">(</span><em>obj</em>, <em>cache=True</em>, <em>NoImplicit=True</em>, <em>max_iter=200</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/RDKit.html#RDKitConverter.convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.RDKit.RDKitConverter.convert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write selection at current trajectory frame to
+<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.09)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mol</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>obj</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>) – </li>
+<li><strong>cache</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Use a cached copy of the molecule’s topology when available. To be
+used, the cached molecule and the new one have to be made from the
+same AtomGroup object (same id) and with the same arguments passed
+to the converter (with the exception of this <cite>cache</cite> argument)</li>
+<li><strong>NoImplicit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Prevent adding hydrogens to the molecule</li>
+<li><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Maximum number of iterations to standardize conjugated systems.
+See <a class="reference internal" href="#MDAnalysis.coordinates.RDKit._rebuild_conjugated_bonds" title="MDAnalysis.coordinates.RDKit._rebuild_conjugated_bonds"><code class="xref py py-func docutils literal notranslate"><span class="pre">_rebuild_conjugated_bonds()</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.coordinates.RDKit._infer_bo_and_charges">
+<code class="descclassname">MDAnalysis.coordinates.RDKit.</code><code class="descname">_infer_bo_and_charges</code><span class="sig-paren">(</span><em>mol</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/RDKit.html#_infer_bo_and_charges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.RDKit._infer_bo_and_charges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Infer bond orders and formal charges from a molecule.</p>
+<p>Since most MD topology files don’t explicitly retain information on bond
+orders or charges, it has to be guessed from the topology. This is done by
+looping over each atom and comparing its expected valence to the current
+valence to get the Number of Unpaired Electrons (NUE).
+If an atom has a negative NUE, it needs a positive formal charge (-NUE).
+If two neighbouring atoms have UEs, the bond between them most
+likely has to be increased by the value of the smallest NUE.
+If after this process, an atom still has UEs, it needs a negative formal
+charge of -NUE.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mol</strong> (<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2020.09)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule is modified inplace and must have all hydrogens added</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This algorithm is order dependant. For example, for a carboxylate group
+R-C(-O)-O the first oxygen read will receive a double bond and the other
+one will be charged. It will also affect more complex conjugated systems.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.coordinates.RDKit._standardize_patterns">
+<code class="descclassname">MDAnalysis.coordinates.RDKit.</code><code class="descname">_standardize_patterns</code><span class="sig-paren">(</span><em>mol</em>, <em>max_iter=200</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/RDKit.html#_standardize_patterns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.RDKit._standardize_patterns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standardizes functional groups</p>
+<p>Uses <a class="reference internal" href="#MDAnalysis.coordinates.RDKit._rebuild_conjugated_bonds" title="MDAnalysis.coordinates.RDKit._rebuild_conjugated_bonds"><code class="xref py py-func docutils literal notranslate"><span class="pre">_rebuild_conjugated_bonds()</span></code></a> to standardize conjugated systems,
+and SMARTS reactions for other functional groups.
+Due to the way reactions work, we first have to split the molecule by
+fragments. Then, for each fragment, we apply the standardization reactions.
+Finally, the fragments are recombined.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mol</strong> (<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2020.09)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule to standardize</li>
+<li><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Maximum number of iterations to standardize conjugated systems</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>mol</strong> – The standardized molecule</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2020.09)">rdkit.Chem.rdchem.Mol</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The following functional groups are transformed in this order:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Reaction</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>conjugated</td>
+<td><code class="docutils literal notranslate"><span class="pre">[*-;!O:1]-[*:2]=[*:3]-[*-:4]&gt;&gt;[*+0:1]=[*:2]-[*:3]=[*+0:4]</span></code></td>
+</tr>
+<tr class="row-odd"><td>conjugated-N+</td>
+<td><code class="docutils literal notranslate"><span class="pre">[N;X3;v3:1]-[*:2]=[*:3]-[*-:4]&gt;&gt;[N+:1]=[*:2]-[*:3]=[*+0:4]</span></code></td>
+</tr>
+<tr class="row-even"><td>conjugated-O-</td>
+<td><code class="docutils literal notranslate"><span class="pre">[O:1]=[#6:2]-[*:3]=[*:4]-[*-:5]&gt;&gt;[O-:1]-[*:2]=[*:3]-[*:4]=[*+0:5]</span></code></td>
+</tr>
+<tr class="row-odd"><td>Cterm</td>
+<td><code class="docutils literal notranslate"><span class="pre">[C-;X2:1]=[O:2]&gt;&gt;[C+0:1]=[O:2]</span></code></td>
+</tr>
+<tr class="row-even"><td>Nterm</td>
+<td><code class="docutils literal notranslate"><span class="pre">[N-;X2;H1:1]&gt;&gt;[N+0:1]</span></code></td>
+</tr>
+<tr class="row-odd"><td>keto-enolate</td>
+<td><code class="docutils literal notranslate"><span class="pre">[#6-:1]-[#6:2]=[O:3]&gt;&gt;[#6+0:1]=[#6:2]-[O-:3]</span></code></td>
+</tr>
+<tr class="row-even"><td>arginine</td>
+<td><code class="docutils literal notranslate"><span class="pre">[N;H1:1]-[C-;X3;H0:2](-[N;H2:3])-[N;H2:4]&gt;&gt;[N:1]-[C+0:2](-[N:3])=[N+:4]</span></code></td>
+</tr>
+<tr class="row-odd"><td>histidine</td>
+<td><code class="docutils literal notranslate"><span class="pre">[#6+0;H0:1]=[#6+0:2]-[#7;X3:3]-[#6-;X3:4]&gt;&gt;[#6:1]=[#6:2]-[#7+:3]=[#6+0:4]</span></code></td>
+</tr>
+<tr class="row-even"><td>sulfone</td>
+<td><code class="docutils literal notranslate"><span class="pre">[S;X4;v4:1](-[O-;X1:2])-[O-;X1:3]&gt;&gt;[S:1](=[O+0:2])=[O+0:3]</span></code></td>
+</tr>
+<tr class="row-odd"><td>nitro</td>
+<td><code class="docutils literal notranslate"><span class="pre">[N;X3;v3:1](-[O-;X1:2])-[O-;X1:3]&gt;&gt;[N+:1](-[O-:2])=[O+0:3]</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.coordinates.RDKit._rebuild_conjugated_bonds">
+<code class="descclassname">MDAnalysis.coordinates.RDKit.</code><code class="descname">_rebuild_conjugated_bonds</code><span class="sig-paren">(</span><em>mol</em>, <em>max_iter=200</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/RDKit.html#_rebuild_conjugated_bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.RDKit._rebuild_conjugated_bonds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rebuild conjugated bonds without negatively charged atoms at the
+beginning and end of the conjugated system</p>
+<p>Depending on the order in which atoms are read during the conversion, the
+<a class="reference internal" href="#MDAnalysis.coordinates.RDKit._infer_bo_and_charges" title="MDAnalysis.coordinates.RDKit._infer_bo_and_charges"><code class="xref py py-func docutils literal notranslate"><span class="pre">_infer_bo_and_charges()</span></code></a> function might write conjugated systems with
+a double bond less and both edges of the system as anions instead of the
+usual alternating single and double bonds. This function corrects this
+behaviour by using an iterative procedure.
+The problematic molecules always follow the same pattern:
+<code class="docutils literal notranslate"><span class="pre">anion[-*=*]n-anion</span></code> instead of <code class="docutils literal notranslate"><span class="pre">*=[*-*=]n*</span></code>, where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the number
+of successive single and double bonds. The goal of the iterative procedure
+is to make <code class="docutils literal notranslate"><span class="pre">n</span></code> as small as possible by consecutively transforming
+<code class="docutils literal notranslate"><span class="pre">anion-*=*</span></code> into <code class="docutils literal notranslate"><span class="pre">*=*-anion</span></code> until it reaches the smallest pattern with
+<code class="docutils literal notranslate"><span class="pre">n=1</span></code>. This last pattern is then transformed from <code class="docutils literal notranslate"><span class="pre">anion-*=*-anion</span></code> to
+<code class="docutils literal notranslate"><span class="pre">*=*-*=*</span></code>.
+Since <code class="docutils literal notranslate"><span class="pre">anion-*=*</span></code> is the same as <code class="docutils literal notranslate"><span class="pre">*=*-anion</span></code> in terms of SMARTS, we can
+control that we don’t transform the same triplet of atoms back and forth by
+adding their indices to a list.
+The molecule needs to be kekulized first to also cover systems
+with aromatic rings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mol</strong> (<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.RWMol" title="(in The RDKit v2020.09)"><em>rdkit.Chem.rdchem.RWMol</em></a>) – The molecule to transform, modified inplace</li>
+<li><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Maximum number of iterations performed by the function</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="../trajectory_transformations.html" class="btn btn-neutral float-right" title="8. Trajectory transformations (“on-the-fly” transformations)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="ParmEdParser.html" class="btn btn-neutral float-left" title="7.1. ParmEd topology parser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+
+    </p>
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.0.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

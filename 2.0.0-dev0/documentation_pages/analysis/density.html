@@ -314,7 +314,13 @@ gridcenter is “None”.</li>
 <span class="math notranslate nohighlight">\(Angstrom^{-3}\)</span>.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – if AtomGroup is empty and no user defined grid is provided</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#UserWarning" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">UserWarning</span></code></a> – if AtomGroup is empty and a user defined grid is provided</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -329,6 +335,12 @@ atoms. If you want <em>dynamically changing selections</em> (such as “name OW 
 around 4.0 (protein and not name H*)”, i.e., the water oxygen atoms that
 are within 4 Å of the protein heavy atoms) then create an
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup" title="MDAnalysis.core.groups.UpdatingAtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpdatingAtomGroup</span></code></a> (see Examples).</p>
+<p><a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis" title="MDAnalysis.analysis.density.DensityAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">DensityAnalysis</span></code></a> will fail when the <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> instance
+does not contain any selection of atoms, even when <cite>updating</cite> is set to
+<code class="docutils literal notranslate"><span class="pre">True</span></code>. In such a situation, user defined box limits can be provided to
+generate a <cite>Density</cite>. Although, it remains the user’s responsibility
+to ensure that the provided grid limits encompass atoms to be selected
+on all trajectory frames.</p>
 <p class="rubric">Examples</p>
 <p>A common use case is to analyze the solvent density around a protein of
 interest. The density is calculated with <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis" title="MDAnalysis.analysis.density.DensityAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">DensityAnalysis</span></code></a> in the

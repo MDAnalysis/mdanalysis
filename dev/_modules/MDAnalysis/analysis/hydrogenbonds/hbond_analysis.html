@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>MDAnalysis.analysis.hydrogenbonds.hbond_analysis &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>MDAnalysis.analysis.hydrogenbonds.hbond_analysis &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,7 +43,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -325,13 +325,57 @@
 <span class="sd">  hbonds.acceptors_sel = f&quot;({protein_acceptors_sel}) or ({water_acceptors_sel} and around 10 not resname TIP3})&quot;</span>
 <span class="sd">  hbonds.run()</span>
 
-<span class="sd">It is highly recommended that a topology with bonding information is used to generate the universe, e.g `PSF`, `TPR`, or</span>
-<span class="sd">`PRMTOP` files. This is the only method by which it can be guaranteed that donor-hydrogen pairs are correctly identified.</span>
-<span class="sd">However, if, for example, a `PDB` file is used instead, a :attr:`donors_sel` may be provided along with a</span>
-<span class="sd">:attr:`hydrogens_sel` and the donor-hydrogen pairs will be identified via a distance cutoff, :attr:`d_h_cutoff`::</span>
+<span class="sd">To calculate the hydrogen bonds between different groups, for example a</span>
+<span class="sd">protein and water, one can use the :attr:`between` keyword. The</span>
+<span class="sd">following will find protein-water hydrogen bonds but not protein-protein</span>
+<span class="sd">or water-water hydrogen bonds::</span>
 
 <span class="sd">  import MDAnalysis</span>
-<span class="sd">  from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import HydrogenBondAnalysis as HBA</span>
+<span class="sd">  from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import (</span>
+<span class="sd">    HydrogenBondAnalysis as HBA)</span>
+
+<span class="sd">  u = MDAnalysis.Universe(psf, trajectory)</span>
+
+<span class="sd">  hbonds = HBA(</span>
+<span class="sd">    universe=u,</span>
+<span class="sd">    between=[&#39;resname TIP3&#39;, &#39;protein&#39;]</span>
+<span class="sd">    )</span>
+
+<span class="sd">  protein_hydrogens_sel = hbonds.guess_hydrogens(&quot;protein&quot;)</span>
+<span class="sd">  protein_acceptors_sel = hbonds.guess_acceptors(&quot;protein&quot;)</span>
+
+<span class="sd">  water_hydrogens_sel = &quot;resname TIP3 and name H1 H2&quot;</span>
+<span class="sd">  water_acceptors_sel = &quot;resname TIP3 and name OH2&quot;</span>
+
+<span class="sd">  hbonds.hydrogens_sel = f&quot;({protein_hydrogens_sel}) or ({water_hydrogens_sel}&quot;</span>
+<span class="sd">  hbonds.acceptors_sel = f&quot;({protein_acceptors_sel}) or ({water_acceptors_sel}&quot;</span>
+
+<span class="sd">  hbonds.run()</span>
+
+<span class="sd">It is further possible to compute hydrogen bonds between several groups with</span>
+<span class="sd">with use of :attr:`between`. If in the above example,</span>
+<span class="sd">`between=[[&#39;resname TIP3&#39;, &#39;protein&#39;], [&#39;protein&#39;, &#39;protein&#39;]]`, all</span>
+<span class="sd">protein-water and protein-protein hydrogen bonds will be found, but</span>
+<span class="sd">no water-water hydrogen bonds.</span>
+
+<span class="sd">In order to compute the hydrogen bond lifetime, after finding hydrogen bonds</span>
+<span class="sd">one can use the :attr:`lifetime` function::</span>
+
+<span class="sd">    ...</span>
+<span class="sd">    hbonds.run()</span>
+<span class="sd">    tau_timeseries, timeseries = hbonds.lifetime()</span>
+
+<span class="sd">It is **highly recommended** that a topology with bond information is used to</span>
+<span class="sd">generate the universe, e.g `PSF`, `TPR`, or `PRMTOP` files. This is the only</span>
+<span class="sd">method by which it can be guaranteed that donor-hydrogen pairs are correctly</span>
+<span class="sd">identified. However, if, for example, a `PDB` file is used instead, a</span>
+<span class="sd">:attr:`donors_sel` may be provided along with a :attr:`hydrogens_sel` and the</span>
+<span class="sd">donor-hydrogen pairs will be identified via a distance cutoff,</span>
+<span class="sd">:attr:`d_h_cutoff`::</span>
+
+<span class="sd">  import MDAnalysis</span>
+<span class="sd">  from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import (</span>
+<span class="sd">    HydrogenBondAnalysis as HBA)</span>
 
 <span class="sd">  u = MDAnalysis.Universe(pdb, trajectory)</span>
 
@@ -350,13 +394,14 @@
 <span class="sd">.. autoclass:: HydrogenBondAnalysis</span>
 <span class="sd">   :members:</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="kn">import</span> <span class="n">capped_distance</span><span class="p">,</span> <span class="n">calc_angles</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.correlations</span> <span class="kn">import</span> <span class="n">autocorrelation</span><span class="p">,</span> <span class="n">correct_intermittency</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.core.groups</span> <span class="kn">import</span> <span class="n">AtomGroup</span>
 
@@ -375,39 +420,66 @@
 <span class="sd">    Perform an analysis of hydrogen bonds in a Universe.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">donors_sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hydrogens_sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">acceptors_sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">d_h_cutoff</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">d_a_cutoff</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">d_h_a_angle_cutoff</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">update_selections</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set up atom selections and geometric criteria for finding hydrogen bonds in a Universe.</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span>
+                 <span class="n">donors_sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hydrogens_sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">acceptors_sel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">between</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">d_h_cutoff</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>
+                 <span class="n">d_a_cutoff</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">d_h_a_angle_cutoff</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span>
+                 <span class="n">update_selections</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set up atom selections and geometric criteria for finding hydrogen</span>
+<span class="sd">        bonds in a Universe.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        universe : Universe</span>
 <span class="sd">            MDAnalysis Universe object</span>
 <span class="sd">        donors_sel : str</span>
-<span class="sd">            Selection string for the hydrogen bond donor atoms. If the universe topology contains bonding information,</span>
-<span class="sd">            leave :attr:`donors_sel` as `None` so that donor-hydrogen pairs can be correctly identified.</span>
+<span class="sd">            Selection string for the hydrogen bond donor atoms. If the</span>
+<span class="sd">            universe topology contains bonding information, leave</span>
+<span class="sd">            :attr:`donors_sel` as `None` so that donor-hydrogen pairs can be</span>
+<span class="sd">            correctly identified.</span>
 <span class="sd">        hydrogens_sel :  str</span>
-<span class="sd">            Selection string for the hydrogen bond hydrogen atoms. Leave as `None` to guess which hydrogens to use in</span>
-<span class="sd">            the analysis using :attr:`guess_hydrogens`. If :attr:`hydrogens_sel` is left as `None`, also leave</span>
-<span class="sd">            :attr:`donors_sel` as None so that donor-hydrogen pairs can be correctly identified.</span>
+<span class="sd">            Selection string for the hydrogen bond hydrogen atoms. Leave as</span>
+<span class="sd">            `None` to guess which hydrogens to use in the analysis using</span>
+<span class="sd">            :attr:`guess_hydrogens`. If :attr:`hydrogens_sel` is left as</span>
+<span class="sd">            `None`, also leave :attr:`donors_sel` as None so that</span>
+<span class="sd">            donor-hydrogen pairs can be correctly identified.</span>
 <span class="sd">        acceptors_sel : str</span>
-<span class="sd">            Selection string for the hydrogen bond acceptor atoms. Leave as `None` to guess which atoms to use in the</span>
-<span class="sd">            analysis using :attr:`guess_acceptors`</span>
+<span class="sd">            Selection string for the hydrogen bond acceptor atoms. Leave as</span>
+<span class="sd">            `None` to guess which atoms to use in the analysis using</span>
+<span class="sd">            :attr:`guess_acceptors`</span>
+<span class="sd">        between : List (optional),</span>
+<span class="sd">            Specify two selection strings for non-updating atom groups between</span>
+<span class="sd">            which hydrogen bonds will be calculated. For example, if the donor</span>
+<span class="sd">            and acceptor selections include both protein and water, it is</span>
+<span class="sd">            possible to find only protein-water hydrogen bonds - and not</span>
+<span class="sd">            protein-protein or water-water - by specifying</span>
+<span class="sd">            between=[&quot;protein&quot;, &quot;SOL&quot;]`. If a two-dimensional list is</span>
+<span class="sd">            passed, hydrogen bonds between each pair will be found. For</span>
+<span class="sd">            example, between=[[&quot;protein&quot;, &quot;SOL&quot;], [&quot;protein&quot;, &quot;protein&quot;]]`</span>
+<span class="sd">            will calculate all protein-water and protein-protein hydrogen</span>
+<span class="sd">            bonds but not water-water hydrogen bonds. If `None`, hydrogen</span>
+<span class="sd">            bonds between all donors and acceptors will be calculated.</span>
 <span class="sd">        d_h_cutoff : float (optional)</span>
-<span class="sd">            Distance cutoff used for finding donor-hydrogen pairs [1.2]. Only used to find donor-hydrogen pairs if the</span>
+<span class="sd">            Distance cutoff used for finding donor-hydrogen pairs.</span>
+<span class="sd">            Only used to find donor-hydrogen pairs if the</span>
 <span class="sd">            universe topology does not contain bonding information</span>
 <span class="sd">        d_a_cutoff : float (optional)</span>
-<span class="sd">            Distance cutoff for hydrogen bonds. This cutoff refers to the D-A distance. [3.0]</span>
-<span class="sd">        d_h_a_angle_cutoff: float (optional)</span>
-<span class="sd">            D-H-A angle cutoff for hydrogen bonds, in degrees. [150]</span>
-<span class="sd">        update_selections: bool (optional)</span>
-<span class="sd">            Whether or not to update the acceptor, donor and hydrogen lists at each frame. [True]</span>
+<span class="sd">            Distance cutoff for hydrogen bonds. This cutoff refers to the D-A distance.</span>
+<span class="sd">        d_h_a_angle_cutoff : float (optional)</span>
+<span class="sd">            D-H-A angle cutoff for hydrogen bonds, in degrees.</span>
+<span class="sd">        update_selections : bool (optional)</span>
+<span class="sd">            Whether or not to update the acceptor, donor and hydrogen</span>
+<span class="sd">            lists at each frame.</span>
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
 
-<span class="sd">        It is highly recommended that a universe topology with bonding information is used, as this is the only way</span>
-<span class="sd">        that guarantees the correct identification of donor-hydrogen pairs.</span>
+<span class="sd">        It is highly recommended that a universe topology with bond</span>
+<span class="sd">        information is used, as this is the only way that guarantees the</span>
+<span class="sd">        correct identification of donor-hydrogen pairs.</span>
+
+<span class="sd">        .. versionadded:: 2.0.0</span>
+<span class="sd">            Added `between` keyword</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">universe</span>
@@ -415,10 +487,34 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">donors_sel</span> <span class="o">=</span> <span class="n">donors_sel</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="o">=</span> <span class="n">hydrogens_sel</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="o">=</span> <span class="n">acceptors_sel</span>
+
+        <span class="c1"># If hydrogen bonding groups are selected, then generate</span>
+        <span class="c1"># corresponding atom groups</span>
+        <span class="k">if</span> <span class="n">between</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">between</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">between</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;between must be a non-empty list/iterable&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">between</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">between</span> <span class="o">=</span> <span class="p">[</span><span class="n">between</span><span class="p">]</span>
+
+            <span class="n">between_ags</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">group1</span><span class="p">,</span> <span class="n">group2</span> <span class="ow">in</span> <span class="n">between</span><span class="p">:</span>
+                <span class="n">between_ags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">group1</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">group2</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">between_ags</span> <span class="o">=</span> <span class="n">between_ags</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">between_ags</span> <span class="o">=</span> <span class="kc">None</span>
+
+
         <span class="bp">self</span><span class="o">.</span><span class="n">d_h_cutoff</span> <span class="o">=</span> <span class="n">d_h_cutoff</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">d_a_cutoff</span> <span class="o">=</span> <span class="n">d_a_cutoff</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">d_h_a_angle</span> <span class="o">=</span> <span class="n">d_h_a_angle_cutoff</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_selections</span> <span class="o">=</span> <span class="n">update_selections</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="HydrogenBondAnalysis.guess_hydrogens"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_hydrogens">[docs]</a>    <span class="k">def</span> <span class="nf">guess_hydrogens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                         <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span>
@@ -616,6 +712,40 @@
 
         <span class="k">return</span> <span class="n">donors</span><span class="p">,</span> <span class="n">hydrogens</span>
 
+    <span class="k">def</span> <span class="nf">_filter_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">donors</span><span class="p">,</span> <span class="n">hydrogens</span><span class="p">,</span> <span class="n">acceptors</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter donor, hydrogen and acceptor atoms to consider only hydrogen</span>
+<span class="sd">        bonds between two or more specified groups.</span>
+
+<span class="sd">        Groups are specified with the `between` keyword when creating the</span>
+<span class="sd">        HydrogenBondAnalysis object.</span>
+
+<span class="sd">           Returns</span>
+<span class="sd">           -------</span>
+<span class="sd">           donors, hydrogens, acceptors: Filtered AtomGroups</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">donors</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">group1</span><span class="p">,</span> <span class="n">group2</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">between_ags</span><span class="p">:</span>
+
+            <span class="c1"># Find donors in G1 and acceptors in G2</span>
+            <span class="n">mask</span><span class="p">[</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">donors</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">group1</span><span class="o">.</span><span class="n">indices</span><span class="p">),</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">acceptors</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">group2</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+                    <span class="p">)</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1"># Find acceptors in G1 and donors in G2</span>
+            <span class="n">mask</span><span class="p">[</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">acceptors</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">group1</span><span class="o">.</span><span class="n">indices</span><span class="p">),</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">donors</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">group2</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">donors</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">hydrogens</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">acceptors</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]]</span>
 
@@ -654,6 +784,12 @@
         <span class="n">tmp_hydrogens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hydrogens</span><span class="p">[</span><span class="n">d_a_indices</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
         <span class="n">tmp_acceptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_acceptors</span><span class="p">[</span><span class="n">d_a_indices</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
 
+        <span class="c1"># Remove donor-acceptor pairs between pairs of AtomGroups we are not</span>
+        <span class="c1"># interested in</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">between_ags</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tmp_donors</span><span class="p">,</span> <span class="n">tmp_hydrogens</span><span class="p">,</span> <span class="n">tmp_acceptors</span> <span class="o">=</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">_filter_atoms</span><span class="p">(</span><span class="n">tmp_donors</span><span class="p">,</span> <span class="n">tmp_hydrogens</span><span class="p">,</span> <span class="n">tmp_acceptors</span><span class="p">)</span>
+
         <span class="c1"># Find D-H-A angles greater than d_h_a_angle_cutoff</span>
         <span class="n">d_h_a_angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span>
             <span class="n">calc_angles</span><span class="p">(</span>
@@ -684,6 +820,94 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 
+<div class="viewcode-block" id="HydrogenBondAnalysis.lifetime"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.lifetime">[docs]</a>    <span class="k">def</span> <span class="nf">lifetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">window_step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">intermittency</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Computes and returns the time-autocorrelation</span>
+<span class="sd">        (HydrogenBondLifetimes) of hydrogen bonds.</span>
+
+<span class="sd">        Before calling this method, the hydrogen bonds must first be computed</span>
+<span class="sd">        with the `run()` function. The same `start`, `stop` and `step`</span>
+<span class="sd">        parameters used in finding hydrogen bonds will be used here for</span>
+<span class="sd">        calculating hydrogen bond lifetimes. That is, the same frames will be</span>
+<span class="sd">        used in the analysis.</span>
+
+<span class="sd">        Unique hydrogen bonds are identified using hydrogen-acceptor pairs.</span>
+<span class="sd">        This means an acceptor switching to a different hydrogen atom - with</span>
+<span class="sd">        the same donor - from one frame to the next is considered a different</span>
+<span class="sd">        hydrogen bond.</span>
+
+<span class="sd">        Please see :func:`MDAnalysis.lib.correlations.autocorrelation` and</span>
+<span class="sd">        :func:`MDAnalysis.lib.correlations.intermittency` functions for more</span>
+<span class="sd">        details.</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        window_step : int, optional</span>
+<span class="sd">            The number of frames between each t(0).</span>
+<span class="sd">        tau_max : int, optional</span>
+<span class="sd">            Hydrogen bond lifetime is calculated for frames in the range</span>
+<span class="sd">            1 &lt;= `tau` &lt;= `tau_max`</span>
+<span class="sd">        intermittency : int, optional</span>
+<span class="sd">            The maximum number of consecutive frames for which a bond can</span>
+<span class="sd">            disappear but be counted as present if it returns at the next</span>
+<span class="sd">            frame. An intermittency of `0` is equivalent to a continuous</span>
+<span class="sd">            autocorrelation, which does not allow for hydrogen bond</span>
+<span class="sd">            disappearance. For example, for `intermittency=2`, any given</span>
+<span class="sd">            hydrogen bond may disappear for up to two consecutive frames yet</span>
+<span class="sd">            be treated as being present at all frames. The default is</span>
+<span class="sd">            continuous (intermittency=0).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tau_timeseries : np.array</span>
+<span class="sd">            tau from 1 to `tau_max`</span>
+<span class="sd">        timeseries : np.array</span>
+<span class="sd">            autcorrelation value for each value of `tau`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s2">&quot;Autocorrelation analysis of hydrogen bonds cannot be done&quot;</span>
+                <span class="s2">&quot;before the hydrogen bonds are found&quot;</span>
+            <span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="s2">&quot;Autocorrelation: Please use the .run() before calling this&quot;</span>
+                <span class="s2">&quot;function&quot;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;.hbonds attribute is None: use .run() first&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Autocorrelation: Hydrogen bonds were computed with step &gt; 1.&quot;</span>
+            <span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Autocorrelation: We recommend recomputing hydrogen bonds with&quot;</span>
+                <span class="s2">&quot; step = 1.&quot;</span>
+            <span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;Autocorrelation: if you would like to allow bonds to break&quot;</span>
+                <span class="s2">&quot; and reform, please use &#39;intermittency&#39;&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Extract the hydrogen bonds IDs only in the format</span>
+        <span class="c1"># [set(superset(x1,x2), superset(x3,x4)), ..]</span>
+        <span class="n">found_hydrogen_bonds</span> <span class="o">=</span> <span class="p">[</span><span class="nb">set</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">frame_index</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">hbond</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">frame</span><span class="p">]:</span>
+                <span class="n">found_hydrogen_bonds</span><span class="p">[</span><span class="n">frame_index</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">hbond</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]))</span>
+
+        <span class="n">intermittent_hbonds</span> <span class="o">=</span> <span class="n">correct_intermittency</span><span class="p">(</span>
+            <span class="n">found_hydrogen_bonds</span><span class="p">,</span>
+            <span class="n">intermittency</span><span class="o">=</span><span class="n">intermittency</span>
+        <span class="p">)</span>
+        <span class="n">tau_timeseries</span><span class="p">,</span> <span class="n">timeseries</span><span class="p">,</span> <span class="n">timeseries_data</span> <span class="o">=</span> <span class="n">autocorrelation</span><span class="p">(</span>
+            <span class="n">intermittent_hbonds</span><span class="p">,</span>
+            <span class="n">tau_max</span><span class="p">,</span>
+            <span class="n">window_step</span><span class="o">=</span><span class="n">window_step</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">tau_timeseries</span><span class="p">,</span> <span class="n">timeseries</span><span class="p">])</span></div>
+
 <div class="viewcode-block" id="HydrogenBondAnalysis.count_by_time"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.count_by_time">[docs]</a>    <span class="k">def</span> <span class="nf">count_by_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Counts the number of hydrogen bonds per timestep.</span>
 
@@ -702,7 +926,7 @@
         <span class="n">indices</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span>
 
         <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">)</span>
-        <span class="n">counts</span><span class="p">[</span><span class="n">indices</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)]</span> <span class="o">=</span> <span class="n">tmp_counts</span>
+        <span class="n">counts</span><span class="p">[</span><span class="n">indices</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span> <span class="o">=</span> <span class="n">tmp_counts</span>
         <span class="k">return</span> <span class="n">counts</span></div>
 
 <div class="viewcode-block" id="HydrogenBondAnalysis.count_by_type"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.count_by_type">[docs]</a>    <span class="k">def</span> <span class="nf">count_by_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -720,11 +944,11 @@
 <span class="sd">        acceptor atoms in a hydrogen bond.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)]</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)]</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span>
 
         <span class="n">tmp_hbonds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">resnames</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">types</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">resnames</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">types</span><span class="p">],</span>
-                              <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">str</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+                              <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
         <span class="n">hbond_type</span><span class="p">,</span> <span class="n">type_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
             <span class="n">tmp_hbonds</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">hbond_type_list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -749,9 +973,9 @@
 <span class="sd">        in a hydrogen bond.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)]</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)]</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)]</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span>
 
         <span class="n">tmp_hbonds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">ids</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">ids</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">ids</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
         <span class="n">hbond_ids</span><span class="p">,</span> <span class="n">ids_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">tmp_hbonds</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
@@ -774,10 +998,18 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -794,7 +1026,7 @@
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

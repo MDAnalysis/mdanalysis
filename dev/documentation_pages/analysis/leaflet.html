@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>4.4.3. Leaflet identification — MDAnalysis.analysis.leaflet &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>4.4.2. Leaflet identification — MDAnalysis.analysis.leaflet &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,12 +43,12 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="4.5.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo" href="nuclinfo.html" />
-    <link rel="prev" title="4.4.2. HOLE analysis — MDAnalysis.analysis.hole2" href="hole2.html" /> 
+    <link rel="prev" title="4.4.1. HOLE analysis — MDAnalysis.analysis.hole2" href="hole2.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -109,11 +109,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#distances-and-contacts">4.2. Distances and contacts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#hydrogen-bonding">4.3. Hydrogen bonding</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="hole.html">4.4.1. Generation and Analysis of HOLE pore profiles (Deprecated) — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="hole2.html">4.4.2. HOLE analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">4.4.3. Leaflet identification — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#algorithm">4.4.3.1. Algorithm</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#classes-and-functions">4.4.3.2. Classes and Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hole2.html">4.4.1. HOLE analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.4.2. Leaflet identification — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#algorithm">4.4.2.1. Algorithm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#classes-and-functions">4.4.2.2. Classes and Functions</a></li>
 </ul>
 </li>
 </ul>
@@ -190,7 +189,7 @@
         
           <li><a href="../analysis_modules.html">4. Analysis modules</a> &raquo;</li>
         
-      <li>4.4.3. Leaflet identification — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></li>
+      <li>4.4.2. Leaflet identification — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -210,7 +209,7 @@
            <div itemprop="articleBody">
             
   <span class="target" id="module-MDAnalysis.analysis.leaflet"></span><div class="section" id="leaflet-identification-mdanalysis-analysis-leaflet">
-<h1>4.4.3. Leaflet identification — <a class="reference internal" href="#module-MDAnalysis.analysis.leaflet" title="MDAnalysis.analysis.leaflet"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a><a class="headerlink" href="#leaflet-identification-mdanalysis-analysis-leaflet" title="Permalink to this headline">¶</a></h1>
+<h1>4.4.2. Leaflet identification — <a class="reference internal" href="#module-MDAnalysis.analysis.leaflet" title="MDAnalysis.analysis.leaflet"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a><a class="headerlink" href="#leaflet-identification-mdanalysis-analysis-leaflet" title="Permalink to this headline">¶</a></h1>
 <p>This module implements the <em>LeafletFinder</em> algorithm, described in
 <a class="reference internal" href="../references.html#michaud-agrawal2011" id="id1">[Michaud-Agrawal2011]</a>. It can identify the lipids in a bilayer of
 arbitrary shape and topology, including planar and undulating bilayers
@@ -229,7 +228,7 @@ of distances from the centre of geometry (or possibly simply the
 (slow) heuristic method to find the best cut off for the LeafletFinder
 algorithm.</p>
 <div class="section" id="algorithm">
-<h2>4.4.3.1. Algorithm<a class="headerlink" href="#algorithm" title="Permalink to this headline">¶</a></h2>
+<h2>4.4.2.1. Algorithm<a class="headerlink" href="#algorithm" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
 <li>build a graph of all phosphate distances &lt; cutoff</li>
 <li>identify the largest connected subgraphs</li>
@@ -238,7 +237,7 @@ algorithm.</p>
 <p>For further details see <a class="reference internal" href="../references.html#michaud-agrawal2011" id="id2">[Michaud-Agrawal2011]</a>.</p>
 </div>
 <div class="section" id="classes-and-functions">
-<h2>4.4.3.2. Classes and Functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h2>
+<h2>4.4.2.2. Classes and Functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.leaflet.LeafletFinder">
 <em class="property">class </em><code class="descclassname">MDAnalysis.analysis.leaflet.</code><code class="descname">LeafletFinder</code><span class="sig-paren">(</span><em>universe</em>, <em>select</em>, <em>cutoff=15.0</em>, <em>pbc=False</em>, <em>sparse=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="Permalink to this definition">¶</a></dt>
@@ -249,8 +248,7 @@ algorithm.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> or a file name (e.g., in PDB or
-GRO format)</li>
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> object.</li>
 <li><strong>select</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – A AtomGroup instance or a
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">Universe.select_atoms()</span></code> selection string
 for atoms that define the lipid head groups, e.g.
@@ -272,8 +270,8 @@ implementation [<code class="docutils literal notranslate"><span class="pre">Non
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">LeafletFinder.components</span></code>; the atoms in each component are numbered
 consecutively, starting at 0. To obtain the atoms in the input structure
 use <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups" title="MDAnalysis.analysis.leaflet.LeafletFinder.groups"><code class="xref py py-meth docutils literal notranslate"><span class="pre">LeafletFinder.groups()</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">)</span>
-<span class="n">L</span> <span class="o">=</span> <span class="n">LeafletFinder</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="s1">&#39;name P*&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u_PDB</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">)</span>
+<span class="n">L</span> <span class="o">=</span> <span class="n">LeafletFinder</span><span class="p">(</span><span class="n">u_PDB</span><span class="p">,</span> <span class="s1">&#39;name P*&#39;</span><span class="p">)</span>
 <span class="n">leaflet0</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">groups</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">leaflet1</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">groups</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
@@ -290,9 +288,9 @@ instance. Similarly, all atoms in the first leaflet are then</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
 </div>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 1.0.1: </span>The ability to pass a filename (str) in the <cite>universe</cite> argument
-will be removed in 2.0.0.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>The universe keyword no longer accepts non-Universe arguments. Please
+create a <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> first.</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.analysis.leaflet.LeafletFinder.group">
@@ -401,17 +399,25 @@ made more robust.</p>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="nuclinfo.html" class="btn btn-neutral float-right" title="4.5.1. Nucleic acid analysis — MDAnalysis.analysis.nuclinfo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="hole2.html" class="btn btn-neutral float-left" title="4.4.2. HOLE analysis — MDAnalysis.analysis.hole2" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hole2.html" class="btn btn-neutral float-left" title="4.4.1. HOLE analysis — MDAnalysis.analysis.hole2" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -428,7 +434,7 @@ made more robust.</p>
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

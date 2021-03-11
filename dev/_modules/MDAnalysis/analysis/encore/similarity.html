@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>MDAnalysis.analysis.encore.similarity &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>MDAnalysis.analysis.encore.similarity &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,7 +43,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -353,9 +353,6 @@
 <span class="sd">.. All functions are included via automodule :members:.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">zip</span>
-
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 
@@ -656,30 +653,33 @@
 <div class="viewcode-block" id="dimred_ensemble_similarity"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.dimred_ensemble_similarity">[docs]</a><span class="k">def</span> <span class="nf">dimred_ensemble_similarity</span><span class="p">(</span><span class="n">kde1</span><span class="p">,</span> <span class="n">resamples1</span><span class="p">,</span> <span class="n">kde2</span><span class="p">,</span> <span class="n">resamples2</span><span class="p">,</span>
                                <span class="n">ln_P1_exp_P1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ln_P2_exp_P2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                <span class="n">ln_P1P2_exp_P1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ln_P1P2_exp_P2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculate the Jensen-Shannon divergence according the the</span>
-<span class="sd">    Dimensionality reduction method. In this case, we have continuous</span>
-<span class="sd">    probability densities, this we need to integrate over the measurable</span>
-<span class="sd">    space. The aim is to first calculate the Kullback-Liebler divergence, which</span>
-<span class="sd">    is defined as:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate the Jensen-Shannon divergence according the Dimensionality</span>
+<span class="sd">    reduction method.</span>
+
+<span class="sd">    In this case, we have continuous probability densities, this we need to</span>
+<span class="sd">    integrate over the measurable space. The aim is to first calculate the</span>
+<span class="sd">    Kullback-Liebler divergence, which is defined as:</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        D_{KL}(P(x) || Q(x)) = \\int_{-\\infty}^{\\infty}P(x_i) ln(P(x_i)/Q(x_i)) = \\langle{}ln(P(x))\\rangle{}_P - \\langle{}ln(Q(x))\\rangle{}_P</span>
 
-<span class="sd">    where the :math:`\\langle{}.\\rangle{}_P` denotes an expectation calculated</span>
+<span class="sd">       D_{KL}(P(x) || Q(x)) =</span>
+<span class="sd">           \int_{-\infty}^{\infty}P(x_i) ln(P(x_i)/Q(x_i)) =</span>
+<span class="sd">           \langle{}ln(P(x))\rangle{}_P - \langle{}ln(Q(x))\rangle{}_P</span>
+
+<span class="sd">    where the :math:`\langle{}.\rangle{}_P` denotes an expectation calculated</span>
 <span class="sd">    under the distribution P. We can, thus, just estimate the expectation</span>
-<span class="sd">    values of the components to get an estimate of dKL.</span>
-<span class="sd">    Since the Jensen-Shannon distance is actually  more complex, we need to</span>
-<span class="sd">    estimate four expectation values:</span>
+<span class="sd">    values of the components to get an estimate of dKL.  Since the</span>
+<span class="sd">    Jensen-Shannon distance is actually more complex, we need to estimate four</span>
+<span class="sd">    expectation values:</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">         \\langle{}log(P(x))\\rangle{}_P</span>
+<span class="sd">         \langle{}log(P(x))\rangle{}_P</span>
 
-<span class="sd">         \\langle{}log(Q(x))\\rangle{}_Q</span>
+<span class="sd">         \langle{}log(Q(x))\rangle{}_Q</span>
 
-<span class="sd">         \\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_P</span>
+<span class="sd">         \langle{}log(0.5*(P(x)+Q(x)))\rangle{}_P</span>
 
-<span class="sd">         \\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_Q</span>
+<span class="sd">         \langle{}log(0.5*(P(x)+Q(x)))\rangle{}_Q</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -699,22 +699,22 @@
 <span class="sd">        calculate the expected values according to &#39;Q&#39; as detailed before.</span>
 
 <span class="sd">    ln_P1_exp_P1 : float or None</span>
-<span class="sd">        Use this value for :math:`\\langle{}log(P(x))\\rangle{}_P`; if None,</span>
+<span class="sd">        Use this value for :math:`\langle{}log(P(x))\rangle{}_P`; if ``None``,</span>
 <span class="sd">        calculate it instead</span>
 
 <span class="sd">    ln_P2_exp_P2 : float or None</span>
-<span class="sd">        Use this value for :math:`\\langle{}log(Q(x))\\rangle{}_Q`; if</span>
-<span class="sd">        None, calculate it instead</span>
+<span class="sd">        Use this value for :math:`\langle{}log(Q(x))\rangle{}_Q`; if</span>
+<span class="sd">        ``None``, calculate it instead</span>
 
 <span class="sd">    ln_P1P2_exp_P1 : float or None</span>
 <span class="sd">        Use this value for</span>
-<span class="sd">        :math:`\\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_P`;</span>
-<span class="sd">        if None, calculate it instead</span>
+<span class="sd">        :math:`\langle{}log(0.5*(P(x)+Q(x)))\rangle{}_P`;</span>
+<span class="sd">        if ``None``, calculate it instead</span>
 
 <span class="sd">    ln_P1P2_exp_P2 : float or None</span>
 <span class="sd">        Use this value for</span>
-<span class="sd">        :math:`\\langle{}log(0.5*(P(x)+Q(x)))\\rangle{}_Q`;</span>
-<span class="sd">        if None, calculate it instead</span>
+<span class="sd">        :math:`\langle{}log(0.5*(P(x)+Q(x)))\rangle{}_Q`;</span>
+<span class="sd">        if ``None``, calculate it instead</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -907,11 +907,10 @@
         <span class="n">estimate_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">bootstrapping_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">calc_diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculates the Harmonic Ensemble Similarity (HES) between ensembles.</span>
 
-<span class="sd">    Calculates the Harmonic Ensemble Similarity (HES) between ensembles using</span>
-<span class="sd">    the symmetrized version of Kullback-Leibler divergence as described</span>
-<span class="sd">    in [Tiberti2015]_.</span>
+<span class="sd">    The HES is calculated with the symmetrized version of Kullback-Leibler</span>
+<span class="sd">    divergence as described in [Tiberti2015]_.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -953,13 +952,13 @@
 <span class="sd">    symmetrized version of Kullback-Leibler divergence defined as:</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        D_{KL}(P(x) || Q(x)) = \\int_{-\\infty}^{\\infty}P(x_i)</span>
-<span class="sd">        ln(P(x_i)/Q(x_i)) = \\langle{}ln(P(x))\\rangle{}_P -</span>
-<span class="sd">        \\langle{}ln(Q(x))\\rangle{}_P</span>
+<span class="sd">       D_{KL}(P(x) || Q(x)) =</span>
+<span class="sd">           \int_{-\infty}^{\infty}P(x_i) ln(P(x_i)/Q(x_i)) =</span>
+<span class="sd">           \langle{}ln(P(x))\rangle{}_P - \langle{}ln(Q(x))\rangle{}_P</span>
 
 
-<span class="sd">    where the :math:`\\langle{}.\\rangle{}_P` denotes an expectation</span>
-<span class="sd">    calculated under the distribution P.</span>
+<span class="sd">    where the :math:`\langle{}.\rangle{}_P` denotes an expectation</span>
+<span class="sd">    calculated under the distribution :math:`P`.</span>
 
 <span class="sd">    For each ensemble, the  mean conformation is estimated as the average over</span>
 <span class="sd">    the ensemble, and the covariance matrix is calculated by default using a</span>
@@ -989,16 +988,17 @@
 <span class="sd">         [ 38279683.95892926         0.        ]]</span>
 
 
-<span class="sd">    You can use the align=True option to align the ensembles first. This will</span>
+<span class="sd">    You can use the ``align=True`` option to align the ensembles first. This will</span>
 <span class="sd">    align everything to the current timestep in the first ensemble. Note that</span>
-<span class="sd">    this changes the ens1 and ens2 objects:</span>
+<span class="sd">    this changes the ``ens1`` and ``ens2`` objects:</span>
 
 <span class="sd">        &gt;&gt;&gt; print(encore.hes([ens1, ens2], align=True)[0])</span>
 <span class="sd">        [[    0.          6880.34140106]</span>
 <span class="sd">        [ 6880.34140106     0.        ]]</span>
 
 <span class="sd">    Alternatively, for greater flexibility in how the alignment should be done</span>
-<span class="sd">    you can call use an AlignTraj object manually:</span>
+<span class="sd">    you can call use an :class:`~MDAnalysis.analysis.align.AlignTraj` object</span>
+<span class="sd">    manually:</span>
 
 <span class="sd">        &gt;&gt;&gt; from MDAnalysis.analysis import align</span>
 <span class="sd">        &gt;&gt;&gt; align.AlignTraj(ens1, ens1, select=&quot;name CA&quot;, in_memory=True).run()</span>
@@ -1007,9 +1007,10 @@
 <span class="sd">        [[    0.          7032.19607004]</span>
 <span class="sd">         [ 7032.19607004     0.        ]]</span>
 
+
 <span class="sd">    .. versionchanged:: 1.0.0</span>
-<span class="sd">       hes doesn&#39;t accept the *details* argument anymore, it always returns the</span>
-<span class="sd">       details of the calculation instead, in the form of a dictionary</span>
+<span class="sd">       ``hes`` doesn&#39;t accept the `details` argument anymore, it always returns</span>
+<span class="sd">       the details of the calculation instead, in the form of a dictionary</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1901,10 +1902,18 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -1921,7 +1930,7 @@
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

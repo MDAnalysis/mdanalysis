@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>MDAnalysis.core.selection &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>MDAnalysis.core.selection &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,7 +43,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -222,14 +222,12 @@
 <span class="sd">:class:`~MDAnalysis.core.groups.AtomGroup`.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
-<span class="kn">import</span> <span class="nn">six</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">zip</span>
-
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">fnmatch</span>
 <span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">types</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -237,8 +235,18 @@
 
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">unique_int_1d</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">distances</span>
-<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">NoDataError</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">,</span> <span class="n">SelectionWarning</span>
 
+<span class="c1">#: Regular expression for recognizing a floating point number in a selection.</span>
+<span class="c1">#: Numbers such as 1.2, 1.2e-01, -1.2 are all parsed as Python floats.</span>
+<span class="n">FLOAT_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;-?\d*\.?\d*(?:e[-+]?\d+)?&quot;</span>
+
+<span class="c1">#: Regular expression for recognizing un/signed integers in a selection.</span>
+<span class="n">INT_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;-?\d+&quot;</span>
+
+<span class="c1">#: Regular expression for recognising a range separator.</span>
+<span class="c1">#: Delimiters include &quot;:&quot;, &quot;-&quot;, &quot;to&quot; and can have arbitrary whitespace.</span>
+<span class="n">RANGE_PATTERN</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\s*(?:[:-]| to )\s*&quot;</span>
 
 <div class="viewcode-block" id="is_keyword"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.is_keyword">[docs]</a><span class="k">def</span> <span class="nf">is_keyword</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Is val a selection keyword?</span>
@@ -291,6 +299,43 @@
     <span class="k">return</span> <span class="n">values</span></div>
 
 
+<div class="viewcode-block" id="join_separated_values"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.join_separated_values">[docs]</a><span class="k">def</span> <span class="nf">join_separated_values</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Join range values that are separated by whitespace</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    values: list</span>
+<span class="sd">        list of value strings</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    values: list of strings</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    join_separated_values([&#39;37&#39;, &#39;to&#39;, &#39;22&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; [&#39;37 to 22&#39;]</span>
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">DELIMITERS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">values</span><span class="p">:</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">DELIMITERS</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">values</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="n">given</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_values</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid expression given: </span><span class="si">{</span><span class="n">given</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">_values</span> <span class="ow">and</span> <span class="p">(</span><span class="n">v</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="s1">&#39;to&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;:&quot;</span> <span class="ow">or</span>
+            <span class="nb">any</span><span class="p">(</span><span class="n">_values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">DELIMITERS</span><span class="p">)):</span>
+            <span class="n">_values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_values</span></div>
+
 <span class="n">_SELECTIONDICT</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="n">_OPERATIONS</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="c1"># These are named args to select_atoms that have a special meaning and must</span>
@@ -310,7 +355,7 @@
             <span class="k">pass</span>
 
 
-<span class="k">class</span> <span class="nc">LogicOperation</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">_Operationmeta</span><span class="p">,</span> <span class="nb">object</span><span class="p">)):</span>
+<span class="k">class</span> <span class="nc">LogicOperation</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Operationmeta</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lsel</span><span class="p">,</span> <span class="n">rsel</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rsel</span> <span class="o">=</span> <span class="n">rsel</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lsel</span> <span class="o">=</span> <span class="n">lsel</span>
@@ -339,11 +384,10 @@
         <span class="n">rsel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rsel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
 
         <span class="c1"># Find unique indices from both these AtomGroups</span>
-        <span class="c1"># and slice master list using them</span>
+        <span class="c1"># and slice main list using them</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">union1d</span><span class="p">(</span><span class="n">lsel</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">rsel</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-
 
 <div class="viewcode-block" id="return_empty_on_apply"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.return_empty_on_apply">[docs]</a><span class="k">def</span> <span class="nf">return_empty_on_apply</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -362,11 +406,12 @@
         <span class="nb">type</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">_SELECTIONDICT</span><span class="p">[</span><span class="n">classdict</span><span class="p">[</span><span class="s1">&#39;token&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">cls</span>
+            <span class="n">_SELECTIONDICT</span><span class="p">[</span><span class="n">classdict</span><span class="p">[</span><span class="s1">&#39;token&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="bp">cls</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
 
 
-<span class="k">class</span> <span class="nc">Selection</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">_Selectionmeta</span><span class="p">,</span> <span class="nb">object</span><span class="p">)):</span>
+<span class="k">class</span> <span class="nc">Selection</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Selectionmeta</span><span class="p">):</span>
     <span class="k">pass</span>
 
 
@@ -696,9 +741,8 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">grp</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">selgroups</span><span class="p">[</span><span class="n">grpname</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
-                <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Failed to find group: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">grpname</span><span class="p">)),</span>
-                <span class="kc">None</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed to find group: </span><span class="si">{</span><span class="n">grpname</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grp</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
@@ -734,68 +778,79 @@
 
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">nmidx</span><span class="p">,</span> <span class="n">matches</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span>
 
+<div class="viewcode-block" id="AromaticSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.AromaticSelection">[docs]</a><span class="k">class</span> <span class="nc">AromaticSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select aromatic atoms.</span>
 
-<div class="viewcode-block" id="StringSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.StringSelection">[docs]</a><span class="k">class</span> <span class="nc">StringSelection</span><span class="p">(</span><span class="n">_ProtoStringSelection</span><span class="p">):</span>
-    <span class="n">level</span> <span class="o">=</span> <span class="s1">&#39;ix&#39;</span>  <span class="c1"># operates on atom level attribute, i.e. &#39;.ix&#39;</span></div>
+<span class="sd">    Aromaticity is available in the `aromaticities` attribute and is made</span>
+<span class="sd">    available through RDKit&quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;aromatic&#39;</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;aromaticities&#39;</span>
 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="k">pass</span>
 
-<div class="viewcode-block" id="AtomNameSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.AtomNameSelection">[docs]</a><span class="k">class</span> <span class="nc">AtomNameSelection</span><span class="p">(</span><span class="n">StringSelection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Select atoms based on &#39;names&#39; attribute&quot;&quot;&quot;</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;name&#39;</span>
-    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;names&#39;</span></div>
-
-
-<div class="viewcode-block" id="AtomTypeSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.AtomTypeSelection">[docs]</a><span class="k">class</span> <span class="nc">AtomTypeSelection</span><span class="p">(</span><span class="n">StringSelection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Select atoms based on &#39;types&#39; attribute&quot;&quot;&quot;</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;type&#39;</span>
-    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;types&#39;</span></div>
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">aromaticities</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span></div>
 
 
-<div class="viewcode-block" id="RecordTypeSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.RecordTypeSelection">[docs]</a><span class="k">class</span> <span class="nc">RecordTypeSelection</span><span class="p">(</span><span class="n">StringSelection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Select atoms based on &#39;record_type&#39; attribute&quot;&quot;&quot;</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;record_type&#39;</span>
-    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;record_types&#39;</span></div>
+<div class="viewcode-block" id="SmartsSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SmartsSelection">[docs]</a><span class="k">class</span> <span class="nc">SmartsSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select atoms based on SMARTS queries.</span>
 
+<span class="sd">    Uses RDKit to run the query and converts the result to MDAnalysis.</span>
+<span class="sd">    Supports chirality.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;smarts&#39;</span>
 
-<div class="viewcode-block" id="AtomICodeSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.AtomICodeSelection">[docs]</a><span class="k">class</span> <span class="nc">AtomICodeSelection</span><span class="p">(</span><span class="n">StringSelection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Select atoms based on icode attribute&quot;&quot;&quot;</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;icode&#39;</span>
-    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;icodes&#39;</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="c1"># The parser will add spaces around parentheses and then split the</span>
+        <span class="c1"># selection based on spaces to create the tokens</span>
+        <span class="c1"># If the input SMARTS query contained parentheses, the query will be</span>
+        <span class="c1"># split because of that and we need to reconstruct it</span>
+        <span class="c1"># We also need to keep the parentheses that are not part of the smarts</span>
+        <span class="c1"># query intact</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;(&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+        <span class="c1"># loop until keyword but ignore parentheses as a keyword</span>
+        <span class="k">while</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;(&quot;</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">is_keyword</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="c1"># keep track of the number of open and closed parentheses</span>
+            <span class="k">if</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;(&quot;</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span><span class="p">]:</span>
+                <span class="n">counter</span><span class="p">[</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="c1"># if the char is a closing &quot;)&quot; but there&#39;s no corresponding</span>
+                <span class="c1"># open &quot;(&quot; then we&#39;ve reached then end of the smarts query and</span>
+                <span class="c1"># the current token &quot;)&quot; is part of a grouping parenthesis</span>
+                <span class="k">if</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;)&quot;</span> <span class="ow">and</span> <span class="n">counter</span><span class="p">[</span><span class="s2">&quot;(&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">counter</span><span class="p">[</span><span class="s2">&quot;)&quot;</span><span class="p">]):</span>
+                    <span class="k">break</span>
+            <span class="c1"># add the token to the pattern and remove it from the tokens</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+            <span class="n">pattern</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
 
-
-<span class="k">class</span> <span class="nc">_ResidueStringSelection</span><span class="p">(</span><span class="n">_ProtoStringSelection</span><span class="p">):</span>
-    <span class="n">level</span><span class="o">=</span> <span class="s1">&#39;resindices&#39;</span>
-
-
-<div class="viewcode-block" id="ResidueNameSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ResidueNameSelection">[docs]</a><span class="k">class</span> <span class="nc">ResidueNameSelection</span><span class="p">(</span><span class="n">_ResidueStringSelection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Select atoms based on &#39;resnames&#39; attribute&quot;&quot;&quot;</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;resname&#39;</span>
-    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;resnames&#39;</span></div>
-
-
-<div class="viewcode-block" id="MoleculeTypeSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.MoleculeTypeSelection">[docs]</a><span class="k">class</span> <span class="nc">MoleculeTypeSelection</span><span class="p">(</span><span class="n">_ResidueStringSelection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Select atoms based on &#39;moltypes&#39; attribute&quot;&quot;&quot;</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;moltype&#39;</span>
-    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;moltypes&#39;</span></div>
-
-
-<div class="viewcode-block" id="SegmentNameSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SegmentNameSelection">[docs]</a><span class="k">class</span> <span class="nc">SegmentNameSelection</span><span class="p">(</span><span class="n">_ProtoStringSelection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Select atoms based on &#39;segids&#39; attribute&quot;&quot;&quot;</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;segid&#39;</span>
-    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;segids&#39;</span>
-    <span class="n">level</span> <span class="o">=</span> <span class="s1">&#39;segindices&#39;</span></div>
-
-
-<div class="viewcode-block" id="AltlocSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.AltlocSelection">[docs]</a><span class="k">class</span> <span class="nc">AltlocSelection</span><span class="p">(</span><span class="n">StringSelection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Select atoms based on &#39;altLoc&#39; attribute&quot;&quot;&quot;</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;altloc&#39;</span>
-    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;altLocs&#39;</span></div>
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;RDKit is required for SMARTS-based atom &quot;</span>
+                              <span class="s2">&quot;selection but it&#39;s not installed. Try &quot;</span>
+                              <span class="s2">&quot;installing it with </span><span class="se">\n</span><span class="s2">&quot;</span>
+                              <span class="s2">&quot;conda install -c conda-forge rdkit&quot;</span><span class="p">)</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmarts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pattern</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="si">!r}</span><span class="s2"> is not a valid SMARTS query&quot;</span><span class="p">)</span>
+        <span class="n">mol</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s2">&quot;RDKIT&quot;</span><span class="p">)</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetSubstructMatches</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">useChirality</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># convert rdkit indices to mdanalysis&#39;</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">.</span><span class="n">GetIntProp</span><span class="p">(</span><span class="s2">&quot;_MDAnalysis_index&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">match</span><span class="p">]</span>
+        <span class="c1"># create boolean mask for atoms based on index</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">indices</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="ResidSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ResidSelection">[docs]</a><span class="k">class</span> <span class="nc">ResidSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Select atoms based on numerical fields</span>
 
-<span class="sd">    Allows the use of &#39;:&#39; and &#39;-&#39; to specify a range of values</span>
+<span class="sd">    Allows the use of &#39;:&#39;, &#39;-&#39; and &#39;to&#39; to specify a range of values</span>
 <span class="sd">    For example</span>
 
 <span class="sd">      resid 1:10</span>
@@ -807,12 +862,14 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unexpected token: &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 
+        <span class="n">values</span> <span class="o">=</span> <span class="n">join_separated_values</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
         <span class="c1"># each value in uppers and lowers is a tuple of (resid, icode)</span>
         <span class="n">uppers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">lowers</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
-            <span class="n">m1</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;(\d+)(\w?)$&quot;</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+            <span class="n">m1</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">INT_PATTERN</span><span class="si">}</span><span class="s2">)&quot;</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;(\w?)$&quot;</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">m1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">res</span> <span class="o">=</span> <span class="n">m1</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
                 <span class="n">lower</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -820,7 +877,9 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># check if in appropriate format &#39;lower:upper&#39; or &#39;lower-upper&#39;</span>
                 <span class="c1"># each val is one or more digits, maybe a letter</span>
-                <span class="n">selrange</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;(\d+)(\w?)[:-](\d+)(\w?)&quot;</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+                <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">INT_PATTERN</span><span class="si">}</span><span class="s2">)(</span><span class="se">\\</span><span class="s2">w?)</span><span class="si">{</span><span class="n">RANGE_PATTERN</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">pattern</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">INT_PATTERN</span><span class="si">}</span><span class="s2">)(</span><span class="se">\\</span><span class="s2">w?)&quot;</span>
+                <span class="n">selrange</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">selrange</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># re.match returns None on failure</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Failed to parse value: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
                 <span class="n">res</span> <span class="o">=</span> <span class="n">selrange</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
@@ -844,8 +903,9 @@
             <span class="c1"># if no icodes and icodes are part of selection, cause a fuss</span>
             <span class="k">if</span> <span class="p">(</span><span class="nb">any</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">uppers</span><span class="p">)</span> <span class="ow">or</span>
                 <span class="nb">any</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowers</span><span class="p">)):</span>
-                <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Selection specified icodes, while the &quot;</span>
-                                 <span class="s2">&quot;topology doesn&#39;t have any.&quot;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Selection specified icodes, while the topology &quot;</span>
+                          <span class="s2">&quot;doesn&#39;t have any.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">icodes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sel_with_icodes</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">icodes</span><span class="p">)</span>
@@ -856,7 +916,7 @@
 
     <span class="k">def</span> <span class="nf">_sel_without_icodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vals</span><span class="p">):</span>
         <span class="c1"># Final mask that gets applied to group</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="p">(</span><span class="n">u_resid</span><span class="p">,</span> <span class="n">_</span><span class="p">),</span> <span class="p">(</span><span class="n">l_resid</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uppers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowers</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">u_resid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># range selection</span>
@@ -871,7 +931,7 @@
 
     <span class="k">def</span> <span class="nf">_sel_with_icodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">icodes</span><span class="p">):</span>
         <span class="c1"># Final mask that gets applied to group</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="p">(</span><span class="n">u_resid</span><span class="p">,</span> <span class="n">u_icode</span><span class="p">),</span> <span class="p">(</span><span class="n">l_resid</span><span class="p">,</span> <span class="n">l_icode</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uppers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowers</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">u_resid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># Selecting a range</span>
@@ -914,28 +974,66 @@
         <span class="k">return</span> <span class="n">mask</span></div>
 
 
-<span class="k">class</span> <span class="nc">RangeSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
-    <span class="n">value_offset</span><span class="o">=</span><span class="mi">0</span>
+<div class="viewcode-block" id="BoolSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.BoolSelection">[docs]</a><span class="k">class</span> <span class="nc">BoolSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Selection for boolean values&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">grab_not_keywords</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;true&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+            <span class="n">lower</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">lower</span> <span class="o">==</span> <span class="s2">&quot;false&quot;</span><span class="p">:</span>
+                <span class="n">bval</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">elif</span> <span class="n">lower</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span><span class="p">:</span>
+                <span class="n">bval</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s2">&#39; is an invalid value &quot;</span>
+                                 <span class="s2">&quot;for boolean selection. &quot;</span>
+                                 <span class="s2">&quot;Use &#39;True&#39; or &#39;False&#39;&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bval</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">|=</span> <span class="n">vals</span> <span class="o">==</span> <span class="n">val</span>
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span></div>
+
+
+<div class="viewcode-block" id="RangeSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.RangeSelection">[docs]</a><span class="k">class</span> <span class="nc">RangeSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Range selection for int values&quot;&quot;&quot;</span>
+
+    <span class="n">value_offset</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">INT_PATTERN</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="n">RANGE_PATTERN</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">INT_PATTERN</span><span class="si">}</span><span class="s2">)&quot;</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">int</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rtol</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">rtol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atol</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">atol</span>
+
+        <span class="n">values</span> <span class="o">=</span> <span class="n">grab_not_keywords</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unexpected token: &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+        <span class="n">values</span> <span class="o">=</span> <span class="n">join_separated_values</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
 
         <span class="n">uppers</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># upper limit on any range</span>
         <span class="n">lowers</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># lower limit on any range</span>
 
         <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">lower</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="n">lower</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
                 <span class="n">upper</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                 <span class="c1"># check if in appropriate format &#39;lower:upper&#39; or &#39;lower-upper&#39;</span>
-                <span class="n">selrange</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;(\d+)[:-](\d+)&quot;</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+                <span class="n">selrange</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">selrange</span><span class="p">:</span>
-                    <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="s2">&quot;Failed to parse number: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">)),</span> <span class="kc">None</span><span class="p">)</span>
-                <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">(</span><span class="n">selrange</span><span class="o">.</span><span class="n">groups</span><span class="p">())</span>
+                    <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed to parse number: </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+                <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">selrange</span><span class="o">.</span><span class="n">groups</span><span class="p">())</span>
 
             <span class="n">lowers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lower</span><span class="p">)</span>
             <span class="n">uppers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">upper</span><span class="p">)</span>
@@ -944,7 +1042,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">uppers</span> <span class="o">=</span> <span class="n">uppers</span>
 
     <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_offset</span>
 
         <span class="k">for</span> <span class="n">upper</span><span class="p">,</span> <span class="n">lower</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uppers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowers</span><span class="p">):</span>
@@ -955,29 +1053,47 @@
                 <span class="n">thismask</span> <span class="o">=</span> <span class="n">vals</span> <span class="o">==</span> <span class="n">lower</span>
 
             <span class="n">mask</span> <span class="o">|=</span> <span class="n">thismask</span>
-        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span>
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span></div>
 
 
-<span class="k">class</span> <span class="nc">ResnumSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;resnum&#39;</span>
-    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;resnums&#39;</span>
+<div class="viewcode-block" id="FloatRangeSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.FloatRangeSelection">[docs]</a><span class="k">class</span> <span class="nc">FloatRangeSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Range selection for float values&quot;&quot;&quot;</span>
+
+    <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">FLOAT_PATTERN</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="n">RANGE_PATTERN</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">FLOAT_PATTERN</span><span class="si">}</span><span class="s2">)&quot;</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_offset</span>
+
+        <span class="k">for</span> <span class="n">upper</span><span class="p">,</span> <span class="n">lower</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uppers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowers</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">upper</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">thismask</span> <span class="o">=</span> <span class="n">vals</span> <span class="o">&gt;=</span> <span class="n">lower</span>
+                <span class="n">thismask</span> <span class="o">&amp;=</span> <span class="n">vals</span> <span class="o">&lt;=</span> <span class="n">upper</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="o">=</span> <span class="n">lower</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">lower</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">fp</span> <span class="o">=</span> <span class="s2">&quot;https://docs.python.org/3.8/tutorial/floatingpoint.html&quot;</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Using float equality to select atoms is &quot;</span>
+                       <span class="s2">&quot;not recommended because of inherent &quot;</span>
+                       <span class="s2">&quot;limitations in representing numbers on &quot;</span>
+                       <span class="sa">f</span><span class="s2">&quot;computers (see </span><span class="si">{</span><span class="n">fp</span><span class="si">}</span><span class="s2"> for more). &quot;</span>
+                       <span class="s2">&quot;Instead, we recommend using a range &quot;</span>
+                       <span class="sa">f</span><span class="s2">&quot;to select, e.g. &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">low</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">high</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
+                       <span class="s2">&quot;If you still want to compare floats, use the &quot;</span>
+                       <span class="s2">&quot;`atol` and `rtol` keywords to modify the tolerance &quot;</span>
+                       <span class="s2">&quot;for `np.isclose`.&quot;</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">SelectionWarning</span><span class="p">)</span>
+                <span class="n">thismask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">lower</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">atol</span><span class="p">,</span>
+                                      <span class="n">rtol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rtol</span><span class="p">)</span>
+
+            <span class="n">mask</span> <span class="o">|=</span> <span class="n">thismask</span>
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span></div>
 
 
-<span class="k">class</span> <span class="nc">ByNumSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
+<div class="viewcode-block" id="ByNumSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ByNumSelection">[docs]</a><span class="k">class</span> <span class="nc">ByNumSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;bynum&#39;</span>
     <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;indices&#39;</span>
-    <span class="n">value_offset</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># queries are in 1 based indices</span>
-
-
-<span class="k">class</span> <span class="nc">IndexSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;index&#39;</span>
-    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;indices&#39;</span>
-    <span class="n">value_offset</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># queries now 0 based indices</span>
-
-
-<span class="k">class</span> <span class="nc">MolidSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;molnum&#39;</span>
-    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;molnums&#39;</span>
+    <span class="n">value_offset</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># queries are in 1 based indices</span></div>
 
 
 <div class="viewcode-block" id="ProteinSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ProteinSelection">[docs]</a><span class="k">class</span> <span class="nc">ProteinSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
@@ -995,7 +1111,7 @@
 <span class="sd">    :func:`MDAnalysis.lib.util.convert_aa_code`</span>
 
 
-<span class="sd">    .. versionchanged:: 1.0.1</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
 <span class="sd">       prot_res changed to set (from numpy array)</span>
 <span class="sd">       performance improved by ~100x on larger systems</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1052,7 +1168,7 @@
 
 <span class="sd">    .. versionchanged:: 0.8</span>
 <span class="sd">       additional Gromacs selections</span>
-<span class="sd">    .. versionchanged:: 1.0.1</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
 <span class="sd">       nucl_res changed to set (from numpy array)</span>
 <span class="sd">       performance improved by ~100x on larger systems</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1088,7 +1204,7 @@
 <span class="sd">    (which are included by, eg VMD&#39;s backbone selection).</span>
 
 
-<span class="sd">    .. versionchanged:: 1.0.1</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
 <span class="sd">       bb_atoms changed to set (from numpy array)</span>
 <span class="sd">       performance improved by ~100x on larger systems</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1121,7 +1237,7 @@
 <span class="sd">    by the :class:`NucleicSelection`.</span>
 
 
-<span class="sd">    .. versionchanged:: 1.0.1</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
 <span class="sd">       bb_atoms changed to set (from numpy array)</span>
 <span class="sd">       performance improved by ~100x on larger systems</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1156,7 +1272,7 @@
 <span class="sd">     &#39;O6&#39;,&#39;N2&#39;,&#39;N6&#39;, &#39;O2&#39;,&#39;N4&#39;,&#39;O4&#39;,&#39;C5M&#39;</span>
 
 
-<span class="sd">    .. versionchanged:: 1.0.1</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
 <span class="sd">       base_atoms changed to set (from numpy array)</span>
 <span class="sd">       performance improved by ~100x on larger systems</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1189,7 +1305,7 @@
     <span class="sd">&quot;&quot;&quot;Contains all atoms with name C1&#39;, C2&#39;, C3&#39;, C4&#39;, O2&#39;, O4&#39;, O3&#39;.</span>
 
 
-<span class="sd">    .. versionchanged:: 1.0.1</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
 <span class="sd">       sug_atoms changed to set (from numpy array)</span>
 <span class="sd">       performance improved by ~100x on larger systems</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1218,6 +1334,11 @@
 <div class="viewcode-block" id="PropertySelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.PropertySelection">[docs]</a><span class="k">class</span> <span class="nc">PropertySelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Some of the possible properties:</span>
 <span class="sd">    x, y, z, radius, mass,</span>
+
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">        changed == operator to use np.isclose instead of np.equals.</span>
+<span class="sd">        Added ``atol`` and ``rtol`` keywords to control ``np.isclose``</span>
+<span class="sd">        tolerance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;prop&#39;</span>
     <span class="n">ops</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span>
@@ -1225,7 +1346,7 @@
         <span class="p">(</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">less</span><span class="p">),</span>
         <span class="p">(</span><span class="s1">&#39;&gt;=&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">),</span>
         <span class="p">(</span><span class="s1">&#39;&lt;=&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">less_equal</span><span class="p">),</span>
-        <span class="p">(</span><span class="s1">&#39;==&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">equal</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;==&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">),</span>
         <span class="p">(</span><span class="s1">&#39;!=&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">not_equal</span><span class="p">),</span>
     <span class="p">])</span>
     <span class="c1"># order here is important, need to check &lt;= before &lt; so the</span>
@@ -1240,7 +1361,9 @@
         <span class="s1">&#39;&gt;&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;=&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;=&#39;</span><span class="p">:</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span>
     <span class="p">}</span>
 
-    <span class="n">props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mass&#39;</span><span class="p">,</span> <span class="s1">&#39;charge&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">}</span>
+    <span class="n">props</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="s2">&quot;positions&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="s2">&quot;positions&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="s2">&quot;positions&quot;</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1296,26 +1419,33 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">operator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ops</span><span class="p">[</span><span class="n">oper</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Invalid operator : &#39;</span><span class="si">{0}</span><span class="s2">&#39; Use one of : &#39;</span><span class="si">{1}</span><span class="s2">&#39;&quot;</span>
-                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">oper</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span>
-                <span class="kc">None</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid operator : &#39;</span><span class="si">{</span><span class="n">oper</span><span class="si">}</span><span class="s2">&#39; Use one of : &quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">oper</span> <span class="o">==</span> <span class="s2">&quot;==&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">operator</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">operator</span><span class="p">,</span>
+                                                  <span class="n">atol</span><span class="o">=</span><span class="n">parser</span><span class="o">.</span><span class="n">atol</span><span class="p">,</span>
+                                                  <span class="n">rtol</span><span class="o">=</span><span class="n">parser</span><span class="o">.</span><span class="n">rtol</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Expected one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+        <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
+            <span class="n">attr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">]</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;This Universe does not contain </span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2"> information&quot;</span>
+            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
             <span class="n">col</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}[</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prop</span> <span class="o">==</span> <span class="s1">&#39;mass&#39;</span><span class="p">:</span>
-                <span class="n">values</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">masses</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">prop</span> <span class="o">==</span> <span class="s1">&#39;charge&#39;</span><span class="p">:</span>
-                <span class="n">values</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">charges</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span><span class="n">SelectionError</span><span class="p">(</span>
-                    <span class="s2">&quot;Expected one of : </span><span class="si">{0}</span><span class="s2">&quot;</span>
-                    <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">([</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;mass&#39;</span><span class="p">,</span> <span class="s1">&#39;charge&#39;</span><span class="p">])),</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">values</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">positions</span><span class="p">[:,</span> <span class="n">col</span><span class="p">]</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="p">[:,</span> <span class="n">col</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">absolute</span><span class="p">:</span>
             <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
@@ -1437,7 +1567,8 @@
                 <span class="s2">&quot;Unexpected token: &#39;</span><span class="si">{0}</span><span class="s2">&#39; Expected: &#39;</span><span class="si">{1}</span><span class="s2">&#39;&quot;</span>
                 <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">token</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="SelectionParser.parse"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SelectionParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selectstr</span><span class="p">,</span> <span class="n">selgroups</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SelectionParser.parse"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SelectionParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selectstr</span><span class="p">,</span> <span class="n">selgroups</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-08</span><span class="p">,</span>
+              <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a Selection object from a string.</span>
 
 <span class="sd">        Parameters</span>
@@ -1449,6 +1580,13 @@
 <span class="sd">        periodic : bool, optional</span>
 <span class="sd">            for distance based selections, whether to consider</span>
 <span class="sd">            periodic boundary conditions</span>
+<span class="sd">        atol : float, optional</span>
+<span class="sd">            The absolute tolerance parameter for float comparisons.</span>
+<span class="sd">            Passed to :func:`numpy.isclose`.</span>
+<span class="sd">        rtol : float, optional</span>
+<span class="sd">            The relative tolerance parameter for float comparisons.</span>
+<span class="sd">            Passed to :func:`numpy.isclose`.</span>
+
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1459,8 +1597,14 @@
 <span class="sd">        ------</span>
 <span class="sd">        SelectionError</span>
 <span class="sd">            If anything goes wrong in creating the Selection object.</span>
+
+
+<span class="sd">        .. versionchanged:: 2.0.0</span>
+<span class="sd">            Added `atol` and `rtol` keywords to select float values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="n">periodic</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atol</span> <span class="o">=</span> <span class="n">atol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rtol</span> <span class="o">=</span> <span class="n">rtol</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">selectstr</span> <span class="o">=</span> <span class="n">selectstr</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selgroups</span> <span class="o">=</span> <span class="n">selgroups</span>
@@ -1494,17 +1638,112 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_SELECTIONDICT</span><span class="p">[</span><span class="n">op</span><span class="p">](</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
-                <span class="n">SelectionError</span><span class="p">(</span><span class="s2">&quot;Unknown selection token: &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">op</span><span class="p">)),</span>
-                <span class="kc">None</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Unknown selection token: &#39;</span><span class="si">{</span><span class="n">op</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
-                <span class="n">SelectionError</span><span class="p">(</span><span class="s2">&quot;Selection failed: &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)),</span>
-                <span class="kc">None</span><span class="p">)</span></div>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Selection failed: &#39;</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span></div>
 
 
 <span class="c1"># The module level instance</span>
 <span class="n">Parser</span> <span class="o">=</span> <span class="n">SelectionParser</span><span class="p">()</span>
+
+<span class="c1"># create a module container to avoid name clashes of autogenerated classes</span>
+<span class="n">_selectors</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">ModuleType</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">._selectors&quot;</span><span class="p">,</span>
+                              <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Automatically generated selectors&quot;</span><span class="p">)</span>
+<span class="c1"># stick it in sys.modules so pickle can find it</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">_selectors</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span> <span class="o">=</span> <span class="n">_selectors</span>
+
+
+<div class="viewcode-block" id="gen_selection_class"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.gen_selection_class">[docs]</a><span class="k">def</span> <span class="nf">gen_selection_class</span><span class="p">(</span><span class="n">singular</span><span class="p">,</span> <span class="n">attrname</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">per_object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Selection class factory for arbitrary TopologyAttrs.</span>
+
+<span class="sd">    Normally this should not be used except within the codebase</span>
+<span class="sd">    or by developers; it is called by the metaclass</span>
+<span class="sd">    :class:`MDAnalysis.core.topologyattrs._TopologyAttrMeta` to</span>
+<span class="sd">    auto-generate suitable selection classes by creating a token</span>
+<span class="sd">    with the topology attribute (singular) name. The function</span>
+<span class="sd">    uses the provided ``dtype`` to choose which Selection class</span>
+<span class="sd">    to subclass:</span>
+
+<span class="sd">    * :class:`BoolSelection` for booleans</span>
+<span class="sd">    * :class:`RangeSelection` for integers</span>
+<span class="sd">    * :class:`FloatRangeSelection` for floats</span>
+<span class="sd">    * :class:`_ProtoStringSelection` for strings</span>
+
+<span class="sd">    Other value types are not yet supported and will raise a</span>
+<span class="sd">    ValueError. The classes are created in the :mod:`_selectors`</span>
+<span class="sd">    module to avoid namespace clashes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    singular: str</span>
+<span class="sd">        singular name of TopologyAttr</span>
+<span class="sd">    attrname: str</span>
+<span class="sd">        attribute name of TopologyAttr</span>
+<span class="sd">    dtype: type</span>
+<span class="sd">        type of TopologyAttr</span>
+<span class="sd">    per_object: str</span>
+<span class="sd">        level of TopologyAttr</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    selection: subclass of Selection</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If ``dtype`` is not one of the supported types</span>
+
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    The function creates a class inside ``_selectors`` and returns it.</span>
+<span class="sd">    Normally it should not need to be manually called, as it is created</span>
+<span class="sd">    for each TopologyAttr::</span>
+
+<span class="sd">        &gt;&gt;&gt; gen_selection_class(&quot;resname&quot;, &quot;resnames&quot;, object, &quot;residue&quot;)</span>
+<span class="sd">        &lt;class &#39;MDAnalysis.core.selection._selectors.ResnameSelection&#39;&gt;</span>
+<span class="sd">    </span>
+<span class="sd">    Simply generating this selector is sufficient for the keyword to be</span>
+<span class="sd">    accessible by :meth:`~MDAnalysis.core.universe.Universe.select_atoms`,</span>
+<span class="sd">    as that is automatically handled by</span>
+<span class="sd">    :class:`~MDAnalysis.core.selections._Selectionmeta`.</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :class:`MDAnalysis.core.topologyattrs._TopologyAttrMeta`</span>
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">basedct</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">singular</span><span class="p">,</span> <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="n">attrname</span><span class="p">,</span>
+               <span class="c1"># manually make modules the _selectors wrapper</span>
+               <span class="s2">&quot;__module__&quot;</span><span class="p">:</span> <span class="n">_selectors</span><span class="o">.</span><span class="vm">__name__</span><span class="p">}</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">singular</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s2">Selection&quot;</span>
+
+    <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="n">basecls</span> <span class="o">=</span> <span class="n">BoolSelection</span>
+    <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
+        <span class="n">basecls</span> <span class="o">=</span> <span class="n">RangeSelection</span>
+    <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">):</span>
+        <span class="n">basecls</span> <span class="o">=</span> <span class="n">FloatRangeSelection</span>
+    <span class="k">elif</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="n">dtype</span> <span class="o">==</span> <span class="nb">object</span><span class="p">:</span>
+        <span class="n">basecls</span> <span class="o">=</span> <span class="n">_ProtoStringSelection</span>
+        <span class="k">if</span> <span class="n">per_object</span> <span class="o">==</span> <span class="s2">&quot;segment&quot;</span><span class="p">:</span>
+            <span class="n">basedct</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;segindices&quot;</span>
+        <span class="k">elif</span> <span class="n">per_object</span> <span class="o">==</span> <span class="s2">&quot;residue&quot;</span><span class="p">:</span>
+            <span class="n">basedct</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;resindices&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">basedct</span><span class="p">[</span><span class="s2">&quot;level&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ix&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No base class defined for dtype </span><span class="si">{</span><span class="n">dtype</span><span class="si">}</span><span class="s2">. &quot;</span>
+                         <span class="s2">&quot;Define a Selection class manually by &quot;</span>
+                         <span class="s2">&quot;subclassing core.selection.Selection&quot;</span><span class="p">)</span>
+
+    <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="n">basecls</span><span class="p">,),</span> <span class="n">basedct</span><span class="p">)</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">_selectors</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span>  <span class="c1"># stick it in _selectors</span>
+    <span class="k">return</span> <span class="bp">cls</span></div>
 </pre></div>
 
            </div>
@@ -1516,10 +1755,18 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -1536,7 +1783,7 @@
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

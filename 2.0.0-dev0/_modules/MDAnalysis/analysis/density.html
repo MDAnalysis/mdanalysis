@@ -401,6 +401,14 @@
 <span class="sd">            A :class:`Density` instance containing a physical density of units</span>
 <span class="sd">            :math:`Angstrom^{-3}`.</span>
 
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        if AtomGroup is empty and no user defined grid is provided</span>
+<span class="sd">    UserWarning</span>
+<span class="sd">        if AtomGroup is empty and a user defined grid is provided</span>
+
+
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    pmda.density.DensityAnalysis for a parallel version</span>
@@ -413,6 +421,12 @@
 <span class="sd">    are within 4 Å of the protein heavy atoms) then create an</span>
 <span class="sd">    :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` (see Examples).</span>
 
+<span class="sd">    :class:`DensityAnalysis` will fail when the :class:`AtomGroup` instance</span>
+<span class="sd">    does not contain any selection of atoms, even when `updating` is set to</span>
+<span class="sd">    ``True``. In such a situation, user defined box limits can be provided to</span>
+<span class="sd">    generate a `Density`. Although, it remains the user&#39;s responsibility</span>
+<span class="sd">    to ensure that the provided grid limits encompass atoms to be selected</span>
+<span class="sd">    on all trajectory frames.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -553,6 +567,7 @@
 <span class="sd">    .. versionchanged:: 2.0.0</span>
 <span class="sd">       :func:`_set_user_grid` is now a method of :class:`DensityAnalysis`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
                  <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
                  <span class="n">gridcenter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -578,8 +593,18 @@
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="c1"># Generate a copy of smin/smax from coords to later check if the</span>
             <span class="c1"># defined box might be too small for the selection</span>
-            <span class="n">smin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-            <span class="n">smax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">smin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">smax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;No atoms in AtomGroup at input time frame. &quot;</span>
+                       <span class="s2">&quot;This may be intended; please ensure that &quot;</span>
+                       <span class="s2">&quot;your grid selection covers the atomic &quot;</span>
+                       <span class="s2">&quot;positions you wish to capture.&quot;</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">smin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridcenter</span>     <span class="c1">#assigns limits to be later -</span>
+                <span class="n">smax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridcenter</span>     <span class="c1">#overwritten by _set_user_grid</span>
             <span class="c1"># Overwrite smin/smax with user defined values</span>
             <span class="n">smin</span><span class="p">,</span> <span class="n">smax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_user_grid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gridcenter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xdim</span><span class="p">,</span>
                                              <span class="bp">self</span><span class="o">.</span><span class="n">_ydim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_zdim</span><span class="p">,</span> <span class="n">smin</span><span class="p">,</span>
@@ -592,8 +617,16 @@
             <span class="c1"># ideal solution would use images: implement &#39;looking across the</span>
             <span class="c1"># periodic boundaries&#39; but that gets complicated when the box</span>
             <span class="c1"># rotates due to RMS fitting.</span>
-            <span class="n">smin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span>
-            <span class="n">smax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">smin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span>
+                <span class="n">smax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;No atoms in AtomGroup at input time frame. &quot;</span>
+                          <span class="s2">&quot;Grid for density could not be automatically&quot;</span>
+                          <span class="s2">&quot; generated. If this is expected, a user&quot;</span>
+                          <span class="s2">&quot; defined grid will need to be &quot;</span>
+                          <span class="s2">&quot;provided instead.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
         <span class="n">BINS</span> <span class="o">=</span> <span class="n">fixedwidth_bins</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_delta</span><span class="p">,</span> <span class="n">smin</span><span class="p">,</span> <span class="n">smax</span><span class="p">)</span>
         <span class="n">arange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">BINS</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">],</span> <span class="n">BINS</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">])))</span>
         <span class="n">bins</span> <span class="o">=</span> <span class="n">BINS</span><span class="p">[</span><span class="s1">&#39;Nbins&#39;</span><span class="p">]</span>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>MDAnalysis.lib.util &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>MDAnalysis.lib.util &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,7 +43,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -204,7 +204,7 @@
 <span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Helper functions --- :mod:`MDAnalysis.lib.util`</span>
 <span class="sd">====================================================</span>
 
@@ -212,6 +212,11 @@
 
 <span class="sd">.. versionchanged:: 0.11.0</span>
 <span class="sd">   Moved mathematical functions into lib.mdamath</span>
+
+<span class="sd">.. versionchanged::2.0.0</span>
+<span class="sd">   The following aliases, that existed for compatibility with python versions</span>
+<span class="sd">   older than 3.6, were removed: `callable` for the built-in of the same name,</span>
+<span class="sd">   `PathLike` for :class:`os.PathLike`, and `bz_open` for :func:`bz2.open`.</span>
 
 
 <span class="sd">Files and directories</span>
@@ -234,7 +239,7 @@
 <span class="sd">Many of the readers are not restricted to just reading files. They can</span>
 <span class="sd">also use gzip-compressed or bzip2-compressed files (through the</span>
 <span class="sd">internal use of :func:`openany`). It is also possible to provide more</span>
-<span class="sd">general streams as inputs, such as a :func:`cStringIO.StringIO`</span>
+<span class="sd">general streams as inputs, such as a :class:`io.StringIO`</span>
 <span class="sd">instances (essentially, a memory buffer) by wrapping these instances</span>
 <span class="sd">into a :class:`NamedStream`. This :class:`NamedStream` can then be</span>
 <span class="sd">used in place of an ordinary file name (typically, with a</span>
@@ -247,10 +252,10 @@
 
 <span class="sd">   import MDAnalysis</span>
 <span class="sd">   from MDAnalysis.lib.util import NamedStream</span>
-<span class="sd">   import cStringIO</span>
+<span class="sd">   from io import StringIO</span>
 
 <span class="sd">   pdb_s = &quot;TITLE     Lonely Ion\\nATOM      1  NA  NA+     1      81.260  64.982  10.926  1.00  0.00\\n&quot;</span>
-<span class="sd">   u = MDAnalysis.Universe(NamedStream(cStringIO.StringIO(pdb_s), &quot;ion.pdb&quot;))</span>
+<span class="sd">   u = MDAnalysis.Universe(NamedStream(StringIO(pdb_s), &quot;ion.pdb&quot;))</span>
 <span class="sd">   print(u)</span>
 <span class="sd">   #  &lt;Universe with 1 atoms&gt;</span>
 <span class="sd">   print(u.atoms.positions)</span>
@@ -265,7 +270,7 @@
 <span class="sd">The use of streams becomes more interesting when MDAnalysis is used as glue</span>
 <span class="sd">between different analysis packages and when one can arrange things so that</span>
 <span class="sd">intermediate frames (typically in the PDB format) are not written to disk but</span>
-<span class="sd">remain in memory via e.g. :mod:`cStringIO` buffers.</span>
+<span class="sd">remain in memory via e.g. :class:`io.StringIO` buffers.</span>
 
 
 <span class="sd">.. The following does *not* work because most readers need to</span>
@@ -303,6 +308,7 @@
 <span class="sd">.. autofunction:: unique_int_1d(values)</span>
 <span class="sd">.. autofunction:: unique_rows</span>
 <span class="sd">.. autofunction:: blocks_of</span>
+<span class="sd">.. autofunction:: group_same_or_consecutive_integers</span>
 
 <span class="sd">File parsing</span>
 <span class="sd">------------</span>
@@ -363,9 +369,6 @@
 <span class="sd">   underlying stream and ``NamedStream.close(force=True)`` will also</span>
 <span class="sd">   close it.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
-<span class="kn">import</span> <span class="nn">six</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">map</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="n">__docformat__</span> <span class="o">=</span> <span class="s2">&quot;restructuredtext en&quot;</span>
@@ -383,12 +386,15 @@
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
 <span class="kn">import</span> <span class="nn">textwrap</span>
+<span class="kn">import</span> <span class="nn">weakref</span>
 
 <span class="kn">import</span> <span class="nn">mmtf</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">numpy.testing</span> <span class="kn">import</span> <span class="n">assert_equal</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
+
+<span class="kn">from</span> <span class="nn">.picklable_file_io</span> <span class="kn">import</span> <span class="n">pickle_open</span><span class="p">,</span> <span class="n">bz2_pickle_open</span><span class="p">,</span> <span class="n">gzip_pickle_open</span>
 
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">StreamWarning</span><span class="p">,</span> <span class="n">DuplicateWarning</span>
 <span class="k">try</span><span class="p">:</span>
@@ -398,25 +404,8 @@
                       <span class="s2">&quot;This can happen if your C extensions &quot;</span>
                       <span class="s2">&quot;have not been built.&quot;</span><span class="p">)</span>
 
-<span class="c1"># Python 3.0, 3.1 do not have the builtin callable()</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="n">callable</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
-<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
-    <span class="c1"># http://bugs.python.org/issue10518</span>
-    <span class="kn">import</span> <span class="nn">collections</span>
 
-    <span class="k">def</span> <span class="nf">callable</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">)</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">PathLike</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="k">class</span> <span class="nc">PathLike</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-        <span class="k">pass</span>
-
-
-
-<div class="viewcode-block" id="filename"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.filename">[docs]</a><span class="k">def</span> <span class="nf">filename</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="filename"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.filename">[docs]</a><span class="k">def</span> <span class="nf">filename</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return a new name that has suffix attached; replaces other extensions.</span>
 
 <span class="sd">    Parameters</span>
@@ -449,7 +438,7 @@
     <span class="k">return</span> <span class="n">name</span> <span class="k">if</span> <span class="n">isstream</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="openany"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.openany">[docs]</a><span class="nd">@contextmanager</span>
+<div class="viewcode-block" id="openany"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.openany">[docs]</a><span class="nd">@contextmanager</span>
 <span class="k">def</span> <span class="nf">openany</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rt&#39;</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Context manager for :func:`anyopen`.</span>
 
@@ -500,26 +489,7 @@
         <span class="n">stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
-<span class="c1"># On python 3, we want to use bz2.open to open and uncompress bz2 files. That</span>
-<span class="c1"># function allows to specify the type of the uncompressed file (bytes ot text).</span>
-<span class="c1"># The function does not exist in python 2, thus we must use bz2.BZFile to</span>
-<span class="c1"># which we cannot tell if the uncompressed file contains bytes or text.</span>
-<span class="c1"># Therefore, on python 2 we use a proxy function that removes the type of the</span>
-<span class="c1"># uncompressed file from the `mode` argument.</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="n">bz2</span><span class="o">.</span><span class="n">open</span>
-<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-    <span class="c1"># We are on python 2 and bz2.open is not available</span>
-    <span class="k">def</span> <span class="nf">bz2_open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Open and uncompress a BZ2 file&quot;&quot;&quot;</span>
-        <span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">bz2</span><span class="o">.</span><span class="n">BZ2File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="c1"># We are on python 3 so we can use bz2.open</span>
-    <span class="n">bz2_open</span> <span class="o">=</span> <span class="n">bz2</span><span class="o">.</span><span class="n">open</span>
-
-
-<div class="viewcode-block" id="anyopen"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.anyopen">[docs]</a><span class="k">def</span> <span class="nf">anyopen</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rt&#39;</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="anyopen"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.anyopen">[docs]</a><span class="k">def</span> <span class="nf">anyopen</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rt&#39;</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Open datasource (gzipped, bzipped, uncompressed) and return a stream.</span>
 
 <span class="sd">    `datasource` can be a filename or a stream (see :func:`isstream`). By</span>
@@ -533,7 +503,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    datasource</span>
 <span class="sd">        a file (from :class:`file` or :func:`open`) or a stream (e.g. from</span>
-<span class="sd">        :func:`urllib2.urlopen` or :class:`cStringIO.StringIO`)</span>
+<span class="sd">        :func:`urllib2.urlopen` or :class:`io.StringIO`)</span>
 <span class="sd">    mode: {&#39;r&#39;, &#39;w&#39;, &#39;a&#39;} (optional)</span>
 <span class="sd">        Open in r(ead), w(rite) or a(ppen) mode. More complicated</span>
 <span class="sd">        modes (&#39;r+&#39;, &#39;w+&#39;, ...) are not supported; only the first letter of</span>
@@ -555,8 +525,19 @@
 <span class="sd">       Only returns the ``stream`` and tries to set ``stream.name = filename`` instead of the previous</span>
 <span class="sd">       behavior to return a tuple ``(stream, filename)``.</span>
 
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       New read handlers support pickle functionality</span>
+<span class="sd">       if `datasource` is a filename.</span>
+<span class="sd">       They return a custom picklable file stream in</span>
+<span class="sd">       :class:`MDAnalysis.lib.picklable_file_io`.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">handlers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bz2&#39;</span><span class="p">:</span> <span class="n">bz2_open</span><span class="p">,</span> <span class="s1">&#39;gz&#39;</span><span class="p">:</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">:</span> <span class="nb">open</span><span class="p">}</span>
+    <span class="n">read_handlers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bz2&#39;</span><span class="p">:</span> <span class="n">bz2_pickle_open</span><span class="p">,</span>
+                     <span class="s1">&#39;gz&#39;</span><span class="p">:</span> <span class="n">gzip_pickle_open</span><span class="p">,</span>
+                     <span class="s1">&#39;&#39;</span><span class="p">:</span> <span class="n">pickle_open</span><span class="p">}</span>
+    <span class="n">write_handlers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bz2&#39;</span><span class="p">:</span> <span class="n">bz2</span><span class="o">.</span><span class="n">open</span><span class="p">,</span>
+                      <span class="s1">&#39;gz&#39;</span><span class="p">:</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">,</span>
+                      <span class="s1">&#39;&#39;</span><span class="p">:</span> <span class="nb">open</span><span class="p">}</span>
 
     <span class="k">if</span> <span class="n">mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">isstream</span><span class="p">(</span><span class="n">datasource</span><span class="p">):</span>
@@ -579,7 +560,7 @@
             <span class="n">stream</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="n">datasource</span>
             <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;bz2&#39;</span><span class="p">,</span> <span class="s1">&#39;gz&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>  <span class="c1"># file == &#39;&#39; should be last</span>
-                <span class="n">openfunc</span> <span class="o">=</span> <span class="n">handlers</span><span class="p">[</span><span class="n">ext</span><span class="p">]</span>
+                <span class="n">openfunc</span> <span class="o">=</span> <span class="n">read_handlers</span><span class="p">[</span><span class="n">ext</span><span class="p">]</span>
                 <span class="n">stream</span> <span class="o">=</span> <span class="n">_get_stream</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">openfunc</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">stream</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">break</span>
@@ -600,7 +581,7 @@
                 <span class="n">ext</span> <span class="o">=</span> <span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">ext</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;bz2&#39;</span><span class="p">,</span> <span class="s1">&#39;gz&#39;</span><span class="p">):</span>
                 <span class="n">ext</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>  <span class="c1"># anything else but bz2 or gz is just a normal file</span>
-            <span class="n">openfunc</span> <span class="o">=</span> <span class="n">handlers</span><span class="p">[</span><span class="n">ext</span><span class="p">]</span>
+            <span class="n">openfunc</span> <span class="o">=</span> <span class="n">write_handlers</span><span class="p">[</span><span class="n">ext</span><span class="p">]</span>
             <span class="n">stream</span> <span class="o">=</span> <span class="n">openfunc</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">stream</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">EIO</span><span class="p">,</span> <span class="s2">&quot;Cannot open file or stream in mode=</span><span class="si">{mode!r}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">vars</span><span class="p">()),</span> <span class="nb">repr</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
@@ -609,7 +590,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">stream</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">filename</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
-        <span class="k">pass</span>  <span class="c1"># can&#39;t set name (e.g. cStringIO.StringIO)</span>
+        <span class="k">pass</span>  <span class="c1"># can&#39;t set name (e.g. io.StringIO)</span>
     <span class="k">return</span> <span class="n">stream</span></div>
 
 
@@ -622,7 +603,7 @@
         <span class="c1"># case we have to ignore the error and return None. Second is when openfunction can&#39;t open the file because</span>
         <span class="c1"># either the file isn&#39;t there or the permissions don&#39;t allow access.</span>
         <span class="k">if</span> <span class="n">errno</span><span class="o">.</span><span class="n">errorcode</span><span class="p">[</span><span class="n">err</span><span class="o">.</span><span class="n">errno</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ENOENT&#39;</span><span class="p">,</span> <span class="s1">&#39;EACCES&#39;</span><span class="p">]:</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">reraise</span><span class="p">(</span><span class="o">*</span><span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">())</span>
+            <span class="k">raise</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="kn">from</span> <span class="nn">err</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">):</span>
         <span class="c1"># additional check for reading (eg can we uncompress) --- is this needed?</span>
@@ -640,7 +621,7 @@
     <span class="k">return</span> <span class="n">stream</span>
 
 
-<div class="viewcode-block" id="greedy_splitext"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.greedy_splitext">[docs]</a><span class="k">def</span> <span class="nf">greedy_splitext</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+<div class="viewcode-block" id="greedy_splitext"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.greedy_splitext">[docs]</a><span class="k">def</span> <span class="nf">greedy_splitext</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Split extension in path *p* at the left-most separator.</span>
 
 <span class="sd">    Extensions are taken to be separated from the filename with the</span>
@@ -674,12 +655,12 @@
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">root</span><span class="p">),</span> <span class="n">extension</span></div>
 
 
-<div class="viewcode-block" id="hasmethod"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.hasmethod">[docs]</a><span class="k">def</span> <span class="nf">hasmethod</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+<div class="viewcode-block" id="hasmethod"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.hasmethod">[docs]</a><span class="k">def</span> <span class="nf">hasmethod</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return ``True`` if object *obj* contains the method *m*.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="ow">and</span> <span class="n">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="isstream"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.isstream">[docs]</a><span class="k">def</span> <span class="nf">isstream</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="isstream"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.isstream">[docs]</a><span class="k">def</span> <span class="nf">isstream</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Detect if `obj` is a stream.</span>
 
 <span class="sd">    We consider anything a stream that has the methods</span>
@@ -723,7 +704,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">alternative_results</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="which"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.which">[docs]</a><span class="k">def</span> <span class="nf">which</span><span class="p">(</span><span class="n">program</span><span class="p">):</span>
+<div class="viewcode-block" id="which"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.which">[docs]</a><span class="k">def</span> <span class="nf">which</span><span class="p">(</span><span class="n">program</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Determine full path of executable `program` on :envvar:`PATH`.</span>
 
 <span class="sd">    (Jay at http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python)</span>
@@ -756,8 +737,8 @@
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="NamedStream"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">total_ordering</span>
-<span class="k">class</span> <span class="nc">NamedStream</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">total_ordering</span>
+<span class="k">class</span> <span class="nc">NamedStream</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Stream that also provides a (fake) name.</span>
 
 <span class="sd">    By wrapping a stream `stream` in this class, it can be passed to</span>
@@ -776,11 +757,11 @@
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
-<span class="sd">    Wrap a :func:`cStringIO.StringIO` instance to write to::</span>
+<span class="sd">    Wrap a :class:`io.StringIO` instance to write to::</span>
 
-<span class="sd">      import cStringIO</span>
+<span class="sd">      from io import StringIO</span>
 <span class="sd">      import os.path</span>
-<span class="sd">      stream = cStringIO.StringIO()</span>
+<span class="sd">      stream = StringIO()</span>
 <span class="sd">      f = NamedStream(stream, &quot;output.pdb&quot;)</span>
 <span class="sd">      print(os.path.splitext(f))</span>
 
@@ -823,7 +804,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        stream : stream</span>
-<span class="sd">            an open stream (e.g. :class:`file` or :func:`cStringIO.StringIO`)</span>
+<span class="sd">            an open stream (e.g. :class:`file` or :class:`io.StringIO`)</span>
 <span class="sd">        filename : str</span>
 <span class="sd">            the filename that should be associated with the stream</span>
 <span class="sd">        reset : bool (optional)</span>
@@ -856,7 +837,7 @@
         <span class="k">if</span> <span class="n">reset</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 
-<div class="viewcode-block" id="NamedStream.reset"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.reset"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Move to the beginning of the stream&quot;&quot;&quot;</span>
         <span class="c1"># try to rewind</span>
         <span class="k">try</span><span class="p">:</span>
@@ -901,7 +882,7 @@
 
     <span class="c1"># override more IOBase methods, as these are provided by IOBase and are not</span>
     <span class="c1"># caught with __getattr__ (ugly...)</span>
-<div class="viewcode-block" id="NamedStream.close"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.close"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reset or close the stream.</span>
 
 <span class="sd">        If :attr:`NamedStream.close_stream` is set to ``False`` (the default)</span>
@@ -935,7 +916,7 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">closed</span>
 
-<div class="viewcode-block" id="NamedStream.seek"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.seek">[docs]</a>    <span class="k">def</span> <span class="nf">seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">whence</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">SEEK_SET</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.seek"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.seek">[docs]</a>    <span class="k">def</span> <span class="nf">seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">whence</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">SEEK_SET</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Change the stream position to the given byte `offset` .</span>
 
 <span class="sd">        Parameters</span>
@@ -964,14 +945,14 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">whence</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="NamedStream.tell"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.tell">[docs]</a>    <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.tell"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.tell">[docs]</a>    <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the current stream position.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="NamedStream.truncate"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.truncate">[docs]</a>    <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">size</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.truncate"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.truncate">[docs]</a>    <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">size</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Truncate the stream&#39;s size to `size`.</span>
 
 <span class="sd">        Parameters</span>
@@ -986,7 +967,7 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="o">*</span><span class="n">size</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="NamedStream.seekable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.seekable">[docs]</a>    <span class="k">def</span> <span class="nf">seekable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.seekable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.seekable">[docs]</a>    <span class="k">def</span> <span class="nf">seekable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return ``True`` if the stream supports random access.</span>
 
 <span class="sd">        If ``False``, :meth:`seek`, :meth:`tell` and :meth:`truncate` will</span>
@@ -998,7 +979,7 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">seekable</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="NamedStream.readable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.readable">[docs]</a>    <span class="k">def</span> <span class="nf">readable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.readable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.readable">[docs]</a>    <span class="k">def</span> <span class="nf">readable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return ``True`` if the stream can be read from.</span>
 
 <span class="sd">        If ``False``, :meth:`read` will raise :exc:`IOError`.</span>
@@ -1008,7 +989,7 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">readable</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="NamedStream.writable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.writable">[docs]</a>    <span class="k">def</span> <span class="nf">writable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.writable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.writable">[docs]</a>    <span class="k">def</span> <span class="nf">writable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return ``True`` if the stream can be written to.</span>
 
 <span class="sd">        If ``False``, :meth:`write` will raise :exc:`IOError`.</span>
@@ -1018,7 +999,7 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">writable</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="NamedStream.flush"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.flush">[docs]</a>    <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.flush"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.flush">[docs]</a>    <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Flush the write buffers of the stream if applicable.</span>
 
 <span class="sd">        This does nothing for read-only and non-blocking streams. For file</span>
@@ -1030,7 +1011,7 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="NamedStream.fileno"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.fileno">[docs]</a>    <span class="k">def</span> <span class="nf">fileno</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.fileno"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.fileno">[docs]</a>    <span class="k">def</span> <span class="nf">fileno</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the underlying file descriptor (an integer) of the stream if it exists.</span>
 
 <span class="sd">        An :exc:`IOError` is raised if the IO object does not use a file descriptor.</span>
@@ -1039,11 +1020,10 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="c1"># IOBase.fileno does not raise IOError as advertised so we do this here</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
-                <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;This NamedStream does not use a file descriptor.&quot;</span><span class="p">),</span>
-                <span class="kc">None</span><span class="p">)</span></div>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;This NamedStream does not use a file descriptor.&quot;</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span></div>
 
-<div class="viewcode-block" id="NamedStream.readline"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.readline">[docs]</a>    <span class="k">def</span> <span class="nf">readline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.readline"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.readline">[docs]</a>    <span class="k">def</span> <span class="nf">readline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
@@ -1087,7 +1067,7 @@
         <span class="k">return</span> <span class="s2">&quot;&lt;NamedStream(</span><span class="si">{0}</span><span class="s2">, </span><span class="si">{1}</span><span class="s2">)&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="realpath"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.realpath">[docs]</a><span class="k">def</span> <span class="nf">realpath</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="realpath"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.realpath">[docs]</a><span class="k">def</span> <span class="nf">realpath</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Join all args and return the real path, rooted at ``/``.</span>
 
 <span class="sd">    Expands &#39;~&#39;, &#39;~user&#39;, and environment variables such as :envvar:`$HOME`.</span>
@@ -1099,7 +1079,7 @@
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">))))</span></div>
 
 
-<div class="viewcode-block" id="get_ext"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.get_ext">[docs]</a><span class="k">def</span> <span class="nf">get_ext</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="get_ext"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.get_ext">[docs]</a><span class="k">def</span> <span class="nf">get_ext</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return the lower-cased extension of `filename` without a leading dot.</span>
 
 <span class="sd">    Parameters</span>
@@ -1119,7 +1099,7 @@
     <span class="k">return</span> <span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="check_compressed_format"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.check_compressed_format">[docs]</a><span class="k">def</span> <span class="nf">check_compressed_format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="p">):</span>
+<div class="viewcode-block" id="check_compressed_format"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.check_compressed_format">[docs]</a><span class="k">def</span> <span class="nf">check_compressed_format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Check if this is a supported gzipped/bzip2ed file format and return UPPERCASE format.</span>
 
 <span class="sd">    Parameters</span>
@@ -1147,15 +1127,13 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">get_ext</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
-                <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Cannot determine coordinate format for &#39;</span><span class="si">{0}</span><span class="s2">.</span><span class="si">{1}</span><span class="s2">&#39;&quot;</span>
-                          <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="p">)),</span>
-                <span class="kc">None</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Cannot determine coordinate format for &#39;</span><span class="si">{</span><span class="n">root</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">ext</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
     <span class="k">return</span> <span class="n">ext</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="format_from_filename_extension"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.format_from_filename_extension">[docs]</a><span class="k">def</span> <span class="nf">format_from_filename_extension</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="format_from_filename_extension"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.format_from_filename_extension">[docs]</a><span class="k">def</span> <span class="nf">format_from_filename_extension</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Guess file format from the file extension.</span>
 
 <span class="sd">    Parameters</span>
@@ -1174,16 +1152,15 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">get_ext</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">(</span>
-            <span class="s2">&quot;Cannot determine file format for file &#39;</span><span class="si">{0}</span><span class="s2">&#39;.</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;           You can set the format explicitly with &quot;</span>
-            <span class="s2">&quot;&#39;Universe(..., format=FORMAT)&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">)),</span>
-            <span class="kc">None</span><span class="p">)</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot determine file format for file &#39;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&#39;.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot;           You can set the format explicitly with &quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot;&#39;Universe(..., format=FORMAT)&#39;.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="n">check_compressed_format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">format</span></div>
 
 
-<div class="viewcode-block" id="guess_format"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.guess_format">[docs]</a><span class="k">def</span> <span class="nf">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="guess_format"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.guess_format">[docs]</a><span class="k">def</span> <span class="nf">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return the format of `filename`</span>
 
 <span class="sd">    The current heuristic simply looks at the filename extension and can work</span>
@@ -1216,10 +1193,9 @@
             <span class="nb">format</span> <span class="o">=</span> <span class="n">format_from_filename_extension</span><span class="p">(</span><span class="n">filename</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="c1"># format is None so we need to complain:</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
-                <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;guess_format requires an explicit format specifier &quot;</span>
-                           <span class="s2">&quot;for stream </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">)),</span>
-                <span class="kc">None</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;guess_format requires an explicit format specifier &quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;for stream </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># iterator, list, filename: simple extension checking... something more</span>
         <span class="c1"># complicated is left for the ambitious.</span>
@@ -1231,10 +1207,10 @@
     <span class="k">return</span> <span class="nb">format</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="iterable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.iterable">[docs]</a><span class="k">def</span> <span class="nf">iterable</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="iterable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.iterable">[docs]</a><span class="k">def</span> <span class="nf">iterable</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Returns ``True`` if `obj` can be iterated over and is *not* a  string</span>
 <span class="sd">    nor a :class:`NamedStream`&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">,</span> <span class="n">NamedStream</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">NamedStream</span><span class="p">)):</span>
         <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># avoid iterating over characters of a string</span>
 
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;next&#39;</span><span class="p">):</span>
@@ -1246,7 +1222,7 @@
     <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="asiterable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.asiterable">[docs]</a><span class="k">def</span> <span class="nf">asiterable</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="asiterable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.asiterable">[docs]</a><span class="k">def</span> <span class="nf">asiterable</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Returns `obj` so that it can be iterated over.</span>
 
 <span class="sd">    A string is *not* detected as and iterable and is wrapped into a :class:`list`</span>
@@ -1261,11 +1237,13 @@
         <span class="n">obj</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">obj</span></div>
 
+
 <span class="c1">#: Regular expresssion (see :mod:`re`) to parse a simple `FORTRAN edit descriptor`_.</span>
 <span class="c1">#: ``(?P&lt;repeat&gt;\d?)(?P&lt;format&gt;[IFELAX])(?P&lt;numfmt&gt;(?P&lt;length&gt;\d+)(\.(?P&lt;decimals&gt;\d+))?)?``</span>
 <span class="c1">#:</span>
 <span class="c1">#: .. _FORTRAN edit descriptor: http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html</span>
-<span class="n">FORTRAN_format_regex</span> <span class="o">=</span> <span class="s2">&quot;(?P&lt;repeat&gt;\d+?)(?P&lt;format&gt;[IFEAX])(?P&lt;numfmt&gt;(?P&lt;length&gt;\d+)(\.(?P&lt;decimals&gt;\d+))?)?&quot;</span>
+<span class="n">FORTRAN_format_regex</span> <span class="o">=</span> <span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(?P&lt;repeat&gt;\d+?)(?P&lt;format&gt;[IFEAX])&quot;</span>
+                        <span class="sa">r</span><span class="s2">&quot;(?P&lt;numfmt&gt;(?P&lt;length&gt;\d+)(\.(?P&lt;decimals&gt;\d+))?)?&quot;</span><span class="p">)</span>
 <span class="n">_FORTRAN_format_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">FORTRAN_format_regex</span><span class="p">)</span>
 
 
@@ -1306,11 +1284,9 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">convertor</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
-                <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;</span><span class="si">{0!r}</span><span class="s2">: Failed to read&amp;convert </span><span class="si">{1!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">])),</span>
-                <span class="kc">None</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s2">: Failed to read&amp;convert &quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">line</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Length of the field in columns (stop - start)&quot;&quot;&quot;</span>
@@ -1320,7 +1296,7 @@
         <span class="k">return</span> <span class="s2">&quot;FixedcolumnEntry(</span><span class="si">{0:d}</span><span class="s2">,</span><span class="si">{1:d}</span><span class="s2">,</span><span class="si">{2!r}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">typespecifier</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="FORTRANReader"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.FORTRANReader">[docs]</a><span class="k">class</span> <span class="nc">FORTRANReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="FORTRANReader"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.FORTRANReader">[docs]</a><span class="k">class</span> <span class="nc">FORTRANReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;FORTRANReader provides a method to parse FORTRAN formatted lines in a file.</span>
 
 <span class="sd">    The contents of lines in a file can be parsed according to FORTRAN format</span>
@@ -1370,7 +1346,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">start</span> <span class="o">+=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;totallength&#39;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="FORTRANReader.read"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.FORTRANReader.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+<div class="viewcode-block" id="FORTRANReader.read"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.FORTRANReader.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse `line` according to the format string and return list of values.</span>
 
 <span class="sd">        Values are converted to Python types according to the format specifier.</span>
@@ -1395,7 +1371,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="FORTRANReader.number_of_matches"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.FORTRANReader.number_of_matches">[docs]</a>    <span class="k">def</span> <span class="nf">number_of_matches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+<div class="viewcode-block" id="FORTRANReader.number_of_matches"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.FORTRANReader.number_of_matches">[docs]</a>    <span class="k">def</span> <span class="nf">number_of_matches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return how many format entries could be populated with legal values.&quot;&quot;&quot;</span>
         <span class="c1"># not optimal, I suppose...</span>
         <span class="n">matches</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1407,7 +1383,7 @@
                 <span class="k">pass</span>
         <span class="k">return</span> <span class="n">matches</span></div>
 
-<div class="viewcode-block" id="FORTRANReader.parse_FORTRAN_format"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.FORTRANReader.parse_FORTRAN_format">[docs]</a>    <span class="k">def</span> <span class="nf">parse_FORTRAN_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edit_descriptor</span><span class="p">):</span>
+<div class="viewcode-block" id="FORTRANReader.parse_FORTRAN_format"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.FORTRANReader.parse_FORTRAN_format">[docs]</a>    <span class="k">def</span> <span class="nf">parse_FORTRAN_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edit_descriptor</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse the descriptor.</span>
 
 
@@ -1464,7 +1440,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span></div>
 
 
-<div class="viewcode-block" id="fixedwidth_bins"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.fixedwidth_bins">[docs]</a><span class="k">def</span> <span class="nf">fixedwidth_bins</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">):</span>
+<div class="viewcode-block" id="fixedwidth_bins"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.fixedwidth_bins">[docs]</a><span class="k">def</span> <span class="nf">fixedwidth_bins</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return bins of width `delta` that cover `xmin`, `xmax` (or a larger range).</span>
 
 <span class="sd">    The bin parameters are computed such that the bin size `delta` is</span>
@@ -1508,7 +1484,7 @@
     <span class="n">dx</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="n">_delta</span> <span class="o">-</span> <span class="n">_length</span><span class="p">)</span>  <span class="c1"># add half of the excess to each end</span>
     <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;Nbins&#39;</span><span class="p">:</span> <span class="n">N</span><span class="p">,</span> <span class="s1">&#39;delta&#39;</span><span class="p">:</span> <span class="n">_delta</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="n">_xmin</span> <span class="o">-</span> <span class="n">dx</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="n">_xmax</span> <span class="o">+</span> <span class="n">dx</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="get_weights"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.get_weights">[docs]</a><span class="k">def</span> <span class="nf">get_weights</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
+<div class="viewcode-block" id="get_weights"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.get_weights">[docs]</a><span class="k">def</span> <span class="nf">get_weights</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Check that a `weights` argument is compatible with `atoms`.</span>
 
 <span class="sd">    Parameters</span>
@@ -1544,21 +1520,21 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">weights</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">masses</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
-                <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;weights=&#39;mass&#39; selected but atoms.masses is missing&quot;</span><span class="p">),</span>
-                <span class="kc">None</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;weights=&#39;mass&#39; selected but atoms.masses is missing&quot;</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
     <span class="k">if</span> <span class="n">iterable</span><span class="p">(</span><span class="n">weights</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;weights must be a 1D array, not with shape &quot;</span>
-                            <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+                            <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span>
+                             <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;weights (length </span><span class="si">{0}</span><span class="s2">) must be of same length as &quot;</span>
-                            <span class="s2">&quot;the atoms (</span><span class="si">{1}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                                <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)))</span>
+                             <span class="s2">&quot;the atoms (</span><span class="si">{1}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                 <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)))</span>
     <span class="k">elif</span> <span class="n">weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;weights must be {&#39;mass&#39;, None} or an iterable of the &quot;</span>
-                        <span class="s2">&quot;same size as the atomgroup.&quot;</span><span class="p">)</span>
+                         <span class="s2">&quot;same size as the atomgroup.&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">weights</span></div>
 
@@ -1576,7 +1552,8 @@
     <span class="s1">&#39;THR&#39;</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;VAL&#39;</span><span class="p">:</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;TRP&#39;</span><span class="p">:</span> <span class="s1">&#39;W&#39;</span><span class="p">,</span> <span class="s1">&#39;TYR&#39;</span><span class="p">:</span> <span class="s1">&#39;Y&#39;</span><span class="p">}</span>
 <span class="c1">#: translation table for 1-letter codes --&gt; *canonical* 3-letter codes.</span>
 <span class="c1">#: The table is used for :func:`convert_aa_code`.</span>
-<span class="n">amino_acid_codes</span> <span class="o">=</span> <span class="p">{</span><span class="n">one</span><span class="p">:</span> <span class="n">three</span> <span class="k">for</span> <span class="n">three</span><span class="p">,</span> <span class="n">one</span> <span class="ow">in</span> <span class="n">canonical_inverse_aa_codes</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+<span class="n">amino_acid_codes</span> <span class="o">=</span> <span class="p">{</span><span class="n">one</span><span class="p">:</span> <span class="n">three</span> <span class="k">for</span> <span class="n">three</span><span class="p">,</span>
+                    <span class="n">one</span> <span class="ow">in</span> <span class="n">canonical_inverse_aa_codes</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 <span class="c1">#: non-default charge state amino acids or special charge state descriptions</span>
 <span class="c1">#: (Not fully synchronized with :class:`MDAnalysis.core.selection.ProteinSelection`.)</span>
 <span class="n">alternative_inverse_aa_codes</span> <span class="o">=</span> <span class="p">{</span>
@@ -1596,7 +1573,7 @@
 <span class="n">inverse_aa_codes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">alternative_inverse_aa_codes</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="convert_aa_code"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.convert_aa_code">[docs]</a><span class="k">def</span> <span class="nf">convert_aa_code</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="convert_aa_code"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.convert_aa_code">[docs]</a><span class="k">def</span> <span class="nf">convert_aa_code</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Converts between 3-letter and 1-letter amino acid codes.</span>
 
 <span class="sd">    Parameters</span>
@@ -1626,16 +1603,14 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">d</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
-            <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;No conversion for </span><span class="si">{0}</span><span class="s2"> found (1 letter -&gt; 3 letter or 3/4 letter -&gt; 1 letter)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-                <span class="p">),</span>
-            <span class="kc">None</span><span class="p">)</span></div>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No conversion for </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2"> found (1 letter -&gt; 3 letter or 3/4 &quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot;letter -&gt; 1 letter)&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span></div>
 
 
 <span class="c1">#: Regular expression to match and parse a residue-atom selection; will match</span>
 <span class="c1">#: &quot;LYS300:HZ1&quot; or &quot;K300:HZ1&quot; or &quot;K300&quot; or &quot;4GB300:H6O&quot; or &quot;4GB300&quot; or &quot;YaA300&quot;.</span>
-<span class="n">RESIDUE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="n">RESIDUE</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">                 (?P&lt;aa&gt;([ACDEFGHIKLMNPQRSTVWY])   # 1-letter amino acid</span>
 <span class="s2">                        |                          #   or</span>
 <span class="s2">                        ([0-9A-Z][a-zA-Z][A-Z][A-Z]?)    # 3-letter or 4-letter residue name</span>
@@ -1651,7 +1626,7 @@
 
 
 <span class="c1"># from GromacsWrapper cbook.IndexBuilder</span>
-<div class="viewcode-block" id="parse_residue"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.parse_residue">[docs]</a><span class="k">def</span> <span class="nf">parse_residue</span><span class="p">(</span><span class="n">residue</span><span class="p">):</span>
+<div class="viewcode-block" id="parse_residue"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.parse_residue">[docs]</a><span class="k">def</span> <span class="nf">parse_residue</span><span class="p">(</span><span class="n">residue</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Process residue string.</span>
 
 <span class="sd">    Parameters</span>
@@ -1693,7 +1668,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">resname</span><span class="p">,</span> <span class="n">resid</span><span class="p">,</span> <span class="n">atomname</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="conv_float"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.conv_float">[docs]</a><span class="k">def</span> <span class="nf">conv_float</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="conv_float"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.conv_float">[docs]</a><span class="k">def</span> <span class="nf">conv_float</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Convert an object `s` to float if possible.</span>
 
 <span class="sd">    Function to be passed into :func:`map` or a list comprehension. If</span>
@@ -1706,10 +1681,18 @@
         <span class="k">return</span> <span class="n">s</span></div>
 
 
-<div class="viewcode-block" id="cached"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.cached">[docs]</a><span class="k">def</span> <span class="nf">cached</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+<span class="c1"># A dummy, empty, cheaply-hashable object class to use with weakref caching.</span>
+<span class="c1"># (class object doesn&#39;t allow weakrefs to its instances, but user-defined</span>
+<span class="c1">#  classes do)</span>
+<span class="k">class</span> <span class="nc">_CacheKey</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="cached"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.cached">[docs]</a><span class="k">def</span> <span class="nf">cached</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">universe_validation</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Cache a property within a class.</span>
 
-<span class="sd">    Requires the Class to have a cache dict called ``_cache``.</span>
+<span class="sd">    Requires the Class to have a cache dict :attr:`_cache` and, with</span>
+<span class="sd">    `universe_validation`, a :attr:`universe` with a cache dict :attr:`_cache`.</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
@@ -1723,23 +1706,54 @@
 <span class="sd">           @property</span>
 <span class="sd">           @cached(&#39;keyname&#39;)</span>
 <span class="sd">           def size(self):</span>
-<span class="sd">               # This code gets ran only if the lookup of keyname fails</span>
-<span class="sd">               # After this code has been ran once, the result is stored in</span>
+<span class="sd">               # This code gets run only if the lookup of keyname fails</span>
+<span class="sd">               # After this code has been run once, the result is stored in</span>
 <span class="sd">               # _cache with the key: &#39;keyname&#39;</span>
-<span class="sd">               size = 10.0</span>
+<span class="sd">               return 10.0</span>
+
+<span class="sd">           @property</span>
+<span class="sd">           @cached(&#39;keyname&#39;, universe_validation=True)</span>
+<span class="sd">           def othersize(self):</span>
+<span class="sd">               # This code gets run only if the lookup</span>
+<span class="sd">               # id(self) is not in the validation set under</span>
+<span class="sd">               # self.universe._cache[&#39;_valid&#39;][&#39;keyname&#39;]</span>
+<span class="sd">               # After this code has been run once, id(self) is added to that</span>
+<span class="sd">               # set. The validation set can be centrally invalidated at the</span>
+<span class="sd">               # universe level (say, if a topology change invalidates specific</span>
+<span class="sd">               # caches).</span>
+<span class="sd">               return 20.0</span>
 
 
 <span class="sd">    .. versionadded:: 0.9.0</span>
 
+<span class="sd">    .. versionchanged::2.0.0</span>
+<span class="sd">        Added the `universe_validation` keyword.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">cached_lookup</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
         <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">universe_validation</span><span class="p">:</span>  <span class="c1"># Universe-level cache validation</span>
+                    <span class="n">u_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;_valid&#39;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">())</span>
+                    <span class="c1"># A WeakSet is used so that keys from out-of-scope/deleted</span>
+                    <span class="c1"># objects don&#39;t clutter it.</span>
+                    <span class="n">valid_caches</span> <span class="o">=</span> <span class="n">u_cache</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">weakref</span><span class="o">.</span><span class="n">WeakSet</span><span class="p">())</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_caches</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">KeyError</span>
+                    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>  <span class="c1"># No _cache_key yet</span>
+                        <span class="c1"># Must create a reference key for the validation set.</span>
+                        <span class="c1"># self could be used itself as a weakref but set()</span>
+                        <span class="c1"># requires hashing it, which can be slow for AGs. Using</span>
+                        <span class="c1"># id(self) fails because ints can&#39;t be weak-referenced.</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_cache_key</span> <span class="o">=</span> <span class="n">_CacheKey</span><span class="p">()</span>
+                        <span class="k">raise</span> <span class="ne">KeyError</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">universe_validation</span><span class="p">:</span>
+                    <span class="n">valid_caches</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cache_key</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">ret</span>
 
         <span class="k">return</span> <span class="n">wrapper</span>
@@ -1747,7 +1761,7 @@
     <span class="k">return</span> <span class="n">cached_lookup</span></div>
 
 
-<div class="viewcode-block" id="unique_rows"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.unique_rows">[docs]</a><span class="k">def</span> <span class="nf">unique_rows</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="unique_rows"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.unique_rows">[docs]</a><span class="k">def</span> <span class="nf">unique_rows</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return the unique rows of an array.</span>
 
 <span class="sd">    Arguments</span>
@@ -1803,7 +1817,7 @@
         <span class="k">return</span> <span class="n">u</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="blocks_of"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.blocks_of">[docs]</a><span class="k">def</span> <span class="nf">blocks_of</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+<div class="viewcode-block" id="blocks_of"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.blocks_of">[docs]</a><span class="k">def</span> <span class="nf">blocks_of</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Extract a view of ``(n, m)`` blocks along the diagonal of the array `a`.</span>
 
 <span class="sd">    Parameters</span>
@@ -1873,15 +1887,37 @@
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">stride_tricks</span><span class="o">.</span><span class="n">as_strided</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">new_shape</span><span class="p">,</span> <span class="n">new_strides</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Namespace"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.Namespace">[docs]</a><span class="k">class</span> <span class="nc">Namespace</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+
+<div class="viewcode-block" id="group_same_or_consecutive_integers"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.group_same_or_consecutive_integers">[docs]</a><span class="k">def</span> <span class="nf">group_same_or_consecutive_integers</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Split an array of integers into a list of same or consecutive</span>
+<span class="sd">    sequences.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    arr: :class:`numpy.ndarray`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list of :class:`numpy.ndarray`</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    &gt;&gt;&gt; arr = np.array([ 2,  3,  4,  7,  8,  9, 10, 11, 15, 16])</span>
+<span class="sd">    &gt;&gt;&gt; group_same_or_consecutive_integers(arr)</span>
+<span class="sd">    [array([2, 3, 4]), array([ 7,  8,  9, 10, 11]), array([15, 16])]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ediff1d</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Namespace"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.Namespace">[docs]</a><span class="k">class</span> <span class="nc">Namespace</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class to allow storing attributes in new namespace. &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="c1"># a.this causes a __getattr__ call for key = &#39;this&#39;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; is not known in the namespace.&#39;</span>
-                                 <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">)),</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&quot; is not known in the namespace.&#39;</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="nb">dict</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
@@ -1890,10 +1926,8 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="nb">dict</span><span class="o">.</span><span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
-                <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; is not known in the namespace.&#39;</span>
-                                 <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">)),</span>
-                <span class="kc">None</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&quot; is not known in the namespace.&#39;</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -1904,7 +1938,7 @@
         <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="ltruncate_int"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.ltruncate_int">[docs]</a><span class="k">def</span> <span class="nf">ltruncate_int</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ndigits</span><span class="p">):</span>
+<div class="viewcode-block" id="ltruncate_int"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.ltruncate_int">[docs]</a><span class="k">def</span> <span class="nf">ltruncate_int</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ndigits</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Truncate an integer, retaining least significant digits</span>
 
 <span class="sd">    Parameters</span>
@@ -1929,7 +1963,7 @@
     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)[</span><span class="o">-</span><span class="n">ndigits</span><span class="p">:])</span></div>
 
 
-<div class="viewcode-block" id="flatten_dict"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.flatten_dict">[docs]</a><span class="k">def</span> <span class="nf">flatten_dict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">parent_key</span><span class="o">=</span><span class="nb">tuple</span><span class="p">()):</span>
+<div class="viewcode-block" id="flatten_dict"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.flatten_dict">[docs]</a><span class="k">def</span> <span class="nf">flatten_dict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">parent_key</span><span class="o">=</span><span class="nb">tuple</span><span class="p">()):</span>
     <span class="sd">&quot;&quot;&quot;Flatten a nested dict `d` into a shallow dict with tuples as keys.</span>
 
 <span class="sd">    Parameters</span>
@@ -1961,7 +1995,7 @@
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">items</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="static_variables"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.static_variables">[docs]</a><span class="k">def</span> <span class="nf">static_variables</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="static_variables"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.static_variables">[docs]</a><span class="k">def</span> <span class="nf">static_variables</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Decorator equipping functions or methods with static variables.</span>
 
 <span class="sd">    Static variables are declared and initialized by supplying keyword arguments</span>
@@ -2006,7 +2040,7 @@
 <span class="c1"># method. Of course, as it is generally the case with Python warnings, this is</span>
 <span class="c1"># *not threadsafe*.</span>
 
-<div class="viewcode-block" id="warn_if_not_unique"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.warn_if_not_unique">[docs]</a><span class="nd">@static_variables</span><span class="p">(</span><span class="n">warned</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="viewcode-block" id="warn_if_not_unique"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.warn_if_not_unique">[docs]</a><span class="nd">@static_variables</span><span class="p">(</span><span class="n">warned</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">warn_if_not_unique</span><span class="p">(</span><span class="n">groupmethod</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Decorator triggering a :class:`~MDAnalysis.exceptions.DuplicateWarning`</span>
 <span class="sd">    if the underlying group is not unique.</span>
@@ -2032,7 +2066,8 @@
         <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">isunique</span> <span class="ow">or</span> <span class="n">warn_if_not_unique</span><span class="o">.</span><span class="n">warned</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">groupmethod</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># Otherwise, throw a DuplicateWarning and execute the method.</span>
-        <span class="n">method_name</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">group</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">groupmethod</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+        <span class="n">method_name</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">groupmethod</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="c1"># Try to get the group&#39;s variable name(s):</span>
         <span class="n">caller_locals</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">currentframe</span><span class="p">()</span><span class="o">.</span><span class="n">f_back</span><span class="o">.</span><span class="n">f_locals</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="n">group_names</span> <span class="o">=</span> <span class="p">[]</span>
@@ -2061,7 +2096,7 @@
     <span class="k">return</span> <span class="n">wrapper</span></div>
 
 
-<div class="viewcode-block" id="check_coords"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.check_coords">[docs]</a><span class="k">def</span> <span class="nf">check_coords</span><span class="p">(</span><span class="o">*</span><span class="n">coord_names</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+<div class="viewcode-block" id="check_coords"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.check_coords">[docs]</a><span class="k">def</span> <span class="nf">check_coords</span><span class="p">(</span><span class="o">*</span><span class="n">coord_names</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Decorator for automated coordinate array checking.</span>
 
 <span class="sd">    This decorator is intended for use especially in</span>
@@ -2155,7 +2190,7 @@
     <span class="n">convert_single</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;convert_single&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
     <span class="n">reduce_result_if_single</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reduce_result_if_single&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
     <span class="n">check_lengths_match</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;check_lengths_match&#39;</span><span class="p">,</span>
-                                     <span class="nb">len</span><span class="p">(</span><span class="n">coord_names</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+                                      <span class="nb">len</span><span class="p">(</span><span class="n">coord_names</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">coord_names</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Decorator check_coords() cannot be used without &quot;</span>
                          <span class="s2">&quot;positional arguments.&quot;</span><span class="p">)</span>
@@ -2197,13 +2232,12 @@
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">(): </span><span class="si">{}</span><span class="s2">.shape must be (n, 3), got </span><span class="si">{}</span><span class="s2">.&quot;</span>
                                      <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">argname</span><span class="p">,</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">enforce_copy</span><span class="p">)</span>
+                <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">enforce_copy</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
-                    <span class="ne">TypeError</span><span class="p">(</span>
-                        <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">(): </span><span class="si">{}</span><span class="s2">.dtype must be convertible to float32,&quot;</span>
-                        <span class="s2">&quot; got </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">argname</span><span class="p">,</span> <span class="n">coords</span><span class="o">.</span><span class="n">dtype</span><span class="p">)),</span>
-                    <span class="kc">None</span><span class="p">)</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2">(): </span><span class="si">{</span><span class="n">argname</span><span class="si">}</span><span class="s2">.dtype must be convertible to &quot;</span>
+                          <span class="sa">f</span><span class="s2">&quot;float32, got </span><span class="si">{</span><span class="n">coords</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
             <span class="k">return</span> <span class="n">coords</span><span class="p">,</span> <span class="n">is_single</span>
 
         <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
@@ -2257,7 +2291,7 @@
     <span class="k">return</span> <span class="n">check_coords_decorator</span></div>
 
 
-<span class="c1">#------------------------------------------------------------------</span>
+<span class="c1"># ------------------------------------------------------------------</span>
 <span class="c1">#</span>
 <span class="c1"># our own deprecate function, derived from numpy (see</span>
 <span class="c1"># https://github.com/MDAnalysis/mdanalysis/pull/1763#issuecomment-403231136)</span>
@@ -2269,7 +2303,8 @@
     <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">name</span>
     <span class="k">return</span> <span class="n">func</span>
 
-<div class="viewcode-block" id="_Deprecate"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density._Deprecate">[docs]</a><span class="k">class</span> <span class="nc">_Deprecate</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="_Deprecate"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util._Deprecate">[docs]</a><span class="k">class</span> <span class="nc">_Deprecate</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decorator class to deprecate old functions.</span>
 
@@ -2364,8 +2399,9 @@
             <span class="n">newfunc</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">newfunc</span></div>
 
-<div class="viewcode-block" id="deprecate"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.deprecate">[docs]</a><span class="k">def</span> <span class="nf">deprecate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Issues a DeprecationWarning, adds warning to `old_name`&#39;s</span>
+
+<div class="viewcode-block" id="deprecate"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.deprecate">[docs]</a><span class="k">def</span> <span class="nf">deprecate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Issues a DeprecationWarning, adds warning to `old_name`&#39;s</span>
 <span class="sd">    docstring, rebinds ``old_name.__name__`` and returns the new</span>
 <span class="sd">    function object.</span>
 
@@ -2458,9 +2494,10 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_Deprecate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 <span class="c1">#</span>
-<span class="c1">#------------------------------------------------------------------</span>
+<span class="c1"># ------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="dedent_docstring"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.dedent_docstring">[docs]</a><span class="k">def</span> <span class="nf">dedent_docstring</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+
+<div class="viewcode-block" id="dedent_docstring"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.dedent_docstring">[docs]</a><span class="k">def</span> <span class="nf">dedent_docstring</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Dedent typical python doc string.</span>
 
 <span class="sd">    Parameters</span>
@@ -2489,7 +2526,7 @@
     <span class="k">return</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span></div>
 
 
-<div class="viewcode-block" id="check_box"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.check_box">[docs]</a><span class="k">def</span> <span class="nf">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">):</span>
+<div class="viewcode-block" id="check_box"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.check_box">[docs]</a><span class="k">def</span> <span class="nf">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Take a box input and deduce what type of system it represents based on</span>
 <span class="sd">    the shape of the array and whether all angles are 90 degrees.</span>
 
@@ -2498,7 +2535,7 @@
 <span class="sd">    box : array_like</span>
 <span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
 <span class="sd">        triclinic and must be provided in the same format as returned by</span>
-<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
 <span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
 
 <span class="sd">    Returns</span>
@@ -2552,10 +2589,18 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -2572,7 +2617,7 @@
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

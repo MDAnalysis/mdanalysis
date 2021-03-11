@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>5.20. AMBER PRMTOP topology parser &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>5.20. AMBER PRMTOP topology parser &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,7 +43,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -276,9 +276,13 @@ DIHEDRALS_WITHOUT_HYDROGEN</td>
 <p>The Amber charge is converted to electron charges as used in
 MDAnalysis and other packages. To get back Amber charges, multiply
 by 18.2223.</p>
-<p class="last">Chamber-style Amber topologies (i.e. topologies generated via parmed
-conversion of a CHARMM topology to an AMBER one) are not currently supported.
-Support will likely be added in future MDAnalysis releases.</p>
+<p>Chamber-style Amber topologies (i.e. topologies generated via parmed
+conversion of a CHARMM topology to an AMBER one) are not currently
+supported. Support will likely be added in future MDAnalysis releases.</p>
+<p class="last">As of version 2.0.0, elements are no longer guessed if ATOMIC_NUMBER records
+are missing. In those scenarios, if elements are necessary, users will have
+to invoke the element guessers after parsing the topology file. Please see
+<a class="reference internal" href="guessers.html#module-MDAnalysis.topology.guessers" title="MDAnalysis.topology.guessers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a> for more details.</p>
 </div>
 <div class="section" id="classes">
 <h2>5.20.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
@@ -297,16 +301,13 @@ Support will likely be added in future MDAnalysis releases.</p>
 - Bonds
 - Angles
 - Dihedrals (inc. impropers)</p>
-<dl class="docutils">
-<dt>Guesses the following attributes:</dt>
-<dd><ul class="first last simple">
-<li>Elements (if not included in topology)</li>
-</ul>
-</dd>
-</dl>
 <p>The format is defined in <a class="reference external" href="http://ambermd.org/formats.html#topology">PARM parameter/topology file
 specification</a>.  The reader tries to detect if it is a newer
 (AMBER 12?) file format by looking for the flag “ATOMIC_NUMBER”.</p>
+<p class="rubric">Notes</p>
+<p>Elements are obtained from the atomic numbers (if present). If a given
+input atomic number does not belong to an element (usually either -1 or 0),
+the element will be assigned an empty record.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.7.6: </span>parses both amber10 and amber12 formats</p>
 </div>
@@ -314,7 +315,10 @@ specification</a>.  The reader tries to detect if it is a newer
 <p><span class="versionmodified">Changed in version 0.19.0: </span>parses bonds, angles, dihedrals, and impropers</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.0: </span>warns users that chamber-style topologies are not current supported</p>
+<p><span class="versionmodified">Changed in version 1.0.0: </span>warns users that chamber-style topologies are not currently supported</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>no longer guesses elements if missing</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.topology.TOPParser.TOPParser.close">
@@ -719,9 +723,13 @@ as defined in the parm7 file</p>
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">If the record contains atomic numbers &lt;= 0, these will be treated as
-dummy elements and an attempt will be made to guess the element based
-on atom type. See issue #2306 for more details.</p>
+<p>If the record contains unknown atomic numbers (e.g. &lt;= 0), these will
+be treated as unknown elements and assigned an empty string value. See
+issues #2306 and #2651 for more details.</p>
+<div class="last versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Unrecognised elements will now return a empty string. The parser
+will no longer attempt to guess the element by default.</p>
+</div>
 </div>
 </dd></dl>
 
@@ -936,10 +944,18 @@ until we find the next %FLAG entry and return that</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -956,7 +972,7 @@ until we find the next %FLAG entry and return that</p>
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

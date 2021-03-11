@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>MDAnalysis.coordinates.base &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>MDAnalysis.coordinates.base &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,7 +43,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -381,10 +381,6 @@
 <span class="sd">   :members:</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">import</span> <span class="nn">six</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span>
-
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">numbers</span>
 <span class="kn">import</span> <span class="nn">copy</span>
@@ -414,6 +410,7 @@
 
 <span class="sd">         create a timestep object with space for n_atoms</span>
 
+
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Added :meth:`from_timestep` and :meth:`from_coordinates` constructor</span>
 <span class="sd">       methods.</span>
@@ -421,6 +418,9 @@
 <span class="sd">       :attr:`n_atoms` now a read only property.</span>
 <span class="sd">       :attr:`frame` now 0-based instead of 1-based.</span>
 <span class="sd">       Attributes `status` and `step` removed.</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       Timestep now can be (un)pickled. Weakref for Reader</span>
+<span class="sd">       will be dropped.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">order</span> <span class="o">=</span> <span class="s1">&#39;F&#39;</span>
 
@@ -487,7 +487,6 @@
 
         <span class="c1"># set up aux namespace for adding auxiliary data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">aux</span> <span class="o">=</span> <span class="n">Namespace</span><span class="p">()</span></div>
-
 
 <div class="viewcode-block" id="Timestep.from_timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.topology.ParmEdParser.Timestep.from_timestep">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_timestep</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -569,6 +568,22 @@
 
         <span class="k">return</span> <span class="n">ts</span></div>
 
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1">#  The `dt` property is lazy loaded.</span>
+        <span class="c1">#  We need to load it once from the `_reader` (if exists)</span>
+        <span class="c1">#  attached to this timestep to get the dt value.</span>
+        <span class="c1">#  This will help to (un)pickle a `Timestep` without pickling `_reader`</span>
+        <span class="c1">#  and retain its dt value.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
+
+        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">state</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;_reader&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">state</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
 <div class="viewcode-block" id="Timestep._init_unitcell"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.Timestep._init_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">_init_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create custom datastructure for :attr:`_unitcell`.&quot;&quot;&quot;</span>
         <span class="c1"># override for other Timesteps</span>
@@ -630,7 +645,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">atoms</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span></div>
-    
+
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="c1"># special-case timestep info</span>
         <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;velocities&#39;</span><span class="p">,</span> <span class="s1">&#39;forces&#39;</span><span class="p">,</span> <span class="s1">&#39;positions&#39;</span><span class="p">):</span>
@@ -711,32 +726,25 @@
             <span class="c1"># It&#39;s cool if there&#39;s no Data, we&#39;ll live</span>
             <span class="n">pos</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
-                <span class="ne">TypeError</span><span class="p">(</span>
-                    <span class="s2">&quot;Selection type must be compatible with slicing&quot;</span>
-                    <span class="s2">&quot; the coordinates&quot;</span>
-                    <span class="p">),</span>
-                <span class="kc">None</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Selection type must be compatible with slicing the &quot;</span>
+                      <span class="s2">&quot;coordinates&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">vel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocities</span><span class="p">[</span><span class="n">sel</span><span class="p">,</span> <span class="p">:]</span>
         <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
             <span class="n">vel</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
-                <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Selection type must be compatible with slicing&quot;</span>
-                          <span class="s2">&quot; the coordinates&quot;</span><span class="p">),</span>
-                <span class="kc">None</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Selection type must be compatible with slicing the &quot;</span>
+                      <span class="s2">&quot;coordinates&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">force</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forces</span><span class="p">[</span><span class="n">sel</span><span class="p">,</span> <span class="p">:]</span>
         <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
             <span class="n">force</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
-                <span class="ne">TypeError</span><span class="p">(</span>
-                    <span class="s2">&quot;Selection type must be compatible with slicing&quot;</span>
-                    <span class="s2">&quot; the coordinates&quot;</span>
-                    <span class="p">),</span>
-                <span class="kc">None</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Selection type must be compatible with slicing the &quot;</span>
+                      <span class="s2">&quot;coordinates&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
         <span class="n">new_TS</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">from_coordinates</span><span class="p">(</span>
             <span class="n">positions</span><span class="o">=</span><span class="n">pos</span><span class="p">,</span>
@@ -1576,7 +1584,7 @@
                     <span class="n">_READER_HINTS</span><span class="p">[</span><span class="n">fmt_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">classdict</span><span class="p">[</span><span class="s1">&#39;_format_hint&#39;</span><span class="p">]</span><span class="o">.</span><span class="vm">__func__</span>
 
 
-<div class="viewcode-block" id="ProtoReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader">[docs]</a><span class="k">class</span> <span class="nc">ProtoReader</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">_Readermeta</span><span class="p">,</span> <span class="n">IOBase</span><span class="p">)):</span>
+<div class="viewcode-block" id="ProtoReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader">[docs]</a><span class="k">class</span> <span class="nc">ProtoReader</span><span class="p">(</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Readermeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for Readers, without a :meth:`__del__` method.</span>
 
 <span class="sd">    Extends :class:`IOBase` with most attributes and methods of a generic</span>
@@ -1595,6 +1603,9 @@
 
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Frames now 0-based instead of 1-based</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       Now supports (un)pickle. Upon unpickling,</span>
+<span class="sd">       the current timestep is retained by reconstrunction.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1">#: The appropriate Timestep class, e.g.</span>
@@ -1633,7 +1644,7 @@
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">EOFError</span><span class="p">,</span> <span class="ne">IOError</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span><span class="ne">StopIteration</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">StopIteration</span> <span class="kn">from</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">auxname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">aux_list</span><span class="p">:</span>
                 <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="p">[</span><span class="n">auxname</span><span class="p">]</span><span class="o">.</span><span class="n">update_ts</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
@@ -1765,7 +1776,7 @@
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frame</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bool_</span><span class="p">)):</span>
                 <span class="c1"># Avoid having list of bools</span>
-                <span class="n">frame</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+                <span class="n">frame</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
                 <span class="c1"># Convert bool array to int array</span>
                 <span class="n">frame</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))[</span><span class="n">frame</span><span class="p">]</span>
             <span class="k">return</span> <span class="n">FrameIteratorIndices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
@@ -1817,11 +1828,8 @@
                 <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame_with_aux</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>  <span class="c1"># if _read_frame not implemented</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
-                <span class="ne">TypeError</span><span class="p">(</span>
-                    <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> does not support slicing.&quot;</span>
-                    <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)),</span>
-                <span class="kc">None</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> does not support slicing.&quot;</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
 <div class="viewcode-block" id="ProtoReader.check_slice_indices"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader.check_slice_indices">[docs]</a>    <span class="k">def</span> <span class="nf">check_slice_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check frame indices are valid and clip to fit trajectory.</span>
@@ -2240,11 +2248,9 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">transformations</span> <span class="o">=</span> <span class="n">transformations</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
-                <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Can&#39;t add transformations again. &quot;</span>
-                    <span class="s2">&quot;Please create new Universe object&quot;</span><span class="p">),</span>
-                <span class="kc">None</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Can&#39;t add transformations again. Please create a new &quot;</span>
+                      <span class="s2">&quot;Universe object&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_transformations</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="p">)</span></div>
 
@@ -2258,8 +2264,11 @@
         <span class="k">for</span> <span class="n">transform</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformations</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">ts</span></div>
+        <span class="k">return</span> <span class="n">ts</span>
 
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="n">state</span>
+        <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="ReaderBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ReaderBase">[docs]</a><span class="k">class</span> <span class="nc">ReaderBase</span><span class="p">(</span><span class="n">ProtoReader</span><span class="p">):</span>
@@ -2362,15 +2371,15 @@
                     <span class="n">_MULTIFRAME_WRITERS</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
 
 
-<div class="viewcode-block" id="WriterBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.WriterBase">[docs]</a><span class="k">class</span> <span class="nc">WriterBase</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">_Writermeta</span><span class="p">,</span> <span class="n">IOBase</span><span class="p">)):</span>
+<div class="viewcode-block" id="WriterBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.WriterBase">[docs]</a><span class="k">class</span> <span class="nc">WriterBase</span><span class="p">(</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Writermeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for trajectory writers.</span>
 
 <span class="sd">    See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for</span>
 <span class="sd">    the required attributes and methods.</span>
 
 
-<span class="sd">    .. deprecated:: 1.0.0</span>
-<span class="sd">       :func:`write_next_timestep` has been deprecated, please use</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       Deprecated :func:`write_next_timestep` has now been removed, please use</span>
 <span class="sd">       :func:`write` instead.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -2402,37 +2411,11 @@
 <span class="sd">        when setting up the trajectory.</span>
 
 
-<span class="sd">        .. deprecated:: 1.0.0</span>
-<span class="sd">           Deprecated the use of Timestep as arguments to write.  Use either</span>
-<span class="sd">           an AtomGroup or Universe. To be removed in version 2.0.</span>
+<span class="sd">        .. versionchanged:: 2.0.0</span>
+<span class="sd">           Deprecated support for Timestep argument to write has now been</span>
+<span class="sd">           removed. Use AtomGroup or Universe as an input instead.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Timestep</span><span class="p">):</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s1">&#39;Passing a Timestep to write is deprecated, &#39;</span>
-                <span class="s1">&#39;and will be removed in 2.0; &#39;</span>
-                <span class="s1">&#39;use either an AtomGroup or Universe&#39;</span><span class="p">,</span>
-                <span class="ne">DeprecationWarning</span><span class="p">)</span>
-
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_next_frame</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="WriterBase.write_next_timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.WriterBase.write_next_timestep">[docs]</a>    <span class="k">def</span> <span class="nf">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Write current timestep, using the supplied ``obj``.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`</span>
-<span class="sd">            write coordinate information associated with ``obj``</span>
-
-
-<span class="sd">        .. deprecated:: 1.0.0</span>
-<span class="sd">           Deprecated, use write() instead</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s1">&#39;Writer.write_next_timestep is deprecated, &#39;</span>
-            <span class="s1">&#39;and will be removed in 2.0; &#39;</span>
-            <span class="s1">&#39;use Writer.write()&#39;</span><span class="p">,</span>
-            <span class="ne">DeprecationWarning</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -2623,7 +2606,7 @@
                 <span class="n">f</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
                 <span class="n">_CONVERTERS</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
 
-<div class="viewcode-block" id="ConverterBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ConverterBase">[docs]</a><span class="k">class</span> <span class="nc">ConverterBase</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">_Convertermeta</span><span class="p">,</span> <span class="n">IOBase</span><span class="p">)):</span>
+<div class="viewcode-block" id="ConverterBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ConverterBase">[docs]</a><span class="k">class</span> <span class="nc">ConverterBase</span><span class="p">(</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Convertermeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for converting to other libraries.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -2643,10 +2626,18 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -2663,7 +2654,7 @@
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

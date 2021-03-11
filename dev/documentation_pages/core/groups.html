@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>11.1.2. Core objects: Containers — MDAnalysis.core.groups &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>11.1.2. Core objects: Containers — MDAnalysis.core.groups &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,7 +43,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -393,15 +393,70 @@ in <code class="docutils literal notranslate"><span class="pre">t</span></code><
 <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.</p>
 <p><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> instances are always bound to a
 <a class="reference internal" href="universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.universe.Universe</span></code></a>. They cannot exist in isolation.</p>
+<p>During serialization, <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> will be pickled with its bound
+<a class="reference internal" href="universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.universe.Universe</span></code></a> which means after unpickling,
+a new <a class="reference internal" href="universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.universe.Universe</span></code></a> will be created and
+be attached by the new <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>. If the Universe is serialized
+with its <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>, they will still be bound together afterwards:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g_pickled</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">g</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;g_pickled.universe is u: &quot;</span><span class="p">,</span> <span class="n">u</span> <span class="ow">is</span> <span class="n">g_pickled</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
+<span class="go">g_pickled.universe is u: False</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g_pickled</span><span class="p">,</span> <span class="n">u_pickled</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">u</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;g_pickled.universe is u_pickled: &quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>      <span class="n">u_pickle</span> <span class="ow">is</span> <span class="n">g_pickled</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
+<span class="go">g_pickled.universe is u_pickled: True</span>
+</pre></div>
+</div>
+<p>If multiple <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> are bound to the same
+<a class="reference internal" href="universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.universe.Universe</span></code></a>, they will bound to the same one
+after serialization:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">h</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g_pickled</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">g</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">h_pickled</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;g_pickled.universe is h_pickled.universe : &quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>      <span class="n">g_pickled</span><span class="o">.</span><span class="n">universe</span> <span class="ow">is</span> <span class="n">h_pickled</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
+<span class="go">g_pickled.universe is h_pickled.universe: False</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g_pickled</span><span class="p">,</span> <span class="n">h_pickled</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;g_pickled.universe is h_pickled.universe: &quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>      <span class="n">g_pickle</span><span class="o">.</span><span class="n">universe</span> <span class="ow">is</span> <span class="n">h_pickled</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
+<span class="go">g_pickled.universe is h_pickled.universe: True</span>
+</pre></div>
+</div>
+<p>The aforementioned two cases are useful for implementation of parallel
+analysis base classes. First, you always get an independent
+<a class="reference internal" href="universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.universe.Universe</span></code></a>
+in the new process; you don’t have to worry about detaching and reattaching
+Universe with <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>. It also means the state of the
+new pickled AtomGroup will not be changed with the old Universe,
+So either the Universe has to pickled together with the AtomGroup
+(e.g. as a tuple, or as attributes of the object to be pickled), or the
+implicit new Universe (<cite>AtomGroup.Universe</cite>) needs to be used.
+Second, When multiple AtomGroup need to be pickled, they will recognize if
+they belong to the same Univese or not.
+Also keep in mind that they need to be pickled together.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p><a class="reference internal" href="universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.universe.Universe</span></code></a></p>
-<dl class="last docutils">
-<dt><code class="xref py py-class docutils literal notranslate"></code></dt>
-<dd><em>Instant selectors</em> of <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> will be removed in the 1.0 release.</dd>
-<dt><code class="xref py py-class docutils literal notranslate"></code></dt>
-<dd>Removed instant selectors, use select_atoms(‘name …’) to select atoms by name.</dd>
-</dl>
+<p class="last"><a class="reference internal" href="universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.universe.Universe</span></code></a></p>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.16.2: </span><em>Instant selectors</em> of <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> will be removed in the 1.0
+release.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Removed instant selectors, use select_atoms(‘name …’) to select
+atoms by name.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> can always be pickled with or without its universe,
+instead of failing when not finding its anchored universe.</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.accumulate">
@@ -427,7 +482,8 @@ the group.</li>
 attribute values to accumulate as its only positional argument and
 accept an (optional) keyword argument <code class="docutils literal notranslate"><span class="pre">axis</span></code> allowing to specify
 the axis along which the accumulation is performed.</li>
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the accumulation of all attributes associated with
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the accumulation of all attributes associated with
 atoms in the group will be returned as a single value. Otherwise,
 the accumulation of the attributes per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>,
 <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment will be returned as a 1d
@@ -696,7 +752,10 @@ of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" tit
 will be returned as an array of position vectors, i.e. a 2d array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
-<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers. The position of the first atom of each compound will be
+taken as the reference to unwrap from; as such, results may differ
+for the same <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> if atoms are ordered differently.</li>
 </ul>
 </td>
 </tr>
@@ -831,7 +890,8 @@ centers of mass of each compound will be calculated without moving
 any atoms to keep the compounds intact. Instead, the resulting
 center-of-mass position vectors will be moved to the primary unit
 cell after calculation.</li>
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
 be returned as a single position vector. Otherwise, the centers of
 mass of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
 fragment will be returned as an array of position vectors, i.e. a 2d
@@ -1000,7 +1060,7 @@ are preserved when performing a concatenation.</p>
 <code class="descname">convert_to</code><span class="sig-paren">(</span><em>package</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/groups.html#AtomGroup.convert_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.convert_to" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> to a structure from another Python package.</p>
 <p class="rubric">Example</p>
-<p>The code below converts a Universe to a <code class="xref py py-class docutils literal notranslate"><span class="pre">parmed.structure.Structure</span></code>.</p>
+<p>The code below converts a Universe to a <a class="reference external" href="https://parmed.github.io/ParmEd/html/structobj/parmed.structure.Structure.html#parmed.structure.Structure" title="(in ParmEd v0+untagged.3319.g7a6168d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">parmed.structure.Structure</span></code></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">GRO</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">GRO</span><span class="p">)</span>
@@ -1764,7 +1824,7 @@ to new coordinates <span class="math notranslate nohighlight">\(\mathbf{x}'\)</s
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.select_atoms">
-<code class="descname">select_atoms</code><span class="sig-paren">(</span><em>sel</em>, <em>*othersel</em>, <em>**selgroups</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/groups.html#AtomGroup.select_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.select_atoms" title="Permalink to this definition">¶</a></dt>
+<code class="descname">select_atoms</code><span class="sig-paren">(</span><em>sel</em>, <em>*othersel</em>, <em>periodic=True</em>, <em>rtol=1e-05</em>, <em>atol=1e-08</em>, <em>updating=False</em>, <em>**selgroups</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/groups.html#AtomGroup.select_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.select_atoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select atoms from within this Group using a selection string.</p>
 <p>Returns an <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> sorted according to their index in the
 topology (this is to ensure that there are no duplicates, which can
@@ -1779,6 +1839,10 @@ happen with complicated selections).</p>
 will be appended onto the results of the first.</li>
 <li><strong>periodic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – for geometric selections, whether to account for atoms in different
 periodic images when searching</li>
+<li><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – The absolute tolerance parameter for float comparisons.
+Passed to :func:<code class="docutils literal notranslate"><span class="pre">numpy.isclose</span></code>.</li>
+<li><strong>rtol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – The relative tolerance parameter for float comparisons.
+Passed to :func:<code class="docutils literal notranslate"><span class="pre">numpy.isclose</span></code>.</li>
 <li><strong>updating</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – force the selection to be re evaluated each time the Timestep of the
 trajectory is changed.  See section on <strong>Dynamic selections</strong> below.
 [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
@@ -1888,6 +1952,10 @@ moment, only the TPR format defines the molecule type.</dd>
 <dt>record_type <em>record_type</em></dt>
 <dd>for selecting either ATOM or HETATM from PDB-like files.
 e.g. <code class="docutils literal notranslate"><span class="pre">select_atoms('name</span> <span class="pre">CA</span> <span class="pre">and</span> <span class="pre">not</span> <span class="pre">record_type</span> <span class="pre">HETATM')</span></code></dd>
+<dt>smarts <em>SMARTS-query</em></dt>
+<dd>select atoms using Daylight’s SMARTS queries, e.g. <code class="docutils literal notranslate"><span class="pre">smarts</span>
+<span class="pre">[#7;R]</span></code> to find nitrogen atoms in rings. Requires RDKit.
+All matches (max 1000) are combined as a unique match</dd>
 </dl>
 </div></blockquote>
 <p><strong>Boolean</strong></p>
@@ -2060,6 +2128,10 @@ equivalent <code class="docutils literal notranslate"><span class="pre">global</
 Removed flags affecting default behaviour for periodic selections;
 periodic are now on by default (as with default flags)</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Added the <em>smarts</em> selection. Added <cite>atol</cite> and <cite>rtol</cite> keywords
+to select float values.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -2198,7 +2270,8 @@ accordingly.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If ‘group’, the total charge of all atoms in the group will
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If ‘group’, the total charge of all atoms in the group will
 be returned as a single value. Otherwise, the total charges per
 <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment
 will be returned as a 1d array.
@@ -2236,7 +2309,8 @@ accordingly.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the total mass of all atoms in the group will be
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the total mass of all atoms in the group will be
 returned as a single value. Otherwise, the total masses per
 <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment will be
 returned as a 1d array.
@@ -2442,7 +2516,8 @@ operations such as calculating the center of mass of the molecule.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>,                     </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to unwrap. Note that, in any case, all
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+Which type of compound to unwrap. Note that, in any case, all
 atoms within each compound must be interconnected by bonds, i.e.,
 compounds must correspond to (parts of) molecules.</li>
 <li><strong>reference</strong> (<em>{'com'</em><em>, </em><em>'cog'</em><em>, </em><em>None}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'com'</span></code> (center of mass) or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> (center of geometry), the
@@ -2475,8 +2550,8 @@ zero.</li>
 <p class="first admonition-title">Note</p>
 <p>Be aware of the fact that only atoms <em>belonging to the group</em> will
 be unwrapped! If you want entire molecules to be unwrapped, make sure
-that all atoms of these molecules are part of the group.</p>
-<p>An AtomGroup containing all atoms of all fragments in the group <code class="docutils literal notranslate"><span class="pre">ag</span></code>
+that all atoms of these molecules are part of the group.
+An AtomGroup containing all atoms of all fragments in the group <code class="docutils literal notranslate"><span class="pre">ag</span></code>
 can be created with:</p>
 <div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">all_frag_atoms</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">fragments</span><span class="p">)</span>
 </pre></div>
@@ -2550,18 +2625,18 @@ compound together during the process. If <cite>compound</cite> is different from
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>compound</strong> (<em>{'atoms'</em><em>, </em><em>'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>,                     </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to keep together during wrapping. Note that,
+<li><strong>compound</strong> (<em>{'atoms'</em><em>, </em><em>'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+Which type of compound to keep together during wrapping. Note that,
 in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
 <li><strong>center</strong> (<em>{'com'</em><em>, </em><em>'cog'}</em>) – How to define the center of a given group of atoms. If <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'atoms'</span></code>, this parameter is meaningless and therefore ignored.</li>
-<li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>The unitcell dimensions of the system, which can be orthogonal or
+<li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
-<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the
-dimensions of the current time step.</p>
-</li>
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the
+dimensions of the current time step.</li>
 <li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, coordinates will be changed in place.</li>
 </ul>
 </td>
@@ -2602,12 +2677,12 @@ each compound. The same translation is applied to all atoms
 within this compound, meaning it will not be broken by the shift.
 This might however mean that not all atoms of a compound will be
 inside the unit cell after wrapping, but rather will be the center of
-the compound.</p>
-<p>Be aware of the fact that only atoms <em>belonging to the group</em> will be
+the compound.
+Be aware of the fact that only atoms <em>belonging to the group</em> will be
 taken into account!</p>
 <p><cite>center</cite> allows to define how the center of each group is computed.
-This can be either <code class="docutils literal notranslate"><span class="pre">'com'</span></code> for center of mass, or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> for center
-of geometry.</p>
+This can be either <code class="docutils literal notranslate"><span class="pre">'com'</span></code> for center of mass, or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> for
+center of geometry.</p>
 <p><cite>box</cite> allows a unit cell to be given for the transformation. If not
 specified, the <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dimensions</span></code></a>
 information from the current
@@ -2726,7 +2801,8 @@ the group.</li>
 attribute values to accumulate as its only positional argument and
 accept an (optional) keyword argument <code class="docutils literal notranslate"><span class="pre">axis</span></code> allowing to specify
 the axis along which the accumulation is performed.</li>
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the accumulation of all attributes associated with
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the accumulation of all attributes associated with
 atoms in the group will be returned as a single value. Otherwise,
 the accumulation of the attributes per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>,
 <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment will be returned as a 1d
@@ -2950,7 +3026,10 @@ of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" tit
 will be returned as an array of position vectors, i.e. a 2d array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
-<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers. The position of the first atom of each compound will be
+taken as the reference to unwrap from; as such, results may differ
+for the same <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> if atoms are ordered differently.</li>
 </ul>
 </td>
 </tr>
@@ -3085,7 +3164,8 @@ centers of mass of each compound will be calculated without moving
 any atoms to keep the compounds intact. Instead, the resulting
 center-of-mass position vectors will be moved to the primary unit
 cell after calculation.</li>
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
 be returned as a single position vector. Otherwise, the centers of
 mass of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
 fragment will be returned as an array of position vectors, i.e. a 2d
@@ -4137,7 +4217,8 @@ accordingly.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If ‘group’, the total charge of all atoms in the group will
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If ‘group’, the total charge of all atoms in the group will
 be returned as a single value. Otherwise, the total charges per
 <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment
 will be returned as a 1d array.
@@ -4175,7 +4256,8 @@ accordingly.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the total mass of all atoms in the group will be
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the total mass of all atoms in the group will be
 returned as a single value. Otherwise, the total masses per
 <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment will be
 returned as a 1d array.
@@ -4366,7 +4448,8 @@ operations such as calculating the center of mass of the molecule.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>,                     </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to unwrap. Note that, in any case, all
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+Which type of compound to unwrap. Note that, in any case, all
 atoms within each compound must be interconnected by bonds, i.e.,
 compounds must correspond to (parts of) molecules.</li>
 <li><strong>reference</strong> (<em>{'com'</em><em>, </em><em>'cog'</em><em>, </em><em>None}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'com'</span></code> (center of mass) or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> (center of geometry), the
@@ -4399,8 +4482,8 @@ zero.</li>
 <p class="first admonition-title">Note</p>
 <p>Be aware of the fact that only atoms <em>belonging to the group</em> will
 be unwrapped! If you want entire molecules to be unwrapped, make sure
-that all atoms of these molecules are part of the group.</p>
-<p>An AtomGroup containing all atoms of all fragments in the group <code class="docutils literal notranslate"><span class="pre">ag</span></code>
+that all atoms of these molecules are part of the group.
+An AtomGroup containing all atoms of all fragments in the group <code class="docutils literal notranslate"><span class="pre">ag</span></code>
 can be created with:</p>
 <div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">all_frag_atoms</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">fragments</span><span class="p">)</span>
 </pre></div>
@@ -4432,18 +4515,18 @@ compound together during the process. If <cite>compound</cite> is different from
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>compound</strong> (<em>{'atoms'</em><em>, </em><em>'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>,                     </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to keep together during wrapping. Note that,
+<li><strong>compound</strong> (<em>{'atoms'</em><em>, </em><em>'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+Which type of compound to keep together during wrapping. Note that,
 in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
 <li><strong>center</strong> (<em>{'com'</em><em>, </em><em>'cog'}</em>) – How to define the center of a given group of atoms. If <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'atoms'</span></code>, this parameter is meaningless and therefore ignored.</li>
-<li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>The unitcell dimensions of the system, which can be orthogonal or
+<li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
-<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the
-dimensions of the current time step.</p>
-</li>
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the
+dimensions of the current time step.</li>
 <li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, coordinates will be changed in place.</li>
 </ul>
 </td>
@@ -4484,12 +4567,12 @@ each compound. The same translation is applied to all atoms
 within this compound, meaning it will not be broken by the shift.
 This might however mean that not all atoms of a compound will be
 inside the unit cell after wrapping, but rather will be the center of
-the compound.</p>
-<p>Be aware of the fact that only atoms <em>belonging to the group</em> will be
+the compound.
+Be aware of the fact that only atoms <em>belonging to the group</em> will be
 taken into account!</p>
 <p><cite>center</cite> allows to define how the center of each group is computed.
-This can be either <code class="docutils literal notranslate"><span class="pre">'com'</span></code> for center of mass, or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> for center
-of geometry.</p>
+This can be either <code class="docutils literal notranslate"><span class="pre">'com'</span></code> for center of mass, or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> for
+center of geometry.</p>
 <p><cite>box</cite> allows a unit cell to be given for the transformation. If not
 specified, the <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dimensions</span></code></a>
 information from the current
@@ -4556,7 +4639,8 @@ the group.</li>
 attribute values to accumulate as its only positional argument and
 accept an (optional) keyword argument <code class="docutils literal notranslate"><span class="pre">axis</span></code> allowing to specify
 the axis along which the accumulation is performed.</li>
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the accumulation of all attributes associated with
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the accumulation of all attributes associated with
 atoms in the group will be returned as a single value. Otherwise,
 the accumulation of the attributes per <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>,
 <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment will be returned as a 1d
@@ -4781,7 +4865,10 @@ of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" tit
 will be returned as an array of position vectors, i.e. a 2d array.
 Note that, in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
-<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
+<li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their
+centers. The position of the first atom of each compound will be
+taken as the reference to unwrap from; as such, results may differ
+for the same <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> if atoms are ordered differently.</li>
 </ul>
 </td>
 </tr>
@@ -4916,7 +5003,8 @@ centers of mass of each compound will be calculated without moving
 any atoms to keep the compounds intact. Instead, the resulting
 center-of-mass position vectors will be moved to the primary unit
 cell after calculation.</li>
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of mass of all atoms in the group will
 be returned as a single position vector. Otherwise, the centers of
 mass of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or
 fragment will be returned as an array of position vectors, i.e. a 2d
@@ -5737,7 +5825,8 @@ accordingly.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If ‘group’, the total charge of all atoms in the group will
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If ‘group’, the total charge of all atoms in the group will
 be returned as a single value. Otherwise, the total charges per
 <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment
 will be returned as a 1d array.
@@ -5775,7 +5864,8 @@ accordingly.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,                   </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the total mass of all atoms in the group will be
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>,</em>) – optional
+If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the total mass of all atoms in the group will be
 returned as a single value. Otherwise, the total masses per
 <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment will be
 returned as a 1d array.
@@ -5966,7 +6056,8 @@ operations such as calculating the center of mass of the molecule.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>,                     </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to unwrap. Note that, in any case, all
+<li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+Which type of compound to unwrap. Note that, in any case, all
 atoms within each compound must be interconnected by bonds, i.e.,
 compounds must correspond to (parts of) molecules.</li>
 <li><strong>reference</strong> (<em>{'com'</em><em>, </em><em>'cog'</em><em>, </em><em>None}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'com'</span></code> (center of mass) or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> (center of geometry), the
@@ -5999,8 +6090,8 @@ zero.</li>
 <p class="first admonition-title">Note</p>
 <p>Be aware of the fact that only atoms <em>belonging to the group</em> will
 be unwrapped! If you want entire molecules to be unwrapped, make sure
-that all atoms of these molecules are part of the group.</p>
-<p>An AtomGroup containing all atoms of all fragments in the group <code class="docutils literal notranslate"><span class="pre">ag</span></code>
+that all atoms of these molecules are part of the group.
+An AtomGroup containing all atoms of all fragments in the group <code class="docutils literal notranslate"><span class="pre">ag</span></code>
 can be created with:</p>
 <div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">all_frag_atoms</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">fragments</span><span class="p">)</span>
 </pre></div>
@@ -6032,18 +6123,18 @@ compound together during the process. If <cite>compound</cite> is different from
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>compound</strong> (<em>{'atoms'</em><em>, </em><em>'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>,                     </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to keep together during wrapping. Note that,
+<li><strong>compound</strong> (<em>{'atoms'</em><em>, </em><em>'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em>) – ‘fragments’}, optional
+Which type of compound to keep together during wrapping. Note that,
 in any case, <em>only</em> the positions of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 <em>belonging to the group</em> will be taken into account.</li>
 <li><strong>center</strong> (<em>{'com'</em><em>, </em><em>'cog'}</em>) – How to define the center of a given group of atoms. If <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'atoms'</span></code>, this parameter is meaningless and therefore ignored.</li>
-<li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>The unitcell dimensions of the system, which can be orthogonal or
+<li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
-<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
-<p>If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the
-dimensions of the current time step.</p>
-</li>
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the
+dimensions of the current time step.</li>
 <li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, coordinates will be changed in place.</li>
 </ul>
 </td>
@@ -6084,12 +6175,12 @@ each compound. The same translation is applied to all atoms
 within this compound, meaning it will not be broken by the shift.
 This might however mean that not all atoms of a compound will be
 inside the unit cell after wrapping, but rather will be the center of
-the compound.</p>
-<p>Be aware of the fact that only atoms <em>belonging to the group</em> will be
+the compound.
+Be aware of the fact that only atoms <em>belonging to the group</em> will be
 taken into account!</p>
 <p><cite>center</cite> allows to define how the center of each group is computed.
-This can be either <code class="docutils literal notranslate"><span class="pre">'com'</span></code> for center of mass, or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> for center
-of geometry.</p>
+This can be either <code class="docutils literal notranslate"><span class="pre">'com'</span></code> for center of mass, or <code class="docutils literal notranslate"><span class="pre">'cog'</span></code> for
+center of geometry.</p>
 <p><cite>box</cite> allows a unit cell to be given for the transformation. If not
 specified, the <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dimensions</span></code></a>
 information from the current
@@ -6655,10 +6746,18 @@ that two objects are of the same level, or to access a particular class:</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -6675,7 +6774,7 @@ that two objects are of the same level, or to access a particular class:</p>
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

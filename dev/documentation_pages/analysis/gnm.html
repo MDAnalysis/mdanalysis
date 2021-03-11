@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>4.7.1. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>4.7.1.1. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,11 +43,11 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="4.7.2. HELANAL (Deprecated) — analysis of protein helices" href="helanal.html" />
+    <link rel="next" title="4.7.1.2. HELANAL — analysis of protein helices" href="helix_analysis.html" />
     <link rel="prev" title="4.6.1. Polymer analysis — MDAnalysis.analysis.polymer" href="polymer.html" /> 
 </head>
 
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -112,14 +112,13 @@
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#nucleic-acids">4.5. Nucleic acids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#polymers">4.6. Polymers</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#structure">4.7. Structure</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">4.7.1. Elastic network analysis of MD trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#analysis-tasks">4.7.1.1. Analysis tasks</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#utility-functions">4.7.1.2. Utility functions</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../analysis_modules.html#macromolecules">4.7.1. Macromolecules</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">4.7.1.1. Elastic network analysis of MD trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="helix_analysis.html">4.7.1.2. HELANAL — analysis of protein helices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dihedrals.html">4.7.1.3. Dihedral angles analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="helanal.html">4.7.2. HELANAL (Deprecated) — analysis of protein helices</a></li>
-<li class="toctree-l3"><a class="reference internal" href="rdf.html">4.7.3. Radial Distribution Functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="dihedrals.html">4.7.4. Dihedral angles analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../analysis_modules.html#liquids">4.7.2. Liquids</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#volumetric-analysis">4.8. Volumetric analysis</a></li>
@@ -191,7 +190,7 @@
         
           <li><a href="../analysis_modules.html">4. Analysis modules</a> &raquo;</li>
         
-      <li>4.7.1. Elastic network analysis of MD trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></li>
+      <li>4.7.1.1. Elastic network analysis of MD trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -211,7 +210,7 @@
            <div itemprop="articleBody">
             
   <span class="target" id="module-MDAnalysis.analysis.gnm"></span><div class="section" id="elastic-network-analysis-of-md-trajectories-mdanalysis-analysis-gnm">
-<h1>4.7.1. Elastic network analysis of MD trajectories — <a class="reference internal" href="#module-MDAnalysis.analysis.gnm" title="MDAnalysis.analysis.gnm"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a><a class="headerlink" href="#elastic-network-analysis-of-md-trajectories-mdanalysis-analysis-gnm" title="Permalink to this headline">¶</a></h1>
+<h1>4.7.1.1. Elastic network analysis of MD trajectories — <a class="reference internal" href="#module-MDAnalysis.analysis.gnm" title="MDAnalysis.analysis.gnm"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a><a class="headerlink" href="#elastic-network-analysis-of-md-trajectories-mdanalysis-analysis-gnm" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -251,7 +250,7 @@ States by Normal-Mode Frequencies. <em>JACS</em> 129 (2007), 11394–11401.</td>
 </tbody>
 </table>
 <div class="section" id="analysis-tasks">
-<h2>4.7.1.1. Analysis tasks<a class="headerlink" href="#analysis-tasks" title="Permalink to this headline">¶</a></h2>
+<h2>4.7.1.1.1. Analysis tasks<a class="headerlink" href="#analysis-tasks" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.gnm.GNMAnalysis">
 <em class="property">class </em><code class="descclassname">MDAnalysis.analysis.gnm.</code><code class="descname">GNMAnalysis</code><span class="sig-paren">(</span><em>universe</em>, <em>select='protein and name CA'</em>, <em>cutoff=7.0</em>, <em>ReportVector=None</em>, <em>Bonus_groups=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#GNMAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis" title="Permalink to this definition">¶</a></dt>
@@ -411,7 +410,7 @@ the cutoff.</p>
 
 </div>
 <div class="section" id="utility-functions">
-<h2>4.7.1.2. Utility functions<a class="headerlink" href="#utility-functions" title="Permalink to this headline">¶</a></h2>
+<h2>4.7.1.1.2. Utility functions<a class="headerlink" href="#utility-functions" title="Permalink to this headline">¶</a></h2>
 <p>The following functions are used internally and are typically not
 directly needed to perform the analysis.</p>
 <dl class="function">
@@ -456,7 +455,7 @@ grid will consist of boxes with sides of at least length <cite>cutoff</cite></li
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="helanal.html" class="btn btn-neutral float-right" title="4.7.2. HELANAL (Deprecated) — analysis of protein helices" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="helix_analysis.html" class="btn btn-neutral float-right" title="4.7.1.2. HELANAL — analysis of protein helices" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="polymer.html" class="btn btn-neutral float-left" title="4.6.1. Polymer analysis — MDAnalysis.analysis.polymer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
@@ -464,10 +463,18 @@ grid will consist of boxes with sides of at least length <cite>cutoff</cite></li
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -484,7 +491,7 @@ grid will consist of boxes with sides of at least length <cite>cutoff</cite></li
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

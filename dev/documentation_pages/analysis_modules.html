@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>4. Analysis modules &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>4. Analysis modules &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,7 +43,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -116,19 +116,26 @@
 <li class="toctree-l3"><a class="reference internal" href="analysis/rms.html">4.2.4. Calculating root mean square quantities — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="analysis/psa.html">4.2.5. Calculating path similarity — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="analysis/encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/bat.html">4.2.7. Bond-Angle-Torsion coordinates analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#hydrogen-bonding">4.3. Hydrogen bonding</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="analysis/hydrogenbonds.html">4.3.1. Hydrogen Bond Analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="analysis/hbond_analysis.html">4.3.2. Hydrogen Bond analysis (Deprecated) — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_analysis</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="analysis/hbond_autocorrel.html">4.3.3. Hydrogen bond autocorrelation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_autocorrel</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="analysis/wbridge_analysis.html">4.3.4. Water Bridge analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.WaterBridgeAnalysis</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/wbridge_analysis.html">4.3.4. Theory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/wbridge_analysis.html#output-as-network">4.3.5. Output as Network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/wbridge_analysis.html#output-as-timeseries">4.3.6. Output as Timeseries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/wbridge_analysis.html#detection-of-water-bridges">4.3.7. Detection of water bridges</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/wbridge_analysis.html#how-to-perform-waterbridgeanalysis">4.3.8. How to perform WaterBridgeAnalysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/wbridge_analysis.html#use-count-by-type">4.3.9. Use count_by_type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/wbridge_analysis.html#use-count-by-time">4.3.10. Use count_by_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/wbridge_analysis.html#classes">4.3.11. Classes</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="analysis/hole.html">4.4.1. Generation and Analysis of HOLE pore profiles (Deprecated) — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="analysis/hole2.html">4.4.2. HOLE analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="analysis/leaflet.html">4.4.3. Leaflet identification — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/hole2.html">4.4.1. HOLE analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/leaflet.html">4.4.2. Leaflet identification — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#nucleic-acids">4.5. Nucleic acids</a><ul>
@@ -140,10 +147,17 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#structure">4.7. Structure</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="analysis/gnm.html">4.7.1. Elastic network analysis of MD trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="analysis/helanal.html">4.7.2. HELANAL (Deprecated) — analysis of protein helices</a></li>
-<li class="toctree-l3"><a class="reference internal" href="analysis/rdf.html">4.7.3. Radial Distribution Functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="analysis/dihedrals.html">4.7.4. Dihedral angles analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#macromolecules">4.7.1. Macromolecules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis/gnm.html">4.7.1.1. Elastic network analysis of MD trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="analysis/helix_analysis.html">4.7.1.2. HELANAL — analysis of protein helices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="analysis/dihedrals.html">4.7.1.3. Dihedral angles analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#liquids">4.7.2. Liquids</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="analysis/rdf.html">4.7.2.1. Radial Distribution Functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="analysis/msd.html">4.7.2.2. Mean Squared Displacement — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.msd</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#volumetric-analysis">4.8. Volumetric analysis</a><ul>
@@ -271,10 +285,10 @@ installed. These package are <em>not automatically installed</em> with
 MDAnalysis with <strong class="program">conda</strong> (see <a class="reference internal" href="../index.html#installation-instructions"><span class="std std-ref">Installing MDAnalysis</span></a>) then a
 <em>full set of dependencies</em> is automatically installed.</p>
 <p>Other modules require external programs. For instance, the
-<a class="reference internal" href="analysis/hole.html#module-MDAnalysis.analysis.hole" title="MDAnalysis.analysis.hole"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole</span></code></a> module requires an installation of the <a class="reference external" href="http://www.holeprogram.org/">HOLE</a>
-suite of programs. You will need to install these external dependencies by
-following their installation instructions before you can use the corresponding
-MDAnalysis module.</p>
+<a class="reference internal" href="analysis/hole2.html#module-MDAnalysis.analysis.hole2.hole" title="MDAnalysis.analysis.hole2.hole"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2.hole</span></code></a> module requires an installation of the
+<a class="reference external" href="http://www.holeprogram.org/">HOLE</a> suite of programs. You will need to install these external dependencies
+by following their installation instructions before you can use the
+corresponding MDAnalysis module.</p>
 <div class="section" id="building-blocks-for-analysis">
 <h2>4.1. Building blocks for Analysis<a class="headerlink" href="#building-blocks-for-analysis" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
@@ -293,6 +307,7 @@ MDAnalysis module.</p>
 <li class="toctree-l1"><a class="reference internal" href="analysis/rms.html">4.2.4. Calculating root mean square quantities — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="analysis/psa.html">4.2.5. Calculating path similarity — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="analysis/encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/bat.html">4.2.7. Bond-Angle-Torsion coordinates analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a></li>
 </ul>
 </div>
 </div>
@@ -303,7 +318,14 @@ MDAnalysis module.</p>
 <li class="toctree-l1"><a class="reference internal" href="analysis/hydrogenbonds.html">4.3.1. Hydrogen Bond Analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="analysis/hbond_analysis.html">4.3.2. Hydrogen Bond analysis (Deprecated) — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_analysis</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="analysis/hbond_autocorrel.html">4.3.3. Hydrogen bond autocorrelation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_autocorrel</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/wbridge_analysis.html">4.3.4. Water Bridge analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.WaterBridgeAnalysis</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/wbridge_analysis.html">4.3.4. Theory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/wbridge_analysis.html#output-as-network">4.3.5. Output as Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/wbridge_analysis.html#output-as-timeseries">4.3.6. Output as Timeseries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/wbridge_analysis.html#detection-of-water-bridges">4.3.7. Detection of water bridges</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/wbridge_analysis.html#how-to-perform-waterbridgeanalysis">4.3.8. How to perform WaterBridgeAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/wbridge_analysis.html#use-count-by-type">4.3.9. Use count_by_type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/wbridge_analysis.html#use-count-by-time">4.3.10. Use count_by_time</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/wbridge_analysis.html#classes">4.3.11. Classes</a></li>
 </ul>
 </div>
 </div>
@@ -311,9 +333,8 @@ MDAnalysis module.</p>
 <h2>4.4. Membranes and membrane proteins<a class="headerlink" href="#membranes-and-membrane-proteins" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="analysis/hole.html">4.4.1. Generation and Analysis of HOLE pore profiles (Deprecated) — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/hole2.html">4.4.2. HOLE analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/leaflet.html">4.4.3. Leaflet identification — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/hole2.html">4.4.1. HOLE analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/leaflet.html">4.4.2. Leaflet identification — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a></li>
 </ul>
 </div>
 </div>
@@ -335,13 +356,24 @@ MDAnalysis module.</p>
 </div>
 <div class="section" id="structure">
 <h2>4.7. Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="macromolecules">
+<h3>4.7.1. Macromolecules<a class="headerlink" href="#macromolecules" title="Permalink to this headline">¶</a></h3>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="analysis/gnm.html">4.7.1. Elastic network analysis of MD trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/helanal.html">4.7.2. HELANAL (Deprecated) — analysis of protein helices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/rdf.html">4.7.3. Radial Distribution Functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/dihedrals.html">4.7.4. Dihedral angles analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/gnm.html">4.7.1.1. Elastic network analysis of MD trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/helix_analysis.html">4.7.1.2. HELANAL — analysis of protein helices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/dihedrals.html">4.7.1.3. Dihedral angles analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
 </ul>
+</div>
+</div>
+<div class="section" id="liquids">
+<h3>4.7.2. Liquids<a class="headerlink" href="#liquids" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="analysis/rdf.html">4.7.2.1. Radial Distribution Functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/msd.html">4.7.2.2. Mean Squared Displacement — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.msd</span></code></a></li>
+</ul>
+</div>
 </div>
 </div>
 <div class="section" id="volumetric-analysis">
@@ -398,10 +430,18 @@ analysis modules. <em>Use with care.</em></p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -418,7 +458,7 @@ analysis modules. <em>Use with care.</em></p>
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

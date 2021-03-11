@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>7.1. ParmEd topology parser &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>7.1. ParmEd topology parser &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,11 +43,11 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="8. Trajectory transformations (“on-the-fly” transformations)" href="../trajectory_transformations.html" />
+    <link rel="next" title="7.3. RDKit topology parser" href="RDKitParser.html" />
     <link rel="prev" title="7. Converter modules" href="../converters.html" /> 
 </head>
 
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -116,6 +116,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#id2">7.2.1. Classes</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="RDKitParser.html">7.3. RDKit topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="RDKitParser.html#rdkit-molecule-i-o-mdanalysis-coordinates-rdkit">7.4. RDKit molecule I/O — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.RDKit</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
@@ -199,7 +201,8 @@
             
   <span class="target" id="module-MDAnalysis.topology.ParmEdParser"></span><div class="section" id="parmed-topology-parser">
 <h1>7.1. ParmEd topology parser<a class="headerlink" href="#parmed-topology-parser" title="Permalink to this headline">¶</a></h1>
-<p>Converts a <a class="reference external" href="https://parmed.github.io/ParmEd/html">ParmEd</a> <code class="xref py py-class docutils literal notranslate"><span class="pre">parmed.structure.Structure</span></code> into a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.Topology</span></code>.</p>
+<p>Converts a <a class="reference external" href="https://parmed.github.io/ParmEd/html">ParmEd</a>
+<a class="reference external" href="https://parmed.github.io/ParmEd/html/structobj/parmed.structure.Structure.html#parmed.structure.Structure" title="(in ParmEd v0+untagged.3319.g7a6168d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">parmed.structure.Structure</span></code></a> into a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.Topology</span></code>.</p>
 <p class="rubric">Example</p>
 <p>If you want to use an MDAnalysis-written ParmEd structure for simulation
 in ParmEd, you need to first read your files with ParmEd to include the
@@ -223,7 +226,8 @@ protein atoms, and then convert it back to ParmEd.</p>
 <span class="go">&lt;Structure 23 atoms; 2 residues; 22 bonds; PBC (orthogonal); parametrized&gt;</span>
 </pre></div>
 </div>
-<p>From here you can create an OpenMM simulation system and minimize the energy.</p>
+<p>From here you can create an OpenMM simulation system and minimize the
+energy.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">simtk.openmm</span> <span class="k">as</span> <span class="nn">mm</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">simtk.openmm.app</span> <span class="k">as</span> <span class="nn">app</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">parmed</span> <span class="kn">import</span> <span class="n">unit</span> <span class="k">as</span> <span class="n">u</span>
@@ -498,6 +502,11 @@ is avoided.</p>
 </tr>
 </tbody>
 </table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Elements are no longer guessed, if the elements present in the
+parmed object are not recoginsed (usually given an atomic mass of 0)
+then they will be assigned an empty string.</p>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -506,8 +515,8 @@ is avoided.</p>
 </div>
 <span class="target" id="module-MDAnalysis.coordinates.ParmEd"></span><div class="section" id="parmed-structure-i-o-mdanalysis-coordinates-parmed">
 <h1>7.2. ParmEd structure I/O — <a class="reference internal" href="#module-MDAnalysis.coordinates.ParmEd" title="MDAnalysis.coordinates.ParmEd"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.ParmEd</span></code></a><a class="headerlink" href="#parmed-structure-i-o-mdanalysis-coordinates-parmed" title="Permalink to this headline">¶</a></h1>
-<p>Read coordinates data from a <a class="reference external" href="https://parmed.github.io/ParmEd/html">ParmEd</a> <code class="xref py py-class docutils literal notranslate"><span class="pre">parmed.structure.Structure</span></code> with <a class="reference internal" href="#MDAnalysis.coordinates.ParmEd.ParmEdReader" title="MDAnalysis.coordinates.ParmEd.ParmEdReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParmEdReader</span></code></a>
-into a MDAnalysis Universe. Convert it back to a <code class="xref py py-class docutils literal notranslate"><span class="pre">parmed.structure.Structure</span></code> with
+<p>Read coordinates data from a <a class="reference external" href="https://parmed.github.io/ParmEd/html">ParmEd</a> <a class="reference external" href="https://parmed.github.io/ParmEd/html/structobj/parmed.structure.Structure.html#parmed.structure.Structure" title="(in ParmEd v0+untagged.3319.g7a6168d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">parmed.structure.Structure</span></code></a> with <a class="reference internal" href="#MDAnalysis.coordinates.ParmEd.ParmEdReader" title="MDAnalysis.coordinates.ParmEd.ParmEdReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParmEdReader</span></code></a>
+into a MDAnalysis Universe. Convert it back to a <a class="reference external" href="https://parmed.github.io/ParmEd/html/structobj/parmed.structure.Structure.html#parmed.structure.Structure" title="(in ParmEd v0+untagged.3319.g7a6168d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">parmed.structure.Structure</span></code></a> with
 <a class="reference internal" href="#MDAnalysis.coordinates.ParmEd.ParmEdConverter" title="MDAnalysis.coordinates.ParmEd.ParmEdConverter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParmEdConverter</span></code></a>.</p>
 <p class="rubric">Example</p>
 <p>ParmEd has some neat functions. One such is <a class="reference external" href="http://parmed.github.io/ParmEd/html/parmed.html#hmassrepartition">HMassRepartition</a>.
@@ -547,7 +556,7 @@ bonded by the same amount, so that the total mass is unchanged.</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.ParmEd.ParmEdConverter">
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.ParmEd.</code><code class="descname">ParmEdConverter</code><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/ParmEd.html#ParmEdConverter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.ParmEd.ParmEdConverter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert MDAnalysis AtomGroup or Universe to ParmEd <code class="xref py py-class docutils literal notranslate"><span class="pre">Structure</span></code>.</p>
+<dd><p>Convert MDAnalysis AtomGroup or Universe to ParmEd <a class="reference external" href="https://parmed.github.io/ParmEd/html/structobj/parmed.structure.Structure.html#parmed.structure.Structure" title="(in ParmEd v0+untagged.3319.g7a6168d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Structure</span></code></a>.</p>
 <p class="rubric">Example</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">parmed</span> <span class="k">as</span> <span class="nn">pmd</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
@@ -560,7 +569,7 @@ bonded by the same amount, so that the total mass is unchanged.</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.ParmEd.ParmEdConverter.convert">
 <code class="descname">convert</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/ParmEd.html#ParmEdConverter.convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.ParmEd.ParmEdConverter.convert" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write selection at current trajectory frame to <code class="xref py py-class docutils literal notranslate"><span class="pre">Structure</span></code>.</p>
+<dd><p>Write selection at current trajectory frame to <a class="reference external" href="https://parmed.github.io/ParmEd/html/structobj/parmed.structure.Structure.html#parmed.structure.Structure" title="(in ParmEd v0+untagged.3319.g7a6168d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Structure</span></code></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -582,7 +591,7 @@ bonded by the same amount, so that the total mass is unchanged.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="../trajectory_transformations.html" class="btn btn-neutral float-right" title="8. Trajectory transformations (“on-the-fly” transformations)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="RDKitParser.html" class="btn btn-neutral float-right" title="7.3. RDKit topology parser" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="../converters.html" class="btn btn-neutral float-left" title="7. Converter modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
@@ -590,10 +599,18 @@ bonded by the same amount, so that the total mass is unchanged.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -610,7 +627,7 @@ bonded by the same amount, so that the total mass is unchanged.</p>
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

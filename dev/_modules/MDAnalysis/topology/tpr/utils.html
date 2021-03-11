@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>MDAnalysis.topology.tpr.utils &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>MDAnalysis.topology.tpr.utils &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,7 +43,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -230,15 +230,12 @@
 
 <span class="sd">The module also contains the :func:`do_inputrec` to read the TPR header with.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">xdrlib</span>
 <span class="kn">import</span> <span class="nn">struct</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">obj</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">setting</span> <span class="k">as</span> <span class="n">S</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">setting</span>
 <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">squash_by</span>
 <span class="kn">from</span> <span class="nn">...core.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
 <span class="kn">from</span> <span class="nn">...core.topologyattrs</span> <span class="kn">import</span> <span class="p">(</span>
@@ -247,6 +244,7 @@
     <span class="n">Atomtypes</span><span class="p">,</span>
     <span class="n">Masses</span><span class="p">,</span>
     <span class="n">Charges</span><span class="p">,</span>
+    <span class="n">Elements</span><span class="p">,</span>
     <span class="n">Resids</span><span class="p">,</span>
     <span class="n">Resnames</span><span class="p">,</span>
     <span class="n">Moltypes</span><span class="p">,</span>
@@ -255,7 +253,7 @@
     <span class="n">Bonds</span><span class="p">,</span>
     <span class="n">Angles</span><span class="p">,</span>
     <span class="n">Dihedrals</span><span class="p">,</span>
-    <span class="n">Impropers</span>
+    <span class="n">Impropers</span><span class="p">,</span>
 <span class="p">)</span>
 
 
@@ -264,17 +262,12 @@
 <span class="sd">    Extend the standard XDR unpacker for the specificity of TPX files.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="c1"># Using super here would be ideal, but it does not work on python2 as</span>
-        <span class="c1"># TPXUnpacker is a `classobj` and not a `type`.</span>
-        <span class="c1"># super().__init__(data)</span>
-        <span class="n">xdrlib</span><span class="o">.</span><span class="n">Unpacker</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_buf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_buffer</span><span class="p">()</span>
 
     <span class="c1"># The parent class uses a dunder attribute to store the</span>
     <span class="c1"># cursor position. This property makes it easier to manipulate</span>
     <span class="c1"># this attribute that is otherwise &quot;protected&quot;.</span>
-    <span class="c1"># The use of this property works well in python3, but fails in python2</span>
-    <span class="c1"># where direct access to the mangled attribute seems required.</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
@@ -284,14 +277,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">set_position</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_unpack_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_size</span><span class="p">,</span> <span class="n">struct_template</span><span class="p">):</span>
-        <span class="c1"># Ideally, we should use the _pos attribute, but it present some</span>
-        <span class="c1"># unexpected behaviour on python2 where the position of the cursor is</span>
-        <span class="c1"># not kept in sync between the method defined in TPXUnpacker and the</span>
-        <span class="c1"># methods defined in the base class.</span>
-        <span class="c1"># start_position = self._pos</span>
-        <span class="c1"># end_position = self._pos = start_position + item_size</span>
-        <span class="n">start_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Unpacker__pos</span>  <span class="c1"># pylint: disable=access-member-before-definition </span>
-        <span class="n">end_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Unpacker__pos</span> <span class="o">=</span> <span class="n">start_position</span> <span class="o">+</span> <span class="n">item_size</span>
+        <span class="n">start_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span>
+        <span class="n">end_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">start_position</span> <span class="o">+</span> <span class="n">item_size</span>
         <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="p">[</span><span class="n">start_position</span><span class="p">:</span><span class="n">end_position</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)</span> <span class="o">!=</span> <span class="n">item_size</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">EOFError</span>
@@ -335,8 +322,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="TPXUnpacker2020.from_unpacker"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.from_unpacker">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_unpacker</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">unpacker</span><span class="p">):</span>
-        <span class="n">new_unpacker</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">unpacker</span><span class="o">.</span><span class="n">_buf</span><span class="p">)</span>
-        <span class="n">new_unpacker</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">new_unpacker</span><span class="o">.</span><span class="n">_Unpacker__pos</span> <span class="o">=</span> <span class="n">unpacker</span><span class="o">.</span><span class="n">_Unpacker__pos</span>
+        <span class="n">new_unpacker</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">unpacker</span><span class="o">.</span><span class="n">get_buffer</span><span class="p">())</span>
+        <span class="n">new_unpacker</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">unpacker</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">unpacker</span><span class="p">,</span> <span class="s1">&#39;unpack_real&#39;</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">unpacker</span><span class="o">.</span><span class="n">unpack_real</span> <span class="o">==</span> <span class="n">unpacker</span><span class="o">.</span><span class="n">unpack_float</span><span class="p">:</span>
                 <span class="n">new_unpacker</span><span class="o">.</span><span class="n">unpack_real</span> <span class="o">=</span> <span class="n">new_unpacker</span><span class="o">.</span><span class="n">unpack_float</span>
@@ -349,8 +336,8 @@
 <div class="viewcode-block" id="TPXUnpacker2020.unpack_fstring"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.TPXUnpacker2020.unpack_fstring">[docs]</a>    <span class="k">def</span> <span class="nf">unpack_fstring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Size of fstring cannot be negative.&#39;</span><span class="p">)</span>
-        <span class="n">start_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Unpacker__pos</span> <span class="c1"># pylint: disable=access-member-before-definition</span>
-        <span class="n">end_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Unpacker__pos</span> <span class="o">=</span> <span class="n">start_position</span> <span class="o">+</span> <span class="n">n</span>
+        <span class="n">start_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span>
+        <span class="n">end_position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">start_position</span> <span class="o">+</span> <span class="n">n</span>
         <span class="k">if</span> <span class="n">end_position</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">EOFError</span>
         <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buf</span><span class="p">[</span><span class="n">start_position</span><span class="p">:</span><span class="n">end_position</span><span class="p">]</span>
@@ -385,24 +372,24 @@
 
 
 <div class="viewcode-block" id="do_rvec"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_rvec">[docs]</a><span class="k">def</span> <span class="nf">do_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">S</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ndo_rvec"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.ndo_rvec">[docs]</a><span class="k">def</span> <span class="nf">ndo_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;mimic of gmx_fio_ndo_rvec in gromacs&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">S</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span></div>
+    <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span></div>
 
 
 <div class="viewcode-block" id="ndo_ivec"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.ndo_ivec">[docs]</a><span class="k">def</span> <span class="nf">ndo_ivec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;mimic of gmx_fio_ndo_rvec in gromacs&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">S</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span></div>
+    <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span></div>
 
 
 <div class="viewcode-block" id="fileVersion_err"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.fileVersion_err">[docs]</a><span class="k">def</span> <span class="nf">fileVersion_err</span><span class="p">(</span><span class="n">fver</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">fver</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">S</span><span class="o">.</span><span class="n">SUPPORTED_VERSIONS</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">fver</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">setting</span><span class="o">.</span><span class="n">SUPPORTED_VERSIONS</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s2">&quot;Your tpx version is </span><span class="si">{0}</span><span class="s2">, which this parser does not support, yet &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">fver</span><span class="p">))</span></div>
+            <span class="sa">f</span><span class="s2">&quot;Your tpx version is </span><span class="si">{</span><span class="n">fver</span><span class="si">}</span><span class="s2">, which this parser does not support, yet &quot;</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="define_unpack_real"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.define_unpack_real">[docs]</a><span class="k">def</span> <span class="nf">define_unpack_real</span><span class="p">(</span><span class="n">prec</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
@@ -412,7 +399,7 @@
     <span class="k">elif</span> <span class="n">prec</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
         <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_double</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;unsupported precision: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prec</span><span class="p">))</span></div>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unsupported precision: </span><span class="si">{</span><span class="n">prec</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="read_tpxheader"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.read_tpxheader">[docs]</a><span class="k">def</span> <span class="nf">read_tpxheader</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
@@ -420,6 +407,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Last compatibility check with gromacs-2016</span>
     <span class="n">ver_str</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">do_string</span><span class="p">()</span>  <span class="c1"># version string e.g. VERSION 4.0.5</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ver_str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;VERSION&#39;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Input does not look like a TPR file.&#39;</span><span class="p">)</span>
     <span class="n">precision</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># e.g. 4</span>
     <span class="n">define_unpack_real</span><span class="p">(</span><span class="n">precision</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
     <span class="n">fileVersion</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># version of tpx file</span>
@@ -427,6 +416,7 @@
 
     <span class="c1"># This is for backward compatibility with development version 77-79 where</span>
     <span class="c1"># the tag was, mistakenly, placed before the generation.</span>
+    <span class="c1"># These versions are development versions between the 4.5 and 4.6 series.</span>
     <span class="k">if</span> <span class="mi">77</span> <span class="o">&lt;=</span> <span class="n">fileVersion</span> <span class="o">&lt;=</span> <span class="mi">79</span><span class="p">:</span>
         <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># the value is 8, but haven&#39;t found the</span>
         <span class="n">file_tag</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">do_string</span><span class="p">()</span>
@@ -438,7 +428,7 @@
     <span class="c1"># tpx_tag from a lower or the same version of gromacs code can be parsed by</span>
     <span class="c1"># the tpxio.c</span>
 
-    <span class="n">file_tag</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">do_string</span><span class="p">()</span> <span class="k">if</span> <span class="n">fileVersion</span> <span class="o">&gt;=</span> <span class="mi">81</span> <span class="k">else</span> <span class="n">S</span><span class="o">.</span><span class="n">TPX_TAG_RELEASE</span>
+    <span class="n">file_tag</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">do_string</span><span class="p">()</span> <span class="k">if</span> <span class="n">fileVersion</span> <span class="o">&gt;=</span> <span class="mi">81</span> <span class="k">else</span> <span class="n">setting</span><span class="o">.</span><span class="n">TPX_TAG_RELEASE</span>
 
     <span class="n">natoms</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># total number of atoms</span>
     <span class="n">ngtc</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span> <span class="k">if</span> <span class="n">fileVersion</span> <span class="o">&gt;=</span> <span class="mi">28</span> <span class="k">else</span> <span class="mi">0</span>  <span class="c1"># number of groups for T-coupling</span>
@@ -461,7 +451,7 @@
     <span class="n">bBox</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># has box or not</span>
 
     <span class="n">sizeOfTprBody</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="n">fileVersion</span> <span class="o">&gt;=</span> <span class="n">S</span><span class="o">.</span><span class="n">tpxv_AddSizeField</span> <span class="ow">and</span> <span class="n">fileGeneration</span> <span class="o">&gt;=</span> <span class="mi">27</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">fileVersion</span> <span class="o">&gt;=</span> <span class="n">setting</span><span class="o">.</span><span class="n">tpxv_AddSizeField</span> <span class="ow">and</span> <span class="n">fileGeneration</span> <span class="o">&gt;=</span> <span class="mi">27</span><span class="p">:</span>
         <span class="n">sizeOfTprBody</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int64</span><span class="p">()</span>
 
     <span class="n">th</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">TpxHeader</span><span class="p">(</span><span class="n">ver_str</span><span class="p">,</span> <span class="n">precision</span><span class="p">,</span> <span class="n">fileVersion</span><span class="p">,</span> <span class="n">fileGeneration</span><span class="p">,</span>
@@ -470,12 +460,10 @@
     <span class="k">return</span> <span class="n">th</span></div>
 
 
-<div class="viewcode-block" id="extract_box_info"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.extract_box_info">[docs]</a><span class="k">def</span> <span class="nf">extract_box_info</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fileVersion</span><span class="p">):</span>
-    <span class="n">box</span> <span class="o">=</span> <span class="n">ndo_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">DIM</span><span class="p">)</span>
-    <span class="n">box_rel</span> <span class="o">=</span> <span class="n">ndo_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">DIM</span><span class="p">)</span> <span class="k">if</span> <span class="n">fileVersion</span> <span class="o">&gt;=</span> <span class="mi">51</span> <span class="k">else</span> <span class="mi">0</span>
-    <span class="n">box_v</span> <span class="o">=</span> <span class="n">ndo_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">DIM</span><span class="p">)</span> <span class="k">if</span> <span class="n">fileVersion</span> <span class="o">&gt;=</span> <span class="mi">28</span> <span class="k">else</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">fileVersion</span> <span class="o">&lt;</span> <span class="mi">56</span><span class="p">):</span>
-        <span class="n">ndo_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">DIM</span><span class="p">)</span>  <span class="c1"># mdum?</span>
+<div class="viewcode-block" id="extract_box_info"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.extract_box_info">[docs]</a><span class="k">def</span> <span class="nf">extract_box_info</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fver</span><span class="p">):</span>
+    <span class="n">box</span> <span class="o">=</span> <span class="n">ndo_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">)</span>
+    <span class="n">box_rel</span> <span class="o">=</span> <span class="n">ndo_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">)</span>
+    <span class="n">box_v</span> <span class="o">=</span> <span class="n">ndo_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">box_rel</span><span class="p">,</span> <span class="n">box_v</span><span class="p">)</span></div>
 
@@ -511,6 +499,7 @@
     <span class="n">molnums</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">charges</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">masses</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">elements</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="n">atom_start_ndx</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">res_start_ndx</span> <span class="o">=</span> <span class="mi">0</span>
@@ -521,7 +510,7 @@
         <span class="c1"># segment is made to correspond to the molblock as in gromacs, the</span>
         <span class="c1"># naming is kind of arbitrary</span>
         <span class="n">molblock</span> <span class="o">=</span> <span class="n">mtop</span><span class="o">.</span><span class="n">moltypes</span><span class="p">[</span><span class="n">mb</span><span class="o">.</span><span class="n">molb_type</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
-        <span class="n">segid</span> <span class="o">=</span> <span class="s2">&quot;seg_</span><span class="si">{0}</span><span class="s2">_</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">molblock</span><span class="p">)</span>
+        <span class="n">segid</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;seg_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">molblock</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mb</span><span class="o">.</span><span class="n">molb_nmol</span><span class="p">):</span>
             <span class="n">mt</span> <span class="o">=</span> <span class="n">mtop</span><span class="o">.</span><span class="n">moltypes</span><span class="p">[</span><span class="n">mb</span><span class="o">.</span><span class="n">molb_type</span><span class="p">]</span>  <span class="c1"># mt: molecule type</span>
             <span class="k">for</span> <span class="n">atomkind</span> <span class="ow">in</span> <span class="n">mt</span><span class="o">.</span><span class="n">atomkinds</span><span class="p">:</span>
@@ -535,6 +524,7 @@
                 <span class="n">molnums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">molnum</span><span class="p">)</span>
                 <span class="n">charges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atomkind</span><span class="o">.</span><span class="n">charge</span><span class="p">)</span>
                 <span class="n">masses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atomkind</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+                <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atomkind</span><span class="o">.</span><span class="n">element_symbol</span><span class="p">)</span>
             <span class="n">molnum</span> <span class="o">+=</span> <span class="mi">1</span>
 
             <span class="c1"># remap_ method returns [blah, blah, ..] or []</span>
@@ -600,11 +590,15 @@
     <span class="n">top</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">Impropers</span><span class="p">([</span><span class="n">improper</span> <span class="k">for</span> <span class="n">improper</span> <span class="ow">in</span> <span class="n">impropers</span>
                                     <span class="k">if</span> <span class="n">improper</span><span class="p">]))</span>
 
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">elements</span><span class="p">):</span>
+        <span class="n">elements</span> <span class="o">=</span> <span class="n">Elements</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
+        <span class="n">top</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">top</span></div>
 
 
 <div class="viewcode-block" id="do_symstr"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_symstr">[docs]</a><span class="k">def</span> <span class="nf">do_symstr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">symtab</span><span class="p">):</span>
-    <span class="c1">#do_symstr: get a string based on index from the symtab</span>
+    <span class="c1"># do_symstr: get a string based on index from the symtab</span>
     <span class="n">ndx</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">symtab</span><span class="p">[</span><span class="n">ndx</span><span class="p">]</span></div>
 
@@ -620,27 +614,22 @@
 
 <div class="viewcode-block" id="do_ffparams"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_ffparams">[docs]</a><span class="k">def</span> <span class="nf">do_ffparams</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fver</span><span class="p">):</span>
     <span class="n">atnr</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">fver</span> <span class="o">&lt;</span> <span class="mi">57</span><span class="p">:</span>
-        <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># idum</span>
     <span class="n">ntypes</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
     <span class="n">functype</span> <span class="o">=</span> <span class="n">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ntypes</span><span class="p">)</span>
     <span class="n">reppow</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_double</span><span class="p">()</span> <span class="k">if</span> <span class="n">fver</span> <span class="o">&gt;=</span> <span class="mi">66</span> <span class="k">else</span> <span class="mf">12.0</span>
-    <span class="k">if</span> <span class="n">fver</span> <span class="o">&gt;=</span> <span class="mi">57</span><span class="p">:</span>
-        <span class="n">fudgeQQ</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>
+    <span class="n">fudgeQQ</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>
 
     <span class="c1"># mimicing the c code,</span>
     <span class="c1"># remapping the functype due to inconsistency in different versions</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">functype</span><span class="p">)):</span>
-        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">S</span><span class="o">.</span><span class="n">ftupd</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">setting</span><span class="o">.</span><span class="n">ftupd</span><span class="p">:</span>
             <span class="c1"># j[0]: tpx_version, j[1] funtype</span>
             <span class="k">if</span> <span class="n">fver</span> <span class="o">&lt;</span> <span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">functype</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
                 <span class="n">functype</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
 
-    <span class="c1"># parameters for different functions, None returned for now since not sure</span>
-    <span class="c1"># what is iparams</span>
-    <span class="n">iparams</span> <span class="o">=</span> <span class="n">do_iparams</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">functype</span><span class="p">,</span> <span class="n">fver</span><span class="p">)</span>
+    <span class="n">do_iparams</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">functype</span><span class="p">,</span> <span class="n">fver</span><span class="p">)</span>
 
-    <span class="n">params</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">Params</span><span class="p">(</span><span class="n">atnr</span><span class="p">,</span> <span class="n">ntypes</span><span class="p">,</span> <span class="n">functype</span><span class="p">,</span> <span class="n">reppow</span><span class="p">,</span> <span class="n">fudgeQQ</span><span class="p">,</span> <span class="n">iparams</span><span class="p">)</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">Params</span><span class="p">(</span><span class="n">atnr</span><span class="p">,</span> <span class="n">ntypes</span><span class="p">,</span> <span class="n">functype</span><span class="p">,</span> <span class="n">reppow</span><span class="p">,</span> <span class="n">fudgeQQ</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">params</span></div>
 
 
@@ -655,23 +644,23 @@
     <span class="c1"># Not all elif cases in this function has been used and tested</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">functypes</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span>
-            <span class="n">S</span><span class="o">.</span><span class="n">F_ANGLES</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">F_G96ANGLES</span><span class="p">,</span>
-            <span class="n">S</span><span class="o">.</span><span class="n">F_BONDS</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">F_G96BONDS</span><span class="p">,</span>
-            <span class="n">S</span><span class="o">.</span><span class="n">F_HARMONIC</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">F_IDIHS</span>
+            <span class="n">setting</span><span class="o">.</span><span class="n">F_ANGLES</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">F_G96ANGLES</span><span class="p">,</span>
+            <span class="n">setting</span><span class="o">.</span><span class="n">F_BONDS</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">F_G96BONDS</span><span class="p">,</span>
+            <span class="n">setting</span><span class="o">.</span><span class="n">F_HARMONIC</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">F_IDIHS</span>
         <span class="p">]:</span>
             <span class="n">do_harm</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_RESTRANGLES</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_RESTRANGLES</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># harmonic.rA</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># harmonic.krA</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_LINEAR_ANGLES</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_LINEAR_ANGLES</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># linangle.klinA</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># linangle.aA</span>
-            <span class="n">data</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span>  <span class="c1"># linangle.klinB</span>
-            <span class="n">data</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span>  <span class="c1"># linangle.aB);</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_FENEBONDS</span><span class="p">]:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># linangle.klinB</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># linangle.aB);</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_FENEBONDS</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># fene.bm</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># fene.kb</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_RESTRBONDS</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_RESTRBONDS</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># restraint.lowA</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># restraint.up1A</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># restraint.up2A</span>
@@ -680,20 +669,23 @@
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># restraint.up1B</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># restraint.up2B</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># restraint.kB</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_TABBONDS</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">F_TABBONDSNC</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">F_TABANGLES</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">F_TABDIHS</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="n">setting</span><span class="o">.</span><span class="n">F_TABBONDS</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">F_TABBONDSNC</span><span class="p">,</span>
+            <span class="n">setting</span><span class="o">.</span><span class="n">F_TABANGLES</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">F_TABDIHS</span><span class="p">,</span>
+        <span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># tab.kA</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># tab.table</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># tab.kB</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_CROSS_BOND_BONDS</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_CROSS_BOND_BONDS</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># cross_bb.r1e</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># cross_bb.r2e</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># cross_bb.krr</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_CROSS_BOND_ANGLES</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_CROSS_BOND_ANGLES</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># cross_ba.r1e</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># cross_ba.r2e</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># cross_ba.r3e</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># cross_ba.krt</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_UREY_BRADLEY</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_UREY_BRADLEY</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># u_b.theta</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># u_b.ktheta</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># u_b.r13</span>
@@ -703,14 +695,14 @@
                 <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># u_b.kthetaB</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># u_b.r13B</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># u_b.kUBB</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_QUARTIC_ANGLES</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_QUARTIC_ANGLES</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># qangle.theta</span>
             <span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>   <span class="c1"># qangle.c</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_BHAM</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_BHAM</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># bham.a</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># bham.b</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># bham.c</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_MORSE</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_MORSE</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># morse.b0</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># morse.cb</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># morse.beta</span>
@@ -718,68 +710,65 @@
                 <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># morse.b0B</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># morse.cbB</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># morse.betaB</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_CUBICBONDS</span><span class="p">]:</span>
-            <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># cubic.b0</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_CUBICBONDS</span><span class="p">]:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># cubic.b0g</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># cubic.kb</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># cubic.kcub</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_CONNBONDS</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_CONNBONDS</span><span class="p">]:</span>
             <span class="k">pass</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_POLARIZATION</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_POLARIZATION</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># polarize.alpha</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_ANHARM_POL</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_ANHARM_POL</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># anharm_polarize.alpha</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># anharm_polarize.drcut</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># anharm_polarize.khyp</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_WATER_POL</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="n">fver</span> <span class="o">&lt;</span> <span class="mi">31</span><span class="p">:</span>
-                <span class="n">fver_err</span><span class="p">(</span><span class="n">fver</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_WATER_POL</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># wpol.al_x</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># wpol.al_y</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># wpol.al_z</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># wpol.rOH</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># wpol.rHH</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># wpol.rOD</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_THOLE_POL</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_THOLE_POL</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># thole.a</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># thole.alpha1</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># thole.alpha2</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># thole.rfac</span>
 
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_LJ</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_LJ</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># lj_c6</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># lj_c9</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_LJ14</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_LJ14</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># lj14_c6A</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># lj14_c12A</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># lj14_c6B</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># lj14_c12B</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_LJC14_Q</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_LJC14_Q</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># ljc14.fqq</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># ljc14.qi</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># ljc14.qj</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># ljc14.c6</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># ljc14.c12</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_LJC_PAIRS_NB</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_LJC_PAIRS_NB</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># ljcnb.qi</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># ljcnb.qj</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># ljcnb.c6</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># ljcnb.c12</span>
 
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_PIDIHS</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">F_ANGRES</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">F_ANGRESZ</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">F_PDIHS</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="n">setting</span><span class="o">.</span><span class="n">F_PIDIHS</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">F_ANGRES</span><span class="p">,</span>
+            <span class="n">setting</span><span class="o">.</span><span class="n">F_ANGRESZ</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">F_PDIHS</span><span class="p">,</span>
+        <span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># pdihs_phiA</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># pdihs_cpA</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">S</span><span class="o">.</span><span class="n">F_ANGRES</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">==</span> <span class="n">S</span><span class="o">.</span><span class="n">F_ANGRESZ</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fver</span> <span class="o">&lt;</span> <span class="mi">42</span><span class="p">:</span>
-                <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># harmonic.rB</span>
-                <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># harmonic.krB</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># pdihs_phiB</span>
-                <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># pdihs_cpB</span>
-                <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># pdihs_mult</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># pdihs_phiB</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># pdihs_cpB</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># pdihs_mult</span>
 
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_RESTRDIHS</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_RESTRDIHS</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># pdihs.phiA</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># pdihs.cpA</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_DISRES</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_DISRES</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># disres.label</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># disres.type</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># disres.low</span>
@@ -787,7 +776,7 @@
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># disres.up2</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># disres.kfac</span>
 
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_ORIRES</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_ORIRES</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># orires.ex</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># orires.label</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># orires.power</span>
@@ -795,7 +784,7 @@
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># orires.obs</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># orires.kfac</span>
 
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_DIHRES</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_DIHRES</span><span class="p">]:</span>
             <span class="k">if</span> <span class="n">fver</span> <span class="o">&lt;</span> <span class="mi">72</span><span class="p">:</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># idum</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># idum</span>
@@ -807,59 +796,55 @@
                 <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># dihres.dphiB</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># dihres.kfacB</span>
 
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_POSRES</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_POSRES</span><span class="p">]:</span>
             <span class="n">do_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># posres.pos0A</span>
             <span class="n">do_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># posres.fcA</span>
-            <span class="k">if</span> <span class="n">fver</span> <span class="o">&lt;</span> <span class="mi">27</span><span class="p">:</span>
-                <span class="n">fver_err</span><span class="p">(</span><span class="n">fver</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">do_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># posres.pos0B</span>
-                <span class="n">do_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># posres.fcB</span>
+            <span class="n">do_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># posres.pos0B</span>
+            <span class="n">do_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># posres.fcB</span>
 
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_FBPOSRES</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_FBPOSRES</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>   <span class="c1"># fbposres.geom</span>
             <span class="n">do_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>       <span class="c1"># fbposres.pos0</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># fbposres.r</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># fbposres.k</span>
 
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_CBTDIHS</span><span class="p">]:</span>
-            <span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">NR_CBTDIHS</span><span class="p">)</span>  <span class="c1"># cbtdihs.cbtcA</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_CBTDIHS</span><span class="p">]:</span>
+            <span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">NR_CBTDIHS</span><span class="p">)</span>  <span class="c1"># cbtdihs.cbtcA</span>
 
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_RBDIHS</span><span class="p">]:</span>
-            <span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">NR_RBDIHS</span><span class="p">)</span>  <span class="c1"># iparams_rbdihs_rbcA</span>
-            <span class="k">if</span> <span class="n">fver</span> <span class="o">&gt;=</span> <span class="mi">25</span><span class="p">:</span>
-                <span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">NR_RBDIHS</span><span class="p">)</span>  <span class="c1"># iparams_rbdihs_rbcB</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_RBDIHS</span><span class="p">]:</span>
+            <span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">NR_RBDIHS</span><span class="p">)</span>  <span class="c1"># iparams_rbdihs_rbcA</span>
+            <span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">NR_RBDIHS</span><span class="p">)</span>  <span class="c1"># iparams_rbdihs_rbcB</span>
 
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_FOURDIHS</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_FOURDIHS</span><span class="p">]:</span>
             <span class="c1"># Fourier dihedrals</span>
-            <span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">NR_RBDIHS</span><span class="p">)</span>  <span class="c1"># rbdihs.rbcA</span>
-            <span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">NR_RBDIHS</span><span class="p">)</span>  <span class="c1"># rbdihs.rbcB</span>
+            <span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">NR_RBDIHS</span><span class="p">)</span>  <span class="c1"># rbdihs.rbcA</span>
+            <span class="n">ndo_real</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">NR_RBDIHS</span><span class="p">)</span>  <span class="c1"># rbdihs.rbcB</span>
 
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_CONSTR</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">F_CONSTRNC</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_CONSTR</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">F_CONSTRNC</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># dA</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># dB</span>
 
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_SETTLE</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_SETTLE</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># settle.doh</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># settle.dhh</span>
 
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_VSITE2</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">F_VSITE2FD</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_VSITE2</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">F_VSITE2FD</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># vsite.a</span>
 
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_VSITE3</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">F_VSITE3FD</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">F_VSITE3FAD</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_VSITE3</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">F_VSITE3FD</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">F_VSITE3FAD</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># vsite.a</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># vsite.b</span>
 
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_VSITE3OUT</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">F_VSITE4FD</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">F_VSITE4FDN</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_VSITE3OUT</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">F_VSITE4FD</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">F_VSITE4FDN</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># vsite.a</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># vsite.b</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># vsite.c</span>
 
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_VSITEN</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_VSITEN</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># vsiten.n</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># vsiten.a</span>
 
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_GB12</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">F_GB13</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">F_GB14</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_GB12</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">F_GB13</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">F_GB14</span><span class="p">]:</span>
             <span class="c1"># /* We got rid of some parameters in version 68 */</span>
             <span class="k">if</span> <span class="n">fver</span> <span class="o">&lt;</span> <span class="mi">68</span><span class="p">:</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># rdum</span>
@@ -872,17 +857,16 @@
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># gb.gbr</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># gb.bmlt</span>
 
-        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">S</span><span class="o">.</span><span class="n">F_CMAP</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_CMAP</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># cmap.cmapA</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># cmap.cmapB</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;unknown functype: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unknown functype: </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">return</span></div>
 
 
 <div class="viewcode-block" id="do_moltype"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_moltype">[docs]</a><span class="k">def</span> <span class="nf">do_moltype</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">symtab</span><span class="p">,</span> <span class="n">fver</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">fver</span> <span class="o">&gt;=</span> <span class="mi">57</span><span class="p">:</span>
-        <span class="n">molname</span> <span class="o">=</span> <span class="n">do_symstr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">symtab</span><span class="p">)</span>
+    <span class="n">molname</span> <span class="o">=</span> <span class="n">do_symstr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">symtab</span><span class="p">)</span>
 
     <span class="c1"># key info: about atoms</span>
     <span class="n">atoms_obj</span> <span class="o">=</span> <span class="n">do_atoms</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">symtab</span><span class="p">,</span> <span class="n">fver</span><span class="p">)</span>
@@ -897,7 +881,9 @@
             <span class="n">a</span><span class="o">.</span><span class="n">resind</span><span class="p">,</span>
             <span class="n">atoms_obj</span><span class="o">.</span><span class="n">resnames</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">resind</span><span class="p">],</span>
             <span class="n">a</span><span class="o">.</span><span class="n">m</span><span class="p">,</span>
-            <span class="n">a</span><span class="o">.</span><span class="n">q</span><span class="p">))</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">q</span><span class="p">,</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">atomnumber</span><span class="p">,</span>
+        <span class="p">))</span>
     <span class="c1">#### end: MDAnalysis specific</span>
 
     <span class="c1"># key info: about bonds, angles, dih, improp dih.</span>
@@ -930,7 +916,7 @@
             <span class="k">elif</span> <span class="n">ik_obj</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;SETTLE&#39;</span><span class="p">:</span>
                 <span class="c1"># SETTLE interactions are optimized triangular constraints for</span>
                 <span class="c1"># water molecules. They should be counted as a pair of bonds</span>
-                <span class="c1"># between the oxigen and the hydrogens. In older versions of</span>
+                <span class="c1"># between the oxygen and the hydrogens. In older versions of</span>
                 <span class="c1"># the TPR format only specifies the index of the oxygen and</span>
                 <span class="c1"># assumes that the next two atoms are the hydrogens.</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ias</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
@@ -959,7 +945,7 @@
     <span class="n">moltype</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">MoleculeKind</span><span class="p">(</span><span class="n">molname</span><span class="p">,</span> <span class="n">atomkinds</span><span class="p">,</span> <span class="n">bonds</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">dihs</span><span class="p">,</span> <span class="n">impr</span><span class="p">)</span>
     <span class="c1">#### end: MDAnalysis specific</span>
 
-    <span class="c1"># info in do_block and do_blocka is not interested, but has to be parsed</span>
+    <span class="c1"># info in do_block and do_blocka is not interesting, but has to be parsed</span>
     <span class="c1"># here so that all moltypes can be parsed properly</span>
     <span class="n">do_block</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="n">do_blocka</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -970,9 +956,6 @@
     <span class="n">nr</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># number of atoms in a particular molecule</span>
     <span class="n">nres</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># number of residues in a particular molecule</span>
 
-    <span class="k">if</span> <span class="n">fver</span> <span class="o">&lt;</span> <span class="mi">57</span><span class="p">:</span>
-        <span class="n">fver_err</span><span class="p">(</span><span class="n">fver</span><span class="p">)</span>
-
     <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nr</span><span class="p">):</span>
         <span class="n">A</span> <span class="o">=</span> <span class="n">do_atom</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fver</span><span class="p">)</span>
@@ -981,15 +964,9 @@
     <span class="c1"># do_strstr</span>
     <span class="n">atomnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">symtab</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nr</span><span class="p">)]</span>
 
-    <span class="k">if</span> <span class="n">fver</span> <span class="o">&lt;=</span> <span class="mi">20</span><span class="p">:</span>
-        <span class="n">fver_err</span><span class="p">(</span><span class="n">fver</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">type</span> <span class="o">=</span> <span class="p">[</span><span class="n">symtab</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nr</span><span class="p">)]</span>  <span class="c1"># e.g. opls_111</span>
-        <span class="n">typeB</span> <span class="o">=</span> <span class="p">[</span><span class="n">symtab</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nr</span><span class="p">)]</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="p">[</span><span class="n">symtab</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nr</span><span class="p">)]</span>  <span class="c1"># e.g. opls_111</span>
+    <span class="n">typeB</span> <span class="o">=</span> <span class="p">[</span><span class="n">symtab</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ndo_int</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">nr</span><span class="p">)]</span>
     <span class="n">resnames</span> <span class="o">=</span> <span class="n">do_resinfo</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">symtab</span><span class="p">,</span> <span class="n">fver</span><span class="p">,</span> <span class="n">nres</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">fver</span> <span class="o">&lt;</span> <span class="mi">57</span><span class="p">:</span>
-        <span class="n">fver_err</span><span class="p">(</span><span class="n">fver</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">Atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">nres</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">typeB</span><span class="p">,</span> <span class="n">atomnames</span><span class="p">,</span> <span class="n">resnames</span><span class="p">)</span></div>
 
@@ -1016,11 +993,8 @@
     <span class="n">ptype</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># regular atom, virtual site or others</span>
     <span class="n">resind</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># index of residue</span>
 
-    <span class="k">if</span> <span class="n">fver</span> <span class="o">&gt;=</span> <span class="mi">52</span><span class="p">:</span>
-        <span class="n">atomnumber</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># index of atom type</span>
+    <span class="n">atomnumber</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># index of atom type</span>
 
-    <span class="k">if</span> <span class="n">fver</span> <span class="o">&lt;</span> <span class="mi">23</span> <span class="ow">or</span> <span class="n">fver</span> <span class="o">&lt;</span> <span class="mi">39</span> <span class="ow">or</span> <span class="n">fver</span> <span class="o">&lt;</span> <span class="mi">57</span><span class="p">:</span>
-        <span class="n">fver_err</span><span class="p">(</span><span class="n">fver</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">mB</span><span class="p">,</span> <span class="n">qB</span><span class="p">,</span> <span class="n">tp</span><span class="p">,</span> <span class="n">typeB</span><span class="p">,</span> <span class="n">ptype</span><span class="p">,</span> <span class="n">resind</span><span class="p">,</span> <span class="n">atomnumber</span><span class="p">)</span></div>
 
 
@@ -1028,17 +1002,15 @@
     <span class="n">nr</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># number of ilist</span>
     <span class="n">iatoms</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># atoms involved in a particular interaction type</span>
     <span class="n">pos</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">S</span><span class="o">.</span><span class="n">F_NRE</span><span class="p">):</span>  <span class="c1"># total number of energies (i.e. interaction types)</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">F_NRE</span><span class="p">):</span>  <span class="c1"># total number of energies (i.e. interaction types)</span>
         <span class="n">bClear</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">S</span><span class="o">.</span><span class="n">ftupd</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">setting</span><span class="o">.</span><span class="n">ftupd</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">fver</span> <span class="o">&lt;</span> <span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">==</span> <span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
                 <span class="n">bClear</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">if</span> <span class="n">bClear</span><span class="p">:</span>
             <span class="n">nr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
             <span class="n">iatoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">fver</span> <span class="o">&lt;</span> <span class="mi">44</span><span class="p">:</span>
-                <span class="n">fver_err</span><span class="p">(</span><span class="n">fver</span><span class="p">)</span>
             <span class="c1"># do_ilist</span>
             <span class="n">n</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
             <span class="n">nr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
@@ -1047,7 +1019,10 @@
                 <span class="n">l_</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">())</span>
             <span class="n">iatoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l_</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">Ilist</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">it</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">it</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">nr</span><span class="p">,</span> <span class="n">S</span><span class="o">.</span><span class="n">interaction_types</span><span class="p">,</span> <span class="n">iatoms</span><span class="p">)]</span></div>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">Ilist</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">it</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">it</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">nr</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">interaction_types</span><span class="p">,</span> <span class="n">iatoms</span><span class="p">)</span>
+    <span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="do_molblock"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_molblock">[docs]</a><span class="k">def</span> <span class="nf">do_molblock</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
@@ -1084,7 +1059,7 @@
 
 <div class="viewcode-block" id="do_grps"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_grps">[docs]</a><span class="k">def</span> <span class="nf">do_grps</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
     <span class="n">grps_nr</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">myngrps</span> <span class="o">=</span> <span class="n">ngrps</span> <span class="o">=</span> <span class="n">S</span><span class="o">.</span><span class="n">egcNR</span>  <span class="c1"># remind of version inconsistency</span>
+    <span class="n">myngrps</span> <span class="o">=</span> <span class="n">ngrps</span> <span class="o">=</span> <span class="n">setting</span><span class="o">.</span><span class="n">egcNR</span>  <span class="c1"># remind of version inconsistency</span>
     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ngrps</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">myngrps</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
@@ -1103,7 +1078,7 @@
 
     <span class="n">ngrpnr</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">grpnr</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">S</span><span class="o">.</span><span class="n">egcNR</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">egcNR</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
         <span class="n">ngrpnr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -1223,17 +1198,17 @@
     <span class="c1"># ir_nstpcouple = ir_nstcalcenergy</span>
     <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># tau_p</span>
 
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c1"># ir_ref_p_XX</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c1"># ir_ref_p_YY</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c1"># ir_ref_p_ZZ</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c1"># ir_ref_p_XX</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c1"># ir_ref_p_YY</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c1"># ir_ref_p_ZZ</span>
 
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c1"># ir_compress_XX</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c1"># ir_compress_YY</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c1"># ir_compress_ZZ</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c1"># ir_compress_XX</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c1"># ir_compress_YY</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c1"># ir_compress_ZZ</span>
 
     <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># ir_refcoord_scaling</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c1"># ir_posres_com</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c1"># ir_posres_comB</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c1"># ir_posres_com</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">unpack_farray</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">)</span>  <span class="c1"># ir_posres_comB</span>
 
     <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># ir_andersen_seed</span>
     <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># ir_shake_tol</span>
@@ -1288,7 +1263,7 @@
     <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># ir_bd_fric</span>
     <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>  <span class="c1"># ir_ld_seed</span>
 
-    <span class="n">ndo_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">DIM</span><span class="p">)</span>  <span class="c1"># ir_deform</span>
+    <span class="n">ndo_rvec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">)</span>  <span class="c1"># ir_deform</span>
 
     <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># ir_cos_accel</span>
 
@@ -1353,7 +1328,7 @@
 
     <span class="c1"># cosine stuff for electric fields</span>
     <span class="n">ir_ex_n</span><span class="p">,</span> <span class="n">ir_et_n</span><span class="p">,</span> <span class="n">ir_ex_a</span><span class="p">,</span> <span class="n">ir_ex_phi</span><span class="p">,</span> <span class="n">ir_et_a</span><span class="p">,</span> <span class="n">ir_et_phi</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">DIM</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">setting</span><span class="o">.</span><span class="n">DIM</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
         <span class="n">ir_ex_n</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">unpack_int</span><span class="p">()</span>
@@ -1386,10 +1361,18 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -1406,7 +1389,7 @@
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

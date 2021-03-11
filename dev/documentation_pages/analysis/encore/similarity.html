@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>4.2.6.1.1. Ensemble Similarity Calculations — MDAnalysis.analysis.encore.similarity &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>4.2.6.1.1. Ensemble Similarity Calculations — MDAnalysis.analysis.encore.similarity &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,7 +43,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -117,6 +117,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../encore.html#references">4.2.6.2. References</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../bat.html">4.2.7. Bond-Angle-Torsion coordinates analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#hydrogen-bonding">4.3. Hydrogen bonding</a></li>
@@ -351,9 +352,9 @@ a symmetrized version of the Kullback-Leibler divergence, which is unbounded.</p
 <dl class="function">
 <dt id="MDAnalysis.analysis.encore.similarity.hes">
 <code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">hes</code><span class="sig-paren">(</span><em>ensembles</em>, <em>select='name CA'</em>, <em>cov_estimator='shrinkage'</em>, <em>weights='mass'</em>, <em>align=False</em>, <em>estimate_error=False</em>, <em>bootstrapping_samples=100</em>, <em>calc_diagonal=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#hes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.hes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the Harmonic Ensemble Similarity (HES) between ensembles using
-the symmetrized version of Kullback-Leibler divergence as described
-in <a class="reference internal" href="#tiberti2015" id="id4">[Tiberti2015]</a>.</p>
+<dd><p>Calculates the Harmonic Ensemble Similarity (HES) between ensembles.</p>
+<p>The HES is calculated with the symmetrized version of Kullback-Leibler
+divergence as described in <a class="reference internal" href="#tiberti2015" id="id4">[Tiberti2015]</a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -392,11 +393,11 @@ distribution. The mean and covariance matrix are, thus, estimatated from
 the distribution of each ensemble and used for comparision by the
 symmetrized version of Kullback-Leibler divergence defined as:</p>
 <div class="math notranslate nohighlight">
-\[D_{KL}(P(x) || Q(x)) = \int_{-\infty}^{\infty}P(x_i)
-ln(P(x_i)/Q(x_i)) = \langle{}ln(P(x))\rangle{}_P -
-\langle{}ln(Q(x))\rangle{}_P\]</div>
+\[D_{KL}(P(x) || Q(x)) =
+    \int_{-\infty}^{\infty}P(x_i) ln(P(x_i)/Q(x_i)) =
+    \langle{}ln(P(x))\rangle{}_P - \langle{}ln(Q(x))\rangle{}_P\]</div>
 <p>where the <span class="math notranslate nohighlight">\(\langle{}.\rangle{}_P\)</span> denotes an expectation
-calculated under the distribution P.</p>
+calculated under the distribution <span class="math notranslate nohighlight">\(P\)</span>.</p>
 <p>For each ensemble, the  mean conformation is estimated as the average over
 the ensemble, and the covariance matrix is calculated by default using a
 shrinkage estimation method (or by a maximum-likelihood method,
@@ -419,16 +420,17 @@ examples see the module <a class="reference internal" href="#examples">Examples<
 <span class="go"> [ 38279683.95892926         0.        ]]</span>
 </pre></div>
 </div>
-<p>You can use the align=True option to align the ensembles first. This will
+<p>You can use the <code class="docutils literal notranslate"><span class="pre">align=True</span></code> option to align the ensembles first. This will
 align everything to the current timestep in the first ensemble. Note that
-this changes the ens1 and ens2 objects:</p>
+this changes the <code class="docutils literal notranslate"><span class="pre">ens1</span></code> and <code class="docutils literal notranslate"><span class="pre">ens2</span></code> objects:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 <span class="go">[[    0.          6880.34140106]</span>
 <span class="go">[ 6880.34140106     0.        ]]</span>
 </pre></div>
 </div>
 <p>Alternatively, for greater flexibility in how the alignment should be done
-you can call use an AlignTraj object manually:</p>
+you can call use an <a class="reference internal" href="../align.html#MDAnalysis.analysis.align.AlignTraj" title="MDAnalysis.analysis.align.AlignTraj"><code class="xref py py-class docutils literal notranslate"><span class="pre">AlignTraj</span></code></a> object
+manually:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">align</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">ens2</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
@@ -438,8 +440,8 @@ you can call use an AlignTraj object manually:</p>
 </pre></div>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.0: </span>hes doesn’t accept the <em>details</em> argument anymore, it always returns the
-details of the calculation instead, in the form of a dictionary</p>
+<p><span class="versionmodified">Changed in version 1.0.0: </span><code class="docutils literal notranslate"><span class="pre">hes</span></code> doesn’t accept the <cite>details</cite> argument anymore, it always returns
+the details of the calculation instead, in the form of a dictionary</p>
 </div>
 </dd></dl>
 
@@ -918,18 +920,20 @@ embedded space belonging to a certain ensemble</li>
 <dl class="function">
 <dt id="MDAnalysis.analysis.encore.similarity.dimred_ensemble_similarity">
 <code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">dimred_ensemble_similarity</code><span class="sig-paren">(</span><em>kde1</em>, <em>resamples1</em>, <em>kde2</em>, <em>resamples2</em>, <em>ln_P1_exp_P1=None</em>, <em>ln_P2_exp_P2=None</em>, <em>ln_P1P2_exp_P1=None</em>, <em>ln_P1P2_exp_P2=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#dimred_ensemble_similarity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.dimred_ensemble_similarity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the Jensen-Shannon divergence according the the
-Dimensionality reduction method. In this case, we have continuous
-probability densities, this we need to integrate over the measurable
-space. The aim is to first calculate the Kullback-Liebler divergence, which
-is defined as:</p>
+<dd><p>Calculate the Jensen-Shannon divergence according the Dimensionality
+reduction method.</p>
+<p>In this case, we have continuous probability densities, this we need to
+integrate over the measurable space. The aim is to first calculate the
+Kullback-Liebler divergence, which is defined as:</p>
 <div class="math notranslate nohighlight">
-\[D_{KL}(P(x) || Q(x)) = \int_{-\infty}^{\infty}P(x_i) ln(P(x_i)/Q(x_i)) = \langle{}ln(P(x))\rangle{}_P - \langle{}ln(Q(x))\rangle{}_P\]</div>
+\[D_{KL}(P(x) || Q(x)) =
+    \int_{-\infty}^{\infty}P(x_i) ln(P(x_i)/Q(x_i)) =
+    \langle{}ln(P(x))\rangle{}_P - \langle{}ln(Q(x))\rangle{}_P\]</div>
 <p>where the <span class="math notranslate nohighlight">\(\langle{}.\rangle{}_P\)</span> denotes an expectation calculated
 under the distribution P. We can, thus, just estimate the expectation
-values of the components to get an estimate of dKL.
-Since the Jensen-Shannon distance is actually  more complex, we need to
-estimate four expectation values:</p>
+values of the components to get an estimate of dKL.  Since the
+Jensen-Shannon distance is actually more complex, we need to estimate four
+expectation values:</p>
 <div class="math notranslate nohighlight">
 \[ \begin{align}\begin{aligned}\langle{}log(P(x))\rangle{}_P\\\langle{}log(Q(x))\rangle{}_Q\\\langle{}log(0.5*(P(x)+Q(x)))\rangle{}_P\\\langle{}log(0.5*(P(x)+Q(x)))\rangle{}_Q\end{aligned}\end{align} \]</div>
 <table class="docutils field-list" frame="void" rules="none">
@@ -943,16 +947,16 @@ calculate the expected values according to ‘P’ as detailed before.</li>
 <li><strong>kde2</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html#scipy.stats.gaussian_kde" title="(in SciPy v1.6.1)"><em>scipy.stats.gaussian_kde</em></a>) – Kernel density estimation for ensemble 2</li>
 <li><strong>resamples2</strong> (<em>numpy.array</em>) – Samples drawn according do kde2. Will be used as sample to
 calculate the expected values according to ‘Q’ as detailed before.</li>
-<li><strong>ln_P1_exp_P1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – Use this value for <span class="math notranslate nohighlight">\(\langle{}log(P(x))\rangle{}_P\)</span>; if None,
+<li><strong>ln_P1_exp_P1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – Use this value for <span class="math notranslate nohighlight">\(\langle{}log(P(x))\rangle{}_P\)</span>; if <code class="docutils literal notranslate"><span class="pre">None</span></code>,
 calculate it instead</li>
 <li><strong>ln_P2_exp_P2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – Use this value for <span class="math notranslate nohighlight">\(\langle{}log(Q(x))\rangle{}_Q\)</span>; if
-None, calculate it instead</li>
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, calculate it instead</li>
 <li><strong>ln_P1P2_exp_P1</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – Use this value for
 <span class="math notranslate nohighlight">\(\langle{}log(0.5*(P(x)+Q(x)))\rangle{}_P\)</span>;
-if None, calculate it instead</li>
+if <code class="docutils literal notranslate"><span class="pre">None</span></code>, calculate it instead</li>
 <li><strong>ln_P1P2_exp_P2</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – Use this value for
 <span class="math notranslate nohighlight">\(\langle{}log(0.5*(P(x)+Q(x)))\rangle{}_Q\)</span>;
-if None, calculate it instead</li>
+if <code class="docutils literal notranslate"><span class="pre">None</span></code>, calculate it instead</li>
 </ul>
 </td>
 </tr>
@@ -1252,9 +1256,9 @@ ensemble.</li>
 <dl class="function">
 <dt>
 <code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">hes</code><span class="sig-paren">(</span><em>ensembles</em>, <em>select='name CA'</em>, <em>cov_estimator='shrinkage'</em>, <em>weights='mass'</em>, <em>align=False</em>, <em>estimate_error=False</em>, <em>bootstrapping_samples=100</em>, <em>calc_diagonal=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#hes"><span class="viewcode-link">[source]</span></a></dt>
-<dd><p>Calculates the Harmonic Ensemble Similarity (HES) between ensembles using
-the symmetrized version of Kullback-Leibler divergence as described
-in <a class="reference internal" href="#tiberti2015" id="id10">[Tiberti2015]</a>.</p>
+<dd><p>Calculates the Harmonic Ensemble Similarity (HES) between ensembles.</p>
+<p>The HES is calculated with the symmetrized version of Kullback-Leibler
+divergence as described in <a class="reference internal" href="#tiberti2015" id="id10">[Tiberti2015]</a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1293,11 +1297,11 @@ distribution. The mean and covariance matrix are, thus, estimatated from
 the distribution of each ensemble and used for comparision by the
 symmetrized version of Kullback-Leibler divergence defined as:</p>
 <div class="math notranslate nohighlight">
-\[D_{KL}(P(x) || Q(x)) = \int_{-\infty}^{\infty}P(x_i)
-ln(P(x_i)/Q(x_i)) = \langle{}ln(P(x))\rangle{}_P -
-\langle{}ln(Q(x))\rangle{}_P\]</div>
+\[D_{KL}(P(x) || Q(x)) =
+    \int_{-\infty}^{\infty}P(x_i) ln(P(x_i)/Q(x_i)) =
+    \langle{}ln(P(x))\rangle{}_P - \langle{}ln(Q(x))\rangle{}_P\]</div>
 <p>where the <span class="math notranslate nohighlight">\(\langle{}.\rangle{}_P\)</span> denotes an expectation
-calculated under the distribution P.</p>
+calculated under the distribution <span class="math notranslate nohighlight">\(P\)</span>.</p>
 <p>For each ensemble, the  mean conformation is estimated as the average over
 the ensemble, and the covariance matrix is calculated by default using a
 shrinkage estimation method (or by a maximum-likelihood method,
@@ -1320,16 +1324,17 @@ examples see the module <a class="reference internal" href="#examples">Examples<
 <span class="go"> [ 38279683.95892926         0.        ]]</span>
 </pre></div>
 </div>
-<p>You can use the align=True option to align the ensembles first. This will
+<p>You can use the <code class="docutils literal notranslate"><span class="pre">align=True</span></code> option to align the ensembles first. This will
 align everything to the current timestep in the first ensemble. Note that
-this changes the ens1 and ens2 objects:</p>
+this changes the <code class="docutils literal notranslate"><span class="pre">ens1</span></code> and <code class="docutils literal notranslate"><span class="pre">ens2</span></code> objects:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 <span class="go">[[    0.          6880.34140106]</span>
 <span class="go">[ 6880.34140106     0.        ]]</span>
 </pre></div>
 </div>
 <p>Alternatively, for greater flexibility in how the alignment should be done
-you can call use an AlignTraj object manually:</p>
+you can call use an <a class="reference internal" href="../align.html#MDAnalysis.analysis.align.AlignTraj" title="MDAnalysis.analysis.align.AlignTraj"><code class="xref py py-class docutils literal notranslate"><span class="pre">AlignTraj</span></code></a> object
+manually:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">align</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">ens2</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
@@ -1339,8 +1344,8 @@ you can call use an AlignTraj object manually:</p>
 </pre></div>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.0: </span>hes doesn’t accept the <em>details</em> argument anymore, it always returns the
-details of the calculation instead, in the form of a dictionary</p>
+<p><span class="versionmodified">Changed in version 1.0.0: </span><code class="docutils literal notranslate"><span class="pre">hes</span></code> doesn’t accept the <cite>details</cite> argument anymore, it always returns
+the details of the calculation instead, in the form of a dictionary</p>
 </div>
 </dd></dl>
 
@@ -1414,10 +1419,18 @@ file name</li>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -1434,7 +1447,7 @@ file name</li>
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 

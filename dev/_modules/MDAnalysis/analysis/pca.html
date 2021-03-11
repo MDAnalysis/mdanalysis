@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>MDAnalysis.analysis.pca &mdash; MDAnalysis 1.0.2-dev0 documentation</title>
+  <title>MDAnalysis.analysis.pca &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -43,7 +43,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 1.0.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -73,7 +73,7 @@
             
             
               <div class="version">
-                1.0.2-dev0
+                2.0.0-dev0
               </div>
             
           
@@ -286,8 +286,6 @@
 <span class="sd">.. autofunction:: cosine_content</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -348,12 +346,13 @@
 <span class="sd">    Computation can be sped up by supplying a precalculated mean structure.</span>
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
-<span class="sd">       ``n_components`` now limits the correct axis of ``p_components``. ``cumulated_variance`` now accurately represents the contribution of each </span>
-<span class="sd">       principal component and does not change when ``n_components`` is given. If </span>
-<span class="sd">       ``n_components`` is not None or is less than the number of ``p_components``, </span>
-<span class="sd">       ``cumulated_variance`` will not sum to 1.</span>
-<span class="sd">       ``align=True`` now correctly aligns the trajectory and computes the correct</span>
-<span class="sd">       means and covariance matrix.</span>
+<span class="sd">       ``n_components`` now limits the correct axis of ``p_components``.</span>
+<span class="sd">       ``cumulated_variance`` now accurately represents the contribution of</span>
+<span class="sd">       each principal component and does not change when ``n_components`` is</span>
+<span class="sd">       given. If ``n_components`` is not None or is less than the number of</span>
+<span class="sd">       ``p_components``, ``cumulated_variance`` will not sum to 1.</span>
+<span class="sd">       ``align=True`` now correctly aligns the trajectory and computes the</span>
+<span class="sd">       correct means and covariance matrix.</span>
 
 <span class="sd">    .. versionchanged:: 0.19.0</span>
 <span class="sd">       The start frame is used when performing selections and calculating</span>
@@ -365,23 +364,22 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        universe: Universe</span>
+<span class="sd">        universe : Universe</span>
 <span class="sd">            Universe</span>
-<span class="sd">        select: string, optional</span>
+<span class="sd">        select : string, optional</span>
 <span class="sd">            A valid selection statement for choosing a subset of atoms from</span>
 <span class="sd">            the atomgroup.</span>
-<span class="sd">        align: boolean, optional</span>
+<span class="sd">        align : boolean, optional</span>
 <span class="sd">            If True, the trajectory will be aligned to a reference</span>
 <span class="sd">            structure.</span>
-<span class="sd">        mean: MDAnalysis atomgroup, optional</span>
+<span class="sd">        mean : MDAnalysis atomgroup, optional</span>
 <span class="sd">            An optional reference structure to be used as the mean of the</span>
 <span class="sd">            covariance matrix.</span>
 <span class="sd">        n_components : int, optional</span>
 <span class="sd">            The number of principal components to be saved, default saves</span>
-<span class="sd">            all principal components, Default: None</span>
+<span class="sd">            all principal components</span>
 <span class="sd">        verbose : bool (optional)</span>
-<span class="sd">             Show detailed progress of the calculation if set to ``True``; the</span>
-<span class="sd">             default is ``False``.</span>
+<span class="sd">             Show detailed progress of the calculation if set to ``True``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">PCA</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_u</span> <span class="o">=</span> <span class="n">universe</span>
@@ -480,21 +478,23 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        atomgroup: MDAnalysis atomgroup/ Universe</span>
+<span class="sd">        atomgroup : MDAnalysis atomgroup/ Universe</span>
 <span class="sd">            The atomgroup or universe containing atoms to be PCA transformed.</span>
-<span class="sd">        n_components: int, optional</span>
-<span class="sd">            The number of components to be projected onto, Default none: maps</span>
-<span class="sd">            onto all components.</span>
-<span class="sd">        start: int, optional</span>
-<span class="sd">            The frame to start on for the PCA transform. Default: None becomes</span>
-<span class="sd">            0, the first frame index.</span>
-<span class="sd">        stop: int, optional</span>
-<span class="sd">            Frame index to stop PCA transform. Default: None becomes n_frames.</span>
+<span class="sd">        n_components : int, optional</span>
+<span class="sd">            The number of components to be projected onto, The default</span>
+<span class="sd">            ``None``maps onto all components.</span>
+<span class="sd">        start : int, optional</span>
+<span class="sd">            The frame to start on for the PCA transform. The default</span>
+<span class="sd">            ``None`` becomes 0, the first frame index.</span>
+<span class="sd">        stop : int, optional</span>
+<span class="sd">            Frame index to stop PCA transform. The default ``None`` becomes</span>
+<span class="sd">            the total number of frames in the trajectory.</span>
 <span class="sd">            Iteration stops *before* this frame number, which means that the</span>
 <span class="sd">            trajectory would be read until the end.</span>
-<span class="sd">        step: int, optional</span>
-<span class="sd">            Number of frames to skip over for PCA transform. Default: None</span>
-<span class="sd">            becomes 1.</span>
+<span class="sd">        step : int, optional</span>
+<span class="sd">            Number of frames to skip over for PCA transform. If set to ``None``</span>
+<span class="sd">            (the default) then every frame is analyzed (i.e., same as</span>
+<span class="sd">            ``step=1``).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -542,26 +542,26 @@
     <span class="k">def</span> <span class="nf">rmsip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Compute the root mean square inner product between subspaces.</span>
 
-<span class="sd">        This is only symmetric if the number of components is the same for </span>
-<span class="sd">        both instances. The RMSIP effectively measures how </span>
+<span class="sd">        This is only symmetric if the number of components is the same for</span>
+<span class="sd">        both instances. The RMSIP effectively measures how</span>
 <span class="sd">        correlated the vectors of this instance are to those of ``other``.</span>
 
 <span class="sd">        Please cite [Amadei1999]_ and [Leo-Macias2004]_ if you use this function.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        other: :class:`~MDAnalysis.analysis.pca.PCA`</span>
+<span class="sd">        other : :class:`~MDAnalysis.analysis.pca.PCA`</span>
 <span class="sd">            Another PCA class. This must have already been run.</span>
-<span class="sd">        n_components: int or tuple of ints, optional</span>
+<span class="sd">        n_components : int or tuple of ints, optional</span>
 <span class="sd">            number of components to compute for the inner products.</span>
 <span class="sd">            ``None`` computes all of them.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        float:</span>
-<span class="sd">            Root mean square inner product of the selected subspaces. </span>
-<span class="sd">            0 indicates that they are mutually orthogonal, whereas 1 indicates </span>
-<span class="sd">            that they are identical. </span>
+<span class="sd">            Root mean square inner product of the selected subspaces.</span>
+<span class="sd">            0 indicates that they are mutually orthogonal, whereas 1 indicates</span>
+<span class="sd">            that they are identical.</span>
 
 <span class="sd">        See also</span>
 <span class="sd">        --------</span>
@@ -593,27 +593,27 @@
     <span class="k">def</span> <span class="nf">cumulative_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Compute the cumulative overlap of a vector in a subspace.</span>
 
-<span class="sd">        This is not symmetric. The cumulative overlap measures the overlap of </span>
+<span class="sd">        This is not symmetric. The cumulative overlap measures the overlap of</span>
 <span class="sd">        the chosen vector in this instance, in the ``other`` subspace.</span>
 
 <span class="sd">        Please cite [Yang2008]_ if you use this function.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        other: :class:`~MDAnalysis.analysis.pca.PCA`</span>
+<span class="sd">        other : :class:`~MDAnalysis.analysis.pca.PCA`</span>
 <span class="sd">            Another PCA class. This must have already been run.</span>
-<span class="sd">        i: int, optional</span>
+<span class="sd">        i : int, optional</span>
 <span class="sd">            The index of eigenvector to be analysed.</span>
-<span class="sd">        n_components: int, optional</span>
+<span class="sd">        n_components : int, optional</span>
 <span class="sd">            number of components in ``other`` to compute for the cumulative overlap.</span>
 <span class="sd">            ``None`` computes all of them.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        float:</span>
-<span class="sd">            Cumulative overlap of the chosen vector in this instance to </span>
-<span class="sd">            the ``other`` subspace. 0 indicates that they are mutually </span>
-<span class="sd">            orthogonal, whereas 1 indicates that they are identical. </span>
+<span class="sd">            Cumulative overlap of the chosen vector in this instance to</span>
+<span class="sd">            the ``other`` subspace. 0 indicates that they are mutually</span>
+<span class="sd">            orthogonal, whereas 1 indicates that they are identical.</span>
 
 <span class="sd">        See also</span>
 <span class="sd">        --------</span>
@@ -652,9 +652,9 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    pca_space: array, shape (number of frames, number of components)</span>
+<span class="sd">    pca_space : array, shape (number of frames, number of components)</span>
 <span class="sd">        The PCA space to be analyzed.</span>
-<span class="sd">    i: int</span>
+<span class="sd">    i : int</span>
 <span class="sd">        The index of the pca_component projection to be analyzed.</span>
 
 <span class="sd">    Returns</span>
@@ -685,28 +685,28 @@
 <span class="k">def</span> <span class="nf">rmsip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute the root mean square inner product between subspaces.</span>
 
-<span class="sd">    This is only symmetric if the number of components is the same for </span>
-<span class="sd">    ``a`` and ``b``. The RMSIP effectively measures how </span>
+<span class="sd">    This is only symmetric if the number of components is the same for</span>
+<span class="sd">    ``a`` and ``b``. The RMSIP effectively measures how</span>
 <span class="sd">    correlated the vectors of ``a`` are to those of ``b``.</span>
 
 <span class="sd">    Please cite [Amadei1999]_ and [Leo-Macias2004]_ if you use this function.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    a: array, shape (n_components, n_features)</span>
+<span class="sd">    a : array, shape (n_components, n_features)</span>
 <span class="sd">        The first subspace. Must have the same number of features as ``b``.</span>
-<span class="sd">    b: array, shape (n_components, n_features)</span>
+<span class="sd">    b : array, shape (n_components, n_features)</span>
 <span class="sd">        The second subspace. Must have the same number of features as ``a``.</span>
-<span class="sd">    n_components: int or tuple of ints, optional</span>
+<span class="sd">    n_components : int or tuple of ints, optional</span>
 <span class="sd">        number of components to compute for the inner products.</span>
 <span class="sd">        ``None`` computes all of them.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    float:</span>
-<span class="sd">        Root mean square inner product of the selected subspaces. </span>
-<span class="sd">        0 indicates that they are mutually orthogonal, whereas 1 indicates </span>
-<span class="sd">        that they are identical. </span>
+<span class="sd">        Root mean square inner product of the selected subspaces.</span>
+<span class="sd">        0 indicates that they are mutually orthogonal, whereas 1 indicates</span>
+<span class="sd">        that they are identical.</span>
 
 <span class="sd">    .. versionadded:: 1.0.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -736,30 +736,30 @@
 <span class="k">def</span> <span class="nf">cumulative_overlap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute the cumulative overlap of a vector in a subspace.</span>
 
-<span class="sd">    This is not symmetric. The cumulative overlap measures the overlap of </span>
+<span class="sd">    This is not symmetric. The cumulative overlap measures the overlap of</span>
 <span class="sd">    the chosen vector in ``a``, in the ``b`` subspace.</span>
 
 <span class="sd">    Please cite [Yang2008]_ if you use this function.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    a: array, shape (n_components, n_features) or vector, length n_features</span>
+<span class="sd">    a : array, shape (n_components, n_features) or vector, length n_features</span>
 <span class="sd">        The first subspace containing the vector of interest. Alternatively,</span>
 <span class="sd">        the actual vector. Must have the same number of features as ``b``.</span>
-<span class="sd">    b: array, shape (n_components, n_features)</span>
+<span class="sd">    b : array, shape (n_components, n_features)</span>
 <span class="sd">        The second subspace. Must have the same number of features as ``a``.</span>
-<span class="sd">    i: int, optional</span>
+<span class="sd">    i : int, optional</span>
 <span class="sd">        The index of eigenvector to be analysed.</span>
-<span class="sd">    n_components: int, optional</span>
+<span class="sd">    n_components : int, optional</span>
 <span class="sd">        number of components in ``b`` to compute for the cumulative overlap.</span>
 <span class="sd">        ``None`` computes all of them.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    float:</span>
-<span class="sd">        Cumulative overlap of the chosen vector in ``a`` to the ``b`` subspace. </span>
-<span class="sd">        0 indicates that they are mutually orthogonal, whereas 1 indicates </span>
-<span class="sd">        that they are identical. </span>
+<span class="sd">        Cumulative overlap of the chosen vector in ``a`` to the ``b`` subspace.</span>
+<span class="sd">        0 indicates that they are mutually orthogonal, whereas 1 indicates</span>
+<span class="sd">        that they are identical.</span>
 
 <span class="sd">    .. versionadded:: 1.0.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -789,10 +789,18 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
-  </div> 
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
 
 </footer>
         </div>
@@ -809,7 +817,7 @@
      aria-label="versions">
     <span class="rst-current-version" data-toggle="rst-current-version">
       <span class="fa fa-book"></span>
-        1.0.2-dev0
+        2.0.0-dev0
       <span class="fa fa-caret-down"></span>
     </span>
 
