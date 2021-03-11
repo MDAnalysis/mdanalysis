@@ -335,3 +335,9 @@ class TestErrors:
         with pytest.raises(IOError):
             with self.parser(ITP_no_endif) as p:
                 top = p.parse(include_dir=GMX_DIR)
+
+class Testrelativepath:
+
+    def test_relpath(self):
+        u=mda.Universe('../data/gromacs_ala10.itp', format='ITP')
+        
