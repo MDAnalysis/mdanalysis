@@ -21,6 +21,9 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * ValueError raised when empty atomgroup is given to DensityAnalysis
+    without a user defined grid. UserWarning displayed when user defined 
+    grid is provided. (Issue #3055)
   * Fixed import of several `__all__` lists (PR #3013)
   * atommethods (_get_prev/next_residues_by_resid) returns empty residue group 
     when given empty residue group (Issue #3089)
@@ -81,8 +84,11 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Caches can now undergo central validation at the Universe level, opening
+    the door to more useful caching. Already applied to fragment caching
+    (Issue #2376, PR #3135)
   * Code for operations on compounds refactored, centralized and optimized for
-    performance (Issue #3000)
+    performance (Issue #3000, PR #3005)
   * Added automatic selection class generation for TopologyAttrs,
     FloatRangeSelection, and BoolSelection (Issues #2925, #2875; PR #2927)
   * Added 'to' operator, negatives, scientific notation, and arbitrary

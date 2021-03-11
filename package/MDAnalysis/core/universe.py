@@ -308,7 +308,7 @@ class Universe(object):
                  in_memory_step=1, **kwargs):
 
         self._trajectory = None  # managed attribute holding Reader
-        self._cache = {}
+        self._cache = {'_valid': {}}
         self.atoms = None
         self.residues = None
         self.segments = None
@@ -1002,7 +1002,10 @@ class Universe(object):
         """
         self._add_topology_objects('bonds', values, types=types,
                                  guessed=guessed, order=order)
+        # Invalidate bond-related caches
         self._cache.pop('fragments', None)
+        self._cache['_valid'].pop('fragments', None)
+        self._cache['_valid'].pop('fragindices', None)
 
     def add_angles(self, values, types=None, guessed=False):
         """Add new Angles to this Universe.
@@ -1139,7 +1142,10 @@ class Universe(object):
         .. versionadded:: 1.0.0
         """
         self._delete_topology_objects('bonds', values)
+        # Invalidate bond-related caches
         self._cache.pop('fragments', None)
+        self._cache['_valid'].pop('fragments', None)
+        self._cache['_valid'].pop('fragindices', None)
 
     def delete_angles(self, values):
         """Delete Angles from this Universe.
