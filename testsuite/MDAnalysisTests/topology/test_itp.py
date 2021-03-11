@@ -338,6 +338,6 @@ class TestErrors:
 
 class Testrelativepath:
 
+
     def test_relpath(self):
-        u=mda.Universe('../data/gromacs_ala10.itp', format='ITP')
-        
+        u = mda.Universe('../data/gromacs_ala10.itp', format='ITP')
