@@ -21,7 +21,8 @@ The rules for this file:
   * 2.0.0
 
 Fixes
-  * Fixed UnboundLocalError in fasta2align function (Issue #3124)
+  * Fixed issue with unassigned 'GAP' variable when fasta2align function gets a
+    no gap residue input (Issue #3124)
   * Fixed import of several `__all__` lists (PR #3013)
   * atommethods (_get_prev/next_residues_by_resid) returns empty residue group 
     when given empty residue group (Issue #3089)
