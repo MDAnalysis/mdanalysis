@@ -13,7 +13,7 @@ matrix:
     - python: 3.8
       name: "Power PC"
       os: linux
-      dist: focal
+      #dist: focal
       arch: ppc64le
       #before_install:
       #  - wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-ppc64le.sh -O miniconda.sh
