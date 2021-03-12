@@ -55,6 +55,6 @@ install:
   - (cd package/ && python setup.py develop) && (cd testsuite/ && python setup.py install)
 script:
   # 4 threads per power9 cores, 2 cores = 8 threads
-  - python -m pytest ./MDAnalysisTests --disable-pytest-warnings -n 8
+  - pytest testsuite/MDAnalysisTests --disable-pytest-warnings -n 8
 after_success:
   - echo "Override this stage for now"
