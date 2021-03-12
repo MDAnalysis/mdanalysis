@@ -597,7 +597,7 @@ class TopologyGroup(object):
         elif guessed is True or guessed is False:
             guessed = np.repeat(guessed, nbonds)
         else:
-            guessed = np.asarray(guessed, dtype=np.bool)
+            guessed = np.asarray(guessed, dtype=bool)
         if order is None:
             order = np.repeat(None, nbonds)
 

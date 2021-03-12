@@ -13,13 +13,18 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/??  richardjgowers
+??/??/??  richardjgowers, IAlibay, tylerjereddy
 
   * 1.0.2
 
 Fixes
+  * Replaces decreated NumPy type aliases and fixes NEP 34 explicit ragged
+    array warnings (PR #3139, backports PRs #2845 and #2834)
   * Fixed several issues with NSGrid and triclinic boxes not finding some pairs.
-    (Issues #2229 #2345 #2919) PR #2937.
+    (Issues #2229 #2345 #2919, PR #2937).
+
+Changes
+  * Maximum pinned versions in setup.py removed for python 3.6+ (PR #3139)
     
 01/17/21 richardjgowers, IAlibay, orbeckst, tylerjereddy, jbarnoud,
          yuxuanzhuang, lilyminium, VOD555, p-j-smith, bieniekmateusz,

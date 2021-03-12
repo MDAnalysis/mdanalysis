@@ -200,7 +200,7 @@ def change_squash(criteria, to_squash):
 
     # 2) Allocate new arrays
     # Per atom record of what residue they belong to
-    residx = np.zeros_like(criteria[0], dtype=np.int)
+    residx = np.zeros_like(criteria[0], dtype=int)
     # Per residue record of various attributes
     new_others = [np.zeros(nres, dtype=o.dtype) for o in to_squash]
 

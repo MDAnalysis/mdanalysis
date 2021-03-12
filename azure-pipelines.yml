@@ -41,7 +41,7 @@ jobs:
       cython
       matplotlib
       numpy
-      pytest
+      "pytest<6.2"
       pytest-cov
       pytest-xdist
       scikit-learn
