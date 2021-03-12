@@ -150,6 +150,11 @@ jobs:
         # for .pyx file. If possible a solution for this should be found.
         (cd package/ && python setup.py develop) && (cd testsuite/ && python setup.py install)
 
+    - name: check_issue_failure
+      if: contains(matrix.name, 'asv_check') != true
+      run: |
+        pytest testsuite/MDAnalysisTests/analysis/test_helix_analysis.py
+
     - name: run_tests
       if: contains(matrix.name, 'asv_check') != true
       run: |
