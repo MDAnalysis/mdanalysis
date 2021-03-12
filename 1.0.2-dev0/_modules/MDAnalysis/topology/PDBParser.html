@@ -607,7 +607,7 @@
 <span class="sd">    RuntimeError</span>
 <span class="sd">        Raised if ``conect`` is not a valid CONECT record</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">atom_id</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">(</span><span class="n">conect</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">11</span><span class="p">])</span>
+    <span class="n">atom_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">conect</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">11</span><span class="p">])</span>
     <span class="n">n_bond_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">conect</span><span class="p">[</span><span class="mi">11</span><span class="p">:])</span> <span class="o">//</span> <span class="mi">5</span>
 
     <span class="k">try</span><span class="p">:</span>
