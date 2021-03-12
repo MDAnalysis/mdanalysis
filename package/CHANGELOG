@@ -134,7 +134,7 @@ Enhancements
   
 Changes
   * Introduces encore specific C compiler arguments to allow for lowering of
-    optimisations on non-x86 platforms (PR #3149)
+    optimisations on non-x86 platforms (Issue #1389, PR #3149)
   * Continuous integration uses mamba rather than conda to install the
     dependencies (PR #2983)
   * removes deprecated `as_Universe` function from MDAnalysis.core.universe,
