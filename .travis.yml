@@ -48,7 +48,7 @@ before_install:
   - . "/home/travis/miniconda/etc/profile.d/conda.sh"
   - conda activate base
   - conda update --yes conda
-  - conda install --yes pip pytest==6.1.2 mmtf-python biopython networkx cython matplotlib-base scipy griddataformats hypothesis gsd codecov -c conda-forge -c biobuilds
+  - conda install --yes pip pytest==6.1.2 mmtf-python biopython networkx cython matplotlib-base "scipy>=1.6" griddataformats hypothesis gsd codecov -c conda-forge -c biobuilds
   - pip install pytest-xdist
   - conda info
 install:
