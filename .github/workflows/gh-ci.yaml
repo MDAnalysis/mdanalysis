@@ -153,7 +153,7 @@ jobs:
     - name: check_issue_failure
       if: contains(matrix.name, 'asv_check') != true
       run: |
-        pytest testsuite/MDAnalysisTests/analysis/test_helix_analysis.py
+        pytest -v testsuite/MDAnalysisTests/analysis/test_helix_analysis.py::TestHELANAL::test_residue_gaps_split
 
     - name: run_tests
       if: contains(matrix.name, 'asv_check') != true
