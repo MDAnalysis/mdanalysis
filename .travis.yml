@@ -14,6 +14,24 @@ matrix:
       name: "Power PC"
       os: linux
       arch: ppc64le
+      before_install:
+        - wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-ppc64le.sh -O miniconda.sh
+        - mkdir $HOME/.conda
+        - bash miniconda.sh -b -p $HOME/miniconda
+        - $HOME/miniconda/bin/conda init bash
+        # for some reason the image does not like sourcing .bashrc
+        - . "/home/travis/miniconda/etc/profile.d/conda.sh"
+        - conda activate base
+        - conda update --yes conda
+        - conda install --yes pip pytest==6.1.2 mmtf-python biopython networkx cython matplotlib-base "scipy>=1.6" griddataformats hypothesis gsd codecov -c conda-forge -c biobuilds
+        - pip install pytest-xdist
+        - conda info
+      install:
+        - (cd package/ && python setup.py develop) && (cd testsuite/ && python setup.py install)
+      script:
+        - pytest testsuite/MDAnalysisTests --disable-pytest-warnings -n 2
+      after_sucess:
+        - echo "Override this stage for now"
 
     - os: linux
       language: python
@@ -38,23 +56,3 @@ matrix:
       after_success:
         - echo "Override this stage for ARM64"
 
-
-before_install:
-  - wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-ppc64le.sh -O miniconda.sh
-  - mkdir $HOME/.conda
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - $HOME/miniconda/bin/conda init bash
-  - cat $HOME/.bashrc
-  - . "/home/travis/miniconda/etc/profile.d/conda.sh"
-  - conda activate base
-  - conda update --yes conda
-  - conda install --yes pip pytest==6.1.2 mmtf-python biopython networkx cython matplotlib-base "scipy>=1.6" griddataformats hypothesis gsd codecov -c conda-forge -c biobuilds
-  - pip install pytest-xdist
-  - conda info
-install:
-  - (cd package/ && python setup.py develop) && (cd testsuite/ && python setup.py install)
-script:
-  # 4 threads per power9 cores, 2 cores = 8 threads
-  - pytest testsuite/MDAnalysisTests --disable-pytest-warnings -n 8
-after_success:
-  - echo "Override this stage for now"
