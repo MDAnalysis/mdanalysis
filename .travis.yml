@@ -13,27 +13,7 @@ matrix:
     - python: 3.8
       name: "Power PC"
       os: linux
-      #dist: focal
       arch: ppc64le
-      #before_install:
-      #  - wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-ppc64le.sh -O miniconda.sh
-      #  - mkdir $HOME/.conda
-      #  - bash miniconda.sh -b -p $HOME/miniconda
-      #  - $HOME/miniconda/bin/conda init bash
-      #  - cat $HOME/.bashrc
-      #  - source $HOME/.bashrc
-      #  - conda activate base
-      #  - conda update --yes conda
-      #  - conda install pip pytest==6.1.2 mmtf-python biopython networkx cython matplotlib-base scipy griddataformats hypothesis gsd codecov -c conda-forge biobuilds
-      #  - pip install pytest-xdist
-      #  - conda info
-      #install:
-      #  - (cd package/ && python setup.py develop) && (cd testsuite/ && python setup.py install)
-      #script:
-      #  # 4 threads per power9 cores, 2 cores = 8 threads
-      #  - python -m pytest ./MDAnalysisTests --disable-pytest-warnings -n 8
-      #after_success:
-      #  - echo "Override this stage for ppc64le"
 
     - os: linux
       language: python
@@ -57,6 +37,7 @@ matrix:
         - python -m pytest ./MDAnalysisTests --disable-pytest-warnings -n 8 -rsx --cov=MDAnalysis
       after_success:
         - echo "Override this stage for ARM64"
+
 
 before_install:
   - wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-ppc64le.sh -O miniconda.sh
