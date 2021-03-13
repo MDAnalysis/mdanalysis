@@ -443,6 +443,13 @@ class DensityAnalysis(AnalysisBase):
                           " defined grid will need to be "
                           "provided instead.")
                 raise ValueError(errmsg) from err
+            if any([self._xdim, self._ydim, self._zdim]):
+                msg = ("Grid dimensions are provided but "
+                       "no grid centre is. "
+                       "The provided dimensions are ignored and the grid "
+                       "is automatically generated from atom coordinates. ")
+                warnings.warn(msg)
+                logger.warning(msg)
         BINS = fixedwidth_bins(self._delta, smin, smax)
         arange = np.transpose(np.vstack((BINS['min'], BINS['max'])))
         bins = BINS['Nbins']
