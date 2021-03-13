@@ -176,12 +176,24 @@ class TPRParser(TopologyReaderBase):
     """
     format = 'TPR'
 
-    def parse(self, **kwargs):
+    def parse(self, tpr_resid_from_one=False, **kwargs):
         """Parse a Gromacs TPR file into a MDAnalysis internal topology structure.
+
+        Parameters
+        ----------
+        tpr_resid_from_one: bool (optional)
+            Toggle whether to index resids from 1 or 0 from TPR files.
+            TPR files index resids from 0 by default, even though GRO and ITP
+            files index from 1.
 
         Returns
         -------
         structure : dict
+
+
+        .. versionchanged:: 1.0.2
+            Added the ``tpr_resid_from_one`` keyword to control if
+            resids are indexed from 0 or 1. Default ``False``.
         """
         with openany(self.filename, mode='rb') as infile:
             tprf = infile.read()
@@ -219,7 +231,8 @@ class TPRParser(TopologyReaderBase):
             tpr_utils.ndo_real(data, state_ngtc)        # relevant to Berendsen tcoupl_lambda
 
         if th.bTop:
-            tpr_top = tpr_utils.do_mtop(data, th.fver)
+            tpr_top = tpr_utils.do_mtop(data, th.fver,
+                                        tpr_resid_from_one=tpr_resid_from_one)
         else:
             msg = f"{self.filename}: No topology found in tpr file"
             logger.critical(msg)
