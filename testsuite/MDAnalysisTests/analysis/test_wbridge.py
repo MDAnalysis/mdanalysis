@@ -18,11 +18,6 @@ from MDAnalysis.analysis.hydrogenbonds.wbridge_analysis import (
     WaterBridgeAnalysis, )
 
 
-def test_import_warning():
-    wmsg = 'This module has been moved to'
-    with pytest.warns(DeprecationWarning, match=wmsg):
-        reload(MDAnalysis.analysis.hbonds.wbridge_analysis)
-
 class TestWaterBridgeAnalysis(object):
     @staticmethod
     @pytest.fixture(scope='class')
@@ -736,3 +731,8 @@ class TestWaterBridgeAnalysis(object):
 
         timesteps = sorted(wb_multiframe.timesteps_by_type())
         assert_array_equal(timesteps[3], [1, 12, 'ALA', 1, 'H', 'ALA', 6, 'O', 0, 2])
+
+def test_import_warning():
+    wmsg = 'This module has been moved to'
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        reload(MDAnalysis.analysis.hbonds.wbridge_analysis)
