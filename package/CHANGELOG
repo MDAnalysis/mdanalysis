@@ -25,6 +25,10 @@ Fixes
 
 Changes
   * Maximum pinned versions in setup.py removed for python 3.6+ (PR #3139)
+
+Deprecations
+  * hbonds.WaterBridgeAnalysis will be removed in 2.0.0 and
+    replaced with hydrogenbonds.WaterBridgeAnalysis (#3111)
     
 01/17/21 richardjgowers, IAlibay, orbeckst, tylerjereddy, jbarnoud,
          yuxuanzhuang, lilyminium, VOD555, p-j-smith, bieniekmateusz,
@@ -83,8 +87,6 @@ Deprecations
     only a Universe, in 2.0.0
   * analysis.helanal will be removed in 2.0.0 and replaced by
     analysis.helix_analysis (PR #2622)
-  * hbonds.WaterBridgeAnalysis will be removed in 2.0.0 and
-    replaced with hydrogenbonds.WaterBridgeAnalysis (#3111)
 
 
 06/09/20 richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
