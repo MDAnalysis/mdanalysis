@@ -1581,7 +1581,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         elif isinstance(frame, (list, np.ndarray)):
             if len(frame) != 0 and isinstance(frame[0], (bool, np.bool_)):
                 # Avoid having list of bools
-                frame = np.asarray(frame, dtype=np.bool)
+                frame = np.asarray(frame, dtype=bool)
                 # Convert bool array to int array
                 frame = np.arange(len(self))[frame]
             return FrameIteratorIndices(self, frame)
