@@ -671,11 +671,11 @@ Classes
       of a water bridge existence.
 
 """
+from __future__ import division
 from collections import defaultdict
 import logging
 import warnings
 import numpy as np
-from __future__ import division
 
 from ..base import AnalysisBase
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
