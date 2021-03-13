@@ -21,8 +21,8 @@ The rules for this file:
   * 2.0.0
 
 Fixes
-  * Fixed UnboundLocalError in fasta2align function (Issue #3124)
-    changed authors and changelog
+  * Fixed issue with unassigned 'GAP' variable in fasta2algin function with a
+    no gap resid input (Issue #3124)
   * ValueError raised when empty atomgroup is given to DensityAnalysis
     without a user defined grid. UserWarning displayed when user defined
     grid is provided. (Issue #3055)
