@@ -171,12 +171,24 @@ class TPRParser(TopologyReaderBase):
     """
     format = 'TPR'
 
-    def parse(self, **kwargs):
+    def parse(self, tpr_resid_from_one=False, **kwargs):
         """Parse a Gromacs TPR file into a MDAnalysis internal topology structure.
+
+        Parameters
+        ----------
+        tpr_resid_from_one: bool (optional)
+            Toggle whether to index resids from 1 or 0 from TPR files.
+            TPR files index resids from 0 by default, even though GRO and ITP
+            files index from 1.
 
         Returns
         -------
         structure : dict
+
+
+        .. versionchanged:: 1.0.2
+            Added the ``tpr_resid_from_one`` keyword to control if
+            resids are indexed from 0 or 1. Default ``False``.
         """
         with openany(self.filename, mode='rb') as infile:
             tprf = infile.read()
@@ -219,7 +231,8 @@ class TPRParser(TopologyReaderBase):
             tpr_utils.fileVersion_err(V)
 
         if th.bTop:
-            tpr_top = tpr_utils.do_mtop(data, V)
+            tpr_top = tpr_utils.do_mtop(data, V,
+                                        tpr_resid_from_one=tpr_resid_from_one)
         else:
             msg = "{0}: No topology found in tpr file".format(self.filename)
             logger.critical(msg)
