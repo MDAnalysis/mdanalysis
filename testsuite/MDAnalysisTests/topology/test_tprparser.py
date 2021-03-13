@@ -291,22 +291,11 @@ def test_elements():
 
 
 @pytest.mark.parametrize("resid_from_one,resid_addition", [
-    (False, 0),  # status quo for 1.x
-    (True, 1),
+    (False, 0),
+    (True, 1),  # status quo for 2.x
     ])
 def test_resids(resid_from_one, resid_addition):
     u = mda.Universe(TPR, tpr_resid_from_one=resid_from_one)
     resids = np.arange(len(u.residues)) + resid_addition
     assert_equal(u.residues.resids, resids,
                  err_msg="tpr_resid_from_one kwarg not switching resids")
-
-
-@pytest.mark.parametrize("kwargs", [
-    {},
-    {"tpr_resid_from_one": False},
-])
-def test_resid_false_deprecation_warning(kwargs):
-    err = ("indexing residues from 0 by default will be removed "
-           "in MDAnalysis version 2.0")
-    with pytest.warns(DeprecationWarning, match=err):
-        u = mda.Universe(TPR, **kwargs)

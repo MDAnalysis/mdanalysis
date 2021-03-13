@@ -176,7 +176,7 @@ class TPRParser(TopologyReaderBase):
     """
     format = 'TPR'
 
-    def parse(self, tpr_resid_from_one=False, **kwargs):
+    def parse(self, tpr_resid_from_one=True, **kwargs):
         """Parse a Gromacs TPR file into a MDAnalysis internal topology structure.
 
         Parameters
@@ -194,6 +194,9 @@ class TPRParser(TopologyReaderBase):
         .. versionchanged:: 1.0.2
             Added the ``tpr_resid_from_one`` keyword to control if
             resids are indexed from 0 or 1. Default ``False``.
+
+        .. versionchanged:: 2.0.0
+            Changed to ``tpr_resid_from_one=True`` by default.
         """
         with openany(self.filename, mode='rb') as infile:
             tprf = infile.read()
