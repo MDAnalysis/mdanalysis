@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>6.26. Reading trajectory with Chemfiles — MDAnalysis.coordinates.chemfiles &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  <title>6.26. Reading trajectories with chemfiles — MDAnalysis.coordinates.chemfiles &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -132,8 +132,10 @@
 <li class="toctree-l2"><a class="reference internal" href="XYZ.html">6.23. XYZ trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="FHIAIMS.html">6.24. FHI-AIMS file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.FHIAIMS</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="memory.html">6.25. Reading trajectories from memory — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">6.26. Reading trajectory with Chemfiles — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#classes">6.26.1. Classes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">6.26. Reading trajectories with <em>chemfiles</em> — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-the-chemfiles-reader">6.26.1. Using the CHEMFILES reader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#classes">6.26.2. Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#helper-functions">6.26.3. Helper functions</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="null.html">6.27. Null output — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
@@ -205,7 +207,7 @@
         
           <li><a href="../coordinates_modules.html">6. Coordinates modules</a> &raquo;</li>
         
-      <li>6.26. Reading trajectory with Chemfiles — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></li>
+      <li>6.26. Reading trajectories with <em>chemfiles</em> — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -224,13 +226,37 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <span class="target" id="module-MDAnalysis.coordinates.chemfiles"></span><div class="section" id="reading-trajectory-with-chemfiles-mdanalysis-coordinates-chemfiles">
-<h1>6.26. Reading trajectory with Chemfiles — <a class="reference internal" href="#module-MDAnalysis.coordinates.chemfiles" title="MDAnalysis.coordinates.chemfiles"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a><a class="headerlink" href="#reading-trajectory-with-chemfiles-mdanalysis-coordinates-chemfiles" title="Permalink to this headline">¶</a></h1>
-<p>Classes to read and write files using the <a class="reference external" href="https://chemfiles.org">chemfiles</a> library. This library
-provides C++ implementation of multiple formats readers and writers, the full
-list if available <a class="reference external" href="formats">here</a>.</p>
+  <span class="target" id="module-MDAnalysis.coordinates.chemfiles"></span><div class="section" id="reading-trajectories-with-chemfiles-mdanalysis-coordinates-chemfiles">
+<h1>6.26. Reading trajectories with <em>chemfiles</em> — <a class="reference internal" href="#module-MDAnalysis.coordinates.chemfiles" title="MDAnalysis.coordinates.chemfiles"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a><a class="headerlink" href="#reading-trajectories-with-chemfiles-mdanalysis-coordinates-chemfiles" title="Permalink to this headline">¶</a></h1>
+<p>MDAnalysis interoperates with the <a class="reference external" href="https://chemfiles.org">chemfiles</a> library. The <em>chemfiles</em> C++ library
+supports an expanding set of file formats, some of which are not natively supported by
+MDAnalysis. Using the <em>CHEMFILES</em> reader you can use  <a class="reference external" href="https://chemfiles.org">chemfiles</a> for the low-level
+file reading. Check the list of <a class="reference external" href="formats">chemfile-supported file formats</a>.</p>
+<div class="section" id="using-the-chemfiles-reader">
+<h2>6.26.1. Using the CHEMFILES reader<a class="headerlink" href="#using-the-chemfiles-reader" title="Permalink to this headline">¶</a></h2>
+<p>When reading, set the <code class="docutils literal notranslate"><span class="pre">format=&quot;CHEMFILES&quot;</span></code> keyword argument and I/O is delegated to
+<a class="reference external" href="https://chemfiles.org">chemfiles</a>. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests</span> <span class="kn">import</span> <span class="n">datafiles</span> <span class="k">as</span> <span class="n">data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">TPR</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">TRR</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;CHEMFILES&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
+<span class="go">&lt;ChemfilesReader ~/anaconda3/envs/mda3/lib/python3.8/site-packages/MDAnalysisTests/data/adk_oplsaa.trr with 10 frames of 47681 atoms&gt;</span>
+</pre></div>
+</div>
+<p>You can then use the <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> as usual while chemfiles
+is handling the I/O transparently in the background.</p>
+<p><a class="reference external" href="https://chemfiles.org">chemfiles</a> can also <em>write</em> a number of formats for which there are no Writers in
+MDAnalysis. For example, to write a mol2 file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">mol2_ligand</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">mda</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="s2">&quot;ligand.mol2&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;CHEMFILES&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">W</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">W</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="classes">
-<h2>6.26.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<h2>6.26.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<p>Classes to read and write files using the <a class="reference external" href="https://chemfiles.org">chemfiles</a> library. This library
+provides C++ implementation of multiple formats readers and writers.</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.chemfiles.ChemfilesReader">
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.chemfiles.</code><code class="descname">ChemfilesReader</code><span class="sig-paren">(</span><em>filename</em>, <em>chemfiles_format=''</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/chemfiles.html#ChemfilesReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.chemfiles.ChemfilesReader" title="Permalink to this definition">¶</a></dt>
@@ -248,7 +274,7 @@ possible to manually specify the format to use for a given file.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>filename</strong> (<em>chemfiles.Trajectory</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the chemfiles object to read or filename to read</li>
 <li><strong>chemfiles_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – if <em>filename</em> was a string, use the given format name instead of
-guessing from the extension. The <a class="reference external" href="formats">list of supported formats</a> and the associated names is available in chemfiles
+guessing from the extension. The <a class="reference external" href="formats">list of supported formats</a> and the associated names is available in the chemfiles
 documentation.</li>
 <li><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – General reader arguments.</li>
 </ul>
@@ -346,6 +372,35 @@ to be used to return to its original frame.</p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="helper-functions">
+<h2>6.26.3. Helper functions<a class="headerlink" href="#helper-functions" title="Permalink to this headline">¶</a></h2>
+<dl class="data">
+<dt id="MDAnalysis.coordinates.chemfiles.MIN_CHEMFILES_VERSION">
+<code class="descclassname">MDAnalysis.coordinates.chemfiles.</code><code class="descname">MIN_CHEMFILES_VERSION</code><em class="property"> = LooseVersion ('0.9')</em><a class="headerlink" href="#MDAnalysis.coordinates.chemfiles.MIN_CHEMFILES_VERSION" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lowest version of chemfiles that is supported
+by MDAnalysis.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="MDAnalysis.coordinates.chemfiles.MAX_CHEMFILES_VERSION">
+<code class="descclassname">MDAnalysis.coordinates.chemfiles.</code><code class="descname">MAX_CHEMFILES_VERSION</code><em class="property"> = LooseVersion ('0.10')</em><a class="headerlink" href="#MDAnalysis.coordinates.chemfiles.MAX_CHEMFILES_VERSION" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lowest version of chemfiles that is <em>not supported</em>
+by MDAnalysis.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.coordinates.chemfiles.check_chemfiles_version">
+<code class="descclassname">MDAnalysis.coordinates.chemfiles.</code><code class="descname">check_chemfiles_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/chemfiles.html#check_chemfiles_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.chemfiles.check_chemfiles_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if an appropriate <em>chemfiles</em> is available</p>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if a usable chemfiles version is available,
+with <a class="reference internal" href="#MDAnalysis.coordinates.chemfiles.MIN_CHEMFILES_VERSION" title="MDAnalysis.coordinates.chemfiles.MIN_CHEMFILES_VERSION"><code class="xref py py-data docutils literal notranslate"><span class="pre">MIN_CHEMFILES_VERSION</span></code></a> &lt;= version &lt;
+<a class="reference internal" href="#MDAnalysis.coordinates.chemfiles.MAX_CHEMFILES_VERSION" title="MDAnalysis.coordinates.chemfiles.MAX_CHEMFILES_VERSION"><code class="xref py py-data docutils literal notranslate"><span class="pre">MAX_CHEMFILES_VERSION</span></code></a></p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.0.</span></p>
 </div>
 </dd></dl>
 
