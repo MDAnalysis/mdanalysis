@@ -1,7 +1,12 @@
 from __future__ import print_function, absolute_import
 from six import StringIO
 from collections import defaultdict
-from importlib import reload
+try:
+    #reload was move to importlib from py34
+    from importlib import reload
+except:
+    # reload is a builtin function in py27
+    pass
 
 from numpy.testing import (
     assert_equal, assert_array_equal,)
