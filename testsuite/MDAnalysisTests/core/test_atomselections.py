@@ -485,7 +485,7 @@ class TestSelectionsTPR(object):
     @staticmethod
     @pytest.fixture(scope='class')
     def universe():
-        return MDAnalysis.Universe(TPR,XTC)
+        return MDAnalysis.Universe(TPR, XTC, tpr_resid_from_one=False)
 
     @pytest.mark.parametrize('selstr', [
         'same fragment as bynum 1',
@@ -1299,7 +1299,7 @@ def test_mass_sel_warning(u_fake_masses):
 
 
 @pytest.mark.parametrize("selstr,n_res", [
-    ("resnum -10 to 3", 14),
+    ("resnum -10 to 3", 13),
     ("resnum -5--3", 3),  # select -5 to -3
     ("resnum -3 : -5", 0),  # wrong way around
 ])

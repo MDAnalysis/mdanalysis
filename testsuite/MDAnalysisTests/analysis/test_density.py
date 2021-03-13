@@ -148,7 +148,7 @@ class DensityParameters(object):
 
     @pytest.fixture()
     def universe(self):
-        return mda.Universe(self.topology, self.trajectory)
+        return mda.Universe(self.topology, self.trajectory, tpr_resid_from_one=False)
 
 class TestDensityAnalysis(DensityParameters):
     def check_DensityAnalysis(self, ag, ref_meandensity,
