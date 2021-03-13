@@ -20,24 +20,64 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 """
-Reading trajectory with Chemfiles --- :mod:`MDAnalysis.coordinates.chemfiles`
-=============================================================================
+Reading trajectories with *chemfiles* --- :mod:`MDAnalysis.coordinates.chemfiles`
+=================================================================================
 
-Classes to read and write files using the `chemfiles`_ library. This library
-provides C++ implementation of multiple formats readers and writers, the full
-list if available `here <formats>`_.
+MDAnalysis interoperates with the `chemfiles`_ library. The *chemfiles* C++ library 
+supports an expanding set of file formats, some of which are not natively supported by
+MDAnalysis. Using the *CHEMFILES* reader you can use  `chemfiles`_ for the low-level 
+file reading. Check the list of `chemfile-supported file formats <formats>`_.
 
 .. _chemfiles: https://chemfiles.org
-.. _formats: http://chemfiles.org/chemfiles/latest/formats.html
+.. _formats: https://chemfiles.org/chemfiles/0.9.3/formats.html#list-of-supported-formats
+.. NOTE: MDAnalysis currently restricts chemfiles to 0.9 <= version < 0.10. Update the link
+..       above to the latest documentation once this restriction is lifted.
+..       https://chemfiles.org/chemfiles/latest/formats.html#list-of-supported-formats
+
+Using the CHEMFILES reader
+--------------------------
+
+When reading, set the ``format="CHEMFILES"`` keyword argument and I/O is delegated to 
+`chemfiles`_. For example::
+
+   >>> import MDAnalysis as mda
+   >>> from MDAnalysis.tests import datafiles as data
+   >>> u = mda.Universe(data.TPR, data.TRR, format="CHEMFILES")
+   >>> print(u.trajectory)
+   <ChemfilesReader ~/anaconda3/envs/mda3/lib/python3.8/site-packages/MDAnalysisTests/data/adk_oplsaa.trr with 10 frames of 47681 atoms>
+
+You can then use the :class:`~MDAnalysis.core.universe.Universe` as usual while chemfiles
+is handling the I/O transparently in the background.
+
+`chemfiles`_ can also *write* a number of formats for which there are no Writers in
+MDAnalysis. For example, to write a mol2 file::
+
+   >>> u = mda.Universe(data.mol2_ligand)
+   >>> with mda.Writer("ligand.mol2", format="CHEMFILES") as W:
+   ...     W.write(u.atoms)
+
+
+
 
 Classes
 -------
+
+Classes to read and write files using the `chemfiles`_ library. This library
+provides C++ implementation of multiple formats readers and writers.
 
 .. autoclass:: ChemfilesReader
 
 .. autoclass:: ChemfilesWriter
 
 .. autoclass:: ChemfilesPicklable
+
+Helper functions
+----------------
+
+.. autodata:: MIN_CHEMFILES_VERSION
+.. autodata:: MAX_CHEMFILES_VERSION
+.. autofunction:: check_chemfiles_version
+
 """
 from distutils.version import LooseVersion
 import warnings
@@ -60,14 +100,20 @@ else:
     HAS_CHEMFILES = True
 
 
+#: Lowest version of chemfiles that is supported
+#: by MDAnalysis.
 MIN_CHEMFILES_VERSION = LooseVersion("0.9")
+#: Lowest version of chemfiles that is *not supported*
+#: by MDAnalysis.
 MAX_CHEMFILES_VERSION = LooseVersion("0.10")
 
 
 def check_chemfiles_version():
-    """Check an appropriate Chemfiles is available
+    """Check if an appropriate *chemfiles* is available
 
-    Returns True if a usable chemfiles version is available
+    Returns ``True`` if a usable chemfiles version is available,
+    with :data:`MIN_CHEMFILES_VERSION` <= version < 
+    :data:`MAX_CHEMFILES_VERSION`
 
     .. versionadded:: 1.0.0
     """
@@ -108,13 +154,11 @@ class ChemfilesReader(base.ReaderBase):
         chemfiles_format : str (optional)
             if *filename* was a string, use the given format name instead of
             guessing from the extension. The `list of supported formats
-            <formats>`_ and the associated names is available in chemfiles
+            <formats>`_ and the associated names is available in the chemfiles
             documentation.
         **kwargs : dict
             General reader arguments.
 
-
-        .. _formats: http://chemfiles.org/chemfiles/latest/formats.html
         """
         if not check_chemfiles_version():
             raise RuntimeError("Please install Chemfiles > {}"
@@ -252,8 +296,6 @@ class ChemfilesWriter(base.WriterBase):
         **kwargs : dict
             General writer arguments.
 
-
-        .. _formats: http://chemfiles.org/chemfiles/latest/formats.html
         """
         if not check_chemfiles_version():
             raise RuntimeError("Please install Chemfiles > {}"
