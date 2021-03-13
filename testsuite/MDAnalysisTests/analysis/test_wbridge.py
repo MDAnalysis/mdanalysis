@@ -1,12 +1,7 @@
 from __future__ import print_function, absolute_import
 from six import StringIO
 from collections import defaultdict
-try:
-    #reload was move to importlib from py34
-    from importlib import reload
-except:
-    # reload is a builtin function in py27
-    pass
+from six.moves import reload_module
 
 from numpy.testing import (
     assert_equal, assert_array_equal,)
@@ -735,4 +730,4 @@ class TestWaterBridgeAnalysis(object):
 def test_import_warning():
     wmsg = 'This module has been moved to'
     with pytest.warns(DeprecationWarning, match=wmsg):
-        reload(MDAnalysis.analysis.hbonds.wbridge_analysis)
+        reload_module(MDAnalysis.analysis.hbonds.wbridge_analysis)
