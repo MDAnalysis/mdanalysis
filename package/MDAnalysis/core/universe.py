@@ -862,11 +862,12 @@ class Universe(object):
                        ("tempfactors", "bfactors")]
         for a, b in alias_pairs:
             if topologyattr.attrname == a and hasattr(self._topology, b):
-                warnings.warn(f"You are adding {a} to a Universe that "
-                              f"has {b}. From MDAnalysis version 2.0, {a} "
-                              f"and {b} will no longer be separate "
-                              "TopologyAttrs. Instead, they will be aliases "
-                              "of the same attribute.", DeprecationWarning)
+                err = ("You are adding {a} to a Universe that "
+                       "has {b}. From MDAnalysis version 2.0, {a} "
+                       "and {b} will no longer be separate "
+                       "TopologyAttrs. Instead, they will be aliases "
+                       "of the same attribute.").format(a=a, b=b)
+                warnings.warn(err, DeprecationWarning)
         self._topology.add_TopologyAttr(topologyattr)
         self._process_attr(topologyattr)
 
