@@ -27,7 +27,7 @@ import MDAnalysis as mda
 import numpy as np
 import pytest
 from MDAnalysisTests import make_Universe
-from MDAnalysisTests.coordinates.base impaort _SingleFrameReader
+from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.coordinates.reference import (RefAdKSmall,
                                                    RefAdK)
 from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
