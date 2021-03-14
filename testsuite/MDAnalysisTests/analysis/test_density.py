@@ -249,7 +249,8 @@ class TestDensityAnalysis(DensityParameters):
 
     def test_ValueError_userdf_nogridcenter(self, universe):
         # Test no gridcenter provided when grid dimensions are given
-        regex = ("grid dimensions are provided but the gridcenter is not set")
+        regex = ("grid dimensions are provided --- "
+                 "but the gridcenter is not set")
         with pytest.raises(ValueError, match=regex):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['static']),

@@ -514,7 +514,8 @@ class DensityAnalysis(AnalysisBase):
             errmsg = "Non-number values assigned to gridcenter"
             raise ValueError(errmsg) from err
         if np.isnan(gridcenter).all() and any([xdim, ydim, zdim]):
-            errmsg = ("grid dimensions are provided but the gridcenter is not set")
+            errmsg = ("grid dimensions are provided --- "
+                      "but the gridcenter is not set")
             raise ValueError(errmsg)
         if gridcenter.shape != (3,):
             raise ValueError("gridcenter must be a 3D coordinate")
