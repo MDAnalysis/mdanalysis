@@ -18,6 +18,7 @@ The rules for this file:
   * 1.0.2
 
 Fixes
+  * Adds test for crashes caused by small box NSGrid searches (Issue #2670)
   * Replaces decreated NumPy type aliases and fixes NEP 34 explicit ragged
     array warnings (PR #3139, backports PRs #2845 and #2834)
   * Fixed several issues with NSGrid and triclinic boxes not finding some pairs.
