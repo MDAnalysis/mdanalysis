@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/??  richardjgowers, IAlibay, tylerjereddy, xiki-tempula,
+??/??/??  richardjgowers, IAlibay, tylerjereddy, xiki-tempula, lilyminium
 
   * 1.0.2
 
@@ -29,6 +29,13 @@ Changes
 Deprecations
   * hbonds.WaterBridgeAnalysis will be removed in 2.0.0 and
     replaced with hydrogenbonds.WaterBridgeAnalysis (#3111)
+  * TPRParser indexing resids from 0 by default is deprecated.
+    From 2.0 TPRParser will index resids from 1 by default.
+
+Enhancements
+  * Added `tpr_resid_from_one` keyword to select whether TPRParser
+    indexes resids from 0 or 1 (Issue #2364, PR #3153)
+  
     
 01/17/21 richardjgowers, IAlibay, orbeckst, tylerjereddy, jbarnoud,
          yuxuanzhuang, lilyminium, VOD555, p-j-smith, bieniekmateusz,
@@ -174,8 +181,6 @@ Fixes
   * Contact Analysis class respects PBC (Issue #2368)
 
 Enhancements
-  * Added `tpr_resid_from_one` keyword to select whether TPRParser
-    indexes resids from 0 or 1 (Issue #2364, PR #3153)
   * Added support for FHI-AIMS input files (PR #2705)
   * vastly improved support for 32-bit Windows (PR #2696)
   * Added methods to compute the root-mean-square-inner-product of subspaces 
@@ -288,8 +293,6 @@ Changes
     function calls. (Issue #782)
 
 Deprecations
-  * TPRParser indexing resids from 0 by default is deprecated in 1.0.
-    From 2.0 TPRParser will index resids from 1 by default.
   * analysis.hole is deprecated in 1.0 (remove in 2.0)
   * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
   * analysis.density.density_from_Universe() (remove in 2.0)
