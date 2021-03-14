@@ -203,13 +203,10 @@ class TestHole(object):
 
     def test_output_level(self, tmpdir):
         with tmpdir.as_cwd():
-            with pytest.warns(UserWarning) as rec:
+            with pytest.warns(UserWarning, match="needs to be < 3"):
                 profiles = hole2.hole(self.filename,
                                       random_seed=self.random_seed,
                                       output_level=100)
-            assert len(rec) == 1
-            assert 'needs to be < 3' in rec[0].message.args[0]
-            # no profiles
             assert len(profiles) == 0
 
     def test_keep_files(self, tmpdir):
@@ -304,16 +301,11 @@ class TestHoleAnalysis(BaseTestHole):
 
     def test_output_level(self, tmpdir, universe):
         with tmpdir.as_cwd():
-            with pytest.warns(UserWarning) as rec:
+            with pytest.warns(UserWarning, match="needs to be < 3"):
                 h = hole2.HoleAnalysis(universe,
                                        output_level=100)
                 h.run(start=self.start,
                       stop=self.stop, random_seed=self.random_seed)
-            assert len(rec) == 5
-
-            assert any('needs to be < 3' in r.message.args[0] for r in rec)
-            assert any('has no dt information' in r.message.args[0] for r in rec)  # 2x
-            assert any('Unit cell dimensions not found.' in r.message.args[0] for r in rec)  # 2x
 
             # no profiles
             assert len(h.profiles) == 0
