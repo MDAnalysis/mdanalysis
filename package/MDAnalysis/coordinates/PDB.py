@@ -1051,6 +1051,8 @@ class PDBWriter(base.WriterBase):
            Writing now only uses the contents of the elements attribute
            instead of guessing by default. If the elements are missing,
            empty records are written out (Issue #2423).
+           Atoms are now checked for a chainID instead of being overwritten
+           by the last letter of the SegmentID (Issue #3144).
 
         """
         atoms = self.obj.atoms
@@ -1080,6 +1082,7 @@ class PDBWriter(base.WriterBase):
         altlocs = get_attr('altLocs', ' ')
         resnames = get_attr('resnames', 'UNK')
         icodes = get_attr('icodes', ' ')
+        chainids = get_attr('chainIDs', ' ')
         segids = get_attr('segids', ' ')
         resids = get_attr('resids', 1)
         occupancies = get_attr('occupancies', 1.0)
@@ -1087,6 +1090,10 @@ class PDBWriter(base.WriterBase):
         atomnames = get_attr('names', 'X')
         elements = get_attr('elements', ' ')
         record_types = get_attr('record_types', 'ATOM')
+        chainids = (
+            [id[:4] if (chainids[index] != '') else segids[index][-1:]
+            for index, id in enumerate(chainids)]
+            ) # check for a chainID, if no chainID default to segid
 
         # If reindex == False, we use the atom ids for the serial. We do not
         # want to use a fallback here.
@@ -1107,13 +1114,15 @@ class PDBWriter(base.WriterBase):
             vals['name'] = self._deduce_PDB_atom_name(atomnames[i], resnames[i])
             vals['altLoc'] = altlocs[i][:1]
             vals['resName'] = resnames[i][:4]
-            vals['chainID'] = segids[i][-1:]
             vals['resSeq'] = util.ltruncate_int(resids[i], 4)
             vals['iCode'] = icodes[i][:1]
             vals['pos'] = pos[i]  # don't take off atom so conversion works
             vals['occupancy'] = occupancies[i]
             vals['tempFactor'] = tempfactors[i]
             vals['segID'] = segids[i][:4]
+            vals['chainID'] = (
+                chainids[i][:4] if (chainids[i][:4] != ' ') else segids[i][-1:]
+                )  # check to see if there is a valid chainID else segID
             vals['element'] = elements[i][:2].upper()
 
             # record_type attribute, if exists, can be ATOM or HETATM
