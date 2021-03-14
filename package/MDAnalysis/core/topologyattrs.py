@@ -2250,15 +2250,47 @@ class _Connection(AtomAttr):
     def set_atoms(self, ag):
         return NotImplementedError("Cannot set bond information")
 
-    def get_atoms(self, ag):
+    def get_atoms(self, ag, outside=True):
+        """
+        Get subset for atoms.
+
+        Parameters
+        ----------
+        ag : AtomGroup
+        outside : bool (optional)
+            Whether to include connections to atoms outside the given
+            AtomGroup.
+
+        .. versionchanged:: 1.1.0
+            Added the ``outside`` keyword. Set to ``True`` by default
+            to give the same behavior as previously
+        """
+        warn = True
         try:
             unique_bonds = set(itertools.chain(
                 *[self._bondDict[a] for a in ag.ix]))
         except TypeError:
             # maybe we got passed an Atom
             unique_bonds = self._bondDict[ag.ix]
-        bond_idx, types, guessed, order = np.hsplit(
-            np.array(sorted(unique_bonds), dtype=object), 4)
+            warn = False
+        unique_bonds = np.array(sorted(unique_bonds), dtype=object)
+        if not outside:
+            indices = np.array([list(bd[0]) for bd in unique_bonds])
+            try:
+                mask = np.all(np.isin(indices, ag.ix), axis=1)
+            except np.AxisError:
+                mask = []
+            unique_bonds = unique_bonds[mask]
+        elif warn:
+            warnings.warn("This group contains all connections "
+                          "where at least one atom in the "
+                          "AtomGroup is involved. In MDAnalysis "
+                          "2.0 this behavior will change so that "
+                          "the group only contains connections "
+                          "where all atoms are in the AtomGroup.",
+                          DeprecationWarning)
+
+        bond_idx, types, guessed, order = np.hsplit(unique_bonds, 4)
         bond_idx = np.array(bond_idx.ravel().tolist(), dtype=np.int32)
         types = types.ravel()
         guessed = guessed.ravel()

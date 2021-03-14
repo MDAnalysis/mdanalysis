@@ -37,7 +37,7 @@ import six
 import MDAnalysis as mda
 from MDAnalysis.exceptions import NoDataError
 from MDAnalysisTests import make_Universe, no_deprecated_call
-from MDAnalysisTests.datafiles import PSF, DCD
+from MDAnalysisTests.datafiles import PSF, DCD, TPR
 from MDAnalysis.core import groups
 
 
@@ -1466,3 +1466,146 @@ class TestDecorator(object):
                 self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap)
         else:
             assert_equal(self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap), 0)
+
+
+@pytest.fixture()
+def tpr():
+    return mda.Universe(TPR)
+
+
+class TestGetConnectionsAtoms(object):
+    """Test Atom and AtomGroup.get_connections"""
+
+    @pytest.mark.parametrize("typename",
+                            ["bonds", "angles", "dihedrals", "impropers"])
+    def test_connection_from_atom_not_outside(self, tpr, typename):
+        cxns = tpr.atoms[1].get_connections(typename, outside=False)
+        assert len(cxns) == 0
+
+    @pytest.mark.parametrize("typename, n_atoms", [
+        ("bonds", 1),
+        ("angles", 3),
+        ("dihedrals", 4),
+    ])
+    def test_connection_from_atom_outside(self, tpr, typename, n_atoms):
+        cxns = tpr.atoms[10].get_connections(typename, outside=True)
+        assert len(cxns) == n_atoms
+
+    @pytest.mark.parametrize("typename, n_atoms", [
+        ("bonds", 9),
+        ("angles", 15),
+        ("dihedrals", 12),
+    ])
+    def test_connection_from_atoms_not_outside(self, tpr, typename,
+                                               n_atoms):
+        ag = tpr.atoms[:10]
+        cxns = ag.get_connections(typename, outside=False)
+        assert len(cxns) == n_atoms
+        indices = np.ravel(cxns.to_indices())
+        assert np.all(np.in1d(indices, ag.indices))
+
+    @pytest.mark.parametrize("typename, n_atoms", [
+        ("bonds", 13),
+        ("angles", 27),
+        ("dihedrals", 38),
+    ])
+    def test_connection_from_atoms_outside(self, tpr, typename, n_atoms):
+        ag = tpr.atoms[:10]
+        cxns = ag.get_connections(typename, outside=True)
+        assert len(cxns) == n_atoms
+        indices = np.ravel(cxns.to_indices())
+        assert not np.all(np.in1d(indices, ag.indices))
+
+    def test_invalid_connection_error(self, tpr):
+        with pytest.raises(AttributeError, match="does not contain"):
+            ag = tpr.atoms[:10]
+            ag.get_connections("ureybradleys")
+
+    @pytest.mark.parametrize("outside", [True, False])
+    def test_get_empty_group(self, tpr, outside):
+        imp = tpr.impropers
+        ag = tpr.atoms[:10]
+        cxns = ag.get_connections("impropers", outside=outside)
+        assert len(imp) == 0
+        assert len(cxns) == 0
+
+
+class TestGetConnectionsResidues(object):
+    """Test Residue and ResidueGroup.get_connections"""
+
+    @pytest.mark.parametrize("typename, n_atoms", [
+        ("bonds", 9),
+        ("angles", 14),
+        ("dihedrals", 9),
+        ("impropers", 0),
+    ])
+    def test_connection_from_res_not_outside(self, tpr, typename, n_atoms):
+        cxns = tpr.residues[10].get_connections(typename, outside=False)
+        assert len(cxns) == n_atoms
+
+    @pytest.mark.parametrize("typename, n_atoms", [
+        ("bonds", 11),
+        ("angles", 22),
+        ("dihedrals", 27),
+        ("impropers", 0),
+    ])
+    def test_connection_from_res_outside(self, tpr, typename, n_atoms):
+        cxns = tpr.residues[10].get_connections(typename, outside=True)
+        assert len(cxns) == n_atoms
+
+    @pytest.mark.parametrize("typename, n_atoms", [
+        ("bonds", 157),
+        ("angles", 290),
+        ("dihedrals", 351),
+    ])
+    def test_connection_from_residues_not_outside(self, tpr, typename,
+                                                  n_atoms):
+        ag = tpr.residues[:10]
+        cxns = ag.get_connections(typename, outside=False)
+        assert len(cxns) == n_atoms
+        indices = np.ravel(cxns.to_indices())
+        assert np.all(np.in1d(indices, ag.atoms.indices))
+
+    @pytest.mark.parametrize("typename, n_atoms", [
+        ("bonds", 158),
+        ("angles", 294),
+        ("dihedrals", 360),
+    ])
+    def test_connection_from_residues_outside(self, tpr, typename, n_atoms):
+        ag = tpr.residues[:10]
+        cxns = ag.get_connections(typename, outside=True)
+        assert len(cxns) == n_atoms
+        indices = np.ravel(cxns.to_indices())
+        assert not np.all(np.in1d(indices, ag.atoms.indices))
+
+    def test_invalid_connection_error(self, tpr):
+        with pytest.raises(AttributeError, match="does not contain"):
+            ag = tpr.residues[:10]
+            ag.get_connections("ureybradleys")
+
+    @pytest.mark.parametrize("outside", [True, False])
+    def test_get_empty_group(self, tpr, outside):
+        imp = tpr.impropers
+        ag = tpr.residues[:10]
+        cxns = ag.get_connections("impropers", outside=outside)
+        assert len(imp) == 0
+        assert len(cxns) == 0
+
+@pytest.mark.parametrize("typename, n_atoms", [
+    ("bonds", 13),
+    ("angles", 27),
+    ("dihedrals", 38),
+])
+def test_get_topologygroup_property_deprecated(tpr, typename, n_atoms):
+    err = ("This group contains all connections "
+            "where at least one atom in the "
+            "AtomGroup is involved. In MDAnalysis "
+            "2.0 this behavior will change so that "
+            "the group only contains connections "
+            "where all atoms are in the AtomGroup.")
+    with pytest.warns(DeprecationWarning, match=err):
+        ag = tpr.atoms[:10]
+        cxns = getattr(ag, typename)
+        assert len(cxns) == n_atoms
+        indices = np.ravel(cxns.to_indices())
+        assert not np.all(np.in1d(indices, ag.indices))
