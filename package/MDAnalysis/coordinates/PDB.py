@@ -1083,7 +1083,7 @@ class PDBWriter(base.WriterBase):
         resnames = get_attr('resnames', 'UNK')
         icodes = get_attr('icodes', ' ')
         segids = get_attr('segids', ' ')
-        chainids = getattr(atoms, 'chainIDs', segids)
+        chainids = get_attr('chainIDs', ' ')
         resids = get_attr('resids', 1)
         occupancies = get_attr('occupancies', 1.0)
         tempfactors = get_attr('tempfactors', 0.0)
@@ -1091,6 +1091,9 @@ class PDBWriter(base.WriterBase):
         elements = get_attr('elements', ' ')
         record_types = get_attr('record_types', 'ATOM')
 
+        # If non alphanumeric occurs in chainids, resort back to using segids .
+        if not any([id.isalnum() for id in chainids]):
+            chainids = segids
 
         # If reindex == False, we use the atom ids for the serial. We do not
         # want to use a fallback here.
