@@ -463,6 +463,15 @@ class TestPDBWriter(object):
         u_pdb = mda.Universe(outfile)
         assert u_pdb.segments.chainIDs[0][0] == ref_id
 
+    def test_segid_chainid_overwrite(self, universe3, outfile):
+        """check if chainID gets round-tripped after file write (issue #3144)"""
+        ref_id = 'x'
+        u = universe3
+        u.atoms.chainIDs = ref_id
+        u.atoms.write(outfile)
+        u_pdb = mda.Universe(outfile)
+        assert u_pdb.atoms.chainIDs[0] == ref_id
+
     def test_stringio_outofrange(self, universe3):
         """
         Check that when StringIO is used, the correct out-of-range error for
