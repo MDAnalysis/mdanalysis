@@ -39,6 +39,7 @@ from MDAnalysis.tests.datafiles import (
 )
 from MDAnalysisTests.topology.base import ParserBase
 import MDAnalysis.topology.TPRParser
+import MDAnalysis as mda
 
 
 class TPRAttrs(ParserBase):
@@ -248,3 +249,25 @@ def test_fail_for_gmx2020_beta(tpr_path):
     parser = MDAnalysis.topology.TPRParser.TPRParser(tpr_path)
     with pytest.raises(IOError):
         parser.parse()
+
+
+@pytest.mark.parametrize("resid_from_one,resid_addition", [
+    (False, 0),  # status quo for 1.x
+    (True, 1),
+    ])
+def test_resids(resid_from_one, resid_addition):
+    u = mda.Universe(TPR, tpr_resid_from_one=resid_from_one)
+    resids = np.arange(len(u.residues)) + resid_addition
+    assert_equal(u.residues.resids, resids,
+                 err_msg="tpr_resid_from_one kwarg not switching resids")
+
+
+@pytest.mark.parametrize("kwargs", [
+    {},
+    {"tpr_resid_from_one": False},
+])
+def test_resid_false_deprecation_warning(kwargs):
+    err = ("TPR files index residues from 0. From "
+           "MDAnalysis version 2.0, resids will start at 1 instead.")
+    with pytest.warns(DeprecationWarning, match=err):
+        u = mda.Universe(TPR, **kwargs)

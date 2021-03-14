@@ -49,6 +49,8 @@ The module also contains the :func:`do_inputrec` to read the TPR header with.
 from __future__ import absolute_import
 
 from six.moves import range
+import warnings
+
 import numpy as np
 import xdrlib
 import struct
@@ -296,7 +298,7 @@ def extract_box_info(data, fileVersion):
     return obj.Box(box, box_rel, box_v)
 
 
-def do_mtop(data, fver):
+def do_mtop(data, fver, tpr_resid_from_one=False):
     # mtop: the topology of the whole system
     symtab = do_symtab(data)
     do_symstr(data, symtab)  # system_name
@@ -381,6 +383,16 @@ def do_mtop(data, fver):
     molnums = np.array(molnums, dtype=np.int32)
     segids = np.array(segids, dtype=object)
     resids = np.array(resids, dtype=np.int32)
+    if tpr_resid_from_one:
+        resids += 1
+    else:
+        warnings.warn("TPR files index residues from 0. "
+                      "From MDAnalysis version 2.0, resids will start "
+                      "at 1 instead. If you wish to keep indexing "
+                      "resids from 0, please set "
+                      "`tpr_resid_from_one=False` as a keyword argument "
+                      "when you create a new Topology or Universe.",
+                      category=DeprecationWarning)
     resnames = np.array(resnames, dtype=object)
     (residx, new_resids,
      (new_resnames,

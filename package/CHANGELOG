@@ -13,9 +13,9 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/??  richardjgowers, IAlibay, tylerjereddy, xiki-tempula,
+??/??/??  richardjgowers, IAlibay, tylerjereddy, xiki-tempula, lilyminium
 
-  * 1.0.2
+  * 1.1.0
 
 Fixes
   * Replaces decreated NumPy type aliases and fixes NEP 34 explicit ragged
@@ -31,6 +31,13 @@ Deprecations
     TopologyAttrs, with a warning (PR #3161)
   * hbonds.WaterBridgeAnalysis will be removed in 2.0.0 and
     replaced with hydrogenbonds.WaterBridgeAnalysis (#3111)
+  * TPRParser indexing resids from 0 by default is deprecated.
+    From 2.0 TPRParser will index resids from 1 by default.
+
+Enhancements
+  * Added `tpr_resid_from_one` keyword to select whether TPRParser
+    indexes resids from 0 or 1 (Issue #2364, PR #3153)
+  
     
 01/17/21 richardjgowers, IAlibay, orbeckst, tylerjereddy, jbarnoud,
          yuxuanzhuang, lilyminium, VOD555, p-j-smith, bieniekmateusz,
