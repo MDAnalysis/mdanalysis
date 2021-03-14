@@ -442,6 +442,14 @@ or zero values.</li>
 attribute to add (eg ‘charges’), can also supply initial values
 using values keyword.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.1.0: </span>Now warns when adding bfactors to a Universe with
+existing tempfactors, or adding tempfactors to a
+Universe with existing bfactors.
+In version 2.0, MDAnalysis will stop treating
+tempfactors and bfactors as separate attributes. Instead,
+they will be aliases of the same attribute.</p>
+</div>
 </dd></dl>
 
 <dl class="method">

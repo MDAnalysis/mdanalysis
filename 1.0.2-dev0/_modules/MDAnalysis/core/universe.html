@@ -1014,6 +1014,14 @@
 <span class="sd">           Can now also add TopologyAttrs with a string of the name of the</span>
 <span class="sd">           attribute to add (eg &#39;charges&#39;), can also supply initial values</span>
 <span class="sd">           using values keyword.</span>
+
+<span class="sd">        .. versionchanged:: 1.1.0 </span>
+<span class="sd">            Now warns when adding bfactors to a Universe with</span>
+<span class="sd">            existing tempfactors, or adding tempfactors to a</span>
+<span class="sd">            Universe with existing bfactors.</span>
+<span class="sd">            In version 2.0, MDAnalysis will stop treating</span>
+<span class="sd">            tempfactors and bfactors as separate attributes. Instead,</span>
+<span class="sd">            they will be aliases of the same attribute.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
@@ -1034,6 +1042,16 @@
                     <span class="n">n_residues</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span>
                     <span class="n">n_segments</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_segments</span><span class="p">,</span>
                     <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">alias_pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;bfactors&quot;</span><span class="p">,</span> <span class="s2">&quot;tempfactors&quot;</span><span class="p">),</span>
+                       <span class="p">(</span><span class="s2">&quot;tempfactors&quot;</span><span class="p">,</span> <span class="s2">&quot;bfactors&quot;</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">alias_pairs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">topologyattr</span><span class="o">.</span><span class="n">attrname</span> <span class="o">==</span> <span class="n">a</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;You are adding </span><span class="si">{a}</span><span class="s2"> to a Universe that &quot;</span>
+                       <span class="s2">&quot;has </span><span class="si">{b}</span><span class="s2">. From MDAnalysis version 2.0, </span><span class="si">{a}</span><span class="s2"> &quot;</span>
+                       <span class="s2">&quot;and </span><span class="si">{b}</span><span class="s2"> will no longer be separate &quot;</span>
+                       <span class="s2">&quot;TopologyAttrs. Instead, they will be aliases &quot;</span>
+                       <span class="s2">&quot;of the same attribute.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_process_attr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span></div>
 
