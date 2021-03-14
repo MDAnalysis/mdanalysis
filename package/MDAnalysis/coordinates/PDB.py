@@ -1051,9 +1051,8 @@ class PDBWriter(base.WriterBase):
            Writing now only uses the contents of the elements attribute
            instead of guessing by default. If the elements are missing,
            empty records are written out (Issue #2423).
-           chainID now comes from the AtomGroup if the attribute is present.
-           If no chainID is present then the chainID will default to the l
-           last letter of segid (Issue #3144).
+           Atoms are now checked for a chainID instead of being overwritten
+           by the last letter of the `segid` (Issue #3144).
 
         """
         atoms = self.obj.atoms
