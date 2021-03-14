@@ -27,6 +27,8 @@ Changes
   * Maximum pinned versions in setup.py removed for python 3.6+ (PR #3139)
 
 Deprecations
+  * Deprecated tempfactors and bfactors being separate
+    TopologyAttrs, with a warning (PR #3161)
   * hbonds.WaterBridgeAnalysis will be removed in 2.0.0 and
     replaced with hydrogenbonds.WaterBridgeAnalysis (#3111)
     
