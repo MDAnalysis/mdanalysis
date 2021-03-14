@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/??  richardjgowers, IAlibay, tylerjereddy, xiki-tempula, lilyminium
 
-  * 1.0.2
+  * 1.1.0
 
 Fixes
   * Replaces decreated NumPy type aliases and fixes NEP 34 explicit ragged
