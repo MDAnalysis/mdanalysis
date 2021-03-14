@@ -51,6 +51,7 @@ from MDAnalysisTests.datafiles import (
     GRO, TRR,
     two_water_gro, two_water_gro_nonames,
     TRZ, TRZ_psf,
+    PDB, MMTF,
 )
 
 import MDAnalysis as mda
@@ -1136,3 +1137,15 @@ class TestEmpty(object):
 def test_as_Universe_deprecation():
     with pytest.deprecated_call():
         _ = mda.core.universe.as_Universe(PSF, DCD)
+
+
+def test_deprecate_b_tempfactors():
+    u = mda.Universe(PDB)
+    with pytest.warns(DeprecationWarning, match="alias"):
+        u.add_TopologyAttr("bfactors")
+
+
+def test_deprecate_temp_bfactors():
+    u = mda.Universe(MMTF)
+    with pytest.warns(DeprecationWarning, match="alias"):
+        u.add_TopologyAttr("tempfactors")
