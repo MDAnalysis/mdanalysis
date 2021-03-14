@@ -1052,7 +1052,7 @@ class PDBWriter(base.WriterBase):
            instead of guessing by default. If the elements are missing,
            empty records are written out (Issue #2423).
            Atoms are now checked for a chainID instead of being overwritten
-           by the last letter of the SegmentID (Issue #3144).
+           by the last letter of the `segid` (Issue #3144).
 
         """
         atoms = self.obj.atoms
