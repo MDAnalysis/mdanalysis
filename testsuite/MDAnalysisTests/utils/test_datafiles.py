@@ -22,6 +22,15 @@
 #
 import pytest
 from numpy.testing import assert_equal
+from MDAnalysisTests.util import block_import
+
+
+@block_import('MDAnalysisTests.datafiles')
+def test_failed_import():
+    # Putting this test first to avoid datafiles already being loaded
+    errmsg = "MDAnalysisTests package not installed."
+    with pytest.raises(ImportError, match=errmsg):
+        import MDAnalysis.tests.datafiles
 
 
 def test_import():
