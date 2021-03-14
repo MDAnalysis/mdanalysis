@@ -247,6 +247,14 @@ class TestDensityAnalysis(DensityParameters):
                 delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0,
                 gridcenter=self.gridcenters['error2']).run(step=5)
 
+    def test_ValueError_userdf_nogridcenter(self, universe):
+        # Test no gridcenter provided when grid dimensions are given
+        regex = ("grid dimensions are provided but the gridcenter is not set")
+        with pytest.raises(ValueError, match=regex):
+            D = density.DensityAnalysis(
+                universe.select_atoms(self.selections['static']),
+                delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0).run(step=5)
+
     def test_ValueError_userdefn_xdim_type(self, universe):
         # Test xdim != int or float
         with pytest.raises(ValueError, match="xdim, ydim, and zdim must be numbers"):

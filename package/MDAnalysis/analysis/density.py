@@ -400,7 +400,8 @@ class DensityAnalysis(AnalysisBase):
 
     def _prepare(self):
         coord = self._atomgroup.positions
-        if self._gridcenter is not None:
+        if (self._gridcenter is not None or
+                any([self._xdim, self._ydim, self._zdim])):
             # Issue 2372: padding is ignored, defaults to 2.0 therefore warn
             if self._padding > 0:
                 msg = (f"Box padding (currently set at {self._padding}) "
@@ -443,13 +444,6 @@ class DensityAnalysis(AnalysisBase):
                           " defined grid will need to be "
                           "provided instead.")
                 raise ValueError(errmsg) from err
-            if any([self._xdim, self._ydim, self._zdim]):
-                msg = ("Grid dimensions are provided but "
-                       "no grid centre is. "
-                       "The provided dimensions are ignored and the grid "
-                       "is automatically generated from atom coordinates. ")
-                warnings.warn(msg)
-                logger.warning(msg)
         BINS = fixedwidth_bins(self._delta, smin, smax)
         arange = np.transpose(np.vstack((BINS['min'], BINS['max'])))
         bins = BINS['Nbins']
@@ -519,6 +513,9 @@ class DensityAnalysis(AnalysisBase):
         except ValueError as err:
             errmsg = "Non-number values assigned to gridcenter"
             raise ValueError(errmsg) from err
+        if np.isnan(gridcenter).all() and any([xdim, ydim, zdim]):
+            errmsg = ("grid dimensions are provided but the gridcenter is not set")
+            raise ValueError(errmsg)
         if gridcenter.shape != (3,):
             raise ValueError("gridcenter must be a 3D coordinate")
         try:

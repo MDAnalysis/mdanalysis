@@ -16,16 +16,16 @@ The rules for this file:
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
-         hanatok, rmeli, aditya-kamath, tirkarthi
+         hanatok, rmeli, aditya-kamath, tirkarthi, biogen98
 
   * 2.0.0
 
 Fixes
   * ValueError raised when empty atomgroup is given to DensityAnalysis
-    without a user defined grid. UserWarning displayed when user defined 
+    without a user defined grid. UserWarning displayed when user defined
     grid is provided. (Issue #3055)
   * Fixed import of several `__all__` lists (PR #3013)
-  * atommethods (_get_prev/next_residues_by_resid) returns empty residue group 
+  * atommethods (_get_prev/next_residues_by_resid) returns empty residue group
     when given empty residue group (Issue #3089)
   * MOL2 files without bonds can now be read and written (Issue #3057)
   * Write `CONECT` record only once in multi-model PDB files (Issue #3018)
@@ -97,7 +97,7 @@ Enhancements
     whitespace for ranges (Issue #3054, PR #2927)
   * Added `atol` and `rtol` keywords for float comparison (PR #2927)
   * Improved performance of the ParmEd converter (Issue #3028, PR #3029)
-  * Improved analysis class docstrings, and added missing classes to the 
+  * Improved analysis class docstrings, and added missing classes to the
     `__all__` list (PR #2998)
   * The PDB writer gives more control over how to write the atom ids
     (Issue #1072, PR #2886)
@@ -131,7 +131,10 @@ Enhancements
     'protein' selection (#2751 PR #2755)
   * Added an RDKit converter that works for any input with all hydrogens
     explicit in the topology (Issue #2468, PR #2775)
-  
+  * Added warning message and test for when user provided
+    grid dimensions are ignored. (Issue #3148, PR #3154)
+
+
 Changes
   * TPRParser now loads TPR files with `tpr_resid_from_one=True` by default, 
     which starts TPR resid indexing from 1 (instead of 0 as in 1.x) (Issue #2364, PR #3152)
@@ -166,7 +169,7 @@ Changes
   * Sets the minimal RDKit version for CI to 2020.03.1 (Issue #2827, PR #2831)
   * Removes deprecated waterdynamics.HydrogenBondLifetimes (PR #2842)
   * Make NeighborSearch return empty atomgroup, residue, segments instead of list (Issue #2892, PR #2907)
-  * Updated Universe creation function signatures to named arguments (Issue #2921)  
+  * Updated Universe creation function signatures to named arguments (Issue #2921)
   * The transformation was changed from a function/closure to a class with
     `__call__` (Issue #2860, PR #2859)
   * deprecated ``analysis.helanal`` module has been removed in favour of
