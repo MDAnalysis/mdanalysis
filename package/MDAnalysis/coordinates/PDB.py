@@ -1092,8 +1092,8 @@ class PDBWriter(base.WriterBase):
         record_types = get_attr('record_types', 'ATOM')
         chainids = (
             [id[:4] if (chainids[index] != '') else segids[index][-1:]
-            for index, id in enumerate(chainids)]
-            ) # check for a chainID, if no chainID default to segid
+                for index, id in enumerate(chainids)]
+            )  # check for a chainID, if no chainID default to segid
 
         # If reindex == False, we use the atom ids for the serial. We do not
         # want to use a fallback here.

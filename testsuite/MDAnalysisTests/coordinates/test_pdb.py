@@ -456,7 +456,7 @@ class TestPDBWriter(object):
             assert int(line[10:14]) == model % 10000
 
     def test_segid_chainid(self, universe2, outfile):
-        """check whether chainID comes from last character of segid (issue #2224)"""
+        """check if chainID comes from last character of segid (issue #2224)"""
         ref_id = 'E'
         u = universe2
         u.atoms.write(outfile)
