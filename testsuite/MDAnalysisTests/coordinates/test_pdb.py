@@ -464,7 +464,7 @@ class TestPDBWriter(object):
         assert u_pdb.segments.chainIDs[0][0] == ref_id
 
     def test_segid_chainid_overwrite(self, universe3, outfile):
-        """check if chainID gets round-tripped after file write (issue #3144)"""
+        """check if chainID gets round-tripped after write (issue #3144)"""
         ref_id = 'x'
         u = universe3
         u.atoms.chainIDs = ref_id
