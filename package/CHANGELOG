@@ -133,8 +133,8 @@ Enhancements
     explicit in the topology (Issue #2468, PR #2775)
   
 Changes
-  * TPRParser now loads TPR files with `tpr_resid_from_one=True`
-    by default (PR #3152)
+  * TPRParser now loads TPR files with `tpr_resid_from_one=True` by default, 
+    which starts TPR resid indexing from 1 (instead of 0 as in 1.x) (Issue #2364, PR #3152)
   * Introduces encore specific C compiler arguments to allow for lowering of
     optimisations on non-x86 platforms (Issue #1389, PR #3149)
   * Continuous integration uses mamba rather than conda to install the
