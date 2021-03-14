@@ -575,18 +575,26 @@ is avoided.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.TPRParser.TPRParser.parse">
-<code class="descname">parse</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TPRParser.html#TPRParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.parse" title="Permalink to this definition">¶</a></dt>
+<code class="descname">parse</code><span class="sig-paren">(</span><em>tpr_resid_from_one=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TPRParser.html#TPRParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse a Gromacs TPR file into a MDAnalysis internal topology structure.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>structure</strong></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tpr_resid_from_one</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Toggle whether to index resids from 1 or 0 from TPR files.
+TPR files index resids from 0 by default, even though GRO and ITP
+files index from 1.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>structure</strong></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></td>
 </tr>
 </tbody>
 </table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.1.0: </span>Added the <code class="docutils literal notranslate"><span class="pre">tpr_resid_from_one</span></code> keyword to control if
+resids are indexed from 0 or 1. Default <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</div>
 </dd></dl>
 
 </dd></dl>
