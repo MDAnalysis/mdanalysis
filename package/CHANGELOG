@@ -16,12 +16,14 @@ The rules for this file:
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
-         hanatok, rmeli, aditya-kamath, tirkarthi, Henry Kobin
+         hanatok, rmeli, aditya-kamath, tirkarthi, HenryKobin
 
   * 2.0.0
 
 Fixes
-  * Fixed chainID being overwritten by segid during file write. (Issue #3144)
+  * PDBParser will check for the presence of the chainID attribute of an
+    atom group and use these values instead of just using the end of segid.
+    If no chainID attribute is present, then segid will be used. (Issue #3144)
   * ValueError raised when empty atomgroup is given to DensityAnalysis
     without a user defined grid. UserWarning displayed when user defined
     grid is provided. (Issue #3055)

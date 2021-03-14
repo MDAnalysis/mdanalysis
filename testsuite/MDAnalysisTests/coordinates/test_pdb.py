@@ -27,7 +27,7 @@ import MDAnalysis as mda
 import numpy as np
 import pytest
 from MDAnalysisTests import make_Universe
-from MDAnalysisTests.coordinates.base import _SingleFrameReader
+from MDAnalysisTests.coordinates.base impaort _SingleFrameReader
 from MDAnalysisTests.coordinates.reference import (RefAdKSmall,
                                                    RefAdK)
 from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
@@ -456,7 +456,7 @@ class TestPDBWriter(object):
             assert int(line[10:14]) == model % 10000
 
     def test_segid_chainid(self, universe2, outfile):
-        """check if chainID comes from last character of segid (issue #2224)"""
+        """Check if chainID comes from last character of segid (issue #2224)"""
         ref_id = 'E'
         u = universe2
         u.atoms.write(outfile)
@@ -464,13 +464,16 @@ class TestPDBWriter(object):
         assert u_pdb.segments.chainIDs[0][0] == ref_id
 
     def test_segid_chainid_overwrite(self, universe3, outfile):
-        """check if chainID gets round-tripped after write (issue #3144)"""
+        """
+        Check that chainID attribute is not overwritten by SegmentID
+        if the chainID attribute is present (issue #3144)
+        """
         ref_id = 'x'
         u = universe3
         u.atoms.chainIDs = ref_id
         u.atoms.write(outfile)
         u_pdb = mda.Universe(outfile)
-        assert u_pdb.atoms.chainIDs[0] == ref_id
+        assert_equal(u_pdb.atoms.chainIDs[0], ref_id)
 
     def test_stringio_outofrange(self, universe3):
         """
