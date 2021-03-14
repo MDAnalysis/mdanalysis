@@ -475,8 +475,7 @@ class TestAlignmentProcessing(object):
         sel = align.fasta2select(self.seq, is_aligned=True)
         # length of the output strings, not residues or anything real...
         assert len(sel['reference']) == 30623, self.error_msg
-        assert len(
-            sel['mobile']) == 30623, self.error_msg
+        assert len(sel['mobile']) == 30623, self.error_msg
 
     @pytest.mark.skipif(executable_not_found("clustalw2"),
                         reason="Test skipped because clustalw2 executable not found")
