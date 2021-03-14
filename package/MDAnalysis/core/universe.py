@@ -850,9 +850,10 @@ class Universe(object):
                     n_residues=self._topology.n_residues,
                     n_segments=self._topology.n_segments,
                     values=values)
-        alias_pairs = [("bfactors", "tempfactors"), ("tempfactors", "bfactors")]
+        alias_pairs = [("bfactors", "tempfactors"),
+                       ("tempfactors", "bfactors")]
         for a, b in alias_pairs:
-            if topologyattr.attrname ==  a and hasattr(self._topology, b):
+            if topologyattr.attrname == a and hasattr(self._topology, b):
                 warnings.warn(f"You are adding {a} to a Universe that "
                               f"has {b}. From MDAnalysis version 2.0, {a} "
                               f"and {b} will no longer be separate "
