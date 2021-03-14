@@ -191,7 +191,7 @@ class TPRParser(TopologyReaderBase):
         structure : dict
 
 
-        .. versionchanged:: 1.0.2
+        .. versionchanged:: 1.1.0
             Added the ``tpr_resid_from_one`` keyword to control if
             resids are indexed from 0 or 1. Default ``False``.
 
