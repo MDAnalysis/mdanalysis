@@ -830,6 +830,14 @@ class Universe(object):
            Can now also add TopologyAttrs with a string of the name of the
            attribute to add (eg 'charges'), can also supply initial values
            using values keyword.
+
+        .. versionchanged:: 1.1.0 
+            Now warns when adding bfactors to a Universe with
+            existing tempfactors, or adding tempfactors to a
+            Universe with existing bfactors.
+            In version 2.0, MDAnalysis will stop treating
+            tempfactors and bfactors as separate attributes. Instead,
+            they will be aliases of the same attribute.
         """
         if isinstance(topologyattr, six.string_types):
             try:
@@ -850,6 +858,16 @@ class Universe(object):
                     n_residues=self._topology.n_residues,
                     n_segments=self._topology.n_segments,
                     values=values)
+        alias_pairs = [("bfactors", "tempfactors"),
+                       ("tempfactors", "bfactors")]
+        for a, b in alias_pairs:
+            if topologyattr.attrname == a and hasattr(self._topology, b):
+                err = ("You are adding {a} to a Universe that "
+                       "has {b}. From MDAnalysis version 2.0, {a} "
+                       "and {b} will no longer be separate "
+                       "TopologyAttrs. Instead, they will be aliases "
+                       "of the same attribute.").format(a=a, b=b)
+                warnings.warn(err, DeprecationWarning)
         self._topology.add_TopologyAttr(topologyattr)
         self._process_attr(topologyattr)
 
