@@ -502,8 +502,7 @@ class TestAlignmentProcessing(object):
         # [orbeckst] length of the output strings, not residues or anything
         # real...
         assert len(sel['reference']) == 23080, self.error_msg
-        assert len(
-            sel['mobile']) == 23090, self.error_msg
+        assert len(sel['mobile']) == 23090, self.error_msg
 
     def test_fasta2select_nogap(self, tmpdir):
         """test align.fasta2select() on aligned FASTA with no gap in residue
@@ -526,8 +525,7 @@ class TestAlignmentProcessing(object):
                                      ref_resids=ref_resids,
                                      target_resids=target_resids)
         assert len(sel['reference']) == 5455, self.error_msg
-        assert len(
-            sel['mobile']) == 5455, self.error_msg
+        assert len(sel['mobile']) == 5455, self.error_msg
 
 def test_sequence_alignment():
     u = mda.Universe(PSF)
