@@ -16,13 +16,15 @@ The rules for this file:
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
-         hanatok, rmeli, aditya-kamath, tirkarthi
+         hanatok, rmeli, aditya-kamath, tirkarthi, sulays
 
   * 2.0.0
 
 Fixes
+  * Fixed issue with unassigned 'GAP' variable in fasta2algin function with a
+    no gap resid input (Issue #3124)
   * ValueError raised when empty atomgroup is given to DensityAnalysis
-    without a user defined grid. UserWarning displayed when user defined 
+    without a user defined grid. UserWarning displayed when user defined
     grid is provided. (Issue #3055)
   * Fixed import of several `__all__` lists (PR #3013)
   * atommethods (_get_prev/next_residues_by_resid) returns empty residue group 
