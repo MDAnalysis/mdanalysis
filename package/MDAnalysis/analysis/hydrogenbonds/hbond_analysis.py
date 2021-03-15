@@ -33,9 +33,9 @@
 This module provides methods to find and analyse hydrogen bonds in a Universe.
 
 The :class:`HydrogenBondAnalysis` class is a new version of the original
-:class:`MDAnalysis.analysis.hbonds.HydrogenBondAnalysis` class from the module
-:mod:`MDAnalysis.analysis.hbonds.hbond_analysis`, which itself was modeled after the `VMD
-HBONDS plugin`_.
+(now removed) :class:`MDAnalysis.analysis.hbonds.HydrogenBondAnalysis` class
+from the module :mod:`MDAnalysis.analysis.hbonds.hbond_analysis`, which itself
+was modeled after the `VMD HBONDS plugin`_.
 
 .. _`VMD HBONDS plugin`: http://www.ks.uiuc.edu/Research/vmd/plugins/hbonds/
 
