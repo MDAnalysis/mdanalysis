@@ -159,7 +159,7 @@ class MDAExtension(Extension, object):
     #  care of calling it when needed.
     def __init__(self, name, sources, *args, **kwargs):
         self._mda_include_dirs = []
-        sources = [abspath(s) for s in sources]
+        # don't abspath sources else packaging fails on Windows (issue #3129)
         super(MDAExtension, self).__init__(name, sources, *args, **kwargs)
 
     @property
