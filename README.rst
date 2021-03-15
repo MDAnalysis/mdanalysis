@@ -2,7 +2,7 @@
   MDAnalysis Repository README
 ================================
 
-|numfocus| |build| |cov| [*]_
+|numfocus| |build| |travis| |cov| [*]_
 
 |docs| |devdocs| |usergroup| |developergroup| |anaconda| |mybinder|
 
@@ -166,8 +166,12 @@ For citations of included algorithms and sub-modules please see the references_.
    :alt: Powered by NumFOCUS
    :target: https://www.numfocus.org/
 
-.. |build| image:: https://travis-ci.com/MDAnalysis/mdanalysis.svg?branch=develop
-   :alt: Build Status
+.. |build| image:: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci.yaml/badge.svg
+   :alt: Github Actions Build Status
+   :target: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci.yaml
+
+.. |travis| image:: https://img.shields.io/travis/MDAnalysis/mdanalysis/develop?label=Travis%20CI
+   :alt: Travis CI Build Status
    :target: https://travis-ci.com/MDAnalysis/mdanalysis
 
 .. |cov|   image:: https://codecov.io/gh/MDAnalysis/mdanalysis/branch/develop/graph/badge.svg

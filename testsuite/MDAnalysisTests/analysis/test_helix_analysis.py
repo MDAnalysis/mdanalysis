@@ -112,7 +112,7 @@ def test_local_screw_angles_plane_circle():
     The global axis is the x-axis and ref axis is the y-axis,
     so angles should be calculated to the xy-plane.
     """
-    angdeg = np.arange(0, 360, 12, dtype=np.int)
+    angdeg = np.arange(0, 360, 12, dtype=np.int32)
     angrad = np.deg2rad(angdeg, dtype=np.float64)
     xyz = np.array([[np.cos(a), np.sin(a), 0] for a in angrad],
                    dtype=np.float64)
@@ -129,7 +129,7 @@ def test_local_screw_angles_ortho_circle():
     The global axis is the x-axis and ref axis is the z-axis,
     so angles should be calculated to the xz-plane.
     """
-    angdeg = np.arange(0, 360, 12, dtype=np.int)
+    angdeg = np.arange(0, 360, 12, dtype=np.int32)
     angrad = np.deg2rad(angdeg, dtype=np.float64)
     xyz = np.array([[np.cos(a), np.sin(a), 0] for a in angrad],
                    dtype=np.float64)

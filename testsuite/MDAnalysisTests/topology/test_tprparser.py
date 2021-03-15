@@ -39,6 +39,7 @@ from MDAnalysis.tests.datafiles import (
 )
 from MDAnalysisTests.topology.base import ParserBase
 import MDAnalysis.topology.TPRParser
+import MDAnalysis as mda
 
 BONDED_TPRS = (
     TPR510_bonded,
@@ -287,3 +288,14 @@ def test_elements():
         'H', '', 'Na', 'Na', 'Na', 'Na',
     ], dtype=object)
     assert_equal(topology.elements.values[-20:], reference)
+
+
+@pytest.mark.parametrize("resid_from_one,resid_addition", [
+    (False, 0),
+    (True, 1),  # status quo for 2.x
+    ])
+def test_resids(resid_from_one, resid_addition):
+    u = mda.Universe(TPR, tpr_resid_from_one=resid_from_one)
+    resids = np.arange(len(u.residues)) + resid_addition
+    assert_equal(u.residues.resids, resids,
+                 err_msg="tpr_resid_from_one kwarg not switching resids")

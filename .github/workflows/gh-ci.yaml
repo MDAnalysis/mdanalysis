@@ -1,4 +1,4 @@
-name: mda_gh_ci
+name: GH Actions CI
 on:
   push:
     branches:
@@ -14,7 +14,7 @@ defaults:
     shell: bash -l {0}
 
 env:
-  MDA_CONDA_MIN_DEPS: "pip pytest==6.1.2 mmtf-python biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
+  MDA_CONDA_MIN_DEPS: "pip pytest==6.1.2 mmtf-python biopython networkx cython matplotlib-base scipy griddataformats hypothesis gsd codecov"
   MDA_CONDA_EXTRA_DEPS: "seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles tqdm>=4.43.0 tidynamics>=1.0.0 rdkit>=2020.03.1 h5py==2.10.0"
   MDA_PIP_MIN_DEPS: 'coveralls coverage<5 pytest-cov pytest-xdist'
   MDA_PIP_EXTRA_DEPS: 'duecredit parmed'

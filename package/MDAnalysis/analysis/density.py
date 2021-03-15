@@ -217,6 +217,14 @@ class DensityAnalysis(AnalysisBase):
             A :class:`Density` instance containing a physical density of units
             :math:`Angstrom^{-3}`.
 
+    Raises
+    ------
+    ValueError
+        if AtomGroup is empty and no user defined grid is provided
+    UserWarning
+        if AtomGroup is empty and a user defined grid is provided
+
+
     See Also
     --------
     pmda.density.DensityAnalysis for a parallel version
@@ -229,6 +237,12 @@ class DensityAnalysis(AnalysisBase):
     are within 4 Å of the protein heavy atoms) then create an
     :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` (see Examples).
 
+    :class:`DensityAnalysis` will fail when the :class:`AtomGroup` instance
+    does not contain any selection of atoms, even when `updating` is set to
+    ``True``. In such a situation, user defined box limits can be provided to
+    generate a `Density`. Although, it remains the user's responsibility
+    to ensure that the provided grid limits encompass atoms to be selected
+    on all trajectory frames.
 
     Examples
     --------
@@ -369,6 +383,7 @@ class DensityAnalysis(AnalysisBase):
     .. versionchanged:: 2.0.0
        :func:`_set_user_grid` is now a method of :class:`DensityAnalysis`.
     """
+
     def __init__(self, atomgroup, delta=1.0,
                  metadata=None, padding=2.0,
                  gridcenter=None,
@@ -394,8 +409,18 @@ class DensityAnalysis(AnalysisBase):
                 logger.warning(msg)
             # Generate a copy of smin/smax from coords to later check if the
             # defined box might be too small for the selection
-            smin = np.min(coord, axis=0)
-            smax = np.max(coord, axis=0)
+            try:
+                smin = np.min(coord, axis=0)
+                smax = np.max(coord, axis=0)
+            except ValueError as err:
+                msg = ("No atoms in AtomGroup at input time frame. "
+                       "This may be intended; please ensure that "
+                       "your grid selection covers the atomic "
+                       "positions you wish to capture.")
+                warnings.warn(msg)
+                logger.warning(msg)
+                smin = self._gridcenter     #assigns limits to be later -
+                smax = self._gridcenter     #overwritten by _set_user_grid
             # Overwrite smin/smax with user defined values
             smin, smax = self._set_user_grid(self._gridcenter, self._xdim,
                                              self._ydim, self._zdim, smin,
@@ -408,8 +433,16 @@ class DensityAnalysis(AnalysisBase):
             # ideal solution would use images: implement 'looking across the
             # periodic boundaries' but that gets complicated when the box
             # rotates due to RMS fitting.
-            smin = np.min(coord, axis=0) - self._padding
-            smax = np.max(coord, axis=0) + self._padding
+            try:
+                smin = np.min(coord, axis=0) - self._padding
+                smax = np.max(coord, axis=0) + self._padding
+            except ValueError as err:
+                errmsg = ("No atoms in AtomGroup at input time frame. "
+                          "Grid for density could not be automatically"
+                          " generated. If this is expected, a user"
+                          " defined grid will need to be "
+                          "provided instead.")
+                raise ValueError(errmsg) from err
         BINS = fixedwidth_bins(self._delta, smin, smax)
         arange = np.transpose(np.vstack((BINS['min'], BINS['max'])))
         bins = BINS['Nbins']

@@ -129,7 +129,7 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
     atomgroup : AtomGroup
         The :class:`MDAnalysis.core.groups.AtomGroup` to work with.
         The positions of this are modified in place.  All these atoms
-        must belong in the same molecule or fragment.
+        must belong to the same molecule or fragment.
     reference_atom : :class:`~MDAnalysis.core.groups.Atom`
         The atom around which all other atoms will be moved.
         Defaults to atom 0 in the atomgroup.
