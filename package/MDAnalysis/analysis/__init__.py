@@ -52,7 +52,7 @@ Available analysis modules
     contains the often-used
     :func:`~MDAnalysis.analysis.distances.distance_array` function.
 
-:mod:`~MDAnalysis.analysis.hbonds`
+:mod:`~MDAnalysis.analysis.hydrogenbonds`
     Analyze hydrogen bonds, including both the per frame results as well
     as the dynamic properties and lifetimes.
 
@@ -127,7 +127,6 @@ __all__ = [
     'dihedrals',
     'distances',
     'gnm',
-    'hbonds',
     'helix_analysis',
     'hole2',
     'hydrogenbonds',

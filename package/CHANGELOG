@@ -133,6 +133,8 @@ Enhancements
     explicit in the topology (Issue #2468, PR #2775)
   
 Changes
+  * Removes deprecated `MDAnalysis.analysis.hbonds.hbond_analysis` and
+    `MDAnalysis.analysis.hbonds.hbond_autocorrel` (Issue #2739)
   * TPRParser now loads TPR files with `tpr_resid_from_one=True` by default, 
     which starts TPR resid indexing from 1 (instead of 0 as in 1.x) (Issue #2364, PR #3152)
   * Introduces encore specific C compiler arguments to allow for lowering of
