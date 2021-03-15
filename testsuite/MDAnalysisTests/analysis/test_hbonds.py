@@ -29,6 +29,7 @@ import MDAnalysis
 import MDAnalysis.analysis.hbonds
 import itertools
 import pytest
+from six.moves import reload_module
 from MDAnalysis import SelectionError
 
 from numpy.testing import (
@@ -554,3 +555,9 @@ class TestHydrogenBondAnalysisTIP3PHeavyPBCStartStep(object):
 
         assert_array_almost_equal(times, ref_times)
         assert_array_equal(counts, ref_counts)
+
+
+def test_hbond_deprecation():
+    wmsg = "deprecated as of MDAnalysis version 1.0"
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        reload_module(MDAnalysis.analysis.hbonds)

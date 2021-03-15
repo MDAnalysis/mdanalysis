@@ -225,6 +225,16 @@ due.cite(Doi("10.1063/1.4922445"),
 del Doi
 
 
+warnings.warn(
+            "This module is deprecated as of MDAnalysis version 1.1.0 and "
+            "will be removed in MDAnalysis version 2.0. Most of the base "
+            "functionality will be moved to "
+            "MDAnalysis.analysis.hydrobonds.hbond_analysis instead.",
+            category=DeprecationWarning
+        )
+
+
+@deprecate(release="1.1.0", remove="2.0.0")
 @requires('bonds')
 def find_hydrogen_donors(hydrogens):
     """Returns the donor atom for each hydrogen
@@ -285,10 +295,15 @@ class HydrogenBondAutoCorrel(object):
     pbc : bool, optional
         Whether to consider periodic boundaries in calculations [``True``]
 
-    ..versionchanged: 1.0.0
-      ``save_results()`` method was removed. You can instead use ``np.savez()``
-      on :attr:`HydrogenBondAutoCorrel.solution['time']` and
-      :attr:`HydrogenBondAutoCorrel.solution['results']` instead.
+
+    .. versionchanged:: 1.0.0
+       ``save_results()`` method was removed. You can instead use ``np.savez()``
+       on :attr:`HydrogenBondAutoCorrel.solution['time']` and
+       :attr:`HydrogenBondAutoCorrel.solution['results']` instead.
+    .. deprecated:: 1.1.0
+       This class will be removed in favour of
+       :class:`MDAnalysis.analysis.hydrobonds.hbond_analysis` in
+       MDAnalysis 2.0.
     """
 
     def __init__(self, universe,

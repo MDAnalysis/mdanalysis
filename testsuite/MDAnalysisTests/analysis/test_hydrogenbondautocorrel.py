@@ -24,7 +24,7 @@ from __future__ import division, absolute_import
 
 import pytest
 import six
-from six.moves import range
+from six.moves import range, reload_module
 
 from MDAnalysisTests.datafiles import (
     TRZ, TRZ_psf,
@@ -279,6 +279,13 @@ class TestHydrogenBondAutocorrel(object):
         )
         assert isinstance(repr(hbond), six.string_types)
 
+
+def test_hbond_autocorrel_deprecation():
+    wmsg = "deprecated as of MDAnalysis version 1.1.0"
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        reload_module(MDAnalysis.analysis.hbonds)
+
+
 def test_find_donors():
     u = mda.Universe(waterPSF, waterDCD)
 
@@ -290,6 +297,16 @@ def test_find_donors():
     # check each O is bonded to the corresponding H
     for h_atom, o_atom in zip(H, D):
         assert o_atom in h_atom.bonded_atoms
+
+
+def test_find_donors_deprecation_warning():
+    u = mda.Universe(waterPSF, waterDCD)
+    H = u.select_atoms('name H*')
+
+    with pytest.raises(DeprecationWarning,
+                       match="will be removed in release 2.0.0"):
+        D = hbonds.find_hydrogen_donors(H)
+
 
 def test_donors_nobonds():
     u = mda.Universe(XYZ_mini)
