@@ -338,5 +338,12 @@ class TestErrors:
 
 class Testrelativepath:
 
-    def test_relpath(self):
-        u = mda.Universe('../data/gromacs_ala10.itp', format='ITP')
+    
+    def test_relpath(self,tmp_path):
+        content="[ atoms ]\n"+\
+        "     1      H      1    SOL    HW1      1       0.41    1.00800"
+        d = tmp_path / "sub"
+        d.mkdir()
+        p = d / "test.itp"
+        p.write_text(content)
+        u = mda.Universe(tmp_path / "sub/test.itp", format='ITP')
