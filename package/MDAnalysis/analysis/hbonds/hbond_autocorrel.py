@@ -215,6 +215,7 @@ import warnings
 
 from MDAnalysis.lib.log import ProgressBar
 from MDAnalysis.lib.distances import capped_distance, calc_angles, calc_bonds
+from MDANalysis.lib.util import deprecate
 from MDAnalysis.core.groups import requires
 
 from MDAnalysis.due import due, Doi
