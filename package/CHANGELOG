@@ -131,8 +131,9 @@ Enhancements
     'protein' selection (#2751 PR #2755)
   * Added an RDKit converter that works for any input with all hydrogens
     explicit in the topology (Issue #2468, PR #2775)
-  * Added warning message and test for when user provided
-    grid dimensions are ignored. (Issue #3148, PR #3154)
+  * Added a ValueError raised when not given a gridcenter while providing
+    grid dimensions, and implemented the corresponding test
+    (Issue #3148, PR #3154)
 
 
 Changes
