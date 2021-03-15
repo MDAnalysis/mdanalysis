@@ -352,3 +352,19 @@ def test_issue_2345():
     c = Counter(len(v) for v in cn.values())
 
     assert c == {9: 50, 12: 50}
+
+
+def test_issue_2670():
+    # Tests that NSGrid no longer crashes when using small box sizes
+    u = mda.Universe(PDB)
+    u.dimensions = [1e-3, 1e-3, 1e-3, 90, 90, 90]
+
+    ag1 = u.select_atoms('resid 2 3')
+    # should return nothing as nothing except resid 3 is within 0.0 or resid 3
+    assert len(ag1.select_atoms('around 0.0 resid 3')) == 0
+
+    # force atom 0 of resid 1 to overlap with atom 0 of resid 3
+    u.residues[0].atoms[0].position = u.residues[2].atoms[0].position
+    ag2 = u.select_atoms('resid 1 3')
+    # should return the one atom overlap
+    assert len(ag2.select_atoms('around 0.0 resid 3')) == 1
