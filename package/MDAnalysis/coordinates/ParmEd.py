@@ -175,6 +175,10 @@ class ParmEdConverter(base.ConverterBase):
         except AttributeError:
             if isinstance(obj, base.Timestep):
                 ag_or_ts = obj.copy()
+                warnings.warn('Passing a Timestep to convert is deprecated, ' 
+                              'and will be removed in 2.0; ' 
+                              'use either an AtomGroup or Universe', 
+                              DeprecationWarning) 
             else:
                 raise_from(TypeError("No Timestep found in obj argument"), None)
 

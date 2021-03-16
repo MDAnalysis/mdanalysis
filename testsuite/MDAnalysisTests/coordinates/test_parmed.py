@@ -31,6 +31,7 @@ from numpy.testing import (assert_equal,
 
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
+from MDAnalysis.coordinates.ParmEd import ParmEdConverter
 
 from MDAnalysisTests.datafiles import (
     GRO,
@@ -288,3 +289,10 @@ class TestParmEdConverterPDB(BaseTestParmEdConverter):
     def test_equivalent_coordinates(self, ref, output):
         assert_almost_equal(ref.coordinates, output.coordinates, decimal=3)
 
+
+def test_convert_ts_deprecation():
+    u = mda.Universe(PDB_small)
+    err = "Passing a Timestep to convert is deprecated"
+    with pytest.warns(DeprecationWarning, match=err):
+        c = ParmEdConverter()
+        c.convert(u.trajectory.ts)
