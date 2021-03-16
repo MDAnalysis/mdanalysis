@@ -967,45 +967,6 @@ class H5MDWriter(base.WriterBase):
         self.creator = kwargs.pop('creator', 'MDAnalysis')
         self.creator_version = kwargs.pop('creator_version', mda.__version__)
 
-        self.units = units
-
-    def _init_h5md(self, periodic=True):
-        """Initializes H5MD trajectory.
-
-        The `H5MD`_ file is opened using the `H5PY`_ library. """
-
-        h5md_file = h5py.File(self.filename, 'w')
-        h5md_group = h5md_file.create_group('h5md')
-        h5md_group.attrs['version'] = np.array([1,1])
-        author_group = h5md_file.create_group('h5md/author')
-        author_group.attrs['name'] = self.author
-        if self.author_email is not None:
-            author_group.attrs['email'] = self.author_email
-        creator_group = h5md_file.create_group('h5md/creator')
-        creator_group.attrs['name'] = self.creator
-        creator_group.attrs['version'] = self.creator_version
-
-        self.h5mdfile = h5md_file
-        self._trajectory_group = h5mdfile.require_group('particles').require_group('trajectory')
-
-    def is_periodic(self, ts):
-        """Test if timestep ``ts`` contains a periodic box.
-
-        Parameters
-        ----------
-        ts : :class:`Timestep`
-             :class:`Timestep` instance containing coordinates to
-             be written to trajectory file
-
-        Returns
-        -------
-        bool
-            Return ``True`` if `ts` contains a valid simulation box
-        """
-        return np.all(ts.dimensions > 0)
-
-=======
->>>>>>> 2912678d7d8a2ea5ff49bf0e73f36b408c907867
     def _write_next_frame(self, ag):
         """Write information associated with ``ag`` at current frame
         into trajectory
