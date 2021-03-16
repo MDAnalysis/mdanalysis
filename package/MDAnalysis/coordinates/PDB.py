@@ -1083,7 +1083,7 @@ class PDBWriter(base.WriterBase):
         resnames = get_attr('resnames', 'UNK')
         icodes = get_attr('icodes', ' ')
         segids = get_attr('segids', ' ')
-        chainids = get_attr('chainIDs', ' ')
+        chainids = get_attr('chainIDs', 'X')
         resids = get_attr('resids', 1)
         occupancies = get_attr('occupancies', 1.0)
         tempfactors = get_attr('tempfactors', 0.0)
@@ -1091,9 +1091,42 @@ class PDBWriter(base.WriterBase):
         elements = get_attr('elements', ' ')
         record_types = get_attr('record_types', 'ATOM')
 
-        # If non alphanumeric occurs in chainids, resort back to using segids .
-        if not any([id.isalnum() for id in chainids]):
-            chainids = segids
+        def validate_chainids(chainids, default):
+            """Validate each atom's chainID
+
+            chainids - np array of chainIDs
+            default - default value in case chainID is considered invalid
+            """
+            invalid_length_ids = False
+            invalid_char_ids = False
+            missing_ids = False
+
+            for (i, id) in enumerate(chainids):
+                if id is None:
+                    missing_ids = True
+                    chainids[i] = default
+                elif len(id) > 1:
+                    invalid_length_ids = True
+                    chainids[i] = default
+                elif not id.isalnum():
+                    invalid_char_ids = True
+                    chainids[i] = default
+
+            if invalid_length_ids:
+                warnings.warn("Found chainIDs with invalid length."
+                              " Corresponding atoms will use value of '{}'"
+                              "".format(default))
+            if invalid_char_ids:
+                warnings.warn("Found chainIDs using unnaccepted character."
+                              " Corresponding atoms will use value of '{}'"
+                              "".format(default))
+            if missing_ids:
+                warnings.warn("Found missing chainIDs."
+                              " Corresponding atoms will use value of '{}'"
+                              "".format(default))
+            return chainids
+
+        chainids = validate_chainids(chainids, "X")
 
         # If reindex == False, we use the atom ids for the serial. We do not
         # want to use a fallback here.
@@ -1120,7 +1153,7 @@ class PDBWriter(base.WriterBase):
             vals['occupancy'] = occupancies[i]
             vals['tempFactor'] = tempfactors[i]
             vals['segID'] = segids[i][:4]
-            vals['chainID'] = chainids[i][-1:]
+            vals['chainID'] = chainids[i]
             vals['element'] = elements[i][:2].upper()
 
             # record_type attribute, if exists, can be ATOM or HETATM
