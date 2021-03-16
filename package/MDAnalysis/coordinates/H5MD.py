@@ -1005,7 +1005,7 @@ class H5MDWriter(base.WriterBase):
         return np.all(ts.dimensions > 0)
 
 =======
->>>>>>> H5MDWriter working version - does not write observables group yet
+>>>>>>> 2912678d7d8a2ea5ff49bf0e73f36b408c907867
     def _write_next_frame(self, ag):
         """Write information associated with ``ag`` at current frame
         into trajectory
