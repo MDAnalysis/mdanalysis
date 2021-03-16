@@ -1,0 +1,4 @@
+.spyproject/*
+../analysis/spyproject/*
+../analysis/rmsn.py
+
