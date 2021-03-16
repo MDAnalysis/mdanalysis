@@ -101,8 +101,7 @@ jobs:
         channel-priority: flexible
         channels: biobuilds, conda-forge
         add-pip-as-python-dependency: true
-        # TODO: mamba causes pip to segfault, switch when fixed
-        #mamba-version: "*"
+        mamba-version: "*"
         architecture: x64
         
     - name: install_deps
@@ -114,7 +113,7 @@ jobs:
         # NOTE: set matrix.numpy to pin to a specific numpy version
         conda_deps="${{ matrix.numpy }} ${MDA_CONDA_${{ matrix.run_type }}_DEPS}"
         pip_deps=${MDA_PIP_${{ matrix.run_type }}_DEPS}
-        conda install ${conda_deps}
+        mamba install ${conda_deps}
         pip install ${pip_deps}
 
         # also install asv if required
