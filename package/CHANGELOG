@@ -23,7 +23,9 @@ The rules for this file:
 Fixes
   * PDBParser will check for the presence of the chainID attribute of an
     atom group and use these values instead of just using the end of segid.
-    If no chainID attribute is present, then segid will be used. (Issue #3144)
+    If no chainID attribute is present, then a default value will be
+    provided. If the chainID for an atom is invalid (longer than one character,
+    not alpha-numeric, blank) it will be replaced with a default. (Issue #3144)
   * ValueError raised when empty atomgroup is given to DensityAnalysis
     without a user defined grid. UserWarning displayed when user defined
     grid is provided. (Issue #3055)
