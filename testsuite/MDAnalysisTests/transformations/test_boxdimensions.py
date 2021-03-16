@@ -26,7 +26,7 @@ import pytest
 from numpy.testing import assert_array_almost_equal
 
 import MDAnalysis as mdanalysis
-from MDAnalysis.transformations import boxdimensions
+from MDAnalysis.transformations import SetDimensions
 from MDAnalysisTests import make_Universe
 
 @pytest.fixture()
@@ -41,7 +41,7 @@ def test_boxdimensions_dims(boxdimensions_universes):
     ref = ref_u.trajectory.ts
     new_dims = np.float32([2, 2, 2, 90, 90, 90])
     ref.dimensions = new_dims
-    new = boxdimensions.setdimensions(new_dims)(new_u.trajectory.ts)
+    new = SetDimensions(new_dims)(new_u.trajectory.ts)
     assert_array_almost_equal(ref.dimensions, new.dimensions, decimal=6)
     
 @pytest.mark.parametrize('dim_vector', (
@@ -60,7 +60,7 @@ def test_dimensions_vector(boxdimensions_universes, dim_vector):
     # wrong box dimension vector size
     ts = boxdimensions_universes[0].trajectory.ts
     with pytest.raises(ValueError):
-        boxdimensions.setdimensions(dim_vector)(ts)
+        SetDimensions(dim_vector)(ts)
 
 def test_dimensions_transformations_api(boxdimensions_universes):
     # test if transformation workes with on-the-fly transformations API
@@ -68,5 +68,5 @@ def test_dimensions_transformations_api(boxdimensions_universes):
     ref = ref_u.trajectory.ts
     new_dims = np.float32([2, 2, 2, 90, 90, 90])
     ref.dimensions = new_dims
-    new = boxdimensions.setdimensions(new_dims)(new_u.trajectory.ts)
+    new = SetDimensions(new_dims)(new_u.trajectory.ts)
     assert_array_almost_equal(ref.dimensions, new.dimensions, decimal=6)
