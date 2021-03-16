@@ -211,9 +211,21 @@ class ParmEdConverter(base.ConverterBase):
         atom_kwargs = []
         for atom, name, resname, xyz, vel in zip(ag_or_ts, names, resnames, 
                                                  positions, velocities):
-            akwargs = {'name': name}
-            chain_seg = {'segid': atom.segid}
-            for attrname in ('mass', 'charge', 'type',
+            try:
+                resid = atom.resid
+            except AttributeError:
+                resid = 1
+            try:
+                mass = atom.mass
+            except AttributeError:
+                mass = 0
+            try:
+                segid = atom.segid
+            except AttributeError:
+                segid = "X"
+            chain_seg = {'segid': segid}
+            akwargs = {'name': name, "mass": mass}
+            for attrname in ('charge', 'type',
                              'altLoc', 'tempfactor',
                              'occupancy', 'gbscreen', 'solventradius',
                              'nbindex', 'rmin', 'epsilon', 'rmin14',
@@ -239,7 +251,7 @@ class ParmEdConverter(base.ConverterBase):
                 chain_seg['inscode'] = atom.icode
             except AttributeError:
                 pass
-            atom_kwargs.append((akwargs, resname, atom.resid, chain_seg, xyz, vel))
+            atom_kwargs.append((akwargs, resname, resid, chain_seg, xyz, vel))
         
 
         struct = pmd.Structure()
