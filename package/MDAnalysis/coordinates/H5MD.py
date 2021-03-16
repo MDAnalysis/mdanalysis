@@ -23,7 +23,6 @@
 """
 H5MD trajectories --- :mod:`MDAnalysis.coordinates.H5MD`
 ========================================================
-
 The `H5MD`_ trajectory file format is based upon the general, high performance
 `HDF5`_ file format.
 HDF5 files are self documenting and can be accessed with the `h5py`_ library.
@@ -182,7 +181,6 @@ Classes
 
 .. autoclass:: H5PYPicklable
    :members:
-
 """
 
 import numpy as np
@@ -385,6 +383,7 @@ class H5MDReader(base.ReaderBase):
                  convert_units=True,
                  driver=None,
                  comm=None,
+                 read_direct=None,
                  **kwargs):
         """
         Parameters
@@ -419,8 +418,9 @@ class H5MDReader(base.ReaderBase):
         NoDataError
             when the H5MD file has no 'position', 'velocity', or
             'force' group
-
         """
+
+        self.read_direct = read_direct
         if not HAS_H5PY:
             raise RuntimeError("Please install h5py")
         super(H5MDReader, self).__init__(filename, **kwargs)
@@ -600,7 +600,7 @@ class H5MDReader(base.ReaderBase):
             else:
                 raise NoDataError("Provide at least a position, velocity"
                                   " or force group in the h5md file.")
-        except ValueError:
+        except (ValueError, IndexError):
             raise IOError from None
 
         self._frame = frame
@@ -623,12 +623,24 @@ class H5MDReader(base.ReaderBase):
 
         # set the timestep positions, velocities, and forces with
         # current frame dataset
-        if self._has['position']:
-            ts.positions = self._get_frame_dataset('position')
-        if self._has['velocity']:
-            ts.velocities = self._get_frame_dataset('velocity')
-        if self._has['force']:
-            ts.forces = self._get_frame_dataset('force')
+        if self.read_direct is True:
+            if self._has['position']:
+                self._particle_group['position/value'].read_direct(ts.positions, source_sel=np.s_[frame, :])
+            if self._has['velocity']:
+                self._particle_group['velocity/value'].read_direct(ts.velocities, source_sel=np.s_[frame, :])
+            if self._has['force']:
+                self._particle_group['force/value'].read_direct(ts.forces, source_sel=np.s_[frame, :])
+
+        else:
+            if self._has['position']:
+                ts.positions = self._get_frame_dataset('position')
+            if self._has['velocity']:
+                ts.velocities = self._get_frame_dataset('velocity')
+            if self._has['force']:
+                ts.forces = self._get_frame_dataset('force')
+
+
+
 
         if self.convert_units:
             self._convert_units()
@@ -955,8 +967,6 @@ class H5MDWriter(base.WriterBase):
         self.creator = kwargs.pop('creator', 'MDAnalysis')
         self.creator_version = kwargs.pop('creator_version', mda.__version__)
 
-<<<<<<< HEAD
-=======
         self.units = units
 
     def _init_h5md(self, periodic=True):
@@ -994,7 +1004,8 @@ class H5MDWriter(base.WriterBase):
         """
         return np.all(ts.dimensions > 0)
 
->>>>>>> added pyh5md LICENSE info, other small adjustments
+=======
+>>>>>>> H5MDWriter working version - does not write observables group yet
     def _write_next_frame(self, ag):
         """Write information associated with ``ag`` at current frame
         into trajectory
