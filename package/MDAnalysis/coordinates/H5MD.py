@@ -1048,8 +1048,8 @@ class H5MDWriter(base.WriterBase):
         trajectory['box'].attrs['dimension'] = 3
         if self.is_periodic(ts):
             trajectory.create_dataset('box/edges/value', shape=(self.n_frames, 3, 3), dtype=np.float32)
-            trajectory.create_dataset('box/edges/step', shape=(self.n_frames), dtype=np.int32)
-            trajectory.create_dataset('box/edges/time', shape=(self.n_frames), dtype=np.float32)
+            trajectory.create_dataset('box/edges/step', shape=(self.n_frames,), dtype=np.int32)
+            trajectory.create_dataset('box/edges/time', shape=(self.n_frames,), dtype=np.float32)
             trajectory['box'].attrs['boundary'] = ['periodic', 'periodic', 'periodic']
         else:
             trajectory['box'].attrs['boundary'] = [None, None, None]
@@ -1070,8 +1070,8 @@ class H5MDWriter(base.WriterBase):
 
         trajectory.create_group(group)
         trajectory.create_dataset(f'{group}/value', shape=(self.n_frames, self.n_atoms, 3), dtype=np.float32, chunks=self.chunks)
-        trajectory.create_dataset(f'{group}/step', shape=(self.n_frames), dtype=np.int32)
-        trajectory.create_dataset(f'{group}/time', shape=(self.n_frames), dtype=np.float32)
+        trajectory.create_dataset(f'{group}/step', shape=(self.n_frames,), dtype=np.int32)
+        trajectory.create_dataset(f'{group}/time', shape=(self.n_frames,), dtype=np.float32)
         if self.units is not None:
             trajectory[f'{group}/value'].attrs['unit'] = self._unit_translation_dict[_group_unit_dict[group]][self.units[_group_unit_dict[group]]]
             trajectory[f'{group}/time'].attrs['unit'] = self._unit_translation_dict['time'][self.units['time']]
