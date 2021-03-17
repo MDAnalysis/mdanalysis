@@ -233,7 +233,7 @@ class TestDensityAnalysis(DensityParameters):
 
     def test_ValueError_userdefn_gridcenter_shape(self, universe):
         # Test len(gridcenter) != 3
-        with pytest.raises(ValueError, match="gridcenter must be a 3D coordinate"):
+        with pytest.raises(ValueError, match="Gridcenter must be a 3D coordinate"):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['static']),
                 delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0,
@@ -241,16 +241,15 @@ class TestDensityAnalysis(DensityParameters):
 
     def test_ValueError_userdefn_gridcenter_type(self, universe):
         # Test gridcenter includes non-numeric strings
-        with pytest.raises(ValueError, match="Non-number values assigned to gridcenter"):
+        with pytest.raises(ValueError, match="Gridcenter must be a 3D coordinate"):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['static']),
                 delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0,
                 gridcenter=self.gridcenters['error2']).run(step=5)
 
-    def test_ValueError_userdf_nogridcenter(self, universe):
+    def test_ValueError_userdefn_gridcenter_missing(self, universe):
         # Test no gridcenter provided when grid dimensions are given
-        regex = ("grid dimensions are provided --- "
-                 "but the gridcenter is not set")
+        regex = ("Gridcenter or grid dimensions are not provided")
         with pytest.raises(ValueError, match=regex):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['static']),

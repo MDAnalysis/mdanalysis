@@ -508,21 +508,20 @@ class DensityAnalysis(AnalysisBase):
            Now a staticmethod of :class:`DensityAnalysis`.
         """
         # Check user inputs
-        try:
-            gridcenter = np.asarray(gridcenter, dtype=np.float32)
-        except ValueError as err:
-            errmsg = "Non-number values assigned to gridcenter"
-            raise ValueError(errmsg) from err
-        if np.isnan(gridcenter).all() and any([xdim, ydim, zdim]):
-            errmsg = ("grid dimensions are provided --- "
-                      "but the gridcenter is not set")
+        if any(x is None for x in [gridcenter, xdim, ydim, zdim]):
+            errmsg = ("Gridcenter or grid dimensions are not provided")
             raise ValueError(errmsg)
-        if gridcenter.shape != (3,):
-            raise ValueError("gridcenter must be a 3D coordinate")
+        try:
+            gridcenter = np.asarray(gridcenter, dtype=np.float32).reshape(3,)
+        except ValueError as err:
+            raise ValueError("Gridcenter must be a 3D coordinate") from err
         try:
             xyzdim = np.array([xdim, ydim, zdim], dtype=np.float32)
         except ValueError as err:
             raise ValueError("xdim, ydim, and zdim must be numbers") from err
+        if any(np.isnan(gridcenter)) or any(np.isnan(xyzdim)):
+            raise ValueError('Gridcenter or grid dimensions have NaN element')
+
 
         # Set min/max by shifting by half the edge length of each dimension
         umin = gridcenter - xyzdim/2
