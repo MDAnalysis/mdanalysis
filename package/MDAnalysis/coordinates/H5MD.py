@@ -1087,15 +1087,24 @@ class H5MDWriter(base.WriterBase):
 
         file = self.h5md_file
 
-        _group_ts_dict = {'position': ts._pos,
+        '''_group_ts_dict = {'position': ts._pos,
                           'velocity': ts._velocities,
-                          'force': ts._forces}
+                          'force': ts._forces}'''
 
-        for name, value in self._has.items():
-            if value:
-                file[f'particles/trajectory/{name}/value'][ts.frame] = _group_ts_dict[name]
-                file[f'particles/trajectory/{name}/step'][ts.frame] = ts.data['step']
-                file[f'particles/trajectory/{name}/time'][ts.frame] = ts.time
+        if self.has_positions:
+            file['particles/trajectory/position/value'][ts.frame] = ts._pos
+            file['particles/trajectory/position/step'][ts.frame] = ts.data['step']
+            file['particles/trajectory/position/time'][ts.frame] = ts.time
+
+        if self.has_velocities:
+            file['particles/trajectory/velocity/value'][ts.frame] = ts._velocities
+            file['particles/trajectory/velocity/step'][ts.frame] = ts.data['step']
+            file['particles/trajectory/velocity/time'][ts.frame] = ts.time
+
+        if self.has_forces:
+            file['particles/trajectory/force/value'][ts.frame] = ts._forces
+            file['particles/trajectory/force/step'][ts.frame] = ts.data['step']
+            file['particles/trajectory/force/time'][ts.frame] = ts.time
 
         file['particles/trajectory/box/edges/value'][ts.frame] = ts._unitcell
         file['particles/trajectory/box/edges/step'][ts.frame] = ts.data['step']
