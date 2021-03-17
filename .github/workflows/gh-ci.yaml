@@ -80,6 +80,7 @@ jobs:
         echo "CXX=clang++" >> $GITHUB_ENV
         gfortran-9 -v
         echo "FC=gfortran-9" >> $GITHUB_ENV
+        echo "numprocs=3" >> $GITHUB_ENV
 
     - name: setup_linux
       if: startsWith(matrix.os, 'ubuntu')
@@ -92,6 +93,7 @@ jobs:
         echo "CXX=g++" >> $GITHUB_ENV
         gfortran -v
         echo "FC=gfortran" >> $GITHUB_ENV
+        echo "numprocs=2" >> $GITHUB_ENV
 
     - name: setup_miniconda
       uses: conda-incubator/setup-miniconda@v2
@@ -157,7 +159,7 @@ jobs:
           PYTEST_FLAGS="${PYTEST_FLAGS} --cov=MDAnalysis --cov-report=xml"
         fi
         echo $PYTEST_FLAGS
-        pytest -n 2 testsuite/MDAnalysisTests $PYTEST_FLAGS
+        pytest -n $numprocs testsuite/MDAnalysisTests $PYTEST_FLAGS
 
     - name: run_asv
       if: contains(matrix.name, 'asv_check')
