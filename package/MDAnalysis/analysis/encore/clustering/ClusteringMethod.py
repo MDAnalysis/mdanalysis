@@ -331,7 +331,6 @@ if sklearn:
                      verbose=False,
                      random_state=None,
                      copy_x=True,
-                     n_jobs=1,
                      **kwargs):
             """
             Parameters
@@ -401,12 +400,10 @@ if sklearn:
                                                  max_iter=max_iter,
                                                  n_init=n_init,
                                                  init=init,
-                                                 precompute_distances='auto',
                                                  tol=tol,
                                                  verbose=verbose,
                                                  random_state=random_state,
                                                  copy_x=copy_x,
-                                                 n_jobs=n_jobs,
                                                  **kwargs)
 
         def __call__(self, coordinates):
