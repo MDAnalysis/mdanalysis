@@ -68,7 +68,7 @@ class SetDimensions:
             if self.dimensions.shape != (6, ) and \
                self.dimensions.shape != (1, 6):
                 raise ValueError(f'{self.dimensions} are not valid box dimensions')
-                self.dimensions = self.dimensions.reshape(6, )
+            self.dimensions = self.dimensions.reshape(6, )
         except ValueError:
             raise ValueError(f'{self.dimensions} are not valid box dimensions')
     
