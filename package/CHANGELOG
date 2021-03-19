@@ -132,8 +132,8 @@ Enhancements
   * Added an RDKit converter that works for any input with all hydrogens
     explicit in the topology (Issue #2468, PR #2775)
   * Added a ValueError raised when not given a gridcenter while providing
-    grid dimensions, implemented the corresponding test
-    and added a check for NaN in input (Issue #3148, PR #3154)
+    grid dimensions to DensityAnalysis, also implemented the corresponding test
+    and added a check for NaN in the input (Issue #3148, PR #3154)
 
 
 Changes
