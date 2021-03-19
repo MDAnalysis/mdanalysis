@@ -32,19 +32,20 @@ Set dimensions of the simulation box to a constant vector across all timesteps.
 """
 import numpy as np
 
+
 class SetDimensions:
     """
     Set simulation box dimensions.
-    
+
     Timestep dimensions are modified in place.
-    
+
     Example
     -------
-    
+
     e.g. set simulation box dimensions to a vector containing unit cell
     dimensions [*a*, *b*, *c*, *alpha*, *beta*, *gamma*], lengths *a*,
     *b*, *c* are in the MDAnalysis length unit (Å), and angles are in degrees.
-    
+
     dim = [2, 2, 2, 90, 90, 90]
     transform = mda.transformations.boxdimensions.setdimensions(dim)
     u.trajectory.add_transformations(transform)
@@ -59,20 +60,20 @@ class SetDimensions:
     -------
     MDAnalysis.coordinates.base.Timestep
     """
-    
+
     def __init__(self, dimensions):
         self.dimensions = dimensions
-        
+
         try:
             self.dimensions = np.asarray(self.dimensions, np.float32)
             if self.dimensions.shape != (6, ) and \
                self.dimensions.shape != (1, 6):
-                raise ValueError(f'{self.dimensions} are not valid box dimensions')
+                raise ValueError('{} are not valid box dimensions'.format(
+                self.dimensions))
             self.dimensions = self.dimensions.reshape(6, )
         except ValueError:
             raise ValueError(f'{self.dimensions} are not valid box dimensions')
-    
+
     def __call__(self, ts):
         ts.dimensions = self.dimensions
         return ts
-
