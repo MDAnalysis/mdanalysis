@@ -29,12 +29,14 @@ import MDAnalysis as mdanalysis
 from MDAnalysis.transformations import SetDimensions
 from MDAnalysisTests import make_Universe
 
+
 @pytest.fixture()
 def boxdimensions_universes():
     # create Universe objects for tests
     ref_u = make_Universe(trajectory=True)
     new_u = ref_u
     return ref_u, new_u
+
 
 def test_boxdimensions_dims(boxdimensions_universes):
     ref_u, new_u = boxdimensions_universes
@@ -43,7 +45,8 @@ def test_boxdimensions_dims(boxdimensions_universes):
     ref.dimensions = new_dims
     new = SetDimensions(new_dims)(new_u.trajectory.ts)
     assert_array_almost_equal(ref.dimensions, new.dimensions, decimal=6)
-    
+
+
 @pytest.mark.parametrize('dim_vector', (
     [1, 1, 1, 90, 90],
     [1, 1, 1, 1, 90, 90, 90],
@@ -56,11 +59,13 @@ def test_boxdimensions_dims(boxdimensions_universes):
     'abcd')
 )
 
+
 def test_dimensions_vector(boxdimensions_universes, dim_vector):
     # wrong box dimension vector size
     ts = boxdimensions_universes[0].trajectory.ts
     with pytest.raises(ValueError):
         SetDimensions(dim_vector)(ts)
+
 
 def test_dimensions_transformations_api(boxdimensions_universes):
     # test if transformation workes with on-the-fly transformations API
