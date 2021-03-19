@@ -25,7 +25,7 @@
 Set box dimensions --- :mod: `MDAnalysis.transformations.boxdimensions`
 =======================================================================
 
-Set dimensions of the simulatopn box to a constant vector across all timesteps.
+Set dimensions of the simulation box to a constant vector across all timesteps.
 
 
 ..autocalss:: setdimensions
