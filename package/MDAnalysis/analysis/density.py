@@ -220,7 +220,8 @@ class DensityAnalysis(AnalysisBase):
     Raises
     ------
     ValueError
-        if AtomGroup is empty and no user defined grid is provided
+        if AtomGroup is empty and no user defined grid is provided, or
+        if the user defined grid is not or incorrectly provided
     UserWarning
         if AtomGroup is empty and a user defined grid is provided
 
@@ -520,7 +521,7 @@ class DensityAnalysis(AnalysisBase):
         except ValueError as err:
             raise ValueError("xdim, ydim, and zdim must be numbers") from err
         if any(np.isnan(gridcenter)) or any(np.isnan(xyzdim)):
-            raise ValueError('Gridcenter or grid dimensions have NaN element')
+            raise ValueError("Gridcenter or grid dimensions have NaN element")
 
 
         # Set min/max by shifting by half the edge length of each dimension
