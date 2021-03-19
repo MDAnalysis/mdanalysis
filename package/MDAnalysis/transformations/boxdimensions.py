@@ -47,7 +47,7 @@ class SetDimensions:
     
     dim = [2, 2, 2, 90, 90, 90]
     transform = mda.transformations.boxdimensions.setdimensions(dim)
-    u.trajectorz.add_transformations(transform)
+    u.trajectory.add_transformations(transform)
 
     Parameters
     ----------
