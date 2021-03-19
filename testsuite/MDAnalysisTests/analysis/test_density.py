@@ -263,6 +263,15 @@ class TestDensityAnalysis(DensityParameters):
                 delta=self.delta, xdim="MDAnalysis", ydim=10.0, zdim=10.0,
                 gridcenter=self.gridcenters['static_defined']).run(step=5)
 
+    def test_ValueError_userdefn_xdim_nanvalue(self, universe):
+        # Test  xdim set to NaN value
+        regex = ("Gridcenter or grid dimensions have NaN element")
+        with pytest.raises(ValueError, match=regex):
+            D = density.DensityAnalysis(
+                universe.select_atoms(self.selections['static']),
+                delta=self.delta, xdim=np.NaN, ydim=10.0, zdim=10.0,
+                gridcenter=self.gridcenters['static_defined']).run(step=5)
+
     def test_warn_noatomgroup(self, universe):
         regex = ("No atoms in AtomGroup at input time frame. "
                  "This may be intended; please ensure that "
