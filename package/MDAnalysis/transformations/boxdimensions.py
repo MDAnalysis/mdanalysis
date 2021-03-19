@@ -32,7 +32,7 @@ Set dimensions of the simulation box to a constant vector across all timesteps.
 """
 import numpy as np
 
-class SetDimensions(object):
+class SetDimensions:
     """
     Set simulation box dimensions.
     
