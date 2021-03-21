@@ -817,6 +817,18 @@ class NCDFWriter(base.WriterBase):
     .. _`Issue #506`:
        https://github.com/MDAnalysis/mdanalysis/issues/506#issuecomment-225081416
 
+    Raises
+    ------
+    FutureWarning
+        When writing. The :class:`NCDFWriter` currently does not write any
+        `scale_factor` values for the data variables. Whilst not in breach
+        of the AMBER NetCDF standard, this behaviour differs from that of
+        most AMBER writers, especially for velocities which usually have a
+        `scale_factor` of 20.455. In MDAnalysis 2.0, the :class:`NCDFWriter`
+        will enforce `scale_factor` writing to either match user inputs (either
+        manually defined or via the :class:`NCDFReader`) or those as written by
+        AmberTools's :program:`sander` under default operation.
+
     See Also
     --------
     :class:`NCDFReader`
@@ -875,6 +887,13 @@ class NCDFWriter(base.WriterBase):
         self.has_velocities = kwargs.get('velocities', False)
         self.has_forces = kwargs.get('forces', False)
         self.curr_frame = 0
+
+        # warn users of upcoming changes
+        wmsg = ("In MDAnalysis v2.0, `scale_factor` writing will change ("
+                "currently these are not written), to better match the way "
+                "they are written by AMBER programs. See NCDFWriter docstring "
+                "for more details.")
+        warnings.warn(wmsg, FutureWarning)
 
     def _init_netcdf(self, periodic=True):
         """Initialize netcdf AMBER 1.0 trajectory.
