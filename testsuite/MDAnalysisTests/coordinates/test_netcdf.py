@@ -900,8 +900,8 @@ class TestNCDFWriterErrorsWarnings(object):
                 w.write(u.trajectory.ts)
 
     def test_scale_factor_future(self, outfile):
-        with NCDFWriter(outfile) as w:
-            u = mda.Universe(GRO)
+        u = mda.Universe(GRO)
+        with NCDFWriter(outfile, u.trajectory.n_atoms) as w:
             wmsg = "`scale_factor` writing will change"
-            with pytest.warn(FutureWarning, match=wmsg):
+            with pytest.warns(FutureWarning, match=wmsg):
                 w.write(u.atoms)
