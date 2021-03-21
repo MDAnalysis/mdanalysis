@@ -179,7 +179,7 @@ class RDKitParser(TopologyReaderBase):
 
         try:
             atom = mol.GetAtomWithIdx(0)
-        except:
+        except RuntimeError:
             top = Topology(n_atoms=0, n_res=0, n_seg=0,
                            attrs=None,
                            atom_resindex=None,
