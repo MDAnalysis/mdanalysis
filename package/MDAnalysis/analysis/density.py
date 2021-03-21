@@ -202,14 +202,11 @@ class DensityAnalysis(AnalysisBase):
             3 element numpy array detailing the x, y and z coordinates of the
             center of a user defined grid box in ångström.
     xdim : float (optional)
-            User defined x dimension box edge in ångström; ignored if
-            gridcenter is "None".
+            User defined x dimension box edge in ångström.
     ydim : float (optional)
-            User defined y dimension box edge in ångström; ignored if
-            gridcenter is "None".
+            User defined y dimension box edge in ångström.
     zdim : float (optional)
-            User defined z dimension box edge in ångström; ignored if
-            gridcenter is "None".
+            User defined z dimension box edge in ångström.
 
     Returns
     -------
