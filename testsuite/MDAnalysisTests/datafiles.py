@@ -195,7 +195,7 @@ __all__ = [
     "SDF_molecule",  # MDL SDFile for rdkit
     "PDB_elements",  # PDB file with elements
     "SURFACE_PDB",  # 111 FCC lattice topology for NSGrid bug #2345
-    "SURFACE_TRR",  # 111 FCC lattice full precision coordinates for NSGrid bug #2345
+    "SURFACE_TRR",  # full precision coordinates for NSGrid bug #2345
 ]
 
 from pkg_resources import resource_filename

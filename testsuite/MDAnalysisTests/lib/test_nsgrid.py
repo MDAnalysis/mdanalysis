@@ -370,6 +370,6 @@ def test_issue_2670():
     # force atom 0 of resid 1 to overlap with atom 0 of resid 3
     u.residues[0].atoms[0].position = u.residues[2].atoms[0].position
     ag2 = u.select_atoms('resid 1 3')
-    
+
     # should return the one atom overlap
     assert len(ag2.select_atoms('around 0.0 resid 3')) == 1
