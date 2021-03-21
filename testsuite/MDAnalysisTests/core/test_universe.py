@@ -214,6 +214,9 @@ class TestUniverseCreation(object):
         Chem = pytest.importorskip("rdkit.Chem")
         mol = Chem.Mol()
         u = mda.Universe(mol, format="RDKIT")
+        assert u.empty
+        assert len(u.atoms) == 0
+
 
 class TestUniverseFromSmiles(object):
     def setup_class(self):
