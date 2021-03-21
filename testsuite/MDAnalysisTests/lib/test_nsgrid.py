@@ -31,7 +31,7 @@ import numpy as np
 
 import MDAnalysis as mda
 from MDAnalysisTests.datafiles import (
-    GRO, Martini_membrane_gro, PDB, PDB_xvf, SURFACE_PDB,
+    GRO, Martini_membrane_gro, PDB, PDB_xvf, SURFACE_PDB, SURFACE_TRR
 )
 from MDAnalysis.lib import nsgrid
 from MDAnalysis.transformations.translate import center_in_box
@@ -338,7 +338,7 @@ def test_issue_2345():
     # another example of NSGrid being wrong
     # this is a 111 FCC slab
     # coordination numbers for atoms should be either 9 or 12, 50 of each
-    u = mda.Universe(SURFACE_PDB)
+    u = mda.Universe(SURFACE_PDB, SURFACE_TRR)
 
     g = mda.lib.nsgrid.FastNS(2.9, u.atoms.positions, box=u.dimensions)
 
@@ -359,6 +359,10 @@ def test_issue_2670():
     u = mda.Universe(PDB)
     u.dimensions = [1e-3, 1e-3, 1e-3, 90, 90, 90]
 
+    # PDB files only have a coordinate precision of 1.0e-3, so we need to scale
+    # the coordinates for this test to make any sense:
+    u.atoms.positions = u.atoms.positions * 1.0e-3
+
     ag1 = u.select_atoms('resid 2 3')
     # should return nothing as nothing except resid 3 is within 0.0 or resid 3
     assert len(ag1.select_atoms('around 0.0 resid 3')) == 0
@@ -366,5 +370,6 @@ def test_issue_2670():
     # force atom 0 of resid 1 to overlap with atom 0 of resid 3
     u.residues[0].atoms[0].position = u.residues[2].atoms[0].position
     ag2 = u.select_atoms('resid 1 3')
+
     # should return the one atom overlap
     assert len(ag2.select_atoms('around 0.0 resid 3')) == 1
