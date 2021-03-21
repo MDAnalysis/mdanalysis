@@ -90,10 +90,13 @@ DEF XZ = 6
 DEF YZ = 7
 DEF ZZ = 8
 
+ctypedef float coordinate[3];
 
 cdef extern from "calc_distances.h" nogil:
     void minimum_image(double* x, float* box, float* inverse_box)
     void minimum_image_triclinic(double* dx, float* box)
+    void _ortho_pbc(coordinate* coords, int numcoords, float* box)
+    void _triclinic_pbc(coordinate* coords, int numcoords, float* box)
 
 
 cdef inline float fmax(float a, float b):
@@ -389,17 +392,19 @@ cdef class FastNS(object):
         # Next coordinate index in cell for each coordinate (END if end of sequence)
         self.next_id = np.full(coords.shape[0], END, dtype=np.int32, order='C')
 
-        self.coords_bbox = np.empty_like(coords, order='C')
+        self.coords_bbox = coords.copy()
         with nogil:
-            for i in range(coords.shape[0]):
-                self.coords_bbox[i][0] = coords[i][0]
-                self.coords_bbox[i][1] = coords[i][1]
-                self.coords_bbox[i][2] = coords[i][2]
+            if self.triclinic:
+                _triclinic_pbc(<coordinate*>&self.coords_bbox[0][0],
+                               self.coords_bbox.shape[0],
+                               &self.triclinic_dimensions[0])
+            else:
+                _ortho_pbc(<coordinate*>&self.coords_bbox[0][0],
+                           self.coords_bbox.shape[0],
+                           &self.dimensions[0])
 
-                self.coordintoprimarycell(&self.coords_bbox[i][0])
-
+            for i in range(self.coords_bbox.shape[0]):
                 j = self.coord2cellid(&self.coords_bbox[i][0])
-
                 self.next_id[i] = self.head_id[j]
                 self.head_id[j] = i
 
@@ -424,32 +429,11 @@ cdef class FastNS(object):
         xyz[1] = <int> ((coord[1] - coord[2] * self.cellsize[YZ]) / self.cellsize[YY])
         xyz[0] = <int> ((coord[0] - coord[1] * self.cellsize[XY]
                          - coord[2] * self.cellsize[XZ]) / self.cellsize[XX])
-
-    cdef void coordintoprimarycell(self, float* coord) nogil:
-        cdef float adj_cy, adj_cx
-
-        while (coord[2] >= self.triclinic_dimensions[ZZ]):
-            coord[2] -= self.triclinic_dimensions[ZZ]
-            coord[1] -= self.triclinic_dimensions[YZ]
-            coord[0] -= self.triclinic_dimensions[XZ]
-        while (coord[2] < 0):
-            coord[2] += self.triclinic_dimensions[ZZ]
-            coord[1] += self.triclinic_dimensions[YZ]
-            coord[0] += self.triclinic_dimensions[XZ]
-
-        adj_cy = coord[2] * self.cellsize[YZ]
-        while ((coord[1] - adj_cy) >= self.triclinic_dimensions[YY]):
-            coord[1] -= self.triclinic_dimensions[YY]
-            coord[0] -= self.triclinic_dimensions[XY]
-        while ((coord[1] - adj_cy) < 0):
-            coord[1] += self.triclinic_dimensions[YY]
-            coord[0] += self.triclinic_dimensions[XY]
-
-        adj_cx = coord[2] * self.cellsize[XZ] + coord[1] * self.cellsize[XY]
-        while ((coord[0] - adj_cx) >= self.triclinic_dimensions[XX]):
-            coord[0] -= self.triclinic_dimensions[XX]
-        while ((coord[0] - adj_cx) < 0):
-            coord[0] += self.triclinic_dimensions[XX]
+        # Make sure cell coordinate indices are within the primary unit cell
+        # (better safe than sorry):
+        xyz[0] %= self.ncells[0]
+        xyz[1] %= self.ncells[1]
+        xyz[2] %= self.ncells[2]
 
     cdef int cellxyz2cellid(self, int cx, int cy, int cz) nogil:
         """Convert cell coordinate to cell id, END for out of bounds"""
@@ -497,7 +481,8 @@ cdef class FastNS(object):
             if self.triclinic:
                 minimum_image_triclinic(dx, &self.triclinic_dimensions[0])
             else:
-                minimum_image(dx, &self.dimensions[0], &self.inverse_dimensions[0])
+                minimum_image(dx, &self.dimensions[0],
+                              &self.inverse_dimensions[0])
 
         return dx[0]*dx[0] + dx[1]*dx[1] + dx[2]*dx[2]
 
@@ -537,7 +522,7 @@ cdef class FastNS(object):
         cdef int cellid
         cdef int xi, yi, zi
         cdef int cellcoord[3]
-        cdef float tmpcoord[3]
+        cdef float[:, ::1] tmpcoords
         
         cdef NSResults results = NSResults()
         cdef double d2, cutoff2
@@ -548,14 +533,21 @@ cdef class FastNS(object):
             raise ValueError("search_coords must have a shape of (n, 3), got "
                              "{}.".format(search_coords.shape))
 
+        tmpcoords = search_coords.copy()
         with nogil:
+            if self.triclinic:
+                _triclinic_pbc(<coordinate*>&tmpcoords[0][0],
+                               tmpcoords.shape[0],
+                               &self.triclinic_dimensions[0])
+            else:
+                _ortho_pbc(<coordinate*>&tmpcoords[0][0],
+                           tmpcoords.shape[0],
+                           &self.dimensions[0])
+
             size_search = search_coords.shape[0]
             for i in range(size_search):
-                for j in range(3):
-                    tmpcoord[j] = search_coords[i][j]
-                self.coordintoprimarycell(tmpcoord)
                 # which cell is atom *i* in
-                self.coord2cellxyz(tmpcoord, cellcoord)
+                self.coord2cellxyz(&tmpcoords[i][0], cellcoord)
                 # loop over all 27 neighbouring cells
                 for xi in range(3):
                     for yi in range(3):
@@ -570,12 +562,12 @@ cdef class FastNS(object):
                             # for loop over atoms in searchcoord
                             j = self.head_id[cellid]
                             while (j != END):
-                                d2 = self.calc_distsq(&tmpcoord[0], &self.coords_bbox[j][0])
+                                d2 = self.calc_distsq(&tmpcoords[i][0],
+                                                      &self.coords_bbox[j][0])
                                 if d2 <= cutoff2:
                                     # place search_coords then self.bbox_coords
                                     results.add_neighbors(i, j, d2)
                                 j = self.next_id[j]
-
         return results
 
     def self_search(self):
