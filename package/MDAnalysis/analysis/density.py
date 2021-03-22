@@ -229,7 +229,7 @@ class DensityAnalysis(AnalysisBase):
 
     Notes
     -----
-    If the gridcenter and x/y/zdim arguments are not provided,
+    If the `gridcenter` and `x/y/zdim` arguments are not provided,
     :class:`DensityAnalysis` will attempt to automatically generate
     a gridbox from the atoms in 'atomgroup' (See Examples).
 
