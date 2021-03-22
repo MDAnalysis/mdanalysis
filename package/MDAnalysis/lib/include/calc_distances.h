@@ -43,6 +43,19 @@ void minimum_image(double* x, float* box, float* inverse_box)
   }
 }
 
+inline void _minimum_image_ortho_lazy(double* x, float* box, float* half_box)
+{
+   /*
+    * Lazy minimum image convention for orthorhombic boxes.
+    *
+    * Assumes that the maximum separation is less than 1.5 times the box length.
+    */
+    for (int i = 0; i < 3; i++) {
+        x[i] -= (x[i] > half_box[i]) * box[i];
+        x[i] += (x[i] <= -half_box[i]) * box[i];
+    }
+}
+
 void minimum_image_triclinic(double* dx, float* box)
 {
    /*

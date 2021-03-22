@@ -1029,6 +1029,7 @@ struct __pyx_obj_10MDAnalysis_3lib_6nsgrid_FastNS {
   __Pyx_memviewslice next_id;
   int triclinic;
   float dimensions[6];
+  float half_dimensions[3];
   float inverse_dimensions[3];
   float triclinic_dimensions[9];
   int pbc;
@@ -2118,7 +2119,7 @@ static const char __pyx_k_Can_only_create_a_buffer_that_is[] = "Can only create 
 static const char __pyx_k_Cannot_assign_to_read_only_memor[] = "Cannot assign to read-only memoryview";
 static const char __pyx_k_Cannot_create_writable_memory_vi[] = "Cannot create writable memory view from read-only memoryview";
 static const char __pyx_k_Empty_shape_tuple_for_cython_arr[] = "Empty shape tuple for cython.array";
-static const char __pyx_k_Incompatible_checksums_s_vs_0x27[] = "Incompatible checksums (%s vs 0x27caffd = (cell_offsets, cellsize, coords_bbox, cutoff, dimensions, head_id, inverse_dimensions, ncells, next_id, pbc, periodic, triclinic, triclinic_dimensions))";
+static const char __pyx_k_Incompatible_checksums_s_vs_0x42[] = "Incompatible checksums (%s vs 0x42b468a = (cell_offsets, cellsize, coords_bbox, cutoff, dimensions, half_dimensions, head_id, inverse_dimensions, ncells, next_id, pbc, periodic, triclinic, triclinic_dimensions))";
 static const char __pyx_k_Incompatible_checksums_s_vs_0x96[] = "Incompatible checksums (%s vs 0x9689e9e = (distances2, pairs))";
 static const char __pyx_k_Incompatible_checksums_s_vs_0xb0[] = "Incompatible checksums (%s vs 0xb068931 = (name))";
 static const char __pyx_k_Indirect_dimensions_not_supporte[] = "Indirect dimensions not supported";
@@ -2142,7 +2143,7 @@ static PyObject *__pyx_kp_s_Cutoff_too_large_for_box_max;
 static PyObject *__pyx_n_s_Ellipsis;
 static PyObject *__pyx_kp_s_Empty_shape_tuple_for_cython_arr;
 static PyObject *__pyx_n_s_FastNS;
-static PyObject *__pyx_kp_s_Incompatible_checksums_s_vs_0x27;
+static PyObject *__pyx_kp_s_Incompatible_checksums_s_vs_0x42;
 static PyObject *__pyx_kp_s_Incompatible_checksums_s_vs_0x96;
 static PyObject *__pyx_kp_s_Incompatible_checksums_s_vs_0xb0;
 static PyObject *__pyx_n_s_IndexError;
@@ -2307,6 +2308,7 @@ static PyObject *__pyx_tp_new_Enum(PyTypeObject *t, PyObject *a, PyObject *k); /
 static PyObject *__pyx_tp_new_memoryview(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new__memoryviewslice(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_float_0_0;
+static PyObject *__pyx_float_0_5;
 static PyObject *__pyx_float_1_0;
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
@@ -2314,7 +2316,7 @@ static PyObject *__pyx_int_2;
 static PyObject *__pyx_int_3;
 static PyObject *__pyx_int_6;
 static PyObject *__pyx_int_9;
-static PyObject *__pyx_int_41725949;
+static PyObject *__pyx_int_69944970;
 static PyObject *__pyx_int_157851294;
 static PyObject *__pyx_int_184977713;
 static PyObject *__pyx_int_neg_1;
@@ -3153,7 +3155,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_9NSResults_6__setstate_cytho
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/nsgrid.pyx":219
+/* "MDAnalysis/lib/nsgrid.pyx":220
  *     cdef bint periodic[3]
  * 
  *     def __init__(self, cutoff, coords, box, pbc=True):             # <<<<<<<<<<<<<<
@@ -3206,13 +3208,13 @@ static int __pyx_pw_10MDAnalysis_3lib_6nsgrid_6FastNS_1__init__(PyObject *__pyx_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_coords)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 4, 1); __PYX_ERR(0, 219, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 4, 1); __PYX_ERR(0, 220, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_box)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 4, 2); __PYX_ERR(0, 219, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 4, 2); __PYX_ERR(0, 220, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
@@ -3222,7 +3224,7 @@ static int __pyx_pw_10MDAnalysis_3lib_6nsgrid_6FastNS_1__init__(PyObject *__pyx_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 219, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 220, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -3242,7 +3244,7 @@ static int __pyx_pw_10MDAnalysis_3lib_6nsgrid_6FastNS_1__init__(PyObject *__pyx_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 219, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 3, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 220, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("MDAnalysis.lib.nsgrid.FastNS.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3273,49 +3275,49 @@ static int __pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS___init__(struct __pyx_obj_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "MDAnalysis/lib/nsgrid.pyx":271
+  /* "MDAnalysis/lib/nsgrid.pyx":272
  * 
  *         """
  *         if (coords.ndim != 2 or coords.shape[1] != 3):             # <<<<<<<<<<<<<<
  *             raise ValueError("coords must have a shape of (n, 3), got {}."
  *                              "".format(coords.shape))
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_coords, __pyx_n_s_ndim); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 271, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_coords, __pyx_n_s_ndim); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 272, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyInt_NeObjC(__pyx_t_2, __pyx_int_2, 2, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 271, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_NeObjC(__pyx_t_2, __pyx_int_2, 2, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 272, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 271, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 272, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (!__pyx_t_4) {
   } else {
     __pyx_t_1 = __pyx_t_4;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_coords, __pyx_n_s_shape); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 271, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_coords, __pyx_n_s_shape); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 272, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_3, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 271, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_3, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 272, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyInt_NeObjC(__pyx_t_2, __pyx_int_3, 3, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 271, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_NeObjC(__pyx_t_2, __pyx_int_3, 3, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 272, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 271, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 272, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_1 = __pyx_t_4;
   __pyx_L4_bool_binop_done:;
   if (unlikely(__pyx_t_1)) {
 
-    /* "MDAnalysis/lib/nsgrid.pyx":273
+    /* "MDAnalysis/lib/nsgrid.pyx":274
  *         if (coords.ndim != 2 or coords.shape[1] != 3):
  *             raise ValueError("coords must have a shape of (n, 3), got {}."
  *                              "".format(coords.shape))             # <<<<<<<<<<<<<<
  *         if box.shape != (6,):
  *             raise ValueError("Box must be a numpy array of [lx, ly, lz, alpha, beta, gamma], got {}"
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_coords_must_have_a_shape_of_n_3, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 273, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_coords_must_have_a_shape_of_n_3, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 274, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_coords, __pyx_n_s_shape); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 273, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_coords, __pyx_n_s_shape); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 274, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -3330,25 +3332,25 @@ static int __pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS___init__(struct __pyx_obj_
     __pyx_t_3 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_6, __pyx_t_5) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_5);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 273, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 274, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "MDAnalysis/lib/nsgrid.pyx":272
+    /* "MDAnalysis/lib/nsgrid.pyx":273
  *         """
  *         if (coords.ndim != 2 or coords.shape[1] != 3):
  *             raise ValueError("coords must have a shape of (n, 3), got {}."             # <<<<<<<<<<<<<<
  *                              "".format(coords.shape))
  *         if box.shape != (6,):
  */
-    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 272, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 273, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __PYX_ERR(0, 272, __pyx_L1_error)
+    __PYX_ERR(0, 273, __pyx_L1_error)
 
-    /* "MDAnalysis/lib/nsgrid.pyx":271
+    /* "MDAnalysis/lib/nsgrid.pyx":272
  * 
  *         """
  *         if (coords.ndim != 2 or coords.shape[1] != 3):             # <<<<<<<<<<<<<<
@@ -3357,29 +3359,29 @@ static int __pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS___init__(struct __pyx_obj_
  */
   }
 
-  /* "MDAnalysis/lib/nsgrid.pyx":274
+  /* "MDAnalysis/lib/nsgrid.pyx":275
  *             raise ValueError("coords must have a shape of (n, 3), got {}."
  *                              "".format(coords.shape))
  *         if box.shape != (6,):             # <<<<<<<<<<<<<<
  *             raise ValueError("Box must be a numpy array of [lx, ly, lz, alpha, beta, gamma], got {}"
  *                              "".format(box))
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_box, __pyx_n_s_shape); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_box, __pyx_n_s_shape); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_tuple__2, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_tuple__2, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (unlikely(__pyx_t_1)) {
 
-    /* "MDAnalysis/lib/nsgrid.pyx":276
+    /* "MDAnalysis/lib/nsgrid.pyx":277
  *         if box.shape != (6,):
  *             raise ValueError("Box must be a numpy array of [lx, ly, lz, alpha, beta, gamma], got {}"
  *                              "".format(box))             # <<<<<<<<<<<<<<
  *         if (box[:3] == 0.0).any():
  *             raise ValueError("Any of the box dimensions cannot be 0")
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_Box_must_be_a_numpy_array_of_lx, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 276, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_Box_must_be_a_numpy_array_of_lx, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 277, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -3393,25 +3395,25 @@ static int __pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS___init__(struct __pyx_obj_
     }
     __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_5, __pyx_v_box) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_box);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 276, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 277, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "MDAnalysis/lib/nsgrid.pyx":275
+    /* "MDAnalysis/lib/nsgrid.pyx":276
  *                              "".format(coords.shape))
  *         if box.shape != (6,):
  *             raise ValueError("Box must be a numpy array of [lx, ly, lz, alpha, beta, gamma], got {}"             # <<<<<<<<<<<<<<
  *                              "".format(box))
  *         if (box[:3] == 0.0).any():
  */
-    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 275, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 276, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __PYX_ERR(0, 275, __pyx_L1_error)
+    __PYX_ERR(0, 276, __pyx_L1_error)
 
-    /* "MDAnalysis/lib/nsgrid.pyx":274
+    /* "MDAnalysis/lib/nsgrid.pyx":275
  *             raise ValueError("coords must have a shape of (n, 3), got {}."
  *                              "".format(coords.shape))
  *         if box.shape != (6,):             # <<<<<<<<<<<<<<
@@ -3420,19 +3422,19 @@ static int __pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS___init__(struct __pyx_obj_
  */
   }
 
-  /* "MDAnalysis/lib/nsgrid.pyx":277
+  /* "MDAnalysis/lib/nsgrid.pyx":278
  *             raise ValueError("Box must be a numpy array of [lx, ly, lz, alpha, beta, gamma], got {}"
  *                              "".format(box))
  *         if (box[:3] == 0.0).any():             # <<<<<<<<<<<<<<
  *             raise ValueError("Any of the box dimensions cannot be 0")
  *         if cutoff < 0:
  */
-  __pyx_t_3 = __Pyx_PyObject_GetSlice(__pyx_v_box, 0, 3, NULL, NULL, &__pyx_slice__3, 0, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 277, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetSlice(__pyx_v_box, 0, 3, NULL, NULL, &__pyx_slice__3, 0, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyFloat_EqObjC(__pyx_t_3, __pyx_float_0_0, 0.0, 0, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 277, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyFloat_EqObjC(__pyx_t_3, __pyx_float_0_0, 0.0, 0, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_any); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 277, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_any); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_5 = NULL;
@@ -3447,27 +3449,27 @@ static int __pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS___init__(struct __pyx_obj_
   }
   __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 277, __pyx_L1_error)
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 277, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (unlikely(__pyx_t_1)) {
 
-    /* "MDAnalysis/lib/nsgrid.pyx":278
+    /* "MDAnalysis/lib/nsgrid.pyx":279
  *                              "".format(box))
  *         if (box[:3] == 0.0).any():
  *             raise ValueError("Any of the box dimensions cannot be 0")             # <<<<<<<<<<<<<<
  *         if cutoff < 0:
  *             raise ValueError("Cutoff must be positive")
  */
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 278, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 279, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __PYX_ERR(0, 278, __pyx_L1_error)
+    __PYX_ERR(0, 279, __pyx_L1_error)
 
-    /* "MDAnalysis/lib/nsgrid.pyx":277
+    /* "MDAnalysis/lib/nsgrid.pyx":278
  *             raise ValueError("Box must be a numpy array of [lx, ly, lz, alpha, beta, gamma], got {}"
  *                              "".format(box))
  *         if (box[:3] == 0.0).any():             # <<<<<<<<<<<<<<
@@ -3476,32 +3478,32 @@ static int __pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS___init__(struct __pyx_obj_
  */
   }
 
-  /* "MDAnalysis/lib/nsgrid.pyx":279
+  /* "MDAnalysis/lib/nsgrid.pyx":280
  *         if (box[:3] == 0.0).any():
  *             raise ValueError("Any of the box dimensions cannot be 0")
  *         if cutoff < 0:             # <<<<<<<<<<<<<<
  *             raise ValueError("Cutoff must be positive")
  *         self.cutoff = cutoff
  */
-  __pyx_t_2 = PyObject_RichCompare(__pyx_v_cutoff, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 279, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 279, __pyx_L1_error)
+  __pyx_t_2 = PyObject_RichCompare(__pyx_v_cutoff, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 280, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 280, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (unlikely(__pyx_t_1)) {
 
-    /* "MDAnalysis/lib/nsgrid.pyx":280
+    /* "MDAnalysis/lib/nsgrid.pyx":281
  *             raise ValueError("Any of the box dimensions cannot be 0")
  *         if cutoff < 0:
  *             raise ValueError("Cutoff must be positive")             # <<<<<<<<<<<<<<
  *         self.cutoff = cutoff
  *         max_cutoff = self._prepare_box(box, pbc)
  */
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 280, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 281, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __PYX_ERR(0, 280, __pyx_L1_error)
+    __PYX_ERR(0, 281, __pyx_L1_error)
 
-    /* "MDAnalysis/lib/nsgrid.pyx":279
+    /* "MDAnalysis/lib/nsgrid.pyx":280
  *         if (box[:3] == 0.0).any():
  *             raise ValueError("Any of the box dimensions cannot be 0")
  *         if cutoff < 0:             # <<<<<<<<<<<<<<
@@ -3510,49 +3512,49 @@ static int __pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS___init__(struct __pyx_obj_
  */
   }
 
-  /* "MDAnalysis/lib/nsgrid.pyx":281
+  /* "MDAnalysis/lib/nsgrid.pyx":282
  *         if cutoff < 0:
  *             raise ValueError("Cutoff must be positive")
  *         self.cutoff = cutoff             # <<<<<<<<<<<<<<
  *         max_cutoff = self._prepare_box(box, pbc)
  *         if cutoff > max_cutoff:
  */
-  __pyx_t_7 = __pyx_PyFloat_AsDouble(__pyx_v_cutoff); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 281, __pyx_L1_error)
+  __pyx_t_7 = __pyx_PyFloat_AsDouble(__pyx_v_cutoff); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 282, __pyx_L1_error)
   __pyx_v_self->cutoff = __pyx_t_7;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":282
+  /* "MDAnalysis/lib/nsgrid.pyx":283
  *             raise ValueError("Cutoff must be positive")
  *         self.cutoff = cutoff
  *         max_cutoff = self._prepare_box(box, pbc)             # <<<<<<<<<<<<<<
  *         if cutoff > max_cutoff:
  *             raise ValueError("Cutoff {} too large for box (max {})".format(cutoff, max_cutoff))
  */
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_pbc); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 282, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(((struct __pyx_vtabstruct_10MDAnalysis_3lib_6nsgrid_FastNS *)__pyx_v_self->__pyx_vtab)->_prepare_box(__pyx_v_self, __pyx_v_box, __pyx_t_1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 282, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_pbc); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 283, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(((struct __pyx_vtabstruct_10MDAnalysis_3lib_6nsgrid_FastNS *)__pyx_v_self->__pyx_vtab)->_prepare_box(__pyx_v_self, __pyx_v_box, __pyx_t_1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 283, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_max_cutoff = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":283
+  /* "MDAnalysis/lib/nsgrid.pyx":284
  *         self.cutoff = cutoff
  *         max_cutoff = self._prepare_box(box, pbc)
  *         if cutoff > max_cutoff:             # <<<<<<<<<<<<<<
  *             raise ValueError("Cutoff {} too large for box (max {})".format(cutoff, max_cutoff))
  *         self._pack_grid(coords)
  */
-  __pyx_t_2 = PyObject_RichCompare(__pyx_v_cutoff, __pyx_v_max_cutoff, Py_GT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 283, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 283, __pyx_L1_error)
+  __pyx_t_2 = PyObject_RichCompare(__pyx_v_cutoff, __pyx_v_max_cutoff, Py_GT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 284, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 284, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (unlikely(__pyx_t_1)) {
 
-    /* "MDAnalysis/lib/nsgrid.pyx":284
+    /* "MDAnalysis/lib/nsgrid.pyx":285
  *         max_cutoff = self._prepare_box(box, pbc)
  *         if cutoff > max_cutoff:
  *             raise ValueError("Cutoff {} too large for box (max {})".format(cutoff, max_cutoff))             # <<<<<<<<<<<<<<
  *         self._pack_grid(coords)
  * 
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_Cutoff_too_large_for_box_max, __pyx_n_s_format); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 284, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_Cutoff_too_large_for_box_max, __pyx_n_s_format); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 285, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_5 = NULL;
     __pyx_t_8 = 0;
@@ -3569,7 +3571,7 @@ static int __pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS___init__(struct __pyx_obj_
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_v_cutoff, __pyx_v_max_cutoff};
-      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 284, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 285, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else
@@ -3577,13 +3579,13 @@ static int __pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS___init__(struct __pyx_obj_
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_v_cutoff, __pyx_v_max_cutoff};
-      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 284, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 285, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else
     #endif
     {
-      __pyx_t_6 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 284, __pyx_L1_error)
+      __pyx_t_6 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 285, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       if (__pyx_t_5) {
         __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -3594,19 +3596,19 @@ static int __pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS___init__(struct __pyx_obj_
       __Pyx_INCREF(__pyx_v_max_cutoff);
       __Pyx_GIVEREF(__pyx_v_max_cutoff);
       PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_8, __pyx_v_max_cutoff);
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 284, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 285, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 284, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 285, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 284, __pyx_L1_error)
+    __PYX_ERR(0, 285, __pyx_L1_error)
 
-    /* "MDAnalysis/lib/nsgrid.pyx":283
+    /* "MDAnalysis/lib/nsgrid.pyx":284
  *         self.cutoff = cutoff
  *         max_cutoff = self._prepare_box(box, pbc)
  *         if cutoff > max_cutoff:             # <<<<<<<<<<<<<<
@@ -3615,20 +3617,20 @@ static int __pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS___init__(struct __pyx_obj_
  */
   }
 
-  /* "MDAnalysis/lib/nsgrid.pyx":285
+  /* "MDAnalysis/lib/nsgrid.pyx":286
  *         if cutoff > max_cutoff:
  *             raise ValueError("Cutoff {} too large for box (max {})".format(cutoff, max_cutoff))
  *         self._pack_grid(coords)             # <<<<<<<<<<<<<<
  * 
  *     cdef float _prepare_box(self, box, bint pbc):
  */
-  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_dsds_float(__pyx_v_coords, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 285, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_dsds_float(__pyx_v_coords, PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 286, __pyx_L1_error)
   ((struct __pyx_vtabstruct_10MDAnalysis_3lib_6nsgrid_FastNS *)__pyx_v_self->__pyx_vtab)->_pack_grid(__pyx_v_self, __pyx_t_9);
   __PYX_XDEC_MEMVIEW(&__pyx_t_9, 1);
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":219
+  /* "MDAnalysis/lib/nsgrid.pyx":220
  *     cdef bint periodic[3]
  * 
  *     def __init__(self, cutoff, coords, box, pbc=True):             # <<<<<<<<<<<<<<
@@ -3653,7 +3655,7 @@ static int __pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS___init__(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/nsgrid.pyx":287
+/* "MDAnalysis/lib/nsgrid.pyx":288
  *         self._pack_grid(coords)
  * 
  *     cdef float _prepare_box(self, box, bint pbc):             # <<<<<<<<<<<<<<
@@ -3687,108 +3689,124 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_prepare_box", 0);
 
-  /* "MDAnalysis/lib/nsgrid.pyx":304
+  /* "MDAnalysis/lib/nsgrid.pyx":305
  *         cdef int i
  * 
  *         from MDAnalysis.lib.mdamath import triclinic_vectors             # <<<<<<<<<<<<<<
  * 
  *         for i in range(3):
  */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 304, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 305, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_triclinic_vectors);
   __Pyx_GIVEREF(__pyx_n_s_triclinic_vectors);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_triclinic_vectors);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_MDAnalysis_lib_mdamath, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 304, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_MDAnalysis_lib_mdamath, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 305, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_triclinic_vectors); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 304, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_triclinic_vectors); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 305, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_t_1);
   __pyx_v_triclinic_vectors = __pyx_t_1;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":306
+  /* "MDAnalysis/lib/nsgrid.pyx":307
  *         from MDAnalysis.lib.mdamath import triclinic_vectors
  * 
  *         for i in range(3):             # <<<<<<<<<<<<<<
  *             self.dimensions[i] = box[i]
- *             self.inverse_dimensions[i] = 1.0 / box[i]
+ *             self.half_dimensions[i] = 0.5 * box[i];
  */
   for (__pyx_t_3 = 0; __pyx_t_3 < 3; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "MDAnalysis/lib/nsgrid.pyx":307
+    /* "MDAnalysis/lib/nsgrid.pyx":308
  * 
  *         for i in range(3):
  *             self.dimensions[i] = box[i]             # <<<<<<<<<<<<<<
+ *             self.half_dimensions[i] = 0.5 * box[i];
  *             self.inverse_dimensions[i] = 1.0 / box[i]
- *         self.dimensions[3] = box[3]
  */
-    __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_box, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 307, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_box, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 308, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 307, __pyx_L1_error)
+    __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 308, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     (__pyx_v_self->dimensions[__pyx_v_i]) = __pyx_t_4;
 
-    /* "MDAnalysis/lib/nsgrid.pyx":308
+    /* "MDAnalysis/lib/nsgrid.pyx":309
  *         for i in range(3):
  *             self.dimensions[i] = box[i]
+ *             self.half_dimensions[i] = 0.5 * box[i];             # <<<<<<<<<<<<<<
+ *             self.inverse_dimensions[i] = 1.0 / box[i]
+ *         self.dimensions[3] = box[3]
+ */
+    __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_box, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 309, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_1 = PyNumber_Multiply(__pyx_float_0_5, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 309, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 309, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    (__pyx_v_self->half_dimensions[__pyx_v_i]) = __pyx_t_4;
+
+    /* "MDAnalysis/lib/nsgrid.pyx":310
+ *             self.dimensions[i] = box[i]
+ *             self.half_dimensions[i] = 0.5 * box[i];
  *             self.inverse_dimensions[i] = 1.0 / box[i]             # <<<<<<<<<<<<<<
  *         self.dimensions[3] = box[3]
  *         self.dimensions[4] = box[4]
  */
-    __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_box, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 308, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_1 = __Pyx_PyFloat_DivideCObj(__pyx_float_1_0, __pyx_t_2, 1.0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 308, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_box, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 310, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 308, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyFloat_DivideCObj(__pyx_float_1_0, __pyx_t_1, 1.0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 310, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 310, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     (__pyx_v_self->inverse_dimensions[__pyx_v_i]) = __pyx_t_4;
   }
 
-  /* "MDAnalysis/lib/nsgrid.pyx":309
- *             self.dimensions[i] = box[i]
+  /* "MDAnalysis/lib/nsgrid.pyx":311
+ *             self.half_dimensions[i] = 0.5 * box[i];
  *             self.inverse_dimensions[i] = 1.0 / box[i]
  *         self.dimensions[3] = box[3]             # <<<<<<<<<<<<<<
  *         self.dimensions[4] = box[4]
  *         self.dimensions[5] = box[5]
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_box, 3, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 309, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 309, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_box, 3, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 311, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 311, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   (__pyx_v_self->dimensions[3]) = __pyx_t_4;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":310
+  /* "MDAnalysis/lib/nsgrid.pyx":312
  *             self.inverse_dimensions[i] = 1.0 / box[i]
  *         self.dimensions[3] = box[3]
  *         self.dimensions[4] = box[4]             # <<<<<<<<<<<<<<
  *         self.dimensions[5] = box[5]
  * 
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_box, 4, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 310, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 310, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_box, 4, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 312, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 312, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   (__pyx_v_self->dimensions[4]) = __pyx_t_4;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":311
+  /* "MDAnalysis/lib/nsgrid.pyx":313
  *         self.dimensions[3] = box[3]
  *         self.dimensions[4] = box[4]
  *         self.dimensions[5] = box[5]             # <<<<<<<<<<<<<<
  * 
  *         self.triclinic_dimensions = triclinic_vectors(box).reshape((9,))
  */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_box, 5, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 311, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 311, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_box, 5, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 313, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_4 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_4 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 313, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   (__pyx_v_self->dimensions[5]) = __pyx_t_4;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":313
+  /* "MDAnalysis/lib/nsgrid.pyx":315
  *         self.dimensions[5] = box[5]
  * 
  *         self.triclinic_dimensions = triclinic_vectors(box).reshape((9,))             # <<<<<<<<<<<<<<
@@ -3806,34 +3824,34 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
       __Pyx_DECREF_SET(__pyx_t_5, function);
     }
   }
-  __pyx_t_2 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_v_box) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_v_box);
+  __pyx_t_1 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_v_box) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_v_box);
   __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 313, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 315, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_reshape); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 313, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_reshape); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = NULL;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_5);
-    if (likely(__pyx_t_2)) {
+    __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_5);
+    if (likely(__pyx_t_1)) {
       PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-      __Pyx_INCREF(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_1);
       __Pyx_INCREF(function);
       __Pyx_DECREF_SET(__pyx_t_5, function);
     }
   }
-  __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_2, __pyx_tuple__6) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_tuple__6);
-  __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 313, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_1, __pyx_tuple__6) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_tuple__6);
+  __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 315, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (unlikely(__Pyx_carray_from_py_float(__pyx_t_1, __pyx_t_7, 9) < 0)) __PYX_ERR(0, 313, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (unlikely(__Pyx_carray_from_py_float(__pyx_t_2, __pyx_t_7, 9) < 0)) __PYX_ERR(0, 315, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   memcpy(&(__pyx_v_self->triclinic_dimensions[0]), __pyx_t_7, sizeof(__pyx_v_self->triclinic_dimensions[0]) * (9));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":314
+  /* "MDAnalysis/lib/nsgrid.pyx":316
  * 
  *         self.triclinic_dimensions = triclinic_vectors(box).reshape((9,))
  *         self.triclinic = (self.triclinic_dimensions[XY] != 0 or             # <<<<<<<<<<<<<<
@@ -3847,7 +3865,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
     goto __pyx_L5_bool_binop_done;
   }
 
-  /* "MDAnalysis/lib/nsgrid.pyx":315
+  /* "MDAnalysis/lib/nsgrid.pyx":317
  *         self.triclinic_dimensions = triclinic_vectors(box).reshape((9,))
  *         self.triclinic = (self.triclinic_dimensions[XY] != 0 or
  *                           self.triclinic_dimensions[XZ] != 0 or             # <<<<<<<<<<<<<<
@@ -3861,7 +3879,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
     goto __pyx_L5_bool_binop_done;
   }
 
-  /* "MDAnalysis/lib/nsgrid.pyx":316
+  /* "MDAnalysis/lib/nsgrid.pyx":318
  *         self.triclinic = (self.triclinic_dimensions[XY] != 0 or
  *                           self.triclinic_dimensions[XZ] != 0 or
  *                           self.triclinic_dimensions[YZ] != 0)             # <<<<<<<<<<<<<<
@@ -3872,7 +3890,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
   __pyx_t_8 = __pyx_t_9;
   __pyx_L5_bool_binop_done:;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":314
+  /* "MDAnalysis/lib/nsgrid.pyx":316
  * 
  *         self.triclinic_dimensions = triclinic_vectors(box).reshape((9,))
  *         self.triclinic = (self.triclinic_dimensions[XY] != 0 or             # <<<<<<<<<<<<<<
@@ -3881,7 +3899,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   __pyx_v_self->triclinic = __pyx_t_8;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":317
+  /* "MDAnalysis/lib/nsgrid.pyx":319
  *                           self.triclinic_dimensions[XZ] != 0 or
  *                           self.triclinic_dimensions[YZ] != 0)
  *         cutoff = max(self.cutoff, 1.0)  # TODO: Figure out max ncells and stick to that             # <<<<<<<<<<<<<<
@@ -3897,7 +3915,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
   }
   __pyx_v_cutoff = __pyx_t_12;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":322
+  /* "MDAnalysis/lib/nsgrid.pyx":324
  *         # For triclinic the box tilt creates a shorter path across the box we must account for
  *         # alpha
  *         max_cutoff = self.triclinic_dimensions[YY] * degsin(self.dimensions[3])             # <<<<<<<<<<<<<<
@@ -3906,7 +3924,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   __pyx_v_max_cutoff = ((__pyx_v_self->triclinic_dimensions[4]) * __pyx_f_10MDAnalysis_3lib_6nsgrid_degsin((__pyx_v_self->dimensions[3])));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":323
+  /* "MDAnalysis/lib/nsgrid.pyx":325
  *         # alpha
  *         max_cutoff = self.triclinic_dimensions[YY] * degsin(self.dimensions[3])
  *         max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[ZZ] * degsin(self.dimensions[3]))             # <<<<<<<<<<<<<<
@@ -3915,7 +3933,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   __pyx_v_max_cutoff = __pyx_f_10MDAnalysis_3lib_6nsgrid_fmin(__pyx_v_max_cutoff, ((__pyx_v_self->triclinic_dimensions[8]) * __pyx_f_10MDAnalysis_3lib_6nsgrid_degsin((__pyx_v_self->dimensions[3]))));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":325
+  /* "MDAnalysis/lib/nsgrid.pyx":327
  *         max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[ZZ] * degsin(self.dimensions[3]))
  *         # beta
  *         max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[XX] * degsin(self.dimensions[4]))             # <<<<<<<<<<<<<<
@@ -3924,7 +3942,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   __pyx_v_max_cutoff = __pyx_f_10MDAnalysis_3lib_6nsgrid_fmin(__pyx_v_max_cutoff, ((__pyx_v_self->triclinic_dimensions[0]) * __pyx_f_10MDAnalysis_3lib_6nsgrid_degsin((__pyx_v_self->dimensions[4]))));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":326
+  /* "MDAnalysis/lib/nsgrid.pyx":328
  *         # beta
  *         max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[XX] * degsin(self.dimensions[4]))
  *         max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[ZZ] * degsin(self.dimensions[4]))             # <<<<<<<<<<<<<<
@@ -3933,7 +3951,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   __pyx_v_max_cutoff = __pyx_f_10MDAnalysis_3lib_6nsgrid_fmin(__pyx_v_max_cutoff, ((__pyx_v_self->triclinic_dimensions[8]) * __pyx_f_10MDAnalysis_3lib_6nsgrid_degsin((__pyx_v_self->dimensions[4]))));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":328
+  /* "MDAnalysis/lib/nsgrid.pyx":330
  *         max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[ZZ] * degsin(self.dimensions[4]))
  *         # gamma
  *         max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[XX] * degsin(self.dimensions[5]))             # <<<<<<<<<<<<<<
@@ -3942,7 +3960,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   __pyx_v_max_cutoff = __pyx_f_10MDAnalysis_3lib_6nsgrid_fmin(__pyx_v_max_cutoff, ((__pyx_v_self->triclinic_dimensions[0]) * __pyx_f_10MDAnalysis_3lib_6nsgrid_degsin((__pyx_v_self->dimensions[5]))));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":329
+  /* "MDAnalysis/lib/nsgrid.pyx":331
  *         # gamma
  *         max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[XX] * degsin(self.dimensions[5]))
  *         max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[YY] * degsin(self.dimensions[5]))             # <<<<<<<<<<<<<<
@@ -3951,7 +3969,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   __pyx_v_max_cutoff = __pyx_f_10MDAnalysis_3lib_6nsgrid_fmin(__pyx_v_max_cutoff, ((__pyx_v_self->triclinic_dimensions[4]) * __pyx_f_10MDAnalysis_3lib_6nsgrid_degsin((__pyx_v_self->dimensions[5]))));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":330
+  /* "MDAnalysis/lib/nsgrid.pyx":332
  *         max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[XX] * degsin(self.dimensions[5]))
  *         max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[YY] * degsin(self.dimensions[5]))
  *         max_cutoff /= 2             # <<<<<<<<<<<<<<
@@ -3960,7 +3978,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   __pyx_v_max_cutoff = (__pyx_v_max_cutoff / 2.0);
 
-  /* "MDAnalysis/lib/nsgrid.pyx":333
+  /* "MDAnalysis/lib/nsgrid.pyx":335
  * 
  *         # for triclinic cells, we need to worry about the shortest path across the cells
  *         min_cellsize = cutoff             # <<<<<<<<<<<<<<
@@ -3969,7 +3987,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   __pyx_v_min_cellsize = __pyx_v_cutoff;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":334
+  /* "MDAnalysis/lib/nsgrid.pyx":336
  *         # for triclinic cells, we need to worry about the shortest path across the cells
  *         min_cellsize = cutoff
  *         if self.triclinic:             # <<<<<<<<<<<<<<
@@ -3979,7 +3997,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
   __pyx_t_8 = (__pyx_v_self->triclinic != 0);
   if (__pyx_t_8) {
 
-    /* "MDAnalysis/lib/nsgrid.pyx":335
+    /* "MDAnalysis/lib/nsgrid.pyx":337
  *         min_cellsize = cutoff
  *         if self.triclinic:
  *             for i in range(3, 6):             # <<<<<<<<<<<<<<
@@ -3989,7 +4007,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
     for (__pyx_t_3 = 3; __pyx_t_3 < 6; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "MDAnalysis/lib/nsgrid.pyx":337
+      /* "MDAnalysis/lib/nsgrid.pyx":339
  *             for i in range(3, 6):
  *                 # cutoff/sin(theta) to elongate the XX/YY/ZZ dimension to make smallest diagonal large enough
  *                 new_cellsize = cutoff / degsin(self.dimensions[i])             # <<<<<<<<<<<<<<
@@ -3998,7 +4016,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
       __pyx_v_new_cellsize = (__pyx_v_cutoff / __pyx_f_10MDAnalysis_3lib_6nsgrid_degsin((__pyx_v_self->dimensions[__pyx_v_i])));
 
-      /* "MDAnalysis/lib/nsgrid.pyx":338
+      /* "MDAnalysis/lib/nsgrid.pyx":340
  *                 # cutoff/sin(theta) to elongate the XX/YY/ZZ dimension to make smallest diagonal large enough
  *                 new_cellsize = cutoff / degsin(self.dimensions[i])
  *                 min_cellsize = fmax(new_cellsize, min_cellsize)             # <<<<<<<<<<<<<<
@@ -4008,7 +4026,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
       __pyx_v_min_cellsize = __pyx_f_10MDAnalysis_3lib_6nsgrid_fmax(__pyx_v_new_cellsize, __pyx_v_min_cellsize);
     }
 
-    /* "MDAnalysis/lib/nsgrid.pyx":334
+    /* "MDAnalysis/lib/nsgrid.pyx":336
  *         # for triclinic cells, we need to worry about the shortest path across the cells
  *         min_cellsize = cutoff
  *         if self.triclinic:             # <<<<<<<<<<<<<<
@@ -4017,7 +4035,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   }
 
-  /* "MDAnalysis/lib/nsgrid.pyx":342
+  /* "MDAnalysis/lib/nsgrid.pyx":344
  *         # add 0.001 here to avoid floating point errors
  *         # will make cells slightly too large as a result, ah well
  *         min_cellsize += 0.001             # <<<<<<<<<<<<<<
@@ -4026,7 +4044,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   __pyx_v_min_cellsize = (__pyx_v_min_cellsize + 0.001);
 
-  /* "MDAnalysis/lib/nsgrid.pyx":343
+  /* "MDAnalysis/lib/nsgrid.pyx":345
  *         # will make cells slightly too large as a result, ah well
  *         min_cellsize += 0.001
  *         self.ncells[0] = <int> math.floor(self.triclinic_dimensions[XX] / min_cellsize)             # <<<<<<<<<<<<<<
@@ -4035,7 +4053,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   (__pyx_v_self->ncells[0]) = ((int)floor(((__pyx_v_self->triclinic_dimensions[0]) / __pyx_v_min_cellsize)));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":344
+  /* "MDAnalysis/lib/nsgrid.pyx":346
  *         min_cellsize += 0.001
  *         self.ncells[0] = <int> math.floor(self.triclinic_dimensions[XX] / min_cellsize)
  *         self.ncells[1] = <int> math.floor(self.triclinic_dimensions[YY] / min_cellsize)             # <<<<<<<<<<<<<<
@@ -4044,7 +4062,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   (__pyx_v_self->ncells[1]) = ((int)floor(((__pyx_v_self->triclinic_dimensions[4]) / __pyx_v_min_cellsize)));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":345
+  /* "MDAnalysis/lib/nsgrid.pyx":347
  *         self.ncells[0] = <int> math.floor(self.triclinic_dimensions[XX] / min_cellsize)
  *         self.ncells[1] = <int> math.floor(self.triclinic_dimensions[YY] / min_cellsize)
  *         self.ncells[2] = <int> math.floor(self.triclinic_dimensions[ZZ] / min_cellsize)             # <<<<<<<<<<<<<<
@@ -4053,7 +4071,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   (__pyx_v_self->ncells[2]) = ((int)floor(((__pyx_v_self->triclinic_dimensions[8]) / __pyx_v_min_cellsize)));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":347
+  /* "MDAnalysis/lib/nsgrid.pyx":349
  *         self.ncells[2] = <int> math.floor(self.triclinic_dimensions[ZZ] / min_cellsize)
  * 
  *         self.pbc = pbc             # <<<<<<<<<<<<<<
@@ -4062,7 +4080,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   __pyx_v_self->pbc = __pyx_v_pbc;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":351
+  /* "MDAnalysis/lib/nsgrid.pyx":353
  *         # this prevents double counting of results if a cell would have the same
  *         # neighbour above and below
  *         if pbc:             # <<<<<<<<<<<<<<
@@ -4072,7 +4090,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
   __pyx_t_8 = (__pyx_v_pbc != 0);
   if (__pyx_t_8) {
 
-    /* "MDAnalysis/lib/nsgrid.pyx":352
+    /* "MDAnalysis/lib/nsgrid.pyx":354
  *         # neighbour above and below
  *         if pbc:
  *             for i in range(3):             # <<<<<<<<<<<<<<
@@ -4082,7 +4100,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
     for (__pyx_t_3 = 0; __pyx_t_3 < 3; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "MDAnalysis/lib/nsgrid.pyx":353
+      /* "MDAnalysis/lib/nsgrid.pyx":355
  *         if pbc:
  *             for i in range(3):
  *                 if self.ncells[i] <= 3:             # <<<<<<<<<<<<<<
@@ -4092,7 +4110,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
       __pyx_t_8 = (((__pyx_v_self->ncells[__pyx_v_i]) <= 3) != 0);
       if (__pyx_t_8) {
 
-        /* "MDAnalysis/lib/nsgrid.pyx":354
+        /* "MDAnalysis/lib/nsgrid.pyx":356
  *             for i in range(3):
  *                 if self.ncells[i] <= 3:
  *                     self.ncells[i] = 1             # <<<<<<<<<<<<<<
@@ -4101,7 +4119,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
         (__pyx_v_self->ncells[__pyx_v_i]) = 1;
 
-        /* "MDAnalysis/lib/nsgrid.pyx":355
+        /* "MDAnalysis/lib/nsgrid.pyx":357
  *                 if self.ncells[i] <= 3:
  *                     self.ncells[i] = 1
  *                     self.periodic[i] = False             # <<<<<<<<<<<<<<
@@ -4110,7 +4128,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
         (__pyx_v_self->periodic[__pyx_v_i]) = 0;
 
-        /* "MDAnalysis/lib/nsgrid.pyx":353
+        /* "MDAnalysis/lib/nsgrid.pyx":355
  *         if pbc:
  *             for i in range(3):
  *                 if self.ncells[i] <= 3:             # <<<<<<<<<<<<<<
@@ -4120,7 +4138,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
         goto __pyx_L14;
       }
 
-      /* "MDAnalysis/lib/nsgrid.pyx":357
+      /* "MDAnalysis/lib/nsgrid.pyx":359
  *                     self.periodic[i] = False
  *                 else:
  *                     self.periodic[i] = True             # <<<<<<<<<<<<<<
@@ -4133,7 +4151,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
       __pyx_L14:;
     }
 
-    /* "MDAnalysis/lib/nsgrid.pyx":351
+    /* "MDAnalysis/lib/nsgrid.pyx":353
  *         # this prevents double counting of results if a cell would have the same
  *         # neighbour above and below
  *         if pbc:             # <<<<<<<<<<<<<<
@@ -4143,7 +4161,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
     goto __pyx_L11;
   }
 
-  /* "MDAnalysis/lib/nsgrid.pyx":359
+  /* "MDAnalysis/lib/nsgrid.pyx":361
  *                     self.periodic[i] = True
  *         else:
  *             for i in range(3):             # <<<<<<<<<<<<<<
@@ -4154,7 +4172,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
     for (__pyx_t_3 = 0; __pyx_t_3 < 3; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "MDAnalysis/lib/nsgrid.pyx":360
+      /* "MDAnalysis/lib/nsgrid.pyx":362
  *         else:
  *             for i in range(3):
  *                 if self.ncells[i] <= 2:             # <<<<<<<<<<<<<<
@@ -4164,7 +4182,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
       __pyx_t_8 = (((__pyx_v_self->ncells[__pyx_v_i]) <= 2) != 0);
       if (__pyx_t_8) {
 
-        /* "MDAnalysis/lib/nsgrid.pyx":361
+        /* "MDAnalysis/lib/nsgrid.pyx":363
  *             for i in range(3):
  *                 if self.ncells[i] <= 2:
  *                     self.ncells[i] = 1             # <<<<<<<<<<<<<<
@@ -4173,7 +4191,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
         (__pyx_v_self->ncells[__pyx_v_i]) = 1;
 
-        /* "MDAnalysis/lib/nsgrid.pyx":360
+        /* "MDAnalysis/lib/nsgrid.pyx":362
  *         else:
  *             for i in range(3):
  *                 if self.ncells[i] <= 2:             # <<<<<<<<<<<<<<
@@ -4182,7 +4200,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
       }
 
-      /* "MDAnalysis/lib/nsgrid.pyx":362
+      /* "MDAnalysis/lib/nsgrid.pyx":364
  *                 if self.ncells[i] <= 2:
  *                     self.ncells[i] = 1
  *                 self.periodic[i] = False             # <<<<<<<<<<<<<<
@@ -4194,7 +4212,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
   }
   __pyx_L11:;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":364
+  /* "MDAnalysis/lib/nsgrid.pyx":366
  *                 self.periodic[i] = False
  *         # Off diagonal cellsizes are actually the tilt, i.e. dy/dz or similar
  *         self.cellsize[XX] = self.triclinic_dimensions[XX] / <double> self.ncells[0]             # <<<<<<<<<<<<<<
@@ -4203,7 +4221,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   (__pyx_v_self->cellsize[0]) = ((__pyx_v_self->triclinic_dimensions[0]) / ((double)(__pyx_v_self->ncells[0])));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":366
+  /* "MDAnalysis/lib/nsgrid.pyx":368
  *         self.cellsize[XX] = self.triclinic_dimensions[XX] / <double> self.ncells[0]
  *         # [YX] and [ZX] are 0
  *         self.cellsize[XY] = self.triclinic_dimensions[XY] / self.triclinic_dimensions[YY]             # <<<<<<<<<<<<<<
@@ -4212,7 +4230,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   (__pyx_v_self->cellsize[3]) = ((__pyx_v_self->triclinic_dimensions[3]) / (__pyx_v_self->triclinic_dimensions[4]));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":367
+  /* "MDAnalysis/lib/nsgrid.pyx":369
  *         # [YX] and [ZX] are 0
  *         self.cellsize[XY] = self.triclinic_dimensions[XY] / self.triclinic_dimensions[YY]
  *         self.cellsize[YY] = self.triclinic_dimensions[YY] / <double> self.ncells[1]             # <<<<<<<<<<<<<<
@@ -4221,7 +4239,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   (__pyx_v_self->cellsize[4]) = ((__pyx_v_self->triclinic_dimensions[4]) / ((double)(__pyx_v_self->ncells[1])));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":369
+  /* "MDAnalysis/lib/nsgrid.pyx":371
  *         self.cellsize[YY] = self.triclinic_dimensions[YY] / <double> self.ncells[1]
  *         # [ZY] is zero
  *         self.cellsize[XZ] = self.triclinic_dimensions[XZ] / self.triclinic_dimensions[ZZ]             # <<<<<<<<<<<<<<
@@ -4230,7 +4248,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   (__pyx_v_self->cellsize[6]) = ((__pyx_v_self->triclinic_dimensions[6]) / (__pyx_v_self->triclinic_dimensions[8]));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":370
+  /* "MDAnalysis/lib/nsgrid.pyx":372
  *         # [ZY] is zero
  *         self.cellsize[XZ] = self.triclinic_dimensions[XZ] / self.triclinic_dimensions[ZZ]
  *         self.cellsize[YZ] = self.triclinic_dimensions[YZ] / self.triclinic_dimensions[ZZ]             # <<<<<<<<<<<<<<
@@ -4239,7 +4257,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   (__pyx_v_self->cellsize[7]) = ((__pyx_v_self->triclinic_dimensions[7]) / (__pyx_v_self->triclinic_dimensions[8]));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":371
+  /* "MDAnalysis/lib/nsgrid.pyx":373
  *         self.cellsize[XZ] = self.triclinic_dimensions[XZ] / self.triclinic_dimensions[ZZ]
  *         self.cellsize[YZ] = self.triclinic_dimensions[YZ] / self.triclinic_dimensions[ZZ]
  *         self.cellsize[ZZ] = self.triclinic_dimensions[ZZ] / <double> self.ncells[2]             # <<<<<<<<<<<<<<
@@ -4248,7 +4266,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   (__pyx_v_self->cellsize[8]) = ((__pyx_v_self->triclinic_dimensions[8]) / ((double)(__pyx_v_self->ncells[2])));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":373
+  /* "MDAnalysis/lib/nsgrid.pyx":375
  *         self.cellsize[ZZ] = self.triclinic_dimensions[ZZ] / <double> self.ncells[2]
  * 
  *         self.cell_offsets[0] = 0             # <<<<<<<<<<<<<<
@@ -4257,7 +4275,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   (__pyx_v_self->cell_offsets[0]) = 0;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":374
+  /* "MDAnalysis/lib/nsgrid.pyx":376
  * 
  *         self.cell_offsets[0] = 0
  *         self.cell_offsets[1] = self.ncells[0]             # <<<<<<<<<<<<<<
@@ -4266,7 +4284,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   (__pyx_v_self->cell_offsets[1]) = (__pyx_v_self->ncells[0]);
 
-  /* "MDAnalysis/lib/nsgrid.pyx":375
+  /* "MDAnalysis/lib/nsgrid.pyx":377
  *         self.cell_offsets[0] = 0
  *         self.cell_offsets[1] = self.ncells[0]
  *         self.cell_offsets[2] = self.ncells[0] * self.ncells[1]             # <<<<<<<<<<<<<<
@@ -4275,7 +4293,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
  */
   (__pyx_v_self->cell_offsets[2]) = ((__pyx_v_self->ncells[0]) * (__pyx_v_self->ncells[1]));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":377
+  /* "MDAnalysis/lib/nsgrid.pyx":379
  *         self.cell_offsets[2] = self.ncells[0] * self.ncells[1]
  * 
  *         return max_cutoff             # <<<<<<<<<<<<<<
@@ -4285,7 +4303,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
   __pyx_r = __pyx_v_max_cutoff;
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":287
+  /* "MDAnalysis/lib/nsgrid.pyx":288
  *         self._pack_grid(coords)
  * 
  *     cdef float _prepare_box(self, box, bint pbc):             # <<<<<<<<<<<<<<
@@ -4307,7 +4325,7 @@ static float __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__prepare_box(struct __pyx
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/nsgrid.pyx":379
+/* "MDAnalysis/lib/nsgrid.pyx":381
  *         return max_cutoff
  * 
  *     cdef void _pack_grid(self, float[:, :] coords):             # <<<<<<<<<<<<<<
@@ -4337,21 +4355,21 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__pack_grid(struct __pyx_ob
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_pack_grid", 0);
 
-  /* "MDAnalysis/lib/nsgrid.pyx":391
+  /* "MDAnalysis/lib/nsgrid.pyx":393
  *         # Linked list for each cell
  *         # Starting coordinate index for each cell (END if empty cell)
  *         self.head_id = np.full(self.cell_offsets[2] * self.ncells[2], END, dtype=np.int32, order='C')             # <<<<<<<<<<<<<<
  *         # Next coordinate index in cell for each coordinate (END if end of sequence)
  *         self.next_id = np.full(coords.shape[0], END, dtype=np.int32, order='C')
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 391, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 393, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_full); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 391, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_full); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 393, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyInt_From_int(((__pyx_v_self->cell_offsets[2]) * (__pyx_v_self->ncells[2]))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 391, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(((__pyx_v_self->cell_offsets[2]) * (__pyx_v_self->ncells[2]))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 393, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 391, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 393, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
@@ -4359,43 +4377,43 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__pack_grid(struct __pyx_ob
   __Pyx_GIVEREF(__pyx_int_neg_1);
   PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_int_neg_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 391, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 393, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 391, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 393, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 391, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_int32); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 393, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 391, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 393, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_order, __pyx_n_s_C) < 0) __PYX_ERR(0, 391, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 391, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_order, __pyx_n_s_C) < 0) __PYX_ERR(0, 393, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 393, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_t_5, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 391, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_t_5, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 393, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->head_id, 0);
   __pyx_v_self->head_id = __pyx_t_6;
   __pyx_t_6.memview = NULL;
   __pyx_t_6.data = NULL;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":393
+  /* "MDAnalysis/lib/nsgrid.pyx":395
  *         self.head_id = np.full(self.cell_offsets[2] * self.ncells[2], END, dtype=np.int32, order='C')
  *         # Next coordinate index in cell for each coordinate (END if end of sequence)
  *         self.next_id = np.full(coords.shape[0], END, dtype=np.int32, order='C')             # <<<<<<<<<<<<<<
  * 
  *         self.coords_bbox = coords.copy()
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 393, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_full); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 393, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_full); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = PyInt_FromSsize_t((__pyx_v_coords.shape[0])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 393, __pyx_L1_error)
+  __pyx_t_5 = PyInt_FromSsize_t((__pyx_v_coords.shape[0])); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 393, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_5);
@@ -4403,42 +4421,42 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__pack_grid(struct __pyx_ob
   __Pyx_GIVEREF(__pyx_int_neg_1);
   PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_int_neg_1);
   __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 393, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 393, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_int32); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 393, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_int32); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_dtype, __pyx_t_4) < 0) __PYX_ERR(0, 393, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_dtype, __pyx_t_4) < 0) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_order, __pyx_n_s_C) < 0) __PYX_ERR(0, 393, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_3, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 393, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_order, __pyx_n_s_C) < 0) __PYX_ERR(0, 395, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_3, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_t_4, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 393, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_t_4, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->next_id, 0);
   __pyx_v_self->next_id = __pyx_t_6;
   __pyx_t_6.memview = NULL;
   __pyx_t_6.data = NULL;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":395
+  /* "MDAnalysis/lib/nsgrid.pyx":397
  *         self.next_id = np.full(coords.shape[0], END, dtype=np.int32, order='C')
  * 
  *         self.coords_bbox = coords.copy()             # <<<<<<<<<<<<<<
  *         with nogil:
  *             if self.triclinic:
  */
-  __pyx_t_7 = __pyx_memoryview_copy_slice_d_dc_float_c(__pyx_v_coords); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 395, __pyx_L1_error)
+  __pyx_t_7 = __pyx_memoryview_copy_slice_d_dc_float_c(__pyx_v_coords); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 397, __pyx_L1_error)
   __PYX_XDEC_MEMVIEW(&__pyx_v_self->coords_bbox, 0);
   __pyx_v_self->coords_bbox = __pyx_t_7;
   __pyx_t_7.memview = NULL;
   __pyx_t_7.data = NULL;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":396
+  /* "MDAnalysis/lib/nsgrid.pyx":398
  * 
  *         self.coords_bbox = coords.copy()
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -4453,7 +4471,7 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__pack_grid(struct __pyx_ob
       #endif
       /*try:*/ {
 
-        /* "MDAnalysis/lib/nsgrid.pyx":397
+        /* "MDAnalysis/lib/nsgrid.pyx":399
  *         self.coords_bbox = coords.copy()
  *         with nogil:
  *             if self.triclinic:             # <<<<<<<<<<<<<<
@@ -4463,7 +4481,7 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__pack_grid(struct __pyx_ob
         __pyx_t_8 = (__pyx_v_self->triclinic != 0);
         if (__pyx_t_8) {
 
-          /* "MDAnalysis/lib/nsgrid.pyx":398
+          /* "MDAnalysis/lib/nsgrid.pyx":400
  *         with nogil:
  *             if self.triclinic:
  *                 _triclinic_pbc(<coordinate*>&self.coords_bbox[0][0],             # <<<<<<<<<<<<<<
@@ -4473,7 +4491,7 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__pack_grid(struct __pyx_ob
           __pyx_t_9 = 0;
           __pyx_t_10 = 0;
 
-          /* "MDAnalysis/lib/nsgrid.pyx":400
+          /* "MDAnalysis/lib/nsgrid.pyx":402
  *                 _triclinic_pbc(<coordinate*>&self.coords_bbox[0][0],
  *                                self.coords_bbox.shape[0],
  *                                &self.triclinic_dimensions[0])             # <<<<<<<<<<<<<<
@@ -4482,7 +4500,7 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__pack_grid(struct __pyx_ob
  */
           _triclinic_pbc(((__pyx_t_10MDAnalysis_3lib_6nsgrid_coordinate *)(&(*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_self->coords_bbox.data + __pyx_t_9 * __pyx_v_self->coords_bbox.strides[0]) )) + __pyx_t_10)) ))))), (__pyx_v_self->coords_bbox.shape[0]), (&(__pyx_v_self->triclinic_dimensions[0])));
 
-          /* "MDAnalysis/lib/nsgrid.pyx":397
+          /* "MDAnalysis/lib/nsgrid.pyx":399
  *         self.coords_bbox = coords.copy()
  *         with nogil:
  *             if self.triclinic:             # <<<<<<<<<<<<<<
@@ -4492,7 +4510,7 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__pack_grid(struct __pyx_ob
           goto __pyx_L6;
         }
 
-        /* "MDAnalysis/lib/nsgrid.pyx":402
+        /* "MDAnalysis/lib/nsgrid.pyx":404
  *                                &self.triclinic_dimensions[0])
  *             else:
  *                 _ortho_pbc(<coordinate*>&self.coords_bbox[0][0],             # <<<<<<<<<<<<<<
@@ -4503,7 +4521,7 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__pack_grid(struct __pyx_ob
           __pyx_t_10 = 0;
           __pyx_t_9 = 0;
 
-          /* "MDAnalysis/lib/nsgrid.pyx":404
+          /* "MDAnalysis/lib/nsgrid.pyx":406
  *                 _ortho_pbc(<coordinate*>&self.coords_bbox[0][0],
  *                            self.coords_bbox.shape[0],
  *                            &self.dimensions[0])             # <<<<<<<<<<<<<<
@@ -4514,7 +4532,7 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__pack_grid(struct __pyx_ob
         }
         __pyx_L6:;
 
-        /* "MDAnalysis/lib/nsgrid.pyx":406
+        /* "MDAnalysis/lib/nsgrid.pyx":408
  *                            &self.dimensions[0])
  * 
  *             for i in range(self.coords_bbox.shape[0]):             # <<<<<<<<<<<<<<
@@ -4526,7 +4544,7 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__pack_grid(struct __pyx_ob
         for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
           __pyx_v_i = __pyx_t_13;
 
-          /* "MDAnalysis/lib/nsgrid.pyx":407
+          /* "MDAnalysis/lib/nsgrid.pyx":409
  * 
  *             for i in range(self.coords_bbox.shape[0]):
  *                 j = self.coord2cellid(&self.coords_bbox[i][0])             # <<<<<<<<<<<<<<
@@ -4537,7 +4555,7 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__pack_grid(struct __pyx_ob
           __pyx_t_10 = 0;
           __pyx_v_j = ((struct __pyx_vtabstruct_10MDAnalysis_3lib_6nsgrid_FastNS *)__pyx_v_self->__pyx_vtab)->coord2cellid(__pyx_v_self, (&(*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_self->coords_bbox.data + __pyx_t_9 * __pyx_v_self->coords_bbox.strides[0]) )) + __pyx_t_10)) )))));
 
-          /* "MDAnalysis/lib/nsgrid.pyx":408
+          /* "MDAnalysis/lib/nsgrid.pyx":410
  *             for i in range(self.coords_bbox.shape[0]):
  *                 j = self.coord2cellid(&self.coords_bbox[i][0])
  *                 self.next_id[i] = self.head_id[j]             # <<<<<<<<<<<<<<
@@ -4548,7 +4566,7 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__pack_grid(struct __pyx_ob
           __pyx_t_9 = __pyx_v_i;
           *((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_self->next_id.data) + __pyx_t_9)) )) = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_self->head_id.data) + __pyx_t_10)) )));
 
-          /* "MDAnalysis/lib/nsgrid.pyx":409
+          /* "MDAnalysis/lib/nsgrid.pyx":411
  *                 j = self.coord2cellid(&self.coords_bbox[i][0])
  *                 self.next_id[i] = self.head_id[j]
  *                 self.head_id[j] = i             # <<<<<<<<<<<<<<
@@ -4560,7 +4578,7 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__pack_grid(struct __pyx_ob
         }
       }
 
-      /* "MDAnalysis/lib/nsgrid.pyx":396
+      /* "MDAnalysis/lib/nsgrid.pyx":398
  * 
  *         self.coords_bbox = coords.copy()
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -4579,7 +4597,7 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__pack_grid(struct __pyx_ob
       }
   }
 
-  /* "MDAnalysis/lib/nsgrid.pyx":379
+  /* "MDAnalysis/lib/nsgrid.pyx":381
  *         return max_cutoff
  * 
  *     cdef void _pack_grid(self, float[:, :] coords):             # <<<<<<<<<<<<<<
@@ -4602,7 +4620,7 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS__pack_grid(struct __pyx_ob
   __Pyx_RefNannyFinishContext();
 }
 
-/* "MDAnalysis/lib/nsgrid.pyx":411
+/* "MDAnalysis/lib/nsgrid.pyx":413
  *                 self.head_id[j] = i
  * 
  *     cdef int coord2cellid(self, const float* coord) nogil:             # <<<<<<<<<<<<<<
@@ -4614,7 +4632,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_coord2cellid(struct __pyx_o
   int __pyx_v_xyz[3];
   int __pyx_r;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":421
+  /* "MDAnalysis/lib/nsgrid.pyx":423
  *         cdef int xyz[3]
  * 
  *         self.coord2cellxyz(coord, xyz)             # <<<<<<<<<<<<<<
@@ -4623,7 +4641,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_coord2cellid(struct __pyx_o
  */
   ((struct __pyx_vtabstruct_10MDAnalysis_3lib_6nsgrid_FastNS *)__pyx_v_self->__pyx_vtab)->coord2cellxyz(__pyx_v_self, __pyx_v_coord, __pyx_v_xyz);
 
-  /* "MDAnalysis/lib/nsgrid.pyx":423
+  /* "MDAnalysis/lib/nsgrid.pyx":425
  *         self.coord2cellxyz(coord, xyz)
  * 
  *         return xyz[0] + xyz[1] * self.cell_offsets[1] + xyz[2] * self.cell_offsets[2]             # <<<<<<<<<<<<<<
@@ -4633,7 +4651,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_coord2cellid(struct __pyx_o
   __pyx_r = (((__pyx_v_xyz[0]) + ((__pyx_v_xyz[1]) * (__pyx_v_self->cell_offsets[1]))) + ((__pyx_v_xyz[2]) * (__pyx_v_self->cell_offsets[2])));
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":411
+  /* "MDAnalysis/lib/nsgrid.pyx":413
  *                 self.head_id[j] = i
  * 
  *     cdef int coord2cellid(self, const float* coord) nogil:             # <<<<<<<<<<<<<<
@@ -4646,7 +4664,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_coord2cellid(struct __pyx_o
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/nsgrid.pyx":425
+/* "MDAnalysis/lib/nsgrid.pyx":427
  *         return xyz[0] + xyz[1] * self.cell_offsets[1] + xyz[2] * self.cell_offsets[2]
  * 
  *     cdef void coord2cellxyz(self, const float* coord, int* xyz) nogil:             # <<<<<<<<<<<<<<
@@ -4657,7 +4675,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_coord2cellid(struct __pyx_o
 static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_coord2cellxyz(struct __pyx_obj_10MDAnalysis_3lib_6nsgrid_FastNS *__pyx_v_self, float const *__pyx_v_coord, int *__pyx_v_xyz) {
   long __pyx_t_1;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":428
+  /* "MDAnalysis/lib/nsgrid.pyx":430
  *         """Calculate cell coordinate for coord"""
  *         # This assumes coordinate is inside the primary unit cell
  *         xyz[2] = <int> (coord[2] / self.cellsize[ZZ])             # <<<<<<<<<<<<<<
@@ -4666,7 +4684,7 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_coord2cellxyz(struct __pyx
  */
   (__pyx_v_xyz[2]) = ((int)((__pyx_v_coord[2]) / (__pyx_v_self->cellsize[8])));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":429
+  /* "MDAnalysis/lib/nsgrid.pyx":431
  *         # This assumes coordinate is inside the primary unit cell
  *         xyz[2] = <int> (coord[2] / self.cellsize[ZZ])
  *         xyz[1] = <int> ((coord[1] - coord[2] * self.cellsize[YZ]) / self.cellsize[YY])             # <<<<<<<<<<<<<<
@@ -4675,7 +4693,7 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_coord2cellxyz(struct __pyx
  */
   (__pyx_v_xyz[1]) = ((int)(((__pyx_v_coord[1]) - ((__pyx_v_coord[2]) * (__pyx_v_self->cellsize[7]))) / (__pyx_v_self->cellsize[4])));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":430
+  /* "MDAnalysis/lib/nsgrid.pyx":432
  *         xyz[2] = <int> (coord[2] / self.cellsize[ZZ])
  *         xyz[1] = <int> ((coord[1] - coord[2] * self.cellsize[YZ]) / self.cellsize[YY])
  *         xyz[0] = <int> ((coord[0] - coord[1] * self.cellsize[XY]             # <<<<<<<<<<<<<<
@@ -4684,7 +4702,7 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_coord2cellxyz(struct __pyx
  */
   (__pyx_v_xyz[0]) = ((int)((((__pyx_v_coord[0]) - ((__pyx_v_coord[1]) * (__pyx_v_self->cellsize[3]))) - ((__pyx_v_coord[2]) * (__pyx_v_self->cellsize[6]))) / (__pyx_v_self->cellsize[0])));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":434
+  /* "MDAnalysis/lib/nsgrid.pyx":436
  *         # Make sure cell coordinate indices are within the primary unit cell
  *         # (better safe than sorry):
  *         xyz[0] %= self.ncells[0]             # <<<<<<<<<<<<<<
@@ -4694,7 +4712,7 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_coord2cellxyz(struct __pyx
   __pyx_t_1 = 0;
   (__pyx_v_xyz[__pyx_t_1]) = ((__pyx_v_xyz[__pyx_t_1]) % (__pyx_v_self->ncells[0]));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":435
+  /* "MDAnalysis/lib/nsgrid.pyx":437
  *         # (better safe than sorry):
  *         xyz[0] %= self.ncells[0]
  *         xyz[1] %= self.ncells[1]             # <<<<<<<<<<<<<<
@@ -4704,7 +4722,7 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_coord2cellxyz(struct __pyx
   __pyx_t_1 = 1;
   (__pyx_v_xyz[__pyx_t_1]) = ((__pyx_v_xyz[__pyx_t_1]) % (__pyx_v_self->ncells[1]));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":436
+  /* "MDAnalysis/lib/nsgrid.pyx":438
  *         xyz[0] %= self.ncells[0]
  *         xyz[1] %= self.ncells[1]
  *         xyz[2] %= self.ncells[2]             # <<<<<<<<<<<<<<
@@ -4714,7 +4732,7 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_coord2cellxyz(struct __pyx
   __pyx_t_1 = 2;
   (__pyx_v_xyz[__pyx_t_1]) = ((__pyx_v_xyz[__pyx_t_1]) % (__pyx_v_self->ncells[2]));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":425
+  /* "MDAnalysis/lib/nsgrid.pyx":427
  *         return xyz[0] + xyz[1] * self.cell_offsets[1] + xyz[2] * self.cell_offsets[2]
  * 
  *     cdef void coord2cellxyz(self, const float* coord, int* xyz) nogil:             # <<<<<<<<<<<<<<
@@ -4725,7 +4743,7 @@ static void __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_coord2cellxyz(struct __pyx
   /* function exit code */
 }
 
-/* "MDAnalysis/lib/nsgrid.pyx":438
+/* "MDAnalysis/lib/nsgrid.pyx":440
  *         xyz[2] %= self.ncells[2]
  * 
  *     cdef int cellxyz2cellid(self, int cx, int cy, int cz) nogil:             # <<<<<<<<<<<<<<
@@ -4737,7 +4755,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
   int __pyx_r;
   int __pyx_t_1;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":440
+  /* "MDAnalysis/lib/nsgrid.pyx":442
  *     cdef int cellxyz2cellid(self, int cx, int cy, int cz) nogil:
  *         """Convert cell coordinate to cell id, END for out of bounds"""
  *         if cx < 0:             # <<<<<<<<<<<<<<
@@ -4747,7 +4765,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
   __pyx_t_1 = ((__pyx_v_cx < 0) != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/nsgrid.pyx":441
+    /* "MDAnalysis/lib/nsgrid.pyx":443
  *         """Convert cell coordinate to cell id, END for out of bounds"""
  *         if cx < 0:
  *             if self.periodic[0]:             # <<<<<<<<<<<<<<
@@ -4757,7 +4775,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
     __pyx_t_1 = ((__pyx_v_self->periodic[0]) != 0);
     if (__pyx_t_1) {
 
-      /* "MDAnalysis/lib/nsgrid.pyx":442
+      /* "MDAnalysis/lib/nsgrid.pyx":444
  *         if cx < 0:
  *             if self.periodic[0]:
  *                 cx = self.ncells[0] - 1             # <<<<<<<<<<<<<<
@@ -4766,7 +4784,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
  */
       __pyx_v_cx = ((__pyx_v_self->ncells[0]) - 1);
 
-      /* "MDAnalysis/lib/nsgrid.pyx":441
+      /* "MDAnalysis/lib/nsgrid.pyx":443
  *         """Convert cell coordinate to cell id, END for out of bounds"""
  *         if cx < 0:
  *             if self.periodic[0]:             # <<<<<<<<<<<<<<
@@ -4776,7 +4794,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
       goto __pyx_L4;
     }
 
-    /* "MDAnalysis/lib/nsgrid.pyx":444
+    /* "MDAnalysis/lib/nsgrid.pyx":446
  *                 cx = self.ncells[0] - 1
  *             else:
  *                 return END             # <<<<<<<<<<<<<<
@@ -4789,7 +4807,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
     }
     __pyx_L4:;
 
-    /* "MDAnalysis/lib/nsgrid.pyx":440
+    /* "MDAnalysis/lib/nsgrid.pyx":442
  *     cdef int cellxyz2cellid(self, int cx, int cy, int cz) nogil:
  *         """Convert cell coordinate to cell id, END for out of bounds"""
  *         if cx < 0:             # <<<<<<<<<<<<<<
@@ -4799,7 +4817,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
     goto __pyx_L3;
   }
 
-  /* "MDAnalysis/lib/nsgrid.pyx":445
+  /* "MDAnalysis/lib/nsgrid.pyx":447
  *             else:
  *                 return END
  *         elif cx == self.ncells[0]:             # <<<<<<<<<<<<<<
@@ -4809,7 +4827,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
   __pyx_t_1 = ((__pyx_v_cx == (__pyx_v_self->ncells[0])) != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/nsgrid.pyx":446
+    /* "MDAnalysis/lib/nsgrid.pyx":448
  *                 return END
  *         elif cx == self.ncells[0]:
  *             if self.periodic[0]:             # <<<<<<<<<<<<<<
@@ -4819,7 +4837,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
     __pyx_t_1 = ((__pyx_v_self->periodic[0]) != 0);
     if (__pyx_t_1) {
 
-      /* "MDAnalysis/lib/nsgrid.pyx":447
+      /* "MDAnalysis/lib/nsgrid.pyx":449
  *         elif cx == self.ncells[0]:
  *             if self.periodic[0]:
  *                 cx = 0             # <<<<<<<<<<<<<<
@@ -4828,7 +4846,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
  */
       __pyx_v_cx = 0;
 
-      /* "MDAnalysis/lib/nsgrid.pyx":446
+      /* "MDAnalysis/lib/nsgrid.pyx":448
  *                 return END
  *         elif cx == self.ncells[0]:
  *             if self.periodic[0]:             # <<<<<<<<<<<<<<
@@ -4838,7 +4856,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
       goto __pyx_L5;
     }
 
-    /* "MDAnalysis/lib/nsgrid.pyx":449
+    /* "MDAnalysis/lib/nsgrid.pyx":451
  *                 cx = 0
  *             else:
  *                 return END             # <<<<<<<<<<<<<<
@@ -4851,7 +4869,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
     }
     __pyx_L5:;
 
-    /* "MDAnalysis/lib/nsgrid.pyx":445
+    /* "MDAnalysis/lib/nsgrid.pyx":447
  *             else:
  *                 return END
  *         elif cx == self.ncells[0]:             # <<<<<<<<<<<<<<
@@ -4861,7 +4879,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
   }
   __pyx_L3:;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":450
+  /* "MDAnalysis/lib/nsgrid.pyx":452
  *             else:
  *                 return END
  *         if cy < 0:             # <<<<<<<<<<<<<<
@@ -4871,7 +4889,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
   __pyx_t_1 = ((__pyx_v_cy < 0) != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/nsgrid.pyx":451
+    /* "MDAnalysis/lib/nsgrid.pyx":453
  *                 return END
  *         if cy < 0:
  *             if self.periodic[1]:             # <<<<<<<<<<<<<<
@@ -4881,7 +4899,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
     __pyx_t_1 = ((__pyx_v_self->periodic[1]) != 0);
     if (__pyx_t_1) {
 
-      /* "MDAnalysis/lib/nsgrid.pyx":452
+      /* "MDAnalysis/lib/nsgrid.pyx":454
  *         if cy < 0:
  *             if self.periodic[1]:
  *                 cy = self.ncells[1] - 1             # <<<<<<<<<<<<<<
@@ -4890,7 +4908,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
  */
       __pyx_v_cy = ((__pyx_v_self->ncells[1]) - 1);
 
-      /* "MDAnalysis/lib/nsgrid.pyx":451
+      /* "MDAnalysis/lib/nsgrid.pyx":453
  *                 return END
  *         if cy < 0:
  *             if self.periodic[1]:             # <<<<<<<<<<<<<<
@@ -4900,7 +4918,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
       goto __pyx_L7;
     }
 
-    /* "MDAnalysis/lib/nsgrid.pyx":454
+    /* "MDAnalysis/lib/nsgrid.pyx":456
  *                 cy = self.ncells[1] - 1
  *             else:
  *                 return END             # <<<<<<<<<<<<<<
@@ -4913,7 +4931,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
     }
     __pyx_L7:;
 
-    /* "MDAnalysis/lib/nsgrid.pyx":450
+    /* "MDAnalysis/lib/nsgrid.pyx":452
  *             else:
  *                 return END
  *         if cy < 0:             # <<<<<<<<<<<<<<
@@ -4923,7 +4941,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
     goto __pyx_L6;
   }
 
-  /* "MDAnalysis/lib/nsgrid.pyx":455
+  /* "MDAnalysis/lib/nsgrid.pyx":457
  *             else:
  *                 return END
  *         elif cy == self.ncells[1]:             # <<<<<<<<<<<<<<
@@ -4933,7 +4951,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
   __pyx_t_1 = ((__pyx_v_cy == (__pyx_v_self->ncells[1])) != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/nsgrid.pyx":456
+    /* "MDAnalysis/lib/nsgrid.pyx":458
  *                 return END
  *         elif cy == self.ncells[1]:
  *             if self.periodic[1]:             # <<<<<<<<<<<<<<
@@ -4943,7 +4961,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
     __pyx_t_1 = ((__pyx_v_self->periodic[1]) != 0);
     if (__pyx_t_1) {
 
-      /* "MDAnalysis/lib/nsgrid.pyx":457
+      /* "MDAnalysis/lib/nsgrid.pyx":459
  *         elif cy == self.ncells[1]:
  *             if self.periodic[1]:
  *                 cy = 0             # <<<<<<<<<<<<<<
@@ -4952,7 +4970,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
  */
       __pyx_v_cy = 0;
 
-      /* "MDAnalysis/lib/nsgrid.pyx":456
+      /* "MDAnalysis/lib/nsgrid.pyx":458
  *                 return END
  *         elif cy == self.ncells[1]:
  *             if self.periodic[1]:             # <<<<<<<<<<<<<<
@@ -4962,7 +4980,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
       goto __pyx_L8;
     }
 
-    /* "MDAnalysis/lib/nsgrid.pyx":459
+    /* "MDAnalysis/lib/nsgrid.pyx":461
  *                 cy = 0
  *             else:
  *                 return END             # <<<<<<<<<<<<<<
@@ -4975,7 +4993,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
     }
     __pyx_L8:;
 
-    /* "MDAnalysis/lib/nsgrid.pyx":455
+    /* "MDAnalysis/lib/nsgrid.pyx":457
  *             else:
  *                 return END
  *         elif cy == self.ncells[1]:             # <<<<<<<<<<<<<<
@@ -4985,7 +5003,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
   }
   __pyx_L6:;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":460
+  /* "MDAnalysis/lib/nsgrid.pyx":462
  *             else:
  *                 return END
  *         if cz < 0:             # <<<<<<<<<<<<<<
@@ -4995,7 +5013,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
   __pyx_t_1 = ((__pyx_v_cz < 0) != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/nsgrid.pyx":461
+    /* "MDAnalysis/lib/nsgrid.pyx":463
  *                 return END
  *         if cz < 0:
  *             if self.periodic[2]:             # <<<<<<<<<<<<<<
@@ -5005,7 +5023,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
     __pyx_t_1 = ((__pyx_v_self->periodic[2]) != 0);
     if (__pyx_t_1) {
 
-      /* "MDAnalysis/lib/nsgrid.pyx":462
+      /* "MDAnalysis/lib/nsgrid.pyx":464
  *         if cz < 0:
  *             if self.periodic[2]:
  *                 cz = self.ncells[2] - 1             # <<<<<<<<<<<<<<
@@ -5014,7 +5032,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
  */
       __pyx_v_cz = ((__pyx_v_self->ncells[2]) - 1);
 
-      /* "MDAnalysis/lib/nsgrid.pyx":461
+      /* "MDAnalysis/lib/nsgrid.pyx":463
  *                 return END
  *         if cz < 0:
  *             if self.periodic[2]:             # <<<<<<<<<<<<<<
@@ -5024,7 +5042,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
       goto __pyx_L10;
     }
 
-    /* "MDAnalysis/lib/nsgrid.pyx":464
+    /* "MDAnalysis/lib/nsgrid.pyx":466
  *                 cz = self.ncells[2] - 1
  *             else:
  *                 return END             # <<<<<<<<<<<<<<
@@ -5037,7 +5055,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
     }
     __pyx_L10:;
 
-    /* "MDAnalysis/lib/nsgrid.pyx":460
+    /* "MDAnalysis/lib/nsgrid.pyx":462
  *             else:
  *                 return END
  *         if cz < 0:             # <<<<<<<<<<<<<<
@@ -5047,7 +5065,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
     goto __pyx_L9;
   }
 
-  /* "MDAnalysis/lib/nsgrid.pyx":465
+  /* "MDAnalysis/lib/nsgrid.pyx":467
  *             else:
  *                 return END
  *         elif cz == self.ncells[2]:             # <<<<<<<<<<<<<<
@@ -5057,7 +5075,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
   __pyx_t_1 = ((__pyx_v_cz == (__pyx_v_self->ncells[2])) != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/nsgrid.pyx":466
+    /* "MDAnalysis/lib/nsgrid.pyx":468
  *                 return END
  *         elif cz == self.ncells[2]:
  *             if self.periodic[2]:             # <<<<<<<<<<<<<<
@@ -5067,7 +5085,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
     __pyx_t_1 = ((__pyx_v_self->periodic[2]) != 0);
     if (__pyx_t_1) {
 
-      /* "MDAnalysis/lib/nsgrid.pyx":467
+      /* "MDAnalysis/lib/nsgrid.pyx":469
  *         elif cz == self.ncells[2]:
  *             if self.periodic[2]:
  *                 cz = 0             # <<<<<<<<<<<<<<
@@ -5076,7 +5094,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
  */
       __pyx_v_cz = 0;
 
-      /* "MDAnalysis/lib/nsgrid.pyx":466
+      /* "MDAnalysis/lib/nsgrid.pyx":468
  *                 return END
  *         elif cz == self.ncells[2]:
  *             if self.periodic[2]:             # <<<<<<<<<<<<<<
@@ -5086,7 +5104,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
       goto __pyx_L11;
     }
 
-    /* "MDAnalysis/lib/nsgrid.pyx":469
+    /* "MDAnalysis/lib/nsgrid.pyx":471
  *                 cz = 0
  *             else:
  *                 return END             # <<<<<<<<<<<<<<
@@ -5099,7 +5117,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
     }
     __pyx_L11:;
 
-    /* "MDAnalysis/lib/nsgrid.pyx":465
+    /* "MDAnalysis/lib/nsgrid.pyx":467
  *             else:
  *                 return END
  *         elif cz == self.ncells[2]:             # <<<<<<<<<<<<<<
@@ -5109,7 +5127,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
   }
   __pyx_L9:;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":471
+  /* "MDAnalysis/lib/nsgrid.pyx":473
  *                 return END
  * 
  *         return cx + cy * self.cell_offsets[1] + cz * self.cell_offsets[2]             # <<<<<<<<<<<<<<
@@ -5119,7 +5137,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
   __pyx_r = ((__pyx_v_cx + (__pyx_v_cy * (__pyx_v_self->cell_offsets[1]))) + (__pyx_v_cz * (__pyx_v_self->cell_offsets[2])));
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":438
+  /* "MDAnalysis/lib/nsgrid.pyx":440
  *         xyz[2] %= self.ncells[2]
  * 
  *     cdef int cellxyz2cellid(self, int cx, int cy, int cz) nogil:             # <<<<<<<<<<<<<<
@@ -5132,7 +5150,7 @@ static int __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_cellxyz2cellid(struct __pyx
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/nsgrid.pyx":473
+/* "MDAnalysis/lib/nsgrid.pyx":475
  *         return cx + cy * self.cell_offsets[1] + cz * self.cell_offsets[2]
  * 
  *     cdef double calc_distsq(self, const float* a, const float* b) nogil:             # <<<<<<<<<<<<<<
@@ -5145,7 +5163,7 @@ static double __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_calc_distsq(struct __pyx
   double __pyx_r;
   int __pyx_t_1;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":476
+  /* "MDAnalysis/lib/nsgrid.pyx":478
  *         cdef double dx[3]
  * 
  *         dx[0] = a[0] - b[0]             # <<<<<<<<<<<<<<
@@ -5154,7 +5172,7 @@ static double __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_calc_distsq(struct __pyx
  */
   (__pyx_v_dx[0]) = ((__pyx_v_a[0]) - (__pyx_v_b[0]));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":477
+  /* "MDAnalysis/lib/nsgrid.pyx":479
  * 
  *         dx[0] = a[0] - b[0]
  *         dx[1] = a[1] - b[1]             # <<<<<<<<<<<<<<
@@ -5163,7 +5181,7 @@ static double __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_calc_distsq(struct __pyx
  */
   (__pyx_v_dx[1]) = ((__pyx_v_a[1]) - (__pyx_v_b[1]));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":478
+  /* "MDAnalysis/lib/nsgrid.pyx":480
  *         dx[0] = a[0] - b[0]
  *         dx[1] = a[1] - b[1]
  *         dx[2] = a[2] - b[2]             # <<<<<<<<<<<<<<
@@ -5172,7 +5190,7 @@ static double __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_calc_distsq(struct __pyx
  */
   (__pyx_v_dx[2]) = ((__pyx_v_a[2]) - (__pyx_v_b[2]));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":480
+  /* "MDAnalysis/lib/nsgrid.pyx":482
  *         dx[2] = a[2] - b[2]
  * 
  *         if self.pbc:             # <<<<<<<<<<<<<<
@@ -5182,7 +5200,7 @@ static double __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_calc_distsq(struct __pyx
   __pyx_t_1 = (__pyx_v_self->pbc != 0);
   if (__pyx_t_1) {
 
-    /* "MDAnalysis/lib/nsgrid.pyx":481
+    /* "MDAnalysis/lib/nsgrid.pyx":483
  * 
  *         if self.pbc:
  *             if self.triclinic:             # <<<<<<<<<<<<<<
@@ -5192,16 +5210,16 @@ static double __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_calc_distsq(struct __pyx
     __pyx_t_1 = (__pyx_v_self->triclinic != 0);
     if (__pyx_t_1) {
 
-      /* "MDAnalysis/lib/nsgrid.pyx":482
+      /* "MDAnalysis/lib/nsgrid.pyx":484
  *         if self.pbc:
  *             if self.triclinic:
  *                 minimum_image_triclinic(dx, &self.triclinic_dimensions[0])             # <<<<<<<<<<<<<<
  *             else:
- *                 minimum_image(dx, &self.dimensions[0],
+ *                 _minimum_image_ortho_lazy(dx, &self.dimensions[0],
  */
       minimum_image_triclinic(__pyx_v_dx, (&(__pyx_v_self->triclinic_dimensions[0])));
 
-      /* "MDAnalysis/lib/nsgrid.pyx":481
+      /* "MDAnalysis/lib/nsgrid.pyx":483
  * 
  *         if self.pbc:
  *             if self.triclinic:             # <<<<<<<<<<<<<<
@@ -5211,27 +5229,27 @@ static double __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_calc_distsq(struct __pyx
       goto __pyx_L4;
     }
 
-    /* "MDAnalysis/lib/nsgrid.pyx":484
+    /* "MDAnalysis/lib/nsgrid.pyx":486
  *                 minimum_image_triclinic(dx, &self.triclinic_dimensions[0])
  *             else:
- *                 minimum_image(dx, &self.dimensions[0],             # <<<<<<<<<<<<<<
- *                               &self.inverse_dimensions[0])
+ *                 _minimum_image_ortho_lazy(dx, &self.dimensions[0],             # <<<<<<<<<<<<<<
+ *                                           &self.half_dimensions[0])
  * 
  */
     /*else*/ {
 
-      /* "MDAnalysis/lib/nsgrid.pyx":485
+      /* "MDAnalysis/lib/nsgrid.pyx":487
  *             else:
- *                 minimum_image(dx, &self.dimensions[0],
- *                               &self.inverse_dimensions[0])             # <<<<<<<<<<<<<<
+ *                 _minimum_image_ortho_lazy(dx, &self.dimensions[0],
+ *                                           &self.half_dimensions[0])             # <<<<<<<<<<<<<<
  * 
  *         return dx[0]*dx[0] + dx[1]*dx[1] + dx[2]*dx[2]
  */
-      minimum_image(__pyx_v_dx, (&(__pyx_v_self->dimensions[0])), (&(__pyx_v_self->inverse_dimensions[0])));
+      _minimum_image_ortho_lazy(__pyx_v_dx, (&(__pyx_v_self->dimensions[0])), (&(__pyx_v_self->half_dimensions[0])));
     }
     __pyx_L4:;
 
-    /* "MDAnalysis/lib/nsgrid.pyx":480
+    /* "MDAnalysis/lib/nsgrid.pyx":482
  *         dx[2] = a[2] - b[2]
  * 
  *         if self.pbc:             # <<<<<<<<<<<<<<
@@ -5240,8 +5258,8 @@ static double __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_calc_distsq(struct __pyx
  */
   }
 
-  /* "MDAnalysis/lib/nsgrid.pyx":487
- *                               &self.inverse_dimensions[0])
+  /* "MDAnalysis/lib/nsgrid.pyx":489
+ *                                           &self.half_dimensions[0])
  * 
  *         return dx[0]*dx[0] + dx[1]*dx[1] + dx[2]*dx[2]             # <<<<<<<<<<<<<<
  * 
@@ -5250,7 +5268,7 @@ static double __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_calc_distsq(struct __pyx
   __pyx_r = ((((__pyx_v_dx[0]) * (__pyx_v_dx[0])) + ((__pyx_v_dx[1]) * (__pyx_v_dx[1]))) + ((__pyx_v_dx[2]) * (__pyx_v_dx[2])));
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":473
+  /* "MDAnalysis/lib/nsgrid.pyx":475
  *         return cx + cy * self.cell_offsets[1] + cz * self.cell_offsets[2]
  * 
  *     cdef double calc_distsq(self, const float* a, const float* b) nogil:             # <<<<<<<<<<<<<<
@@ -5263,7 +5281,7 @@ static double __pyx_f_10MDAnalysis_3lib_6nsgrid_6FastNS_calc_distsq(struct __pyx
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/nsgrid.pyx":489
+/* "MDAnalysis/lib/nsgrid.pyx":491
  *         return dx[0]*dx[0] + dx[1]*dx[1] + dx[2]*dx[2]
  * 
  *     def search(self, float[:, :] search_coords):             # <<<<<<<<<<<<<<
@@ -5283,7 +5301,7 @@ static PyObject *__pyx_pw_10MDAnalysis_3lib_6nsgrid_6FastNS_3search(PyObject *__
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("search (wrapper)", 0);
   assert(__pyx_arg_search_coords); {
-    __pyx_v_search_coords = __Pyx_PyObject_to_MemoryviewSlice_dsds_float(__pyx_arg_search_coords, PyBUF_WRITABLE); if (unlikely(!__pyx_v_search_coords.memview)) __PYX_ERR(0, 489, __pyx_L3_error)
+    __pyx_v_search_coords = __Pyx_PyObject_to_MemoryviewSlice_dsds_float(__pyx_arg_search_coords, PyBUF_WRITABLE); if (unlikely(!__pyx_v_search_coords.memview)) __PYX_ERR(0, 491, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5310,7 +5328,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
   int __pyx_v_yi;
   int __pyx_v_zi;
   int __pyx_v_cellcoord[3];
-  __Pyx_memviewslice __pyx_v_tmpcoords = { 0, 0, { 0 }, { 0 }, { 0 } };
+  float __pyx_v_tmpcoord[3];
   struct __pyx_obj_10MDAnalysis_3lib_6nsgrid_NSResults *__pyx_v_results = 0;
   double __pyx_v_d2;
   double __pyx_v_cutoff2;
@@ -5322,35 +5340,32 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
   int __pyx_t_4;
   PyObject *__pyx_t_5 = NULL;
   PyObject *__pyx_t_6 = NULL;
-  __Pyx_memviewslice __pyx_t_7 = { 0, 0, { 0 }, { 0 }, { 0 } };
-  Py_ssize_t __pyx_t_8;
-  Py_ssize_t __pyx_t_9;
-  int __pyx_t_10;
-  int __pyx_t_11;
+  int __pyx_t_7;
+  int __pyx_t_8;
+  int __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  Py_ssize_t __pyx_t_11;
   int __pyx_t_12;
   int __pyx_t_13;
   int __pyx_t_14;
-  int __pyx_t_15;
-  Py_ssize_t __pyx_t_16;
-  Py_ssize_t __pyx_t_17;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("search", 0);
 
-  /* "MDAnalysis/lib/nsgrid.pyx":527
- *         cdef float[:, ::1] tmpcoords
+  /* "MDAnalysis/lib/nsgrid.pyx":529
+ *         cdef float tmpcoord[3]
  * 
  *         cdef NSResults results = NSResults()             # <<<<<<<<<<<<<<
  *         cdef double d2, cutoff2
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_10MDAnalysis_3lib_6nsgrid_NSResults)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 527, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_10MDAnalysis_3lib_6nsgrid_NSResults)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 529, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_results = ((struct __pyx_obj_10MDAnalysis_3lib_6nsgrid_NSResults *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":530
+  /* "MDAnalysis/lib/nsgrid.pyx":532
  *         cdef double d2, cutoff2
  * 
  *         cutoff2 = self.cutoff * self.cutoff             # <<<<<<<<<<<<<<
@@ -5359,22 +5374,22 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
  */
   __pyx_v_cutoff2 = (__pyx_v_self->cutoff * __pyx_v_self->cutoff);
 
-  /* "MDAnalysis/lib/nsgrid.pyx":532
+  /* "MDAnalysis/lib/nsgrid.pyx":534
  *         cutoff2 = self.cutoff * self.cutoff
  * 
  *         if (search_coords.ndim != 2 or search_coords.shape[1] != 3):             # <<<<<<<<<<<<<<
  *             raise ValueError("search_coords must have a shape of (n, 3), got "
  *                              "{}.".format(search_coords.shape))
  */
-  __pyx_t_1 = __pyx_memoryview_fromslice(__pyx_v_search_coords, 2, (PyObject *(*)(char *)) __pyx_memview_get_float, (int (*)(char *, PyObject *)) __pyx_memview_set_float, 0);; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_1 = __pyx_memoryview_fromslice(__pyx_v_search_coords, 2, (PyObject *(*)(char *)) __pyx_memview_get_float, (int (*)(char *, PyObject *)) __pyx_memview_set_float, 0);; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 534, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_ndim); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_ndim); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 534, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyInt_NeObjC(__pyx_t_3, __pyx_int_2, 2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_NeObjC(__pyx_t_3, __pyx_int_2, 2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 534, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 534, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (!__pyx_t_4) {
   } else {
@@ -5386,16 +5401,16 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
   __pyx_L4_bool_binop_done:;
   if (unlikely(__pyx_t_2)) {
 
-    /* "MDAnalysis/lib/nsgrid.pyx":534
+    /* "MDAnalysis/lib/nsgrid.pyx":536
  *         if (search_coords.ndim != 2 or search_coords.shape[1] != 3):
  *             raise ValueError("search_coords must have a shape of (n, 3), got "
  *                              "{}.".format(search_coords.shape))             # <<<<<<<<<<<<<<
  * 
- *         tmpcoords = search_coords.copy()
+ *         with nogil:
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_search_coords_must_have_a_shape, __pyx_n_s_format); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 534, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_search_coords_must_have_a_shape, __pyx_n_s_format); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 536, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_search_coords.shape, 8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 534, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_search_coords.shape, 8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 536, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -5410,25 +5425,25 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
     __pyx_t_1 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_6, __pyx_t_5) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_5);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 534, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 536, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "MDAnalysis/lib/nsgrid.pyx":533
+    /* "MDAnalysis/lib/nsgrid.pyx":535
  * 
  *         if (search_coords.ndim != 2 or search_coords.shape[1] != 3):
  *             raise ValueError("search_coords must have a shape of (n, 3), got "             # <<<<<<<<<<<<<<
  *                              "{}.".format(search_coords.shape))
  * 
  */
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 533, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 535, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 533, __pyx_L1_error)
+    __PYX_ERR(0, 535, __pyx_L1_error)
 
-    /* "MDAnalysis/lib/nsgrid.pyx":532
+    /* "MDAnalysis/lib/nsgrid.pyx":534
  *         cutoff2 = self.cutoff * self.cutoff
  * 
  *         if (search_coords.ndim != 2 or search_coords.shape[1] != 3):             # <<<<<<<<<<<<<<
@@ -5437,24 +5452,12 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
  */
   }
 
-  /* "MDAnalysis/lib/nsgrid.pyx":536
+  /* "MDAnalysis/lib/nsgrid.pyx":538
  *                              "{}.".format(search_coords.shape))
  * 
- *         tmpcoords = search_coords.copy()             # <<<<<<<<<<<<<<
- *         with nogil:
- *             if self.triclinic:
- */
-  __pyx_t_7 = __pyx_memoryview_copy_slice_d_dc_float_c(__pyx_v_search_coords); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(0, 536, __pyx_L1_error)
-  __pyx_v_tmpcoords = __pyx_t_7;
-  __pyx_t_7.memview = NULL;
-  __pyx_t_7.data = NULL;
-
-  /* "MDAnalysis/lib/nsgrid.pyx":537
- * 
- *         tmpcoords = search_coords.copy()
  *         with nogil:             # <<<<<<<<<<<<<<
- *             if self.triclinic:
- *                 _triclinic_pbc(<coordinate*>&tmpcoords[0][0],
+ *             size_search = search_coords.shape[0]
+ *             for i in range(size_search):
  */
   {
       #ifdef WITH_THREAD
@@ -5464,130 +5467,149 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
       #endif
       /*try:*/ {
 
-        /* "MDAnalysis/lib/nsgrid.pyx":538
- *         tmpcoords = search_coords.copy()
- *         with nogil:
- *             if self.triclinic:             # <<<<<<<<<<<<<<
- *                 _triclinic_pbc(<coordinate*>&tmpcoords[0][0],
- *                                tmpcoords.shape[0],
- */
-        __pyx_t_2 = (__pyx_v_self->triclinic != 0);
-        if (__pyx_t_2) {
-
-          /* "MDAnalysis/lib/nsgrid.pyx":539
- *         with nogil:
- *             if self.triclinic:
- *                 _triclinic_pbc(<coordinate*>&tmpcoords[0][0],             # <<<<<<<<<<<<<<
- *                                tmpcoords.shape[0],
- *                                &self.triclinic_dimensions[0])
- */
-          __pyx_t_8 = 0;
-          __pyx_t_9 = 0;
-
-          /* "MDAnalysis/lib/nsgrid.pyx":541
- *                 _triclinic_pbc(<coordinate*>&tmpcoords[0][0],
- *                                tmpcoords.shape[0],
- *                                &self.triclinic_dimensions[0])             # <<<<<<<<<<<<<<
- *             else:
- *                 _ortho_pbc(<coordinate*>&tmpcoords[0][0],
- */
-          _triclinic_pbc(((__pyx_t_10MDAnalysis_3lib_6nsgrid_coordinate *)(&(*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_tmpcoords.data + __pyx_t_8 * __pyx_v_tmpcoords.strides[0]) )) + __pyx_t_9)) ))))), (__pyx_v_tmpcoords.shape[0]), (&(__pyx_v_self->triclinic_dimensions[0])));
-
-          /* "MDAnalysis/lib/nsgrid.pyx":538
- *         tmpcoords = search_coords.copy()
- *         with nogil:
- *             if self.triclinic:             # <<<<<<<<<<<<<<
- *                 _triclinic_pbc(<coordinate*>&tmpcoords[0][0],
- *                                tmpcoords.shape[0],
- */
-          goto __pyx_L9;
-        }
-
-        /* "MDAnalysis/lib/nsgrid.pyx":543
- *                                &self.triclinic_dimensions[0])
- *             else:
- *                 _ortho_pbc(<coordinate*>&tmpcoords[0][0],             # <<<<<<<<<<<<<<
- *                            tmpcoords.shape[0],
- *                            &self.dimensions[0])
- */
-        /*else*/ {
-          __pyx_t_9 = 0;
-          __pyx_t_8 = 0;
-
-          /* "MDAnalysis/lib/nsgrid.pyx":545
- *                 _ortho_pbc(<coordinate*>&tmpcoords[0][0],
- *                            tmpcoords.shape[0],
- *                            &self.dimensions[0])             # <<<<<<<<<<<<<<
+        /* "MDAnalysis/lib/nsgrid.pyx":539
  * 
- *             size_search = search_coords.shape[0]
- */
-          _ortho_pbc(((__pyx_t_10MDAnalysis_3lib_6nsgrid_coordinate *)(&(*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_tmpcoords.data + __pyx_t_9 * __pyx_v_tmpcoords.strides[0]) )) + __pyx_t_8)) ))))), (__pyx_v_tmpcoords.shape[0]), (&(__pyx_v_self->dimensions[0])));
-        }
-        __pyx_L9:;
-
-        /* "MDAnalysis/lib/nsgrid.pyx":547
- *                            &self.dimensions[0])
- * 
+ *         with nogil:
  *             size_search = search_coords.shape[0]             # <<<<<<<<<<<<<<
  *             for i in range(size_search):
- *                 # which cell is atom *i* in
+ *                 tmpcoord[0] = search_coords[i][0]
  */
         __pyx_v_size_search = (__pyx_v_search_coords.shape[0]);
 
-        /* "MDAnalysis/lib/nsgrid.pyx":548
- * 
+        /* "MDAnalysis/lib/nsgrid.pyx":540
+ *         with nogil:
  *             size_search = search_coords.shape[0]
  *             for i in range(size_search):             # <<<<<<<<<<<<<<
- *                 # which cell is atom *i* in
- *                 self.coord2cellxyz(&tmpcoords[i][0], cellcoord)
+ *                 tmpcoord[0] = search_coords[i][0]
+ *                 tmpcoord[1] = search_coords[i][1]
  */
-        __pyx_t_10 = __pyx_v_size_search;
-        __pyx_t_11 = __pyx_t_10;
-        for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
-          __pyx_v_i = __pyx_t_12;
+        __pyx_t_7 = __pyx_v_size_search;
+        __pyx_t_8 = __pyx_t_7;
+        for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
+          __pyx_v_i = __pyx_t_9;
 
-          /* "MDAnalysis/lib/nsgrid.pyx":550
+          /* "MDAnalysis/lib/nsgrid.pyx":541
+ *             size_search = search_coords.shape[0]
  *             for i in range(size_search):
+ *                 tmpcoord[0] = search_coords[i][0]             # <<<<<<<<<<<<<<
+ *                 tmpcoord[1] = search_coords[i][1]
+ *                 tmpcoord[2] = search_coords[i][2]
+ */
+          __pyx_t_10 = __pyx_v_i;
+          __pyx_t_11 = 0;
+          (__pyx_v_tmpcoord[0]) = (*((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_search_coords.data + __pyx_t_10 * __pyx_v_search_coords.strides[0]) ) + __pyx_t_11 * __pyx_v_search_coords.strides[1]) )));
+
+          /* "MDAnalysis/lib/nsgrid.pyx":542
+ *             for i in range(size_search):
+ *                 tmpcoord[0] = search_coords[i][0]
+ *                 tmpcoord[1] = search_coords[i][1]             # <<<<<<<<<<<<<<
+ *                 tmpcoord[2] = search_coords[i][2]
+ *                 if self.triclinic:
+ */
+          __pyx_t_11 = __pyx_v_i;
+          __pyx_t_10 = 1;
+          (__pyx_v_tmpcoord[1]) = (*((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_search_coords.data + __pyx_t_11 * __pyx_v_search_coords.strides[0]) ) + __pyx_t_10 * __pyx_v_search_coords.strides[1]) )));
+
+          /* "MDAnalysis/lib/nsgrid.pyx":543
+ *                 tmpcoord[0] = search_coords[i][0]
+ *                 tmpcoord[1] = search_coords[i][1]
+ *                 tmpcoord[2] = search_coords[i][2]             # <<<<<<<<<<<<<<
+ *                 if self.triclinic:
+ *                     _triclinic_pbc(<coordinate*>&tmpcoord[0], 1,
+ */
+          __pyx_t_10 = __pyx_v_i;
+          __pyx_t_11 = 2;
+          (__pyx_v_tmpcoord[2]) = (*((float *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_search_coords.data + __pyx_t_10 * __pyx_v_search_coords.strides[0]) ) + __pyx_t_11 * __pyx_v_search_coords.strides[1]) )));
+
+          /* "MDAnalysis/lib/nsgrid.pyx":544
+ *                 tmpcoord[1] = search_coords[i][1]
+ *                 tmpcoord[2] = search_coords[i][2]
+ *                 if self.triclinic:             # <<<<<<<<<<<<<<
+ *                     _triclinic_pbc(<coordinate*>&tmpcoord[0], 1,
+ *                                    &self.triclinic_dimensions[0])
+ */
+          __pyx_t_2 = (__pyx_v_self->triclinic != 0);
+          if (__pyx_t_2) {
+
+            /* "MDAnalysis/lib/nsgrid.pyx":545
+ *                 tmpcoord[2] = search_coords[i][2]
+ *                 if self.triclinic:
+ *                     _triclinic_pbc(<coordinate*>&tmpcoord[0], 1,             # <<<<<<<<<<<<<<
+ *                                    &self.triclinic_dimensions[0])
+ *                 else:
+ */
+            _triclinic_pbc(((__pyx_t_10MDAnalysis_3lib_6nsgrid_coordinate *)(&(__pyx_v_tmpcoord[0]))), 1, (&(__pyx_v_self->triclinic_dimensions[0])));
+
+            /* "MDAnalysis/lib/nsgrid.pyx":544
+ *                 tmpcoord[1] = search_coords[i][1]
+ *                 tmpcoord[2] = search_coords[i][2]
+ *                 if self.triclinic:             # <<<<<<<<<<<<<<
+ *                     _triclinic_pbc(<coordinate*>&tmpcoord[0], 1,
+ *                                    &self.triclinic_dimensions[0])
+ */
+            goto __pyx_L11;
+          }
+
+          /* "MDAnalysis/lib/nsgrid.pyx":548
+ *                                    &self.triclinic_dimensions[0])
+ *                 else:
+ *                     _ortho_pbc(<coordinate*>&tmpcoord[0], 1,             # <<<<<<<<<<<<<<
+ *                                &self.dimensions[0])
  *                 # which cell is atom *i* in
- *                 self.coord2cellxyz(&tmpcoords[i][0], cellcoord)             # <<<<<<<<<<<<<<
+ */
+          /*else*/ {
+
+            /* "MDAnalysis/lib/nsgrid.pyx":549
+ *                 else:
+ *                     _ortho_pbc(<coordinate*>&tmpcoord[0], 1,
+ *                                &self.dimensions[0])             # <<<<<<<<<<<<<<
+ *                 # which cell is atom *i* in
+ *                 self.coord2cellxyz(&tmpcoord[0], cellcoord)
+ */
+            _ortho_pbc(((__pyx_t_10MDAnalysis_3lib_6nsgrid_coordinate *)(&(__pyx_v_tmpcoord[0]))), 1, (&(__pyx_v_self->dimensions[0])));
+          }
+          __pyx_L11:;
+
+          /* "MDAnalysis/lib/nsgrid.pyx":551
+ *                                &self.dimensions[0])
+ *                 # which cell is atom *i* in
+ *                 self.coord2cellxyz(&tmpcoord[0], cellcoord)             # <<<<<<<<<<<<<<
  *                 # loop over all 27 neighbouring cells
  *                 for xi in range(3):
  */
-          __pyx_t_8 = __pyx_v_i;
-          __pyx_t_9 = 0;
-          ((struct __pyx_vtabstruct_10MDAnalysis_3lib_6nsgrid_FastNS *)__pyx_v_self->__pyx_vtab)->coord2cellxyz(__pyx_v_self, (&(*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_tmpcoords.data + __pyx_t_8 * __pyx_v_tmpcoords.strides[0]) )) + __pyx_t_9)) )))), __pyx_v_cellcoord);
+          ((struct __pyx_vtabstruct_10MDAnalysis_3lib_6nsgrid_FastNS *)__pyx_v_self->__pyx_vtab)->coord2cellxyz(__pyx_v_self, (&(__pyx_v_tmpcoord[0])), __pyx_v_cellcoord);
 
-          /* "MDAnalysis/lib/nsgrid.pyx":552
- *                 self.coord2cellxyz(&tmpcoords[i][0], cellcoord)
+          /* "MDAnalysis/lib/nsgrid.pyx":553
+ *                 self.coord2cellxyz(&tmpcoord[0], cellcoord)
  *                 # loop over all 27 neighbouring cells
  *                 for xi in range(3):             # <<<<<<<<<<<<<<
  *                     for yi in range(3):
  *                         for zi in range(3):
  */
-          for (__pyx_t_13 = 0; __pyx_t_13 < 3; __pyx_t_13+=1) {
-            __pyx_v_xi = __pyx_t_13;
+          for (__pyx_t_12 = 0; __pyx_t_12 < 3; __pyx_t_12+=1) {
+            __pyx_v_xi = __pyx_t_12;
 
-            /* "MDAnalysis/lib/nsgrid.pyx":553
+            /* "MDAnalysis/lib/nsgrid.pyx":554
  *                 # loop over all 27 neighbouring cells
  *                 for xi in range(3):
  *                     for yi in range(3):             # <<<<<<<<<<<<<<
  *                         for zi in range(3):
  *                             cx = cellcoord[0] - 1 + xi
  */
-            for (__pyx_t_14 = 0; __pyx_t_14 < 3; __pyx_t_14+=1) {
-              __pyx_v_yi = __pyx_t_14;
+            for (__pyx_t_13 = 0; __pyx_t_13 < 3; __pyx_t_13+=1) {
+              __pyx_v_yi = __pyx_t_13;
 
-              /* "MDAnalysis/lib/nsgrid.pyx":554
+              /* "MDAnalysis/lib/nsgrid.pyx":555
  *                 for xi in range(3):
  *                     for yi in range(3):
  *                         for zi in range(3):             # <<<<<<<<<<<<<<
  *                             cx = cellcoord[0] - 1 + xi
  *                             cy = cellcoord[1] - 1 + yi
  */
-              for (__pyx_t_15 = 0; __pyx_t_15 < 3; __pyx_t_15+=1) {
-                __pyx_v_zi = __pyx_t_15;
+              for (__pyx_t_14 = 0; __pyx_t_14 < 3; __pyx_t_14+=1) {
+                __pyx_v_zi = __pyx_t_14;
 
-                /* "MDAnalysis/lib/nsgrid.pyx":555
+                /* "MDAnalysis/lib/nsgrid.pyx":556
  *                     for yi in range(3):
  *                         for zi in range(3):
  *                             cx = cellcoord[0] - 1 + xi             # <<<<<<<<<<<<<<
@@ -5596,7 +5618,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
  */
                 __pyx_v_cx = (((__pyx_v_cellcoord[0]) - 1) + __pyx_v_xi);
 
-                /* "MDAnalysis/lib/nsgrid.pyx":556
+                /* "MDAnalysis/lib/nsgrid.pyx":557
  *                         for zi in range(3):
  *                             cx = cellcoord[0] - 1 + xi
  *                             cy = cellcoord[1] - 1 + yi             # <<<<<<<<<<<<<<
@@ -5605,7 +5627,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
  */
                 __pyx_v_cy = (((__pyx_v_cellcoord[1]) - 1) + __pyx_v_yi);
 
-                /* "MDAnalysis/lib/nsgrid.pyx":557
+                /* "MDAnalysis/lib/nsgrid.pyx":558
  *                             cx = cellcoord[0] - 1 + xi
  *                             cy = cellcoord[1] - 1 + yi
  *                             cz = cellcoord[2] - 1 + zi             # <<<<<<<<<<<<<<
@@ -5614,7 +5636,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
  */
                 __pyx_v_cz = (((__pyx_v_cellcoord[2]) - 1) + __pyx_v_zi);
 
-                /* "MDAnalysis/lib/nsgrid.pyx":558
+                /* "MDAnalysis/lib/nsgrid.pyx":559
  *                             cy = cellcoord[1] - 1 + yi
  *                             cz = cellcoord[2] - 1 + zi
  *                             cellid = self.cellxyz2cellid(cx, cy, cz)             # <<<<<<<<<<<<<<
@@ -5623,7 +5645,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
  */
                 __pyx_v_cellid = ((struct __pyx_vtabstruct_10MDAnalysis_3lib_6nsgrid_FastNS *)__pyx_v_self->__pyx_vtab)->cellxyz2cellid(__pyx_v_self, __pyx_v_cx, __pyx_v_cy, __pyx_v_cz);
 
-                /* "MDAnalysis/lib/nsgrid.pyx":560
+                /* "MDAnalysis/lib/nsgrid.pyx":561
  *                             cellid = self.cellxyz2cellid(cx, cy, cz)
  * 
  *                             if cellid == END:  # out of bounds             # <<<<<<<<<<<<<<
@@ -5633,7 +5655,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
                 __pyx_t_2 = ((__pyx_v_cellid == -1L) != 0);
                 if (__pyx_t_2) {
 
-                  /* "MDAnalysis/lib/nsgrid.pyx":561
+                  /* "MDAnalysis/lib/nsgrid.pyx":562
  * 
  *                             if cellid == END:  # out of bounds
  *                                 continue             # <<<<<<<<<<<<<<
@@ -5642,7 +5664,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
  */
                   goto __pyx_L16_continue;
 
-                  /* "MDAnalysis/lib/nsgrid.pyx":560
+                  /* "MDAnalysis/lib/nsgrid.pyx":561
  *                             cellid = self.cellxyz2cellid(cx, cy, cz)
  * 
  *                             if cellid == END:  # out of bounds             # <<<<<<<<<<<<<<
@@ -5651,58 +5673,48 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
  */
                 }
 
-                /* "MDAnalysis/lib/nsgrid.pyx":563
+                /* "MDAnalysis/lib/nsgrid.pyx":564
  *                                 continue
  *                             # for loop over atoms in searchcoord
  *                             j = self.head_id[cellid]             # <<<<<<<<<<<<<<
  *                             while (j != END):
- *                                 d2 = self.calc_distsq(&tmpcoords[i][0],
+ *                                 d2 = self.calc_distsq(&tmpcoord[0],
  */
-                __pyx_t_9 = __pyx_v_cellid;
-                __pyx_v_j = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_self->head_id.data) + __pyx_t_9)) )));
+                __pyx_t_11 = __pyx_v_cellid;
+                __pyx_v_j = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_self->head_id.data) + __pyx_t_11)) )));
 
-                /* "MDAnalysis/lib/nsgrid.pyx":564
+                /* "MDAnalysis/lib/nsgrid.pyx":565
  *                             # for loop over atoms in searchcoord
  *                             j = self.head_id[cellid]
  *                             while (j != END):             # <<<<<<<<<<<<<<
- *                                 d2 = self.calc_distsq(&tmpcoords[i][0],
+ *                                 d2 = self.calc_distsq(&tmpcoord[0],
  *                                                       &self.coords_bbox[j][0])
  */
                 while (1) {
                   __pyx_t_2 = ((__pyx_v_j != -1L) != 0);
                   if (!__pyx_t_2) break;
 
-                  /* "MDAnalysis/lib/nsgrid.pyx":565
- *                             j = self.head_id[cellid]
+                  /* "MDAnalysis/lib/nsgrid.pyx":567
  *                             while (j != END):
- *                                 d2 = self.calc_distsq(&tmpcoords[i][0],             # <<<<<<<<<<<<<<
- *                                                       &self.coords_bbox[j][0])
- *                                 if d2 <= cutoff2:
- */
-                  __pyx_t_9 = __pyx_v_i;
-                  __pyx_t_8 = 0;
-
-                  /* "MDAnalysis/lib/nsgrid.pyx":566
- *                             while (j != END):
- *                                 d2 = self.calc_distsq(&tmpcoords[i][0],
+ *                                 d2 = self.calc_distsq(&tmpcoord[0],
  *                                                       &self.coords_bbox[j][0])             # <<<<<<<<<<<<<<
  *                                 if d2 <= cutoff2:
  *                                     # place search_coords then self.bbox_coords
  */
-                  __pyx_t_16 = __pyx_v_j;
-                  __pyx_t_17 = 0;
+                  __pyx_t_11 = __pyx_v_j;
+                  __pyx_t_10 = 0;
 
-                  /* "MDAnalysis/lib/nsgrid.pyx":565
+                  /* "MDAnalysis/lib/nsgrid.pyx":566
  *                             j = self.head_id[cellid]
  *                             while (j != END):
- *                                 d2 = self.calc_distsq(&tmpcoords[i][0],             # <<<<<<<<<<<<<<
+ *                                 d2 = self.calc_distsq(&tmpcoord[0],             # <<<<<<<<<<<<<<
  *                                                       &self.coords_bbox[j][0])
  *                                 if d2 <= cutoff2:
  */
-                  __pyx_v_d2 = ((struct __pyx_vtabstruct_10MDAnalysis_3lib_6nsgrid_FastNS *)__pyx_v_self->__pyx_vtab)->calc_distsq(__pyx_v_self, (&(*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_tmpcoords.data + __pyx_t_9 * __pyx_v_tmpcoords.strides[0]) )) + __pyx_t_8)) )))), (&(*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_self->coords_bbox.data + __pyx_t_16 * __pyx_v_self->coords_bbox.strides[0]) )) + __pyx_t_17)) )))));
+                  __pyx_v_d2 = ((struct __pyx_vtabstruct_10MDAnalysis_3lib_6nsgrid_FastNS *)__pyx_v_self->__pyx_vtab)->calc_distsq(__pyx_v_self, (&(__pyx_v_tmpcoord[0])), (&(*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_self->coords_bbox.data + __pyx_t_11 * __pyx_v_self->coords_bbox.strides[0]) )) + __pyx_t_10)) )))));
 
-                  /* "MDAnalysis/lib/nsgrid.pyx":567
- *                                 d2 = self.calc_distsq(&tmpcoords[i][0],
+                  /* "MDAnalysis/lib/nsgrid.pyx":568
+ *                                 d2 = self.calc_distsq(&tmpcoord[0],
  *                                                       &self.coords_bbox[j][0])
  *                                 if d2 <= cutoff2:             # <<<<<<<<<<<<<<
  *                                     # place search_coords then self.bbox_coords
@@ -5711,7 +5723,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
                   __pyx_t_2 = ((__pyx_v_d2 <= __pyx_v_cutoff2) != 0);
                   if (__pyx_t_2) {
 
-                    /* "MDAnalysis/lib/nsgrid.pyx":569
+                    /* "MDAnalysis/lib/nsgrid.pyx":570
  *                                 if d2 <= cutoff2:
  *                                     # place search_coords then self.bbox_coords
  *                                     results.add_neighbors(i, j, d2)             # <<<<<<<<<<<<<<
@@ -5720,8 +5732,8 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
  */
                     ((struct __pyx_vtabstruct_10MDAnalysis_3lib_6nsgrid_NSResults *)__pyx_v_results->__pyx_vtab)->add_neighbors(__pyx_v_results, __pyx_v_i, __pyx_v_j, __pyx_v_d2);
 
-                    /* "MDAnalysis/lib/nsgrid.pyx":567
- *                                 d2 = self.calc_distsq(&tmpcoords[i][0],
+                    /* "MDAnalysis/lib/nsgrid.pyx":568
+ *                                 d2 = self.calc_distsq(&tmpcoord[0],
  *                                                       &self.coords_bbox[j][0])
  *                                 if d2 <= cutoff2:             # <<<<<<<<<<<<<<
  *                                     # place search_coords then self.bbox_coords
@@ -5729,15 +5741,15 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
  */
                   }
 
-                  /* "MDAnalysis/lib/nsgrid.pyx":570
+                  /* "MDAnalysis/lib/nsgrid.pyx":571
  *                                     # place search_coords then self.bbox_coords
  *                                     results.add_neighbors(i, j, d2)
  *                                 j = self.next_id[j]             # <<<<<<<<<<<<<<
  *         return results
  * 
  */
-                  __pyx_t_17 = __pyx_v_j;
-                  __pyx_v_j = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_self->next_id.data) + __pyx_t_17)) )));
+                  __pyx_t_10 = __pyx_v_j;
+                  __pyx_v_j = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_self->next_id.data) + __pyx_t_10)) )));
                 }
                 __pyx_L16_continue:;
               }
@@ -5746,12 +5758,12 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
         }
       }
 
-      /* "MDAnalysis/lib/nsgrid.pyx":537
+      /* "MDAnalysis/lib/nsgrid.pyx":538
+ *                              "{}.".format(search_coords.shape))
  * 
- *         tmpcoords = search_coords.copy()
  *         with nogil:             # <<<<<<<<<<<<<<
- *             if self.triclinic:
- *                 _triclinic_pbc(<coordinate*>&tmpcoords[0][0],
+ *             size_search = search_coords.shape[0]
+ *             for i in range(size_search):
  */
       /*finally:*/ {
         /*normal exit:*/{
@@ -5765,7 +5777,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
       }
   }
 
-  /* "MDAnalysis/lib/nsgrid.pyx":571
+  /* "MDAnalysis/lib/nsgrid.pyx":572
  *                                     results.add_neighbors(i, j, d2)
  *                                 j = self.next_id[j]
  *         return results             # <<<<<<<<<<<<<<
@@ -5777,7 +5789,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
   __pyx_r = ((PyObject *)__pyx_v_results);
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":489
+  /* "MDAnalysis/lib/nsgrid.pyx":491
  *         return dx[0]*dx[0] + dx[1]*dx[1] + dx[2]*dx[2]
  * 
  *     def search(self, float[:, :] search_coords):             # <<<<<<<<<<<<<<
@@ -5791,19 +5803,17 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_2search(struct __pyx
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
-  __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
   __Pyx_AddTraceback("MDAnalysis.lib.nsgrid.FastNS.search", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_search_coords, 1);
-  __PYX_XDEC_MEMVIEW(&__pyx_v_tmpcoords, 1);
   __Pyx_XDECREF((PyObject *)__pyx_v_results);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "MDAnalysis/lib/nsgrid.pyx":573
+/* "MDAnalysis/lib/nsgrid.pyx":574
  *         return results
  * 
  *     def self_search(self):             # <<<<<<<<<<<<<<
@@ -5878,19 +5888,19 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("self_search", 0);
 
-  /* "MDAnalysis/lib/nsgrid.pyx":592
+  /* "MDAnalysis/lib/nsgrid.pyx":593
  *         cdef int cellindex, cellindex_probe
  *         cdef int xi, yi, zi
  *         cdef NSResults results = NSResults()             # <<<<<<<<<<<<<<
  *         cdef double d2
  *         cdef double cutoff2 = self.cutoff * self.cutoff
  */
-  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_10MDAnalysis_3lib_6nsgrid_NSResults)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 592, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_10MDAnalysis_3lib_6nsgrid_NSResults)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 593, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_results = ((struct __pyx_obj_10MDAnalysis_3lib_6nsgrid_NSResults *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":594
+  /* "MDAnalysis/lib/nsgrid.pyx":595
  *         cdef NSResults results = NSResults()
  *         cdef double d2
  *         cdef double cutoff2 = self.cutoff * self.cutoff             # <<<<<<<<<<<<<<
@@ -5899,7 +5909,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
  */
   __pyx_v_cutoff2 = (__pyx_v_self->cutoff * __pyx_v_self->cutoff);
 
-  /* "MDAnalysis/lib/nsgrid.pyx":596
+  /* "MDAnalysis/lib/nsgrid.pyx":597
  *         cdef double cutoff2 = self.cutoff * self.cutoff
  *         # route over 13 neighbouring cells
  *         cdef int[13][3] route = [[1, 0, 0], [1, 1, 0], [0, 1, 0], [-1, 1, 0],             # <<<<<<<<<<<<<<
@@ -5919,7 +5929,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
   __pyx_t_5[1] = 1;
   __pyx_t_5[2] = 0;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":597
+  /* "MDAnalysis/lib/nsgrid.pyx":598
  *         # route over 13 neighbouring cells
  *         cdef int[13][3] route = [[1, 0, 0], [1, 1, 0], [0, 1, 0], [-1, 1, 0],
  *                                  [1, 0, -1], [1, 1, -1], [0, 1, -1], [-1, 1, -1],             # <<<<<<<<<<<<<<
@@ -5939,7 +5949,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
   __pyx_t_9[1] = 1;
   __pyx_t_9[2] = -1;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":598
+  /* "MDAnalysis/lib/nsgrid.pyx":599
  *         cdef int[13][3] route = [[1, 0, 0], [1, 1, 0], [0, 1, 0], [-1, 1, 0],
  *                                  [1, 0, -1], [1, 1, -1], [0, 1, -1], [-1, 1, -1],
  *                                  [1, 0, 1], [1, 1, 1], [0, 1, 1], [-1, 1, 1], [0, 0, 1]]             # <<<<<<<<<<<<<<
@@ -5962,7 +5972,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
   __pyx_t_14[1] = 0;
   __pyx_t_14[2] = 1;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":596
+  /* "MDAnalysis/lib/nsgrid.pyx":597
  *         cdef double cutoff2 = self.cutoff * self.cutoff
  *         # route over 13 neighbouring cells
  *         cdef int[13][3] route = [[1, 0, 0], [1, 1, 0], [0, 1, 0], [-1, 1, 0],             # <<<<<<<<<<<<<<
@@ -5984,7 +5994,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
   memcpy(&(__pyx_t_15[12]), __pyx_t_14, sizeof(__pyx_t_15[0]));
   memcpy(&(__pyx_v_route[0]), __pyx_t_15, sizeof(__pyx_v_route[0]) * (13));
 
-  /* "MDAnalysis/lib/nsgrid.pyx":600
+  /* "MDAnalysis/lib/nsgrid.pyx":601
  *                                  [1, 0, 1], [1, 1, 1], [0, 1, 1], [-1, 1, 1], [0, 0, 1]]
  * 
  *         for cx in range(self.ncells[0]):             # <<<<<<<<<<<<<<
@@ -5996,7 +6006,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
   for (__pyx_t_18 = 0; __pyx_t_18 < __pyx_t_17; __pyx_t_18+=1) {
     __pyx_v_cx = __pyx_t_18;
 
-    /* "MDAnalysis/lib/nsgrid.pyx":601
+    /* "MDAnalysis/lib/nsgrid.pyx":602
  * 
  *         for cx in range(self.ncells[0]):
  *             for cy in range(self.ncells[1]):             # <<<<<<<<<<<<<<
@@ -6008,7 +6018,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
     for (__pyx_t_21 = 0; __pyx_t_21 < __pyx_t_20; __pyx_t_21+=1) {
       __pyx_v_cy = __pyx_t_21;
 
-      /* "MDAnalysis/lib/nsgrid.pyx":602
+      /* "MDAnalysis/lib/nsgrid.pyx":603
  *         for cx in range(self.ncells[0]):
  *             for cy in range(self.ncells[1]):
  *                 for cz in range(self.ncells[2]):             # <<<<<<<<<<<<<<
@@ -6020,7 +6030,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
       for (__pyx_t_24 = 0; __pyx_t_24 < __pyx_t_23; __pyx_t_24+=1) {
         __pyx_v_cz = __pyx_t_24;
 
-        /* "MDAnalysis/lib/nsgrid.pyx":603
+        /* "MDAnalysis/lib/nsgrid.pyx":604
  *             for cy in range(self.ncells[1]):
  *                 for cz in range(self.ncells[2]):
  *                     ci = self.cellxyz2cellid(cx, cy, cz)             # <<<<<<<<<<<<<<
@@ -6029,7 +6039,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
  */
         __pyx_v_ci = ((struct __pyx_vtabstruct_10MDAnalysis_3lib_6nsgrid_FastNS *)__pyx_v_self->__pyx_vtab)->cellxyz2cellid(__pyx_v_self, __pyx_v_cx, __pyx_v_cy, __pyx_v_cz);
 
-        /* "MDAnalysis/lib/nsgrid.pyx":605
+        /* "MDAnalysis/lib/nsgrid.pyx":606
  *                     ci = self.cellxyz2cellid(cx, cy, cz)
  * 
  *                     i = self.head_id[ci]             # <<<<<<<<<<<<<<
@@ -6039,7 +6049,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
         __pyx_t_25 = __pyx_v_ci;
         __pyx_v_i = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_self->head_id.data) + __pyx_t_25)) )));
 
-        /* "MDAnalysis/lib/nsgrid.pyx":606
+        /* "MDAnalysis/lib/nsgrid.pyx":607
  * 
  *                     i = self.head_id[ci]
  *                     while (i != END):             # <<<<<<<<<<<<<<
@@ -6050,7 +6060,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
           __pyx_t_26 = ((__pyx_v_i != -1L) != 0);
           if (!__pyx_t_26) break;
 
-          /* "MDAnalysis/lib/nsgrid.pyx":608
+          /* "MDAnalysis/lib/nsgrid.pyx":609
  *                     while (i != END):
  *                         # pairwise within this cell
  *                         j = self.next_id[i]             # <<<<<<<<<<<<<<
@@ -6060,7 +6070,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
           __pyx_t_25 = __pyx_v_i;
           __pyx_v_j = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_self->next_id.data) + __pyx_t_25)) )));
 
-          /* "MDAnalysis/lib/nsgrid.pyx":609
+          /* "MDAnalysis/lib/nsgrid.pyx":610
  *                         # pairwise within this cell
  *                         j = self.next_id[i]
  *                         while (j != END):             # <<<<<<<<<<<<<<
@@ -6071,7 +6081,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
             __pyx_t_26 = ((__pyx_v_j != -1L) != 0);
             if (!__pyx_t_26) break;
 
-            /* "MDAnalysis/lib/nsgrid.pyx":610
+            /* "MDAnalysis/lib/nsgrid.pyx":611
  *                         j = self.next_id[i]
  *                         while (j != END):
  *                             d2 = self.calc_distsq(&self.coords_bbox[i][0],             # <<<<<<<<<<<<<<
@@ -6081,7 +6091,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
             __pyx_t_25 = __pyx_v_i;
             __pyx_t_27 = 0;
 
-            /* "MDAnalysis/lib/nsgrid.pyx":611
+            /* "MDAnalysis/lib/nsgrid.pyx":612
  *                         while (j != END):
  *                             d2 = self.calc_distsq(&self.coords_bbox[i][0],
  *                                                   &self.coords_bbox[j][0])             # <<<<<<<<<<<<<<
@@ -6091,7 +6101,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
             __pyx_t_28 = __pyx_v_j;
             __pyx_t_29 = 0;
 
-            /* "MDAnalysis/lib/nsgrid.pyx":610
+            /* "MDAnalysis/lib/nsgrid.pyx":611
  *                         j = self.next_id[i]
  *                         while (j != END):
  *                             d2 = self.calc_distsq(&self.coords_bbox[i][0],             # <<<<<<<<<<<<<<
@@ -6100,7 +6110,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
  */
             __pyx_v_d2 = ((struct __pyx_vtabstruct_10MDAnalysis_3lib_6nsgrid_FastNS *)__pyx_v_self->__pyx_vtab)->calc_distsq(__pyx_v_self, (&(*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_self->coords_bbox.data + __pyx_t_25 * __pyx_v_self->coords_bbox.strides[0]) )) + __pyx_t_27)) )))), (&(*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_self->coords_bbox.data + __pyx_t_28 * __pyx_v_self->coords_bbox.strides[0]) )) + __pyx_t_29)) )))));
 
-            /* "MDAnalysis/lib/nsgrid.pyx":612
+            /* "MDAnalysis/lib/nsgrid.pyx":613
  *                             d2 = self.calc_distsq(&self.coords_bbox[i][0],
  *                                                   &self.coords_bbox[j][0])
  *                             if d2 <= cutoff2:             # <<<<<<<<<<<<<<
@@ -6110,7 +6120,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
             __pyx_t_26 = ((__pyx_v_d2 <= __pyx_v_cutoff2) != 0);
             if (__pyx_t_26) {
 
-              /* "MDAnalysis/lib/nsgrid.pyx":613
+              /* "MDAnalysis/lib/nsgrid.pyx":614
  *                                                   &self.coords_bbox[j][0])
  *                             if d2 <= cutoff2:
  *                                 results.add_neighbors(i, j, d2)             # <<<<<<<<<<<<<<
@@ -6119,7 +6129,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
  */
               ((struct __pyx_vtabstruct_10MDAnalysis_3lib_6nsgrid_NSResults *)__pyx_v_results->__pyx_vtab)->add_neighbors(__pyx_v_results, __pyx_v_i, __pyx_v_j, __pyx_v_d2);
 
-              /* "MDAnalysis/lib/nsgrid.pyx":612
+              /* "MDAnalysis/lib/nsgrid.pyx":613
  *                             d2 = self.calc_distsq(&self.coords_bbox[i][0],
  *                                                   &self.coords_bbox[j][0])
  *                             if d2 <= cutoff2:             # <<<<<<<<<<<<<<
@@ -6128,7 +6138,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
  */
             }
 
-            /* "MDAnalysis/lib/nsgrid.pyx":614
+            /* "MDAnalysis/lib/nsgrid.pyx":615
  *                             if d2 <= cutoff2:
  *                                 results.add_neighbors(i, j, d2)
  *                             j = self.next_id[j]             # <<<<<<<<<<<<<<
@@ -6139,7 +6149,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
             __pyx_v_j = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_self->next_id.data) + __pyx_t_29)) )));
           }
 
-          /* "MDAnalysis/lib/nsgrid.pyx":617
+          /* "MDAnalysis/lib/nsgrid.pyx":618
  * 
  *                         # loop over 13 neighbouring cells
  *                         for nj in range(13):             # <<<<<<<<<<<<<<
@@ -6149,7 +6159,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
           for (__pyx_t_30 = 0; __pyx_t_30 < 13; __pyx_t_30+=1) {
             __pyx_v_nj = __pyx_t_30;
 
-            /* "MDAnalysis/lib/nsgrid.pyx":618
+            /* "MDAnalysis/lib/nsgrid.pyx":619
  *                         # loop over 13 neighbouring cells
  *                         for nj in range(13):
  *                             ox = cx + route[nj][0]             # <<<<<<<<<<<<<<
@@ -6158,7 +6168,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
  */
             __pyx_v_ox = (__pyx_v_cx + ((__pyx_v_route[__pyx_v_nj])[0]));
 
-            /* "MDAnalysis/lib/nsgrid.pyx":619
+            /* "MDAnalysis/lib/nsgrid.pyx":620
  *                         for nj in range(13):
  *                             ox = cx + route[nj][0]
  *                             oy = cy + route[nj][1]             # <<<<<<<<<<<<<<
@@ -6167,7 +6177,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
  */
             __pyx_v_oy = (__pyx_v_cy + ((__pyx_v_route[__pyx_v_nj])[1]));
 
-            /* "MDAnalysis/lib/nsgrid.pyx":620
+            /* "MDAnalysis/lib/nsgrid.pyx":621
  *                             ox = cx + route[nj][0]
  *                             oy = cy + route[nj][1]
  *                             oz = cz + route[nj][2]             # <<<<<<<<<<<<<<
@@ -6176,7 +6186,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
  */
             __pyx_v_oz = (__pyx_v_cz + ((__pyx_v_route[__pyx_v_nj])[2]));
 
-            /* "MDAnalysis/lib/nsgrid.pyx":622
+            /* "MDAnalysis/lib/nsgrid.pyx":623
  *                             oz = cz + route[nj][2]
  * 
  *                             cj = self.cellxyz2cellid(ox, oy, oz)             # <<<<<<<<<<<<<<
@@ -6185,7 +6195,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
  */
             __pyx_v_cj = ((struct __pyx_vtabstruct_10MDAnalysis_3lib_6nsgrid_FastNS *)__pyx_v_self->__pyx_vtab)->cellxyz2cellid(__pyx_v_self, __pyx_v_ox, __pyx_v_oy, __pyx_v_oz);
 
-            /* "MDAnalysis/lib/nsgrid.pyx":623
+            /* "MDAnalysis/lib/nsgrid.pyx":624
  * 
  *                             cj = self.cellxyz2cellid(ox, oy, oz)
  *                             if cj == END:             # <<<<<<<<<<<<<<
@@ -6195,7 +6205,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
             __pyx_t_26 = ((__pyx_v_cj == -1L) != 0);
             if (__pyx_t_26) {
 
-              /* "MDAnalysis/lib/nsgrid.pyx":624
+              /* "MDAnalysis/lib/nsgrid.pyx":625
  *                             cj = self.cellxyz2cellid(ox, oy, oz)
  *                             if cj == END:
  *                                 continue             # <<<<<<<<<<<<<<
@@ -6204,7 +6214,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
  */
               goto __pyx_L14_continue;
 
-              /* "MDAnalysis/lib/nsgrid.pyx":623
+              /* "MDAnalysis/lib/nsgrid.pyx":624
  * 
  *                             cj = self.cellxyz2cellid(ox, oy, oz)
  *                             if cj == END:             # <<<<<<<<<<<<<<
@@ -6213,7 +6223,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
  */
             }
 
-            /* "MDAnalysis/lib/nsgrid.pyx":626
+            /* "MDAnalysis/lib/nsgrid.pyx":627
  *                                 continue
  * 
  *                             j = self.head_id[cj]             # <<<<<<<<<<<<<<
@@ -6223,7 +6233,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
             __pyx_t_29 = __pyx_v_cj;
             __pyx_v_j = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_self->head_id.data) + __pyx_t_29)) )));
 
-            /* "MDAnalysis/lib/nsgrid.pyx":627
+            /* "MDAnalysis/lib/nsgrid.pyx":628
  * 
  *                             j = self.head_id[cj]
  *                             while (j != END):             # <<<<<<<<<<<<<<
@@ -6234,7 +6244,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
               __pyx_t_26 = ((__pyx_v_j != -1L) != 0);
               if (!__pyx_t_26) break;
 
-              /* "MDAnalysis/lib/nsgrid.pyx":628
+              /* "MDAnalysis/lib/nsgrid.pyx":629
  *                             j = self.head_id[cj]
  *                             while (j != END):
  *                                 d2 = self.calc_distsq(&self.coords_bbox[i][0],             # <<<<<<<<<<<<<<
@@ -6244,7 +6254,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
               __pyx_t_29 = __pyx_v_i;
               __pyx_t_28 = 0;
 
-              /* "MDAnalysis/lib/nsgrid.pyx":629
+              /* "MDAnalysis/lib/nsgrid.pyx":630
  *                             while (j != END):
  *                                 d2 = self.calc_distsq(&self.coords_bbox[i][0],
  *                                                       &self.coords_bbox[j][0])             # <<<<<<<<<<<<<<
@@ -6254,7 +6264,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
               __pyx_t_27 = __pyx_v_j;
               __pyx_t_25 = 0;
 
-              /* "MDAnalysis/lib/nsgrid.pyx":628
+              /* "MDAnalysis/lib/nsgrid.pyx":629
  *                             j = self.head_id[cj]
  *                             while (j != END):
  *                                 d2 = self.calc_distsq(&self.coords_bbox[i][0],             # <<<<<<<<<<<<<<
@@ -6263,7 +6273,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
  */
               __pyx_v_d2 = ((struct __pyx_vtabstruct_10MDAnalysis_3lib_6nsgrid_FastNS *)__pyx_v_self->__pyx_vtab)->calc_distsq(__pyx_v_self, (&(*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_self->coords_bbox.data + __pyx_t_29 * __pyx_v_self->coords_bbox.strides[0]) )) + __pyx_t_28)) )))), (&(*((float *) ( /* dim=1 */ ((char *) (((float *) ( /* dim=0 */ (__pyx_v_self->coords_bbox.data + __pyx_t_27 * __pyx_v_self->coords_bbox.strides[0]) )) + __pyx_t_25)) )))));
 
-              /* "MDAnalysis/lib/nsgrid.pyx":630
+              /* "MDAnalysis/lib/nsgrid.pyx":631
  *                                 d2 = self.calc_distsq(&self.coords_bbox[i][0],
  *                                                       &self.coords_bbox[j][0])
  *                                 if d2 <= cutoff2:             # <<<<<<<<<<<<<<
@@ -6273,7 +6283,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
               __pyx_t_26 = ((__pyx_v_d2 <= __pyx_v_cutoff2) != 0);
               if (__pyx_t_26) {
 
-                /* "MDAnalysis/lib/nsgrid.pyx":631
+                /* "MDAnalysis/lib/nsgrid.pyx":632
  *                                                       &self.coords_bbox[j][0])
  *                                 if d2 <= cutoff2:
  *                                     results.add_neighbors(i, j, d2)             # <<<<<<<<<<<<<<
@@ -6282,7 +6292,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
  */
                 ((struct __pyx_vtabstruct_10MDAnalysis_3lib_6nsgrid_NSResults *)__pyx_v_results->__pyx_vtab)->add_neighbors(__pyx_v_results, __pyx_v_i, __pyx_v_j, __pyx_v_d2);
 
-                /* "MDAnalysis/lib/nsgrid.pyx":630
+                /* "MDAnalysis/lib/nsgrid.pyx":631
  *                                 d2 = self.calc_distsq(&self.coords_bbox[i][0],
  *                                                       &self.coords_bbox[j][0])
  *                                 if d2 <= cutoff2:             # <<<<<<<<<<<<<<
@@ -6291,7 +6301,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
  */
               }
 
-              /* "MDAnalysis/lib/nsgrid.pyx":632
+              /* "MDAnalysis/lib/nsgrid.pyx":633
  *                                 if d2 <= cutoff2:
  *                                     results.add_neighbors(i, j, d2)
  *                                 j = self.next_id[j]             # <<<<<<<<<<<<<<
@@ -6304,7 +6314,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
             __pyx_L14_continue:;
           }
 
-          /* "MDAnalysis/lib/nsgrid.pyx":635
+          /* "MDAnalysis/lib/nsgrid.pyx":636
  * 
  *                         # move to next position in cell *ci*
  *                         i = self.next_id[i]             # <<<<<<<<<<<<<<
@@ -6318,7 +6328,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
     }
   }
 
-  /* "MDAnalysis/lib/nsgrid.pyx":637
+  /* "MDAnalysis/lib/nsgrid.pyx":638
  *                         i = self.next_id[i]
  * 
  *         return results             # <<<<<<<<<<<<<<
@@ -6328,7 +6338,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_4self_search(struct 
   __pyx_r = ((PyObject *)__pyx_v_results);
   goto __pyx_L0;
 
-  /* "MDAnalysis/lib/nsgrid.pyx":573
+  /* "MDAnalysis/lib/nsgrid.pyx":574
  *         return results
  * 
  *     def self_search(self):             # <<<<<<<<<<<<<<
@@ -6435,8 +6445,9 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_6__reduce_cython__(s
   PyObject *__pyx_t_12 = NULL;
   PyObject *__pyx_t_13 = NULL;
   PyObject *__pyx_t_14 = NULL;
-  int __pyx_t_15;
+  PyObject *__pyx_t_15 = NULL;
   int __pyx_t_16;
+  int __pyx_t_17;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -6445,7 +6456,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_6__reduce_cython__(s
   /* "(tree fragment)":5
  *     cdef object _dict
  *     cdef bint use_setstate
- *     state = (self.cell_offsets, self.cellsize, self.coords_bbox, self.cutoff, self.dimensions, self.head_id, self.inverse_dimensions, self.ncells, self.next_id, self.pbc, self.periodic, self.triclinic, self.triclinic_dimensions)             # <<<<<<<<<<<<<<
+ *     state = (self.cell_offsets, self.cellsize, self.coords_bbox, self.cutoff, self.dimensions, self.half_dimensions, self.head_id, self.inverse_dimensions, self.ncells, self.next_id, self.pbc, self.periodic, self.triclinic, self.triclinic_dimensions)             # <<<<<<<<<<<<<<
  *     _dict = getattr(self, '__dict__', None)
  *     if _dict is not None:
  */
@@ -6459,50 +6470,54 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_6__reduce_cython__(s
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = __Pyx_carray_to_py_float(__pyx_v_self->dimensions, 6); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_self->head_id, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_carray_to_py_float(__pyx_v_self->half_dimensions, 3); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = __Pyx_carray_to_py_float(__pyx_v_self->inverse_dimensions, 3); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_7 = __pyx_memoryview_fromslice(__pyx_v_self->head_id, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_8 = __Pyx_carray_to_py_int(__pyx_v_self->ncells, 3); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_carray_to_py_float(__pyx_v_self->inverse_dimensions, 3); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_9 = __pyx_memoryview_fromslice(__pyx_v_self->next_id, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_9)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_carray_to_py_int(__pyx_v_self->ncells, 3); if (unlikely(!__pyx_t_9)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_10 = __Pyx_PyBool_FromLong(__pyx_v_self->pbc); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_10 = __pyx_memoryview_fromslice(__pyx_v_self->next_id, 1, (PyObject *(*)(char *)) __pyx_memview_get_int, (int (*)(char *, PyObject *)) __pyx_memview_set_int, 0);; if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
-  __pyx_t_11 = __Pyx_carray_to_py_int(__pyx_v_self->periodic, 3); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyBool_FromLong(__pyx_v_self->pbc); if (unlikely(!__pyx_t_11)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
-  __pyx_t_12 = __Pyx_PyBool_FromLong(__pyx_v_self->triclinic); if (unlikely(!__pyx_t_12)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_carray_to_py_int(__pyx_v_self->periodic, 3); if (unlikely(!__pyx_t_12)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __pyx_t_13 = __Pyx_carray_to_py_float(__pyx_v_self->triclinic_dimensions, 9); if (unlikely(!__pyx_t_13)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_13 = __Pyx_PyBool_FromLong(__pyx_v_self->triclinic); if (unlikely(!__pyx_t_13)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
-  __pyx_t_14 = PyTuple_New(13); if (unlikely(!__pyx_t_14)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_14 = __Pyx_carray_to_py_float(__pyx_v_self->triclinic_dimensions, 9); if (unlikely(!__pyx_t_14)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_14);
+  __pyx_t_15 = PyTuple_New(14); if (unlikely(!__pyx_t_15)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_15);
   __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_15, 0, __pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_15, 1, __pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_14, 2, __pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_15, 2, __pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_4);
-  PyTuple_SET_ITEM(__pyx_t_14, 3, __pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_15, 3, __pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_5);
-  PyTuple_SET_ITEM(__pyx_t_14, 4, __pyx_t_5);
+  PyTuple_SET_ITEM(__pyx_t_15, 4, __pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_6);
-  PyTuple_SET_ITEM(__pyx_t_14, 5, __pyx_t_6);
+  PyTuple_SET_ITEM(__pyx_t_15, 5, __pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_7);
-  PyTuple_SET_ITEM(__pyx_t_14, 6, __pyx_t_7);
+  PyTuple_SET_ITEM(__pyx_t_15, 6, __pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_8);
-  PyTuple_SET_ITEM(__pyx_t_14, 7, __pyx_t_8);
+  PyTuple_SET_ITEM(__pyx_t_15, 7, __pyx_t_8);
   __Pyx_GIVEREF(__pyx_t_9);
-  PyTuple_SET_ITEM(__pyx_t_14, 8, __pyx_t_9);
+  PyTuple_SET_ITEM(__pyx_t_15, 8, __pyx_t_9);
   __Pyx_GIVEREF(__pyx_t_10);
-  PyTuple_SET_ITEM(__pyx_t_14, 9, __pyx_t_10);
+  PyTuple_SET_ITEM(__pyx_t_15, 9, __pyx_t_10);
   __Pyx_GIVEREF(__pyx_t_11);
-  PyTuple_SET_ITEM(__pyx_t_14, 10, __pyx_t_11);
+  PyTuple_SET_ITEM(__pyx_t_15, 10, __pyx_t_11);
   __Pyx_GIVEREF(__pyx_t_12);
-  PyTuple_SET_ITEM(__pyx_t_14, 11, __pyx_t_12);
+  PyTuple_SET_ITEM(__pyx_t_15, 11, __pyx_t_12);
   __Pyx_GIVEREF(__pyx_t_13);
-  PyTuple_SET_ITEM(__pyx_t_14, 12, __pyx_t_13);
+  PyTuple_SET_ITEM(__pyx_t_15, 12, __pyx_t_13);
+  __Pyx_GIVEREF(__pyx_t_14);
+  PyTuple_SET_ITEM(__pyx_t_15, 13, __pyx_t_14);
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
   __pyx_t_3 = 0;
@@ -6516,31 +6531,32 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_6__reduce_cython__(s
   __pyx_t_11 = 0;
   __pyx_t_12 = 0;
   __pyx_t_13 = 0;
-  __pyx_v_state = ((PyObject*)__pyx_t_14);
   __pyx_t_14 = 0;
+  __pyx_v_state = ((PyObject*)__pyx_t_15);
+  __pyx_t_15 = 0;
 
   /* "(tree fragment)":6
  *     cdef bint use_setstate
- *     state = (self.cell_offsets, self.cellsize, self.coords_bbox, self.cutoff, self.dimensions, self.head_id, self.inverse_dimensions, self.ncells, self.next_id, self.pbc, self.periodic, self.triclinic, self.triclinic_dimensions)
+ *     state = (self.cell_offsets, self.cellsize, self.coords_bbox, self.cutoff, self.dimensions, self.half_dimensions, self.head_id, self.inverse_dimensions, self.ncells, self.next_id, self.pbc, self.periodic, self.triclinic, self.triclinic_dimensions)
  *     _dict = getattr(self, '__dict__', None)             # <<<<<<<<<<<<<<
  *     if _dict is not None:
  *         state += (_dict,)
  */
-  __pyx_t_14 = __Pyx_GetAttr3(((PyObject *)__pyx_v_self), __pyx_n_s_dict, Py_None); if (unlikely(!__pyx_t_14)) __PYX_ERR(1, 6, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_14);
-  __pyx_v__dict = __pyx_t_14;
-  __pyx_t_14 = 0;
+  __pyx_t_15 = __Pyx_GetAttr3(((PyObject *)__pyx_v_self), __pyx_n_s_dict, Py_None); if (unlikely(!__pyx_t_15)) __PYX_ERR(1, 6, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_15);
+  __pyx_v__dict = __pyx_t_15;
+  __pyx_t_15 = 0;
 
   /* "(tree fragment)":7
- *     state = (self.cell_offsets, self.cellsize, self.coords_bbox, self.cutoff, self.dimensions, self.head_id, self.inverse_dimensions, self.ncells, self.next_id, self.pbc, self.periodic, self.triclinic, self.triclinic_dimensions)
+ *     state = (self.cell_offsets, self.cellsize, self.coords_bbox, self.cutoff, self.dimensions, self.half_dimensions, self.head_id, self.inverse_dimensions, self.ncells, self.next_id, self.pbc, self.periodic, self.triclinic, self.triclinic_dimensions)
  *     _dict = getattr(self, '__dict__', None)
  *     if _dict is not None:             # <<<<<<<<<<<<<<
  *         state += (_dict,)
  *         use_setstate = True
  */
-  __pyx_t_15 = (__pyx_v__dict != Py_None);
-  __pyx_t_16 = (__pyx_t_15 != 0);
-  if (__pyx_t_16) {
+  __pyx_t_16 = (__pyx_v__dict != Py_None);
+  __pyx_t_17 = (__pyx_t_16 != 0);
+  if (__pyx_t_17) {
 
     /* "(tree fragment)":8
  *     _dict = getattr(self, '__dict__', None)
@@ -6549,16 +6565,16 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_6__reduce_cython__(s
  *         use_setstate = True
  *     else:
  */
-    __pyx_t_14 = PyTuple_New(1); if (unlikely(!__pyx_t_14)) __PYX_ERR(1, 8, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_14);
+    __pyx_t_15 = PyTuple_New(1); if (unlikely(!__pyx_t_15)) __PYX_ERR(1, 8, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_15);
     __Pyx_INCREF(__pyx_v__dict);
     __Pyx_GIVEREF(__pyx_v__dict);
-    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_v__dict);
-    __pyx_t_13 = PyNumber_InPlaceAdd(__pyx_v_state, __pyx_t_14); if (unlikely(!__pyx_t_13)) __PYX_ERR(1, 8, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_13);
-    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-    __Pyx_DECREF_SET(__pyx_v_state, ((PyObject*)__pyx_t_13));
-    __pyx_t_13 = 0;
+    PyTuple_SET_ITEM(__pyx_t_15, 0, __pyx_v__dict);
+    __pyx_t_14 = PyNumber_InPlaceAdd(__pyx_v_state, __pyx_t_15); if (unlikely(!__pyx_t_14)) __PYX_ERR(1, 8, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_14);
+    __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
+    __Pyx_DECREF_SET(__pyx_v_state, ((PyObject*)__pyx_t_14));
+    __pyx_t_14 = 0;
 
     /* "(tree fragment)":9
  *     if _dict is not None:
@@ -6570,7 +6586,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_6__reduce_cython__(s
     __pyx_v_use_setstate = 1;
 
     /* "(tree fragment)":7
- *     state = (self.cell_offsets, self.cellsize, self.coords_bbox, self.cutoff, self.dimensions, self.head_id, self.inverse_dimensions, self.ncells, self.next_id, self.pbc, self.periodic, self.triclinic, self.triclinic_dimensions)
+ *     state = (self.cell_offsets, self.cellsize, self.coords_bbox, self.cutoff, self.dimensions, self.half_dimensions, self.head_id, self.inverse_dimensions, self.ncells, self.next_id, self.pbc, self.periodic, self.triclinic, self.triclinic_dimensions)
  *     _dict = getattr(self, '__dict__', None)
  *     if _dict is not None:             # <<<<<<<<<<<<<<
  *         state += (_dict,)
@@ -6584,7 +6600,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_6__reduce_cython__(s
  *     else:
  *         use_setstate = False             # <<<<<<<<<<<<<<
  *     if use_setstate:
- *         return __pyx_unpickle_FastNS, (type(self), 0x27caffd, None), state
+ *         return __pyx_unpickle_FastNS, (type(self), 0x42b468a, None), state
  */
   /*else*/ {
     __pyx_v_use_setstate = 0;
@@ -6595,89 +6611,89 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_6__reduce_cython__(s
  *     else:
  *         use_setstate = False
  *     if use_setstate:             # <<<<<<<<<<<<<<
- *         return __pyx_unpickle_FastNS, (type(self), 0x27caffd, None), state
+ *         return __pyx_unpickle_FastNS, (type(self), 0x42b468a, None), state
  *     else:
  */
-  __pyx_t_16 = (__pyx_v_use_setstate != 0);
-  if (__pyx_t_16) {
+  __pyx_t_17 = (__pyx_v_use_setstate != 0);
+  if (__pyx_t_17) {
 
     /* "(tree fragment)":13
  *         use_setstate = False
  *     if use_setstate:
- *         return __pyx_unpickle_FastNS, (type(self), 0x27caffd, None), state             # <<<<<<<<<<<<<<
+ *         return __pyx_unpickle_FastNS, (type(self), 0x42b468a, None), state             # <<<<<<<<<<<<<<
  *     else:
- *         return __pyx_unpickle_FastNS, (type(self), 0x27caffd, state)
+ *         return __pyx_unpickle_FastNS, (type(self), 0x42b468a, state)
  */
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_n_s_pyx_unpickle_FastNS); if (unlikely(!__pyx_t_13)) __PYX_ERR(1, 13, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_13);
-    __pyx_t_14 = PyTuple_New(3); if (unlikely(!__pyx_t_14)) __PYX_ERR(1, 13, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_14, __pyx_n_s_pyx_unpickle_FastNS); if (unlikely(!__pyx_t_14)) __PYX_ERR(1, 13, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
+    __pyx_t_15 = PyTuple_New(3); if (unlikely(!__pyx_t_15)) __PYX_ERR(1, 13, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_15);
     __Pyx_INCREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
     __Pyx_GIVEREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
-    PyTuple_SET_ITEM(__pyx_t_14, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
-    __Pyx_INCREF(__pyx_int_41725949);
-    __Pyx_GIVEREF(__pyx_int_41725949);
-    PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_int_41725949);
+    PyTuple_SET_ITEM(__pyx_t_15, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
+    __Pyx_INCREF(__pyx_int_69944970);
+    __Pyx_GIVEREF(__pyx_int_69944970);
+    PyTuple_SET_ITEM(__pyx_t_15, 1, __pyx_int_69944970);
     __Pyx_INCREF(Py_None);
     __Pyx_GIVEREF(Py_None);
-    PyTuple_SET_ITEM(__pyx_t_14, 2, Py_None);
-    __pyx_t_12 = PyTuple_New(3); if (unlikely(!__pyx_t_12)) __PYX_ERR(1, 13, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_12);
-    __Pyx_GIVEREF(__pyx_t_13);
-    PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_13);
+    PyTuple_SET_ITEM(__pyx_t_15, 2, Py_None);
+    __pyx_t_13 = PyTuple_New(3); if (unlikely(!__pyx_t_13)) __PYX_ERR(1, 13, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_13);
     __Pyx_GIVEREF(__pyx_t_14);
-    PyTuple_SET_ITEM(__pyx_t_12, 1, __pyx_t_14);
+    PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_t_14);
+    __Pyx_GIVEREF(__pyx_t_15);
+    PyTuple_SET_ITEM(__pyx_t_13, 1, __pyx_t_15);
     __Pyx_INCREF(__pyx_v_state);
     __Pyx_GIVEREF(__pyx_v_state);
-    PyTuple_SET_ITEM(__pyx_t_12, 2, __pyx_v_state);
-    __pyx_t_13 = 0;
+    PyTuple_SET_ITEM(__pyx_t_13, 2, __pyx_v_state);
     __pyx_t_14 = 0;
-    __pyx_r = __pyx_t_12;
-    __pyx_t_12 = 0;
+    __pyx_t_15 = 0;
+    __pyx_r = __pyx_t_13;
+    __pyx_t_13 = 0;
     goto __pyx_L0;
 
     /* "(tree fragment)":12
  *     else:
  *         use_setstate = False
  *     if use_setstate:             # <<<<<<<<<<<<<<
- *         return __pyx_unpickle_FastNS, (type(self), 0x27caffd, None), state
+ *         return __pyx_unpickle_FastNS, (type(self), 0x42b468a, None), state
  *     else:
  */
   }
 
   /* "(tree fragment)":15
- *         return __pyx_unpickle_FastNS, (type(self), 0x27caffd, None), state
+ *         return __pyx_unpickle_FastNS, (type(self), 0x42b468a, None), state
  *     else:
- *         return __pyx_unpickle_FastNS, (type(self), 0x27caffd, state)             # <<<<<<<<<<<<<<
+ *         return __pyx_unpickle_FastNS, (type(self), 0x42b468a, state)             # <<<<<<<<<<<<<<
  * def __setstate_cython__(self, __pyx_state):
  *     __pyx_unpickle_FastNS__set_state(self, __pyx_state)
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_GetModuleGlobalName(__pyx_t_12, __pyx_n_s_pyx_unpickle_FastNS); if (unlikely(!__pyx_t_12)) __PYX_ERR(1, 15, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_12);
-    __pyx_t_14 = PyTuple_New(3); if (unlikely(!__pyx_t_14)) __PYX_ERR(1, 15, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_14);
+    __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_n_s_pyx_unpickle_FastNS); if (unlikely(!__pyx_t_13)) __PYX_ERR(1, 15, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_13);
+    __pyx_t_15 = PyTuple_New(3); if (unlikely(!__pyx_t_15)) __PYX_ERR(1, 15, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_15);
     __Pyx_INCREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
     __Pyx_GIVEREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
-    PyTuple_SET_ITEM(__pyx_t_14, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
-    __Pyx_INCREF(__pyx_int_41725949);
-    __Pyx_GIVEREF(__pyx_int_41725949);
-    PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_int_41725949);
+    PyTuple_SET_ITEM(__pyx_t_15, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
+    __Pyx_INCREF(__pyx_int_69944970);
+    __Pyx_GIVEREF(__pyx_int_69944970);
+    PyTuple_SET_ITEM(__pyx_t_15, 1, __pyx_int_69944970);
     __Pyx_INCREF(__pyx_v_state);
     __Pyx_GIVEREF(__pyx_v_state);
-    PyTuple_SET_ITEM(__pyx_t_14, 2, __pyx_v_state);
-    __pyx_t_13 = PyTuple_New(2); if (unlikely(!__pyx_t_13)) __PYX_ERR(1, 15, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_13);
-    __Pyx_GIVEREF(__pyx_t_12);
-    PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_t_12);
-    __Pyx_GIVEREF(__pyx_t_14);
-    PyTuple_SET_ITEM(__pyx_t_13, 1, __pyx_t_14);
-    __pyx_t_12 = 0;
-    __pyx_t_14 = 0;
-    __pyx_r = __pyx_t_13;
+    PyTuple_SET_ITEM(__pyx_t_15, 2, __pyx_v_state);
+    __pyx_t_14 = PyTuple_New(2); if (unlikely(!__pyx_t_14)) __PYX_ERR(1, 15, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_14);
+    __Pyx_GIVEREF(__pyx_t_13);
+    PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_13);
+    __Pyx_GIVEREF(__pyx_t_15);
+    PyTuple_SET_ITEM(__pyx_t_14, 1, __pyx_t_15);
     __pyx_t_13 = 0;
+    __pyx_t_15 = 0;
+    __pyx_r = __pyx_t_14;
+    __pyx_t_14 = 0;
     goto __pyx_L0;
   }
 
@@ -6703,6 +6719,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_6__reduce_cython__(s
   __Pyx_XDECREF(__pyx_t_12);
   __Pyx_XDECREF(__pyx_t_13);
   __Pyx_XDECREF(__pyx_t_14);
+  __Pyx_XDECREF(__pyx_t_15);
   __Pyx_AddTraceback("MDAnalysis.lib.nsgrid.FastNS.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -6715,7 +6732,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_6__reduce_cython__(s
 
 /* "(tree fragment)":16
  *     else:
- *         return __pyx_unpickle_FastNS, (type(self), 0x27caffd, state)
+ *         return __pyx_unpickle_FastNS, (type(self), 0x42b468a, state)
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     __pyx_unpickle_FastNS__set_state(self, __pyx_state)
  */
@@ -6744,7 +6761,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_8__setstate_cython__
   __Pyx_RefNannySetupContext("__setstate_cython__", 0);
 
   /* "(tree fragment)":17
- *         return __pyx_unpickle_FastNS, (type(self), 0x27caffd, state)
+ *         return __pyx_unpickle_FastNS, (type(self), 0x42b468a, state)
  * def __setstate_cython__(self, __pyx_state):
  *     __pyx_unpickle_FastNS__set_state(self, __pyx_state)             # <<<<<<<<<<<<<<
  */
@@ -6755,7 +6772,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_6FastNS_8__setstate_cython__
 
   /* "(tree fragment)":16
  *     else:
- *         return __pyx_unpickle_FastNS, (type(self), 0x27caffd, state)
+ *         return __pyx_unpickle_FastNS, (type(self), 0x42b468a, state)
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     __pyx_unpickle_FastNS__set_state(self, __pyx_state)
  */
@@ -7271,18 +7288,18 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_2__pyx_unpickle_FastNS(CYTHO
   /* "(tree fragment)":4
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
- *     if __pyx_checksum != 0x27caffd:             # <<<<<<<<<<<<<<
+ *     if __pyx_checksum != 0x42b468a:             # <<<<<<<<<<<<<<
  *         from pickle import PickleError as __pyx_PickleError
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x27caffd = (cell_offsets, cellsize, coords_bbox, cutoff, dimensions, head_id, inverse_dimensions, ncells, next_id, pbc, periodic, triclinic, triclinic_dimensions))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x42b468a = (cell_offsets, cellsize, coords_bbox, cutoff, dimensions, half_dimensions, head_id, inverse_dimensions, ncells, next_id, pbc, periodic, triclinic, triclinic_dimensions))" % __pyx_checksum)
  */
-  __pyx_t_1 = ((__pyx_v___pyx_checksum != 0x27caffd) != 0);
+  __pyx_t_1 = ((__pyx_v___pyx_checksum != 0x42b468a) != 0);
   if (__pyx_t_1) {
 
     /* "(tree fragment)":5
  *     cdef object __pyx_result
- *     if __pyx_checksum != 0x27caffd:
+ *     if __pyx_checksum != 0x42b468a:
  *         from pickle import PickleError as __pyx_PickleError             # <<<<<<<<<<<<<<
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x27caffd = (cell_offsets, cellsize, coords_bbox, cutoff, dimensions, head_id, inverse_dimensions, ncells, next_id, pbc, periodic, triclinic, triclinic_dimensions))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x42b468a = (cell_offsets, cellsize, coords_bbox, cutoff, dimensions, half_dimensions, head_id, inverse_dimensions, ncells, next_id, pbc, periodic, triclinic, triclinic_dimensions))" % __pyx_checksum)
  *     __pyx_result = FastNS.__new__(__pyx_type)
  */
     __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 5, __pyx_L1_error)
@@ -7301,15 +7318,15 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_2__pyx_unpickle_FastNS(CYTHO
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
     /* "(tree fragment)":6
- *     if __pyx_checksum != 0x27caffd:
+ *     if __pyx_checksum != 0x42b468a:
  *         from pickle import PickleError as __pyx_PickleError
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x27caffd = (cell_offsets, cellsize, coords_bbox, cutoff, dimensions, head_id, inverse_dimensions, ncells, next_id, pbc, periodic, triclinic, triclinic_dimensions))" % __pyx_checksum)             # <<<<<<<<<<<<<<
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x42b468a = (cell_offsets, cellsize, coords_bbox, cutoff, dimensions, half_dimensions, head_id, inverse_dimensions, ncells, next_id, pbc, periodic, triclinic, triclinic_dimensions))" % __pyx_checksum)             # <<<<<<<<<<<<<<
  *     __pyx_result = FastNS.__new__(__pyx_type)
  *     if __pyx_state is not None:
  */
     __pyx_t_2 = __Pyx_PyInt_From_long(__pyx_v___pyx_checksum); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 6, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Incompatible_checksums_s_vs_0x27, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 6, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Incompatible_checksums_s_vs_0x42, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 6, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_INCREF(__pyx_v___pyx_PickleError);
@@ -7336,15 +7353,15 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_2__pyx_unpickle_FastNS(CYTHO
     /* "(tree fragment)":4
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
- *     if __pyx_checksum != 0x27caffd:             # <<<<<<<<<<<<<<
+ *     if __pyx_checksum != 0x42b468a:             # <<<<<<<<<<<<<<
  *         from pickle import PickleError as __pyx_PickleError
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x27caffd = (cell_offsets, cellsize, coords_bbox, cutoff, dimensions, head_id, inverse_dimensions, ncells, next_id, pbc, periodic, triclinic, triclinic_dimensions))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x42b468a = (cell_offsets, cellsize, coords_bbox, cutoff, dimensions, half_dimensions, head_id, inverse_dimensions, ncells, next_id, pbc, periodic, triclinic, triclinic_dimensions))" % __pyx_checksum)
  */
   }
 
   /* "(tree fragment)":7
  *         from pickle import PickleError as __pyx_PickleError
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x27caffd = (cell_offsets, cellsize, coords_bbox, cutoff, dimensions, head_id, inverse_dimensions, ncells, next_id, pbc, periodic, triclinic, triclinic_dimensions))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x42b468a = (cell_offsets, cellsize, coords_bbox, cutoff, dimensions, half_dimensions, head_id, inverse_dimensions, ncells, next_id, pbc, periodic, triclinic, triclinic_dimensions))" % __pyx_checksum)
  *     __pyx_result = FastNS.__new__(__pyx_type)             # <<<<<<<<<<<<<<
  *     if __pyx_state is not None:
  *         __pyx_unpickle_FastNS__set_state(<FastNS> __pyx_result, __pyx_state)
@@ -7370,7 +7387,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_2__pyx_unpickle_FastNS(CYTHO
   __pyx_t_3 = 0;
 
   /* "(tree fragment)":8
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x27caffd = (cell_offsets, cellsize, coords_bbox, cutoff, dimensions, head_id, inverse_dimensions, ncells, next_id, pbc, periodic, triclinic, triclinic_dimensions))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x42b468a = (cell_offsets, cellsize, coords_bbox, cutoff, dimensions, half_dimensions, head_id, inverse_dimensions, ncells, next_id, pbc, periodic, triclinic, triclinic_dimensions))" % __pyx_checksum)
  *     __pyx_result = FastNS.__new__(__pyx_type)
  *     if __pyx_state is not None:             # <<<<<<<<<<<<<<
  *         __pyx_unpickle_FastNS__set_state(<FastNS> __pyx_result, __pyx_state)
@@ -7393,7 +7410,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_2__pyx_unpickle_FastNS(CYTHO
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
     /* "(tree fragment)":8
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x27caffd = (cell_offsets, cellsize, coords_bbox, cutoff, dimensions, head_id, inverse_dimensions, ncells, next_id, pbc, periodic, triclinic, triclinic_dimensions))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x42b468a = (cell_offsets, cellsize, coords_bbox, cutoff, dimensions, half_dimensions, head_id, inverse_dimensions, ncells, next_id, pbc, periodic, triclinic, triclinic_dimensions))" % __pyx_checksum)
  *     __pyx_result = FastNS.__new__(__pyx_type)
  *     if __pyx_state is not None:             # <<<<<<<<<<<<<<
  *         __pyx_unpickle_FastNS__set_state(<FastNS> __pyx_result, __pyx_state)
@@ -7406,7 +7423,7 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_2__pyx_unpickle_FastNS(CYTHO
  *         __pyx_unpickle_FastNS__set_state(<FastNS> __pyx_result, __pyx_state)
  *     return __pyx_result             # <<<<<<<<<<<<<<
  * cdef __pyx_unpickle_FastNS__set_state(FastNS __pyx_result, tuple __pyx_state):
- *     __pyx_result.cell_offsets = __pyx_state[0]; __pyx_result.cellsize = __pyx_state[1]; __pyx_result.coords_bbox = __pyx_state[2]; __pyx_result.cutoff = __pyx_state[3]; __pyx_result.dimensions = __pyx_state[4]; __pyx_result.head_id = __pyx_state[5]; __pyx_result.inverse_dimensions = __pyx_state[6]; __pyx_result.ncells = __pyx_state[7]; __pyx_result.next_id = __pyx_state[8]; __pyx_result.pbc = __pyx_state[9]; __pyx_result.periodic = __pyx_state[10]; __pyx_result.triclinic = __pyx_state[11]; __pyx_result.triclinic_dimensions = __pyx_state[12]
+ *     __pyx_result.cell_offsets = __pyx_state[0]; __pyx_result.cellsize = __pyx_state[1]; __pyx_result.coords_bbox = __pyx_state[2]; __pyx_result.cutoff = __pyx_state[3]; __pyx_result.dimensions = __pyx_state[4]; __pyx_result.half_dimensions = __pyx_state[5]; __pyx_result.head_id = __pyx_state[6]; __pyx_result.inverse_dimensions = __pyx_state[7]; __pyx_result.ncells = __pyx_state[8]; __pyx_result.next_id = __pyx_state[9]; __pyx_result.pbc = __pyx_state[10]; __pyx_result.periodic = __pyx_state[11]; __pyx_result.triclinic = __pyx_state[12]; __pyx_result.triclinic_dimensions = __pyx_state[13]
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v___pyx_result);
@@ -7439,8 +7456,8 @@ static PyObject *__pyx_pf_10MDAnalysis_3lib_6nsgrid_2__pyx_unpickle_FastNS(CYTHO
  *         __pyx_unpickle_FastNS__set_state(<FastNS> __pyx_result, __pyx_state)
  *     return __pyx_result
  * cdef __pyx_unpickle_FastNS__set_state(FastNS __pyx_result, tuple __pyx_state):             # <<<<<<<<<<<<<<
- *     __pyx_result.cell_offsets = __pyx_state[0]; __pyx_result.cellsize = __pyx_state[1]; __pyx_result.coords_bbox = __pyx_state[2]; __pyx_result.cutoff = __pyx_state[3]; __pyx_result.dimensions = __pyx_state[4]; __pyx_result.head_id = __pyx_state[5]; __pyx_result.inverse_dimensions = __pyx_state[6]; __pyx_result.ncells = __pyx_state[7]; __pyx_result.next_id = __pyx_state[8]; __pyx_result.pbc = __pyx_state[9]; __pyx_result.periodic = __pyx_state[10]; __pyx_result.triclinic = __pyx_state[11]; __pyx_result.triclinic_dimensions = __pyx_state[12]
- *     if len(__pyx_state) > 13 and hasattr(__pyx_result, '__dict__'):
+ *     __pyx_result.cell_offsets = __pyx_state[0]; __pyx_result.cellsize = __pyx_state[1]; __pyx_result.coords_bbox = __pyx_state[2]; __pyx_result.cutoff = __pyx_state[3]; __pyx_result.dimensions = __pyx_state[4]; __pyx_result.half_dimensions = __pyx_state[5]; __pyx_result.head_id = __pyx_state[6]; __pyx_result.inverse_dimensions = __pyx_state[7]; __pyx_result.ncells = __pyx_state[8]; __pyx_result.next_id = __pyx_state[9]; __pyx_result.pbc = __pyx_state[10]; __pyx_result.periodic = __pyx_state[11]; __pyx_result.triclinic = __pyx_state[12]; __pyx_result.triclinic_dimensions = __pyx_state[13]
+ *     if len(__pyx_state) > 14 and hasattr(__pyx_result, '__dict__'):
  */
 
 static PyObject *__pyx_f_10MDAnalysis_3lib_6nsgrid___pyx_unpickle_FastNS__set_state(struct __pyx_obj_10MDAnalysis_3lib_6nsgrid_FastNS *__pyx_v___pyx_result, PyObject *__pyx_v___pyx_state) {
@@ -7451,8 +7468,8 @@ static PyObject *__pyx_f_10MDAnalysis_3lib_6nsgrid___pyx_unpickle_FastNS__set_st
   __Pyx_memviewslice __pyx_t_3 = { 0, 0, { 0 }, { 0 }, { 0 } };
   double __pyx_t_4;
   float __pyx_t_5[6];
-  __Pyx_memviewslice __pyx_t_6 = { 0, 0, { 0 }, { 0 }, { 0 } };
-  float __pyx_t_7[3];
+  float __pyx_t_6[3];
+  __Pyx_memviewslice __pyx_t_7 = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_t_8;
   int __pyx_t_9[3];
   float __pyx_t_10[9];
@@ -7470,9 +7487,9 @@ static PyObject *__pyx_f_10MDAnalysis_3lib_6nsgrid___pyx_unpickle_FastNS__set_st
   /* "(tree fragment)":12
  *     return __pyx_result
  * cdef __pyx_unpickle_FastNS__set_state(FastNS __pyx_result, tuple __pyx_state):
- *     __pyx_result.cell_offsets = __pyx_state[0]; __pyx_result.cellsize = __pyx_state[1]; __pyx_result.coords_bbox = __pyx_state[2]; __pyx_result.cutoff = __pyx_state[3]; __pyx_result.dimensions = __pyx_state[4]; __pyx_result.head_id = __pyx_state[5]; __pyx_result.inverse_dimensions = __pyx_state[6]; __pyx_result.ncells = __pyx_state[7]; __pyx_result.next_id = __pyx_state[8]; __pyx_result.pbc = __pyx_state[9]; __pyx_result.periodic = __pyx_state[10]; __pyx_result.triclinic = __pyx_state[11]; __pyx_result.triclinic_dimensions = __pyx_state[12]             # <<<<<<<<<<<<<<
- *     if len(__pyx_state) > 13 and hasattr(__pyx_result, '__dict__'):
- *         __pyx_result.__dict__.update(__pyx_state[13])
+ *     __pyx_result.cell_offsets = __pyx_state[0]; __pyx_result.cellsize = __pyx_state[1]; __pyx_result.coords_bbox = __pyx_state[2]; __pyx_result.cutoff = __pyx_state[3]; __pyx_result.dimensions = __pyx_state[4]; __pyx_result.half_dimensions = __pyx_state[5]; __pyx_result.head_id = __pyx_state[6]; __pyx_result.inverse_dimensions = __pyx_state[7]; __pyx_result.ncells = __pyx_state[8]; __pyx_result.next_id = __pyx_state[9]; __pyx_result.pbc = __pyx_state[10]; __pyx_result.periodic = __pyx_state[11]; __pyx_result.triclinic = __pyx_state[12]; __pyx_result.triclinic_dimensions = __pyx_state[13]             # <<<<<<<<<<<<<<
+ *     if len(__pyx_state) > 14 and hasattr(__pyx_result, '__dict__'):
+ *         __pyx_result.__dict__.update(__pyx_state[14])
  */
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
@@ -7511,69 +7528,75 @@ static PyObject *__pyx_f_10MDAnalysis_3lib_6nsgrid___pyx_unpickle_FastNS__set_st
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 5), PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(1, 12, __pyx_L1_error)
+  if (unlikely(__Pyx_carray_from_py_float(PyTuple_GET_ITEM(__pyx_v___pyx_state, 5), __pyx_t_6, 3) < 0)) __PYX_ERR(1, 12, __pyx_L1_error)
+  memcpy(&(__pyx_v___pyx_result->half_dimensions[0]), __pyx_t_6, sizeof(__pyx_v___pyx_result->half_dimensions[0]) * (3));
+  if (unlikely(__pyx_v___pyx_state == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+    __PYX_ERR(1, 12, __pyx_L1_error)
+  }
+  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 6), PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(1, 12, __pyx_L1_error)
   __PYX_XDEC_MEMVIEW(&__pyx_v___pyx_result->head_id, 0);
-  __pyx_v___pyx_result->head_id = __pyx_t_6;
-  __pyx_t_6.memview = NULL;
-  __pyx_t_6.data = NULL;
+  __pyx_v___pyx_result->head_id = __pyx_t_7;
+  __pyx_t_7.memview = NULL;
+  __pyx_t_7.data = NULL;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  if (unlikely(__Pyx_carray_from_py_float(PyTuple_GET_ITEM(__pyx_v___pyx_state, 6), __pyx_t_7, 3) < 0)) __PYX_ERR(1, 12, __pyx_L1_error)
-  memcpy(&(__pyx_v___pyx_result->inverse_dimensions[0]), __pyx_t_7, sizeof(__pyx_v___pyx_result->inverse_dimensions[0]) * (3));
+  if (unlikely(__Pyx_carray_from_py_float(PyTuple_GET_ITEM(__pyx_v___pyx_state, 7), __pyx_t_6, 3) < 0)) __PYX_ERR(1, 12, __pyx_L1_error)
+  memcpy(&(__pyx_v___pyx_result->inverse_dimensions[0]), __pyx_t_6, sizeof(__pyx_v___pyx_result->inverse_dimensions[0]) * (3));
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  if (unlikely(__Pyx_carray_from_py_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 7), __pyx_t_1, 3) < 0)) __PYX_ERR(1, 12, __pyx_L1_error)
+  if (unlikely(__Pyx_carray_from_py_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 8), __pyx_t_1, 3) < 0)) __PYX_ERR(1, 12, __pyx_L1_error)
   memcpy(&(__pyx_v___pyx_result->ncells[0]), __pyx_t_1, sizeof(__pyx_v___pyx_result->ncells[0]) * (3));
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 8), PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 9), PyBUF_WRITABLE); if (unlikely(!__pyx_t_7.memview)) __PYX_ERR(1, 12, __pyx_L1_error)
   __PYX_XDEC_MEMVIEW(&__pyx_v___pyx_result->next_id, 0);
-  __pyx_v___pyx_result->next_id = __pyx_t_6;
-  __pyx_t_6.memview = NULL;
-  __pyx_t_6.data = NULL;
+  __pyx_v___pyx_result->next_id = __pyx_t_7;
+  __pyx_t_7.memview = NULL;
+  __pyx_t_7.data = NULL;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_8 = __Pyx_PyObject_IsTrue(PyTuple_GET_ITEM(__pyx_v___pyx_state, 9)); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_IsTrue(PyTuple_GET_ITEM(__pyx_v___pyx_state, 10)); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
   __pyx_v___pyx_result->pbc = __pyx_t_8;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  if (unlikely(__Pyx_carray_from_py_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 10), __pyx_t_9, 3) < 0)) __PYX_ERR(1, 12, __pyx_L1_error)
+  if (unlikely(__Pyx_carray_from_py_int(PyTuple_GET_ITEM(__pyx_v___pyx_state, 11), __pyx_t_9, 3) < 0)) __PYX_ERR(1, 12, __pyx_L1_error)
   memcpy(&(__pyx_v___pyx_result->periodic[0]), __pyx_t_9, sizeof(__pyx_v___pyx_result->periodic[0]) * (3));
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_8 = __Pyx_PyObject_IsTrue(PyTuple_GET_ITEM(__pyx_v___pyx_state, 11)); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_IsTrue(PyTuple_GET_ITEM(__pyx_v___pyx_state, 12)); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
   __pyx_v___pyx_result->triclinic = __pyx_t_8;
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  if (unlikely(__Pyx_carray_from_py_float(PyTuple_GET_ITEM(__pyx_v___pyx_state, 12), __pyx_t_10, 9) < 0)) __PYX_ERR(1, 12, __pyx_L1_error)
+  if (unlikely(__Pyx_carray_from_py_float(PyTuple_GET_ITEM(__pyx_v___pyx_state, 13), __pyx_t_10, 9) < 0)) __PYX_ERR(1, 12, __pyx_L1_error)
   memcpy(&(__pyx_v___pyx_result->triclinic_dimensions[0]), __pyx_t_10, sizeof(__pyx_v___pyx_result->triclinic_dimensions[0]) * (9));
 
   /* "(tree fragment)":13
  * cdef __pyx_unpickle_FastNS__set_state(FastNS __pyx_result, tuple __pyx_state):
- *     __pyx_result.cell_offsets = __pyx_state[0]; __pyx_result.cellsize = __pyx_state[1]; __pyx_result.coords_bbox = __pyx_state[2]; __pyx_result.cutoff = __pyx_state[3]; __pyx_result.dimensions = __pyx_state[4]; __pyx_result.head_id = __pyx_state[5]; __pyx_result.inverse_dimensions = __pyx_state[6]; __pyx_result.ncells = __pyx_state[7]; __pyx_result.next_id = __pyx_state[8]; __pyx_result.pbc = __pyx_state[9]; __pyx_result.periodic = __pyx_state[10]; __pyx_result.triclinic = __pyx_state[11]; __pyx_result.triclinic_dimensions = __pyx_state[12]
- *     if len(__pyx_state) > 13 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
- *         __pyx_result.__dict__.update(__pyx_state[13])
+ *     __pyx_result.cell_offsets = __pyx_state[0]; __pyx_result.cellsize = __pyx_state[1]; __pyx_result.coords_bbox = __pyx_state[2]; __pyx_result.cutoff = __pyx_state[3]; __pyx_result.dimensions = __pyx_state[4]; __pyx_result.half_dimensions = __pyx_state[5]; __pyx_result.head_id = __pyx_state[6]; __pyx_result.inverse_dimensions = __pyx_state[7]; __pyx_result.ncells = __pyx_state[8]; __pyx_result.next_id = __pyx_state[9]; __pyx_result.pbc = __pyx_state[10]; __pyx_result.periodic = __pyx_state[11]; __pyx_result.triclinic = __pyx_state[12]; __pyx_result.triclinic_dimensions = __pyx_state[13]
+ *     if len(__pyx_state) > 14 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
+ *         __pyx_result.__dict__.update(__pyx_state[14])
  */
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
     __PYX_ERR(1, 13, __pyx_L1_error)
   }
   __pyx_t_11 = PyTuple_GET_SIZE(__pyx_v___pyx_state); if (unlikely(__pyx_t_11 == ((Py_ssize_t)-1))) __PYX_ERR(1, 13, __pyx_L1_error)
-  __pyx_t_12 = ((__pyx_t_11 > 13) != 0);
+  __pyx_t_12 = ((__pyx_t_11 > 14) != 0);
   if (__pyx_t_12) {
   } else {
     __pyx_t_8 = __pyx_t_12;
@@ -7586,9 +7609,9 @@ static PyObject *__pyx_f_10MDAnalysis_3lib_6nsgrid___pyx_unpickle_FastNS__set_st
   if (__pyx_t_8) {
 
     /* "(tree fragment)":14
- *     __pyx_result.cell_offsets = __pyx_state[0]; __pyx_result.cellsize = __pyx_state[1]; __pyx_result.coords_bbox = __pyx_state[2]; __pyx_result.cutoff = __pyx_state[3]; __pyx_result.dimensions = __pyx_state[4]; __pyx_result.head_id = __pyx_state[5]; __pyx_result.inverse_dimensions = __pyx_state[6]; __pyx_result.ncells = __pyx_state[7]; __pyx_result.next_id = __pyx_state[8]; __pyx_result.pbc = __pyx_state[9]; __pyx_result.periodic = __pyx_state[10]; __pyx_result.triclinic = __pyx_state[11]; __pyx_result.triclinic_dimensions = __pyx_state[12]
- *     if len(__pyx_state) > 13 and hasattr(__pyx_result, '__dict__'):
- *         __pyx_result.__dict__.update(__pyx_state[13])             # <<<<<<<<<<<<<<
+ *     __pyx_result.cell_offsets = __pyx_state[0]; __pyx_result.cellsize = __pyx_state[1]; __pyx_result.coords_bbox = __pyx_state[2]; __pyx_result.cutoff = __pyx_state[3]; __pyx_result.dimensions = __pyx_state[4]; __pyx_result.half_dimensions = __pyx_state[5]; __pyx_result.head_id = __pyx_state[6]; __pyx_result.inverse_dimensions = __pyx_state[7]; __pyx_result.ncells = __pyx_state[8]; __pyx_result.next_id = __pyx_state[9]; __pyx_result.pbc = __pyx_state[10]; __pyx_result.periodic = __pyx_state[11]; __pyx_result.triclinic = __pyx_state[12]; __pyx_result.triclinic_dimensions = __pyx_state[13]
+ *     if len(__pyx_state) > 14 and hasattr(__pyx_result, '__dict__'):
+ *         __pyx_result.__dict__.update(__pyx_state[14])             # <<<<<<<<<<<<<<
  */
     __pyx_t_15 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v___pyx_result), __pyx_n_s_dict); if (unlikely(!__pyx_t_15)) __PYX_ERR(1, 14, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_15);
@@ -7609,7 +7632,7 @@ static PyObject *__pyx_f_10MDAnalysis_3lib_6nsgrid___pyx_unpickle_FastNS__set_st
         __Pyx_DECREF_SET(__pyx_t_16, function);
       }
     }
-    __pyx_t_14 = (__pyx_t_15) ? __Pyx_PyObject_Call2Args(__pyx_t_16, __pyx_t_15, PyTuple_GET_ITEM(__pyx_v___pyx_state, 13)) : __Pyx_PyObject_CallOneArg(__pyx_t_16, PyTuple_GET_ITEM(__pyx_v___pyx_state, 13));
+    __pyx_t_14 = (__pyx_t_15) ? __Pyx_PyObject_Call2Args(__pyx_t_16, __pyx_t_15, PyTuple_GET_ITEM(__pyx_v___pyx_state, 14)) : __Pyx_PyObject_CallOneArg(__pyx_t_16, PyTuple_GET_ITEM(__pyx_v___pyx_state, 14));
     __Pyx_XDECREF(__pyx_t_15); __pyx_t_15 = 0;
     if (unlikely(!__pyx_t_14)) __PYX_ERR(1, 14, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
@@ -7618,9 +7641,9 @@ static PyObject *__pyx_f_10MDAnalysis_3lib_6nsgrid___pyx_unpickle_FastNS__set_st
 
     /* "(tree fragment)":13
  * cdef __pyx_unpickle_FastNS__set_state(FastNS __pyx_result, tuple __pyx_state):
- *     __pyx_result.cell_offsets = __pyx_state[0]; __pyx_result.cellsize = __pyx_state[1]; __pyx_result.coords_bbox = __pyx_state[2]; __pyx_result.cutoff = __pyx_state[3]; __pyx_result.dimensions = __pyx_state[4]; __pyx_result.head_id = __pyx_state[5]; __pyx_result.inverse_dimensions = __pyx_state[6]; __pyx_result.ncells = __pyx_state[7]; __pyx_result.next_id = __pyx_state[8]; __pyx_result.pbc = __pyx_state[9]; __pyx_result.periodic = __pyx_state[10]; __pyx_result.triclinic = __pyx_state[11]; __pyx_result.triclinic_dimensions = __pyx_state[12]
- *     if len(__pyx_state) > 13 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
- *         __pyx_result.__dict__.update(__pyx_state[13])
+ *     __pyx_result.cell_offsets = __pyx_state[0]; __pyx_result.cellsize = __pyx_state[1]; __pyx_result.coords_bbox = __pyx_state[2]; __pyx_result.cutoff = __pyx_state[3]; __pyx_result.dimensions = __pyx_state[4]; __pyx_result.half_dimensions = __pyx_state[5]; __pyx_result.head_id = __pyx_state[6]; __pyx_result.inverse_dimensions = __pyx_state[7]; __pyx_result.ncells = __pyx_state[8]; __pyx_result.next_id = __pyx_state[9]; __pyx_result.pbc = __pyx_state[10]; __pyx_result.periodic = __pyx_state[11]; __pyx_result.triclinic = __pyx_state[12]; __pyx_result.triclinic_dimensions = __pyx_state[13]
+ *     if len(__pyx_state) > 14 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
+ *         __pyx_result.__dict__.update(__pyx_state[14])
  */
   }
 
@@ -7628,8 +7651,8 @@ static PyObject *__pyx_f_10MDAnalysis_3lib_6nsgrid___pyx_unpickle_FastNS__set_st
  *         __pyx_unpickle_FastNS__set_state(<FastNS> __pyx_result, __pyx_state)
  *     return __pyx_result
  * cdef __pyx_unpickle_FastNS__set_state(FastNS __pyx_result, tuple __pyx_state):             # <<<<<<<<<<<<<<
- *     __pyx_result.cell_offsets = __pyx_state[0]; __pyx_result.cellsize = __pyx_state[1]; __pyx_result.coords_bbox = __pyx_state[2]; __pyx_result.cutoff = __pyx_state[3]; __pyx_result.dimensions = __pyx_state[4]; __pyx_result.head_id = __pyx_state[5]; __pyx_result.inverse_dimensions = __pyx_state[6]; __pyx_result.ncells = __pyx_state[7]; __pyx_result.next_id = __pyx_state[8]; __pyx_result.pbc = __pyx_state[9]; __pyx_result.periodic = __pyx_state[10]; __pyx_result.triclinic = __pyx_state[11]; __pyx_result.triclinic_dimensions = __pyx_state[12]
- *     if len(__pyx_state) > 13 and hasattr(__pyx_result, '__dict__'):
+ *     __pyx_result.cell_offsets = __pyx_state[0]; __pyx_result.cellsize = __pyx_state[1]; __pyx_result.coords_bbox = __pyx_state[2]; __pyx_result.cutoff = __pyx_state[3]; __pyx_result.dimensions = __pyx_state[4]; __pyx_result.half_dimensions = __pyx_state[5]; __pyx_result.head_id = __pyx_state[6]; __pyx_result.inverse_dimensions = __pyx_state[7]; __pyx_result.ncells = __pyx_state[8]; __pyx_result.next_id = __pyx_state[9]; __pyx_result.pbc = __pyx_state[10]; __pyx_result.periodic = __pyx_state[11]; __pyx_result.triclinic = __pyx_state[12]; __pyx_result.triclinic_dimensions = __pyx_state[13]
+ *     if len(__pyx_state) > 14 and hasattr(__pyx_result, '__dict__'):
  */
 
   /* function exit code */
@@ -7637,7 +7660,7 @@ static PyObject *__pyx_f_10MDAnalysis_3lib_6nsgrid___pyx_unpickle_FastNS__set_st
   goto __pyx_L0;
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_3, 1);
-  __PYX_XDEC_MEMVIEW(&__pyx_t_6, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_7, 1);
   __Pyx_XDECREF(__pyx_t_14);
   __Pyx_XDECREF(__pyx_t_15);
   __Pyx_XDECREF(__pyx_t_16);
@@ -23904,7 +23927,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_Ellipsis, __pyx_k_Ellipsis, sizeof(__pyx_k_Ellipsis), 0, 0, 1, 1},
   {&__pyx_kp_s_Empty_shape_tuple_for_cython_arr, __pyx_k_Empty_shape_tuple_for_cython_arr, sizeof(__pyx_k_Empty_shape_tuple_for_cython_arr), 0, 0, 1, 0},
   {&__pyx_n_s_FastNS, __pyx_k_FastNS, sizeof(__pyx_k_FastNS), 0, 0, 1, 1},
-  {&__pyx_kp_s_Incompatible_checksums_s_vs_0x27, __pyx_k_Incompatible_checksums_s_vs_0x27, sizeof(__pyx_k_Incompatible_checksums_s_vs_0x27), 0, 0, 1, 0},
+  {&__pyx_kp_s_Incompatible_checksums_s_vs_0x42, __pyx_k_Incompatible_checksums_s_vs_0x42, sizeof(__pyx_k_Incompatible_checksums_s_vs_0x42), 0, 0, 1, 0},
   {&__pyx_kp_s_Incompatible_checksums_s_vs_0x96, __pyx_k_Incompatible_checksums_s_vs_0x96, sizeof(__pyx_k_Incompatible_checksums_s_vs_0x96), 0, 0, 1, 0},
   {&__pyx_kp_s_Incompatible_checksums_s_vs_0xb0, __pyx_k_Incompatible_checksums_s_vs_0xb0, sizeof(__pyx_k_Incompatible_checksums_s_vs_0xb0), 0, 0, 1, 0},
   {&__pyx_n_s_IndexError, __pyx_k_IndexError, sizeof(__pyx_k_IndexError), 0, 0, 1, 1},
@@ -24011,8 +24034,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 272, __pyx_L1_error)
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 306, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 307, __pyx_L1_error)
   __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(1, 81, __pyx_L1_error)
   __pyx_builtin_OverflowError = __Pyx_GetBuiltinName(__pyx_n_s_OverflowError); if (!__pyx_builtin_OverflowError) __PYX_ERR(1, 81, __pyx_L1_error)
   __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(1, 84, __pyx_L1_error)
@@ -24040,58 +24063,58 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "MDAnalysis/lib/nsgrid.pyx":274
+  /* "MDAnalysis/lib/nsgrid.pyx":275
  *             raise ValueError("coords must have a shape of (n, 3), got {}."
  *                              "".format(coords.shape))
  *         if box.shape != (6,):             # <<<<<<<<<<<<<<
  *             raise ValueError("Box must be a numpy array of [lx, ly, lz, alpha, beta, gamma], got {}"
  *                              "".format(box))
  */
-  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_int_6); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_int_6); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
-  /* "MDAnalysis/lib/nsgrid.pyx":277
+  /* "MDAnalysis/lib/nsgrid.pyx":278
  *             raise ValueError("Box must be a numpy array of [lx, ly, lz, alpha, beta, gamma], got {}"
  *                              "".format(box))
  *         if (box[:3] == 0.0).any():             # <<<<<<<<<<<<<<
  *             raise ValueError("Any of the box dimensions cannot be 0")
  *         if cutoff < 0:
  */
-  __pyx_slice__3 = PySlice_New(Py_None, __pyx_int_3, Py_None); if (unlikely(!__pyx_slice__3)) __PYX_ERR(0, 277, __pyx_L1_error)
+  __pyx_slice__3 = PySlice_New(Py_None, __pyx_int_3, Py_None); if (unlikely(!__pyx_slice__3)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_slice__3);
   __Pyx_GIVEREF(__pyx_slice__3);
 
-  /* "MDAnalysis/lib/nsgrid.pyx":278
+  /* "MDAnalysis/lib/nsgrid.pyx":279
  *                              "".format(box))
  *         if (box[:3] == 0.0).any():
  *             raise ValueError("Any of the box dimensions cannot be 0")             # <<<<<<<<<<<<<<
  *         if cutoff < 0:
  *             raise ValueError("Cutoff must be positive")
  */
-  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_s_Any_of_the_box_dimensions_cannot); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 278, __pyx_L1_error)
+  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_s_Any_of_the_box_dimensions_cannot); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 279, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
-  /* "MDAnalysis/lib/nsgrid.pyx":280
+  /* "MDAnalysis/lib/nsgrid.pyx":281
  *             raise ValueError("Any of the box dimensions cannot be 0")
  *         if cutoff < 0:
  *             raise ValueError("Cutoff must be positive")             # <<<<<<<<<<<<<<
  *         self.cutoff = cutoff
  *         max_cutoff = self._prepare_box(box, pbc)
  */
-  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_s_Cutoff_must_be_positive); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 280, __pyx_L1_error)
+  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_s_Cutoff_must_be_positive); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 281, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
 
-  /* "MDAnalysis/lib/nsgrid.pyx":313
+  /* "MDAnalysis/lib/nsgrid.pyx":315
  *         self.dimensions[5] = box[5]
  * 
  *         self.triclinic_dimensions = triclinic_vectors(box).reshape((9,))             # <<<<<<<<<<<<<<
  *         self.triclinic = (self.triclinic_dimensions[XY] != 0 or
  *                           self.triclinic_dimensions[XZ] != 0 or
  */
-  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_int_9); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 313, __pyx_L1_error)
+  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_int_9); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
 
@@ -24375,6 +24398,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
 static CYTHON_SMALL_CODE int __Pyx_InitGlobals(void) {
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
   __pyx_float_0_0 = PyFloat_FromDouble(0.0); if (unlikely(!__pyx_float_0_0)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_float_0_5 = PyFloat_FromDouble(0.5); if (unlikely(!__pyx_float_0_5)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_float_1_0 = PyFloat_FromDouble(1.0); if (unlikely(!__pyx_float_1_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -24382,7 +24406,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitGlobals(void) {
   __pyx_int_3 = PyInt_FromLong(3); if (unlikely(!__pyx_int_3)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_6 = PyInt_FromLong(6); if (unlikely(!__pyx_int_6)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_9 = PyInt_FromLong(9); if (unlikely(!__pyx_int_9)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_41725949 = PyInt_FromLong(41725949L); if (unlikely(!__pyx_int_41725949)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_69944970 = PyInt_FromLong(69944970L); if (unlikely(!__pyx_int_69944970)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_157851294 = PyInt_FromLong(157851294L); if (unlikely(!__pyx_int_157851294)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_184977713 = PyInt_FromLong(184977713L); if (unlikely(!__pyx_int_184977713)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_neg_1 = PyInt_FromLong(-1); if (unlikely(!__pyx_int_neg_1)) __PYX_ERR(0, 1, __pyx_L1_error)
