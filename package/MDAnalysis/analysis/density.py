@@ -229,6 +229,10 @@ class DensityAnalysis(AnalysisBase):
 
     Notes
     -----
+    If the gridcenter and x/y/zdim arguments are not provided,
+    :class:`DensityAnalysis` will attempt to automatically generate
+    a gridbox from the atoms in 'atomgroup' (See Examples).
+
     Normal :class:`AtomGroup` instances represent a static selection of
     atoms. If you want *dynamically changing selections* (such as "name OW and
     around 4.0 (protein and not name H*)", i.e., the water oxygen atoms that
