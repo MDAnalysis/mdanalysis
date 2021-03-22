@@ -31,6 +31,8 @@ Changes
   * Maximum pinned versions in setup.py removed for python 3.6+ (PR #3139)
 
 Deprecations
+  * Deprecated using the last letter of the segid as the
+    chainID when writing PDB files (Issue #3144)
   * Deprecated tempfactors and bfactors being separate
     TopologyAttrs, with a warning (PR #3161)
   * hbonds.WaterBridgeAnalysis will be removed in 2.0.0 and
