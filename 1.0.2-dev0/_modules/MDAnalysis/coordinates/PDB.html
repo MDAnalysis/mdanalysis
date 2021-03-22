@@ -1042,6 +1042,10 @@
 <span class="sd">            The :class:`~MDAnalysis.core.groups.AtomGroup` or</span>
 <span class="sd">            :class:`~MDAnalysis.core.universe.Universe` to write.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Using the last letter of the segid for the chainID &quot;</span>
+                      <span class="s2">&quot;is now deprecated and will be changed in 2.0. &quot;</span>
+                      <span class="s2">&quot;In 2.0, the chainID attribute will be used if it &quot;</span>
+                      <span class="s2">&quot;exists, or a placeholder value.&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_frame</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_pdb_header</span><span class="p">()</span>
