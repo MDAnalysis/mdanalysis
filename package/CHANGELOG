@@ -84,6 +84,9 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Added a ValueError raised when not given a gridcenter while
+    providing grid dimensions to DensityAnalysis, also added
+    check for NaN in the input (Issue #3148, PR #3154)
   * Adds preliminary support for the ppc64le platform with minimal
     dependencies (Issue #3127, PR #3149)
   * Caches can now undergo central validation at the Universe level, opening
@@ -131,9 +134,6 @@ Enhancements
     'protein' selection (#2751 PR #2755)
   * Added an RDKit converter that works for any input with all hydrogens
     explicit in the topology (Issue #2468, PR #2775)
-  * Added a ValueError raised when not given a gridcenter while providing
-    grid dimensions to DensityAnalysis, also implemented the corresponding test
-    and added a check for NaN in the input (Issue #3148, PR #3154)
 
 
 Changes
