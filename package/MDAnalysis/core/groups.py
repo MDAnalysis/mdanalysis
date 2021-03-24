@@ -3348,7 +3348,7 @@ class AtomGroup(GroupBase):
         Parameters
         ----------
         keys: callable object
-        A function for the parameter of each atom to use for sorting. 
+        A function for the parameter of each atom to use for sorting.
         Example: lambda atom: atom.id
 
         Returns
