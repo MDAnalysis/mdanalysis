@@ -3324,6 +3324,55 @@ class AtomGroup(GroupBase):
 
         raise ValueError("No writer found for format: {}".format(filename))
 
+    def sort(self, **keys):
+        """Return sorted Atomgroup.
+
+        Example
+        -------
+
+        .. code-block:: python
+
+            >>> import MDAnalysis as mda
+            >>> from MDAnalysisTests.datafiles import PDB_small
+            >>> ag = sum([u.atoms[3], u.atoms[2], u.atoms[1], u.atoms[0]])
+            >>> ag.ids
+            [4 3 2 1]
+            >>> ag.ix
+            [3 2 1 0]
+            >>> ag = ag.sort(key=lambda atom: atom.id)
+            >>> ag.ids
+            [1 2 3 4]
+            >>> ag.ix
+            [0 1 2 3]
+
+        Parameters
+        ----------
+        keys: callable object
+        A function for the parameter of each atom to use for sorting. 
+        Example: lambda atom: atom.id
+
+        Returns
+        -------
+        output:
+            Sorted atomgroup.
+
+
+        .. versionadded:: 2.0.0
+        """
+        if len(keys) == 0:
+            raise NameError("argument 'key' is not defined. ")
+        for key, value in keys.items():
+            if key == "key":
+                n = len(self.atoms)
+                idx = np.zeros(n)
+                for i in range(n):
+                    idx[i] = value(self.atoms[i])
+                order = np.argsort(idx)
+                agsorted = self.atoms[order]
+                return agsorted
+            else:
+                raise ValueError("Incorrect parameter: {}")
+
 
 class ResidueGroup(GroupBase):
     """ResidueGroup base class.
