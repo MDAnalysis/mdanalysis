@@ -261,15 +261,8 @@ def extensions(config):
     use_cython = config.get('use_cython', default=not is_release)
     use_openmp = config.get('use_openmp', default=True)
 
-    if platform.machine() == 'aarch64':
-        # reduce optimization level for ARM64 machines
-        # because of issues with test failures sourcing to:
-        # MDAnalysis/analysis/encore/clustering/src/ap.c
-        extra_compile_args = ['-std=c99', '-ffast-math', '-O1', '-funroll-loops',
-                              '-fsigned-zeros']
-    else:
-        extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops',
-                              '-fsigned-zeros']  # see #2722
+    extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops',
+                          '-fsigned-zeros']  # see #2722
     define_macros = []
     if config.get('debug_cflags', default=False):
         extra_compile_args.extend(['-Wall', '-pedantic'])
@@ -280,6 +273,15 @@ def extensions(config):
     arch = config.get('march', default=False)
     if arch:
         extra_compile_args.append('-march={}'.format(arch))
+
+    # encore is sensitive to floating point accuracy, especially on non-x86
+    # to avoid reducing optimisations on everything, we make a set of compile
+    # args specific to encore see #2997 for an example of this.
+    encore_compile_args = [a for a in extra_compile_args if 'O3' not in a]
+    if platform.machine() == 'aarch64' or platform.machine() == 'ppc64le':
+        encore_compile_args.append('-O1')
+    else:
+        encore_compile_args.append('-O3')
 
     cpp_extra_compile_args = [a for a in extra_compile_args if 'std' not in a]
     cpp_extra_compile_args.append('-std=c++11')
@@ -401,21 +403,21 @@ def extensions(config):
                                 sources=['MDAnalysis/analysis/encore/cutils' + source_suffix],
                                 include_dirs=include_dirs,
                                 define_macros=define_macros,
-                                extra_compile_args=extra_compile_args)
+                                extra_compile_args=encore_compile_args)
     ap_clustering = MDAExtension('MDAnalysis.analysis.encore.clustering.affinityprop',
                                  sources=['MDAnalysis/analysis/encore/clustering/affinityprop' + source_suffix,
                                           'MDAnalysis/analysis/encore/clustering/src/ap.c'],
                                  include_dirs=include_dirs+['MDAnalysis/analysis/encore/clustering/include'],
                                  libraries=mathlib,
                                  define_macros=define_macros,
-                                 extra_compile_args=extra_compile_args)
+                                 extra_compile_args=encore_compile_args)
     spe_dimred = MDAExtension('MDAnalysis.analysis.encore.dimensionality_reduction.stochasticproxembed',
                               sources=['MDAnalysis/analysis/encore/dimensionality_reduction/stochasticproxembed' + source_suffix,
                                        'MDAnalysis/analysis/encore/dimensionality_reduction/src/spe.c'],
                               include_dirs=include_dirs+['MDAnalysis/analysis/encore/dimensionality_reduction/include'],
                               libraries=mathlib,
                               define_macros=define_macros,
-                              extra_compile_args=extra_compile_args)
+                              extra_compile_args=encore_compile_args)
     nsgrid = MDAExtension('MDAnalysis.lib.nsgrid',
                              ['MDAnalysis/lib/nsgrid' + cpp_source_suffix],
                              include_dirs=include_dirs,
@@ -616,7 +618,8 @@ if __name__ == '__main__':
           ext_modules=exts,
           requires=['numpy (>=1.16.0)', 'biopython (>= 1.71)', 'mmtf (>=1.0.0)',
                     'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib',
-                    'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)', 'tqdm (>=4.43.0)'],
+                    'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)', 'tqdm (>=4.43.0)',
+                    ],
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[

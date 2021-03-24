@@ -15,11 +15,28 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
-         calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo
+         calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
+         hanatok, rmeli, aditya-kamath, tirkarthi
 
   * 2.0.0
 
 Fixes
+  * ValueError raised when empty atomgroup is given to DensityAnalysis
+    without a user defined grid. UserWarning displayed when user defined 
+    grid is provided. (Issue #3055)
+  * Fixed import of several `__all__` lists (PR #3013)
+  * atommethods (_get_prev/next_residues_by_resid) returns empty residue group 
+    when given empty residue group (Issue #3089)
+  * MOL2 files without bonds can now be read and written (Issue #3057)
+  * Write `CONECT` record only once in multi-model PDB files (Issue #3018)
+  * Add '.nc' as a recognised extension for the NCDFWriter (Issue #3030)
+  * PDB parser now assigns empty records for partially missing/invalid elements
+    instead of not assigning the elements attribute at all (Issue #2422)
+  * PDB writer now uses elements attribute instead of guessing elements from
+    atom name (Issue #2423)
+  * Cleanup and parametrization of test_atomgroup.py (Issue #2995)
+  * The methods provided by topology attributes now appear in the
+    documentation (Issue #1845)
   * AtomGroup.center now works correctly for compounds + unwrapping
     (Issue #2984)
   * Avoid using deprecated array indexing in topology attributes
@@ -64,8 +81,24 @@ Fixes
     (Issue #2934)
   * Fix tests for analysis.bat that could fail when run in parallel and that
     would create a test artifact (Issue #2979, PR #2981)
+  * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Adds preliminary support for the ppc64le platform with minimal
+    dependencies (Issue #3127, PR #3149)
+  * Caches can now undergo central validation at the Universe level, opening
+    the door to more useful caching. Already applied to fragment caching
+    (Issue #2376, PR #3135)
+  * Code for operations on compounds refactored, centralized and optimized for
+    performance (Issue #3000, PR #3005)
+  * Added automatic selection class generation for TopologyAttrs,
+    FloatRangeSelection, and BoolSelection (Issues #2925, #2875; PR #2927)
+  * Added 'to' operator, negatives, scientific notation, and arbitrary
+    whitespace for ranges (Issue #3054, PR #2927)
+  * Added `atol` and `rtol` keywords for float comparison (PR #2927)
+  * Improved performance of the ParmEd converter (Issue #3028, PR #3029)
+  * Improved analysis class docstrings, and added missing classes to the 
+    `__all__` list (PR #2998)
   * The PDB writer gives more control over how to write the atom ids
     (Issue #1072, PR #2886)
   * Preliminary support for the Linux ARM64 platform with minimal
@@ -98,8 +131,12 @@ Enhancements
     'protein' selection (#2751 PR #2755)
   * Added an RDKit converter that works for any input with all hydrogens
     explicit in the topology (Issue #2468, PR #2775)
-
+  
 Changes
+  * TPRParser now loads TPR files with `tpr_resid_from_one=True` by default, 
+    which starts TPR resid indexing from 1 (instead of 0 as in 1.x) (Issue #2364, PR #3152)
+  * Introduces encore specific C compiler arguments to allow for lowering of
+    optimisations on non-x86 platforms (Issue #1389, PR #3149)
   * Continuous integration uses mamba rather than conda to install the
     dependencies (PR #2983)
   * removes deprecated `as_Universe` function from MDAnalysis.core.universe,
@@ -134,6 +171,7 @@ Changes
     `__call__` (Issue #2860, PR #2859)
   * deprecated ``analysis.helanal`` module has been removed in favour of
     ``analysis.helix_analysis`` (PR #2929)
+  * Move water bridge analysis from hbonds to hydrogenbonds (Issue #2739 PR #2913)
 
 Deprecations
 
