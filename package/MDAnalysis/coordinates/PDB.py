@@ -858,6 +858,10 @@ class PDBWriter(base.WriterBase):
             The :class:`~MDAnalysis.core.groups.AtomGroup` or
             :class:`~MDAnalysis.core.universe.Universe` to write.
         """
+        warnings.warn("Using the last letter of the segid for the chainID "
+                      "is now deprecated and will be changed in 2.0. "
+                      "In 2.0, the chainID attribute will be used if it "
+                      "exists, or a placeholder value.", DeprecationWarning)
 
         self._update_frame(obj)
         self._write_pdb_header()

@@ -33,6 +33,8 @@ Changes
 Deprecations
   * NCDFWriter `scale_factor` writing will change in version 2.0 to
     better match AMBER outputs (Issue #2327)
+  * Deprecated using the last letter of the segid as the
+    chainID when writing PDB files (Issue #3144)
   * Deprecated tempfactors and bfactors being separate
     TopologyAttrs, with a warning (PR #3161)
   * hbonds.WaterBridgeAnalysis will be removed in 2.0.0 and
