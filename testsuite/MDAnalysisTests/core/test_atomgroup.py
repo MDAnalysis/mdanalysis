@@ -47,7 +47,8 @@ from MDAnalysisTests.datafiles import (
     TRZ_psf, TRZ,
     two_water_gro,
     TPR_xvf, TRR_xvf,
-    GRO
+    GRO,
+    PDB_helix
 )
 from MDAnalysisTests import make_Universe, no_deprecated_call
 from MDAnalysisTests.core.util import UnWrapUniverse
@@ -1674,3 +1675,25 @@ class TestAtomGroupTimestep(object):
                                 ag.ts.velocities,
                                 self.prec,
                                 err_msg="Partial timestep coordinates wrong")
+
+
+class TestAtomGroupSort(object):
+    """Tests the AtomGroup.sort attribute"""
+
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(PDB_helix)
+
+    @pytest.fixture()
+    def ag(self, u):
+        return sum([u.atoms[3], u.atoms[2], u.atoms[1], u.atoms[0]])
+
+    @pytest.fixture()
+    def agsort(self, ag):
+        return ag.sort(key=lambda atom: atom.id)
+
+    def test_sort(self, agsort):
+        refid = np.array([1, 2, 3, 4])
+        refix = np.array([0, 1, 2, 3])
+        assert np.array_equal(refid, agsort.ids)
+        assert np.array_equal(refix, agsort.ix)
