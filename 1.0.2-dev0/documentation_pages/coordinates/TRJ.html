@@ -492,6 +492,21 @@ users of AMBER.</p>
 writing capabilities of <code class="xref py py-mod docutils literal notranslate"><span class="pre">netCDF4</span></code> then you need to unload your AMBER
 environment before importing MDAnalysis.</p>
 </div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#FutureWarning" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">FutureWarning</span></code></a> – When writing. The <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="MDAnalysis.coordinates.TRJ.NCDFWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFWriter</span></code></a> currently does not write any
+<cite>scale_factor</cite> values for the data variables. Whilst not in breach
+of the AMBER NetCDF standard, this behaviour differs from that of
+most AMBER writers, especially for velocities which usually have a
+<cite>scale_factor</cite> of 20.455. In MDAnalysis 2.0, the <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="MDAnalysis.coordinates.TRJ.NCDFWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFWriter</span></code></a>
+will enforce <cite>scale_factor</cite> writing to either match user inputs (either
+manually defined or via the <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFReader" title="MDAnalysis.coordinates.TRJ.NCDFReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFReader</span></code></a>) or those as written by
+AmberTools’s <strong class="program">sander</strong> under default operation.</td>
+</tr>
+</tbody>
+</table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFReader" title="MDAnalysis.coordinates.TRJ.NCDFReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFReader</span></code></a></p>

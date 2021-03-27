@@ -1001,6 +1001,18 @@
 <span class="sd">    .. _`Issue #506`:</span>
 <span class="sd">       https://github.com/MDAnalysis/mdanalysis/issues/506#issuecomment-225081416</span>
 
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    FutureWarning</span>
+<span class="sd">        When writing. The :class:`NCDFWriter` currently does not write any</span>
+<span class="sd">        `scale_factor` values for the data variables. Whilst not in breach</span>
+<span class="sd">        of the AMBER NetCDF standard, this behaviour differs from that of</span>
+<span class="sd">        most AMBER writers, especially for velocities which usually have a</span>
+<span class="sd">        `scale_factor` of 20.455. In MDAnalysis 2.0, the :class:`NCDFWriter`</span>
+<span class="sd">        will enforce `scale_factor` writing to either match user inputs (either</span>
+<span class="sd">        manually defined or via the :class:`NCDFReader`) or those as written by</span>
+<span class="sd">        AmberTools&#39;s :program:`sander` under default operation.</span>
+
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    :class:`NCDFReader`</span>
@@ -1059,6 +1071,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;velocities&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;forces&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">curr_frame</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># warn users of upcoming changes</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;In MDAnalysis v2.0, `scale_factor` writing will change (&quot;</span>
+                <span class="s2">&quot;currently these are not written), to better match the way &quot;</span>
+                <span class="s2">&quot;they are written by AMBER programs. See NCDFWriter docstring &quot;</span>
+                <span class="s2">&quot;for more details.&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">FutureWarning</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_init_netcdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize netcdf AMBER 1.0 trajectory.</span>
