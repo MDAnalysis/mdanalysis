@@ -210,6 +210,12 @@ class TestUniverseCreation(object):
         assert_equal(u.trajectory.n_frames, u2.trajectory.n_frames)
         assert u2._topology is u._topology
 
+    def test_universe_empty_ROMol(self):
+        Chem = pytest.importorskip("rdkit.Chem")
+        mol = Chem.Mol()
+        u = mda.Universe(mol, format="RDKIT")
+        assert len(u.atoms) == 0
+
 
 class TestUniverseFromSmiles(object):
     def setup_class(self):
