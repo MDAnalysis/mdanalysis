@@ -33,7 +33,7 @@ from numpy.testing import (
     assert_equal,
     assert_almost_equal
 )
-from MDAnalysis.coordinates.TRJ import NCDFReader
+from MDAnalysis.coordinates.TRJ import NCDFReader, NCDFWriter
 
 from MDAnalysisTests.datafiles import (PFncdf_Top, PFncdf_Trj,
                                        GRO, TRR, XYZ_mini,
@@ -884,21 +884,24 @@ class TestNCDFWriterUnits(object):
             assert_equal(unit, expected)
 
 
-class TestNCDFWriterErrors(object):
+class TestNCDFWriterErrorsWarnings(object):
     @pytest.fixture()
     def outfile(self, tmpdir):
         return str(tmpdir) + 'out.ncdf'
 
     def test_zero_atoms_VE(self, outfile):
-        from MDAnalysis.coordinates.TRJ import NCDFWriter
-
         with pytest.raises(ValueError):
             NCDFWriter(outfile, 0)
 
     def test_wrong_n_atoms(self, outfile):
-        from MDAnalysis.coordinates.TRJ import NCDFWriter
-
         with NCDFWriter(outfile, 100) as w:
             u = make_Universe(trajectory=True)
             with pytest.raises(IOError):
                 w.write(u.trajectory.ts)
+
+    def test_scale_factor_future(self, outfile):
+        u = mda.Universe(GRO)
+        wmsg = "`scale_factor` writing will change"
+        with pytest.warns(FutureWarning, match=wmsg):
+            with NCDFWriter(outfile, u.trajectory.n_atoms) as w:
+                w.write(u.atoms)
