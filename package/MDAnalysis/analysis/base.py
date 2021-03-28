@@ -161,7 +161,7 @@ class AnalysisBase(object):
         """
         pass  # pylint: disable=unnecessary-pass
 
-    def run(self, start=None, stop=None, step=None, verbose=None):
+    def run(self, start=None, stop=None, step=None, verbose=None, **kwargs):
         """Perform the calculation
 
         Parameters
@@ -179,13 +179,15 @@ class AnalysisBase(object):
         # if verbose unchanged, use class default
         verbose = getattr(self, '_verbose',
                           False) if verbose is None else verbose
+        kwargs['verbose'] = verbose
 
         self._setup_frames(self._trajectory, start, stop, step)
         logger.info("Starting preparation")
         self._prepare()
+
         for i, ts in enumerate(ProgressBar(
                 self._trajectory[self.start:self.stop:self.step],
-                verbose=verbose)):
+                **kwargs)):
             self._frame_index = i
             self._ts = ts
             self.frames[i] = ts.frame
