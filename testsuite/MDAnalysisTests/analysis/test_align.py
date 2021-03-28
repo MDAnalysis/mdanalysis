@@ -31,8 +31,7 @@ import pytest
 from MDAnalysis import SelectionError, SelectionWarning
 from MDAnalysisTests import executable_not_found
 from MDAnalysisTests.datafiles import (PSF, DCD, CRD, FASTA, ALIGN_BOUND,
-                                       ALIGN_UNBOUND, FASTA_NOGAP_ref,
-                                       FASTA_NOGAP_tgt)
+                                       ALIGN_UNBOUND)
 from numpy.testing import (
     assert_almost_equal,
     assert_equal,
@@ -466,8 +465,6 @@ class TestAverageStructure(object):
 
 class TestAlignmentProcessing(object):
     seq = FASTA
-    ref = FASTA_NOGAP_ref
-    tgt = FASTA_NOGAP_tgt
     error_msg = "selection string has unexpected length"
 
     def test_fasta2select_aligned(self):
@@ -504,27 +501,17 @@ class TestAlignmentProcessing(object):
         assert len(sel['mobile']) == 23090, self.error_msg
 
     def test_fasta2select_nogap(self, tmpdir):
-        """test align.fasta2select() on aligned FASTA with no gap in residue
+        """test align.fasta2select() on aligned FASTA with no gap in resid
         (Issue #3124)"""
-        reference = mda.Universe(self.ref).select_atoms('all')
-        target = mda.Universe(self.tgt).select_atoms('all')
-        CA_ref = reference.select_atoms('protein and name CA and not altloc B')
-        CA_target = target.select_atoms('protein and name CA and not altloc B')
-        ref_resids = [a.resid for a in CA_ref]
-        target_resids = [a.resid for a in CA_target]
-        alignment = align.sequence_alignment(
-            target.select_atoms('protein and not altloc B'),
-            reference.select_atoms('protein and not altloc B'))
-        with tmpdir.as_cwd():
-            fasta = f">ref\n{alignment[0]}\n>mobile\n{alignment[1]}"
-            with open('alignment.aln', "w+") as f:
-                f.write(fasta)
-            sel = align.fasta2select('alignment.aln',
-                                     is_aligned=True,
-                                     ref_resids=ref_resids,
-                                     target_resids=target_resids)
-        assert len(sel['reference']) == 5455, self.error_msg
-        assert len(sel['mobile']) == 5455, self.error_msg
+        ref_resids = [x for x in range(705)]
+        target_resids = [x for x in range(705)]
+        sel = align.fasta2select(self.seq,
+                                 is_aligned=True,
+                                 ref_resids=ref_resids,
+                                 target_resids=target_resids)
+        # length of the output strings, not residues or anything real...
+        assert len(sel['reference']) == 30621, self.error_msg
+        assert len(sel['mobile']) == 30621, self.error_msg
 
 def test_sequence_alignment():
     u = mda.Universe(PSF)
