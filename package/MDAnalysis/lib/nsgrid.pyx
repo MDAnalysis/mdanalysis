@@ -93,7 +93,7 @@ DEF ZZ = 8
 ctypedef float coordinate[3];
 
 cdef extern from "calc_distances.h" nogil:
-    void minimum_image(double* x, float* box, float* inverse_box)
+    void _minimum_image_ortho_lazy(double* x, float* box, float* half_box)
     void minimum_image_triclinic(double* dx, float* box)
     void _ortho_pbc(coordinate* coords, int numcoords, float* box)
     void _triclinic_pbc(coordinate* coords, int numcoords, float* box)
@@ -210,6 +210,7 @@ cdef class FastNS(object):
     cdef int[::1] next_id  # next coord id after a given cell
     cdef bint triclinic
     cdef float[6] dimensions
+    cdef float[3] half_dimensions
     cdef float[3] inverse_dimensions
     cdef float[9] triclinic_dimensions
     # are we periodic in the X, Y and Z dimension?
@@ -305,6 +306,7 @@ cdef class FastNS(object):
 
         for i in range(3):
             self.dimensions[i] = box[i]
+            self.half_dimensions[i] = 0.5 * box[i];
             self.inverse_dimensions[i] = 1.0 / box[i]
         self.dimensions[3] = box[3]
         self.dimensions[4] = box[4]
@@ -481,8 +483,8 @@ cdef class FastNS(object):
             if self.triclinic:
                 minimum_image_triclinic(dx, &self.triclinic_dimensions[0])
             else:
-                minimum_image(dx, &self.dimensions[0],
-                              &self.inverse_dimensions[0])
+                _minimum_image_ortho_lazy(dx, &self.dimensions[0],
+                                          &self.half_dimensions[0])
 
         return dx[0]*dx[0] + dx[1]*dx[1] + dx[2]*dx[2]
 
@@ -522,7 +524,7 @@ cdef class FastNS(object):
         cdef int cellid
         cdef int xi, yi, zi
         cdef int cellcoord[3]
-        cdef float[:, ::1] tmpcoords
+        cdef float tmpcoord[3]
         
         cdef NSResults results = NSResults()
         cdef double d2, cutoff2
@@ -533,21 +535,20 @@ cdef class FastNS(object):
             raise ValueError("search_coords must have a shape of (n, 3), got "
                              "{}.".format(search_coords.shape))
 
-        tmpcoords = search_coords.copy()
         with nogil:
-            if self.triclinic:
-                _triclinic_pbc(<coordinate*>&tmpcoords[0][0],
-                               tmpcoords.shape[0],
-                               &self.triclinic_dimensions[0])
-            else:
-                _ortho_pbc(<coordinate*>&tmpcoords[0][0],
-                           tmpcoords.shape[0],
-                           &self.dimensions[0])
-
             size_search = search_coords.shape[0]
             for i in range(size_search):
+                tmpcoord[0] = search_coords[i][0]
+                tmpcoord[1] = search_coords[i][1]
+                tmpcoord[2] = search_coords[i][2]
+                if self.triclinic:
+                    _triclinic_pbc(<coordinate*>&tmpcoord[0], 1,
+                                   &self.triclinic_dimensions[0])
+                else:
+                    _ortho_pbc(<coordinate*>&tmpcoord[0], 1,
+                               &self.dimensions[0])
                 # which cell is atom *i* in
-                self.coord2cellxyz(&tmpcoords[i][0], cellcoord)
+                self.coord2cellxyz(&tmpcoord[0], cellcoord)
                 # loop over all 27 neighbouring cells
                 for xi in range(3):
                     for yi in range(3):
@@ -562,7 +563,7 @@ cdef class FastNS(object):
                             # for loop over atoms in searchcoord
                             j = self.head_id[cellid]
                             while (j != END):
-                                d2 = self.calc_distsq(&tmpcoords[i][0],
+                                d2 = self.calc_distsq(&tmpcoord[0],
                                                       &self.coords_bbox[j][0])
                                 if d2 <= cutoff2:
                                     # place search_coords then self.bbox_coords
