@@ -26,25 +26,22 @@ import pytest
 from numpy.testing import assert_array_almost_equal
 
 import MDAnalysis as mdanalysis
-from MDAnalysis.transformations import SetDimensions
+from MDAnalysis.transformations import setdimensions
 from MDAnalysisTests import make_Universe
 
 
 @pytest.fixture()
-def boxdimensions_universes():
+def boxdimensions_universe():
     # create Universe objects for tests
-    ref_u = make_Universe(trajectory=True)
-    new_u = ref_u
-    return ref_u, new_u
+    new_u = make_Universe(trajectory=True)
+    return new_u
 
 
-def test_boxdimensions_dims(boxdimensions_universes):
-    ref_u, new_u = boxdimensions_universes
-    ref = ref_u.trajectory.ts
+def test_boxdimensions_dims(boxdimensions_universe):
+    new_u = boxdimensions_universe
     new_dims = np.float32([2, 2, 2, 90, 90, 90])
-    ref.dimensions = new_dims
-    new = SetDimensions(new_dims)(new_u.trajectory.ts)
-    assert_array_almost_equal(ref.dimensions, new.dimensions, decimal=6)
+    new = setdimensions(new_dims)(new_u.trajectory.ts)
+    assert_array_almost_equal(new_dims, new.dimensions, decimal=6)
 
 
 @pytest.mark.parametrize('dim_vector', (
@@ -60,18 +57,18 @@ def test_boxdimensions_dims(boxdimensions_universes):
 )
 
 
-def test_dimensions_vector(boxdimensions_universes, dim_vector):
+def test_dimensions_vector(boxdimensions_universe, dim_vector):
     # wrong box dimension vector size
-    ts = boxdimensions_universes[0].trajectory.ts
+    ts = boxdimensions_universe.trajectory.ts
     with pytest.raises(ValueError):
-        SetDimensions(dim_vector)(ts)
+        detdimensions(dim_vector)
 
 
-def test_dimensions_transformations_api(boxdimensions_universes):
+def test_dimensions_transformations_api(boxdimensions_universe):
     # test if transformation works with on-the-fly transformations API
-    ref_u, new_u = boxdimensions_universes
-    ref = ref_u.trajectory.ts
+    new_u = boxdimensions_universe
     new_dims = np.float32([2, 2, 2, 90, 90, 90])
-    ref.dimensions = new_dims
-    new = SetDimensions(new_dims)(new_u.trajectory.ts)
-    assert_array_almost_equal(ref.dimensions, new.dimensions, decimal=6)
+    transform = setdimensions
+    new_u.trajectory.add_transformations(transform)
+    for ts in new_u.trajectory:
+        assert_array_almost_equal(new_dims, new_u.dimensions, decimal=6)
