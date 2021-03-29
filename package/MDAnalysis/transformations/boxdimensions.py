@@ -73,8 +73,8 @@ class setdimensions:
         try:
             self.dimensions = self.dimensions.reshape(6, )
         except ValueError:
-            raise ValueError(f'Box dimensions array must be convertible into shape (6, )')
-
+            raise ValueError('Box dimensions array must be convertible into \
+shape (6, )')
 
     def __call__(self, ts):
         ts.dimensions = self.dimensions
