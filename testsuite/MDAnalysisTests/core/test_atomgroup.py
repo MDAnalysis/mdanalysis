@@ -1686,11 +1686,11 @@ class TestAtomGroupSort(object):
 
     @pytest.fixture()
     def ag(self, u):
-        return sum([u.atoms[3], u.atoms[2], u.atoms[1], u.atoms[0]])
+        return u.atoms[[3, 2, 1, 0]]
 
     @pytest.fixture()
     def agsort(self, ag):
-        return ag.sort(key=lambda atom: atom.id)
+        return ag.sort("ids")
 
     def test_sort(self, agsort):
         refid = np.array([1, 2, 3, 4])
