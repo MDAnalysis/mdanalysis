@@ -1,4 +1,4 @@
-#-*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
 #
 # MDAnalysis --- https://www.mdanalysis.org
@@ -55,8 +55,6 @@ def test_boxdimensions_dims(boxdimensions_universe):
     111,
     'abcd')
 )
-
-
 def test_dimensions_vector(boxdimensions_universe, dim_vector):
     # wrong box dimension vector size
     ts = boxdimensions_universe.trajectory.ts
