@@ -47,8 +47,7 @@ from MDAnalysisTests.datafiles import (
     TRZ_psf, TRZ,
     two_water_gro,
     TPR_xvf, TRR_xvf,
-    GRO,
-    PDB_helix
+    GRO
 )
 from MDAnalysisTests import make_Universe, no_deprecated_call
 from MDAnalysisTests.core.util import UnWrapUniverse
@@ -1681,19 +1680,52 @@ class TestAtomGroupSort(object):
     """Tests the AtomGroup.sort attribute"""
 
     @pytest.fixture()
-    def u(self):
-        return mda.Universe(PDB_helix)
+    def universe(self):
+        u = mda.Universe.empty(
+            n_atoms=7,
+            n_residues=3,
+            n_segments=2,
+            atom_resindex=np.array([0, 0, 0, 1, 1, 1, 2]),
+            residue_segindex=np.array([0, 0, 1]),
+            trajectory=True,
+            velocities=True,
+            forces=True
+        )
+        attributes = ["id", "charge", "mass", "tempfactor"]
+
+        for i in (attributes):
+            u.add_TopologyAttr(i, [6, 5, 4, 3, 2, 1, 0])
+
+        u.add_TopologyAttr('resid', [2, 1, 0])
+        u.add_TopologyAttr('segid', [1, 0])
+
+        return u
 
     @pytest.fixture()
-    def ag(self, u):
-        return u.atoms[[3, 2, 1, 0]]
+    def ag(self, universe):
+        return universe.atoms
 
-    @pytest.fixture()
-    def agsort(self, ag):
-        return ag.sort("ids")
+    test_ids = [
+       "ix",
+       "ids",
+       "resids",
+       "segids",
+       "charges",
+       "masses",
+       "tempfactors"
+    ]
 
-    def test_sort(self, agsort):
-        refid = np.array([1, 2, 3, 4])
-        refix = np.array([0, 1, 2, 3])
-        assert np.array_equal(refid, agsort.ids)
-        assert np.array_equal(refix, agsort.ix)
+    test_data = [
+        ("ix", np.array([0, 1, 2, 3, 4, 5, 6])),
+        ("ids", np.array([6, 5, 4, 3, 2, 1, 0])),
+        ("resids", np.array([6, 3, 4, 5, 0, 1, 2])),
+        ("segids", np.array([6, 0, 1, 2, 3, 4, 5])),
+        ("charges", np.array([6, 5, 4, 3, 2, 1, 0])),
+        ("masses", np.array([6, 5, 4, 3, 2, 1, 0])),
+        ("tempfactors", np.array([6, 5, 4, 3, 2, 1, 0])),
+    ]
+
+    @pytest.mark.parametrize("inputs, expected", test_data, ids=test_ids)
+    def test_sort(self, ag, inputs, expected):
+        agsort = ag.sort(inputs)
+        assert np.array_equal(expected, agsort.ix)
