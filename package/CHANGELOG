@@ -84,8 +84,8 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
-  * Introduce possibility for setting box dimensions for all timesteps in 
-    trajectory (Issue #2691)
+  * Add `setdimensions` transformation class for setting constant 
+    box dimensions for all timesteps in trajectory (Issue #2691)
   * Adds preliminary support for the ppc64le platform with minimal
     dependencies (Issue #3127, PR #3149)
   * Caches can now undergo central validation at the Universe level, opening
