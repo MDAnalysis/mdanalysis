@@ -28,12 +28,12 @@ Set box dimensions --- :mod: `MDAnalysis.transformations.boxdimensions`
 Set dimensions of the simulation box to a constant vector across all timesteps.
 
 
-..autoclass:: SetDimensions
+..autoclass:: setdimensions
 """
 import numpy as np
 
 
-class SetDimensions:
+class setdimensions:
     """
     Set simulation box dimensions.
 
@@ -46,9 +46,11 @@ class SetDimensions:
     dimensions [*a*, *b*, *c*, *alpha*, *beta*, *gamma*], lengths *a*,
     *b*, *c* are in the MDAnalysis length unit (Å), and angles are in degrees.
 
-    dim = [2, 2, 2, 90, 90, 90]
-    transform = mda.transformations.boxdimensions.setdimensions(dim)
-    u.trajectory.add_transformations(transform)
+    .. code-block:: python
+
+        dim = [2, 2, 2, 90, 90, 90]
+        transform = mda.transformations.boxdimensions.setdimensions(dim)
+        u.trajectory.add_transformations(transform)
 
     Parameters
     ----------
@@ -58,7 +60,7 @@ class SetDimensions:
 
     Returns
     -------
-    MDAnalysis.coordinates.base.Timestep
+    :class:`~MDAnalysis.coordinates.base.Timestep` object
     """
 
     def __init__(self, dimensions):
@@ -66,12 +68,13 @@ class SetDimensions:
 
         try:
             self.dimensions = np.asarray(self.dimensions, np.float32)
-            if self.dimensions.shape != (6, ) and \
-               self.dimensions.shape != (1, 6):
-                raise ValueError(f'{self.dimensions} are not valid box dimensions')
-            self.dimensions = self.dimensions.reshape(6, )
         except ValueError:
             raise ValueError(f'{self.dimensions} are not valid box dimensions')
+        try:
+            self.dimensions = self.dimensions.reshape(6, )
+        except ValueError:
+            raise ValueError(f'Box dimensions array must be convertible into shape (6, )')
+
 
     def __call__(self, ts):
         ts.dimensions = self.dimensions
