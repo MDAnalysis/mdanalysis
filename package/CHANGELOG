@@ -141,12 +141,7 @@ Enhancements
     'protein' selection (#2751 PR #2755)
   * Added an RDKit converter that works for any input with all hydrogens
     explicit in the topology (Issue #2468, PR #2775)
-<<<<<<< HEAD
-
-
-=======
   
->>>>>>> edit CHANGELOG
 Changes
   * TPRParser now loads TPR files with `tpr_resid_from_one=True` by default,
     which starts TPR resid indexing from 1 (instead of 0 as in 1.x) (Issue #2364, PR #3152)
