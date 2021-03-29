@@ -3325,7 +3325,7 @@ class AtomGroup(GroupBase):
         raise ValueError("No writer found for format: {}".format(filename))
 
     def sort(self, key='ix'):
-        """Return sorted Atomgroup by a key that specifies an attribute of atomgroup. The default key is "ix".
+        """Return stably sorted Atomgroup by a key that specifies an attribute of atomgroup. The default key is "ix".
 
         Parameters
         ----------
@@ -3359,7 +3359,7 @@ class AtomGroup(GroupBase):
         .. versionadded:: 2.0.0
         """
         idx = getattr(self.atoms, key)
-        order = np.argsort(idx)
+        order = np.argsort(idx, kind='stable')
         agsorted = self.atoms[order]
         return agsorted
 
