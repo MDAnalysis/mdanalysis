@@ -68,7 +68,7 @@ def test_dimensions_vector(boxdimensions_universes, dim_vector):
 
 
 def test_dimensions_transformations_api(boxdimensions_universes):
-    # test if transformation workes with on-the-fly transformations API
+    # test if transformation works with on-the-fly transformations API
     ref_u, new_u = boxdimensions_universes
     ref = ref_u.trajectory.ts
     new_dims = np.float32([2, 2, 2, 90, 90, 90])
