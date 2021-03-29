@@ -28,7 +28,7 @@ Set box dimensions --- :mod: `MDAnalysis.transformations.boxdimensions`
 Set dimensions of the simulation box to a constant vector across all timesteps.
 
 
-..autocalss:: setdimensions
+..autoclass:: SetDimensions
 """
 import numpy as np
 
