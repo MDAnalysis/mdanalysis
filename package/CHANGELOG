@@ -21,9 +21,11 @@ The rules for this file:
   * 2.0.0
 
 Fixes
-  * Removed depreciated parameters 'n_jobs' and 'precompute_distances' of
-    sklearn.cluster.KMeans and Added new parameter 'random_state' of 
-    sklearn.cluster.AffinityPropagation(Issue #2986)
+  * Removed deprecated parameters `n_jobs` and `precompute_distances` of
+    sklearn.cluster.KMeans and Added new parameter `random_state` of 
+    sklearn.cluster.AffinityPropagation (Issue #2986)
+  * A Universe created from an ROMol with no atoms returns now a Universe 
+    with 0 atoms (Issue #3142)
   * ValueError raised when empty atomgroup is given to DensityAnalysis
     without a user defined grid. UserWarning displayed when user defined 
     grid is provided. (Issue #3055)
