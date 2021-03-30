@@ -60,6 +60,10 @@ using MDAnalysis.
   persistence_length.plot()
 
 """
+from __future__ import division, absolute_import
+from six.moves import range
+from six import raise_from
+
 import numpy as np
 import scipy.optimize
 import warnings
@@ -250,7 +254,7 @@ class PersistenceLength(AnalysisBase):
         try:
             self.results
         except AttributeError:
-            raise NoDataError("Use the run method first") from None
+            raise_from(NoDataError("Use the run method first"), None)
         self.x = np.arange(len(self.results)) * self.lb
 
         self.lp = fit_exponential_decay(self.x, self.results)

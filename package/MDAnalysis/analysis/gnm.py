@@ -85,6 +85,10 @@ directly needed to perform the analysis.
    removed un-unsed function :func:`backup_file`
 
 """
+
+from __future__ import print_function, division, absolute_import
+from six.moves import range
+
 import itertools
 import warnings
 
@@ -359,7 +363,7 @@ class GNMAnalysis(object):
 
 
 class closeContactGNMAnalysis(GNMAnalysis):
-    r"""GNMAnalysis only using close contacts.
+    """GNMAnalysis only using close contacts.
 
     This is a version of the GNM where the Kirchoff matrix is
     constructed from the close contacts between individual atoms

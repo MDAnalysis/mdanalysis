@@ -28,13 +28,14 @@ A tool to compute mass and charge density profiles along the three
 cartesian axes of the simulation cell. Works only for orthorombic,
 fixed volume cells (thus for simulations in canonical NVT ensemble).
 """
+from __future__ import division, absolute_import
+
 import os.path as path
 import warnings
 
 import numpy as np
 
 from MDAnalysis.analysis.base import AnalysisBase
-
 
 class LinearDensity(AnalysisBase):
     """Linear density profile
@@ -45,11 +46,11 @@ class LinearDensity(AnalysisBase):
           any atomgroup
     grouping : str {'atoms', 'residues', 'segments', 'fragments'}
           Density profiles will be computed on the center of geometry
-          of a selected group of atoms
+          of a selected group of atoms ['atoms']
     binsize : float
           Bin width in Angstrom used to build linear density
           histograms. Defines the resolution of the resulting density
-          profile (smaller --> higher resolution)
+          profile (smaller --> higher resolution) [0.25]
     verbose : bool (optional)
           Show detailed progress of the calculation if set to ``True``; the
           default is ``False``.
