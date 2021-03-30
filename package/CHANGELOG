@@ -16,12 +16,14 @@ The rules for this file:
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
-         hanatok, rmeli, aditya-kamath, tirkarthi
+         hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi,
 
   * 2.0.0
 
 Fixes
   * ITPParser now accepts relative paths (Issue #3037, PR #3108)
+  * A Universe created from an ROMol with no atoms returns now a Universe 
+    with 0 atoms (Issue #3142)
   * ValueError raised when empty atomgroup is given to DensityAnalysis
     without a user defined grid. UserWarning displayed when user defined 
     grid is provided. (Issue #3055)
@@ -85,6 +87,8 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Adds preliminary support for the ppc64le platform with minimal
+    dependencies (Issue #3127, PR #3149)
   * Caches can now undergo central validation at the Universe level, opening
     the door to more useful caching. Already applied to fragment caching
     (Issue #2376, PR #3135)
@@ -132,6 +136,10 @@ Enhancements
     explicit in the topology (Issue #2468, PR #2775)
   
 Changes
+  * TPRParser now loads TPR files with `tpr_resid_from_one=True` by default, 
+    which starts TPR resid indexing from 1 (instead of 0 as in 1.x) (Issue #2364, PR #3152)
+  * Introduces encore specific C compiler arguments to allow for lowering of
+    optimisations on non-x86 platforms (Issue #1389, PR #3149)
   * Continuous integration uses mamba rather than conda to install the
     dependencies (PR #2983)
   * removes deprecated `as_Universe` function from MDAnalysis.core.universe,
