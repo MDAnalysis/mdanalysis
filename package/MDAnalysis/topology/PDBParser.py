@@ -288,10 +288,6 @@ class PDBParser(TopologyReaderBase):
             warnings.warn("Serial numbers went over 100,000.  "
                           "Higher serials have been guessed")
 
-        # If segids not present, try to use chainids
-        if not any(segids):
-            segids = chainids
-
         n_atoms = len(serials)
 
         attrs = []
@@ -360,7 +356,7 @@ class PDBParser(TopologyReaderBase):
             attrs.append(Segids(segids))
         else:
             n_segments = 1
-            attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
+            attrs.append(Segids(np.array([' '], dtype=object)))
             segidx = None
 
         top = Topology(n_atoms, n_residues, n_segments,
