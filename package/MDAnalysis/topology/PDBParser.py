@@ -184,6 +184,7 @@ class PDBParser(TopologyReaderBase):
        Bonds attribute is not added if no bonds are present in PDB file.
        If elements are invalid or partially missing, empty elements records
        are now assigned (Issue #2422).
+       If no segids present default to blank value.(Issue #3144)
     """
     format = ['PDB', 'ENT']
 
