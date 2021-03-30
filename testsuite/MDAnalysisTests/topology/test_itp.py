@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import pytest
-
+from pathlib import Path
 import MDAnalysis as mda
 import numpy as np
 from numpy.testing import assert_almost_equal, assert_equal
@@ -336,13 +336,25 @@ class TestErrors:
             with self.parser(ITP_no_endif) as p:
                 top = p.parse(include_dir=GMX_DIR)
 
-class Testrelativepath:
+class TestRelativePath:
 
-    def test_relpath(self, tmp_path):
-        content="[ atoms ]\n" +\
-                "     1      H      1    SOL    HW1      1       0.41    1.00800"
-        d = tmp_path / "sub"
-        d.mkdir()
-        p = d / "test.itp"
-        p.write_text(content)
-        u = mda.Universe(tmp_path / "sub/test.itp", format='ITP')
+    def test_relstring(self, tmpdir):
+        content="""[ atoms ]
+                     1      H      1    SOL    HW1      1       0.41    1.00800"""
+        p=tmpdir.mkdir("sub1").join("test.itp")
+        p.write(content)
+        p2=tmpdir.mkdir("sub2")
+        p2.chdir()
+        with p2.as_cwd() as pchange:           
+            u = mda.Universe(str("../sub1/test.itp"), format='ITP')
+
+    def test_relpath(self, tmpdir):
+        content="""[ atoms ]
+                     1      H      1    SOL    HW1      1       0.41    1.00800"""
+        p=tmpdir.mkdir("sub1").join("test.itp")
+        p.write(content)
+        p2=tmpdir.mkdir("sub2")
+        p2.chdir()
+        with p2.as_cwd() as pchange:
+            relpath=Path("../sub1/test.itp")         
+            u = mda.Universe(relpath, format='ITP')

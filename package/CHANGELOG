@@ -21,7 +21,7 @@ The rules for this file:
   * 2.0.0
 
 Fixes
-  * ITPParser now accepts relative paths (Issue #3037)
+  * ITPParser now accepts relative paths (Issue #3037, PR #3108)
   * ValueError raised when empty atomgroup is given to DensityAnalysis
     without a user defined grid. UserWarning displayed when user defined 
     grid is provided. (Issue #3055)
