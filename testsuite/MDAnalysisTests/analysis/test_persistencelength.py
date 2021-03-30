@@ -56,7 +56,8 @@ class TestPersistenceLength(object):
     @staticmethod
     @pytest.fixture()
     def p_run(p):
-        return p.run()
+        with pytest.warns(DeprecationWarning):
+            return p.run()
 
     def test_ag_ValueError(self, u):
         ags = [u.atoms[:10], u.atoms[10:110]]

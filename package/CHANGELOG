@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/??  richardjgowers, IAlibay, tylerjereddy, xiki-tempula, lilyminium,
-          zemanj
+          zemanj, PicoCentauri
 
   * 1.1.0
 
@@ -31,6 +31,8 @@ Changes
   * Maximum pinned versions in setup.py removed for python 3.6+ (PR #3139)
 
 Deprecations
+  * Deprecate structure of `results` attribute for LinearDensity, 
+    PersistenceLength and AnalysisFromFunction 
   * NCDFWriter `scale_factor` writing will change in version 2.0 to
     better match AMBER outputs (Issue #2327)
   * Deprecated using the last letter of the segid as the

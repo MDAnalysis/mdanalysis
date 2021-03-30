@@ -44,7 +44,8 @@ def universe():
 def test_gnm(universe, tmpdir):
     output = os.path.join(str(tmpdir), 'output.txt')
     gnm = mda.analysis.gnm.GNMAnalysis(universe, ReportVector=output)
-    gnm.run()
+    with pytest.warns(DeprecationWarning):
+      gnm.run()
     result = gnm.results
     assert len(result) == 10
     time, eigenvalues, eigenvectors = zip(*result)

@@ -23,6 +23,7 @@
 from __future__ import absolute_import
 import MDAnalysis as mda
 import numpy as np
+import pytest
 
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
 from MDAnalysis.analysis.lineardensity import LinearDensity
@@ -36,5 +37,6 @@ def test_serial():
 
     xpos = np.array([0., 0., 0., 0.0072334, 0.00473299, 0.,
                           0., 0., 0., 0.])
-    ld = LinearDensity(selection, binsize=5).run()
+    with pytest.warns(DeprecationWarning):
+        ld = LinearDensity(selection, binsize=5).run()
     assert_almost_equal(xpos, ld.results['x']['pos'])
