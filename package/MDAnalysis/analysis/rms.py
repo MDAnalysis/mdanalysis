@@ -611,6 +611,21 @@ class RMSD(AnalysisBase):
                                                        select_atoms(*s['reference']).
                                                        positions.astype(np.float64)) for s in
                                                      self.groupselections]
+                # sanity check
+                for igroup, (sel, atoms, ref) in enumerate(
+                    zip(self.groupselections, self._groupselections_atoms,
+                        self._groupselections_ref_coords64)):
+                    if len(atoms['mobile']) != len(ref):
+                        logger.exception('SelectionError: Group Selection')
+                        raise SelectionError(
+                            "Group selection {0}: {1} | {2}: "
+                            "Reference at ref_frame={3} and "
+                            "trajectory atom selections do not "
+                            "contain the same number of atoms: "
+                            "N_ref={4}, N_traj={5}".format(
+                                igroup, sel['reference'],
+                                sel['mobile'], self.ref_frame,
+                                len(atoms['reference']), len(atoms['mobile'])))
         finally:
             # Move back to the original frame
             self.reference.universe.trajectory[current_frame]
