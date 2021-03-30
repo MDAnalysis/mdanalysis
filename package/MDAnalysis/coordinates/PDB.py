@@ -1051,8 +1051,8 @@ class PDBWriter(base.WriterBase):
            Writing now only uses the contents of the elements attribute
            instead of guessing by default. If the elements are missing,
            empty records are written out (Issue #2423).
-           Atoms are now checked for a chainID instead of being overwritten
-           by the last letter of the `segid` (Issue #3144).
+           Atoms are now checked for a valid chainID instead of being
+           overwritten by the last letter of the `segid` (Issue #3144).
 
         """
         atoms = self.obj.atoms
@@ -1083,7 +1083,7 @@ class PDBWriter(base.WriterBase):
         resnames = get_attr('resnames', 'UNK')
         icodes = get_attr('icodes', ' ')
         segids = get_attr('segids', ' ')
-        chainids = get_attr('chainIDs', 'X')
+        chainids = get_attr('chainIDs', ' ')
         resids = get_attr('resids', 1)
         occupancies = get_attr('occupancies', 1.0)
         tempfactors = get_attr('tempfactors', 0.0)
@@ -1101,14 +1101,14 @@ class PDBWriter(base.WriterBase):
             invalid_char_ids = False
             missing_ids = False
 
-            for (i, id) in enumerate(chainids):
-                if id is None:
+            for (i, chainid) in enumerate(chainids):
+                if chainid is None:
                     missing_ids = True
                     chainids[i] = default
-                elif len(id) > 1:
+                elif len(chainid) > 1:
                     invalid_length_ids = True
                     chainids[i] = default
-                elif not id.isalnum():
+                elif not chainid.isalnum():
                     invalid_char_ids = True
                     chainids[i] = default
 
