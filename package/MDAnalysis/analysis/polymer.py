@@ -60,10 +60,6 @@ using MDAnalysis.
   persistence_length.plot()
 
 """
-from __future__ import division, absolute_import
-from six.moves import range
-from six import raise_from
-
 import numpy as np
 import scipy.optimize
 import warnings
@@ -229,6 +225,13 @@ class PersistenceLength(AnalysisBase):
         norm *= len(self._atomgroups) * self.n_frames
 
         self.results = self._results / norm
+
+        warnings.warn(
+            "This structure of the `results` array will change in "
+            "MDAnalysis version 2.0.",
+            category=DeprecationWarning
+        )
+
         self._calc_bond_length()
 
         self._perform_fit()
@@ -247,7 +250,7 @@ class PersistenceLength(AnalysisBase):
         try:
             self.results
         except AttributeError:
-            raise_from(NoDataError("Use the run method first"), None)
+            raise NoDataError("Use the run method first") from None
         self.x = np.arange(len(self.results)) * self.lb
 
         self.lp = fit_exponential_decay(self.x, self.results)

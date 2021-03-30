@@ -85,11 +85,8 @@ directly needed to perform the analysis.
    removed un-unsed function :func:`backup_file`
 
 """
-
-from __future__ import print_function, division, absolute_import
-from six.moves import range
-
 import itertools
+import warnings
 
 import numpy as np
 
@@ -276,6 +273,12 @@ class GNMAnalysis(object):
         # outputobject.append((time, [ w[list_map[i]] for i in range(nmodes) ],
         # [ v[list_map[i]] for i in range( nmodes) ] ))
 
+        warnings.warn(
+            "This structure of the `results` list will change in "
+            "MDAnalysis version 2.0.",
+            category=DeprecationWarning
+        )
+
     def generate_kirchoff(self):
         """Generate the Kirchhoff matrix of contacts.
 
@@ -356,7 +359,7 @@ class GNMAnalysis(object):
 
 
 class closeContactGNMAnalysis(GNMAnalysis):
-    """GNMAnalysis only using close contacts.
+    r"""GNMAnalysis only using close contacts.
 
     This is a version of the GNM where the Kirchoff matrix is
     constructed from the close contacts between individual atoms
