@@ -200,13 +200,10 @@ class TestHole(object):
 
     def test_output_level(self, tmpdir):
         with tmpdir.as_cwd():
-            with pytest.warns(UserWarning) as rec:
+            with pytest.warns(UserWarning, match="needs to be < 3"):
                 profiles = hole2.hole(self.filename,
                                       random_seed=self.random_seed,
                                       output_level=100)
-            assert len(rec) == 1
-            assert 'needs to be < 3' in rec[0].message.args[0]
-            # no profiles
             assert len(profiles) == 0
 
     def test_keep_files(self, tmpdir):
