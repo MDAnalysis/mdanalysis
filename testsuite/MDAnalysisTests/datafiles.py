@@ -83,8 +83,10 @@ __all__ = [
     "TPR2018", "TPR2019B3", "TPR2020B2", "TPR2020", "TPR2020Double",
     "TPR510_bonded", "TPR2016_bonded", "TPR2018_bonded", "TPR2019B3_bonded",
     "TPR2020B2_bonded", "TPR2020_bonded", "TPR2020_double_bonded",
+    "TPR2021_bonded", "TPR2021_double_bonded",
     "TPR334_bonded",
-    "TPR_EXTRA_2020", "TPR_EXTRA_2018", "TPR_EXTRA_2016", "TPR_EXTRA_407",
+    "TPR_EXTRA_2021", "TPR_EXTRA_2020", "TPR_EXTRA_2018",
+    "TPR_EXTRA_2016", "TPR_EXTRA_407",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
     "XTC_sub_sol",
@@ -356,7 +358,10 @@ TPR2019B3_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2019-
 TPR2020B2_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2020-beta2.tpr')
 TPR2020_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2020.tpr')
 TPR2020_double_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2020_double.tpr')
+TPR2021_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2021.tpr')
+TPR2021_double_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2021_double.tpr')
 # all interactions
+TPR_EXTRA_2021 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2021.tpr')
 TPR_EXTRA_2020 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2020.tpr')
 TPR_EXTRA_2018 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2018.tpr')
 TPR_EXTRA_2016 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2016.3.tpr')

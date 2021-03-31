@@ -86,6 +86,7 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Read TPR files from Gromacs 2021 (Issue #3180)
   * Adds preliminary support for the ppc64le platform with minimal
     dependencies (Issue #3127, PR #3149)
   * Caches can now undergo central validation at the Universe level, opening
