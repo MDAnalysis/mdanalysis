@@ -1729,3 +1729,13 @@ class TestAtomGroupSort(object):
     def test_sort(self, ag, inputs, expected):
         agsort = ag.sort(inputs)
         assert np.array_equal(expected, agsort.ix)
+
+    def test_sort_position(self, ag):
+        ag.positions = (-np.arange(21)).reshape(7, 3)
+        with pytest.raises(ValueError):
+            ag.sort("positions", keyfunc=lambda x: x)
+        with pytest.raises(NameError):
+            ag.sort("positions")
+        ref = [6, 5, 4, 3, 2, 1, 0]
+        agsort = ag.sort("positions", keyfunc=lambda x: x[:, 1])
+        assert np.array_equal(ref, agsort.ix)
