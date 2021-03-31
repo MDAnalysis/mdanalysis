@@ -234,7 +234,7 @@ functions on which the Gromacs TPR topology reader
 <a class="reference internal" href="TPRParser.html#module-MDAnalysis.topology.TPRParser" title="MDAnalysis.topology.TPRParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.TPRParser</span></code></a> module.</p>
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.SUPPORTED_VERSIONS">
-<code class="descclassname">MDAnalysis.topology.tpr.</code><code class="descname">SUPPORTED_VERSIONS</code><em class="property"> = (58, 73, 83, 100, 103, 110, 112, 116, 119)</em><a class="headerlink" href="#MDAnalysis.topology.tpr.SUPPORTED_VERSIONS" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.</code><code class="descname">SUPPORTED_VERSIONS</code><em class="property"> = (58, 73, 83, 100, 103, 110, 112, 116, 119, 122)</em><a class="headerlink" href="#MDAnalysis.topology.tpr.SUPPORTED_VERSIONS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Built-in immutable sequence.</p>
 <p>If no argument is given, the constructor returns an empty tuple.
 If iterable is specified the tuple is initialized from iterable’s items.</p>
@@ -309,7 +309,7 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_COM_PULL">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_COM_PULL</code><em class="property"> = 74</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_COM_PULL" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_COM_PULL</code><em class="property"> = 75</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_COM_PULL" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
@@ -375,13 +375,13 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_DENSITYFITTING">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_DENSITYFITTING</code><em class="property"> = 75</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DENSITYFITTING" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_DENSITYFITTING</code><em class="property"> = 76</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DENSITYFITTING" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_DHDL_CON">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_DHDL_CON</code><em class="property"> = 85</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DHDL_CON" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_DHDL_CON</code><em class="property"> = 86</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DHDL_CON" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
@@ -417,7 +417,7 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_DKDL">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_DKDL</code><em class="property"> = 87</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DKDL" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_DKDL</code><em class="property"> = 88</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DKDL" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
@@ -429,67 +429,67 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_DVDL">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_DVDL</code><em class="property"> = 86</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DVDL" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_DVDL</code><em class="property"> = 87</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DVDL" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_DVDL_BONDED">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_DVDL_BONDED</code><em class="property"> = 90</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DVDL_BONDED" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_DVDL_BONDED</code><em class="property"> = 91</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DVDL_BONDED" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_DVDL_COUL">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_DVDL_COUL</code><em class="property"> = 88</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DVDL_COUL" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_DVDL_COUL</code><em class="property"> = 89</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DVDL_COUL" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_DVDL_RESTRAINT">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_DVDL_RESTRAINT</code><em class="property"> = 91</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DVDL_RESTRAINT" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_DVDL_RESTRAINT</code><em class="property"> = 92</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DVDL_RESTRAINT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_DVDL_TEMPERATURE">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_DVDL_TEMPERATURE</code><em class="property"> = 92</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DVDL_TEMPERATURE" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_DVDL_TEMPERATURE</code><em class="property"> = 93</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DVDL_TEMPERATURE" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_DVDL_VDW">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_DVDL_VDW</code><em class="property"> = 89</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DVDL_VDW" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_DVDL_VDW</code><em class="property"> = 90</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_DVDL_VDW" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_ECONSERVED">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_ECONSERVED</code><em class="property"> = 80</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_ECONSERVED" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_ECONSERVED</code><em class="property"> = 81</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_ECONSERVED" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_EKIN">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_EKIN</code><em class="property"> = 78</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_EKIN" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_EKIN</code><em class="property"> = 79</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_EKIN" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_EPOT">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_EPOT</code><em class="property"> = 77</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_EPOT" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_EPOT</code><em class="property"> = 78</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_EPOT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_EQM">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_EQM</code><em class="property"> = 76</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_EQM" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_EQM</code><em class="property"> = 77</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_EQM" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_ETOT">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_ETOT</code><em class="property"> = 79</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_ETOT" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_ETOT</code><em class="property"> = 80</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_ETOT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
@@ -615,7 +615,7 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_NRE">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_NRE</code><em class="property"> = 93</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_NRE" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_NRE</code><em class="property"> = 94</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_NRE" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
@@ -639,7 +639,7 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_PDISPCORR">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_PDISPCORR</code><em class="property"> = 83</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_PDISPCORR" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_PDISPCORR</code><em class="property"> = 84</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_PDISPCORR" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
@@ -663,7 +663,7 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_PRES">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_PRES</code><em class="property"> = 84</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_PRES" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_PRES</code><em class="property"> = 85</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_PRES" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
@@ -735,7 +735,7 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_TEMP">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_TEMP</code><em class="property"> = 81</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_TEMP" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_TEMP</code><em class="property"> = 82</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_TEMP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
@@ -752,62 +752,68 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 </dd></dl>
 
 <dl class="data">
+<dt id="MDAnalysis.topology.tpr.setting.F_VSITE1">
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VSITE1</code><em class="property"> = 65</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
+</dd></dl>
+
+<dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_VSITE2">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VSITE2</code><em class="property"> = 65</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE2" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VSITE2</code><em class="property"> = 66</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_VSITE2FD">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VSITE2FD</code><em class="property"> = 66</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE2FD" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VSITE2FD</code><em class="property"> = 67</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE2FD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_VSITE3">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VSITE3</code><em class="property"> = 67</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE3" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VSITE3</code><em class="property"> = 68</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_VSITE3FAD">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VSITE3FAD</code><em class="property"> = 69</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE3FAD" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VSITE3FAD</code><em class="property"> = 70</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE3FAD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_VSITE3FD">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VSITE3FD</code><em class="property"> = 68</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE3FD" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VSITE3FD</code><em class="property"> = 69</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE3FD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_VSITE3OUT">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VSITE3OUT</code><em class="property"> = 70</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE3OUT" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VSITE3OUT</code><em class="property"> = 71</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE3OUT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_VSITE4FD">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VSITE4FD</code><em class="property"> = 71</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE4FD" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VSITE4FD</code><em class="property"> = 72</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE4FD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_VSITE4FDN">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VSITE4FDN</code><em class="property"> = 72</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE4FDN" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VSITE4FDN</code><em class="property"> = 73</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITE4FDN" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_VSITEN">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VSITEN</code><em class="property"> = 73</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITEN" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VSITEN</code><em class="property"> = 74</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VSITEN" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.F_VTEMP_NOLONGERUSED">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VTEMP_NOLONGERUSED</code><em class="property"> = 82</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VTEMP_NOLONGERUSED" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">F_VTEMP_NOLONGERUSED</code><em class="property"> = 83</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.F_VTEMP_NOLONGERUSED" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/include/types/idef.h</span></code></p>
 </dd></dl>
 
@@ -819,19 +825,19 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.SUPPORTED_VERSIONS">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">SUPPORTED_VERSIONS</code><em class="property"> = (58, 73, 83, 100, 103, 110, 112, 116, 119)</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.SUPPORTED_VERSIONS" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">SUPPORTED_VERSIONS</code><em class="property"> = (58, 73, 83, 100, 103, 110, 112, 116, 119, 122)</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.SUPPORTED_VERSIONS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gromacs TPR file format versions that can be read by the TPRParser.</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.ftupd">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">ftupd</code><em class="property"> = [(20, 3), (20, 4), (20, 5), (34, 6), (43, 7), (43, 8), (70, 9), (98, 12), (76, 13), (30, 14), (30, 15), (30, 16), (34, 17), (43, 18), (98, 21), (98, 22), (26, 23), (26, 25), (43, 26), (65, 27), (60, 28), (61, 29), (61, 30), (72, 31), (72, 32), (41, 35), (41, 36), (32, 40), (32, 44), (32, 45), (93, 46), (46, 47), (30, 48), (36, 50), (90, 53), (22, 55), (22, 56), (22, 57), (26, 60), (26, 61), (49, 72), (50, 73), (46, 74), (20, 76), (46, 80), (69, 82), (66, 83), (54, 85), (76, 51), (79, 88), (79, 89), (79, 90), (79, 91), (79, 92), (117, 75), (118, 66)]</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.ftupd" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">ftupd</code><em class="property"> = [(20, 3), (20, 4), (20, 5), (34, 6), (43, 7), (43, 8), (70, 9), (98, 12), (76, 13), (30, 14), (30, 15), (30, 16), (34, 17), (43, 18), (98, 21), (98, 22), (26, 23), (26, 25), (43, 26), (65, 27), (60, 28), (61, 29), (61, 30), (72, 31), (72, 32), (41, 35), (41, 36), (32, 40), (32, 44), (32, 45), (93, 46), (46, 47), (30, 48), (36, 50), (90, 53), (22, 55), (22, 56), (22, 57), (26, 60), (26, 61), (49, 73), (50, 74), (46, 75), (20, 77), (46, 81), (69, 83), (66, 84), (54, 86), (76, 51), (79, 89), (79, 90), (79, 91), (79, 92), (79, 93), (117, 76), (121, 65), (118, 67)]</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.ftupd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/src/gmxlib/tpxio.c</span></code></p>
 </dd></dl>
 
 <dl class="data">
 <dt id="MDAnalysis.topology.tpr.setting.interaction_types">
-<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">interaction_types</code><em class="property"> = [('BONDS', 'Bond', 2), ('G96BONDS', 'G96Bond', 2), ('MORSE', 'Morse', 2), ('CUBICBONDS', 'Cubic Bonds', 2), ('CONNBONDS', 'Connect Bonds', 2), ('HARMONIC', 'Harmonic Pot.', 2), ('FENEBONDS', 'FENE Bonds', 2), ('TABBONDS', 'Tab. Bonds', 2), ('TABBONDSNC', 'Tab. Bonds NC', 2), ('RESTRAINTPOT', 'Restraint Pot.', 2), ('ANGLES', 'Angle', 3), ('G96ANGLES', 'G96Angle', 3), ('RESTRANGLES', 'Restricted Angles', 3), ('LINEAR_ANGLES', 'Lin. Angle', 3), ('CROSS_BOND_BOND', 'Bond-Cross', 3), ('CROSS_BOND_ANGLE', 'BA-Cross', 3), ('UREY_BRADLEY', 'U-B', 3), ('QANGLES', 'Quartic Angles', 3), ('TABANGLES', 'Tab. Angles', 3), ('PDIHS', 'Proper Dih.', 4), ('RBDIHS', 'Ryckaert-Bell.', 4), ('RESTRDIHS', 'Restricted Dih.', 4), ('CBTDIHS', 'CBT Dih.', 4), ('FOURDIHS', 'Fourier Dih.', 4), ('IDIHS', 'Improper Dih.', 4), ('PIDIHS', 'Improper Dih.', 4), ('TABDIHS', 'Tab. Dih.', 4), ('CMAP', 'CMAP Dih.', 5), ('GB12', 'GB 1-2 Pol.', 2), ('GB13', 'GB 1-3 Pol.', 2), ('GB14', 'GB 1-4 Pol.', 2), ('GBPOL', 'GB Polarization', None), ('NPSOLVATION', 'Nonpolar Sol.', None), ('LJ14', 'LJ-14', 2), ('COUL14', 'Coulomb-14', None), ('LJC14_Q', 'LJC-14 q', 2), ('LJC_NB', 'LJC Pairs NB', 2), ('LJ_SR', 'LJ (SR)', 2), ('BHAM', 'Buck.ham (SR)', 2), ('LJ_LR', 'LJ (LR)', None), ('BHAM_LR', 'Buck.ham (LR)', None), ('DISPCORR', 'Disper. corr.', None), ('COUL_SR', 'Coulomb (SR)', None), ('COUL_LR', 'Coulomb (LR)', None), ('RF_EXCL', 'RF excl.', None), ('COUL_RECIP', 'Coul. recip.', None), ('LJ_RECIP', 'LJ recip.', None), ('DPD', 'DPD', None), ('POLARIZATION', 'Polarization', 2), ('WATERPOL', 'Water Pol.', 5), ('THOLE', 'Thole Pol.', 4), ('ANHARM_POL', 'Anharm. Pol.', 2), ('POSRES', 'Position Rest.', 1), ('FBPOSRES', 'Flat-bottom posres', 1), ('DISRES', 'Dis. Rest.', 2), ('DISRESVIOL', 'D.R.Viol. (nm)', None), ('ORIRES', 'Orient. Rest.', 2), ('ORDEV', 'Ori. R. RMSD', None), ('ANGRES', 'Angle Rest.', 4), ('ANGRESZ', 'Angle Rest. Z', 2), ('DIHRES', 'Dih. Rest.', 4), ('DIHRESVIOL', 'Dih. Rest. Viol.', None), ('CONSTR', 'Constraint', 2), ('CONSTRNC', 'Constr. No Conn.', 2), ('SETTLE', 'Settle', 3), ('VSITE2', 'Virtual site 2', 3), ('VSITE2FD', 'Virtual site 2fd', 3), ('VSITE3', 'Virtual site 3', 4), ('VSITE3FD', 'Virtual site 3fd', 4), ('VSITE3FAD', 'Virtual site 3fad', 4), ('VSITE3OUT', 'Virtual site 3out', 4), ('VSITE4FD', 'Virtual site 4fd', 5), ('VSITE4FDN', 'Virtual site 4fdn', 5), ('VSITEN', 'Virtual site N', 2), ('COM_PULL', 'COM Pull En.', None), ('DENSITYFIT', 'Density fitting', None), ('EQM', 'Quantum En.', None), ('EPOT', 'Potential', None), ('EKIN', 'Kinetic En.', None), ('ETOT', 'Total Energy', None), ('ECONS', 'Conserved En.', None), ('TEMP', 'Temperature', None), ('VTEMP', 'Vir. Temp. (not used)', None), ('PDISPCORR', 'Pres. DC', None), ('PRES', 'Pressure', None), ('DH/DL_CON', 'dH/dl constr.', None), ('DV/DL', 'dVremain/dl', None), ('DK/DL', 'dEkin/dl', None), ('DVC/DL', 'dVcoul/dl', None), ('DVV/DL', 'dVvdw/dl', None), ('DVB/DL', 'dVbonded/dl', None), ('DVR/DL', 'dVrestraint/dl', None), ('DVT/DL', 'dVtemperature/dl', None)]</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.interaction_types" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.topology.tpr.setting.</code><code class="descname">interaction_types</code><em class="property"> = [('BONDS', 'Bond', 2), ('G96BONDS', 'G96Bond', 2), ('MORSE', 'Morse', 2), ('CUBICBONDS', 'Cubic Bonds', 2), ('CONNBONDS', 'Connect Bonds', 2), ('HARMONIC', 'Harmonic Pot.', 2), ('FENEBONDS', 'FENE Bonds', 2), ('TABBONDS', 'Tab. Bonds', 2), ('TABBONDSNC', 'Tab. Bonds NC', 2), ('RESTRAINTPOT', 'Restraint Pot.', 2), ('ANGLES', 'Angle', 3), ('G96ANGLES', 'G96Angle', 3), ('RESTRANGLES', 'Restricted Angles', 3), ('LINEAR_ANGLES', 'Lin. Angle', 3), ('CROSS_BOND_BOND', 'Bond-Cross', 3), ('CROSS_BOND_ANGLE', 'BA-Cross', 3), ('UREY_BRADLEY', 'U-B', 3), ('QANGLES', 'Quartic Angles', 3), ('TABANGLES', 'Tab. Angles', 3), ('PDIHS', 'Proper Dih.', 4), ('RBDIHS', 'Ryckaert-Bell.', 4), ('RESTRDIHS', 'Restricted Dih.', 4), ('CBTDIHS', 'CBT Dih.', 4), ('FOURDIHS', 'Fourier Dih.', 4), ('IDIHS', 'Improper Dih.', 4), ('PIDIHS', 'Improper Dih.', 4), ('TABDIHS', 'Tab. Dih.', 4), ('CMAP', 'CMAP Dih.', 5), ('GB12', 'GB 1-2 Pol.', 2), ('GB13', 'GB 1-3 Pol.', 2), ('GB14', 'GB 1-4 Pol.', 2), ('GBPOL', 'GB Polarization', None), ('NPSOLVATION', 'Nonpolar Sol.', None), ('LJ14', 'LJ-14', 2), ('COUL14', 'Coulomb-14', None), ('LJC14_Q', 'LJC-14 q', 2), ('LJC_NB', 'LJC Pairs NB', 2), ('LJ_SR', 'LJ (SR)', 2), ('BHAM', 'Buck.ham (SR)', 2), ('LJ_LR', 'LJ (LR)', None), ('BHAM_LR', 'Buck.ham (LR)', None), ('DISPCORR', 'Disper. corr.', None), ('COUL_SR', 'Coulomb (SR)', None), ('COUL_LR', 'Coulomb (LR)', None), ('RF_EXCL', 'RF excl.', None), ('COUL_RECIP', 'Coul. recip.', None), ('LJ_RECIP', 'LJ recip.', None), ('DPD', 'DPD', None), ('POLARIZATION', 'Polarization', 2), ('WATERPOL', 'Water Pol.', 5), ('THOLE', 'Thole Pol.', 4), ('ANHARM_POL', 'Anharm. Pol.', 2), ('POSRES', 'Position Rest.', 1), ('FBPOSRES', 'Flat-bottom posres', 1), ('DISRES', 'Dis. Rest.', 2), ('DISRESVIOL', 'D.R.Viol. (nm)', None), ('ORIRES', 'Orient. Rest.', 2), ('ORDEV', 'Ori. R. RMSD', None), ('ANGRES', 'Angle Rest.', 4), ('ANGRESZ', 'Angle Rest. Z', 2), ('DIHRES', 'Dih. Rest.', 4), ('DIHRESVIOL', 'Dih. Rest. Viol.', None), ('CONSTR', 'Constraint', 2), ('CONSTRNC', 'Constr. No Conn.', 2), ('SETTLE', 'Settle', 3), ('VSITE1', 'Virtual site 1', 2), ('VSITE2', 'Virtual site 2', 3), ('VSITE2FD', 'Virtual site 2fd', 3), ('VSITE3', 'Virtual site 3', 4), ('VSITE3FD', 'Virtual site 3fd', 4), ('VSITE3FAD', 'Virtual site 3fad', 4), ('VSITE3OUT', 'Virtual site 3out', 4), ('VSITE4FD', 'Virtual site 4fd', 5), ('VSITE4FDN', 'Virtual site 4fdn', 5), ('VSITEN', 'Virtual site N', 2), ('COM_PULL', 'COM Pull En.', None), ('DENSITYFIT', 'Density fitting', None), ('EQM', 'Quantum En.', None), ('EPOT', 'Potential', None), ('EKIN', 'Kinetic En.', None), ('ETOT', 'Total Energy', None), ('ECONS', 'Conserved En.', None), ('TEMP', 'Temperature', None), ('VTEMP', 'Vir. Temp. (not used)', None), ('PDISPCORR', 'Pres. DC', None), ('PRES', 'Pressure', None), ('DH/DL_CON', 'dH/dl constr.', None), ('DV/DL', 'dVremain/dl', None), ('DK/DL', 'dEkin/dl', None), ('DVC/DL', 'dVcoul/dl', None), ('DVV/DL', 'dVvdw/dl', None), ('DVB/DL', 'dVbonded/dl', None), ('DVR/DL', 'dVrestraint/dl', None), ('DVT/DL', 'dVtemperature/dl', None)]</em><a class="headerlink" href="#MDAnalysis.topology.tpr.setting.interaction_types" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interaction types from <code class="docutils literal notranslate"><span class="pre">&lt;gromacs_dir&gt;/gmxlib/ifunc.c</span></code></p>
 </dd></dl>
 
@@ -1502,7 +1508,7 @@ functions as a starting point for your own code.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
   </div>
