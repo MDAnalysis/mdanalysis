@@ -3324,13 +3324,17 @@ class AtomGroup(GroupBase):
 
         raise ValueError("No writer found for format: {}".format(filename))
 
-    def sort(self, key='ix'):
-        """Return stably sorted Atomgroup by a key that specifies an attribute of atomgroup. The default key is "ix".
+    def sort(self, key='ix', keyfunc=None):
+        """Return stably sorted Atomgroup by a key that specifies
+           an attribute of atomgroup. The default key is "ix".
 
         Parameters
         ----------
-        keys: 
+        keys: str
             The name for attribute of Atomgroup. (e.g. "ids", "ix")
+        keyfunc: function
+            A function that returns 1 dimension array, a key for sorting the
+            atomgroup from multiple dimension array that the attribute returns.
 
         Returns
         -------
@@ -3359,7 +3363,22 @@ class AtomGroup(GroupBase):
         .. versionadded:: 2.0.0
         """
         idx = getattr(self.atoms, key)
-        order = np.argsort(idx, kind='stable')
+        if idx.ndim == 0:
+            return self.atoms
+        elif idx.ndim == 1:
+            order = np.argsort(idx, kind='stable')
+        else:
+            if keyfunc is None:
+                raise NameError("You have to assign the argument 'keyfunc' "
+                                "a proper function that returns 1D array "
+                                "as the attribute '{}' returns multiple "
+                                "dimension array.".format(key))
+            sortkeys = keyfunc(idx)
+            if sortkeys.ndim != 1:
+                raise ValueError("The function you assigned to the argument "
+                                 "'keyfunc':{} doesn't return 1D array."
+                                 .format(keyfunc))
+            order = np.argsort(sortkeys, kind='stable')
         agsorted = self.atoms[order]
         return agsorted
 
