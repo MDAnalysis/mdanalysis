@@ -3363,6 +3363,10 @@ class AtomGroup(GroupBase):
         .. versionadded:: 2.0.0
         """
         idx = getattr(self.atoms, key)
+        if len(idx) != len(self.atoms):
+            raise ValueError("The array returned by the attribute '{}' "
+                             "must have a same length as the number of "
+                             "atoms".format(key))
         if idx.ndim == 0:
             return self.atoms
         elif idx.ndim == 1:
