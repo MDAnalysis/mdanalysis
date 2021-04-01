@@ -16,11 +16,14 @@ The rules for this file:
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
-         hanatok, rmeli, aditya-kamath, tirkarthi, biogen98
+         hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi, hejamu,
+         biogen98
 
   * 2.0.0
 
 Fixes
+  * A Universe created from an ROMol with no atoms returns now a Universe 
+    with 0 atoms (Issue #3142)
   * ValueError raised when empty atomgroup is given to DensityAnalysis
     without a user defined grid. UserWarning displayed when user defined
     grid is provided. (Issue #3055)
@@ -87,6 +90,7 @@ Enhancements
   * Added a ValueError raised when not given a gridcenter while
     providing grid dimensions to DensityAnalysis, also added
     check for NaN in the input (Issue #3148, PR #3154)
+  * Read TPR files from Gromacs 2021 (Issue #3180)
   * Adds preliminary support for the ppc64le platform with minimal
     dependencies (Issue #3127, PR #3149)
   * Caches can now undergo central validation at the Universe level, opening
