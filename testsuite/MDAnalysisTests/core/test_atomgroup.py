@@ -1733,6 +1733,8 @@ class TestAtomGroupSort(object):
     def test_sort_position(self, ag):
         ag.positions = (-np.arange(21)).reshape(7, 3)
         with pytest.raises(ValueError):
+            ag.sort("angles")
+        with pytest.raises(ValueError):
             ag.sort("positions", keyfunc=lambda x: x)
         with pytest.raises(NameError):
             ag.sort("positions")
