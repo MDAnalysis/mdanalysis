@@ -301,12 +301,9 @@ size) in ångström. Padding is ignored when setting a user defined
 grid.</li>
 <li><strong>gridcenter</strong> (<em>numpy ndarray</em><em>, </em><em>float32</em><em> (</em><em>optional</em><em>)</em>) – 3 element numpy array detailing the x, y and z coordinates of the
 center of a user defined grid box in ångström.</li>
-<li><strong>xdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined x dimension box edge in ångström; ignored if
-gridcenter is “None”.</li>
-<li><strong>ydim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined y dimension box edge in ångström; ignored if
-gridcenter is “None”.</li>
-<li><strong>zdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined z dimension box edge in ångström; ignored if
-gridcenter is “None”.</li>
+<li><strong>xdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined x dimension box edge in ångström.</li>
+<li><strong>ydim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined y dimension box edge in ångström.</li>
+<li><strong>zdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined z dimension box edge in ångström.</li>
 </ul>
 </td>
 </tr>
@@ -318,7 +315,8 @@ gridcenter is “None”.</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – if AtomGroup is empty and no user defined grid is provided</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – if AtomGroup is empty and no user defined grid is provided, or
+if the user defined grid is not or incorrectly provided</li>
 <li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#UserWarning" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">UserWarning</span></code></a> – if AtomGroup is empty and a user defined grid is provided</li>
 </ul>
 </td>
@@ -330,6 +328,9 @@ gridcenter is “None”.</li>
 <p class="last"><code class="xref py py-class docutils literal notranslate"><span class="pre">pmda.density.DensityAnalysis</span></code></p>
 </div>
 <p class="rubric">Notes</p>
+<p>If the <cite>gridcenter</cite> and <cite>x/y/zdim</cite> arguments are not provided,
+<a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis" title="MDAnalysis.analysis.density.DensityAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">DensityAnalysis</span></code></a> will attempt to automatically generate
+a gridbox from the atoms in ‘atomgroup’ (See Examples).</p>
 <p>Normal <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> instances represent a static selection of
 atoms. If you want <em>dynamically changing selections</em> (such as “name OW and
 around 4.0 (protein and not name H*)”, i.e., the water oxygen atoms that
@@ -1068,7 +1069,7 @@ for the actual density calculation.</td></tr>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
   </div>

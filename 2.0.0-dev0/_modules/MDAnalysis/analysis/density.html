@@ -386,14 +386,11 @@
 <span class="sd">            3 element numpy array detailing the x, y and z coordinates of the</span>
 <span class="sd">            center of a user defined grid box in ångström.</span>
 <span class="sd">    xdim : float (optional)</span>
-<span class="sd">            User defined x dimension box edge in ångström; ignored if</span>
-<span class="sd">            gridcenter is &quot;None&quot;.</span>
+<span class="sd">            User defined x dimension box edge in ångström.</span>
 <span class="sd">    ydim : float (optional)</span>
-<span class="sd">            User defined y dimension box edge in ångström; ignored if</span>
-<span class="sd">            gridcenter is &quot;None&quot;.</span>
+<span class="sd">            User defined y dimension box edge in ångström.</span>
 <span class="sd">    zdim : float (optional)</span>
-<span class="sd">            User defined z dimension box edge in ångström; ignored if</span>
-<span class="sd">            gridcenter is &quot;None&quot;.</span>
+<span class="sd">            User defined z dimension box edge in ångström.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -404,7 +401,8 @@
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
-<span class="sd">        if AtomGroup is empty and no user defined grid is provided</span>
+<span class="sd">        if AtomGroup is empty and no user defined grid is provided, or</span>
+<span class="sd">        if the user defined grid is not or incorrectly provided</span>
 <span class="sd">    UserWarning</span>
 <span class="sd">        if AtomGroup is empty and a user defined grid is provided</span>
 
@@ -415,6 +413,10 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
+<span class="sd">    If the `gridcenter` and `x/y/zdim` arguments are not provided,</span>
+<span class="sd">    :class:`DensityAnalysis` will attempt to automatically generate</span>
+<span class="sd">    a gridbox from the atoms in &#39;atomgroup&#39; (See Examples).</span>
+
 <span class="sd">    Normal :class:`AtomGroup` instances represent a static selection of</span>
 <span class="sd">    atoms. If you want *dynamically changing selections* (such as &quot;name OW and</span>
 <span class="sd">    around 4.0 (protein and not name H*)&quot;, i.e., the water oxygen atoms that</span>
@@ -584,7 +586,8 @@
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atomgroup</span><span class="o">.</span><span class="n">positions</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridcenter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gridcenter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span>
+                <span class="nb">any</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_xdim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ydim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_zdim</span><span class="p">])):</span>
             <span class="c1"># Issue 2372: padding is ignored, defaults to 2.0 therefore warn</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Box padding (currently set at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_padding</span><span class="si">}</span><span class="s2">) &quot;</span>
@@ -691,17 +694,20 @@
 <span class="sd">           Now a staticmethod of :class:`DensityAnalysis`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Check user inputs</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="n">gridcenter</span><span class="p">,</span> <span class="n">xdim</span><span class="p">,</span> <span class="n">ydim</span><span class="p">,</span> <span class="n">zdim</span><span class="p">]):</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Gridcenter or grid dimensions are not provided&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">gridcenter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">gridcenter</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">gridcenter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">gridcenter</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,)</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;Non-number values assigned to gridcenter&quot;</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
-        <span class="k">if</span> <span class="n">gridcenter</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;gridcenter must be a 3D coordinate&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Gridcenter must be a 3D coordinate&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">xyzdim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">xdim</span><span class="p">,</span> <span class="n">ydim</span><span class="p">,</span> <span class="n">zdim</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;xdim, ydim, and zdim must be numbers&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">gridcenter</span><span class="p">))</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">xyzdim</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Gridcenter or grid dimensions have NaN element&quot;</span><span class="p">)</span>
+
 
         <span class="c1"># Set min/max by shifting by half the edge length of each dimension</span>
         <span class="n">umin</span> <span class="o">=</span> <span class="n">gridcenter</span> <span class="o">-</span> <span class="n">xyzdim</span><span class="o">/</span><span class="mi">2</span>
@@ -1056,7 +1062,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
   </div>
