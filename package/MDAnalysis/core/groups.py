@@ -3367,11 +3367,9 @@ class AtomGroup(GroupBase):
             raise ValueError("The array returned by the attribute '{}' "
                              "must have a same length as the number of "
                              "atoms".format(key))
-        if idx.ndim == 0:
-            return self.atoms
-        elif idx.ndim == 1:
+        if idx.ndim == 1:
             order = np.argsort(idx, kind='stable')
-        else:
+        elif idx.ndim > 1:
             if keyfunc is None:
                 raise NameError("You have to assign the argument 'keyfunc' "
                                 "a proper function that returns 1D array "
