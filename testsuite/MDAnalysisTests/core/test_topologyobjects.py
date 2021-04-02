@@ -278,7 +278,7 @@ class TestTopologyGroup(object):
     def test_bonds_types(self, PSFDCD, res1):
         """Tests TopologyDict for bonds"""
         assert len(PSFDCD.atoms.bonds.types()) == 57
-        assert len(res1.atoms.get_connections("bonds", outside=True).types()) == 12
+        assert len(res1.atoms.get_connections("bonds").types()) == 12
         assert len(res1.atoms.bonds.types()) == 11
 
     def test_bonds_contains(self, b_td):

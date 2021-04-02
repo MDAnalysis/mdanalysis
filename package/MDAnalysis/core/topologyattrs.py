@@ -2309,7 +2309,7 @@ class _Connection(AtomAttr):
         .. versionchanged:: 1.1.0
             Added the ``outside`` keyword. Set to ``True`` by default
             to give the same behavior as previously
-        
+
         .. versionchanged:: 2.0.0
             Changed to default ``outside=False``
         """
