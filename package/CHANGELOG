@@ -89,7 +89,7 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
-  * Added sort method to the atomgroup (Issue #2976) 
+  * Added sort method to the atomgroup (Issue #2976, PR #3188) 
   * Added a ValueError raised when not given a gridcenter while
     providing grid dimensions to DensityAnalysis, also added
     check for NaN in the input (Issue #3148, PR #3154)
