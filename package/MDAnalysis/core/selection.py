@@ -525,14 +525,15 @@ class BondedSelection(Selection):
     def apply(self, group):
         grp = self.sel.apply(group)
         # Check if we have bonds
-        if not group.bonds:
+        bonds = group.get_connections("bonds", outside=True)
+        if not bonds:
             warnings.warn("Bonded selection has 0 bonds")
             return group[[]]
 
         grpidx = grp.indices
 
         # (n, 2) array of bond indices
-        bix = np.array(group.bonds.to_indices())
+        bix = np.array(bonds.to_indices())
 
         idx = []
         # left side

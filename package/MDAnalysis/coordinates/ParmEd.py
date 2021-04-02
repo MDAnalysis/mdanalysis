@@ -272,8 +272,7 @@ class ParmEdConverter(base.ConverterBase):
         
         # bonds
         try:
-            params = ag_or_ts.bonds.atomgroup_intersection(ag_or_ts, 
-                                                           strict=True)
+            params = ag_or_ts.bonds
         except AttributeError:
             pass
         else:

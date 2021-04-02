@@ -365,7 +365,7 @@ class _MutableBase(object):
                 err += 'Did you mean {match}?'.format(match=match)
             raise AttributeError(err)
 
-    def get_connections(self, typename, outside=False):
+    def get_connections(self, typename, outside=True):
         """
         Get bonded connections between atoms as a
         :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`.

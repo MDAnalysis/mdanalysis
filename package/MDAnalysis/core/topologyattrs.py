@@ -2295,7 +2295,7 @@ class _Connection(AtomAttr):
     def set_atoms(self, ag):
         return NotImplementedError("Cannot set bond information")
 
-    def get_atoms(self, ag, outside=True):
+    def get_atoms(self, ag, outside=False):
         """
         Get subset for atoms.
 
@@ -2309,6 +2309,9 @@ class _Connection(AtomAttr):
         .. versionchanged:: 1.1.0
             Added the ``outside`` keyword. Set to ``True`` by default
             to give the same behavior as previously
+        
+        .. versionchanged:: 2.0.0
+            Changed to default ``outside=False``
         """
         try:
             unique_bonds = set(itertools.chain(
@@ -2316,19 +2319,15 @@ class _Connection(AtomAttr):
         except TypeError:
             # maybe we got passed an Atom
             unique_bonds = self._bondDict[ag.ix]
+            outside = True
         unique_bonds = np.array(sorted(unique_bonds), dtype=object)
         if not outside:
             indices = np.array([list(bd[0]) for bd in unique_bonds])
-            mask = np.all(np.isin(indices, ag.indices), axis=1)
+            try:
+                mask = np.all(np.isin(indices, ag.ix), axis=1)
+            except np.AxisError:
+                mask = []
             unique_bonds = unique_bonds[mask]
-        else:
-            warnings.warn("This group contains all connections "
-                          "where at least one atom in the "
-                          "AtomGroup is involved. In MDAnalysis "
-                          "2.0 this behavior will change so that "
-                          "the group only contains connections "
-                          "where all atoms are in the AtomGroup.",
-                          DeprecationWarning)
 
         bond_idx, types, guessed, order = np.hsplit(unique_bonds, 4)
         bond_idx = np.array(bond_idx.ravel().tolist(), dtype=np.int32)
