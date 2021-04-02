@@ -730,6 +730,11 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
 
         assert len(sel) == expected
 
+    @pytest.mark.parametrize('periodic,expected', ([True, 33], [False, 25]))
+    def test_sphzone(self, u, periodic, expected):
+        sel = u.select_atoms('sphzone 5.0 name NOT_A_NAME', periodic=periodic)
+        assert len(sel) == 0
+
 
 class TestTriclinicDistanceSelections(BaseDistanceSelection):
     @pytest.fixture()
