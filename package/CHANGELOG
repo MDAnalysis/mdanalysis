@@ -141,7 +141,10 @@ Enhancements
 
 
 Changes
-  * TPRParser now loads TPR files with `tpr_resid_from_one=True` by default,
+  * AtomGroup.bonds, .angles, .dihedrals, .impropers etc. now return only
+    the connections involving atoms within the AtomGroup, instead of
+    including atoms outside the AtomGroup (Issue #1264, #2821)
+  * TPRParser now loads TPR files with `tpr_resid_from_one=True` by default, 
     which starts TPR resid indexing from 1 (instead of 0 as in 1.x) (Issue #2364, PR #3152)
   * Introduces encore specific C compiler arguments to allow for lowering of
     optimisations on non-x86 platforms (Issue #1389, PR #3149)
