@@ -174,13 +174,10 @@ class ParmEdConverter(base.ConverterBase):
             ag_or_ts = obj.atoms
         except AttributeError:
             if isinstance(obj, base.Timestep):
-                ag_or_ts = obj.copy()
-                warnings.warn('Passing a Timestep to convert is deprecated, '
-                              'and will be removed in 2.0; '
-                              'use either an AtomGroup or Universe',
-                              DeprecationWarning)
+                raise ValueError("Writing Timesteps to ParmEd "
+                                 "objects is not supported")
             else:
-                raise_from(TypeError("No Timestep found in obj argument"), None)
+                raise_from(TypeError("No atoms found in obj argument"), None)
 
         # Check for topology information
         missing_topology = []

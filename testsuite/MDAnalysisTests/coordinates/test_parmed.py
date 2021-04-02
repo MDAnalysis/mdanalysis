@@ -290,9 +290,9 @@ class TestParmEdConverterPDB(BaseTestParmEdConverter):
         assert_almost_equal(ref.coordinates, output.coordinates, decimal=3)
 
 
-def test_convert_ts_deprecation():
+def test_pass_ts_error():
     u = mda.Universe(PDB_small)
-    err = "Passing a Timestep to convert is deprecated"
-    with pytest.warns(DeprecationWarning, match=err):
+    err = "Writing Timesteps to ParmEd objects is not supported"
+    with pytest.raises(ValueError, match=err):
         c = ParmEdConverter()
         c.convert(u.trajectory.ts)
