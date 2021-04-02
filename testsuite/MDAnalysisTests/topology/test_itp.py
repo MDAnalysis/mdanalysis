@@ -339,7 +339,8 @@ class TestErrors:
 class TestRelativePath:
 
     def test_relstring(self, tmpdir):
-        content="""[ atoms ]
+        content=""" #include "../../data/gromacs/gromos54a7_edited.ff/test.itp"
+                    [ atoms ]
                      1      H      1    SOL    HW1      1       0.41    1.00800"""
         p=tmpdir.mkdir("sub1").join("test.itp")
         p.write(content)
