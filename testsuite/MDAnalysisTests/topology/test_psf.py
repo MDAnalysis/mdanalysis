@@ -72,8 +72,8 @@ class TestPSFParser(PSFBase):
 
     def test_bonds_atom_counts(self, filename):
         u = mda.Universe(filename)
-        assert len(u.atoms[[0]].bonds) == 4
-        assert len(u.atoms[[42]].bonds) == 1
+        assert len(u.atoms[0].bonds) == 4
+        assert len(u.atoms[42].bonds) == 1
 
     def test_bonds_identity(self, top):
         vals = top.bonds.values
@@ -85,8 +85,8 @@ class TestPSFParser(PSFBase):
 
     def test_angles_atom_counts(self, filename):
         u = mda.Universe(filename)
-        assert len(u.atoms[[0]].angles), 9
-        assert len(u.atoms[[42]].angles), 2
+        assert len(u.atoms[0].angles), 9
+        assert len(u.atoms[42].angles), 2
 
     def test_angles_identity(self, top):
         vals = top.angles.values
@@ -98,7 +98,7 @@ class TestPSFParser(PSFBase):
 
     def test_dihedrals_atom_counts(self, filename):
         u = mda.Universe(filename)
-        assert len(u.atoms[[0]].dihedrals) == 14
+        assert len(u.atoms[0].dihedrals) == 14
 
     def test_dihedrals_identity(self, top):
         vals = top.dihedrals.values

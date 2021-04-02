@@ -87,8 +87,8 @@ class TestITP(BaseITP):
 
     
     def test_bonds_atom_counts(self, universe):
-        assert len(universe.atoms[[0]].bonds) == 3
-        assert len(universe.atoms[[42]].bonds) == 1
+        assert len(universe.atoms[0].bonds) == 3
+        assert len(universe.atoms[42].bonds) == 1
 
     def test_bonds_values(self, top):
         vals = top.bonds.values
@@ -99,8 +99,8 @@ class TestITP(BaseITP):
         assert universe.bonds[0].type == 2
 
     def test_angles_atom_counts(self, universe):
-        assert len(universe.atoms[[0]].angles) == 5
-        assert len(universe.atoms[[42]].angles) == 2
+        assert len(universe.atoms[0].angles) == 5
+        assert len(universe.atoms[42].angles) == 2
 
     def test_angles_values(self, top):
         vals = top.angles.values
@@ -111,7 +111,7 @@ class TestITP(BaseITP):
         assert universe.angles[0].type == 2
 
     def test_dihedrals_atom_counts(self, universe):
-        assert len(universe.atoms[[0]].dihedrals) == 2
+        assert len(universe.atoms[0].dihedrals) == 2
 
     def test_dihedrals_multiple_types(self, universe):
         ag = universe.atoms[[0, 3, 5, 7]]
@@ -128,7 +128,7 @@ class TestITP(BaseITP):
 
 
     def test_impropers_atom_counts(self, universe):
-        assert len(universe.atoms[[0]].impropers) == 1
+        assert len(universe.atoms[0].impropers) == 1
 
     def test_impropers_values(self, top):
         vals = top.impropers.values
@@ -174,11 +174,11 @@ class TestDifferentDirectivesITP(BaseITP):
             assert a not in top.angles.values
 
     def test_bonds_atom_counts(self, universe):
-        assert len(universe.atoms[[0]].bonds) == 5
-        assert len(universe.atoms[[42]].bonds) == 5
+        assert len(universe.atoms[0].bonds) == 5
+        assert len(universe.atoms[42].bonds) == 5
 
     def test_dihedrals_atom_counts(self, universe):
-        assert len(universe.atoms[[0]].dihedrals) == 1
+        assert len(universe.atoms[0].dihedrals) == 1
 
     def test_dihedrals_identity(self, universe):
         assert universe.dihedrals[0].type == (1, 1)

@@ -278,7 +278,8 @@ class TestTopologyGroup(object):
     def test_bonds_types(self, PSFDCD, res1):
         """Tests TopologyDict for bonds"""
         assert len(PSFDCD.atoms.bonds.types()) == 57
-        assert len(res1.atoms.bonds.types()) == 12
+        assert len(res1.atoms.get_connections("bonds", outside=True).types()) == 12
+        assert len(res1.atoms.bonds.types()) == 11
 
     def test_bonds_contains(self, b_td):
         assert ('57', '2') in b_td
@@ -425,8 +426,8 @@ class TestTopologyGroup(object):
         """Pull bonds from a TG which are at least partially in an AG"""
         ag = PSFDCD.atoms[10:60]
 
-        TG = getattr(PSFDCD.atoms, attr)
-        ref = getattr(ag, attr)
+        TG = PSFDCD.atoms.get_connections(attr, outside=True)
+        ref = ag.get_connections(attr, outside=True)
         newTG = TG.atomgroup_intersection(ag)
 
         assert newTG == ref
@@ -612,22 +613,22 @@ class TestTopologyGroup_Cython(object):
     @staticmethod
     @pytest.fixture
     def bgroup(PSFDCD):
-        return PSFDCD.atoms[:5].bonds
+        return PSFDCD.atoms[:5].get_connections("bonds", outside=True)
 
     @staticmethod
     @pytest.fixture
     def agroup(PSFDCD):
-        return PSFDCD.atoms[:5].angles
+        return PSFDCD.atoms[:5].get_connections("angles", outside=True)
 
     @staticmethod
     @pytest.fixture
     def dgroup(PSFDCD):
-        return PSFDCD.atoms[:5].dihedrals
+        return PSFDCD.atoms[:5].get_connections("dihedrals", outside=True)
 
     @staticmethod
     @pytest.fixture
     def igroup(PSFDCD):
-        return PSFDCD.atoms[:5].impropers
+        return PSFDCD.atoms[:5].get_connections("impropers", outside=True)
 
     # bonds
     def test_wrong_type_bonds(self, agroup, dgroup, igroup):

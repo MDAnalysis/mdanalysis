@@ -62,24 +62,24 @@ class TOPBase(ParserBase):
 
     def test_bonds_atom_counts(self, filename):
         u = mda.Universe(filename)
-        assert len(u.atoms[[0]].bonds) == self.expected_n_zero_bonds
-        assert len(u.atoms[[self.atom_i]].bonds) == self.expected_n_i_bonds
+        assert len(u.atoms[0].bonds) == self.expected_n_zero_bonds
+        assert len(u.atoms[self.atom_i].bonds) == self.expected_n_i_bonds
 
     def test_angles_atom_counts(self, filename):
         u = mda.Universe(filename)
-        assert len(u.atoms[[0]].angles) == self.expected_n_zero_angles
-        assert len(u.atoms[[self.atom_i]].angles) == self.expected_n_i_angles
+        assert len(u.atoms[0].angles) == self.expected_n_zero_angles
+        assert len(u.atoms[self.atom_i].angles) == self.expected_n_i_angles
 
     def test_dihedrals_atom_counts(self, filename):
         u = mda.Universe(filename)
-        assert len(u.atoms[[0]].dihedrals) == self.expected_n_zero_dihedrals
-        assert len(u.atoms[[self.atom_i]].dihedrals) == \
+        assert len(u.atoms[0].dihedrals) == self.expected_n_zero_dihedrals
+        assert len(u.atoms[self.atom_i].dihedrals) == \
             self.expected_n_i_dihedrals
 
     def test_impropers_atom_counts(self, filename):
         u = mda.Universe(filename)
-        assert len(u.atoms[[0]].impropers) == self.expected_n_zero_impropers
-        assert len(u.atoms[[self.atom_i]].impropers) == \
+        assert len(u.atoms[0].impropers) == self.expected_n_zero_impropers
+        assert len(u.atoms[self.atom_i].impropers) == \
             self.expected_n_i_impropers
 
     def test_bonds_identity(self, top):
