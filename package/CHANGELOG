@@ -32,7 +32,7 @@ Changes
 
 Deprecations
   * Deprecate structure of `results` attribute for LinearDensity, 
-    PersistenceLength and AnalysisFromFunction 
+    PersistenceLength and AnalysisFromFunction (Issue #3115)
   * NCDFWriter `scale_factor` writing will change in version 2.0 to
     better match AMBER outputs (Issue #2327)
   * Deprecated using the last letter of the segid as the
