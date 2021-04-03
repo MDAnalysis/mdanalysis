@@ -222,12 +222,15 @@ class GNMAnalysis(object):
           `Bonus_groups` is contained in `selection` as this could lead to
           double counting. No checks are applied. Default is ``None``.
 
+
+
     Attributes
     ----------
     results : list
           eigenvalues and eigenvectors
-          *The structure of the `results` list will change in MDAnalysis 
-          version 2.0.*
+
+          .. deprecation:: 1.1.0
+          The structure of the `results` list will change in MDAnalysis 2.0
 
     See Also
     --------

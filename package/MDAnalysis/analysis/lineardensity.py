@@ -62,8 +62,10 @@ class LinearDensity(AnalysisBase):
           keys, find 'pos', 'pos_std' (mass-weighted density and
           standard deviation), 'char', 'char_std' (charge density and
           its standard deviation), 'slice_volume' (volume of bin).
-          *The structure of the dictionary will change in MDAnalysis 
-          version 2.0.*
+
+          .. deprecation:: 1.1.0
+             The structure of the `results` dictionary will change in
+             MDAnalysis 2.0
 
     Example
     -------
