@@ -222,6 +222,13 @@ class GNMAnalysis(object):
           `Bonus_groups` is contained in `selection` as this could lead to
           double counting. No checks are applied. Default is ``None``.
 
+    Attributes
+    ----------
+    results : list
+          eigenvalues and eigenvectors
+          *The structure of the `results` list will change in MDAnalysis 
+          version 2.0.*
+
     See Also
     --------
     :class:`closeContactGNMAnalysis`
@@ -278,7 +285,7 @@ class GNMAnalysis(object):
         # [ v[list_map[i]] for i in range( nmodes) ] ))
 
         warnings.warn(
-            "This structure of the `results` list will change in "
+            "The structure of the `results` list will change in "
             "MDAnalysis version 2.0.",
             category=DeprecationWarning
         )

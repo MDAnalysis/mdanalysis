@@ -62,6 +62,8 @@ class LinearDensity(AnalysisBase):
           keys, find 'pos', 'pos_std' (mass-weighted density and
           standard deviation), 'char', 'char_std' (charge density and
           its standard deviation), 'slice_volume' (volume of bin).
+          *The structure of the dictionary will change in MDAnalysis 
+          version 2.0.*
 
     Example
     -------
@@ -102,7 +104,7 @@ class LinearDensity(AnalysisBase):
         self.results = {'x': {'dim': 0}, 'y': {'dim': 1}, 'z': {'dim': 2}}
 
         warnings.warn(
-            "This structure of the `results` dictionary will change in "
+            "The structure of the `results` dictionary will change in "
             "MDAnalysis version 2.0.",
             category=DeprecationWarning
         )

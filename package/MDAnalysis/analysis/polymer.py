@@ -174,6 +174,8 @@ class PersistenceLength(AnalysisBase):
     ----------
     results : numpy.ndarray
        the measured bond autocorrelation
+       *The structure of the `results` array will change in MDAnalysis 
+       version 2.0.*
     lb : float
        the average bond length
     lp : float
@@ -231,7 +233,7 @@ class PersistenceLength(AnalysisBase):
         self.results = self._results / norm
 
         warnings.warn(
-            "This structure of the `results` array will change in "
+            "The structure of the `results` array will change in "
             "MDAnalysis version 2.0.",
             category=DeprecationWarning
         )
