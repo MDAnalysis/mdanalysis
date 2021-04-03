@@ -375,7 +375,7 @@ class SphericalZoneSelection(DistanceSelection):
         self.sel = parser.parse_expression(self.precedence)
 
     @return_empty_on_apply
-    def apply(self, group): # TODO fix atom selection
+    def apply(self, group):
         indices = []
         sel = self.sel.apply(group)
         box = self.validate_dimensions(group.dimensions)
