@@ -217,6 +217,7 @@ def return_empty_on_apply(func):
         return func(self, group)
     return apply
 
+
 def return_empty_on_empty_selection(func):
     """
     Decorator to return empty AtomGroups from the apply() function
