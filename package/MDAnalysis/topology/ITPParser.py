@@ -495,6 +495,7 @@ class ITPParser(TopologyReaderBase):
         MDAnalysis *Topology* object
         """
 
+        self.atomypes = {}
         self.molecules = {}
         self._molecules = []  # for order
         self.current_mol = None
@@ -508,7 +509,10 @@ class ITPParser(TopologyReaderBase):
                 if '[' in line and ']' in line:
                     section = line.split('[')[1].split(']')[0].strip()
 
-                    if section == 'moleculetype':
+                    if section == 'atomtypes':
+                        self.parser = self.parse_atomtypes
+
+                    elif section == 'moleculetype':
                         self.parser = self.parse_moleculetype
 
                     elif section == 'molecules':
@@ -527,7 +531,15 @@ class ITPParser(TopologyReaderBase):
             self.system_molecules = [x.name for x in self._molecules]
 
         self.build_system()
-        
+
+        if not all(self.masses):
+            m = np.array(self.masses)
+            types = np.array(self.types)
+
+            m[m == ''] = [(self.atomypes.get(x)["mass"] if x in self.atomypes.keys() else '') for x in types[m == '']]
+            m[m == ''] = guessers.guess_masses(guessers.guess_types(types)[m == ''])
+            self.masses = m
+
         attrs = []
         # atom stuff
         for vals, Attr, dtype in (
@@ -536,15 +548,10 @@ class ITPParser(TopologyReaderBase):
             (self.names, Atomnames, object),
             (self.chargegroups, Chargegroups, np.int32),
             (self.charges, Charges, np.float32),
+            (self.masses, Masses, np.float64),
         ):
             if all(vals):
                 attrs.append(Attr(np.array(vals, dtype=dtype)))
-        
-        if not all(self.masses):
-            masses = guessers.guess_masses(self.types)
-            attrs.append(Masses(masses, guessed=True))
-        else:
-            attrs.append(Masses(np.array(self.masses, dtype=np.float64)))
 
         # residue stuff
         resids = np.array(self.resids, dtype=np.int32)
@@ -589,6 +596,20 @@ class ITPParser(TopologyReaderBase):
 
     def _pass(self, line):
         pass
+
+    def parse_atomtypes(self, line):
+        keys = ['type_bonded', 'atomic_number', 'mass', 'charge', 'p_type']
+        fields = line.split()
+        if len(fields[5]) == 1 and fields[5].isalpha():
+            values = fields[1:6]
+        elif len(fields[3]) == 1 and fields[3].isalpha():
+            values = '', '', fields[1], fields[2], fields[3]
+        elif len(fields[4]) == 1 and fields[4].isalpha():
+            if fields[1][0].isalpha():
+                values = fields[1], '', fields[2], fields[3], fields[4]
+            else:
+                values = '', fields[1], fields[2], fields[3], fields[4]
+        self.atomypes[fields[0]] = dict(zip(keys, values))
 
     def parse_moleculetype(self, line):
         name = line.split()[0]
