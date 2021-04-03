@@ -375,11 +375,13 @@ class SphericalZoneSelection(DistanceSelection):
         self.sel = parser.parse_expression(self.precedence)
 
     @return_empty_on_apply
-    def apply(self, group):
+    def apply(self, group): # TODO fix atom selection
         indices = []
         sel = self.sel.apply(group)
         box = self.validate_dimensions(group.dimensions)
         periodic = box is not None
+        if len(sel) == 0:
+            return group[[]]
         ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
         pairs = distances.capped_distance(ref, group.positions, self.cutoff,
                                           box=box,
