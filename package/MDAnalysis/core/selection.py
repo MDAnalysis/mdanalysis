@@ -378,10 +378,10 @@ class SphericalZoneSelection(DistanceSelection):
     def apply(self, group):
         indices = []
         sel = self.sel.apply(group)
-        box = self.validate_dimensions(group.dimensions)
-        periodic = box is not None
         if len(sel) == 0:
             return group[[]]
+        box = self.validate_dimensions(group.dimensions)
+        periodic = box is not None
         ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
         pairs = distances.capped_distance(ref, group.positions, self.cutoff,
                                           box=box,
