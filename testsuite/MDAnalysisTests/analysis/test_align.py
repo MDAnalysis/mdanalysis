@@ -503,11 +503,9 @@ class TestAlignmentProcessing(object):
     def test_fasta2select_nogap(self, tmpdir):
         """test align.fasta2select() on aligned FASTA with no gap in resid
         (Issue #3124)"""
-        ref_resids = target_resids = [x for x in range(705)]
-        sel = align.fasta2select(self.seq,
-                                 is_aligned=True,
-                                 ref_resids=ref_resids,
-                                 target_resids=target_resids)
+        resids = [x for x in range(705)]
+        sel = align.fasta2select(self.seq, is_aligned=True,
+                                 ref_resids=resids, target_resids=resids)
         # length of the output strings, not residues or anything real...
         assert len(sel['reference']) == 30621, self.error_msg
         assert len(sel['mobile']) == 30621, self.error_msg
