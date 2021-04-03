@@ -38,7 +38,7 @@ The currently read file format versions are defined in
 """
 
 #: Gromacs TPR file format versions that can be read by the TPRParser.
-SUPPORTED_VERSIONS = (58, 73, 83, 100, 103, 110, 112, 116, 119)
+SUPPORTED_VERSIONS = (58, 73, 83, 100, 103, 110, 112, 116, 119, 122)
 
 # Some constants
 STRLEN = 4096
@@ -55,6 +55,7 @@ tpxv_RestrictedBendingAndCombinedAngleTorsionPotentials = 98
 tpxv_GenericInternalParameters = 117
 tpxv_VSite2FD = 118
 tpxv_AddSizeField = 119
+tpxv_VSite1 = 121
 
 
 #: Function types from ``<gromacs_dir>/include/types/idef.h``
@@ -73,14 +74,14 @@ tpxv_AddSizeField = 119
     F_POLARIZATION, F_WATER_POL, F_THOLE_POL, F_ANHARM_POL,
     F_POSRES, F_FBPOSRES, F_DISRES, F_DISRESVIOL, F_ORIRES,
     F_ORIRESDEV, F_ANGRES, F_ANGRESZ, F_DIHRES,
-    F_DIHRESVIOL, F_CONSTR, F_CONSTRNC, F_SETTLE,
+    F_DIHRESVIOL, F_CONSTR, F_CONSTRNC, F_SETTLE, F_VSITE1,
     F_VSITE2, F_VSITE2FD, F_VSITE3, F_VSITE3FD, F_VSITE3FAD,
     F_VSITE3OUT, F_VSITE4FD, F_VSITE4FDN, F_VSITEN,
     F_COM_PULL, F_DENSITYFITTING, F_EQM, F_EPOT, F_EKIN,
     F_ETOT, F_ECONSERVED, F_TEMP, F_VTEMP_NOLONGERUSED,
     F_PDISPCORR, F_PRES, F_DHDL_CON, F_DVDL,
     F_DKDL, F_DVDL_COUL, F_DVDL_VDW, F_DVDL_BONDED,
-    F_DVDL_RESTRAINT, F_DVDL_TEMPERATURE, F_NRE) = list(range(94))
+    F_DVDL_RESTRAINT, F_DVDL_TEMPERATURE, F_NRE) = list(range(95))
 
 #: Function types from ``<gromacs_dir>/src/gmxlib/tpxio.c``
 ftupd = [
@@ -104,6 +105,7 @@ ftupd = [
     (79, F_DVDL_VDW,), (79, F_DVDL_BONDED,), (79, F_DVDL_RESTRAINT),
     (79, F_DVDL_TEMPERATURE),
     (tpxv_GenericInternalParameters, F_DENSITYFITTING),
+    (tpxv_VSite1, F_VSITE1),
     (tpxv_VSite2FD, F_VSITE2FD),
 ]
 
@@ -174,6 +176,7 @@ interaction_types = [
     ("CONSTR", "Constraint", 2),
     ("CONSTRNC", "Constr. No Conn.", 2),
     ("SETTLE", "Settle", 3),
+    ("VSITE1", "Virtual site 1", 2),
     ("VSITE2", "Virtual site 2", 3),
     ("VSITE2FD", "Virtual site 2fd", 3),
     ("VSITE3", "Virtual site 3", 4),
