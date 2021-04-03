@@ -209,6 +209,8 @@ class TestSelectionsCHARMM(object):
     def test_cylayer(self, universe, selstr):
         sel = universe.select_atoms(selstr)
         assert_equal(len(sel), 88)
+        empty = universe.select_atoms('cylayer 4.0 6.0 10 -10 name NOT_A_NAME')
+        assert_equal(len(empty), 0)
 
     @pytest.mark.parametrize('selstr', [
         'cyzone 6.0 10 -10 bynum 1281',
@@ -217,6 +219,8 @@ class TestSelectionsCHARMM(object):
     def test_cyzone(self, universe, selstr):
         sel = universe.select_atoms(selstr)
         assert_equal(len(sel), 166)
+        empty = universe.select_atoms('cyzone 6.0 10 -10 name NOT_A_NAME')
+        assert_equal(len(empty), 0)
 
     def test_point(self, universe):
         ag = universe.select_atoms('point 5.0 5.0 5.0 3.5')
@@ -774,6 +778,9 @@ class TestTriclinicSelections(object):
         idx = set(np.where((d > 2.4) & (d < 6.0))[0])
 
         assert idx == set(ag.indices)
+
+        empty = u.select_atoms('sphlayer 2.4 6.0 name NOT_A_NAME')
+        assert len(empty) == 0
 
     def test_sphzone(self, u):
         r1 = u.select_atoms('resid 1')
