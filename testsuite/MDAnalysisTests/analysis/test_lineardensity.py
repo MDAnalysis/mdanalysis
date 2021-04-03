@@ -37,6 +37,12 @@ def test_serial():
 
     xpos = np.array([0., 0., 0., 0.0072334, 0.00473299, 0.,
                           0., 0., 0., 0.])
-    with pytest.warns(DeprecationWarning):
-        ld = LinearDensity(selection, binsize=5).run()
+    ld = LinearDensity(selection, binsize=5).run()
     assert_almost_equal(xpos, ld.results['x']['pos'])
+
+
+def test_results_warning():
+    universe = mda.Universe(waterPSF, waterDCD)
+    msg = "This structure of the `results` dictionary will change in MDAnalysis version 2.0."
+    with pytest.warns(DeprecationWarning, match=msg):
+        LinearDensity(universe.atoms).run()
