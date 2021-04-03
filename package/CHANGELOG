@@ -31,6 +31,8 @@ Changes
   * Maximum pinned versions in setup.py removed for python 3.6+ (PR #3139)
 
 Deprecations
+  * ParmEdConverter no longer accepts Timestep objects at all
+    (Issue #3031, PR #3172)
   * NCDFWriter `scale_factor` writing will change in version 2.0 to
     better match AMBER outputs (Issue #2327)
   * Deprecated using the last letter of the segid as the
