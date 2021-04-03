@@ -43,6 +43,6 @@ def test_serial():
 
 def test_results_warning():
     universe = mda.Universe(waterPSF, waterDCD)
-    msg = "This structure of the `results` dictionary will change in MDAnalysis version 2.0."
+    msg = "The structure of the `results` dictionary will change in MDAnalysis version 2.0."
     with pytest.warns(DeprecationWarning, match=msg):
         LinearDensity(universe.atoms).run()

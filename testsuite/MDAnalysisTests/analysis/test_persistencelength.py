@@ -68,7 +68,7 @@ class TestPersistenceLength(object):
             for r in u.residues]
         p = polymer.PersistenceLength(ags)
 
-        msg = "This structure of the `results` array will change in MDAnalysis version 2.0."
+        msg = "The structure of the `results` array will change in MDAnalysis version 2.0."
         with pytest.warns(DeprecationWarning, match=msg):
             p.run()
 
