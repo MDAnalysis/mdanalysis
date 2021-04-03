@@ -296,3 +296,10 @@ def test_pass_ts_error():
     with pytest.raises(ValueError, match=err):
         c = ParmEdConverter()
         c.convert(u.trajectory.ts)
+
+
+def test_incorrect_object_passed_typeerror():
+    err = "No atoms found in obj argument"
+    with pytest.raises(TypeError, match=err):
+        c = ParmEdConverter()
+        c.convert("🧁")
