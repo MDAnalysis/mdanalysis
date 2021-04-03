@@ -536,10 +536,17 @@ class ITPParser(TopologyReaderBase):
             m = np.array(self.masses)
             types = np.array(self.types)
 
-            m[m == ''] = [(self.atomypes.get(x)["mass"] if x in self.atomypes.keys() else '') for x in types[m == '']]
-            m[m == ''] = guessers.guess_masses(guessers.guess_types(types)[m == ''])
+            m[m == ''] = [
+                (self.atomypes.get(x)["mass"] if x in self.atomypes.keys() else '') for x in types[m == '']
+            ]
+            if m[m == ''].size == 0:
+                guessed = False
+            else:
+                m[m == ''] = guessers.guess_masses(guessers.guess_types(types)[m == ''])
+                guessed = True
             self.masses = m
-
+        else:
+            guessed = False
         attrs = []
         # atom stuff
         for vals, Attr, dtype in (
@@ -548,10 +555,11 @@ class ITPParser(TopologyReaderBase):
             (self.names, Atomnames, object),
             (self.chargegroups, Chargegroups, np.int32),
             (self.charges, Charges, np.float32),
-            (self.masses, Masses, np.float64),
         ):
             if all(vals):
                 attrs.append(Attr(np.array(vals, dtype=dtype)))
+
+        attrs.append(Masses(np.array(self.masses, dtype=np.float64), guessed=guessed))
 
         # residue stuff
         resids = np.array(self.resids, dtype=np.int32)
