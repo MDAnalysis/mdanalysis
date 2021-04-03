@@ -503,8 +503,7 @@ class TestAlignmentProcessing(object):
     def test_fasta2select_nogap(self, tmpdir):
         """test align.fasta2select() on aligned FASTA with no gap in resid
         (Issue #3124)"""
-        ref_resids = [x for x in range(705)]
-        target_resids = [x for x in range(705)]
+        ref_resids = target_resids = [x for x in range(705)]
         sel = align.fasta2select(self.seq,
                                  is_aligned=True,
                                  ref_resids=ref_resids,
