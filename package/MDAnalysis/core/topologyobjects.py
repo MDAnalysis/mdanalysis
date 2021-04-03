@@ -915,6 +915,16 @@ class TopologyGroup(object):
 
             return np.array([mdamath.norm(a) for a in bond_dist])
 
+    def _calc_connection_values(self, func, *btypes, result=None, pbc=False):
+        if not any(self.btype == btype for btype in btypes):
+            strbtype = "' or '".join(btypes)
+            raise TypeError(f"TopologyGroup is not of type '{strbtype}'")
+        if not result:
+            result = np.zeros(len(self), np.float64)
+        box = None if not pbc else self._ags[0].dimensions
+        positions = [ag.positions for ag in self._ags]
+        return func(*positions, box=box, result=result)
+
     def bonds(self, pbc=False, result=None):
         """Calculates the distance between all bonds in this TopologyGroup
 
@@ -928,19 +938,8 @@ class TopologyGroup(object):
 
         Uses cython implementation
         """
-        if not self.btype == 'bond':
-            raise TypeError("TopologyGroup is not of type 'bond'")
-        if not result:
-            result = np.zeros(len(self), np.float64)
-        if pbc:
-            return distances.calc_bonds(self._ags[0].positions,
-                                        self._ags[1].positions,
-                                        box=self._ags[0].dimensions,
-                                        result=result)
-        else:
-            return distances.calc_bonds(self._ags[0].positions,
-                                        self._ags[1].positions,
-                                        result=result)
+        return self._calc_connection_values(distances.calc_bonds, "bond",
+                                            pbc=pbc, result=result)
 
     def _anglesSlow(self):  # pragma: no cover
         """Slow version of angle (numpy implementation)"""
@@ -975,21 +974,8 @@ class TopologyGroup(object):
            Added *pbc* option (default ``False``)
 
         """
-        if not self.btype == 'angle':
-            raise TypeError("TopologyGroup is not of type 'angle'")
-        if not result:
-            result = np.zeros(len(self), np.float64)
-        if pbc:
-            return distances.calc_angles(self._ags[0].positions,
-                                         self._ags[1].positions,
-                                         self._ags[2].positions,
-                                         box=self._ags[0].dimensions,
-                                         result=result)
-        else:
-            return distances.calc_angles(self._ags[0].positions,
-                                         self._ags[1].positions,
-                                         self._ags[2].positions,
-                                         result=result)
+        return self._calc_connection_values(distances.calc_angles, "angle",
+                                            pbc=pbc, result=result)
 
     def _dihedralsSlow(self):  # pragma: no cover
         """Slow version of dihedral (numpy implementation)"""
@@ -1028,21 +1014,6 @@ class TopologyGroup(object):
         .. versionchanged:: 0.9.0
            Added *pbc* option (default ``False``)
         """
-        if self.btype not in ['dihedral', 'improper']:
-            raise TypeError("TopologyGroup is not of type 'dihedral' or "
-                            "'improper'")
-        if not result:
-            result = np.zeros(len(self), np.float64)
-        if pbc:
-            return distances.calc_dihedrals(self._ags[0].positions,
-                                            self._ags[1].positions,
-                                            self._ags[2].positions,
-                                            self._ags[3].positions,
-                                            box=self._ags[0].dimensions,
-                                            result=result)
-        else:
-            return distances.calc_dihedrals(self._ags[0].positions,
-                                            self._ags[1].positions,
-                                            self._ags[2].positions,
-                                            self._ags[3].positions,
-                                            result=result)
+        return self._calc_connection_values(distances.calc_dihedrals,
+                                            "dihedral", "improper",
+                                            pbc=pbc, result=result)
