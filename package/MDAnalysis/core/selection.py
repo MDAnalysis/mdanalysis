@@ -217,6 +217,20 @@ def return_empty_on_apply(func):
         return func(self, group)
     return apply
 
+def return_empty_on_empty_selection(func):
+    """
+    Decorator to return empty AtomGroups from the apply() function
+    if entire the selection is empty or a sub-expression is empty.
+    """
+    @functools.wraps(func)
+    def apply(self, group):
+        if len(group) == 0:
+            return group
+        if len(self.sel.apply(group)) == 0:
+            return group[[]]
+        return func(self, group)
+    return apply
+
 class _Selectionmeta(type):
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
@@ -348,12 +362,10 @@ class SphericalLayerSelection(DistanceSelection):
         self.exRadius = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
 
-    @return_empty_on_apply
+    @return_empty_on_empty_selection
     def apply(self, group):
         indices = []
         sel = self.sel.apply(group)
-        if len(sel) == 0:
-            return group[[]]
         box = self.validate_dimensions(group.dimensions)
         periodic = box is not None
         ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
@@ -376,12 +388,10 @@ class SphericalZoneSelection(DistanceSelection):
         self.cutoff = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
 
-    @return_empty_on_apply
+    @return_empty_on_empty_selection
     def apply(self, group):
         indices = []
         sel = self.sel.apply(group)
-        if len(sel) == 0:
-            return group[[]]
         box = self.validate_dimensions(group.dimensions)
         periodic = box is not None
         ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
@@ -395,11 +405,9 @@ class SphericalZoneSelection(DistanceSelection):
 
 
 class CylindricalSelection(Selection):
-    @return_empty_on_apply
+    @return_empty_on_empty_selection
     def apply(self, group):
         sel = self.sel.apply(group)
-        if len(sel) == 0:
-            return group[[]]
         # Calculate vectors between point of interest and our group
         vecs = group.positions - sel.center_of_geometry()
 

@@ -734,11 +734,6 @@ class TestOrthogonalDistanceSelections(BaseDistanceSelection):
 
         assert len(sel) == expected
 
-    @pytest.mark.parametrize('periodic,expected', ([True, 33], [False, 25]))
-    def test_sphzone(self, u, periodic, expected):
-        sel = u.select_atoms('sphzone 5.0 name NOT_A_NAME', periodic=periodic)
-        assert len(sel) == 0
-
 
 class TestTriclinicDistanceSelections(BaseDistanceSelection):
     @pytest.fixture()
@@ -792,6 +787,9 @@ class TestTriclinicSelections(object):
         idx = set(np.where(d < 5.0)[0])
 
         assert idx == set(ag.indices)
+
+        empty = u.select_atoms('sphzone 5.0 name NOT_A_NAME')
+        assert len(empty) == 0
 
     def test_point_1(self, u):
         # The example selection
