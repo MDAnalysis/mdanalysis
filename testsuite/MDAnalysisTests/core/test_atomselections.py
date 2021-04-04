@@ -209,6 +209,8 @@ class TestSelectionsCHARMM(object):
     def test_cylayer(self, universe, selstr):
         sel = universe.select_atoms(selstr)
         assert_equal(len(sel), 88)
+
+    def test_empty_cylayer(self, universe):
         empty = universe.select_atoms('cylayer 4.0 6.0 10 -10 name NOT_A_NAME')
         assert_equal(len(empty), 0)
 
@@ -219,6 +221,8 @@ class TestSelectionsCHARMM(object):
     def test_cyzone(self, universe, selstr):
         sel = universe.select_atoms(selstr)
         assert_equal(len(sel), 166)
+
+    def test_empty_cyzone(self, universe):
         empty = universe.select_atoms('cyzone 6.0 10 -10 name NOT_A_NAME')
         assert_equal(len(empty), 0)
 
@@ -774,6 +778,7 @@ class TestTriclinicSelections(object):
 
         assert idx == set(ag.indices)
 
+    def test_empty_sphlayer(self, u):
         empty = u.select_atoms('sphlayer 2.4 6.0 name NOT_A_NAME')
         assert len(empty) == 0
 
@@ -788,6 +793,7 @@ class TestTriclinicSelections(object):
 
         assert idx == set(ag.indices)
 
+    def test_empty_sphzone(self, u):
         empty = u.select_atoms('sphzone 5.0 name NOT_A_NAME')
         assert len(empty) == 0
 
