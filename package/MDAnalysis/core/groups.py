@@ -3350,13 +3350,9 @@ class AtomGroup(GroupBase):
             >>> from MDAnalysisTests.datafiles import PDB_small
             >>> u = mda.Universe(PDB_small)
             >>> ag = u.atoms[[3, 2, 1, 0]]
-            >>> ag.ids
-            array([4 3 2 1])
             >>> ag.ix
             array([3 2 1 0])
             >>> ag = ag.sort()
-            >>> ag.ids
-            array([1 2 3 4])
             >>> ag.ix
             array([0 1 2 3])
 
