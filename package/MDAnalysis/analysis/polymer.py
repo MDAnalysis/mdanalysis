@@ -176,7 +176,7 @@ class PersistenceLength(AnalysisBase):
        the measured bond autocorrelation
 
        .. deprecated:: 1.1.0
-          The structure of the `results` array will change in MDAnalysis 2.0
+          The structure of the ``results`` array will change in MDAnalysis 2.0
           version 2.0.
 
     lb : float
