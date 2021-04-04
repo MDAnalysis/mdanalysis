@@ -64,7 +64,7 @@ class LinearDensity(AnalysisBase):
           its standard deviation), 'slice_volume' (volume of bin).
 
           .. deprecated:: 1.1.0
-             The structure of the `results` dictionary will change in
+             The structure of the ``results`` dictionary will change in
              MDAnalysis 2.0
 
     Example
