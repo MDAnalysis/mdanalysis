@@ -32,7 +32,7 @@ Changes
 
 Deprecations
   * Deprecate structure of `results` attribute for LinearDensity, 
-    PersistenceLength and AnalysisFromFunction (Issue #3115)
+    PersistenceLength, GNMAnalysis, AnalysisFromFunction (Issue #3115)
   * Deprecated current Group.bonds, angles, dihedrals, impropers
     behavior where it returns connections to atoms outside the group
     by default (Issue #1264, #2821, PR #3159)
