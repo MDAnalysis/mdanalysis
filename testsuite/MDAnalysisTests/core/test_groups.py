@@ -1590,23 +1590,3 @@ class TestGetConnectionsResidues(object):
         cxns = ag.get_connections("impropers", outside=outside)
         assert len(imp) == 0
         assert len(cxns) == 0
-
-
-@pytest.mark.parametrize("typename, n_atoms", [
-    ("bonds", 13),
-    ("angles", 27),
-    ("dihedrals", 38),
-])
-def test_get_topologygroup_property_deprecated(tpr, typename, n_atoms):
-    werr = ("This group contains all connections "
-            "where at least one atom in the "
-            "AtomGroup is involved. In MDAnalysis "
-            "2.0 this behavior will change so that "
-            "the group only contains connections "
-            "where all atoms are in the AtomGroup.")
-    with pytest.warns(DeprecationWarning, match=werr):
-        ag = tpr.atoms[:10]
-        cxns = getattr(ag, typename)
-        assert len(cxns) == n_atoms
-        indices = np.ravel(cxns.to_indices())
-        assert not np.all(np.in1d(indices, ag.indices))
