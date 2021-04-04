@@ -229,8 +229,8 @@ class GNMAnalysis(object):
     results : list
           eigenvalues and eigenvectors
 
-          .. deprecation:: 1.1.0
-          The structure of the `results` list will change in MDAnalysis 2.0
+          .. deprecated:: 1.1.0
+             The structure of the `results` list will change in MDAnalysis 2.0
 
     See Also
     --------

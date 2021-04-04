@@ -63,7 +63,7 @@ class LinearDensity(AnalysisBase):
           standard deviation), 'char', 'char_std' (charge density and
           its standard deviation), 'slice_volume' (volume of bin).
 
-          .. deprecation:: 1.1.0
+          .. deprecated:: 1.1.0
              The structure of the `results` dictionary will change in
              MDAnalysis 2.0
 
