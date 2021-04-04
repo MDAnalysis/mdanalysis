@@ -1763,6 +1763,8 @@ class GroupBase(_MutableBase):
         #if not hasattr(atoms, 'bonds'):
         #    raise NoDataError("{}.unwrap() not available; this requires Bonds"
         #                      "".format(self.__class__.__name__))
+        if not atoms:
+            return atoms.positions
         unique_atoms = atoms.unique
 
         # Parameter sanity checking
@@ -1790,7 +1792,11 @@ class GroupBase(_MutableBase):
         #  unidimensionally whereas the general multi-compound case involves
         #  more indexing and is therefore slower. Leaving separate for now.
         if comp == 'group':
-            positions = mdamath.make_whole(unique_atoms, inplace=False)
+            positions = unique_atoms.positions
+            spread = positions.ptp(axis=0)
+            spread = distances.transform_RtoS(spread, self.dimensions)
+            if np.any(spread > .5):
+                positions = mdamath.make_whole(unique_atoms, inplace=False)
             # Apply reference shift if required:
             if reference is not None and len(positions):
                 if reference == 'com' and len(positions) > 1:
