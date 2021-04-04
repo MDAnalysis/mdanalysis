@@ -3356,6 +3356,10 @@ class AtomGroup(GroupBase):
             >>> ag.ix
             array([0 1 2 3])
 
+        Note
+        ----
+        This sort is stable as it is implemented by `numpy.argsort(kind='stable')`.
+
         .. versionadded:: 2.0.0
         """
         idx = getattr(self.atoms, key)
