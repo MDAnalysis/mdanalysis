@@ -22,6 +22,7 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+<<<<<<< HEAD
   * A Universe created from an ROMol with no atoms returns now a Universe 
     with 0 atoms (Issue #3142)
   * ValueError raised when empty atomgroup is given to DensityAnalysis
@@ -38,6 +39,55 @@ Fixes
   * PDB writer now uses elements attribute instead of guessing elements from
     atom name (Issue #2423)
   * Cleanup and parametrization of test_atomgroup.py (Issue #2995)
+=======
+  * Removes use of absolute paths in setup.py to avoid Windows installation
+    failures (Issue #3129)
+  * Adds test for crashes caused by small box NSGrid searches (Issue #2670)
+  * Replaces decreated NumPy type aliases and fixes NEP 34 explicit ragged
+    array warnings (PR #3139, backports PRs #2845 and #2834)
+  * Fixed several issues with NSGrid and triclinic boxes not finding some pairs.
+    (Issues #2229 #2345 #2919, PR #2937).
+
+Changes
+  * Maximum pinned versions in setup.py removed for python 3.6+ (PR #3139)
+
+Deprecations
+  * ParmEdConverter no longer accepts Timestep objects at all
+    (Issue #3031, PR #3172)
+  * NCDFWriter `scale_factor` writing will change in version 2.0 to
+    better match AMBER outputs (Issue #2327)
+  * Deprecated using the last letter of the segid as the
+    chainID when writing PDB files (Issue #3144)
+  * Deprecated tempfactors and bfactors being separate
+    TopologyAttrs, with a warning (PR #3161)
+  * hbonds.WaterBridgeAnalysis will be removed in 2.0.0 and
+    replaced with hydrogenbonds.WaterBridgeAnalysis (#3111)
+  * TPRParser indexing resids from 0 by default is deprecated.
+    From 2.0 TPRParser will index resids from 1 by default.
+  
+
+Enhancements
+  * Added `get_connections` method to get bonds, angles, dihedrals, etc.
+    with or without atoms outside the group (Issues #1264, #2821, PR #3160)
+  * Added `tpr_resid_from_one` keyword to select whether TPRParser
+    indexes resids from 0 or 1 (Issue #2364, PR #3153)
+
+    
+01/17/21 richardjgowers, IAlibay, orbeckst, tylerjereddy, jbarnoud,
+         yuxuanzhuang, lilyminium, VOD555, p-j-smith, bieniekmateusz,
+         calcraven, ianmkenney, rcrehuet, manuel.nuno.melo, hanatok
+
+  * 1.0.1
+
+Fixes
+  * Due to issues with the reliability/accuracy of `nsgrid`, this method is
+    currently not recommended for use. It has also been removed as an option
+    from lib.capped_distance and lib.self_capped_distance. Please use PKDTree
+    instead (Issue #2930)
+  * Development status changed from beta to mature (Issue #2773)
+  * pip installation only requests Python 2.7-compatible packages (#2736)
+  * Testsuite does not use any more matplotlib.use('agg') (#2191)
+>>>>>>> c58d2d370... undo half of PR 3160
   * The methods provided by topology attributes now appear in the
     documentation (Issue #1845)
   * AtomGroup.center now works correctly for compounds + unwrapping

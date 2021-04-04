@@ -2295,23 +2295,14 @@ class _Connection(AtomAttr):
     def set_atoms(self, ag):
         return NotImplementedError("Cannot set bond information")
 
-    def get_atoms(self, ag, outside=False):
+    def get_atoms(self, ag):
         """
         Get subset for atoms.
 
         Parameters
         ----------
         ag : AtomGroup
-        outside : bool (optional)
-            Whether to include connections to atoms outside the given
-            AtomGroup.
 
-        .. versionchanged:: 1.1.0
-            Added the ``outside`` keyword. Set to ``True`` by default
-            to give the same behavior as previously
-
-        .. versionchanged:: 2.0.0
-            Changed to default ``outside=False``
         """
         try:
             unique_bonds = set(itertools.chain(
@@ -2321,14 +2312,6 @@ class _Connection(AtomAttr):
             unique_bonds = self._bondDict[ag.ix]
             outside = True
         unique_bonds = np.array(sorted(unique_bonds), dtype=object)
-        if not outside:
-            indices = np.array([list(bd[0]) for bd in unique_bonds])
-            try:
-                mask = np.all(np.isin(indices, ag.ix), axis=1)
-            except np.AxisError:
-                mask = []
-            unique_bonds = unique_bonds[mask]
-
         bond_idx, types, guessed, order = np.hsplit(unique_bonds, 4)
         bond_idx = np.array(bond_idx.ravel().tolist(), dtype=np.int32)
         types = types.ravel()
