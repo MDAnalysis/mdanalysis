@@ -1166,6 +1166,35 @@ within a fragment. Thus, a fragment typically corresponds to a molecule.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.core.groups.AtomGroup.get_connections">
+<code class="descname">get_connections</code><span class="sig-paren">(</span><em>typename</em>, <em>outside=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.get_connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get bonded connections between atoms as a
+<a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyGroup</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>typename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – group name. One of {“bonds”, “angles”, “dihedrals”,
+“impropers”, “ureybradleys”, “cmaps”}</li>
+<li><strong>outside</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to include connections involving atoms outside
+this group.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>TopologyGroup</em> – containing the bonded group of choice, i.e. bonds, angles,
+dihedrals, impropers, ureybradleys or cmaps.</li>
+<li><em>.. versionadded:: 1.1.0</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.groupby">
 <code class="descname">groupby</code><span class="sig-paren">(</span><em>topattrs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.groupby" title="Permalink to this definition">¶</a></dt>
 <dd><p>Group together items in this group according to values of <em>topattr</em></p>
@@ -3310,6 +3339,35 @@ duplicate elements</td>
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.core.groups.ResidueGroup.get_connections">
+<code class="descname">get_connections</code><span class="sig-paren">(</span><em>typename</em>, <em>outside=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.get_connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get bonded connections between atoms as a
+<a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyGroup</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>typename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – group name. One of {“bonds”, “angles”, “dihedrals”,
+“impropers”, “ureybradleys”, “cmaps”}</li>
+<li><strong>outside</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to include connections involving atoms outside
+this group.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>TopologyGroup</em> – containing the bonded group of choice, i.e. bonds, angles,
+dihedrals, impropers, ureybradleys or cmaps.</li>
+<li><em>.. versionadded:: 1.1.0</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.core.groups.ResidueGroup.groupby">
 <code class="descname">groupby</code><span class="sig-paren">(</span><em>topattrs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.groupby" title="Permalink to this definition">¶</a></dt>
 <dd><p>Group together items in this group according to values of <em>topattr</em></p>
@@ -5107,6 +5165,35 @@ duplicate elements</td>
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.core.groups.SegmentGroup.get_connections">
+<code class="descname">get_connections</code><span class="sig-paren">(</span><em>typename</em>, <em>outside=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.get_connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get bonded connections between atoms as a
+<a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyGroup</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>typename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – group name. One of {“bonds”, “angles”, “dihedrals”,
+“impropers”, “ureybradleys”, “cmaps”}</li>
+<li><strong>outside</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to include connections involving atoms outside
+this group.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>TopologyGroup</em> – containing the bonded group of choice, i.e. bonds, angles,
+dihedrals, impropers, ureybradleys or cmaps.</li>
+<li><em>.. versionadded:: 1.1.0</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.core.groups.SegmentGroup.groupby">
 <code class="descname">groupby</code><span class="sig-paren">(</span><em>topattrs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.groupby" title="Permalink to this definition">¶</a></dt>
 <dd><p>Group together items in this group according to values of <em>topattr</em></p>
@@ -6312,6 +6399,35 @@ within a fragment. Thus, a fragment typically corresponds to a molecule.</p>
 </div>
 </dd></dl>
 
+<dl class="method">
+<dt id="MDAnalysis.core.groups.Atom.get_connections">
+<code class="descname">get_connections</code><span class="sig-paren">(</span><em>typename</em>, <em>outside=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.Atom.get_connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get bonded connections between atoms as a
+<a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyGroup</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>typename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – group name. One of {“bonds”, “angles”, “dihedrals”,
+“impropers”, “ureybradleys”, “cmaps”}</li>
+<li><strong>outside</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to include connections involving atoms outside
+this group.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>TopologyGroup</em> – containing the bonded group of choice, i.e. bonds, angles,
+dihedrals, impropers, ureybradleys or cmaps.</li>
+<li><em>.. versionadded:: 1.1.0</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.core.groups.Atom.ix">
 <code class="descname">ix</code><a class="headerlink" href="#MDAnalysis.core.groups.Atom.ix" title="Permalink to this definition">¶</a></dt>
@@ -6430,6 +6546,35 @@ faster atom matching with boolean arrays.</li>
 <p class="last">This requires the underlying topology to have names. Otherwise, a
 <a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.Residue.get_connections">
+<code class="descname">get_connections</code><span class="sig-paren">(</span><em>typename</em>, <em>outside=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.Residue.get_connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get bonded connections between atoms as a
+<a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyGroup</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>typename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – group name. One of {“bonds”, “angles”, “dihedrals”,
+“impropers”, “ureybradleys”, “cmaps”}</li>
+<li><strong>outside</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to include connections involving atoms outside
+this group.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>TopologyGroup</em> – containing the bonded group of choice, i.e. bonds, angles,
+dihedrals, impropers, ureybradleys or cmaps.</li>
+<li><em>.. versionadded:: 1.1.0</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -6589,6 +6734,35 @@ to select by resname.</p>
 <code class="descname">atoms</code><a class="headerlink" href="#MDAnalysis.core.groups.Segment.atoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>An <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> present in this
 <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.Segment.get_connections">
+<code class="descname">get_connections</code><span class="sig-paren">(</span><em>typename</em>, <em>outside=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.Segment.get_connections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get bonded connections between atoms as a
+<a class="reference internal" href="topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="MDAnalysis.core.topologyobjects.TopologyGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyGroup</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>typename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – group name. One of {“bonds”, “angles”, “dihedrals”,
+“impropers”, “ureybradleys”, “cmaps”}</li>
+<li><strong>outside</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to include connections involving atoms outside
+this group.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>TopologyGroup</em> – containing the bonded group of choice, i.e. bonds, angles,
+dihedrals, impropers, ureybradleys or cmaps.</li>
+<li><em>.. versionadded:: 1.1.0</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
