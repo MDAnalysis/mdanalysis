@@ -1732,11 +1732,14 @@ class TestAtomGroupSort(object):
 
     def test_sort_position(self, ag):
         ag.positions = (-np.arange(21)).reshape(7, 3)
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=r"The array returned by the"
+                           "attribute.*"):
             ag.sort("angles")
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=r"The function you assigned"
+                           ".*"):
             ag.sort("positions", keyfunc=lambda x: x)
-        with pytest.raises(NameError):
+        with pytest.raises(NameError, match=r"You have to assign the argument"
+                           ".*"):
             ag.sort("positions")
         ref = [6, 5, 4, 3, 2, 1, 0]
         agsort = ag.sort("positions", keyfunc=lambda x: x[:, 1])
