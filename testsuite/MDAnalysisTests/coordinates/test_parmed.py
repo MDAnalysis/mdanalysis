@@ -31,6 +31,7 @@ from numpy.testing import (assert_equal,
 
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
+from MDAnalysis.coordinates.ParmEd import ParmEdConverter
 
 from MDAnalysisTests.datafiles import (
     GRO,
@@ -288,3 +289,17 @@ class TestParmEdConverterPDB(BaseTestParmEdConverter):
     def test_equivalent_coordinates(self, ref, output):
         assert_almost_equal(ref.coordinates, output.coordinates, decimal=3)
 
+
+def test_pass_ts_error():
+    u = mda.Universe(PDB_small)
+    err = "Writing Timesteps to ParmEd objects is not supported"
+    with pytest.raises(ValueError, match=err):
+        c = ParmEdConverter()
+        c.convert(u.trajectory.ts)
+
+
+def test_incorrect_object_passed_typeerror():
+    err = "No atoms found in obj argument"
+    with pytest.raises(TypeError, match=err):
+        c = ParmEdConverter()
+        c.convert("we still don't support emojis :(")

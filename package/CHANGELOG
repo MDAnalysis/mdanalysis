@@ -33,6 +33,11 @@ Changes
 Deprecations
   * Deprecate structure of `results` attribute for LinearDensity, 
     PersistenceLength and AnalysisFromFunction (Issue #3115)
+  * Deprecated current Group.bonds, angles, dihedrals, impropers
+    behavior where it returns connections to atoms outside the group
+    by default (Issue #1264, #2821, PR #3159)
+  * ParmEdConverter no longer accepts Timestep objects at all
+    (Issue #3031, PR #3172)
   * NCDFWriter `scale_factor` writing will change in version 2.0 to
     better match AMBER outputs (Issue #2327)
   * Deprecated using the last letter of the segid as the
@@ -43,11 +48,14 @@ Deprecations
     replaced with hydrogenbonds.WaterBridgeAnalysis (#3111)
   * TPRParser indexing resids from 0 by default is deprecated.
     From 2.0 TPRParser will index resids from 1 by default.
+  
 
 Enhancements
+  * Added `get_connections` method to get bonds, angles, dihedrals, etc.
+    with or without atoms outside the group (Issues #1264, #2821, PR #3160)
   * Added `tpr_resid_from_one` keyword to select whether TPRParser
     indexes resids from 0 or 1 (Issue #2364, PR #3153)
-  
+
     
 01/17/21 richardjgowers, IAlibay, orbeckst, tylerjereddy, jbarnoud,
          yuxuanzhuang, lilyminium, VOD555, p-j-smith, bieniekmateusz,
