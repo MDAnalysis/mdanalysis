@@ -50,9 +50,17 @@ inline void _minimum_image_ortho_lazy(double* x, float* box, float* half_box)
     *
     * Assumes that the maximum separation is less than 1.5 times the box length.
     */
-    for (int i = 0; i < 3; i++) {
-        x[i] -= (x[i] > half_box[i]) * box[i];
-        x[i] += (x[i] <= -half_box[i]) * box[i];
+    for (int i = 0; i < 3; ++i) {
+        if (x[i] > half_box[i]) {
+            x[i] -= box[i];
+        }
+        else
+        {
+            if (x[i] <= -half_box[i])
+            {
+                x[i] += box[i];
+            }
+        }
     }
 }
 

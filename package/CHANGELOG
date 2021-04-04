@@ -34,6 +34,8 @@ Deprecations
   * Deprecated current Group.bonds, angles, dihedrals, impropers
     behavior where it returns connections to atoms outside the group
     by default (Issue #1264, #2821, PR #3159)
+  * ParmEdConverter no longer accepts Timestep objects at all
+    (Issue #3031, PR #3172)
   * NCDFWriter `scale_factor` writing will change in version 2.0 to
     better match AMBER outputs (Issue #2327)
   * Deprecated using the last letter of the segid as the
