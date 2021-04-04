@@ -3381,8 +3381,7 @@ class AtomGroup(GroupBase):
                                  "'keyfunc':{} doesn't return 1D array."
                                  .format(keyfunc))
             order = np.argsort(sortkeys, kind='stable')
-        agsorted = self.atoms[order]
-        return agsorted
+        return self.atoms[order]
 
 
 class ResidueGroup(GroupBase):
