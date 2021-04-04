@@ -29,14 +29,14 @@ from numpy.testing import assert_almost_equal, assert_equal
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     ITP,  # GROMACS itp
-    ITP_nomass, # from Automated Topology Builder
+    ITP_nomass,  # from Automated Topology Builder
     ITP_edited,
     ITP_tip5p,
     ITP_spce,
     GMX_TOP,
     GMX_DIR,
     GMX_TOP_BAD,
-    ITP_no_endif
+    ITP_no_endif, ITP_atomtypes
 )
 
 class BaseITP(ParserBase):
@@ -158,6 +158,34 @@ class TestITPNoMass(ParserBase):
     def test_mass_guess(self, universe):
         assert universe.atoms[0].mass not in ('', None)
 
+class TestITPAtomtypes(ParserBase):
+    parser = mda.topology.ITPParser.ITPParser
+    ref_filename = ITP_atomtypes
+    expected_attrs = ['ids', 'names', 'types', 'masses',
+                      'charges', 'chargegroups',
+                      'resids', 'resnames',
+                      'segids', 'moltypes', 'molnums',
+                      'bonds', 'angles', 'dihedrals', 'impropers']
+    guessed_attrs = ['masses']
+    expected_n_atoms = 4
+    expected_n_residues = 1
+    expected_n_segments = 1
+
+    @pytest.fixture
+    def universe(self, filename):
+        return mda.Universe(filename)
+
+    def test_charge_parse(self, universe):
+        assert_almost_equal(universe.atoms[0].charge, 4)
+        assert_almost_equal(universe.atoms[1].charge, 1.1)
+        assert_almost_equal(universe.atoms[2].charge, -3.000)
+        assert_almost_equal(universe.atoms[3].charge, 1.)
+
+    def test_mass_parse_or_guess(self, universe):
+        assert_almost_equal(universe.atoms[0].mass, 8.0)
+        assert_almost_equal(universe.atoms[1].mass, 20.98)
+        assert_almost_equal(universe.atoms[2].mass, 20.98)
+        assert_almost_equal(universe.atoms[3].mass, 1.008)
 
 class TestDifferentDirectivesITP(BaseITP):
 

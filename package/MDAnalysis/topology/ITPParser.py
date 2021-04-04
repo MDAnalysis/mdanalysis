@@ -532,21 +532,22 @@ class ITPParser(TopologyReaderBase):
 
         self.build_system()
 
-        if not all(self.masses):
-            m = np.array(self.masses)
-            types = np.array(self.types)
+        self.types = np.array(self.types)
+        self.charges = np.array(self.charges)
+        self.masses = np.array(self.masses)
 
-            m[m == ''] = [
-                (self.atomypes.get(x)["mass"] if x in self.atomypes.keys() else '') for x in types[m == '']
+        if not all(self.charges):
+            empty = self.charges == ''
+            self.charges[empty] = [
+                (self.atomypes.get(x)["charge"] if x in self.atomypes.keys() else '') for x in self.types[empty]
             ]
-            if m[m == ''].size == 0:
-                guessed = False
-            else:
-                m[m == ''] = guessers.guess_masses(guessers.guess_types(types)[m == ''])
-                guessed = True
-            self.masses = m
-        else:
-            guessed = False
+
+        if not all(self.masses):
+            empty = self.masses == ''
+            self.masses[empty] = [
+                (self.atomypes.get(x)["mass"] if x in self.atomypes.keys() else '') for x in self.types[empty]
+            ]
+
         attrs = []
         # atom stuff
         for vals, Attr, dtype in (
@@ -559,7 +560,13 @@ class ITPParser(TopologyReaderBase):
             if all(vals):
                 attrs.append(Attr(np.array(vals, dtype=dtype)))
 
-        attrs.append(Masses(np.array(self.masses, dtype=np.float64), guessed=guessed))
+        if not all(self.masses):
+            empty = self.masses == ''
+            self.masses[empty] = guessers.guess_masses(guessers.guess_types(self.types)[empty])
+            attrs.append(Masses(np.array(self.masses, dtype=np.float64), guessed=True))
+        else:
+            attrs.append(Masses(np.array(self.masses, dtype=np.float64), guessed=False))
+
 
         # residue stuff
         resids = np.array(self.resids, dtype=np.int32)
