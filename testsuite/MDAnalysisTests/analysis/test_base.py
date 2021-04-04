@@ -24,7 +24,6 @@ from __future__ import division, absolute_import
 
 import pytest
 from six.moves import range
-import warnings
 
 import numpy as np
 
