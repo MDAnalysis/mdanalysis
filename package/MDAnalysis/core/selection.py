@@ -225,8 +225,6 @@ def return_empty_on_empty_selection(func):
     """
     @functools.wraps(func)
     def apply(self, group):
-        if len(group) == 0:
-            return group
         if len(self.sel.apply(group)) == 0:
             return group[[]]
         return func(self, group)
@@ -363,6 +361,7 @@ class SphericalLayerSelection(DistanceSelection):
         self.exRadius = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
 
+    @return_empty_on_apply
     @return_empty_on_empty_selection
     def apply(self, group):
         indices = []
@@ -389,6 +388,7 @@ class SphericalZoneSelection(DistanceSelection):
         self.cutoff = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
 
+    @return_empty_on_apply
     @return_empty_on_empty_selection
     def apply(self, group):
         indices = []
@@ -406,6 +406,7 @@ class SphericalZoneSelection(DistanceSelection):
 
 
 class CylindricalSelection(Selection):
+    @return_empty_on_apply
     @return_empty_on_empty_selection
     def apply(self, group):
         sel = self.sel.apply(group)
