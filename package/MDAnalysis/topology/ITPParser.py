@@ -35,9 +35,12 @@ If an ITP file is passed without a ``[ molecules ]`` directive, passing
 1 molecule of each defined ``moleculetype``. 
 If a ``[ molecules ]`` section is present, ``infer_system`` is ignored.
 
-If files are included with the `#include` directive, they will also be read. If they are not in the working directory, ITPParser will look for them in the ``include_dir`` directory. By default, this is set to ``include_dir="/usr/local/gromacs/share/gromacs/top/"``.
-Variables can be defined with the `#define` directive in files, or by passing in 
-:ref:`keyword arguments <itp-define-kwargs>`.
+If files are included with the `#include` directive, they will also be read.
+If they are not in the working directory, ITPParser will look for them in the
+``include_dir`` directory. By default, this is set to
+``include_dir="/usr/local/gromacs/share/gromacs/top/"``.
+Variables can be defined with the `#define` directive in files, or by passing
+in :ref:`keyword arguments <itp-define-kwargs>`.
 
 Examples
 --------
@@ -151,10 +154,12 @@ from ..core.topologyattrs import (
 )
 from ..core.topology import Topology
 
+
 class Chargegroups(AtomAttr):
     """The charge group for each Atom"""
     attrname = 'chargegroups'
     singular = 'chargegroup'
+
 
 class GmxTopIterator:
     """
@@ -324,7 +329,7 @@ class Molecule:
         for lst in self.atom_order:
             try:
                 lst.append(values.pop(0))
-            except IndexError: # ran out of values
+            except IndexError:  # ran out of values
                 lst.append('')
     
     def parse_bonds(self, line):
@@ -333,7 +338,7 @@ class Molecule:
     
     def parse_angles(self, line):
         self.add_param(line, self.angles, n_funct=3, 
-                        funct_values=(1, 2, 3, 4, 5, 6, 8, 10))
+                       funct_values=(1, 2, 3, 4, 5, 6, 8, 10))
     
     def parse_dihedrals(self, line):
         dih = self.add_param(line, self.dihedrals, n_funct=4, 
@@ -373,7 +378,6 @@ class Molecule:
         self.molnums = np.array([1] * len(self.resids))
 
         self.resolved_residue_attrs = True
-
 
     def shift_indices(self, atomid=0, resid=0, molnum=0, cgnr=0, n_res=0, n_atoms=0):
         """
@@ -419,9 +423,6 @@ class Molecule:
             new_params.append(new)
 
         return atom_order, new_params, molnums, self.moltypes, residx
-        
-        
-        
 
     def add_param(self, line, container, n_funct=2, funct_values=[]):
         """Add defined GROMACS directive lines, only if the funct is in ``funct_values``"""
@@ -444,7 +445,6 @@ class Molecule:
         return tuple(map(self.ids.index, values))
 
 
-
 class ITPParser(TopologyReaderBase):
     """Read topology information from a GROMACS ITP_ or TOP_ file.
 
@@ -464,7 +464,6 @@ class ITPParser(TopologyReaderBase):
     - angles
     - dihedrals
     - impropers
-
 
     .. _ITP: http://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html#molecule-itp-file
     .. _TOP: http://manual.gromacs.org/current/reference-manual/file-formats.html#top
@@ -495,7 +494,7 @@ class ITPParser(TopologyReaderBase):
         MDAnalysis *Topology* object
         """
 
-        self.atomypes = {}
+        self.atomtypes = {}
         self.molecules = {}
         self._molecules = []  # for order
         self.current_mol = None
@@ -539,13 +538,23 @@ class ITPParser(TopologyReaderBase):
         if not all(self.charges):
             empty = self.charges == ''
             self.charges[empty] = [
-                (self.atomypes.get(x)["charge"] if x in self.atomypes.keys() else '') for x in self.types[empty]
+                (
+                    self.atomtypes.get(x)["charge"]
+                    if x in self.atomtypes.keys()
+                    else ''
+                )
+                for x in self.types[empty]
             ]
 
         if not all(self.masses):
             empty = self.masses == ''
             self.masses[empty] = [
-                (self.atomypes.get(x)["mass"] if x in self.atomypes.keys() else '') for x in self.types[empty]
+                (
+                    self.atomtypes.get(x)["mass"]
+                    if x in self.atomtypes.keys()
+                    else ''
+                )
+                for x in self.types[empty]
             ]
 
         attrs = []
@@ -566,7 +575,6 @@ class ITPParser(TopologyReaderBase):
             attrs.append(Masses(np.array(self.masses, dtype=np.float64), guessed=True))
         else:
             attrs.append(Masses(np.array(self.masses, dtype=np.float64), guessed=False))
-
 
         # residue stuff
         resids = np.array(self.resids, dtype=np.int32)
@@ -608,7 +616,6 @@ class ITPParser(TopologyReaderBase):
 
         return top
 
-
     def _pass(self, line):
         pass
 
@@ -624,7 +631,7 @@ class ITPParser(TopologyReaderBase):
                 values = fields[1], '', fields[2], fields[3], fields[4]
             else:
                 values = '', fields[1], fields[2], fields[3], fields[4]
-        self.atomypes[fields[0]] = dict(zip(keys, values))
+        self.atomtypes[fields[0]] = dict(zip(keys, values))
 
     def parse_moleculetype(self, line):
         name = line.split()[0]

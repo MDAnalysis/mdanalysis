@@ -4,10 +4,12 @@
 
 
 [ atomtypes ]
-;name  at.num  mass        charge          ptype       sigma           epsilon
-A                    10.086     2.000        A       0.356359487256  0.209200
-B    BB   13         20.989    -3.000        A       0.374177461619  0.209200
-C         15         25.989     1.000        A       0.374177461619  0.209200
+;All possible variations of atomtypes lines
+;type   b_type  at.num  mass    charge      ptype   sigma           epsilon
+A                       10.086  2.000       A       0.356359487256  0.209200
+B       BB      13      20.989  -3.000      A       0.349832094823  0.202300
+C               15      25.935  1.000       A       0.320190238903  0.206840
+D       BD              12.129  -1.000      A       0.310128943840  0.201950
 
 
 [ moleculetype ]
