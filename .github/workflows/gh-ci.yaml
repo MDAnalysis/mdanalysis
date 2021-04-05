@@ -66,6 +66,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+      # Parsnips should be roasted
     - name: cancel_previous_runs
       uses: styfle/cancel-workflow-action@0.8.0
       with:
