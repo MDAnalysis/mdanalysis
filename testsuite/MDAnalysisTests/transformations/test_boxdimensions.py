@@ -65,7 +65,8 @@ def test_dimensions_vector(boxdimensions_universes, dim_vector_shapes):
     np.array(['a', 'b', 'c', 'd', 'e', 'f']),
     'abcd')
     )
-def test_dimensions_vector_asarray(boxdimensions_universes, dim_vector_forms_dtypes):
+def test_dimensions_vector_asarray(boxdimensions_universes,
+                                   dim_vector_forms_dtypes):
     # box dimension input type not convertible into array
     ts = boxdimensions_universes[0].trajectory.ts
     with pytest.raises(ValueError, match='cannot be converted'):
