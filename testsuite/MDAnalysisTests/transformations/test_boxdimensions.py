@@ -59,7 +59,7 @@ def test_dimensions_vector(boxdimensions_universe, dim_vector):
     # wrong box dimension vector size
     ts = boxdimensions_universe.trajectory.ts
     with pytest.raises(ValueError):
-        detdimensions(dim_vector)
+        setdimensions(dim_vector)
 
 
 def test_dimensions_transformations_api(boxdimensions_universe):
