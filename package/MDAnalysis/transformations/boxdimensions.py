@@ -69,8 +69,9 @@ class setdimensions:
         try:
             self.dimensions = np.asarray(self.dimensions, np.float32)
         except ValueError:
-            raise ValueError(f'{self.dimensions} cannot be converted into\
-np.float32 numpy.ndarray')
+            errmsg = (f"{self.dimensions} cannot be converted into "
+                             "np.float32 numpy.ndarray")
+            raise ValueError(errmsg)
         try:
             self.dimensions = self.dimensions.reshape(6, )
         except ValueError:
