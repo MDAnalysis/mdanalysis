@@ -23,6 +23,7 @@
 from __future__ import absolute_import
 import MDAnalysis as mda
 import numpy as np
+import pytest
 
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
 from MDAnalysis.analysis.lineardensity import LinearDensity
@@ -38,3 +39,11 @@ def test_serial():
                           0., 0., 0., 0.])
     ld = LinearDensity(selection, binsize=5).run()
     assert_almost_equal(xpos, ld.results['x']['pos'])
+
+
+def test_results_warning():
+    universe = mda.Universe(waterPSF, waterDCD)
+    msg = ("The structure of the `results` dictionary will change in "
+            "MDAnalysis version 2.0.")
+    with pytest.warns(DeprecationWarning, match=msg):
+        LinearDensity(universe.atoms).run()

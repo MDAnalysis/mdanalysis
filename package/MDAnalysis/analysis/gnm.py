@@ -90,6 +90,7 @@ from __future__ import print_function, division, absolute_import
 from six.moves import range
 
 import itertools
+import warnings
 
 import numpy as np
 
@@ -221,6 +222,17 @@ class GNMAnalysis(object):
           `Bonus_groups` is contained in `selection` as this could lead to
           double counting. No checks are applied. Default is ``None``.
 
+
+
+    Attributes
+    ----------
+    results : list
+          eigenvalues and eigenvectors
+
+          .. deprecated:: 1.1.0
+             The structure of the ``results`` list will change in
+             MDAnalysis 2.0.
+
     See Also
     --------
     :class:`closeContactGNMAnalysis`
@@ -275,6 +287,12 @@ class GNMAnalysis(object):
         outputobject.append((time, w[list_map[1]], v[list_map[1]]))
         # outputobject.append((time, [ w[list_map[i]] for i in range(nmodes) ],
         # [ v[list_map[i]] for i in range( nmodes) ] ))
+
+        warnings.warn(
+            "The structure of the `results` list will change in "
+            "MDAnalysis version 2.0.",
+            category=DeprecationWarning
+        )
 
     def generate_kirchoff(self):
         """Generate the Kirchhoff matrix of contacts.

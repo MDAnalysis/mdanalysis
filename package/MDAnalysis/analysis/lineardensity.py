@@ -31,6 +31,7 @@ fixed volume cells (thus for simulations in canonical NVT ensemble).
 from __future__ import division, absolute_import
 
 import os.path as path
+import warnings
 
 import numpy as np
 
@@ -61,6 +62,10 @@ class LinearDensity(AnalysisBase):
           keys, find 'pos', 'pos_std' (mass-weighted density and
           standard deviation), 'char', 'char_std' (charge density and
           its standard deviation), 'slice_volume' (volume of bin).
+
+          .. deprecated:: 1.1.0
+             The structure of the ``results`` dictionary will change in
+             MDAnalysis 2.0
 
     Example
     -------
@@ -99,6 +104,13 @@ class LinearDensity(AnalysisBase):
 
         # Dictionary containing results
         self.results = {'x': {'dim': 0}, 'y': {'dim': 1}, 'z': {'dim': 2}}
+
+        warnings.warn(
+            "The structure of the `results` dictionary will change in "
+            "MDAnalysis version 2.0.",
+            category=DeprecationWarning
+        )
+
         # Box sides
         self.dimensions = self._universe.dimensions[:3]
         self.volume = np.prod(self.dimensions)
