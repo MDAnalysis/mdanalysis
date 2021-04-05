@@ -69,14 +69,15 @@ class setdimensions:
         try:
             self.dimensions = np.asarray(self.dimensions, np.float32)
         except ValueError:
-            errmsg = (f"{self.dimensions} cannot be converted into "
-                             "np.float32 numpy.ndarray")
+            errmsg = (f'{self.dimensions} cannot be converted into '
+                       'np.float32 numpy.ndarray')
             raise ValueError(errmsg)
         try:
             self.dimensions = self.dimensions.reshape(6, )
         except ValueError:
-            raise ValueError(f'{self.dimensions} array does not have valid box\
-dimension shape')
+            errmsg = (f'{self.dimensions} array does not have valid box '
+                       'dimension shape')
+            raise ValueError(errmsg)
 
     def __call__(self, ts):
         ts.dimensions = self.dimensions
