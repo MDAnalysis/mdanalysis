@@ -44,22 +44,32 @@ def test_boxdimensions_dims(boxdimensions_universe):
     assert_array_almost_equal(new_dims, new.dimensions, decimal=6)
 
 
-@pytest.mark.parametrize('dim_vector', (
+@pytest.mark.parametrize('dim_vector_shapes', (
     [1, 1, 1, 90, 90],
     [1, 1, 1, 1, 90, 90, 90],
-    ['a', 'b', 'c', 'd', 'e', 'f'],
+    np.array([[1], [1], [90], [90], [90]]),
     np.array([1, 1, 1, 90, 90]),
     np.array([1, 1, 1, 1, 90, 90, 90]),
-    np.array([[1], [1], [90], [90], [90]]),
+    [1, 1, 1, 90, 90],
+    111909090)
+    )
+def test_dimensions_vector(boxdimensions_universes, dim_vector_shapes):
+    # wrong box dimension vector shape
+    ts = boxdimensions_universes[0].trajectory.ts
+    with pytest.raises(ValueError, match='valid box dimension shape'):
+        setdimensions(dim_vector_shapes)(ts)
+
+
+@pytest.mark.parametrize('dim_vector_forms_dtypes', (
+    ['a', 'b', 'c', 'd', 'e', 'f'],
     np.array(['a', 'b', 'c', 'd', 'e', 'f']),
-    111,
     'abcd')
-)
-def test_dimensions_vector(boxdimensions_universe, dim_vector):
-    # wrong box dimension vector size
-    ts = boxdimensions_universe.trajectory.ts
-    with pytest.raises(ValueError):
-        setdimensions(dim_vector)
+    )
+def test_dimensions_vector_asarray(boxdimensions_universes, dim_vector_forms_dtypes):
+    # box dimension input type not convertible into array
+    ts = boxdimensions_universes[0].trajectory.ts
+    with pytest.raises(ValueError, match='cannot be converted'):
+        setdimensions(dim_vector_forms_dtypes)(ts)
 
 
 def test_dimensions_transformations_api(boxdimensions_universe):
