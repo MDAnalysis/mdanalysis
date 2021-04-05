@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/??  richardjgowers, IAlibay, tylerjereddy, xiki-tempula, lilyminium,
-          zemanj
+          zemanj, PicoCentauri
 
   * 1.1.0
 
@@ -31,6 +31,8 @@ Changes
   * Maximum pinned versions in setup.py removed for python 3.6+ (PR #3139)
 
 Deprecations
+  * Deprecate structure of `results` attribute for LinearDensity, 
+    PersistenceLength, GNMAnalysis, AnalysisFromFunction (Issue #3115)
   * Deprecated current Group.bonds, angles, dihedrals, impropers
     behavior where it returns connections to atoms outside the group
     by default (Issue #1264, #2821, PR #3159)

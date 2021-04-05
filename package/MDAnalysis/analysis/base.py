@@ -34,6 +34,7 @@ from six.moves import range, zip
 import inspect
 import logging
 import itertools
+import warnings
 
 import numpy as np
 from MDAnalysis import coordinates
@@ -209,6 +210,10 @@ class AnalysisFromFunction(AnalysisBase):
     results : ndarray
         results of calculation are stored after call to ``run``
 
+        .. deprecated:: 1.1.0
+           The structure of the ``results`` array will change in
+           MDAnalysis 2.0.
+
     Example
     -------
     >>> def rotation_matrix(mobile, ref):
@@ -271,6 +276,11 @@ class AnalysisFromFunction(AnalysisBase):
 
     def _conclude(self):
         self.results = np.asarray(self.results)
+
+        warnings.warn(
+                "The structure of the `results` array will change in "
+                "MDAnalysis version 2.0.", category=DeprecationWarning
+                )
 
 
 def analysis_class(function):
