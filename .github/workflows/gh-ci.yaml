@@ -66,6 +66,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: cancel_previous_runs
+      uses: style/cancel-workflow-action@0.8.0
+      with:
+        access_token: ${{ github.token }}
+
     - name: setup_osx
       if: startsWith(matrix.os, 'macOS')
       run: |
