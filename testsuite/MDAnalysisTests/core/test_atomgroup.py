@@ -1698,6 +1698,7 @@ class TestAtomGroupSort(object):
 
         u.add_TopologyAttr('resid', [2, 1, 0])
         u.add_TopologyAttr('segid', [1, 0])
+        u.add_TopologyAttr('bonds', [(0,1)])
 
         return u
 
@@ -1732,9 +1733,9 @@ class TestAtomGroupSort(object):
 
     def test_sort_position(self, ag):
         ag.positions = (-np.arange(21)).reshape(7, 3)
-        with pytest.raises(ValueError, match=r"The array returned by the"
+        with pytest.raises(ValueError, match=r"The array returned by the "
                            "attribute.*"):
-            ag.sort("angles")
+            ag.sort("bonds")
         with pytest.raises(ValueError, match=r"The function you assigned"
                            ".*"):
             ag.sort("positions", keyfunc=lambda x: x)
