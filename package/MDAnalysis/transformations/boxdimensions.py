@@ -28,12 +28,12 @@ Set box dimensions --- :mod: `MDAnalysis.transformations.boxdimensions`
 Set dimensions of the simulation box to a constant vector across all timesteps.
 
 
-.. autoclass:: setdimensions
+..autoclass:: set_dimensions
 """
 import numpy as np
 
 
-class setdimensions:
+class set_dimensions:
     """
     Set simulation box dimensions.
 
@@ -49,7 +49,7 @@ class setdimensions:
     .. code-block:: python
 
         dim = [2, 2, 2, 90, 90, 90]
-        transform = mda.transformations.boxdimensions.setdimensions(dim)
+        transform = mda.transformations.boxdimensions.set_dimensions(dim)
         u.trajectory.add_transformations(transform)
 
     Parameters
@@ -76,7 +76,10 @@ class setdimensions:
             self.dimensions = self.dimensions.reshape(6, )
         except ValueError:
             errmsg = (f'{self.dimensions} array does not have valid box '
-                       'dimension shape')
+                       'dimension shape.\nSimulation box dimensions are '
+                       'given by an float array of shape (6, ), '
+                       ' containing 3 lengths and 3 angles: '
+                       '[a, b, c, alpha, beta, gamma]'
             raise ValueError(errmsg)
 
     def __call__(self, ts):
