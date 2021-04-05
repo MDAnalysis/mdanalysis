@@ -342,7 +342,7 @@ class ChemfilesWriter(base.WriterBase):
         constructor.
 
         If `obj` contains velocities, and the underlying format supports it, the
-        velocities are writen to the file. Writing forces is unsupported at the
+        velocities are written to the file. Writing forces is unsupported at the
         moment.
 
         Parameters
@@ -356,21 +356,23 @@ class ChemfilesWriter(base.WriterBase):
            Deprecated support for Timestep argument has now been removed.
            Use AtomGroup or Universe as an input instead.
         """
-        if hasattr(obj, "atoms"):
+        try:
+            atoms = obj.atoms
+        except AttributeError:
+            errmsg = "Input obj is neither an AtomGroup or Universe"
+            raise TypeError(errmsg) from None
+        else:
             if hasattr(obj, "universe"):
                 # For AtomGroup and children (Residue, ResidueGroup, Segment)
                 ts_full = obj.universe.trajectory.ts
-                if ts_full.n_atoms == obj.atoms.n_atoms:
+                if ts_full.n_atoms == atoms.n_atoms:
                     ts = ts_full
                 else:
                     # Only populate a time step with the selected atoms.
-                    ts = ts_full.copy_slice(obj.atoms.indices)
+                    ts = ts_full.copy_slice(atoms.indices)
             elif hasattr(obj, "trajectory"):
                 # For Universe only --- get everything
                 ts = obj.trajectory.ts
-        else:
-            errmsg = "Input obj is neither an AtomGroup or Universe"
-            raise TypeError(errmsg) from None
 
         frame = self._timestep_to_chemfiles(ts)
         frame.topology = self._topology_to_chemfiles(obj, len(frame.atoms))

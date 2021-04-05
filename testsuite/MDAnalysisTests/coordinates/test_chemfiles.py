@@ -200,6 +200,17 @@ class TestChemfiles(object):
 
             # self.check_topology(datafiles.CONECT, outfile)
 
+    def test_write_atom_group(self, tmpdir):
+        u = mda.Universe(datafiles.CONECT)
+        group = u.select_atoms("resname ARG")
+        with tmpdir.as_cwd():
+            outfile = "chemfiles-write-atom-group.pdb"
+            with ChemfilesWriter(outfile) as writer:
+                writer.write(group)
+
+            check = mda.Universe(outfile)
+            assert check.trajectory.ts.n_atoms == group.n_atoms
+
     def test_write_velocities(self, tmpdir):
         u = mda.Universe.empty(4, trajectory=True)
         u.add_TopologyAttr("type", values=["H", "H", "H", "H"])
