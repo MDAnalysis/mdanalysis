@@ -1,2 +1,1 @@
 .. automodule:: MDAnalysis.transformations.boxdimensions
-
