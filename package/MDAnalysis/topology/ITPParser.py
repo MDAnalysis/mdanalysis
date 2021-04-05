@@ -571,10 +571,13 @@ class ITPParser(TopologyReaderBase):
 
         if not all(self.masses):
             empty = self.masses == ''
-            self.masses[empty] = guessers.guess_masses(guessers.guess_types(self.types)[empty])
-            attrs.append(Masses(np.array(self.masses, dtype=np.float64), guessed=True))
+            self.masses[empty] = guessers.guess_masses(
+                guessers.guess_types(self.types)[empty])
+            attrs.append(Masses(np.array(self.masses, dtype=np.float64),
+                                guessed=True))
         else:
-            attrs.append(Masses(np.array(self.masses, dtype=np.float64), guessed=False))
+            attrs.append(Masses(np.array(self.masses, dtype=np.float64),
+                                guessed=False))
 
         # residue stuff
         resids = np.array(self.resids, dtype=np.int32)
