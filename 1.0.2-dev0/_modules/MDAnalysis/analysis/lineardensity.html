@@ -215,6 +215,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
 
 <span class="kn">import</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">path</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -245,6 +246,10 @@
 <span class="sd">          keys, find &#39;pos&#39;, &#39;pos_std&#39; (mass-weighted density and</span>
 <span class="sd">          standard deviation), &#39;char&#39;, &#39;char_std&#39; (charge density and</span>
 <span class="sd">          its standard deviation), &#39;slice_volume&#39; (volume of bin).</span>
+
+<span class="sd">          .. deprecated:: 1.1.0</span>
+<span class="sd">             The structure of the ``results`` dictionary will change in</span>
+<span class="sd">             MDAnalysis 2.0</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
@@ -283,6 +288,13 @@
 
         <span class="c1"># Dictionary containing results</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;dim&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;dim&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;dim&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}}</span>
+
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;The structure of the `results` dictionary will change in &quot;</span>
+            <span class="s2">&quot;MDAnalysis version 2.0.&quot;</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span>
+        <span class="p">)</span>
+
         <span class="c1"># Box sides</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>

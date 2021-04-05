@@ -218,6 +218,7 @@
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">coordinates</span>
@@ -393,6 +394,10 @@
 <span class="sd">    results : ndarray</span>
 <span class="sd">        results of calculation are stored after call to ``run``</span>
 
+<span class="sd">        .. deprecated:: 1.1.0</span>
+<span class="sd">           The structure of the ``results`` array will change in</span>
+<span class="sd">           MDAnalysis 2.0.</span>
+
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
 <span class="sd">    &gt;&gt;&gt; def rotation_matrix(mobile, ref):</span>
@@ -454,7 +459,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
+
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;The structure of the `results` array will change in &quot;</span>
+                <span class="s2">&quot;MDAnalysis version 2.0.&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span>
+                <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="analysis_class"><a class="viewcode-back" href="../../../documentation_pages/analysis/base.html#MDAnalysis.analysis.base.analysis_class">[docs]</a><span class="k">def</span> <span class="nf">analysis_class</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>

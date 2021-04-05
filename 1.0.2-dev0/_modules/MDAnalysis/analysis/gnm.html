@@ -274,6 +274,7 @@
 <span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span>
 
 <span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -405,6 +406,17 @@
 <span class="sd">          `Bonus_groups` is contained in `selection` as this could lead to</span>
 <span class="sd">          double counting. No checks are applied. Default is ``None``.</span>
 
+
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    results : list</span>
+<span class="sd">          eigenvalues and eigenvectors</span>
+
+<span class="sd">          .. deprecated:: 1.1.0</span>
+<span class="sd">             The structure of the ``results`` list will change in</span>
+<span class="sd">             MDAnalysis 2.0.</span>
+
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    :class:`closeContactGNMAnalysis`</span>
@@ -459,6 +471,12 @@
         <span class="n">outputobject</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">time</span><span class="p">,</span> <span class="n">w</span><span class="p">[</span><span class="n">list_map</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">v</span><span class="p">[</span><span class="n">list_map</span><span class="p">[</span><span class="mi">1</span><span class="p">]]))</span>
         <span class="c1"># outputobject.append((time, [ w[list_map[i]] for i in range(nmodes) ],</span>
         <span class="c1"># [ v[list_map[i]] for i in range( nmodes) ] ))</span>
+
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;The structure of the `results` list will change in &quot;</span>
+            <span class="s2">&quot;MDAnalysis version 2.0.&quot;</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="GNMAnalysis.generate_kirchoff"><a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.GNMAnalysis.generate_kirchoff">[docs]</a>    <span class="k">def</span> <span class="nf">generate_kirchoff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generate the Kirchhoff matrix of contacts.</span>
