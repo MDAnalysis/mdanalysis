@@ -2259,14 +2259,12 @@ class _Connection(AtomAttr):
         ag : AtomGroup
 
         """
-        warn = True
         try:
             unique_bonds = set(itertools.chain(
                 *[self._bondDict[a] for a in ag.ix]))
         except TypeError:
             # maybe we got passed an Atom
             unique_bonds = self._bondDict[ag.ix]
-            warn = False
         unique_bonds = np.array(sorted(unique_bonds), dtype=object)
         bond_idx, types, guessed, order = np.hsplit(unique_bonds, 4)
         bond_idx = np.array(bond_idx.ravel().tolist(), dtype=np.int32)
