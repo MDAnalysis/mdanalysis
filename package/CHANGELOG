@@ -17,11 +17,13 @@ The rules for this file:
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
          hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi, hejamu,
-         biogen98, hp115
+         biogen98, orioncohen, hp115
 
   * 2.0.0
 
 Fixes
+  * Fixed 'sphzone', 'sphlayer', 'cyzone', and 'cylayer' to return empty if the
+   zone/layer is empty, consistent with 'around' (Issue #2915)
   * A Universe created from an ROMol with no atoms returns now a Universe 
     with 0 atoms (Issue #3142)
   * ValueError raised when empty atomgroup is given to DensityAnalysis
