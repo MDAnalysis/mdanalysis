@@ -54,7 +54,7 @@ class setdimensions:
 
     Parameters
     ----------
-    dimensions: array-like
+    dimensions: iterable of floats
         vector that contains unit cell lengths and angles.
         Expected shapes are (6, 0) or (1, 6)
 
