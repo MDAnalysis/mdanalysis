@@ -22,6 +22,8 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * Helix_analysis coverage raised to 100% and `from __future__ import`
+    removed (Issue #3209) 
   * Fixed 'sphzone', 'sphlayer', 'cyzone', and 'cylayer' to return empty if the
    zone/layer is empty, consistent with 'around' (Issue #2915)
   * A Universe created from an ROMol with no atoms returns now a Universe 
