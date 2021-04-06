@@ -381,9 +381,9 @@ class RMSD(AnalysisBase):
 
         weights_groupselections : False or list of {"mass", ``None`` or array_like} (optional)
              1. ``False`` will apply imposed weights to `groupselections` from
-             ``weights`` option if `weights` is not iterable. Otherwise will assume
-             a list of length equal to length of `groupselections` filled with
-             ``None`` values.
+             ``weights`` option if ``weights`` is either ``"mass"`` or ``None``. 
+             Otherwise will assume a list of length equal to length of 
+             `groupselections` filled with ``None`` values.
 
              2. A list of {"mass", ``None`` or array_like} with the length of `groupselections`
              will apply the weights to `groupselections` correspondingly.
