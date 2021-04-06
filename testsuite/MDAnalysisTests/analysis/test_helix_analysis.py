@@ -400,7 +400,6 @@ class TestHELANAL(object):
         ha = hel.HELANAL(psf_ca, select='resnum 161-187')
         with pytest.raises(ValueError, match=r'Call run\(\) before universe_from_origins'):
             u = ha.universe_from_origins()
-            #assert u.local_origins
 
     def test_multiple_atoms_per_residues(self):
         u = mda.Universe(XYZ)
@@ -437,12 +436,10 @@ class TestHELANAL(object):
 
     def test_len_groups_short(self, psf_ca):
         sel = 'resnum 161-168'
-        with pytest.warns(UserWarning) as rec:
+        with pytest.warns(UserWarning, match='Fewer than 9 atoms found'):
             ha = hel.HELANAL(psf_ca, select=sel)
             ha.run()
             assert len(ha.atomgroups) < 9
-        assert len(rec) == 1
-        assert 'Fewer than 9 atoms found' in rec[0].message.args[0]
 
     @pytest.mark.parametrize('ref_axis,screw_angles', [
         # input vectors zigzag between [-1, 0, 0] and [1, 0, 0]
