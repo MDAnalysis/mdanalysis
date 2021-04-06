@@ -196,12 +196,12 @@ if sklearn:
                 clustering.
 
             random_state : int, RandomState instance or None, optional
-				Used to control the random number generator used, for the
-				randomization which is part of scikit-learn algorithm(default
-				is scikit-learn's default).Use an int(unique) for reproducible
-				results across function calls. Previously(version<0.23), this
-				parameter was hardcoded to 0 by scikit-learn. Refer its
-				documentation for more details.
+		Used to control the random number generator used, for the
+		randomization which is part of scikit-learn algorithm(default
+		is scikit-learn's default).Use an int(unique) for reproducible
+		results across function calls. Previously(version<0.23), this
+		parameter was hardcoded to 0 by scikit-learn. Refer its
+		documentation for more details.
 
             """
             self.ap = \
