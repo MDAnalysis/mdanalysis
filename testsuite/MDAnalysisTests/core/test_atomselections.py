@@ -210,6 +210,10 @@ class TestSelectionsCHARMM(object):
         sel = universe.select_atoms(selstr)
         assert_equal(len(sel), 88)
 
+    def test_empty_cylayer(self, universe):
+        empty = universe.select_atoms('cylayer 4.0 6.0 10 -10 name NOT_A_NAME')
+        assert_equal(len(empty), 0)
+
     @pytest.mark.parametrize('selstr', [
         'cyzone 6.0 10 -10 bynum 1281',
         'cyzone 6.0 10 -10 index 1280'
@@ -217,6 +221,10 @@ class TestSelectionsCHARMM(object):
     def test_cyzone(self, universe, selstr):
         sel = universe.select_atoms(selstr)
         assert_equal(len(sel), 166)
+
+    def test_empty_cyzone(self, universe):
+        empty = universe.select_atoms('cyzone 6.0 10 -10 name NOT_A_NAME')
+        assert_equal(len(empty), 0)
 
     def test_point(self, universe):
         ag = universe.select_atoms('point 5.0 5.0 5.0 3.5')
@@ -485,7 +493,7 @@ class TestSelectionsTPR(object):
     @staticmethod
     @pytest.fixture(scope='class')
     def universe():
-        return MDAnalysis.Universe(TPR,XTC)
+        return MDAnalysis.Universe(TPR, XTC, tpr_resid_from_one=False)
 
     @pytest.mark.parametrize('selstr', [
         'same fragment as bynum 1',
@@ -770,6 +778,10 @@ class TestTriclinicSelections(object):
 
         assert idx == set(ag.indices)
 
+    def test_empty_sphlayer(self, u):
+        empty = u.select_atoms('sphlayer 2.4 6.0 name NOT_A_NAME')
+        assert len(empty) == 0
+
     def test_sphzone(self, u):
         r1 = u.select_atoms('resid 1')
         cog = r1.center_of_geometry().reshape(1, 3)
@@ -780,6 +792,10 @@ class TestTriclinicSelections(object):
         idx = set(np.where(d < 5.0)[0])
 
         assert idx == set(ag.indices)
+
+    def test_empty_sphzone(self, u):
+        empty = u.select_atoms('sphzone 5.0 name NOT_A_NAME')
+        assert len(empty) == 0
 
     def test_point_1(self, u):
         # The example selection
@@ -1299,7 +1315,7 @@ def test_mass_sel_warning(u_fake_masses):
 
 
 @pytest.mark.parametrize("selstr,n_res", [
-    ("resnum -10 to 3", 14),
+    ("resnum -10 to 3", 13),
     ("resnum -5--3", 3),  # select -5 to -3
     ("resnum -3 : -5", 0),  # wrong way around
 ])

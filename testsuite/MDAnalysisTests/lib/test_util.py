@@ -700,6 +700,11 @@ class Class_with_Caches(object):
         self.ref3 = 3.0
         self.ref4 = 4.0
         self.ref5 = 5.0
+        self.ref6 = 6.0
+        # For universe-validated caches
+        # One-line lambda-like class
+        self.universe = type('Universe', (), dict())()
+        self.universe._cache = {'_valid': {}}
 
     @cached('val1')
     def val1(self):
@@ -741,6 +746,12 @@ class Class_with_Caches(object):
 
     def _init_val_5(self, n, s=None):
         return n * s
+
+    # Property decorator and universally-validated cache
+    @property
+    @cached('val6', universe_validation=True)
+    def val6(self):
+        return self.ref5 + 1.0
 
     # These are designed to mimic the AG and Universe cache methods
     def _clear_caches(self, *args):
@@ -835,6 +846,34 @@ class TestCachedDecorator(object):
         assert obj.val5(5, s='abc') == 5 * 'abc'
 
         assert obj.val5(5, s='!!!') == 5 * 'abc'
+
+    # property decorator, with universe validation
+    def test_val6_universe_validation(self, obj):
+        obj._clear_caches()
+        assert not hasattr(obj, '_cache_key')
+        assert 'val6' not in obj._cache
+        assert 'val6' not in obj.universe._cache['_valid']
+
+        ret = obj.val6  # Trigger caching
+        assert obj.val6 == obj.ref6
+        assert ret is obj.val6
+        assert 'val6' in obj._cache
+        assert 'val6' in obj.universe._cache['_valid']
+        assert obj._cache_key in obj.universe._cache['_valid']['val6']
+        assert obj._cache['val6'] is ret
+
+        # Invalidate cache at universe level
+        obj.universe._cache['_valid']['val6'].clear()
+        ret2 = obj.val6
+        assert ret2 is obj.val6
+        assert ret2 is not ret
+
+        # Clear obj cache and access again
+        obj._clear_caches()
+        ret3 = obj.val6
+        assert ret3 is obj.val6
+        assert ret3 is not ret2
+        assert ret3 is not ret
 
 
 class TestConvFloat(object):
@@ -1474,7 +1513,7 @@ class TestStaticVariables(object):
 
         @static_variables(foo=0, bar={'test': x})
         def myfunc():
-            assert myfunc.foo is 0
+            assert myfunc.foo == 0
             assert type(myfunc.bar) is type(dict())
             if 'test2' not in myfunc.bar:
                 myfunc.bar['test2'] = "a"
@@ -1488,14 +1527,14 @@ class TestStaticVariables(object):
 
         y = myfunc()
         assert y is x
-        assert x[0] is 1
-        assert myfunc.bar['test'][0] is 1
+        assert x[0] == 1
+        assert myfunc.bar['test'][0] == 1
         assert myfunc.bar['test2'] == "a"
 
         x = [0]
         y = myfunc()
         assert y is not x
-        assert myfunc.bar['test'][0] is 2
+        assert myfunc.bar['test'][0] == 2
         assert myfunc.bar['test2'] == "aa"
 
 
@@ -1536,7 +1575,7 @@ class TestWarnIfNotUnique(object):
         assert atoms.isunique
         with pytest.warns(None) as w:
             x = outer(atoms)
-            assert x is 0
+            assert x == 0
             assert not w.list
 
         # Check that a warning is raised for a group with duplicates:
@@ -1548,7 +1587,7 @@ class TestWarnIfNotUnique(object):
             # Assert that the "warned" state is restored:
             assert warn_if_not_unique.warned is False
             # Check correct function execution:
-            assert x is 0
+            assert x == 0
             # Only one warning must have been raised:
             assert len(w) == 1
             # For whatever reason pytest.warns(DuplicateWarning, match=msg)
@@ -1602,7 +1641,7 @@ class TestWarnIfNotUnique(object):
             # Assert that the "warned" state is restored:
             assert warn_if_not_unique.warned is False
             # Check correct function execution:
-            assert x is 0
+            assert x == 0
             # Only one warning must have been raised:
             assert len(w) == 1
             assert w[0].message.args[0] == msg

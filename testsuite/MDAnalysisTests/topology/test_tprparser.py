@@ -32,21 +32,28 @@ from MDAnalysis.tests.datafiles import (
     TPR450, TPR451, TPR452, TPR453, TPR454, TPR455, TPR455Double,
     TPR460, TPR461, TPR502, TPR504, TPR505, TPR510, TPR510_bonded,
     TPR2016, TPR2018, TPR2019B3, TPR2020B2, TPR2020, TPR2020Double,
+    TPR2021, TPR2021Double,
     TPR2016_bonded, TPR2018_bonded, TPR2019B3_bonded,
-    TPR2020B2_bonded, TPR2020_bonded, TPR2020_double_bonded, TPR334_bonded,
-    TPR_EXTRA_2020, TPR_EXTRA_2018, TPR_EXTRA_2016, TPR_EXTRA_407,
+    TPR2020B2_bonded, TPR2020_bonded, TPR2020_double_bonded,
+    TPR2021_bonded, TPR2021_double_bonded, TPR334_bonded,
+    TPR_EXTRA_2021, TPR_EXTRA_2020, TPR_EXTRA_2018,
+    TPR_EXTRA_2016, TPR_EXTRA_407,
     XTC,
 )
 from MDAnalysisTests.topology.base import ParserBase
 import MDAnalysis.topology.TPRParser
+import MDAnalysis as mda
 
 BONDED_TPRS = (
     TPR510_bonded,
     TPR2016_bonded,
     TPR2018_bonded,
     TPR2019B3_bonded,
+    TPR2021_bonded,
+    TPR2021_double_bonded,
     TPR2020_bonded,
     TPR2020_double_bonded,
+    TPR_EXTRA_2021,
     TPR_EXTRA_2020,
     TPR_EXTRA_2018,
     TPR_EXTRA_2016,
@@ -100,7 +107,8 @@ class TestTPRGromacsVersions(TPRAttrs):
     @pytest.fixture(params=[TPR400, TPR402, TPR403, TPR404, TPR405, TPR406,
                             TPR407, TPR450, TPR451, TPR452, TPR453, TPR454,
                             TPR455, TPR502, TPR504, TPR505, TPR510, TPR2016,
-                            TPR2018, TPR2019B3, TPR2020, TPR2020Double])
+                            TPR2018, TPR2019B3, TPR2020, TPR2020Double,
+                            TPR2021, TPR2021Double])
     def filename(self, request):
         return request.param
 
@@ -287,3 +295,14 @@ def test_elements():
         'H', '', 'Na', 'Na', 'Na', 'Na',
     ], dtype=object)
     assert_equal(topology.elements.values[-20:], reference)
+
+
+@pytest.mark.parametrize("resid_from_one,resid_addition", [
+    (False, 0),
+    (True, 1),  # status quo for 2.x
+    ])
+def test_resids(resid_from_one, resid_addition):
+    u = mda.Universe(TPR, tpr_resid_from_one=resid_from_one)
+    resids = np.arange(len(u.residues)) + resid_addition
+    assert_equal(u.residues.resids, resids,
+                 err_msg="tpr_resid_from_one kwarg not switching resids")

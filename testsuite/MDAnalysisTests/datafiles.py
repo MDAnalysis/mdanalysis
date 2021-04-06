@@ -81,10 +81,13 @@ __all__ = [
     "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
     "TPR460", "TPR461", "TPR502", "TPR504", "TPR505", "TPR510", "TPR2016",
     "TPR2018", "TPR2019B3", "TPR2020B2", "TPR2020", "TPR2020Double",
+    "TPR2021", "TPR2021Double",
     "TPR510_bonded", "TPR2016_bonded", "TPR2018_bonded", "TPR2019B3_bonded",
     "TPR2020B2_bonded", "TPR2020_bonded", "TPR2020_double_bonded",
+    "TPR2021_bonded", "TPR2021_double_bonded",
     "TPR334_bonded",
-    "TPR_EXTRA_2020", "TPR_EXTRA_2018", "TPR_EXTRA_2016", "TPR_EXTRA_407",
+    "TPR_EXTRA_2021", "TPR_EXTRA_2020", "TPR_EXTRA_2018",
+    "TPR_EXTRA_2016", "TPR_EXTRA_407",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
     "XTC_sub_sol",
@@ -178,7 +181,6 @@ __all__ = [
     "RamaArray", "GLYRamaArray", # time series of phi/psi angles
     "JaninArray", "LYSJaninArray", # time series of chi1/chi2 angles
     "PDB_rama", "PDB_janin", # for testing failures of Ramachandran and Janin classes
-    "PDB_metal", # PDB with metal atoms
     "BATArray", # time series of bond-angle-torsion coordinates array from Molecule_comments_header.mol2
     # DOS line endings
     "WIN_PDB_multiframe", "WIN_DLP_HISTORY", "WIN_TRJ", "WIN_LAMMPSDUMP", "WIN_ARC",
@@ -264,7 +266,6 @@ PSF_cmap = resource_filename(__name__, 'data/parmed_ala3.psf')
 
 PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
 PDB_closed = resource_filename(__name__, 'data/adk_closed.pdb')
-PDB_metal = resource_filename(__name__, 'data/metals.pdb')
 
 ALIGN = resource_filename(__name__, 'data/align.pdb')
 RNA_PSF = resource_filename(__name__, 'data/analysis/1k5i_c36.psf.gz')
@@ -344,11 +345,13 @@ TPR2018 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2018.tpr')
 TPR2019B3 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2019-beta3.tpr')
 TPR2020B2 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2020-beta2.tpr')
 TPR2020 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2020.tpr')
+TPR2021 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2021.tpr')
 # double precision
 TPR455Double = resource_filename(__name__, 'data/tprs/drew_gmx_4.5.5.double.tpr')
 TPR460 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.tpr')
 TPR461 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.1.tpr')
 TPR2020Double = resource_filename(__name__, 'data/tprs/2lyz_gmx_2020_double.tpr')
+TPR2021Double = resource_filename(__name__, 'data/tprs/2lyz_gmx_2021_double.tpr')
 # all bonded interactions
 TPR334_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_3.3.4.tpr')
 TPR510_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_5.1.tpr')
@@ -358,7 +361,10 @@ TPR2019B3_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2019-
 TPR2020B2_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2020-beta2.tpr')
 TPR2020_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2020.tpr')
 TPR2020_double_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2020_double.tpr')
+TPR2021_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2021.tpr')
+TPR2021_double_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2021_double.tpr')
 # all interactions
+TPR_EXTRA_2021 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2021.tpr')
 TPR_EXTRA_2020 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2020.tpr')
 TPR_EXTRA_2018 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2018.tpr')
 TPR_EXTRA_2016 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2016.3.tpr')

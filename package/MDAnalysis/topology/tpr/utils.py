@@ -46,6 +46,7 @@ Then compose the stuffs in the format :class:`MDAnalysis.Universe` reads in.
 
 The module also contains the :func:`do_inputrec` to read the TPR header with.
 """
+
 import numpy as np
 import xdrlib
 import struct
@@ -284,7 +285,7 @@ def extract_box_info(data, fver):
     return obj.Box(box, box_rel, box_v)
 
 
-def do_mtop(data, fver):
+def do_mtop(data, fver, tpr_resid_from_one=False):
     # mtop: the topology of the whole system
     symtab = do_symtab(data)
     do_symstr(data, symtab)  # system_name
@@ -371,6 +372,9 @@ def do_mtop(data, fver):
     molnums = np.array(molnums, dtype=np.int32)
     segids = np.array(segids, dtype=object)
     resids = np.array(resids, dtype=np.int32)
+    if tpr_resid_from_one:
+        resids += 1
+
     resnames = np.array(resnames, dtype=object)
     (residx, new_resids,
      (new_resnames,
@@ -643,6 +647,9 @@ def do_iparams(data, functypes, fver):
         elif i in [setting.F_SETTLE]:
             data.unpack_real()  # settle.doh
             data.unpack_real()  # settle.dhh
+
+        elif i in [setting.F_VSITE1]:
+            pass
 
         elif i in [setting.F_VSITE2, setting.F_VSITE2FD]:
             data.unpack_real()  # vsite.a
