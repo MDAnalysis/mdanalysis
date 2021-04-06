@@ -170,7 +170,7 @@ if sklearn:
 
         def __init__(self,
                      damping=0.9, preference=-1.0,
-                     max_iter=500, convergence_iter=50, random_state=0,
+                     max_iter=500, convergence_iter=50,
                      **kwargs):
             """
             Parameters
@@ -210,7 +210,6 @@ if sklearn:
                     max_iter=max_iter,
                     convergence_iter=convergence_iter,
                     affinity="precomputed",
-                    random_state=random_state,
                     **kwargs)
 
         def __call__(self, distance_matrix):
