@@ -177,8 +177,16 @@ class RDKitParser(TopologyReaderBase):
         occupancies = []
         tempfactors = []
 
+        try:
+            atom = mol.GetAtomWithIdx(0)
+        except RuntimeError:
+            top = Topology(n_atoms=0, n_res=0, n_seg=0,
+                           attrs=None,
+                           atom_resindex=None,
+                           residue_segindex=None)
+            return top
+
         # check if multiple charges present
-        atom = mol.GetAtomWithIdx(0)
         if atom.HasProp('_GasteigerCharge') and (
         atom.HasProp('_TriposPartialCharge')
         ):
@@ -224,7 +232,6 @@ class RDKitParser(TopologyReaderBase):
                         charges.append(atom.GetDoubleProp('_TriposPartialCharge'))
                     except KeyError:
                         pass
-                
 
         # make Topology attributes
         attrs = []
@@ -274,7 +281,7 @@ class RDKitParser(TopologyReaderBase):
             attrs.append(Charges(np.array(charges, dtype=np.float32)))
         else:
             pass # no guesser yet
-        
+
         # PDB only
         for vals, Attr, dtype in (
             (altlocs, AltLocs, object),

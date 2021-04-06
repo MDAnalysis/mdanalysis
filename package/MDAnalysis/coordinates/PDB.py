@@ -505,6 +505,9 @@ class PDBWriter(base.WriterBase):
     keywords are written out accordingly. Otherwise, the ATOM_ record type
     is the default output.
 
+    The CONECT_ record is written out, if required, when the output stream
+    is closed.
+
     See Also
     --------
     This class is identical to :class:`MultiPDBWriter` with the one
@@ -658,9 +661,16 @@ class PDBWriter(base.WriterBase):
         self.first_frame_done = False
 
     def close(self):
-        """Close PDB file and write END record"""
+        """
+        Close PDB file and write CONECT and END record
+
+
+        .. versionchanged:: 2.0.0
+           CONECT_ record written just before END_ record
+        """
         if hasattr(self, 'pdbfile') and self.pdbfile is not None:
             if not self.has_END:
+                self._write_pdb_bonds()
                 self.END()
             else:
                 logger.warning("END record has already been written"
@@ -797,7 +807,9 @@ class PDBWriter(base.WriterBase):
         if self.bonds is None:
             return
 
-        if not self.obj or not hasattr(self.obj.universe, 'bonds'):
+        if (not hasattr(self, "obj") or
+                not self.obj or
+                not hasattr(self.obj.universe, 'bonds')):
             return
 
         bondset = set(itertools.chain(*(a.bonds for a in self.obj.atoms)))
@@ -898,8 +910,7 @@ class PDBWriter(base.WriterBase):
         # write_all_timesteps() to dump everything in one go, or do the
         # traditional loop over frames
         self._write_next_frame(self.ts, multiframe=self._multiframe)
-        self._write_pdb_bonds()
-        # END record is written when file is being close()d
+        # END and CONECT records are written when file is being close()d
 
     def write_all_timesteps(self, obj):
         """Write all timesteps associated with *obj* to the PDB file.
@@ -922,8 +933,12 @@ class PDBWriter(base.WriterBase):
 
         will be writing frames 12, 14, 16, ...
 
+
         .. versionchanged:: 0.11.0
            Frames now 0-based instead of 1-based
+
+        .. versionchanged:: 2.0.0
+           CONECT_ record moved to :meth:`close`
         """
 
         self._update_frame(obj)
@@ -942,7 +957,7 @@ class PDBWriter(base.WriterBase):
             traj[framenumber]
             self._write_next_frame(self.ts, multiframe=True)
 
-        self._write_pdb_bonds()
+        # CONECT record is written when the file is being close()d
         self.close()
 
         # Set the trajectory to the starting position
@@ -1033,6 +1048,9 @@ class PDBWriter(base.WriterBase):
            When only :attr:`record_types` attribute is present, instead of
            using ATOM_ for both ATOM_ and HETATM_, HETATM_ record
            types are properly written out (Issue #1753).
+           Writing now only uses the contents of the elements attribute
+           instead of guessing by default. If the elements are missing,
+           empty records are written out (Issue #2423).
 
         """
         atoms = self.obj.atoms
@@ -1067,6 +1085,7 @@ class PDBWriter(base.WriterBase):
         occupancies = get_attr('occupancies', 1.0)
         tempfactors = get_attr('tempfactors', 0.0)
         atomnames = get_attr('names', 'X')
+        elements = get_attr('elements', ' ')
         record_types = get_attr('record_types', 'ATOM')
 
         # If reindex == False, we use the atom ids for the serial. We do not
@@ -1095,7 +1114,7 @@ class PDBWriter(base.WriterBase):
             vals['occupancy'] = occupancies[i]
             vals['tempFactor'] = tempfactors[i]
             vals['segID'] = segids[i][:4]
-            vals['element'] = guess_atom_element(atomnames[i].strip())[:2]
+            vals['element'] = elements[i][:2].upper()
 
             # record_type attribute, if exists, can be ATOM or HETATM
             try:

@@ -268,4 +268,5 @@ Currently implemented transformations
    ./transformations/positionaveraging
    ./transformations/fit
    ./transformations/wrap
+   ./transformations/boxdimensions
 

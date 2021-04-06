@@ -179,7 +179,7 @@ def guess_atom_type(atomname):
 
 
 NUMBERS = re.compile(r'[0-9]') # match numbers
-SYMBOLS = re.compile(r'[\*\+\-]')  # match *, +, -
+SYMBOLS = re.compile(r'[*+-]')  # match *, +, -
 
 def guess_atom_element(atomname):
     """Guess the element of the atom from the name.

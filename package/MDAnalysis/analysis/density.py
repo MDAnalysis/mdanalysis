@@ -202,14 +202,11 @@ class DensityAnalysis(AnalysisBase):
             3 element numpy array detailing the x, y and z coordinates of the
             center of a user defined grid box in ångström.
     xdim : float (optional)
-            User defined x dimension box edge in ångström; ignored if
-            gridcenter is "None".
+            User defined x dimension box edge in ångström.
     ydim : float (optional)
-            User defined y dimension box edge in ångström; ignored if
-            gridcenter is "None".
+            User defined y dimension box edge in ångström.
     zdim : float (optional)
-            User defined z dimension box edge in ångström; ignored if
-            gridcenter is "None".
+            User defined z dimension box edge in ångström.
 
     Returns
     -------
@@ -217,18 +214,37 @@ class DensityAnalysis(AnalysisBase):
             A :class:`Density` instance containing a physical density of units
             :math:`Angstrom^{-3}`.
 
+    Raises
+    ------
+    ValueError
+        if AtomGroup is empty and no user defined grid is provided, or
+        if the user defined grid is not or incorrectly provided
+    UserWarning
+        if AtomGroup is empty and a user defined grid is provided
+
+
     See Also
     --------
     pmda.density.DensityAnalysis for a parallel version
 
     Notes
     -----
+    If the `gridcenter` and `x/y/zdim` arguments are not provided,
+    :class:`DensityAnalysis` will attempt to automatically generate
+    a gridbox from the atoms in 'atomgroup' (See Examples).
+
     Normal :class:`AtomGroup` instances represent a static selection of
     atoms. If you want *dynamically changing selections* (such as "name OW and
     around 4.0 (protein and not name H*)", i.e., the water oxygen atoms that
     are within 4 Å of the protein heavy atoms) then create an
     :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` (see Examples).
 
+    :class:`DensityAnalysis` will fail when the :class:`AtomGroup` instance
+    does not contain any selection of atoms, even when `updating` is set to
+    ``True``. In such a situation, user defined box limits can be provided to
+    generate a `Density`. Although, it remains the user's responsibility
+    to ensure that the provided grid limits encompass atoms to be selected
+    on all trajectory frames.
 
     Examples
     --------
@@ -369,6 +385,7 @@ class DensityAnalysis(AnalysisBase):
     .. versionchanged:: 2.0.0
        :func:`_set_user_grid` is now a method of :class:`DensityAnalysis`.
     """
+
     def __init__(self, atomgroup, delta=1.0,
                  metadata=None, padding=2.0,
                  gridcenter=None,
@@ -385,7 +402,8 @@ class DensityAnalysis(AnalysisBase):
 
     def _prepare(self):
         coord = self._atomgroup.positions
-        if self._gridcenter is not None:
+        if (self._gridcenter is not None or
+                any([self._xdim, self._ydim, self._zdim])):
             # Issue 2372: padding is ignored, defaults to 2.0 therefore warn
             if self._padding > 0:
                 msg = (f"Box padding (currently set at {self._padding}) "
@@ -394,8 +412,18 @@ class DensityAnalysis(AnalysisBase):
                 logger.warning(msg)
             # Generate a copy of smin/smax from coords to later check if the
             # defined box might be too small for the selection
-            smin = np.min(coord, axis=0)
-            smax = np.max(coord, axis=0)
+            try:
+                smin = np.min(coord, axis=0)
+                smax = np.max(coord, axis=0)
+            except ValueError as err:
+                msg = ("No atoms in AtomGroup at input time frame. "
+                       "This may be intended; please ensure that "
+                       "your grid selection covers the atomic "
+                       "positions you wish to capture.")
+                warnings.warn(msg)
+                logger.warning(msg)
+                smin = self._gridcenter     #assigns limits to be later -
+                smax = self._gridcenter     #overwritten by _set_user_grid
             # Overwrite smin/smax with user defined values
             smin, smax = self._set_user_grid(self._gridcenter, self._xdim,
                                              self._ydim, self._zdim, smin,
@@ -408,8 +436,16 @@ class DensityAnalysis(AnalysisBase):
             # ideal solution would use images: implement 'looking across the
             # periodic boundaries' but that gets complicated when the box
             # rotates due to RMS fitting.
-            smin = np.min(coord, axis=0) - self._padding
-            smax = np.max(coord, axis=0) + self._padding
+            try:
+                smin = np.min(coord, axis=0) - self._padding
+                smax = np.max(coord, axis=0) + self._padding
+            except ValueError as err:
+                errmsg = ("No atoms in AtomGroup at input time frame. "
+                          "Grid for density could not be automatically"
+                          " generated. If this is expected, a user"
+                          " defined grid will need to be "
+                          "provided instead.")
+                raise ValueError(errmsg) from err
         BINS = fixedwidth_bins(self._delta, smin, smax)
         arange = np.transpose(np.vstack((BINS['min'], BINS['max'])))
         bins = BINS['Nbins']
@@ -474,17 +510,20 @@ class DensityAnalysis(AnalysisBase):
            Now a staticmethod of :class:`DensityAnalysis`.
         """
         # Check user inputs
+        if any(x is None for x in [gridcenter, xdim, ydim, zdim]):
+            errmsg = ("Gridcenter or grid dimensions are not provided")
+            raise ValueError(errmsg)
         try:
-            gridcenter = np.asarray(gridcenter, dtype=np.float32)
+            gridcenter = np.asarray(gridcenter, dtype=np.float32).reshape(3,)
         except ValueError as err:
-            errmsg = "Non-number values assigned to gridcenter"
-            raise ValueError(errmsg) from err
-        if gridcenter.shape != (3,):
-            raise ValueError("gridcenter must be a 3D coordinate")
+            raise ValueError("Gridcenter must be a 3D coordinate") from err
         try:
             xyzdim = np.array([xdim, ydim, zdim], dtype=np.float32)
         except ValueError as err:
             raise ValueError("xdim, ydim, and zdim must be numbers") from err
+        if any(np.isnan(gridcenter)) or any(np.isnan(xyzdim)):
+            raise ValueError("Gridcenter or grid dimensions have NaN element")
+
 
         # Set min/max by shifting by half the edge length of each dimension
         umin = gridcenter - xyzdim/2

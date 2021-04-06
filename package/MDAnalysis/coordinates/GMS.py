@@ -202,7 +202,7 @@ class GMSReader(base.ReaderBase):
                     line) is not None):
                     flag = 2
                     continue
-                if (flag == 2) and (re.match(r'^\s*[-]+\s*', line) is not None):
+                if (flag == 2) and (re.match(r'^\s*-+\s*', line) is not None):
                     flag = 3
                     continue
                 if flag == 3 and counter < self.n_atoms:

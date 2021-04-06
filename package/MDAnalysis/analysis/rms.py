@@ -380,7 +380,10 @@ class RMSD(AnalysisBase):
              corresponding atom in `select`, and assumes ``None`` for `groupselections`.
 
         weights_groupselections : False or list of {"mass", ``None`` or array_like} (optional)
-             1. ``False`` will apply imposed weights to `groupselections` from ``weights`` option.
+             1. ``False`` will apply imposed weights to `groupselections` from
+             ``weights`` option if ``weights`` is either ``"mass"`` or ``None``. 
+             Otherwise will assume a list of length equal to length of 
+             `groupselections` filled with ``None`` values.
 
              2. A list of {"mass", ``None`` or array_like} with the length of `groupselections`
              will apply the weights to `groupselections` correspondingly.
@@ -745,27 +748,37 @@ class RMSF(AnalysisBase):
            u = mda.Universe(TPR, XTC, in_memory=True)
            protein = u.select_atoms("protein")
 
-           # 1) need a step to center and make whole: this trajectory
-           #    contains the protein being split across periodic boundaries
-           #
-           # TODO
+           # 1) the current trajectory contains a protein split across
+           #    periodic boundaries, so we first make the protein whole and
+           #    center it in the box using on-the-fly transformations
+           import MDAnalysis.transformations as trans
+
+           not_protein = u.select_atoms('not protein')
+           transforms = [trans.unwrap(protein),
+                         trans.center_in_box(protein, wrap=True),
+                         trans.wrap(not_protein)]
+           u.trajectory.add_transformations(*transforms)
 
            # 2) fit to the initial frame to get a better average structure
            #    (the trajectory is changed in memory)
-           prealigner = align.AlignTraj(u, select="protein and name CA", in_memory=True).run()
+           prealigner = align.AlignTraj(u, u, select="protein and name CA",
+                                        in_memory=True).run()
 
            # 3) reference = average structure
-           reference_coordinates = u.trajectory.timeseries(asel=protein).mean(axis=1)
-           # make a reference structure (need to reshape into a 1-frame "trajectory")
-           reference = mda.Merge(protein).load_new(
-                       reference_coordinates[:, None, :], order="afc")
+           ref_coordinates = u.trajectory.timeseries(asel=protein).mean(axis=1)
+           # make a reference structure (need to reshape into a 1-frame
+           # "trajectory")
+           reference = mda.Merge(protein).load_new(ref_coordinates[:, None, :],
+                                                   order="afc")
 
         We created a new universe ``reference`` that contains a single frame
         with the averaged coordinates of the protein.  Now we need to fit the
         whole trajectory to the reference by minimizing the RMSD. We use
         :class:`MDAnalysis.analysis.align.AlignTraj`::
 
-           aligner = align.AlignTraj(u, reference, select="protein and name CA", in_memory=True).run()
+           aligner = align.AlignTraj(u, reference,
+                                     select="protein and name CA",
+                                     in_memory=True).run()
 
         The trajectory is now fitted to the reference (the RMSD is stored as
         `aligner.rmsd` for further inspection). Now we can calculate the RMSF::

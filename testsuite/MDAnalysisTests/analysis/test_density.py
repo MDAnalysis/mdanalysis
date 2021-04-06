@@ -120,7 +120,8 @@ class DensityParameters(object):
     topology = TPR
     trajectory = XTC
     delta = 2.0
-    selections = {'static': "name OW",
+    selections = {'none': "resname None",
+                  'static': "name OW",
                   'dynamic': "name OW and around 4 (protein and resid 1-10)",
                   'solute': "protein and not name H*",
                   }
@@ -147,7 +148,7 @@ class DensityParameters(object):
 
     @pytest.fixture()
     def universe(self):
-        return mda.Universe(self.topology, self.trajectory)
+        return mda.Universe(self.topology, self.trajectory, tpr_resid_from_one=False)
 
 class TestDensityAnalysis(DensityParameters):
     def check_DensityAnalysis(self, ag, ref_meandensity,
@@ -232,7 +233,7 @@ class TestDensityAnalysis(DensityParameters):
 
     def test_ValueError_userdefn_gridcenter_shape(self, universe):
         # Test len(gridcenter) != 3
-        with pytest.raises(ValueError, match="gridcenter must be a 3D coordinate"):
+        with pytest.raises(ValueError, match="Gridcenter must be a 3D coordinate"):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['static']),
                 delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0,
@@ -240,11 +241,19 @@ class TestDensityAnalysis(DensityParameters):
 
     def test_ValueError_userdefn_gridcenter_type(self, universe):
         # Test gridcenter includes non-numeric strings
-        with pytest.raises(ValueError, match="Non-number values assigned to gridcenter"):
+        with pytest.raises(ValueError, match="Gridcenter must be a 3D coordinate"):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['static']),
                 delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0,
                 gridcenter=self.gridcenters['error2']).run(step=5)
+
+    def test_ValueError_userdefn_gridcenter_missing(self, universe):
+        # Test no gridcenter provided when grid dimensions are given
+        regex = ("Gridcenter or grid dimensions are not provided")
+        with pytest.raises(ValueError, match=regex):
+            D = density.DensityAnalysis(
+                universe.select_atoms(self.selections['static']),
+                delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0).run(step=5)
 
     def test_ValueError_userdefn_xdim_type(self, universe):
         # Test xdim != int or float
@@ -254,6 +263,36 @@ class TestDensityAnalysis(DensityParameters):
                 delta=self.delta, xdim="MDAnalysis", ydim=10.0, zdim=10.0,
                 gridcenter=self.gridcenters['static_defined']).run(step=5)
 
+    def test_ValueError_userdefn_xdim_nanvalue(self, universe):
+        # Test  xdim set to NaN value
+        regex = ("Gridcenter or grid dimensions have NaN element")
+        with pytest.raises(ValueError, match=regex):
+            D = density.DensityAnalysis(
+                universe.select_atoms(self.selections['static']),
+                delta=self.delta, xdim=np.NaN, ydim=10.0, zdim=10.0,
+                gridcenter=self.gridcenters['static_defined']).run(step=5)
+
+    def test_warn_noatomgroup(self, universe):
+        regex = ("No atoms in AtomGroup at input time frame. "
+                 "This may be intended; please ensure that "
+                 "your grid selection covers the atomic "
+                 "positions you wish to capture.")
+        with pytest.warns(UserWarning, match=regex):
+            D = density.DensityAnalysis(
+                universe.select_atoms(self.selections['none']),
+                delta=self.delta, xdim=1.0, ydim=2.0, zdim=2.0, padding=0.0,
+                gridcenter=self.gridcenters['static_defined']).run(step=5)
+
+    def test_ValueError_noatomgroup(self, universe):
+        with pytest.raises(ValueError, match="No atoms in AtomGroup at input"
+                                             " time frame. Grid for density"
+                                             " could not be automatically"
+                                             " generated. If this is"
+                                             " expected, a user"
+                                             " defined grid will "
+                                             "need to be provided instead."):
+            D = density.DensityAnalysis(
+                universe.select_atoms(self.selections['none'])).run(step=5)
 
 class TestGridImport(object):
 

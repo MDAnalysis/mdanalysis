@@ -837,7 +837,7 @@ class NCDFWriter(base.WriterBase):
 
     """
 
-    format = 'NCDF'
+    format = ['NC', 'NCDF']
     multiframe = True
     version = "1.0"
     units = {'time': 'ps',
