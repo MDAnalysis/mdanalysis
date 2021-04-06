@@ -398,7 +398,7 @@ class TestHELANAL(object):
 
     def test_universe_from_origins_except(self, psf_ca):
         ha = hel.HELANAL(psf_ca, select='resnum 161-187')
-        with pytest.raises(ValueError, match=r'Call run\(\) before universe_from_origins'):
+        with pytest.raises(ValueError, match=r'before universe_from_origins'):
             u = ha.universe_from_origins()
 
     def test_multiple_atoms_per_residues(self):
