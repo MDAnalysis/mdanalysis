@@ -22,8 +22,8 @@ The rules for this file:
   * 2.0.0
 
 Fixes
-  * Fixed issue with unassigned 'GAP' variable in fasta2algin function with a
-    no gap resid input (Issue #3124)
+  * Fixed issue with unassigned 'GAP' variable in fasta2algin function when
+    resids are provided in input (Issue #3124)
   * Fixed 'sphzone', 'sphlayer', 'cyzone', and 'cylayer' to return empty if the
    zone/layer is empty, consistent with 'around' (Issue #2915)
   * A Universe created from an ROMol with no atoms returns now a Universe 
