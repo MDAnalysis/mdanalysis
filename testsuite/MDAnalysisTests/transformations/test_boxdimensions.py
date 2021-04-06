@@ -39,8 +39,9 @@ def boxdimensions_universe():
 
 def test_boxdimensions_dims(boxdimensions_universe):
     new_dims = np.float32([2, 2, 2, 90, 90, 90])
-    new = set_dimensions(new_dims)(boxdimensions_universe.trajectory.ts)
-    assert_array_almost_equal(new.dimensions, new_dims, decimal=6)
+    set_dimensions(new_dims)(boxdimensions_universe.trajectory.ts)
+    assert_array_almost_equal(boxdimensions_universe.dimensions,
+                              new_dims, decimal=6)
 
 
 @pytest.mark.parametrize('dim_vector_shapes', (
@@ -54,7 +55,7 @@ def test_boxdimensions_dims(boxdimensions_universe):
     )
 def test_dimensions_vector(boxdimensions_universe, dim_vector_shapes):
     # wrong box dimension vector shape
-    ts = boxdimensions_universes[0].trajectory.ts
+    ts = boxdimensions_universe.trajectory.ts
     with pytest.raises(ValueError, match='valid box dimension shape'):
         set_dimensions(dim_vector_shapes)(ts)
 
@@ -67,7 +68,7 @@ def test_dimensions_vector(boxdimensions_universe, dim_vector_shapes):
 def test_dimensions_vector_asarray(boxdimensions_universe,
                                    dim_vector_forms_dtypes):
     # box dimension input type not convertible into array
-    ts = boxdimensions_universes[0].trajectory.ts
+    ts = boxdimensions_universe.trajectory.ts
     with pytest.raises(ValueError, match='cannot be converted'):
         set_dimensions(dim_vector_forms_dtypes)(ts)
 
