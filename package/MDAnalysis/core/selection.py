@@ -217,6 +217,7 @@ def return_empty_on_apply(func):
         return func(self, group)
     return apply
 
+
 class _Selectionmeta(type):
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
@@ -352,6 +353,8 @@ class SphericalLayerSelection(DistanceSelection):
     def apply(self, group):
         indices = []
         sel = self.sel.apply(group)
+        if len(sel) == 0:
+            return group[[]]
         box = self.validate_dimensions(group.dimensions)
         periodic = box is not None
         ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
@@ -378,6 +381,8 @@ class SphericalZoneSelection(DistanceSelection):
     def apply(self, group):
         indices = []
         sel = self.sel.apply(group)
+        if len(sel) == 0:
+            return group[[]]
         box = self.validate_dimensions(group.dimensions)
         periodic = box is not None
         ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
@@ -394,7 +399,8 @@ class CylindricalSelection(Selection):
     @return_empty_on_apply
     def apply(self, group):
         sel = self.sel.apply(group)
-
+        if len(sel) == 0:
+            return group[[]]
         # Calculate vectors between point of interest and our group
         vecs = group.positions - sel.center_of_geometry()
 
