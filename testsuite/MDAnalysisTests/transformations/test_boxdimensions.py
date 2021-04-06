@@ -78,5 +78,5 @@ def test_dimensions_transformations_api(boxdimensions_universe):
     transform = set_dimensions(new_dims)
     boxdimensions_universe.trajectory.add_transformations(transform)
     for ts in new_u.trajectory:
-        assert_array_almost_equal(boxdimensions_universe.dimensions, 
+        assert_array_almost_equal(boxdimensions_universe.dimensions,
                                   new_dims, decimal=6)
