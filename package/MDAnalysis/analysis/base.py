@@ -174,6 +174,9 @@ class AnalysisBase(object):
             number of frames to skip between each analysed frame
         verbose : bool, optional
             Turn on verbosity
+        kwargs : keyword arguments, which will be used to access the
+            underlying functionality in tqdm class, via ProgressBar class,
+            specifically, to adjust the location of the bar on the screen
         """
         logger.info("Choosing frames to analyze")
         # if verbose unchanged, use class default
