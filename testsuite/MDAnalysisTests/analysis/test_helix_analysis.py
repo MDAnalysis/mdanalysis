@@ -397,6 +397,12 @@ class TestHELANAL(object):
         assert len(u.atoms) == len(helanal.atomgroups[0])-2
         assert len(u.trajectory) == 70
 
+    def test_universe_from_origins_except(self, psf_ca):
+        ha = hel.HELANAL(psf_ca, select='resnum 161-187')
+        with pytest.raises(Exception) as rec:
+            u = ha.universe_from_origins()
+            assert u.local_origins
+
     def test_multiple_atoms_per_residues(self):
         u = mda.Universe(XYZ)
         with pytest.warns(UserWarning) as rec:
@@ -429,6 +435,15 @@ class TestHELANAL(object):
         warnmsg = rec[0].message.args[0]
         assert 'has gaps in the residues' in warnmsg
         assert 'Splitting into' not in warnmsg
+
+    def test_len_groups_short(self, psf_ca):
+        sel = 'resnum 161-168'
+        with pytest.warns(UserWarning) as rec:
+            ha = hel.HELANAL(psf_ca, select=sel)
+            ha.run()
+            assert len(ha.atomgroups) < 9
+        assert len(rec) == 1
+        assert 'Fewer than 9 atoms found' in rec[0].message.args[0]
 
     @pytest.mark.parametrize('ref_axis,screw_angles', [
         # input vectors zigzag between [-1, 0, 0] and [1, 0, 0]
