@@ -17,7 +17,7 @@ The rules for this file:
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
          hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi, hejamu,
-         biogen98, orioncohen, z3y50n
+         biogen98, orioncohen, z3y50n, hp115
 
   * 2.0.0
 
@@ -89,6 +89,8 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Add `set_dimensions` transformation class for setting constant 
+    box dimensions for all timesteps in trajectory (Issue #2691)
   * Added a ValueError raised when not given a gridcenter while
     providing grid dimensions to DensityAnalysis, also added
     check for NaN in the input (Issue #3148, PR #3154)
