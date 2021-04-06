@@ -438,7 +438,6 @@ class TestHELANAL(object):
         sel = 'resnum 161-168'
         with pytest.warns(UserWarning, match='Fewer than 9 atoms found'):
             ha = hel.HELANAL(psf_ca, select=sel)
-            ha.run()
             assert len(ha.atomgroups) < 9
 
     @pytest.mark.parametrize('ref_axis,screw_angles', [
