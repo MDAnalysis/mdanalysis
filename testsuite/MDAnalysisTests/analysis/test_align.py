@@ -500,9 +500,8 @@ class TestAlignmentProcessing(object):
         assert len(sel['reference']) == 23080, self.error_msg
         assert len(sel['mobile']) == 23090, self.error_msg
 
-    def test_fasta2select_nogap(self, tmpdir):
-        """test align.fasta2select() on aligned FASTA with no gap in resid
-        (Issue #3124)"""
+    def test_fasta2select_resids(self, tmpdir):
+        """test align.fasta2select() when resids provided (Issue #3124)"""
         resids = [x for x in range(705)]
         sel = align.fasta2select(self.seq, is_aligned=True,
                                  ref_resids=resids, target_resids=resids)
