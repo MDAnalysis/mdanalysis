@@ -79,7 +79,7 @@ class set_dimensions:
                        'dimension shape.\nSimulation box dimensions are '
                        'given by an float array of shape (6, ), '
                        ' containing 3 lengths and 3 angles: '
-                       '[a, b, c, alpha, beta, gamma]'
+                       '[a, b, c, alpha, beta, gamma]')
             raise ValueError(errmsg)
 
     def __call__(self, ts):
