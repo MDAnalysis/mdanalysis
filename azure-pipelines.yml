@@ -35,6 +35,9 @@ jobs:
         Python38-64bit-full:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
+        Python39-64bit-full:
+          PYTHON_VERSION: '3.9'
+          PYTHON_ARCH: 'x64'
   steps:
   - task: UsePythonVersion@0
     inputs:
