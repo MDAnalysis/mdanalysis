@@ -498,7 +498,8 @@ class TestEncoreClustering(object):
         cluster_collection = encore.cluster(
             [ens1],
             method=[encore.AffinityPropagation(preference=-7.5,
-                random_state=0), encore.DBSCAN(min_samples=2)])
+                    random_state=0),
+                    encore.DBSCAN(min_samples=2)])
         assert len(cluster_collection[0]) == len(cluster_collection[1]), \
                      "Unexpected result: {0}".format(cluster_collection)
 
