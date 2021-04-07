@@ -16,11 +16,18 @@ The rules for this file:
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
-         hanatok, rmeli, aditya-kamath, tirkarthi, HenryKobin
-
+         hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi, hejamu,
+         biogen98, orioncohen, z3y50n, hp115, ojeda-e, HenryKobin
   * 2.0.0
 
 Fixes
+
+  * Helix_analysis coverage raised to 100% and `from __future__ import`
+    removed (Issue #3209) 
+  * Fixed 'sphzone', 'sphlayer', 'cyzone', and 'cylayer' to return empty if the
+   zone/layer is empty, consistent with 'around' (Issue #2915)
+  * A Universe created from an ROMol with no atoms returns now a Universe 
+    with 0 atoms (Issue #3142)
   * PDBParser will check for the presence of the chainID attribute of an
     atom group and use these values instead of just using the end of segid.
     If no chainID attribute is present, then a default value will be
@@ -89,6 +96,12 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Add `set_dimensions` transformation class for setting constant 
+    box dimensions for all timesteps in trajectory (Issue #2691)
+  * Added a ValueError raised when not given a gridcenter while
+    providing grid dimensions to DensityAnalysis, also added
+    check for NaN in the input (Issue #3148, PR #3154)
+  * Read TPR files from Gromacs 2021 (Issue #3180)
   * Adds preliminary support for the ppc64le platform with minimal
     dependencies (Issue #3127, PR #3149)
   * Caches can now undergo central validation at the Universe level, opening
@@ -138,6 +151,9 @@ Enhancements
     explicit in the topology (Issue #2468, PR #2775)
 
 Changes
+  * Fixed inaccurate docstring inside the RMSD class (Issue #2796, PR #3134) 
+  * TPRParser now loads TPR files with `tpr_resid_from_one=True` by default,
+    which starts TPR resid indexing from 1 (instead of 0 as in 1.x) (Issue #2364, PR #3152)
   * Introduces encore specific C compiler arguments to allow for lowering of
     optimisations on non-x86 platforms (Issue #1389, PR #3149)
   * Continuous integration uses mamba rather than conda to install the

@@ -130,3 +130,4 @@ from .rotate import rotateby
 from .positionaveraging import PositionAverager
 from .fit import fit_translation, fit_rot_trans
 from .wrap import wrap, unwrap
+from .boxdimensions import set_dimensions
