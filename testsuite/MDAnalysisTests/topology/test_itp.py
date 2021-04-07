@@ -339,14 +339,18 @@ class TestErrors:
 class TestRelativePath:
 
     def test_relstring(self, tmpdir):
-        content=""" #include "../../data/gromacs/gromos54a7_edited.ff/test.itp"
+        content=""" #include "../sub3/test2.itp"
                     [ atoms ]
                      1      H      1    SOL    HW1      1       0.41    1.00800"""
+        content2= """[ atoms ]
+                     1      H      1    SOL    HW1      1       0.41    1.00800"""            
         p=tmpdir.mkdir("sub1").join("test.itp")
         p.write(content)
+        p3=tmpdir.mkdir("sub3").join("test2.itp")
+        p3.write(content2)
         p2=tmpdir.mkdir("sub2")
         p2.chdir()
-        with p2.as_cwd() as pchange:           
+        with p2.as_cwd() as pchange:          
             u = mda.Universe(str("../sub1/test.itp"), format='ITP')
 
     def test_relpath(self, tmpdir):
