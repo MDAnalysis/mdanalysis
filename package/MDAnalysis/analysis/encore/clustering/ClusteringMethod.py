@@ -195,7 +195,7 @@ if sklearn:
                 (default is 50). Parameter in the Affinity Propagation for
                 clustering.
 
-            **kwargs being sent to scikit-learn. 
+            **kwargs being sent to scikit-learn.
 
             """
             self.ap = \
