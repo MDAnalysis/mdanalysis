@@ -195,8 +195,8 @@ if sklearn:
                 (default is 50). Parameter in the Affinity Propagation for
                 clustering.
 
-            **kwargs being sent to scikit-learn.
-            **kwargs : Other keyword arguments are passed to :class:`sklearn.cluster.AffinityPropagation`.
+            **kwargs : Other keyword arguments are passed to : class:
+                `sklearn.cluster.AffinityPropagation`.
 
             """
             self.ap = \
