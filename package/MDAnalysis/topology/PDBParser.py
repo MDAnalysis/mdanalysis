@@ -184,8 +184,6 @@ class PDBParser(TopologyReaderBase):
        Bonds attribute is not added if no bonds are present in PDB file.
        If elements are invalid or partially missing, empty elements records
        are now assigned (Issue #2422).
-       If segids are not present they will default to blank instead
-       of SYSTEM.(Issue #3144).
     """
     format = ['PDB', 'ENT']
 
@@ -290,6 +288,10 @@ class PDBParser(TopologyReaderBase):
             warnings.warn("Serial numbers went over 100,000.  "
                           "Higher serials have been guessed")
 
+        # If segids not present, try to use chainids
+        if not any(segids):
+            segids = chainids
+
         n_atoms = len(serials)
 
         attrs = []
@@ -358,7 +360,7 @@ class PDBParser(TopologyReaderBase):
             attrs.append(Segids(segids))
         else:
             n_segments = 1
-            attrs.append(Segids(np.array([' '], dtype=object)))
+            attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
             segidx = None
 
         top = Topology(n_atoms, n_residues, n_segments,

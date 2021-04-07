@@ -300,7 +300,7 @@ class TestPDBWriter(object):
     def test_writer_no_segids(self, u_no_names, outfile):
         u_no_names.atoms.write(outfile)
         u = mda.Universe(outfile)
-        expected = np.array([' '] * u_no_names.atoms.n_atoms)
+        expected = np.array(['X'] * u_no_names.atoms.n_atoms)
         assert_equal([atom.segid for atom in u.atoms], expected)
 
     def test_writer_no_occupancies(self, u_no_names, outfile):
