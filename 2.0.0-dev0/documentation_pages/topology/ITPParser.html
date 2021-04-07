@@ -231,9 +231,12 @@ Bonds, angles, dihedrals and impropers are also read from the file.</p>
 <code class="docutils literal notranslate"><span class="pre">infer_system=True</span></code> (the default option) will create a Universe with
 1 molecule of each defined <code class="docutils literal notranslate"><span class="pre">moleculetype</span></code>.
 If a <code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">molecules</span> <span class="pre">]</span></code> section is present, <code class="docutils literal notranslate"><span class="pre">infer_system</span></code> is ignored.</p>
-<p>If files are included with the <cite>#include</cite> directive, they will also be read. If they are not in the working directory, ITPParser will look for them in the <code class="docutils literal notranslate"><span class="pre">include_dir</span></code> directory. By default, this is set to <code class="docutils literal notranslate"><span class="pre">include_dir=&quot;/usr/local/gromacs/share/gromacs/top/&quot;</span></code>.
-Variables can be defined with the <cite>#define</cite> directive in files, or by passing in
-<a class="reference internal" href="#itp-define-kwargs"><span class="std std-ref">keyword arguments</span></a>.</p>
+<p>If files are included with the <cite>#include</cite> directive, they will also be read.
+If they are not in the working directory, ITPParser will look for them in the
+<code class="docutils literal notranslate"><span class="pre">include_dir</span></code> directory. By default, this is set to
+<code class="docutils literal notranslate"><span class="pre">include_dir=&quot;/usr/local/gromacs/share/gromacs/top/&quot;</span></code>.
+Variables can be defined with the <cite>#define</cite> directive in files, or by passing
+in <a class="reference internal" href="#itp-define-kwargs"><span class="std std-ref">keyword arguments</span></a>.</p>
 <p class="rubric">Examples</p>
 <dl class="docutils">
 <dt>::</dt>
