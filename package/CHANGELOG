@@ -92,6 +92,8 @@ Fixes
 
 Enhancements
   * Added sort method to the atomgroup (Issue #2976, PR #3188) 
+  * ITPParser now reads [ atomtypes ] sections in ITP files, used for charges
+    and masses not defined in the [ atoms ] sections
   * Add `set_dimensions` transformation class for setting constant 
     box dimensions for all timesteps in trajectory (Issue #2691)
   * Added a ValueError raised when not given a gridcenter while
