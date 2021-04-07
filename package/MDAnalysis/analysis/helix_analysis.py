@@ -78,7 +78,6 @@ equivalent::
     hel_xyz = hel.helix_analysis(u.atoms.positions, ref_axis=[0, 0, 1])
 
 """
-from __future__ import division, absolute_import
 
 import warnings
 import numpy as np

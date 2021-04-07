@@ -81,10 +81,13 @@ __all__ = [
     "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
     "TPR460", "TPR461", "TPR502", "TPR504", "TPR505", "TPR510", "TPR2016",
     "TPR2018", "TPR2019B3", "TPR2020B2", "TPR2020", "TPR2020Double",
+    "TPR2021", "TPR2021Double",
     "TPR510_bonded", "TPR2016_bonded", "TPR2018_bonded", "TPR2019B3_bonded",
     "TPR2020B2_bonded", "TPR2020_bonded", "TPR2020_double_bonded",
+    "TPR2021_bonded", "TPR2021_double_bonded",
     "TPR334_bonded",
-    "TPR_EXTRA_2020", "TPR_EXTRA_2018", "TPR_EXTRA_2016", "TPR_EXTRA_407",
+    "TPR_EXTRA_2021", "TPR_EXTRA_2020", "TPR_EXTRA_2018",
+    "TPR_EXTRA_2016", "TPR_EXTRA_407",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
     "XTC_sub_sol",
@@ -184,6 +187,7 @@ __all__ = [
     "GRO_huge_box", # for testing gro parser with hige box sizes
     "ITP", # for GROMACS generated itps
     "ITP_nomass", # for ATB generated itps
+    "ITP_atomtypes",  # atom definitions to check atomtyes section parsing
     "NAMDBIN", # for NAMD generated binary file
     "ITP_edited", # to check different directives are read properly
     "ITP_tip5p", # tip5p water from opls-aa, edited with additional keywords
@@ -342,11 +346,13 @@ TPR2018 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2018.tpr')
 TPR2019B3 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2019-beta3.tpr')
 TPR2020B2 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2020-beta2.tpr')
 TPR2020 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2020.tpr')
+TPR2021 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2021.tpr')
 # double precision
 TPR455Double = resource_filename(__name__, 'data/tprs/drew_gmx_4.5.5.double.tpr')
 TPR460 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.tpr')
 TPR461 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.1.tpr')
 TPR2020Double = resource_filename(__name__, 'data/tprs/2lyz_gmx_2020_double.tpr')
+TPR2021Double = resource_filename(__name__, 'data/tprs/2lyz_gmx_2021_double.tpr')
 # all bonded interactions
 TPR334_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_3.3.4.tpr')
 TPR510_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_5.1.tpr')
@@ -356,7 +362,10 @@ TPR2019B3_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2019-
 TPR2020B2_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2020-beta2.tpr')
 TPR2020_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2020.tpr')
 TPR2020_double_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2020_double.tpr')
+TPR2021_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2021.tpr')
+TPR2021_double_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2021_double.tpr')
 # all interactions
+TPR_EXTRA_2021 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2021.tpr')
 TPR_EXTRA_2020 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2020.tpr')
 TPR_EXTRA_2018 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2018.tpr')
 TPR_EXTRA_2016 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2016.3.tpr')
@@ -534,9 +543,11 @@ BATArray = resource_filename(__name__, 'data/mol2_comments_header_bat.npy')
 
 ITP = resource_filename(__name__, 'data/gromacs_ala10.itp')
 ITP_nomass = resource_filename(__name__, 'data/itp_nomass.itp')
+ITP_atomtypes = resource_filename(__name__, 'data/atomtypes.itp')
 ITP_edited = resource_filename(__name__, 'data/edited_itp.itp')
 ITP_tip5p = resource_filename(__name__, "data/tip5p.itp")
 ITP_spce = resource_filename(__name__, 'data/spce.itp')
+
 GMX_TOP = resource_filename(__name__, 'data/gromacs_ala10.top')
 GMX_DIR = resource_filename(__name__, 'data/gromacs/')
 GMX_TOP_BAD = resource_filename(__name__, 'data/bad_top.top')

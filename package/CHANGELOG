@@ -16,19 +16,26 @@ The rules for this file:
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
-         hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi,
+         hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi, hejamu,
+         biogen98, orioncohen, z3y50n, hp115, ojeda-e, thadanipaarth
 
   * 2.0.0
 
 Fixes
   * ITPParser now accepts relative paths (Issue #3037, PR #3108)
+  * Removed deprecated parameters `n_jobs` and `precompute_distances` of
+    sklearn.cluster.KMeans (Issue #2986)
+  * Helix_analysis coverage raised to 100% and `from __future__ import`
+    removed (Issue #3209)
+  * Fixed 'sphzone', 'sphlayer', 'cyzone', and 'cylayer' to return empty if the
+   zone/layer is empty, consistent with 'around' (Issue #2915)
   * A Universe created from an ROMol with no atoms returns now a Universe 
     with 0 atoms (Issue #3142)
   * ValueError raised when empty atomgroup is given to DensityAnalysis
-    without a user defined grid. UserWarning displayed when user defined 
+    without a user defined grid. UserWarning displayed when user defined
     grid is provided. (Issue #3055)
   * Fixed import of several `__all__` lists (PR #3013)
-  * atommethods (_get_prev/next_residues_by_resid) returns empty residue group 
+  * atommethods (_get_prev/next_residues_by_resid) returns empty residue group
     when given empty residue group (Issue #3089)
   * MOL2 files without bonds can now be read and written (Issue #3057)
   * Write `CONECT` record only once in multi-model PDB files (Issue #3018)
@@ -87,6 +94,14 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * ITPParser now reads [ atomtypes ] sections in ITP files, used for charges
+    and masses not defined in the [ atoms ] sections
+  * Add `set_dimensions` transformation class for setting constant 
+    box dimensions for all timesteps in trajectory (Issue #2691)
+  * Added a ValueError raised when not given a gridcenter while
+    providing grid dimensions to DensityAnalysis, also added
+    check for NaN in the input (Issue #3148, PR #3154)
+  * Read TPR files from Gromacs 2021 (Issue #3180)
   * Adds preliminary support for the ppc64le platform with minimal
     dependencies (Issue #3127, PR #3149)
   * Caches can now undergo central validation at the Universe level, opening
@@ -100,7 +115,7 @@ Enhancements
     whitespace for ranges (Issue #3054, PR #2927)
   * Added `atol` and `rtol` keywords for float comparison (PR #2927)
   * Improved performance of the ParmEd converter (Issue #3028, PR #3029)
-  * Improved analysis class docstrings, and added missing classes to the 
+  * Improved analysis class docstrings, and added missing classes to the
     `__all__` list (PR #2998)
   * The PDB writer gives more control over how to write the atom ids
     (Issue #1072, PR #2886)
@@ -134,9 +149,11 @@ Enhancements
     'protein' selection (#2751 PR #2755)
   * Added an RDKit converter that works for any input with all hydrogens
     explicit in the topology (Issue #2468, PR #2775)
-  
+
+
 Changes
-  * TPRParser now loads TPR files with `tpr_resid_from_one=True` by default, 
+  * Fixed inaccurate docstring inside the RMSD class (Issue #2796, PR #3134) 
+  * TPRParser now loads TPR files with `tpr_resid_from_one=True` by default,
     which starts TPR resid indexing from 1 (instead of 0 as in 1.x) (Issue #2364, PR #3152)
   * Introduces encore specific C compiler arguments to allow for lowering of
     optimisations on non-x86 platforms (Issue #1389, PR #3149)
@@ -169,7 +186,7 @@ Changes
   * Sets the minimal RDKit version for CI to 2020.03.1 (Issue #2827, PR #2831)
   * Removes deprecated waterdynamics.HydrogenBondLifetimes (PR #2842)
   * Make NeighborSearch return empty atomgroup, residue, segments instead of list (Issue #2892, PR #2907)
-  * Updated Universe creation function signatures to named arguments (Issue #2921)  
+  * Updated Universe creation function signatures to named arguments (Issue #2921)
   * The transformation was changed from a function/closure to a class with
     `__call__` (Issue #2860, PR #2859)
   * deprecated ``analysis.helanal`` module has been removed in favour of

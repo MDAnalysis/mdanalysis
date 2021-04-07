@@ -35,6 +35,9 @@ jobs:
         Python38-64bit-full:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
+        Python39-64bit-full:
+          PYTHON_VERSION: '3.9'
+          PYTHON_ARCH: 'x64'
   steps:
   - task: UsePythonVersion@0
     inputs:
@@ -44,7 +47,7 @@ jobs:
   - script: python -m pip install --upgrade pip setuptools wheel
     displayName: 'Install tools'
   - script: >-
-      python -m pip install
+      python -m pip install --only-binary=h5py
       cython
       hypothesis
       matplotlib
@@ -54,11 +57,10 @@ jobs:
       pytest-xdist
       scikit-learn
       scipy
-      h5py==2.10.0
+      h5py
       tqdm
     displayName: 'Install dependencies'
   # TODO: recent rdkit is not on PyPI
-  # NOTE: h5py pinned because of gh-3019
   - script: >-
       python -m pip install
       biopython

@@ -648,6 +648,9 @@ def do_iparams(data, functypes, fver):
             data.unpack_real()  # settle.doh
             data.unpack_real()  # settle.dhh
 
+        elif i in [setting.F_VSITE1]:
+            pass
+
         elif i in [setting.F_VSITE2, setting.F_VSITE2FD]:
             data.unpack_real()  # vsite.a
 

@@ -202,14 +202,11 @@ class DensityAnalysis(AnalysisBase):
             3 element numpy array detailing the x, y and z coordinates of the
             center of a user defined grid box in ångström.
     xdim : float (optional)
-            User defined x dimension box edge in ångström; ignored if
-            gridcenter is "None".
+            User defined x dimension box edge in ångström.
     ydim : float (optional)
-            User defined y dimension box edge in ångström; ignored if
-            gridcenter is "None".
+            User defined y dimension box edge in ångström.
     zdim : float (optional)
-            User defined z dimension box edge in ångström; ignored if
-            gridcenter is "None".
+            User defined z dimension box edge in ångström.
 
     Returns
     -------
@@ -220,7 +217,8 @@ class DensityAnalysis(AnalysisBase):
     Raises
     ------
     ValueError
-        if AtomGroup is empty and no user defined grid is provided
+        if AtomGroup is empty and no user defined grid is provided, or
+        if the user defined grid is not or incorrectly provided
     UserWarning
         if AtomGroup is empty and a user defined grid is provided
 
@@ -231,6 +229,10 @@ class DensityAnalysis(AnalysisBase):
 
     Notes
     -----
+    If the `gridcenter` and `x/y/zdim` arguments are not provided,
+    :class:`DensityAnalysis` will attempt to automatically generate
+    a gridbox from the atoms in 'atomgroup' (See Examples).
+
     Normal :class:`AtomGroup` instances represent a static selection of
     atoms. If you want *dynamically changing selections* (such as "name OW and
     around 4.0 (protein and not name H*)", i.e., the water oxygen atoms that
@@ -400,7 +402,8 @@ class DensityAnalysis(AnalysisBase):
 
     def _prepare(self):
         coord = self._atomgroup.positions
-        if self._gridcenter is not None:
+        if (self._gridcenter is not None or
+                any([self._xdim, self._ydim, self._zdim])):
             # Issue 2372: padding is ignored, defaults to 2.0 therefore warn
             if self._padding > 0:
                 msg = (f"Box padding (currently set at {self._padding}) "
@@ -507,17 +510,20 @@ class DensityAnalysis(AnalysisBase):
            Now a staticmethod of :class:`DensityAnalysis`.
         """
         # Check user inputs
+        if any(x is None for x in [gridcenter, xdim, ydim, zdim]):
+            errmsg = ("Gridcenter or grid dimensions are not provided")
+            raise ValueError(errmsg)
         try:
-            gridcenter = np.asarray(gridcenter, dtype=np.float32)
+            gridcenter = np.asarray(gridcenter, dtype=np.float32).reshape(3,)
         except ValueError as err:
-            errmsg = "Non-number values assigned to gridcenter"
-            raise ValueError(errmsg) from err
-        if gridcenter.shape != (3,):
-            raise ValueError("gridcenter must be a 3D coordinate")
+            raise ValueError("Gridcenter must be a 3D coordinate") from err
         try:
             xyzdim = np.array([xdim, ydim, zdim], dtype=np.float32)
         except ValueError as err:
             raise ValueError("xdim, ydim, and zdim must be numbers") from err
+        if any(np.isnan(gridcenter)) or any(np.isnan(xyzdim)):
+            raise ValueError("Gridcenter or grid dimensions have NaN element")
+
 
         # Set min/max by shifting by half the edge length of each dimension
         umin = gridcenter - xyzdim/2
