@@ -23,8 +23,7 @@ The rules for this file:
 
 Fixes
   * Removed deprecated parameters `n_jobs` and `precompute_distances` of
-    sklearn.cluster.KMeans and Added new parameter `random_state` of 
-    sklearn.cluster.AffinityPropagation (Issue #2986)
+    sklearn.cluster.KMeans (Issue #2986)
   * Helix_analysis coverage raised to 100% and `from __future__ import`
     removed (Issue #3209)
   * Fixed 'sphzone', 'sphlayer', 'cyzone', and 'cylayer' to return empty if the
