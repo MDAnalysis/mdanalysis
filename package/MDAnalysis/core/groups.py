@@ -3326,12 +3326,12 @@ class AtomGroup(GroupBase):
 
     def sort(self, key='ix', keyfunc=None):
         """Return stably sorted Atomgroup by a key that specifies
-           an attribute of atomgroup. The default key is "ix".
+           an attribute of atomgroup.
 
         Parameters
         ----------
         keys: str
-            The name for attribute of Atomgroup. (e.g. "ids", "ix")
+            The name for attribute of Atomgroup. (e.g. "ids", "ix". default="ix".)
         keyfunc: function
             A function that returns 1 dimension array, a key for sorting the
             atomgroup from multiple dimension array that the attribute returns.
