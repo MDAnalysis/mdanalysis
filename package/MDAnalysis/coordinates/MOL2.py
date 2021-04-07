@@ -324,7 +324,7 @@ class MOL2Writer(base.WriterBase):
         if hasattr(obj, "bonds"):
             # Grab only bonds between atoms in the obj
             # ie none that extend out of it
-            bondgroup = obj.bonds
+            bondgroup = obj.intra_bonds
             bonds = sorted((b[0], b[1], b.order) for b in bondgroup)
             bond_lines = ["@<TRIPOS>BOND"]
             bls = ["{0:>5} {1:>5} {2:>5} {3:>2}".format(bid,

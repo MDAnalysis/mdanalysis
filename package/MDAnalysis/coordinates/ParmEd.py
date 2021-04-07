@@ -272,7 +272,7 @@ class ParmEdConverter(base.ConverterBase):
         
         # bonds
         try:
-            params = ag_or_ts.bonds
+            params = ag_or_ts.intra_bonds
         except AttributeError:
             pass
         else:

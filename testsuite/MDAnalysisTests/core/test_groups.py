@@ -1585,3 +1585,27 @@ class TestGetConnectionsResidues(object):
         cxns = ag.get_connections("impropers", outside=outside)
         assert len(imp) == 0
         assert len(cxns) == 0
+
+
+@pytest.mark.parametrize("typename, n_inside", [
+    ("intra_bonds", 9),
+    ("intra_angles", 15),
+    ("intra_dihedrals", 12),
+])
+def test_topologygroup_gets_connections_inside(tpr, typename, n_inside):
+    ag = tpr.atoms[:10]
+    cxns = getattr(ag, typename)
+    assert len(cxns) == n_inside
+    indices = np.ravel(cxns.to_indices())
+    assert np.all(np.in1d(indices, ag.indices))
+
+
+@pytest.mark.parametrize("typename, n_outside", [
+    ("bonds", 13),
+    ("angles", 27),
+    ("dihedrals", 38),
+])
+def test_topologygroup_gets_connections_outside(tpr, typename, n_outside):
+    ag = tpr.atoms[:10]
+    cxns = getattr(ag, typename)
+    assert len(cxns) == n_outside

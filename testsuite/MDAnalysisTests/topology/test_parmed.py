@@ -124,8 +124,8 @@ class TestParmedParserPSF(BaseTestParmedParser):
     expected_elems = (np.array(['' for i in range(3341)], dtype=object),)
 
     def test_bonds_atom_counts(self, universe):
-        assert len(universe.atoms[0].bonds) == 4
-        assert len(universe.atoms[42].bonds) == 1
+        assert len(universe.atoms[[0]].bonds) == 4
+        assert len(universe.atoms[[42]].bonds) == 1
 
     @pytest.mark.parametrize('value', (
         (0, 1),
@@ -145,8 +145,8 @@ class TestParmedParserPSF(BaseTestParmedParser):
         assert b1.type.type is None
 
     def test_angles_atom_counts(self, universe):
-        assert len(universe.atoms[0].angles), 9
-        assert len(universe.atoms[42].angles), 2
+        assert len(universe.atoms[[0]].angles), 9
+        assert len(universe.atoms[[42]].angles), 2
 
     @pytest.mark.parametrize('value', (
         (1, 0, 2),
@@ -158,7 +158,7 @@ class TestParmedParserPSF(BaseTestParmedParser):
         assert value in vals or value[::-1] in vals
 
     def test_dihedrals_atom_counts(self, universe):
-        assert len(universe.atoms[0].dihedrals) == 14
+        assert len(universe.atoms[[0]].dihedrals) == 14
 
     @pytest.mark.parametrize('value', (
         (0, 4, 6, 7),
@@ -195,8 +195,8 @@ class TestParmedParserPRM(BaseTestParmedParser):
                                dtype=object))
 
     def test_bonds_atom_counts(self, universe):
-        assert len(universe.atoms[0].bonds) == 4
-        assert len(universe.atoms[42].bonds) == 1
+        assert len(universe.atoms[[0]].bonds) == 4
+        assert len(universe.atoms[[42]].bonds) == 1
 
     @pytest.mark.parametrize('value', (
         (10, 11),
@@ -217,8 +217,8 @@ class TestParmedParserPRM(BaseTestParmedParser):
         assert b1.type.type.req == 1.010
 
     def test_angles_atom_counts(self, universe):
-        assert len(universe.atoms[0].angles), 9
-        assert len(universe.atoms[42].angles), 2
+        assert len(universe.atoms[[0]].angles), 9
+        assert len(universe.atoms[[42]].angles), 2
 
     @pytest.mark.parametrize('value', (
         (11, 10, 12),
@@ -231,7 +231,7 @@ class TestParmedParserPRM(BaseTestParmedParser):
         assert value in vals or value[::-1] in vals
 
     def test_dihedrals_atom_counts(self, universe):
-        assert len(universe.atoms[0].dihedrals) == 14
+        assert len(universe.atoms[[0]].dihedrals) == 14
 
     @pytest.mark.parametrize('value', (
         (11, 10, 12, 14),
