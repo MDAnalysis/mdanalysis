@@ -196,6 +196,7 @@ if sklearn:
                 clustering.
 
             **kwargs being sent to scikit-learn.
+            **kwargs : Other keyword arguments are passed to :class:`sklearn.cluster.AffinityPropagation`.
 
             """
             self.ap = \
