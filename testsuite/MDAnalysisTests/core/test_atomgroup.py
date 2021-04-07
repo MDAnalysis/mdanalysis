@@ -1698,7 +1698,7 @@ class TestAtomGroupSort(object):
 
         u.add_TopologyAttr('resid', [2, 1, 0])
         u.add_TopologyAttr('segid', [1, 0])
-        u.add_TopologyAttr('bonds', [(0,1)])
+        u.add_TopologyAttr('bonds', [(0, 1)])
 
         return u
 
