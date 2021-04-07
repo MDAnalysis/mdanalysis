@@ -40,22 +40,29 @@ class TransformationBase(object):
     per call, which may be the multi-thread OpenBlas backend of NumPy.
     This backend may kill the performance when subscribing hyperthread
     or oversubscribing the threads when used together with other parallel
-    engines e.g. Dask. (PR #2950)
+    engines e.g. Dask.
+    (PR `#2950 <https://github.com/MDAnalysis/mdanalysis/pull/2950>`_)
 
-    Define `max_threads=1` when that is the case.
+    Define ``max_threads=1`` when that is the case.
 
     2) set up a boolean attribute `parallelizable` for checking if the
     transformation can be applied in a **split-apply-combine** parallelism.
     For example, the :class:`MDAnalysis.transformations.PositionAverager`
     is history-dependent and can not be used in parallel analysis natively.
-    (Issue #2996)
+    (Issue `#2996 <https://github.com/MDAnalysis/mdanalysis/issues/2996>`_)
 
     To define a new Transformation, :class:`TransformationBase`
     has to be subclassed.
-    `max_threads` will be set to `None` in default, i.e. does not do anything.
-    `parallelizable` will be set to `True` in default. You may need to double
-    check if it can be used in parallel analysis; if not, override the value
-    to `False`. Note this attribute is not checked anywhere in MDAnalysis yet.
+    ``max_threads`` will be set to ``None`` in default,
+    i.e. does not do anything and any settings in the environment such as
+    the environment variable :envvar:`OMP_NUM_THREADS`
+    (see the `OpenMP specification for
+    OMP_NUM_THREADS<https://www.openmp.org/spec-html/5.0/openmpse50.html>`_)
+    are used.
+    ``parallelizable`` will be set to ``True`` in default.
+    You may need to double check if it can be used in parallel analysis;
+    if not, override the value to ``False``.
+    Note this attribute is not checked anywhere in MDAnalysis yet.
     Developers of the parallel analysis have to check it in their own code.
 
     .. code-block:: python
@@ -92,11 +99,11 @@ class TransformationBase(object):
         ----------
         max_threads: int, optional
            The maximum thread number can be used.
-           Default is `None`, which means the default or the external setting.
+           Default is ``None``, which means the default or the external setting.
         parallelizable: bool, optional
            A check for if this can be used in split-apply-combine parallel
            analysis approach.
-           Default is `True`.
+           Default is ``True``.
         """
         self.max_threads = kwargs.pop('max_threads', None)
         self.parallelizable = kwargs.pop('parallelizable', True)
