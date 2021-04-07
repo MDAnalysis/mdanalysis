@@ -47,7 +47,7 @@ class TransformationBase(object):
 
     2) set up a boolean attribute `parallelizable` for checking if the
     transformation can be applied in a **split-apply-combine** parallelism.
-    For example, the :class:`MDAnalysis.transformations.PositionAverager`
+    For example, the :class:`~MDAnalysis.transformations.positionaveraging.PositionAverager`
     is history-dependent and can not be used in parallel analysis natively.
     (Issue `#2996 <https://github.com/MDAnalysis/mdanalysis/issues/2996>`_)
 
@@ -56,8 +56,7 @@ class TransformationBase(object):
     ``max_threads`` will be set to ``None`` in default,
     i.e. does not do anything and any settings in the environment such as
     the environment variable :envvar:`OMP_NUM_THREADS`
-    (see the `OpenMP specification for
-    OMP_NUM_THREADS<https://www.openmp.org/spec-html/5.0/openmpse50.html>`_)
+    (see the `OpenMP specification for OMP_NUM_THREADS <https://www.openmp.org/spec-html/5.0/openmpse50.html>`_)
     are used.
     ``parallelizable`` will be set to ``True`` in default.
     You may need to double check if it can be used in parallel analysis;

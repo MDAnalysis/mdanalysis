@@ -113,7 +113,8 @@ the following two methods can be used to create such transformation:
 Creating complex transformation classes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 
-It is implemented by inheriting :class:`MDAnalysis.transformations.base.TransformationBase`,
+It is implemented by inheriting from
+:class:`MDAnalysis.transformations.base.TransformationBase`,
 which defines :func:`__call__` for the transformation class
 and can be applied directly to a :class:`Timestep`. :func:`_transform` has to
 be defined and include the operations on the :class:`MDAnalysis.coordinates.base.Timestep`.
@@ -195,7 +196,9 @@ the parameter `max_threads` can be defined when creating a transformation
 instance to limit the maximum threads.
 (See :class:`MDAnalysis.transformations.base.TransformationBase` for more details) 
 Whether a specific transformation can be used along with parallel analysis
-can be accessed by checking its `parallelizable` attribute.
+can be assessed by checking its 
+:attr:`~MDAnalysis.transformations.base.TransformationBase.parallelizable`
+attribute.
 
 See :ref:`implemented-transformations` for more on the existing
 transformations in :mod:`MDAnalysis.transformations`.
@@ -241,8 +244,7 @@ oversubscribe the threads, either by hyper threading (when it uses OpenBlas back
 or by working with other parallel engines (e.g. Dask).
 
 In MDAnalysis, we use `threadpoolctl <https://github.com/joblib/threadpoolctl>`_
-inside :class:`TransformationBase` to control the maximum threads for
-transformations. (See :class:`MDAnalysis.transformations.base.TransformationBase` for more details) 
+inside :class:`~MDAnalysis.transformations.base.TransformationBase` to control the maximum threads for transformations.
 
 It is also possible to apply a global thread limit by setting the external environmental
 varibale, e.g. :code:`OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
