@@ -3369,8 +3369,8 @@ class AtomGroup(GroupBase):
         idx = getattr(self.atoms, key)
         if len(idx) != len(self.atoms):
             raise ValueError("The array returned by the attribute '{}' "
-                             "must have a same length as the number of "
-                             "atoms".format(key))
+                             "must have the same length as the number of "
+                             "atoms in the input AtomGroup".format(key))
         if idx.ndim == 1:
             order = np.argsort(idx, kind='stable')
         elif idx.ndim > 1:
