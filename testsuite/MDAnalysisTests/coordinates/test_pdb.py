@@ -456,7 +456,7 @@ class TestPDBWriter(object):
             assert int(line[10:14]) == model % 10000
 
     @pytest.mark.parametrize("bad_chainid",
-                             ['@','','AA'])
+                             ['@', '', 'AA'])
     def test_chainid_validated(self, universe3, outfile, bad_chainid):
         """
         Check that an atom's chainID is set to 'X' if the chainID
