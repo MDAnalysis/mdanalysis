@@ -1083,7 +1083,7 @@ class PDBWriter(base.WriterBase):
         resnames = get_attr('resnames', 'UNK')
         icodes = get_attr('icodes', ' ')
         segids = get_attr('segids', ' ')
-        chainids = get_attr('chainIDs', ' ')
+        chainids = get_attr('chainIDs', '')
         resids = get_attr('resids', 1)
         occupancies = get_attr('occupancies', 1.0)
         tempfactors = get_attr('tempfactors', 0.0)
