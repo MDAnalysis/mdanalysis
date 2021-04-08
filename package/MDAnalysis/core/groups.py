@@ -3331,7 +3331,8 @@ class AtomGroup(GroupBase):
         Parameters
         ----------
         key: str
-            The name of the ``AtomGroup`` attribute to sort by (e.g. ``ids``, ``ix``. default=``ix``).
+            The name of the ``AtomGroup`` attribute to sort by (e.g. ``ids``,
+            ``ix``. default=``ix``).
         keyfunc: function
             A function to convert multidimensional arrays to a single
             dimension. This 1D array will be used as the sort key and
