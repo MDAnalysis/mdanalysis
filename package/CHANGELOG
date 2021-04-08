@@ -17,7 +17,8 @@ The rules for this file:
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
          hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi, hejamu,
-         biogen98, orioncohen, z3y50n, hp115, ojeda-e, thadanipaarth, 1ut
+         biogen98, orioncohen, z3y50n, hp115, ojeda-e, thadanipaarth, HenryKobin,
+         1ut
 
   * 2.0.0
 
@@ -30,6 +31,11 @@ Fixes
    zone/layer is empty, consistent with 'around' (Issue #2915)
   * A Universe created from an ROMol with no atoms returns now a Universe 
     with 0 atoms (Issue #3142)
+  * PDBParser will check for the presence of the chainID attribute of an
+    atom group and use these values instead of just using the end of segid.
+    If no chainID attribute is present, then a default value will be
+    provided. If the chainID for an atom is invalid (longer than one character,
+    not alpha-numeric, blank) it will be replaced with a default. (Issue #3144)
   * ValueError raised when empty atomgroup is given to DensityAnalysis
     without a user defined grid. UserWarning displayed when user defined
     grid is provided. (Issue #3055)
@@ -149,7 +155,7 @@ Enhancements
     'protein' selection (#2751 PR #2755)
   * Added an RDKit converter that works for any input with all hydrogens
     explicit in the topology (Issue #2468, PR #2775)
-  
+
 Changes
   * Fixed inaccurate docstring inside the RMSD class (Issue #2796, PR #3134) 
   * TPRParser now loads TPR files with `tpr_resid_from_one=True` by default,
