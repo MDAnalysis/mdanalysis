@@ -3339,7 +3339,7 @@ class AtomGroup(GroupBase):
         Returns
         -------
         output:
-            Sorted atomgroup.
+            Sorted ``AtomGroup``.
 
         Example
         -------
