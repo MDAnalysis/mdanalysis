@@ -149,6 +149,11 @@ class fit_rot_trans(TransformationBase):
     removed. This is useful for protein-membrane systems to where the membrane
     must remain in the same orientation.
 
+    Note
+    ----
+    ``max_threads`` is set to 1 for this transformation
+    with which it performs better.
+
     Example
     -------
     Removing the translations and rotations of a given AtomGroup `ag` on the XY plane

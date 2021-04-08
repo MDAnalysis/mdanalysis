@@ -47,6 +47,11 @@ class rotateby(TransformationBase):
     of geometry or the center of mass of a user defined AtomGroup, or an array defining
     custom coordinates.
 
+    Note
+    ----
+    ``max_threads`` is set to 1 for this transformation
+    with which it performs better.
+
     Examples
     --------
 

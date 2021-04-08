@@ -67,7 +67,7 @@ class set_dimensions(TransformationBase):
 
     def __init__(self,
                  dimensions,
-                 max_threads=1,
+                 max_threads=None,
                  parallelizable=True):
         super().__init__(max_threads=max_threads,
                          parallelizable=parallelizable)

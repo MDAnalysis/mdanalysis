@@ -53,12 +53,12 @@ class TransformationBase(object):
 
     To define a new Transformation, :class:`TransformationBase`
     has to be subclassed.
-    ``max_threads`` will be set to ``None`` in default,
+    ``max_threads`` will be set to ``None`` by default,
     i.e. does not do anything and any settings in the environment such as
     the environment variable :envvar:`OMP_NUM_THREADS`
     (see the `OpenMP specification for OMP_NUM_THREADS <https://www.openmp.org/spec-html/5.0/openmpse50.html>`_)
     are used.
-    ``parallelizable`` will be set to ``True`` in default.
+    ``parallelizable`` will be set to ``True`` by default.
     You may need to double check if it can be used in parallel analysis;
     if not, override the value to ``False``.
     Note this attribute is not checked anywhere in MDAnalysis yet.
