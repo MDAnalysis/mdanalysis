@@ -3325,16 +3325,19 @@ class AtomGroup(GroupBase):
         raise ValueError("No writer found for format: {}".format(filename))
 
     def sort(self, key='ix', keyfunc=None):
-        """Return stably sorted Atomgroup by a key that specifies
-           an attribute of atomgroup.
+        """Returns a sorted ``AtomGroup`` using a specified attribute as
+           the key.
 
         Parameters
         ----------
         key: str
             The name of the ``AtomGroup`` attribute to sort by (e.g. ``ids``, ``ix``. default=``ix``).
         keyfunc: function
-            A function that returns 1 dimension array, a key for sorting the
-            atomgroup from multiple dimension array that the attribute returns.
+            A function to convert multidimensional arrays to a single
+            dimension. This 1D array will be used as the sort key and
+            is required when sorting with an ``AtomGroup`` attribute
+            key which has multiple dimensions. Note: this argument
+            is ignored when the attribute is one dimensional.
 
         Returns
         -------
@@ -3366,8 +3369,8 @@ class AtomGroup(GroupBase):
         idx = getattr(self.atoms, key)
         if len(idx) != len(self.atoms):
             raise ValueError("The array returned by the attribute '{}' "
-                             "must have a same length as the number of "
-                             "atoms".format(key))
+                             "must have the same length as the number of "
+                             "atoms in the input AtomGroup".format(key))
         if idx.ndim == 1:
             order = np.argsort(idx, kind='stable')
         elif idx.ndim > 1:
@@ -3379,7 +3382,7 @@ class AtomGroup(GroupBase):
                                 .format(key))
             sortkeys = keyfunc(idx)
             if sortkeys.ndim != 1:
-                raise ValueError("The function you assigned to the argument "
+                raise ValueError("The function assigned to the argument "
                                  "'keyfunc':{} doesn't return 1D array."
                                  .format(keyfunc))
             order = np.argsort(sortkeys, kind='stable')
