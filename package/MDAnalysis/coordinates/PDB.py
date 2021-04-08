@@ -1102,7 +1102,7 @@ class PDBWriter(base.WriterBase):
             missing_ids = False
 
             for (i, chainid) in enumerate(chainids):
-                if chainid is None:
+                if chainid == "":
                     missing_ids = True
                     chainids[i] = default
                 elif len(chainid) > 1:

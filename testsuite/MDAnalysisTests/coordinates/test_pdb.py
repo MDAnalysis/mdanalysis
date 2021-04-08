@@ -455,27 +455,16 @@ class TestPDBWriter(object):
             # test number (only last 4 digits)
             assert int(line[10:14]) == model % 10000
 
-    def test_chainid_validated(self, universe3, outfile):
+    @pytest.mark.parametrize("bad_chainid",
+                             ['@','','AA'])
+    def test_chainid_validated(self, universe3, outfile, bad_chainid):
         """
         Check that an atom's chainID is set to 'X' if the chainID
         does not confirm to standards (issue #2224)
         """
         default_id = 'X'
-        bad_id = '@'
         u = universe3
-        u.atoms.chainIDs = bad_id
-        u.atoms.write(outfile)
-        u_pdb = mda.Universe(outfile)
-        assert_equal(u_pdb.segments.chainIDs[0][0], default_id)
-        bad_id = 'AA'
-        u = universe3
-        u.atoms.chainIDs = bad_id
-        u.atoms.write(outfile)
-        u_pdb = mda.Universe(outfile)
-        assert_equal(u_pdb.segments.chainIDs[0][0], default_id)
-        bad_id = ' '
-        u = universe3
-        u.atoms.chainIDs = bad_id
+        u.atoms.chainIDs = bad_chainid
         u.atoms.write(outfile)
         u_pdb = mda.Universe(outfile)
         assert_equal(u_pdb.segments.chainIDs[0][0], default_id)
