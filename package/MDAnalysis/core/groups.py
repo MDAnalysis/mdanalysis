@@ -3358,7 +3358,7 @@ class AtomGroup(GroupBase):
 
         Note
         ----
-        This sort is stable as it is implemented by
+        This uses a stable sort as implemented by
         `numpy.argsort(kind='stable')`.
 
         .. versionadded:: 2.0.0
