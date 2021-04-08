@@ -1704,7 +1704,9 @@ class TestAtomGroupSort(object):
 
     @pytest.fixture()
     def ag(self, universe):
-        return universe.atoms
+        ag = universe.atoms
+        ag.positions = (-np.arange(21)).reshape(7, 3)
+        return ag
 
     test_ids = [
        "ix",
@@ -1731,17 +1733,22 @@ class TestAtomGroupSort(object):
         agsort = ag.sort(inputs)
         assert np.array_equal(expected, agsort.ix)
 
-    def test_sort_position(self, ag):
-        ag.positions = (-np.arange(21)).reshape(7, 3)
+    def test_sort_bonds(self, ag):
         with pytest.raises(ValueError, match=r"The array returned by the "
                            "attribute.*"):
             ag.sort("bonds")
+
+    def test_sort_positions_2D(self, ag):
         with pytest.raises(ValueError, match=r"The function you assigned"
                            ".*"):
             ag.sort("positions", keyfunc=lambda x: x)
+
+    def test_sort_position_no_keyfunc(self, ag):
         with pytest.raises(NameError, match=r"You have to assign the argument"
                            ".*"):
             ag.sort("positions")
+
+    def test_sort_position(self, ag):
         ref = [6, 5, 4, 3, 2, 1, 0]
         agsort = ag.sort("positions", keyfunc=lambda x: x[:, 1])
         assert np.array_equal(ref, agsort.ix)
