@@ -116,7 +116,7 @@ class TransformationBase(object):
         with threadpool_limits(self.max_threads):
             return self._transform(ts)
 
-    def _transform(self):
+    def _transform(self, ts):
         """Transform the given `Timestep`
 
         It deals with the transformation of a single `Timestep`.

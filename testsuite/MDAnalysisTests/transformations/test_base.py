@@ -41,6 +41,12 @@ class DefaultTransformation(TransformationBase):
         return ts
 
 
+class NoTransform_Transformation(TransformationBase):
+    """Default values for max_threads and parallelizable"""
+    def __init__(self):
+        super().__init__()
+
+
 class CustomTransformation(TransformationBase):
     """Custom value for max_threads and parallelizable"""
     def __init__(self, max_threads=1, parallelizable=False):
@@ -62,6 +68,12 @@ def test_default_value():
     new_trans = DefaultTransformation()
     assert new_trans.max_threads is None
     assert new_trans.parallelizable is True
+
+
+def test_no_transform_function(u):
+    new_trans = NoTransform_Transformation()
+    with pytest.raises(NotImplementedError, match=r"Only implemented"):
+        _ = new_trans._transform(u.trajectory.ts)
 
 
 def test_custom_value():
