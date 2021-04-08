@@ -3372,10 +3372,11 @@ class AtomGroup(GroupBase):
             order = np.argsort(idx, kind='stable')
         elif idx.ndim > 1:
             if keyfunc is None:
-                raise NameError("You have to assign the argument 'keyfunc' "
-                                "a proper function that returns 1D array "
-                                "as the attribute '{}' returns multiple "
-                                "dimension array.".format(key))
+                raise NameError("The {} attribute returns a multidimensional "
+                                "array. In order to sort it, a function "
+                                "returning a 1D array (to be used as the sort "
+                                "key) must be passed to the keyfunc argument"
+                                .format(key))
             sortkeys = keyfunc(idx)
             if sortkeys.ndim != 1:
                 raise ValueError("The function you assigned to the argument "
