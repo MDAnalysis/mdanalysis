@@ -22,6 +22,7 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * Improve diffusionmap coverage (Issue #3208)
   * Removed deprecated parameters `n_jobs` and `precompute_distances` of
     sklearn.cluster.KMeans (Issue #2986)
   * Helix_analysis coverage raised to 100% and `from __future__ import`
