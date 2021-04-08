@@ -3333,8 +3333,11 @@ class AtomGroup(GroupBase):
         key: str
             The name of the ``AtomGroup`` attribute to sort by (e.g. ``ids``, ``ix``. default=``ix``).
         keyfunc: function
-            A function that returns 1 dimension array, a key for sorting the
-            atomgroup from multiple dimension array that the attribute returns.
+            A function to convert multidimensional arrays to a single
+            dimension. This 1D array will be used as the sort key and
+            is required when sorting with an ``AtomGroup`` attribute
+            key which has multiple dimensions. Note: this argument
+            is ignored when the attribute is one dimensional.
 
         Returns
         -------
