@@ -3325,15 +3325,15 @@ class AtomGroup(GroupBase):
         raise ValueError("No writer found for format: {}".format(filename))
 
     def sort(self, key='ix', keyfunc=None):
-        """Returns a sorted ``AtomGroup`` using a specified attribute as
+        """Returns a sorted ``AtomGroup`` using a specified attribute as \
            the key.
 
         Parameters
         ----------
-        key: str
+        key: str, optional
             The name of the ``AtomGroup`` attribute to sort by (e.g. ``ids``,
-            ``ix``. default=``ix``).
-        keyfunc: function
+            ``ix``. default= ``ix`` ).
+        keyfunc: callable, optional
             A function to convert multidimensional arrays to a single
             dimension. This 1D array will be used as the sort key and
             is required when sorting with an ``AtomGroup`` attribute
