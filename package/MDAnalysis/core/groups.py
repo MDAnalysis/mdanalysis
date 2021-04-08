@@ -3359,6 +3359,17 @@ class AtomGroup(GroupBase):
             >>> ag = ag.sort()
             >>> ag.ix
             array([0 1 2 3])
+            >>> ag.positions
+            array([[-11.921,  26.307,  10.41 ],
+                   [-11.447,  26.741,   9.595],
+                   [-12.44 ,  27.042,  10.926],
+                   [-12.632,  25.619,  10.046]], dtype=float32)
+            >>> ag = ag.sort("positions", lambda x: x[:, 1])
+            >>> ag.positions
+            array([[-12.632,  25.619,  10.046],
+                   [-11.921,  26.307,  10.41 ],
+                   [-11.447,  26.741,   9.595],
+                   [-12.44 ,  27.042,  10.926]], dtype=float32)
 
         Note
         ----
