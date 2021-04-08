@@ -466,7 +466,7 @@ class TestEncoreClustering(object):
 
     def test_clustering_AffinityPropagation_direct(self, ens1):
         pytest.importorskip('sklearn')
-        method = encore.AffinityPropagation()
+        method = encore.AffinityPropagation(random_state=0)
         distance_matrix = encore.get_distance_matrix(ens1)
         cluster_assignment = method(distance_matrix)
         expected_value = 7
@@ -497,7 +497,8 @@ class TestEncoreClustering(object):
         pytest.importorskip('sklearn')
         cluster_collection = encore.cluster(
             [ens1],
-            method=[encore.AffinityPropagation(preference=-7.5),
+            method=[encore.AffinityPropagation(preference=-7.5,
+                    random_state=0),
                     encore.DBSCAN(min_samples=2)])
         assert len(cluster_collection[0]) == len(cluster_collection[1]), \
                      "Unexpected result: {0}".format(cluster_collection)
@@ -523,7 +524,7 @@ class TestEncoreClustering(object):
         pytest.importorskip('sklearn')
         cc1 = encore.cluster([ens1])
         cc2 = encore.cluster([ens1],
-                             method=encore.AffinityPropagation())
+                             method=encore.AffinityPropagation(random_state=0))
         assert len(cc1) == len(cc2), \
                      "Native and sklearn implementations of affinity "\
                               "propagation don't agree: mismatch in number of "\

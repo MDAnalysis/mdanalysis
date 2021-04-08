@@ -17,13 +17,15 @@ The rules for this file:
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
          hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi, hejamu,
-         biogen98, orioncohen, z3y50n, hp115, ojeda-e, 1ut
+         biogen98, orioncohen, z3y50n, hp115, ojeda-e, thadanipaarth, 1ut
 
   * 2.0.0
 
 Fixes
+  * Removed deprecated parameters `n_jobs` and `precompute_distances` of
+    sklearn.cluster.KMeans (Issue #2986)
   * Helix_analysis coverage raised to 100% and `from __future__ import`
-    removed (Issue #3209) 
+    removed (Issue #3209)
   * Fixed 'sphzone', 'sphlayer', 'cyzone', and 'cylayer' to return empty if the
    zone/layer is empty, consistent with 'around' (Issue #2915)
   * A Universe created from an ROMol with no atoms returns now a Universe 
