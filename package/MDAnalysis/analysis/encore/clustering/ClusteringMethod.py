@@ -195,6 +195,9 @@ if sklearn:
                 (default is 50). Parameter in the Affinity Propagation for
                 clustering.
 
+            **kwargs : optional
+                Other keyword arguments are passed to :class:`sklearn.cluster.AffinityPropagation`.
+
             """
             self.ap = \
                 sklearn.cluster.AffinityPropagation(
@@ -331,7 +334,6 @@ if sklearn:
                      verbose=False,
                      random_state=None,
                      copy_x=True,
-                     n_jobs=1,
                      **kwargs):
             """
             Parameters
@@ -360,14 +362,6 @@ if sklearn:
                 If a callable is passed, it should take arguments X, k and
                 and a random state and return an initialization.
 
-            precompute_distances : {'auto', True, False}
-                Precompute distances (faster but takes more memory).
-                'auto' : do not precompute distances if
-                n_samples * n_clusters > 12 million. This corresponds to about
-                100MB overhead per job using double precision.
-                True : always precompute distances
-                False : never precompute distances
-
             tol : float, optional (default 1e-4)
                 The relative increment in the results before declaring
                 convergence.
@@ -388,25 +382,15 @@ if sklearn:
                 differences may be introduced by subtracting and then adding
                 the data mean.
 
-            n_jobs : int
-                The number of jobs to use for the computation. This works by
-                computing each of the n_init runs in parallel. If -1 all CPUs
-                are used. If 1 is given, no parallel computing code is used at
-                all, which is useful for debugging. For n_jobs below -1,
-                (n_cpus + 1 + n_jobs) are used. Thus for n_jobs = -2, all CPUs
-                but one are used.
-
             """
             self.kmeans = sklearn.cluster.KMeans(n_clusters=n_clusters,
                                                  max_iter=max_iter,
                                                  n_init=n_init,
                                                  init=init,
-                                                 precompute_distances='auto',
                                                  tol=tol,
                                                  verbose=verbose,
                                                  random_state=random_state,
                                                  copy_x=copy_x,
-                                                 n_jobs=n_jobs,
                                                  **kwargs)
 
         def __call__(self, coordinates):

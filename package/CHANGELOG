@@ -17,13 +17,15 @@ The rules for this file:
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
          hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi, hejamu,
-         biogen98, orioncohen, z3y50n, hp115, ojeda-e, HenryKobin
+         biogen98, orioncohen, z3y50n, hp115, ojeda-e, thadanipaarth, HenryKobin
+
   * 2.0.0
 
 Fixes
-
+  * Removed deprecated parameters `n_jobs` and `precompute_distances` of
+    sklearn.cluster.KMeans (Issue #2986)
   * Helix_analysis coverage raised to 100% and `from __future__ import`
-    removed (Issue #3209) 
+    removed (Issue #3209)
   * Fixed 'sphzone', 'sphlayer', 'cyzone', and 'cylayer' to return empty if the
    zone/layer is empty, consistent with 'around' (Issue #2915)
   * A Universe created from an ROMol with no atoms returns now a Universe 
@@ -96,6 +98,8 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * ITPParser now reads [ atomtypes ] sections in ITP files, used for charges
+    and masses not defined in the [ atoms ] sections
   * Add `set_dimensions` transformation class for setting constant 
     box dimensions for all timesteps in trajectory (Issue #2691)
   * Added a ValueError raised when not given a gridcenter while

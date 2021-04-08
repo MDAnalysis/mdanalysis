@@ -29,15 +29,17 @@ from numpy.testing import assert_almost_equal, assert_equal
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     ITP,  # GROMACS itp
-    ITP_nomass, # from Automated Topology Builder
+    ITP_nomass,  # from Automated Topology Builder
+    ITP_atomtypes,
     ITP_edited,
     ITP_tip5p,
     ITP_spce,
     GMX_TOP,
     GMX_DIR,
     GMX_TOP_BAD,
-    ITP_no_endif
+    ITP_no_endif,
 )
+
 
 class BaseITP(ParserBase):
     parser = mda.topology.ITPParser.ITPParser
@@ -54,7 +56,6 @@ class BaseITP(ParserBase):
     expected_n_angles = 0
     expected_n_dihedrals = 0
     expected_n_impropers = 0
-
 
     @pytest.fixture
     def universe(self, filename):
@@ -84,7 +85,6 @@ class TestITP(BaseITP):
     expected_n_angles = 91
     expected_n_dihedrals = 30
     expected_n_impropers = 29
-
     
     def test_bonds_atom_counts(self, universe):
         assert len(universe.atoms[[0]].bonds) == 3
@@ -126,7 +126,6 @@ class TestITP(BaseITP):
     def test_dihedrals_type(self, universe):
         assert universe.dihedrals[0].type == (1, 1)
 
-
     def test_impropers_atom_counts(self, universe):
         assert len(universe.atoms[[0]].impropers) == 1
 
@@ -137,6 +136,7 @@ class TestITP(BaseITP):
     
     def test_impropers_type(self, universe):
         assert universe.impropers[0].type == 2
+
 
 class TestITPNoMass(ParserBase):
     parser = mda.topology.ITPParser.ITPParser
@@ -159,6 +159,36 @@ class TestITPNoMass(ParserBase):
         assert universe.atoms[0].mass not in ('', None)
 
 
+class TestITPAtomtypes(ParserBase):
+    parser = mda.topology.ITPParser.ITPParser
+    ref_filename = ITP_atomtypes
+    expected_attrs = ['ids', 'names', 'types', 'masses',
+                      'charges', 'chargegroups',
+                      'resids', 'resnames',
+                      'segids', 'moltypes', 'molnums',
+                      'bonds', 'angles', 'dihedrals', 'impropers']
+    guessed_attrs = ['masses']
+    expected_n_atoms = 4
+    expected_n_residues = 1
+    expected_n_segments = 1
+
+    @pytest.fixture
+    def universe(self, filename):
+        return mda.Universe(filename)
+
+    def test_charge_parse(self, universe):
+        assert_almost_equal(universe.atoms[0].charge, 4)
+        assert_almost_equal(universe.atoms[1].charge, 1.1)
+        assert_almost_equal(universe.atoms[2].charge, -3.000)
+        assert_almost_equal(universe.atoms[3].charge, 1.)
+
+    def test_mass_parse_or_guess(self, universe):
+        assert_almost_equal(universe.atoms[0].mass, 8.0)
+        assert_almost_equal(universe.atoms[1].mass, 20.98)
+        assert_almost_equal(universe.atoms[2].mass, 20.98)
+        assert_almost_equal(universe.atoms[3].mass, 1.008)
+
+
 class TestDifferentDirectivesITP(BaseITP):
 
     ref_filename = ITP_edited
@@ -167,7 +197,6 @@ class TestDifferentDirectivesITP(BaseITP):
     expected_n_angles = 88
     expected_n_dihedrals = 28
     expected_n_impropers = 29
-
 
     def test_no_extra_angles(self, top):
         for a in ((57, 59, 61), (60, 59, 61), (59, 61, 62)):
@@ -182,6 +211,7 @@ class TestDifferentDirectivesITP(BaseITP):
 
     def test_dihedrals_identity(self, universe):
         assert universe.dihedrals[0].type == (1, 1)
+
 
 class TestITPNoKeywords(BaseITP):
     """
@@ -254,7 +284,6 @@ class TestITPKeywords(TestITPNoKeywords):
     def test_kwargs_overrides_defines(self, top):
         assert_almost_equal(top.charges.values[2], 3)
 
-    
 
 class TestNestedIfs(BaseITP):
     """
@@ -281,6 +310,7 @@ class TestNestedIfs(BaseITP):
     
     def test_heavy_atom(self, universe):
         assert universe.atoms[5].mass > 40
+
 
 class TestReadTop(BaseITP):
     """
@@ -321,6 +351,7 @@ class TestReadTop(BaseITP):
         assert_equal(universe.residues.resids[:20], resids)
         assert_equal(universe.residues.resindices, np.arange(self.expected_n_residues))
         assert_equal(universe.atoms.chargegroups[-1], 63)
+
 
 class TestErrors:
 

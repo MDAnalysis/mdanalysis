@@ -1,0 +1,30 @@
+[ defaults ]
+; nbfunc        comb-rule       gen-pairs       fudgeLJ fudgeQQ
+  1             2               no              1.0     1.0
+
+
+[ atomtypes ]
+;All possible variations of atomtypes lines
+;type   b_type  at.num  mass    charge      ptype   sigma           epsilon
+A                       10.086  2.000       A       0.356359487256  0.209200
+B       BB      13      20.989  -3.000      A       0.349832094823  0.202300
+C               15      25.935  1.000       A       0.320190238903  0.206840
+D       BD              12.129  -1.000      A       0.310128943840  0.201950
+
+
+[ moleculetype ]
+; molname    nrexcl
+TEST    1
+
+[ atoms ]
+;nr      type  resnr residue  atom   cgnr    charge    mass
+1        A     1     SURF      A      1      4.000     8.000;
+2        B     1     SURF      B      2      1.1     ;
+3        B     1     SURF      B      3      ;
+4        H     1     SURF      H      4      1.000;
+
+[ system ]
+Testing
+
+[ molecules ]
+TEST     1
