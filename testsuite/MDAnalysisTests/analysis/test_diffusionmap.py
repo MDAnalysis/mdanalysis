@@ -92,5 +92,5 @@ def test_long_traj(u):
 
 def test_not_universe_error(u):
     trj_only = u.trajectory
-    with pytest.raises(ValueError, match='U is not a Universe'):    
+    with pytest.raises(ValueError, match='U is not a Universe'):
         diffusionmap.DiffusionMap(trj_only)
