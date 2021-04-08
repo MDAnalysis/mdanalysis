@@ -3331,7 +3331,7 @@ class AtomGroup(GroupBase):
         Parameters
         ----------
         key: str
-            The name for attribute of Atomgroup. (e.g. "ids", "ix". default="ix".)
+            The name of the ``AtomGroup`` attribute to sort by (e.g. ``ids``, ``ix``. default=``ix``).
         keyfunc: function
             A function that returns 1 dimension array, a key for sorting the
             atomgroup from multiple dimension array that the attribute returns.
