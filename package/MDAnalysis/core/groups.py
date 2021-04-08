@@ -3341,12 +3341,12 @@ class AtomGroup(GroupBase):
             is ignored when the attribute is one dimensional.
 
         Returns
-        -------
-        output:
+        ----------
+        Group
             Sorted ``AtomGroup``.
 
         Example
-        -------
+        ----------
 
         .. code-block:: python
 
@@ -3372,7 +3372,7 @@ class AtomGroup(GroupBase):
                    [-12.44 ,  27.042,  10.926]], dtype=float32)
 
         Note
-        ----
+        ----------
         This uses a stable sort as implemented by
         `numpy.argsort(kind='stable')`.
 
