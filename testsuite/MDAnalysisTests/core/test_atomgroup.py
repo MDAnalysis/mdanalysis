@@ -1735,18 +1735,16 @@ class TestAtomGroupSort(object):
 
     def test_sort_bonds(self, ag):
         with pytest.raises(ValueError, match=r"The array returned by the "
-                           "attribute.*"):
+                           "attribute"):
             ag.sort("bonds")
 
     def test_sort_positions_2D(self, ag):
-        with pytest.raises(ValueError, match=r"The function assigned to"
-                           ".*"):
+        with pytest.raises(ValueError, match=r"The function assigned to"):
             ag.sort("positions", keyfunc=lambda x: x)
 
     def test_sort_position_no_keyfunc(self, ag):
         with pytest.raises(NameError, match=r"The .* attribute returns a "
-                           "multidimensional array. In order to sort it, "
-                           ".*"):
+                           "multidimensional array. In order to sort it, "):
             ag.sort("positions")
 
     def test_sort_position(self, ag):
