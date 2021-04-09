@@ -3325,8 +3325,8 @@ class AtomGroup(GroupBase):
         raise ValueError("No writer found for format: {}".format(filename))
 
     def sort(self, key='ix', keyfunc=None):
-        """Returns a sorted ``AtomGroup`` using a specified attribute as \
-           the key.
+        """
+        Returns a sorted ``AtomGroup`` using a specified attribute as the key.
 
         Parameters
         ----------
