@@ -3376,6 +3376,7 @@ class AtomGroup(GroupBase):
         This uses a stable sort as implemented by
         `numpy.argsort(kind='stable')`.
 
+
         .. versionadded:: 2.0.0
         """
         idx = getattr(self.atoms, key)
