@@ -3396,7 +3396,7 @@ class AtomGroup(GroupBase):
             sortkeys = keyfunc(idx)
             if sortkeys.ndim != 1:
                 raise ValueError("The function assigned to the argument "
-                                 "'keyfunc':{} doesn't return 1D array."
+                                 "'keyfunc':{} doesn't return a 1D array."
                                  .format(keyfunc))
             order = np.argsort(sortkeys, kind='stable')
         return self.atoms[order]
