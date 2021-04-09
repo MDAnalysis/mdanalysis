@@ -17,7 +17,8 @@ The rules for this file:
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
          hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi, hejamu,
-         biogen98, orioncohen, z3y50n, hp115, ojeda-e, thadanipaarth, HenryKobin
+         biogen98, orioncohen, z3y50n, hp115, ojeda-e, thadanipaarth, HenryKobin,
+         1ut
 
   * 2.0.0
 
@@ -99,6 +100,7 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Added sort method to the atomgroup (Issue #2976, PR #3188) 
   * ITPParser now reads [ atomtypes ] sections in ITP files, used for charges
     and masses not defined in the [ atoms ] sections
   * Add `set_dimensions` transformation class for setting constant 
