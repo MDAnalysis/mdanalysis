@@ -3342,7 +3342,7 @@ class AtomGroup(GroupBase):
 
         Returns
         ----------
-        Group
+        :class:`AtomGroup`
             Sorted ``AtomGroup``.
 
         Example
