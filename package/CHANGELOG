@@ -17,19 +17,28 @@ The rules for this file:
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
          hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi, hejamu,
-         biogen98, orioncohen, z3y50n, hp115, ojeda-e, sulays
+         biogen98, orioncohen, z3y50n, hp115, ojeda-e, thadanipaarth, HenryKobin,
+         1ut, sulays
 
   * 2.0.0
 
 Fixes
   * Fixed issue with unassigned 'GAP' variable in fasta2algin function when
     resids are provided in input (Issue #3124)
+  * Improve diffusionmap coverage (Issue #3208)
+  * Removed deprecated parameters `n_jobs` and `precompute_distances` of
+    sklearn.cluster.KMeans (Issue #2986)
   * Helix_analysis coverage raised to 100% and `from __future__ import`
-    removed (Issue #3209) 
+    removed (Issue #3209)
   * Fixed 'sphzone', 'sphlayer', 'cyzone', and 'cylayer' to return empty if the
    zone/layer is empty, consistent with 'around' (Issue #2915)
   * A Universe created from an ROMol with no atoms returns now a Universe 
     with 0 atoms (Issue #3142)
+  * PDBParser will check for the presence of the chainID attribute of an
+    atom group and use these values instead of just using the end of segid.
+    If no chainID attribute is present, then a default value will be
+    provided. If the chainID for an atom is invalid (longer than one character,
+    not alpha-numeric, blank) it will be replaced with a default. (Issue #3144)
   * ValueError raised when empty atomgroup is given to DensityAnalysis
     without a user defined grid. UserWarning displayed when user defined
     grid is provided. (Issue #3055)
@@ -93,6 +102,9 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Added sort method to the atomgroup (Issue #2976, PR #3188) 
+  * ITPParser now reads [ atomtypes ] sections in ITP files, used for charges
+    and masses not defined in the [ atoms ] sections
   * Add `set_dimensions` transformation class for setting constant 
     box dimensions for all timesteps in trajectory (Issue #2691)
   * Added a ValueError raised when not given a gridcenter while
@@ -146,7 +158,6 @@ Enhancements
     'protein' selection (#2751 PR #2755)
   * Added an RDKit converter that works for any input with all hydrogens
     explicit in the topology (Issue #2468, PR #2775)
-
 
 Changes
   * Fixed inaccurate docstring inside the RMSD class (Issue #2796, PR #3134) 
