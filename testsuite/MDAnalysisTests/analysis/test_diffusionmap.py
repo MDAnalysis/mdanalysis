@@ -80,3 +80,17 @@ def test_transform(u, dmap):
     dmap.run()
     diffusion_space = dmap.transform(n_eigenvectors, 1)
     assert diffusion_space.shape == (eigvects.shape[0], n_eigenvectors)
+
+
+def test_long_traj(u):
+    with pytest.warns(UserWarning, match='The distance matrix is very large'):
+        dmap = diffusionmap.DiffusionMap(u)
+        dmap._dist_matrix.run(stop=1)
+        dmap._dist_matrix.n_frames = 5001
+        dmap.run()
+
+
+def test_not_universe_error(u):
+    trj_only = u.trajectory
+    with pytest.raises(ValueError, match='U is not a Universe'):
+        diffusionmap.DiffusionMap(trj_only)

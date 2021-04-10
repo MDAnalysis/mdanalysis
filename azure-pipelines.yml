@@ -59,6 +59,7 @@ jobs:
       scipy
       h5py
       tqdm
+      threadpoolctl
     displayName: 'Install dependencies'
   # TODO: recent rdkit is not on PyPI
   - script: >-

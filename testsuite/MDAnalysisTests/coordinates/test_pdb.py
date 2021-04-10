@@ -300,7 +300,7 @@ class TestPDBWriter(object):
     def test_writer_no_segids(self, u_no_names, outfile):
         u_no_names.atoms.write(outfile)
         u = mda.Universe(outfile)
-        expected = np.array(['SYSTEM'] * u_no_names.atoms.n_atoms)
+        expected = np.array(['X'] * u_no_names.atoms.n_atoms)
         assert_equal([atom.segid for atom in u.atoms], expected)
 
     def test_writer_no_occupancies(self, u_no_names, outfile):
@@ -455,13 +455,19 @@ class TestPDBWriter(object):
             # test number (only last 4 digits)
             assert int(line[10:14]) == model % 10000
 
-    def test_segid_chainid(self, universe2, outfile):
-        """check whether chainID comes from last character of segid (issue #2224)"""
-        ref_id = 'E'
-        u = universe2
+    @pytest.mark.parametrize("bad_chainid",
+                             ['@', '', 'AA'])
+    def test_chainid_validated(self, universe3, outfile, bad_chainid):
+        """
+        Check that an atom's chainID is set to 'X' if the chainID
+        does not confirm to standards (issue #2224)
+        """
+        default_id = 'X'
+        u = universe3
+        u.atoms.chainIDs = bad_chainid
         u.atoms.write(outfile)
         u_pdb = mda.Universe(outfile)
-        assert u_pdb.segments.chainIDs[0][0] == ref_id
+        assert_equal(u_pdb.segments.chainIDs[0][0], default_id)
 
     def test_stringio_outofrange(self, universe3):
         """
@@ -1072,7 +1078,7 @@ class TestWriterAlignments(object):
             assert_equal(written[:16], reference)
 
     def test_atomtype_alignment(self, writtenstuff):
-        result_line = ("ATOM      1  H5T GUA A   1       7.974   6.430   9.561"
+        result_line = ("ATOM      1  H5T GUA X   1       7.974   6.430   9.561"
                        "  1.00  0.00      RNAA  \n")
         assert_equal(writtenstuff[9], result_line)
 
