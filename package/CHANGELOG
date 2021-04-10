@@ -18,11 +18,13 @@ The rules for this file:
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
          hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi, hejamu,
          biogen98, orioncohen, z3y50n, hp115, ojeda-e, thadanipaarth, HenryKobin,
-         1ut
+         1ut, sulays
 
   * 2.0.0
 
 Fixes
+  * Fixed issue with unassigned 'GAP' variable in fasta2algin function when
+    resids are provided in input (Issue #3124)
   * Improve diffusionmap coverage (Issue #3208)
   * Removed deprecated parameters `n_jobs` and `precompute_distances` of
     sklearn.cluster.KMeans (Issue #2986)
