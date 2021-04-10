@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>MDAnalysis.transformations.boxdimensions &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  <title>MDAnalysis.transformations.base &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -166,7 +166,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>MDAnalysis.transformations.boxdimensions</li>
+      <li>MDAnalysis.transformations.base</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -181,7 +181,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for MDAnalysis.transformations.boxdimensions</h1><div class="highlight"><pre>
+  <h1>Source code for MDAnalysis.transformations.base</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
 <span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
 <span class="c1">#</span>
@@ -198,7 +198,6 @@
 <span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
 <span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
 <span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
-<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
 <span class="c1">#</span>
 <span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
 <span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
@@ -206,76 +205,107 @@
 <span class="c1">#</span>
 
 <span class="sd">&quot;&quot;&quot;\</span>
-<span class="sd">Set box dimensions --- :mod:`MDAnalysis.transformations.boxdimensions`</span>
-<span class="sd">=======================================================================</span>
+<span class="sd">Transformations Base Class --- :mod:`MDAnalysis.transformations.base`</span>
+<span class="sd">=====================================================================</span>
 
-<span class="sd">Set dimensions of the simulation box to a constant vector across all timesteps.</span>
+<span class="sd">.. autoclass:: TransformationBase</span>
 
-
-<span class="sd">.. autoclass:: set_dimensions</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TransformationBase</span>
+<span class="kn">from</span> <span class="nn">threadpoolctl</span> <span class="kn">import</span> <span class="n">threadpool_limits</span>
 
 
-<div class="viewcode-block" id="set_dimensions"><a class="viewcode-back" href="../../../documentation_pages/transformations/boxdimensions.html#MDAnalysis.transformations.boxdimensions.set_dimensions">[docs]</a><span class="k">class</span> <span class="nc">set_dimensions</span><span class="p">(</span><span class="n">TransformationBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Set simulation box dimensions.</span>
+<div class="viewcode-block" id="TransformationBase"><a class="viewcode-back" href="../../../documentation_pages/transformations/base.html#MDAnalysis.transformations.base.TransformationBase">[docs]</a><span class="k">class</span> <span class="nc">TransformationBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for defining on-the-fly transformations</span>
 
-<span class="sd">    Timestep dimensions are modified in place.</span>
+<span class="sd">    The class is designed as a template for creating on-the-fly</span>
+<span class="sd">    Transformation classes. This class will</span>
 
-<span class="sd">    Example</span>
-<span class="sd">    -------</span>
+<span class="sd">    1) set up a context manager framework on limiting the threads</span>
+<span class="sd">    per call, which may be the multi-thread OpenBlas backend of NumPy.</span>
+<span class="sd">    This backend may kill the performance when subscribing hyperthread</span>
+<span class="sd">    or oversubscribing the threads when used together with other parallel</span>
+<span class="sd">    engines e.g. Dask.</span>
+<span class="sd">    (PR `#2950 &lt;https://github.com/MDAnalysis/mdanalysis/pull/2950&gt;`_)</span>
 
-<span class="sd">    e.g. set simulation box dimensions to a vector containing unit cell</span>
-<span class="sd">    dimensions [*a*, *b*, *c*, *alpha*, *beta*, *gamma*], lengths *a*,</span>
-<span class="sd">    *b*, *c* are in the MDAnalysis length unit (Å), and angles are in degrees.</span>
+<span class="sd">    Define ``max_threads=1`` when that is the case.</span>
+
+<span class="sd">    2) set up a boolean attribute `parallelizable` for checking if the</span>
+<span class="sd">    transformation can be applied in a **split-apply-combine** parallelism.</span>
+<span class="sd">    For example, the :class:`~MDAnalysis.transformations.positionaveraging.PositionAverager`</span>
+<span class="sd">    is history-dependent and can not be used in parallel analysis natively.</span>
+<span class="sd">    (Issue `#2996 &lt;https://github.com/MDAnalysis/mdanalysis/issues/2996&gt;`_)</span>
+
+<span class="sd">    To define a new Transformation, :class:`TransformationBase`</span>
+<span class="sd">    has to be subclassed.</span>
+<span class="sd">    ``max_threads`` will be set to ``None`` by default,</span>
+<span class="sd">    i.e. does not do anything and any settings in the environment such as</span>
+<span class="sd">    the environment variable :envvar:`OMP_NUM_THREADS`</span>
+<span class="sd">    (see the `OpenMP specification for OMP_NUM_THREADS &lt;https://www.openmp.org/spec-html/5.0/openmpse50.html&gt;`_)</span>
+<span class="sd">    are used.</span>
+<span class="sd">    ``parallelizable`` will be set to ``True`` by default.</span>
+<span class="sd">    You may need to double check if it can be used in parallel analysis;</span>
+<span class="sd">    if not, override the value to ``False``.</span>
+<span class="sd">    Note this attribute is not checked anywhere in MDAnalysis yet.</span>
+<span class="sd">    Developers of the parallel analysis have to check it in their own code.</span>
 
 <span class="sd">    .. code-block:: python</span>
 
-<span class="sd">        dim = [2, 2, 2, 90, 90, 90]</span>
-<span class="sd">        transform = mda.transformations.boxdimensions.set_dimensions(dim)</span>
-<span class="sd">        u.trajectory.add_transformations(transform)</span>
+<span class="sd">       class NewTransformation(TransformationBase):</span>
+<span class="sd">           def __init__(self, ag, parameter,</span>
+<span class="sd">                        max_threads=1, parallelizable=True):</span>
+<span class="sd">               super().__init__(max_threads=max_threads,</span>
+<span class="sd">                                 parallelizable=parallelizable)</span>
+<span class="sd">               self.ag = ag</span>
+<span class="sd">               self._param = parameter</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    dimensions: iterable of floats</span>
-<span class="sd">        vector that contains unit cell lengths and angles.</span>
-<span class="sd">        Expected shapes are (6, 0) or (1, 6)</span>
+<span class="sd">           def _transform(self, ts):</span>
+<span class="sd">               #  REQUIRED</span>
+<span class="sd">               ts.positions = some_function(ts, self.ag, self._param)</span>
+<span class="sd">               return ts</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    :class:`~MDAnalysis.coordinates.base.Timestep` object</span>
+<span class="sd">    Afterwards the new transformation can be run like this.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">       new_transformation = NewTransformation(ag, param)</span>
+<span class="sd">       u.trajectory.add_transformations(new_transformation)</span>
+
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">       Add the base class for all transformations to limit threads and</span>
+<span class="sd">       check if it can be used in parallel analysis.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">dimensions</span><span class="p">,</span>
-                 <span class="n">max_threads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">parallelizable</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">max_threads</span><span class="o">=</span><span class="n">max_threads</span><span class="p">,</span>
-                         <span class="n">parallelizable</span><span class="o">=</span><span class="n">parallelizable</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">dimensions</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        max_threads: int, optional</span>
+<span class="sd">           The maximum thread number can be used.</span>
+<span class="sd">           Default is ``None``, which means the default or the external setting.</span>
+<span class="sd">        parallelizable: bool, optional</span>
+<span class="sd">           A check for if this can be used in split-apply-combine parallel</span>
+<span class="sd">           analysis approach.</span>
+<span class="sd">           Default is ``True``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_threads</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;max_threads&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parallelizable</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;parallelizable&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="si">}</span><span class="s1"> cannot be converted into &#39;</span>
-                       <span class="s1">&#39;np.float32 numpy.ndarray&#39;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="si">}</span><span class="s1"> array does not have valid box &#39;</span>
-                       <span class="s1">&#39;dimension shape.</span><span class="se">\n</span><span class="s1">Simulation box dimensions are &#39;</span>
-                       <span class="s1">&#39;given by an float array of shape (6, ), &#39;</span>
-                       <span class="s1">&#39; containing 3 lengths and 3 angles: &#39;</span>
-                       <span class="s1">&#39;[a, b, c, alpha, beta, gamma]&#39;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The function that makes transformation can be called as a function</span>
+
+<span class="sd">        The thread limit works as a context manager with given `max_threads`</span>
+<span class="sd">        wrapping the real :func:`_transform` function</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">threadpool_limits</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_threads</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span>
-        <span class="k">return</span> <span class="n">ts</span></div>
+        <span class="sd">&quot;&quot;&quot;Transform the given `Timestep`</span>
+
+<span class="sd">        It deals with the transformation of a single `Timestep`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Only implemented in child classes&quot;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

@@ -221,13 +221,20 @@
 <span class="kn">from</span> <span class="nn">..lib.transformations</span> <span class="kn">import</span> <span class="n">rotation_matrix</span>
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">get_weights</span>
 
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TransformationBase</span>
 
-<div class="viewcode-block" id="rotateby"><a class="viewcode-back" href="../../../documentation_pages/transformations/rotate.html#MDAnalysis.transformations.rotate.rotateby">[docs]</a><span class="k">class</span> <span class="nc">rotateby</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="rotateby"><a class="viewcode-back" href="../../../documentation_pages/transformations/rotate.html#MDAnalysis.transformations.rotate.rotateby">[docs]</a><span class="k">class</span> <span class="nc">rotateby</span><span class="p">(</span><span class="n">TransformationBase</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Rotates the trajectory by a given angle on a given axis. The axis is defined by</span>
 <span class="sd">    the user, combining the direction vector and a point. This point can be the center</span>
 <span class="sd">    of geometry or the center of mass of a user defined AtomGroup, or an array defining</span>
 <span class="sd">    custom coordinates.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    ``max_threads`` is set to 1 for this transformation</span>
+<span class="sd">    with which it performs better.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -295,6 +302,9 @@
 <span class="sd">    .. versionchanged:: 2.0.0</span>
 <span class="sd">        The transformation was changed from a function/closure to a class</span>
 <span class="sd">        with ``__call__``.</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       The transformation was changed to inherit from the base class for</span>
+<span class="sd">       limiting threads and checking if it can be used in parallel analysis.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">angle</span><span class="p">,</span>
@@ -302,7 +312,12 @@
                  <span class="n">point</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">ag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                 <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">max_threads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">parallelizable</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">max_threads</span><span class="o">=</span><span class="n">max_threads</span><span class="p">,</span>
+                         <span class="n">parallelizable</span><span class="o">=</span><span class="n">parallelizable</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">angle</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="n">direction</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">point</span>
@@ -346,7 +361,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;A point or an AtomGroup must be specified&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_method</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>

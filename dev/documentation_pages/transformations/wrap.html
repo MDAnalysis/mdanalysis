@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>8.5.5. Wrap/unwrap transformations — MDAnalysis.transformations.wrap &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  <title>8.6.5. Wrap/unwrap transformations — MDAnalysis.transformations.wrap &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -47,8 +47,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="8.5.6. Set box dimensions — MDAnalysis.transformations.boxdimensions" href="boxdimensions.html" />
-    <link rel="prev" title="8.5.4. Fitting transformations — MDAnalysis.transformations.fit" href="fit.html" /> 
+    <link rel="next" title="8.6.6. Set box dimensions — MDAnalysis.transformations.boxdimensions" href="boxdimensions.html" />
+    <link rel="prev" title="8.6.4. Fitting transformations — MDAnalysis.transformations.fit" href="fit.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -113,13 +113,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#creating-transformations">8.2. Creating transformations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#transformations-in-mdanalysis">8.3. Transformations in MDAnalysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#how-to-transformations">8.4. How to transformations</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../trajectory_transformations.html#currently-implemented-transformations">8.5. Currently implemented transformations</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="translate.html">8.5.1. Trajectory translation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="rotate.html">8.5.2. Trajectory rotation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="positionaveraging.html">8.5.3. Trajectory Coordinate Averaging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.positionaveraging</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="fit.html">8.5.4. Fitting transformations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.fit</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">8.5.5. Wrap/unwrap transformations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="boxdimensions.html">8.5.6. Set box dimensions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.boxdimensions</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../trajectory_transformations.html#building-blocks-for-transformation-classes">8.5. Building blocks for Transformation Classes</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../trajectory_transformations.html#currently-implemented-transformations">8.6. Currently implemented transformations</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="translate.html">8.6.1. Trajectory translation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rotate.html">8.6.2. Trajectory rotation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="positionaveraging.html">8.6.3. Trajectory Coordinate Averaging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.positionaveraging</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="fit.html">8.6.4. Fitting transformations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.fit</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">8.6.5. Wrap/unwrap transformations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="boxdimensions.html">8.6.6. Set box dimensions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.boxdimensions</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -183,7 +184,7 @@
         
           <li><a href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a> &raquo;</li>
         
-      <li>8.5.5. Wrap/unwrap transformations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap</span></code></li>
+      <li>8.6.5. Wrap/unwrap transformations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -203,13 +204,13 @@
            <div itemprop="articleBody">
             
   <span class="target" id="module-MDAnalysis.transformations.wrap"></span><div class="section" id="wrap-unwrap-transformations-mdanalysis-transformations-wrap">
-<h1>8.5.5. Wrap/unwrap transformations — <a class="reference internal" href="#module-MDAnalysis.transformations.wrap" title="MDAnalysis.transformations.wrap"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap</span></code></a><a class="headerlink" href="#wrap-unwrap-transformations-mdanalysis-transformations-wrap" title="Permalink to this headline">¶</a></h1>
+<h1>8.6.5. Wrap/unwrap transformations — <a class="reference internal" href="#module-MDAnalysis.transformations.wrap" title="MDAnalysis.transformations.wrap"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap</span></code></a><a class="headerlink" href="#wrap-unwrap-transformations-mdanalysis-transformations-wrap" title="Permalink to this headline">¶</a></h1>
 <p>Wrap/unwrap the atoms of a given AtomGroup in the unit cell. <a class="reference internal" href="#MDAnalysis.transformations.wrap.wrap" title="MDAnalysis.transformations.wrap.wrap"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap()</span></code></a>
 translates the atoms back in the unit cell. <a class="reference internal" href="#MDAnalysis.transformations.wrap.unwrap" title="MDAnalysis.transformations.wrap.unwrap"><code class="xref py py-func docutils literal notranslate"><span class="pre">unwrap()</span></code></a> translates the
 atoms of each molecule so that bons don’t split over images.</p>
 <dl class="class">
 <dt id="MDAnalysis.transformations.wrap.wrap">
-<em class="property">class </em><code class="descclassname">MDAnalysis.transformations.wrap.</code><code class="descname">wrap</code><span class="sig-paren">(</span><em>ag</em>, <em>compound='atoms'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/wrap.html#wrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.wrap.wrap" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.transformations.wrap.</code><code class="descname">wrap</code><span class="sig-paren">(</span><em>ag</em>, <em>compound='atoms'</em>, <em>max_threads=None</em>, <em>parallelizable=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/wrap.html#wrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.wrap.wrap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shift the contents of a given AtomGroup back into the unit cell.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>+-----------+          +-----------+
 |           |          |           |
@@ -260,11 +261,15 @@ inside the unit cell, but rather the center of the compound is.</p>
 <p><span class="versionmodified">Changed in version 2.0.0: </span>The transformation was changed from a function/closure to a class
 with <code class="docutils literal notranslate"><span class="pre">__call__</span></code>.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>The transformation was changed to inherit from the base class for
+limiting threads and checking if it can be used in parallel analysis.</p>
+</div>
 </dd></dl>
 
 <dl class="class">
 <dt id="MDAnalysis.transformations.wrap.unwrap">
-<em class="property">class </em><code class="descclassname">MDAnalysis.transformations.wrap.</code><code class="descname">unwrap</code><span class="sig-paren">(</span><em>ag</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/wrap.html#unwrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.wrap.unwrap" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.transformations.wrap.</code><code class="descname">unwrap</code><span class="sig-paren">(</span><em>ag</em>, <em>max_threads=None</em>, <em>parallelizable=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/wrap.html#unwrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.wrap.unwrap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move all atoms in an AtomGroup so that bonds don’t split over images</p>
 <p>Atom positions are modified in place.</p>
 <p>This function is most useful when atoms have been packed into the primary
@@ -305,6 +310,10 @@ The positions of this are modified in place.</td>
 <p><span class="versionmodified">Changed in version 2.0.0: </span>The transformation was changed from a function/closure to a class
 with <code class="docutils literal notranslate"><span class="pre">__call__</span></code>.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>The transformation was changed to inherit from the base class for
+limiting threads and checking if it can be used in parallel analysis.</p>
+</div>
 </dd></dl>
 
 </div>
@@ -315,8 +324,8 @@ with <code class="docutils literal notranslate"><span class="pre">__call__</span
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="boxdimensions.html" class="btn btn-neutral float-right" title="8.5.6. Set box dimensions — MDAnalysis.transformations.boxdimensions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="fit.html" class="btn btn-neutral float-left" title="8.5.4. Fitting transformations — MDAnalysis.transformations.fit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="boxdimensions.html" class="btn btn-neutral float-right" title="8.6.6. Set box dimensions — MDAnalysis.transformations.boxdimensions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="fit.html" class="btn btn-neutral float-left" title="8.6.4. Fitting transformations — MDAnalysis.transformations.fit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

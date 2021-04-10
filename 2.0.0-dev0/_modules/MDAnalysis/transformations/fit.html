@@ -221,8 +221,10 @@
 <span class="kn">from</span> <span class="nn">..analysis</span> <span class="kn">import</span> <span class="n">align</span>
 <span class="kn">from</span> <span class="nn">..lib.transformations</span> <span class="kn">import</span> <span class="n">euler_from_matrix</span><span class="p">,</span> <span class="n">euler_matrix</span>
 
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TransformationBase</span>
 
-<div class="viewcode-block" id="fit_translation"><a class="viewcode-back" href="../../../documentation_pages/transformations/fit.html#MDAnalysis.transformations.fit.fit_translation">[docs]</a><span class="k">class</span> <span class="nc">fit_translation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="fit_translation"><a class="viewcode-back" href="../../../documentation_pages/transformations/fit.html#MDAnalysis.transformations.fit.fit_translation">[docs]</a><span class="k">class</span> <span class="nc">fit_translation</span><span class="p">(</span><span class="n">TransformationBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Translates a given AtomGroup so that its center of geometry/mass matches</span>
 <span class="sd">    the respective center of the given reference. A plane can be given by the</span>
 <span class="sd">    user using the option `plane`, and will result in the removal of</span>
@@ -266,10 +268,17 @@
 
 
 <span class="sd">    .. versionchanged:: 2.0.0</span>
-<span class="sd">        The transformation was changed from a function/closure to a class</span>
-<span class="sd">        with ``__call__``.</span>
+<span class="sd">       The transformation was changed from a function/closure to a class</span>
+<span class="sd">       with ``__call__``.</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       The transformation was changed to inherit from the base class for</span>
+<span class="sd">       limiting threads and checking if it can be used in parallel analysis.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">plane</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">plane</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">max_threads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallelizable</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">max_threads</span><span class="o">=</span><span class="n">max_threads</span><span class="p">,</span>
+                         <span class="n">parallelizable</span><span class="o">=</span><span class="n">parallelizable</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">ag</span> <span class="o">=</span> <span class="n">ag</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="n">reference</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plane</span> <span class="o">=</span> <span class="n">plane</span>
@@ -301,7 +310,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">get_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="n">mobile_com</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mobile</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">),</span>
                                 <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="n">vector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_com</span> <span class="o">-</span> <span class="n">mobile_com</span>
@@ -312,7 +321,7 @@
         <span class="k">return</span> <span class="n">ts</span></div>
 
 
-<div class="viewcode-block" id="fit_rot_trans"><a class="viewcode-back" href="../../../documentation_pages/transformations/fit.html#MDAnalysis.transformations.fit.fit_rot_trans">[docs]</a><span class="k">class</span> <span class="nc">fit_rot_trans</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="fit_rot_trans"><a class="viewcode-back" href="../../../documentation_pages/transformations/fit.html#MDAnalysis.transformations.fit.fit_rot_trans">[docs]</a><span class="k">class</span> <span class="nc">fit_rot_trans</span><span class="p">(</span><span class="n">TransformationBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Perform a spatial superposition by minimizing the RMSD.</span>
 
 <span class="sd">    Spatially align the group of atoms `ag` to `reference` by doing a RMSD</span>
@@ -323,6 +332,11 @@
 <span class="sd">    so that only translations and rotations in that particular plane are</span>
 <span class="sd">    removed. This is useful for protein-membrane systems to where the membrane</span>
 <span class="sd">    must remain in the same orientation.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    ``max_threads`` is set to 1 for this transformation</span>
+<span class="sd">    with which it performs better.</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
@@ -358,8 +372,20 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    MDAnalysis.coordinates.base.Timestep</span>
+
+
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       The transformation was changed from a function/closure to a class</span>
+<span class="sd">       with ``__call__``.</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       The transformation was changed to inherit from the base class for</span>
+<span class="sd">       limiting threads and checking if it can be used in parallel analysis.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">plane</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">plane</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">max_threads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">parallelizable</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">max_threads</span><span class="o">=</span><span class="n">max_threads</span><span class="p">,</span>
+                         <span class="n">parallelizable</span><span class="o">=</span><span class="n">parallelizable</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">ag</span> <span class="o">=</span> <span class="n">ag</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="n">reference</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plane</span> <span class="o">=</span> <span class="n">plane</span>
@@ -391,7 +417,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_com</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="n">mobile_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
         <span class="n">mobile_coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">mobile_com</span>
         <span class="n">rotation</span><span class="p">,</span> <span class="n">dump</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">rotation_matrix</span><span class="p">(</span><span class="n">mobile_coordinates</span><span class="p">,</span>

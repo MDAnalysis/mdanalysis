@@ -47,7 +47,7 @@
           href="../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="8.5.1. Trajectory translation — MDAnalysis.transformations.translate" href="transformations/translate.html" />
+    <link rel="next" title="8.5.1. Transformations Base Class — MDAnalysis.transformations.base" href="transformations/base.html" />
     <link rel="prev" title="7.3. RDKit topology parser" href="converters/RDKitParser.html" /> 
 </head>
 
@@ -117,13 +117,17 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#transformations-in-mdanalysis">8.3. Transformations in MDAnalysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#how-to-transformations">8.4. How to transformations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#currently-implemented-transformations">8.5. Currently implemented transformations</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="transformations/translate.html">8.5.1. Trajectory translation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="transformations/rotate.html">8.5.2. Trajectory rotation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="transformations/positionaveraging.html">8.5.3. Trajectory Coordinate Averaging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.positionaveraging</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="transformations/fit.html">8.5.4. Fitting transformations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.fit</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="transformations/wrap.html">8.5.5. Wrap/unwrap transformations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="transformations/boxdimensions.html">8.5.6. Set box dimensions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.boxdimensions</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#building-blocks-for-transformation-classes">8.5. Building blocks for Transformation Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="transformations/base.html">8.5.1. Transformations Base Class — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.base</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#currently-implemented-transformations">8.6. Currently implemented transformations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="transformations/translate.html">8.6.1. Trajectory translation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transformations/rotate.html">8.6.2. Trajectory rotation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transformations/positionaveraging.html">8.6.3. Trajectory Coordinate Averaging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.positionaveraging</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transformations/fit.html">8.6.4. Fitting transformations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.fit</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transformations/wrap.html">8.6.5. Wrap/unwrap transformations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transformations/boxdimensions.html">8.6.6. Set box dimensions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.boxdimensions</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -265,7 +269,7 @@ being added.</p>
 </div>
 <div class="section" id="creating-transformations">
 <span id="custom-transformations"></span><h2>8.2. Creating transformations<a class="headerlink" href="#creating-transformations" title="Permalink to this headline">¶</a></h2>
-<p>A simple <em>transformation</em> can also be  a function that takes a
+<p>A simple <em>transformation</em> can also be a function that takes a
 <a class="reference internal" href="coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> as input, modifies it, and
 returns it. If it takes no other arguments but a <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code>
 can be defined as the following example:</p>
@@ -281,14 +285,19 @@ can be defined as the following example:</p>
 the following two methods can be used to create such transformation:</p>
 <div class="section" id="creating-complex-transformation-classes">
 <span id="custom-transformations-class"></span><h3>8.2.1. Creating complex transformation classes<a class="headerlink" href="#creating-complex-transformation-classes" title="Permalink to this headline">¶</a></h3>
-<p>It is implemented by defining <code class="xref py py-func docutils literal notranslate"><span class="pre">__call__()</span></code> for the transformation class
-and can be applied directly to a <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code>.
-So, a transformation class can be roughly defined as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">up_by_x_class</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<p>It is implemented by inheriting from
+<a class="reference internal" href="transformations/base.html#MDAnalysis.transformations.base.TransformationBase" title="MDAnalysis.transformations.base.TransformationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.transformations.base.TransformationBase</span></code></a>,
+which defines <code class="xref py py-func docutils literal notranslate"><span class="pre">__call__()</span></code> for the transformation class
+and can be applied directly to a <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code>. <code class="xref py py-func docutils literal notranslate"><span class="pre">_transform()</span></code> has to
+be defined and include the operations on the <a class="reference internal" href="coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep</span></code></a>.</p>
+<p>So, a transformation class can be roughly defined as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.transformations</span> <span class="kn">import</span> <span class="n">TransformationBase</span>
+
+<span class="k">class</span> <span class="nc">up_by_x_class</span><span class="p">(</span><span class="n">TransformationBase</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">distance</span> <span class="o">=</span> <span class="n">distance</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ts</span>
 </pre></div>
@@ -339,7 +348,14 @@ any of these transformations, the module must first be imported:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis.transformations</span>
 </pre></div>
 </div>
-<p>A workflow can then be added to a trajectory as described above.</p>
+<p>A workflow can then be added to a trajectory as described above. Notably,
+the parameter <cite>max_threads</cite> can be defined when creating a transformation
+instance to limit the maximum threads.
+(See <a class="reference internal" href="transformations/base.html#MDAnalysis.transformations.base.TransformationBase" title="MDAnalysis.transformations.base.TransformationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.transformations.base.TransformationBase</span></code></a> for more details)
+Whether a specific transformation can be used along with parallel analysis
+can be assessed by checking its
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">parallelizable</span></code>
+attribute.</p>
 <p>See <a class="reference internal" href="#implemented-transformations"><span class="std std-ref">Currently implemented transformations</span></a> for more on the existing
 transformations in <a class="reference internal" href="#module-MDAnalysis.transformations" title="MDAnalysis.transformations"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations</span></code></a>.</p>
 </div>
@@ -366,16 +382,36 @@ examples):</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="currently-implemented-transformations">
-<span id="implemented-transformations"></span><h2>8.5. Currently implemented transformations<a class="headerlink" href="#currently-implemented-transformations" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="building-blocks-for-transformation-classes">
+<span id="building-block-transformation"></span><h2>8.5. Building blocks for Transformation Classes<a class="headerlink" href="#building-blocks-for-transformation-classes" title="Permalink to this headline">¶</a></h2>
+<p>Transformations normally ultilize the power of NumPy to get better performance
+on array operations. However, when it comes to parallelism, NumPy will sometimes
+oversubscribe the threads, either by hyper threading (when it uses OpenBlas backend),
+or by working with other parallel engines (e.g. Dask).</p>
+<p>In MDAnalysis, we use <a class="reference external" href="https://github.com/joblib/threadpoolctl">threadpoolctl</a>
+inside <a class="reference internal" href="transformations/base.html#MDAnalysis.transformations.base.TransformationBase" title="MDAnalysis.transformations.base.TransformationBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">TransformationBase</span></code></a> to control the maximum threads for transformations.</p>
+<p>It is also possible to apply a global thread limit by setting the external environmental
+varibale, e.g. <code class="code docutils literal notranslate"><span class="pre">OMP_NUM_THREADS=1</span> <span class="pre">MKL_NUM_THREADS=1</span> <span class="pre">OPENBLAS_NUM_THREADS=1</span>
+<span class="pre">BLIS_NUM_THREADS=1</span> <span class="pre">python</span> <span class="pre">script.py</span></code>. Read more about parallelism and resource management
+in <a class="reference external" href="https://scikit-learn.org/dev/computing/parallelism.html">scikit-learn documentations</a>.</p>
+<p>Users are advised to benchmark code because interaction between different
+libraries can lead to sub-optimal performance with defaults.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="transformations/translate.html">8.5.1. Trajectory translation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="transformations/rotate.html">8.5.2. Trajectory rotation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="transformations/positionaveraging.html">8.5.3. Trajectory Coordinate Averaging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.positionaveraging</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="transformations/fit.html">8.5.4. Fitting transformations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.fit</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="transformations/wrap.html">8.5.5. Wrap/unwrap transformations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="transformations/boxdimensions.html">8.5.6. Set box dimensions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.boxdimensions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="transformations/base.html">8.5.1. Transformations Base Class — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.base</span></code></a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="currently-implemented-transformations">
+<span id="implemented-transformations"></span><h2>8.6. Currently implemented transformations<a class="headerlink" href="#currently-implemented-transformations" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="transformations/translate.html">8.6.1. Trajectory translation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.translate</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="transformations/rotate.html">8.6.2. Trajectory rotation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.rotate</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="transformations/positionaveraging.html">8.6.3. Trajectory Coordinate Averaging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.positionaveraging</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="transformations/fit.html">8.6.4. Fitting transformations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.fit</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="transformations/wrap.html">8.6.5. Wrap/unwrap transformations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="transformations/boxdimensions.html">8.6.6. Set box dimensions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations.boxdimensions</span></code></a></li>
 </ul>
 </div>
 </div>
@@ -387,7 +423,7 @@ examples):</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="transformations/translate.html" class="btn btn-neutral float-right" title="8.5.1. Trajectory translation — MDAnalysis.transformations.translate" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="transformations/base.html" class="btn btn-neutral float-right" title="8.5.1. Transformations Base Class — MDAnalysis.transformations.base" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="converters/RDKitParser.html" class="btn btn-neutral float-left" title="7.3. RDKit topology parser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
