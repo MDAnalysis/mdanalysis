@@ -36,8 +36,10 @@ atoms of each molecule so that bons don't split over images.
 
 from ..lib._cutil import make_whole
 
+from .base import TransformationBase
 
-class wrap(object):
+
+class wrap(TransformationBase):
     """
     Shift the contents of a given AtomGroup back into the unit cell. ::
     
@@ -84,17 +86,24 @@ class wrap(object):
     .. versionchanged:: 2.0.0
         The transformation was changed from a function/closure to a class
         with ``__call__``.
+    .. versionchanged:: 2.0.0
+       The transformation was changed to inherit from the base class for
+       limiting threads and checking if it can be used in parallel analysis.
     """
-    def __init__(self, ag, compound='atoms'):
+    def __init__(self, ag, compound='atoms',
+                 max_threads=None, parallelizable=True):
+        super().__init__(max_threads=max_threads,
+                         parallelizable=parallelizable)
+
         self.ag = ag
         self.compound = compound
 
-    def __call__(self, ts):
+    def _transform(self, ts):
         self.ag.wrap(compound=self.compound)
         return ts
 
 
-class unwrap(object):
+class unwrap(TransformationBase):
     """
     Move all atoms in an AtomGroup so that bonds don't split over images
 
@@ -138,8 +147,14 @@ class unwrap(object):
     .. versionchanged:: 2.0.0
         The transformation was changed from a function/closure to a class
         with ``__call__``.
+    .. versionchanged:: 2.0.0
+       The transformation was changed to inherit from the base class for
+       limiting threads and checking if it can be used in parallel analysis.
     """
-    def __init__(self, ag):
+    def __init__(self, ag, max_threads=None, parallelizable=True):
+        super().__init__(max_threads=max_threads,
+                         parallelizable=parallelizable)
+
         self.ag = ag
 
         try:
@@ -147,7 +162,7 @@ class unwrap(object):
         except AttributeError:
             raise AttributeError("{} has no fragments".format(self.ag))
 
-    def __call__(self, ts):
+    def _transform(self, ts):
         for frag in self.ag.fragments:
             make_whole(frag)
         return ts

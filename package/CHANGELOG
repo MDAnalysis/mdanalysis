@@ -156,6 +156,8 @@ Enhancements
     'protein' selection (#2751 PR #2755)
   * Added an RDKit converter that works for any input with all hydrogens
     explicit in the topology (Issue #2468, PR #2775)
+  * Added `TransformationBase`. Implemented threadlimit and add an attribute for
+    checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
 
 Changes
   * Fixed inaccurate docstring inside the RMSD class (Issue #2796, PR #3134) 
@@ -198,6 +200,7 @@ Changes
   * deprecated ``analysis.helanal`` module has been removed in favour of
     ``analysis.helix_analysis`` (PR #2929)
   * Move water bridge analysis from hbonds to hydrogenbonds (Issue #2739 PR #2913)
+  * `threadpoolctl` is required for installation (Issue #2860)
 
 Deprecations
 

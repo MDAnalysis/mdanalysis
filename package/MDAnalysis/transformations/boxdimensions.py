@@ -32,8 +32,10 @@ Set dimensions of the simulation box to a constant vector across all timesteps.
 """
 import numpy as np
 
+from .base import TransformationBase
 
-class set_dimensions:
+
+class set_dimensions(TransformationBase):
     """
     Set simulation box dimensions.
 
@@ -63,7 +65,12 @@ class set_dimensions:
     :class:`~MDAnalysis.coordinates.base.Timestep` object
     """
 
-    def __init__(self, dimensions):
+    def __init__(self,
+                 dimensions,
+                 max_threads=None,
+                 parallelizable=True):
+        super().__init__(max_threads=max_threads,
+                         parallelizable=parallelizable)
         self.dimensions = dimensions
 
         try:
@@ -82,6 +89,6 @@ class set_dimensions:
                        '[a, b, c, alpha, beta, gamma]')
             raise ValueError(errmsg)
 
-    def __call__(self, ts):
+    def _transform(self, ts):
         ts.dimensions = self.dimensions
         return ts

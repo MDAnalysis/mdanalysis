@@ -125,6 +125,7 @@ So, a closure-style transformation can be roughly defined as follows:
     method instead of being written as a function/closure.
 """
 
+from .base import TransformationBase
 from .translate import translate, center_in_box
 from .rotate import rotateby
 from .positionaveraging import PositionAverager
