@@ -1798,7 +1798,8 @@ class GroupBase(_MutableBase):
             if np.any(spread > .5):
                 positions = mdamath.make_whole(unique_atoms, inplace=False)
             # Apply reference shift if required:
-            if reference is not None and len(positions):
+            if reference is not None:
+                # Defaults to 'cog' if only one atom
                 if reference == 'com' and len(positions) > 1:
                     total_mass = unique_atoms.masses.sum()
                     if np.isclose(total_mass, 0.0):
