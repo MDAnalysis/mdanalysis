@@ -394,3 +394,24 @@ class TestRelativePath:
         with p2.as_cwd() as pchange:
             relpath=Path("../sub1/test.itp")         
             u = mda.Universe(relpath, format='ITP')
+
+    def test_relative_path(self, tmpdir):
+        test_itp_content = '#include "../atoms.itp"'
+        atoms_itp_content = """
+        [ moleculetype ]
+        UNK 3
+
+        [ atoms ]
+        1      H      1    SOL    HW1      1       0.41    1.00800
+        """
+        with tmpdir.as_cwd():
+            with open("atoms.itp", "w") as f:
+                f.write(atoms_itp_content)
+            subdir = tmpdir.mkdir("subdir")
+            with subdir.as_cwd():
+                with open("test.itp", "w") as f:
+                    f.write(test_itp_content)
+                subsubdir = subdir.mkdir("subsubdir")
+                with subsubdir.as_cwd():
+                    u = mda.Universe("../test.itp")
+                    assert len(u.atoms) == 1        
