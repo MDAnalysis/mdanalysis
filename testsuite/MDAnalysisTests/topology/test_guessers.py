@@ -153,6 +153,7 @@ def test_guess_bonds_peptide():
     assert_equal(np.sort(u.bonds.indices, axis=0),
                  np.sort(bonds, axis=0))
 
+
 @pytest.mark.parametrize("smi", [
     "c1ccccc1",
     "C1=CC=CC=C1",
@@ -168,6 +169,7 @@ def test_guess_aromaticities(smi):
     u = mda.Universe(mol)
     values = guessers.guess_aromaticities(u.atoms)
     assert_equal(values, expected)
+
 
 @pytest.mark.parametrize("smi", [
     "c1ccccc1",
