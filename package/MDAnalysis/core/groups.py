@@ -3324,6 +3324,83 @@ class AtomGroup(GroupBase):
 
         raise ValueError("No writer found for format: {}".format(filename))
 
+    def sort(self, key='ix', keyfunc=None):
+        """
+        Returns a sorted ``AtomGroup`` using a specified attribute as the key.
+
+        Parameters
+        ----------
+        key: str, optional
+            The name of the ``AtomGroup`` attribute to sort by (e.g. ``ids``,
+            ``ix``. default= ``ix`` ).
+        keyfunc: callable, optional
+            A function to convert multidimensional arrays to a single
+            dimension. This 1D array will be used as the sort key and
+            is required when sorting with an ``AtomGroup`` attribute
+            key which has multiple dimensions. Note: this argument
+            is ignored when the attribute is one dimensional.
+
+        Returns
+        ----------
+        :class:`AtomGroup`
+            Sorted ``AtomGroup``.
+
+        Example
+        ----------
+
+        .. code-block:: python
+
+            >>> import MDAnalysis as mda
+            >>> from MDAnalysisTests.datafiles import PDB_small
+            >>> u = mda.Universe(PDB_small)
+            >>> ag = u.atoms[[3, 2, 1, 0]]
+            >>> ag.ix
+            array([3 2 1 0])
+            >>> ag = ag.sort()
+            >>> ag.ix
+            array([0 1 2 3])
+            >>> ag.positions
+            array([[-11.921,  26.307,  10.41 ],
+                   [-11.447,  26.741,   9.595],
+                   [-12.44 ,  27.042,  10.926],
+                   [-12.632,  25.619,  10.046]], dtype=float32)
+            >>> ag = ag.sort("positions", lambda x: x[:, 1])
+            >>> ag.positions
+            array([[-12.632,  25.619,  10.046],
+                   [-11.921,  26.307,  10.41 ],
+                   [-11.447,  26.741,   9.595],
+                   [-12.44 ,  27.042,  10.926]], dtype=float32)
+
+        Note
+        ----------
+        This uses a stable sort as implemented by
+        `numpy.argsort(kind='stable')`.
+
+
+        .. versionadded:: 2.0.0
+        """
+        idx = getattr(self.atoms, key)
+        if len(idx) != len(self.atoms):
+            raise ValueError("The array returned by the attribute '{}' "
+                             "must have the same length as the number of "
+                             "atoms in the input AtomGroup".format(key))
+        if idx.ndim == 1:
+            order = np.argsort(idx, kind='stable')
+        elif idx.ndim > 1:
+            if keyfunc is None:
+                raise NameError("The {} attribute returns a multidimensional "
+                                "array. In order to sort it, a function "
+                                "returning a 1D array (to be used as the sort "
+                                "key) must be passed to the keyfunc argument"
+                                .format(key))
+            sortkeys = keyfunc(idx)
+            if sortkeys.ndim != 1:
+                raise ValueError("The function assigned to the argument "
+                                 "'keyfunc':{} doesn't return a 1D array."
+                                 .format(keyfunc))
+            order = np.argsort(sortkeys, kind='stable')
+        return self.atoms[order]
+
 
 class ResidueGroup(GroupBase):
     """ResidueGroup base class.
