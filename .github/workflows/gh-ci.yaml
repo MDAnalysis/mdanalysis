@@ -100,8 +100,8 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         auto-update-conda: true
-        channel-priority: flexible
-        channels: biobuilds, conda-forge
+        channel-priority: strict
+        channels: conda-forge, biobuilds
         add-pip-as-python-dependency: true
         mamba-version: "*"
         architecture: x64
@@ -191,8 +191,8 @@ jobs:
       with:
         python-version: 3.7
         auto-update-conda: true
-        channel-priority: flexible
-        channels: biobuilds, conda-forge
+        channel-priority: strict
+        channels: conda-forge, biobuilds
         add-pip-as-python-dependency: true
         architecture: x64
 
@@ -278,7 +278,7 @@ jobs:
       with:
         python-version: 3.7
         auto-update-conda: true
-        channel-priority: flexible
+        channel-priority: strict
         channels: conda-forge
         add-pip-as-python-dependency: true
         mamba-version: "*"
@@ -309,7 +309,7 @@ jobs:
       with:
         python-version: 3.7
         auto-update-conda: true
-        channel-priority: flexible
+        channel-priority: strict
         channels: conda-forge
         add-pip-as-python-dependency: true
         mamba-version: "*"
