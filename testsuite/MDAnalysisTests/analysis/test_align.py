@@ -386,6 +386,11 @@ class TestAlign(object):
         assert_array_almost_equal(segB_bound.positions, segB_free.positions,
                                   decimal=3)
 
+    def test_alignto_sort(self, universe):
+        mobile = universe.atoms[:4]
+        ref = universe.atoms[[3, 2, 1, 0]]
+        assert align.alignto(mobile, ref, select='bynum 1-4') == (0.0, 0.0)
+
 
 def _get_aligned_average_positions(ref_files, ref, select="all", **kwargs):
     u = mda.Universe(*ref_files, in_memory=True)
