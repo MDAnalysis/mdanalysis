@@ -482,8 +482,8 @@ def alignto(mobile, reference, select=None, weights=None,
         ref_atoms = reference.atoms
     else:
         select = rms.process_selection(select)
-        mobile_atoms = mobile.select_atoms(*select['mobile'])
-        ref_atoms = reference.select_atoms(*select['reference'])
+        mobile_atoms = mobile.select_atoms(*select['mobile']).sort()
+        ref_atoms = reference.select_atoms(*select['reference']).sort()
 
 
     ref_atoms, mobile_atoms = get_matching_atoms(ref_atoms, mobile_atoms,
