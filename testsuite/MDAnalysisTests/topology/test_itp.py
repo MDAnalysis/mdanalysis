@@ -368,8 +368,6 @@ class TestErrors:
                 top = p.parse(include_dir=GMX_DIR)
 
 class TestRelativePath:
-
-
     def test_relstring(self, tmpdir):
         content = """ #include "../sub3/test2.itp"
         [ atoms ]
