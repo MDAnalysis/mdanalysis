@@ -389,7 +389,8 @@ class TestAlign(object):
     def test_alignto_sort(self, universe):
         mobile = universe.atoms[:4]
         ref = universe.atoms[[3, 2, 1, 0]]
-        assert align.alignto(mobile, ref, select='bynum 1-4') == (0.0, 0.0)
+        np.testing.assert_allclose(align.alignto(mobile, ref,
+                                   select='bynum 1-4'), (0.0, 0.0))
 
 
 def _get_aligned_average_positions(ref_files, ref, select="all", **kwargs):
