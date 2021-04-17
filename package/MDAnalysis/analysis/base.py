@@ -94,8 +94,9 @@ class AnalysisBase(object):
 
     To define a new Analysis, `AnalysisBase` needs to be subclassed
     `_single_frame` must be defined. It is also possible to define
-    `_prepare` and `_conclude` for pre and post processing. See the example
-    below.
+    `_prepare` and `_conclude` for pre and post processing. All results 
+    should be stored as attributes of the `results` object.
+    See the example below.
 
     .. code-block:: python
 
@@ -110,14 +111,14 @@ class AnalysisBase(object):
                # OPTIONAL
                # Called before iteration on the trajectory has begun.
                # Data structures can be set up at this time
-               self.result = []
+               self.results.example_result = []
 
            def _single_frame(self):
                # REQUIRED
                # Called after the trajectory is moved onto each new frame.
                # store a example_result of `some_function` for a single frame
-               self.example_result.append(some_function(self._ag, 
-                                                        self._parameter))
+               self.results.example_result.append(some_function(self._ag, 
+                                                              self._parameter))
 
            def _conclude(self):
                # OPTIONAL
