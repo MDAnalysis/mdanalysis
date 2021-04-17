@@ -42,11 +42,11 @@ logger = logging.getLogger(__name__)
 
 class _Results(object):
     r"""Class storing results obtained from an analysis.
-    
-    The class is stores all results obatined from 
+
+    The class is stores all results obatined from
     an analysis after the ``run`` call.
     """
-    
+
     def __init__(self, analysis_cls):
         """
         Parameters
@@ -59,21 +59,22 @@ class _Results(object):
     def __len__(self):
         # Subract the analysis class attribute
         return len(self.__dict__) - 1
-    
+
     def get_attribute_list(self):
         """A list of all result attribute names."""
         return [key for key in self.__dict__.keys() if key != "analysis_cls"]
 
     def __repr__(self):
         analysis_name = type(self.analysis_cls).__name__
-        return f"<{analysis_name} results with {len(self)} attribute{'s'[len(self) == 1:]}>"
-    
-    def __str__(self):    
+        return f"<{analysis_name} results with {len(self)}" \
+               f" attribute{'s'[len(self) == 1:]}>"
+
+    def __str__(self):
         analysis_name = type(self.analysis_cls).__name__
         attribute_list = self.get_attribute_list()
         str_repr = f"<{analysis_name} results with "
         str_repr += f"attribute{'s'[len(self) == 1:]}: "
-    
+
         if len(self) <= 10:
             str_repr += ", ".join(attribute_list)
         else:
@@ -88,7 +89,7 @@ class AnalysisBase(object):
 
     The class it is designed as a template for creating multiframe analyses.
     This class will automatically take care of setting up the trajectory
-    reader for iterating, and it offers to show a progress meter. 
+    reader for iterating, and it offers to show a progress meter.
     Computed results are stored inside the `results` attribute.
 
     To define a new Analysis, `AnalysisBase` needs to be subclassed
@@ -115,7 +116,8 @@ class AnalysisBase(object):
                # REQUIRED
                # Called after the trajectory is moved onto each new frame.
                # store a example_result of `some_function` for a single frame
-               self.example_result.append(some_function(self._ag, self._parameter))
+               self.example_result.append(some_function(self._ag, 
+                                                        self._parameter))
 
            def _conclude(self):
                # OPTIONAL
@@ -252,13 +254,14 @@ class AnalysisFromFunction(AnalysisBase):
         def rotation_matrix(mobile, ref):
             return mda.analysis.align.rotation_matrix(mobile, ref)[0]
 
-        rot = AnalysisFromFunction(rotation_matrix, trajectory, mobile, ref).run()
+        rot = AnalysisFromFunction(rotation_matrix, trajectory, 
+                                   mobile, ref).run()
         print(rot.results)
 
     Attributes
     ----------
     results : asarray
-        calculation results for each frame opf the underlaying function 
+        calculation results for each frame opf the underlaying function
         stored after call to ``run``
 
     Raises
@@ -331,6 +334,7 @@ def analysis_class(function):
     It can also be used as a decorator
 
     .. code-block:: python
+
         @analysis_class
         def RotationMatrix(mobile, ref):
             return mda.analysis.align.rotation_matrix(mobile, ref)[0]

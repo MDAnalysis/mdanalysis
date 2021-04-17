@@ -90,8 +90,8 @@ class LinearDensity(AnalysisBase):
     Example
     -------
     First create a LinearDensity object by supplying a selection,
-    then use the :meth:`run` method::. Finally access the results 
-    stored in results, i.e. the mass density in the x direction. 
+    then use the :meth:`run` method::. Finally access the results
+    stored in results, i.e. the mass density in the x direction.
 
     .. code-block:: python
 
@@ -140,6 +140,7 @@ class LinearDensity(AnalysisBase):
         self.nbins = bins.max()
         slices_vol = self.volume / bins
 
+        self._keys = ['pos', 'pos_std', 'char', 'char_std']
         # Create an alias for the results object to save writing
         self._results = self.results.__dict__
 
@@ -147,7 +148,7 @@ class LinearDensity(AnalysisBase):
         for idx in [0, 1, 2]:
             dim = "xyz"[idx]
             self._results[f'{dim}_slice volume'] = slices_vol[idx]
-            for attr in ['pos', 'pos_std', 'char', 'char_std']:
+            for attr in self._keys:
                 self._results[f"{dim}_{attr}"] =  np.zeros(self.nbins)
 
         # Variables later defined in _prepare() method
@@ -211,21 +212,20 @@ class LinearDensity(AnalysisBase):
 
         # Average results over the  number of configurations
         for dim in ['x', 'y', 'z']:
-            for key in ['pos', 'pos_std', 'char', 'char_std']:
+            for key in self._keys:
                 self._results[f"{dim}_{key}"] /= self.n_frames
             # Compute standard deviation for the error
             self._results[f'{dim}_pos_std'] = np.sqrt(
-                self._results[f'{dim}_pos_std'] - 
+                self._results[f'{dim}_pos_std'] -
                 np.square(self._results[f'{dim}_pos']))
             self._results[f'{dim}_char_std'] = np.sqrt(
-                self._results[f'{dim}_char_std'] - 
+                self._results[f'{dim}_char_std'] -
                 np.square(self._results[f'{dim}_char']))
 
         for dim in ['x', 'y', 'z']:
-            self._results[f'{dim}_pos'] /= self._results[f'{dim}_slice volume'] * k
-            self._results[f'{dim}_char'] /= self._results[f'{dim}_slice volume'] * k
-            self._results[f'{dim}_pos_std'] /=  self._results[f'{dim}_slice volume'] * k
-            self._results[f'{dim}_char_std'] /= self._results[f'{dim}_slice volume'] * k
+            norm = k * self._results[f'{dim}_slice volume']
+            for attr in self._keys:
+                self._results[f'{dim}_{attr}'] /= norm
 
     def _add_other_results(self, other):
         # For parallel analysis

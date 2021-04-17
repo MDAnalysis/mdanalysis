@@ -90,7 +90,7 @@ class TestPersistenceLength(object):
         ax2 = p_run.plot(ax=ax)
 
         assert ax2 is ax
-    
+
     def test_current_axes(self, p_run):
         fig, ax = plt.subplots()
         ax2 = p_run.plot(ax=None)

@@ -27,7 +27,7 @@
 
 The :mod:`MDAnalysis.analysis` sub-package contains various recipes and
 algorithms that can be used to analyze MD trajectories.
-If not stated differently, an analysis conducted by the available modules 
+If not stated differently, an analysis conducted by the available modules
 always follows the same structure
 
 1. Initiliaze the object prevously imported.
