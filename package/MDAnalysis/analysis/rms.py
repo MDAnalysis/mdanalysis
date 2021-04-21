@@ -519,8 +519,8 @@ class RMSD(AnalysisBase):
         #   *groupselections* groups each a dict with reference/mobile
         self._groupselections_atoms = [
             {
-                'reference': self.reference.select_atoms(*s['reference']),
-                'mobile': self.atomgroup.select_atoms(*s['mobile']),
+                'reference': self.reference.universe.select_atoms(*s['reference']),
+                'mobile': self.atomgroup.universe.select_atoms(*s['mobile']),
             }
             for s in self.groupselections]
         # sanity check
