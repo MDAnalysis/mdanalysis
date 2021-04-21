@@ -83,6 +83,15 @@ class _Results:
 
         return str_repr + ">"
 
+    def __eq__(self, other):
+        if self.__dict__.keys() != other.__dict__.keys() :
+            raise TypeError("Can't compare results from with different"
+                            " attributes.")
+        return self.__dict__ == other.__dict__
+
+    def __ne__(self, other):
+        return not self == other
+
 
 class AnalysisBase(object):
     r"""Base class for defining multi frame analysis

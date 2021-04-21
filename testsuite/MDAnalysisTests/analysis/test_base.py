@@ -33,6 +33,69 @@ from MDAnalysisTests.datafiles import PSF, DCD, TPR, XTC
 from MDAnalysisTests.util import no_deprecated_call
 
 
+class DummyClass:
+    def __init__(self):
+        self.results = base._Results(self)
+
+
+class Test_Results:
+    foo = 42
+    bar = "John Doe"
+    baz = np.array([1,2,3,4,5])
+
+    @pytest.fixture
+    def dummy_results(self):
+        obj = DummyClass()
+        obj.results.foo = self.foo
+        obj.results.bar = self.bar
+        obj.results.baz = self.baz
+
+        return obj.results
+
+    @pytest.fixture
+    def dummy_results_2(self):
+        obj = DummyClass()
+        obj.results.foo = self.foo
+        obj.results.bar = self.bar
+
+        return obj.results
+    
+    def test_results_length(self, dummy_results):
+        assert dummy_results.__len__() == 3
+
+    def test_get_attribute_list(self, dummy_results):
+        assert dummy_results.get_attribute_list() == ["foo", "bar", "baz"]
+
+    def test_repr(self, dummy_results):
+        assert dummy_results.__repr__() == ("<DummyClass results with 3"
+                                            " attributes>")
+
+    def test_str(self, dummy_results):
+        assert dummy_results.__str__() == ("<DummyClass results with"
+                                           " attributes: foo, bar, baz>")
+
+    def tes_str_long(self, dummy_results):
+        for i in "abcdefg":
+            dummy_results.__dict__[i] = i
+
+        assert dummy_results.__str__() == ("<DummyClass results with "
+                                           "attributes: foo, bar, baz ..."
+                                           " f, g, i>")
+
+    def test_eq(self, dummy_results, dummy_results_2):
+        assert dummy_results == dummy_results
+
+    def test_eq_err(self, dummy_results, dummy_results_2):
+        msg = ("Can't compare results from with different attributes.")
+        with pytest.raises(TypeError, match=msg):
+            dummy_results == dummy_results_2
+
+    def test_neq(self, dummy_results, dummy_results_2):
+        dummy_results_2.baz = 1 + self.baz
+        assert dummy_results != dummy_results_2
+
+
+
 class FrameAnalysis(base.AnalysisBase):
     """Just grabs frame numbers of frames it goes over"""
 
@@ -150,6 +213,11 @@ def test_filter_baseanalysis_kwargs():
 
 def simple_function(mobile):
     return mobile.center_of_geometry()
+
+
+def test_results_type(u):
+    an = FrameAnalysis(u.trajectory)
+    assert type(an.results) == base._Results
 
 
 @pytest.mark.parametrize('start, stop, step, nframes', [
