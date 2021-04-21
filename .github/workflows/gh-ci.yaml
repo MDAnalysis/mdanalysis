@@ -100,7 +100,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         auto-update-conda: true
-        channel-priority: strict
+        channel-priority: flexible
         channels: conda-forge, biobuilds
         add-pip-as-python-dependency: true
         mamba-version: "*"
@@ -191,16 +191,17 @@ jobs:
       with:
         python-version: 3.7
         auto-update-conda: true
-        channel-priority: strict
+        channel-priority: flexible
         channels: conda-forge, biobuilds
         add-pip-as-python-dependency: true
         architecture: x64
+        mamba-version: "*"
 
     - name: install_deps
       run: |
         conda_deps="${{ env.MDA_CONDA_MIN_DEPS }} ${{ env.MDA_CONDA_EXTRA_DEPS}}"
         pip_deps="${{ env.MDA_PIP_MIN_DEPS}} ${{ env.MDA_PIP_EXTRA_DEPS }} sphinx==1.8.5 sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0"
-        conda install ${conda_deps}
+        mamba install ${conda_deps}
         pip install ${pip_deps}
 
     - name: install_mda
@@ -278,10 +279,9 @@ jobs:
       with:
         python-version: 3.7
         auto-update-conda: true
-        channel-priority: strict
+        channel-priority: flexible
         channels: conda-forge
         add-pip-as-python-dependency: true
-        mamba-version: "*"
         architecture: x64
 
     - name: install
@@ -309,7 +309,7 @@ jobs:
       with:
         python-version: 3.7
         auto-update-conda: true
-        channel-priority: strict
+        channel-priority: flexible
         channels: conda-forge
         add-pip-as-python-dependency: true
         mamba-version: "*"
@@ -317,7 +317,7 @@ jobs:
 
     - name: install_conda
       run: |
-        conda install setuptools cython numpy twine
+        mamba install setuptools cython numpy twine
 
     - name: install_mdanalysis
       run: |
