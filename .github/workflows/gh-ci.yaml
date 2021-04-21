@@ -317,7 +317,7 @@ jobs:
 
     - name: install_conda
       run: |
-        mamba install setuptools cython numpy twine
+        conda install setuptools cython numpy twine
 
     - name: install_mdanalysis
       run: |
