@@ -24,6 +24,7 @@ import pickle
 
 import os
 import subprocess
+import errno
 
 from io import StringIO
 
@@ -163,7 +164,7 @@ class TestUniverseCreation(object):
                 os.chmod(temp_file, 0o200)
 
             # Issue #3221 match by PermissionError and error number instead
-            with pytest.raises(PermissionError, match="13"):
+            with pytest.raises(PermissionError, match=f"Errno {errno.EACCES}"):
                 mda.Universe('permission.denied.tpr')
 
     def test_load_new_VE(self):
