@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import pytest
-
+from pathlib import Path
 import MDAnalysis as mda
 import numpy as np
 from numpy.testing import assert_almost_equal, assert_equal
@@ -366,3 +366,56 @@ class TestErrors:
         with pytest.raises(IOError):
             with self.parser(ITP_no_endif) as p:
                 top = p.parse(include_dir=GMX_DIR)
+
+
+class TestRelativePath:
+    def test_relstring(self, tmpdir):
+        content = """ #include "../sub3/test2.itp"
+        [ atoms ]
+         1      H      1    SOL    HW1      1       0.41    1.00800
+        """
+        content2 = """[ atoms ]
+         1      H      1    SOL    HW1      1       0.41    1.00800
+        """
+        p = tmpdir.mkdir("sub1").join("test.itp")
+        p.write(content)
+        p3 = tmpdir.mkdir("sub3").join("test2.itp")
+        p3.write(content2)
+        p2 = tmpdir.mkdir("sub2")
+        p2.chdir()
+        with p2.as_cwd() as pchange:
+            u = mda.Universe(str("../sub1/test.itp"), format='ITP')
+
+    def test_relpath(self, tmpdir):
+        content = """
+        [ atoms ]
+         1      H      1    SOL    HW1      1       0.41    1.00800
+        """
+        p = tmpdir.mkdir("sub1").join("test.itp")
+        p.write(content)
+        p2 = tmpdir.mkdir("sub2")
+        p2.chdir()
+        with p2.as_cwd() as pchange:
+            relpath = Path("../sub1/test.itp")
+            u = mda.Universe(relpath, format='ITP')
+
+    def test_relative_path(self, tmpdir):
+        test_itp_content = '#include "../atoms.itp"'
+        atoms_itp_content = """
+        [ moleculetype ]
+        UNK 3
+
+        [ atoms ]
+        1      H      1    SOL    HW1      1       0.41    1.00800
+        """
+        with tmpdir.as_cwd():
+            with open("atoms.itp", "w") as f:
+                f.write(atoms_itp_content)
+            subdir = tmpdir.mkdir("subdir")
+            with subdir.as_cwd():
+                with open("test.itp", "w") as f:
+                    f.write(test_itp_content)
+                subsubdir = subdir.mkdir("subsubdir")
+                with subsubdir.as_cwd():
+                    u = mda.Universe("../test.itp")
+                    assert len(u.atoms) == 1
