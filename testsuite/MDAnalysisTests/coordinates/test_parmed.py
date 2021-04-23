@@ -300,4 +300,4 @@ def test_incorrect_object_passed_typeerror():
     err = "No atoms found in obj argument"
     with pytest.raises(TypeError, match=err):
         c = ParmEdConverter()
-        c.convert("we still don't support emojis :(")
+        c.convert("🐍")
