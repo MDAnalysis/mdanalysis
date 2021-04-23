@@ -865,6 +865,14 @@ class GroupBase(_MutableBase):
             pass
 
         compound_indices = self._get_compound_indices(compound)
+        compound_sizes = np.bincount(compound_indices)
+        size_per_atom = compound_sizes[compound_indices]
+        compound_sizes = compound_sizes[compound_sizes != 0]
+        unique_compound_sizes = unique_int_1d(compound_sizes)
+
+        # Sorting is needed when compounds are non-contiguous and there is a
+        # possibility that two compounds of the same length have interspersed
+        # atoms. Left unsorted, this would break vectorization later.
         # Are we already sorted? argsorting and fancy-indexing can be expensive
         # so we do a quick pre-check.
         needs_sorting = np.any(np.diff(compound_indices) < 0)
@@ -876,11 +884,7 @@ class GroupBase(_MutableBase):
             else:
                 # Quicksort
                 sort_indices = np.argsort(compound_indices)
-
-        compound_sizes = np.bincount(compound_indices)
-        size_per_atom = compound_sizes[compound_indices]
-        compound_sizes = compound_sizes[compound_sizes != 0]
-        unique_compound_sizes = unique_int_1d(compound_sizes)
+            size_per_atom = size_per_atom[sort_indices]
 
         compound_masks = []
         atom_masks = []
@@ -894,7 +898,8 @@ class GroupBase(_MutableBase):
                                    .reshape(-1, compound_size))
 
         masks = (atom_masks, compound_masks, len(compound_sizes))
-        self._cache[local_cache_key] = (masks, stable_sort)
+        self._cache[local_cache_key] = (masks, stable_sort
+                                        or not needs_sorting)
         return masks
 
     @warn_if_not_unique
@@ -1819,7 +1824,7 @@ class GroupBase(_MutableBase):
             # need to make sure that the first atom of each compound is stable
             # regarding sorting.
             atom_masks = unique_atoms._split_by_compound_indices(comp,
-                                              stable_sort=reference is None)[0]
+                                              stable_sort=True)[0]
             positions = unique_atoms.positions
             # We preselect where to spend the expensive unwrap effort by
             # vectorially calculating the spread of all the compounds of the
