@@ -25,6 +25,7 @@ The rules for this file:
 Fixes
   * Fixed MDAnalysis.analysis.align.alignto to reindex given mobile and 
     reference atoms before passing for alignment (issue #2977)
+  * ITPParser now accepts relative paths (Issue #3037, PR #3108)
   * Fixed issue with unassigned 'GAP' variable in fasta2algin function when
     resids are provided in input (Issue #3124)
   * Improve diffusionmap coverage (Issue #3208)
