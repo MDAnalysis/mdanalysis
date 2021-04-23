@@ -172,11 +172,7 @@ class ParmEdConverter(base.ConverterBase):
             # make sure to use atoms (Issue 46)
             ag_or_ts = obj.atoms
         except AttributeError:
-            if isinstance(obj, base.Timestep):
-                raise ValueError("Writing Timesteps to ParmEd "
-                                 "objects is not supported")
-            else:
-                raise TypeError("No atoms found in obj argument") from None
+            raise TypeError("No atoms found in obj argument") from None
 
         # Check for topology information
         missing_topology = []
