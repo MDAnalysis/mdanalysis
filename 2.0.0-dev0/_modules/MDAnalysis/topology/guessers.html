@@ -659,6 +659,53 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># TODO: do something slightly smarter, at least use name/element</span>
     <span class="k">return</span> <span class="mf">0.0</span></div>
+
+
+<div class="viewcode-block" id="guess_aromaticities"><a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_aromaticities">[docs]</a><span class="k">def</span> <span class="nf">guess_aromaticities</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Guess aromaticity of atoms using RDKit</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    atomgroup : mda.core.groups.AtomGroup</span>
+<span class="sd">        Atoms for which the aromaticity will be guessed</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    aromaticities : numpy.ndarray</span>
+<span class="sd">        Array of boolean values for the aromaticity of each atom</span>
+
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mol</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s2">&quot;RDKIT&quot;</span><span class="p">)</span>
+    <span class="n">atoms</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">(),</span>
+                   <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">GetIntProp</span><span class="p">(</span><span class="s2">&quot;_MDAnalysis_index&quot;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">GetIsAromatic</span><span class="p">()</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="guess_gasteiger_charges"><a class="viewcode-back" href="../../../documentation_pages/topology/guessers.html#MDAnalysis.topology.guessers.guess_gasteiger_charges">[docs]</a><span class="k">def</span> <span class="nf">guess_gasteiger_charges</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Guess Gasteiger partial charges using RDKit</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    atomgroup : mda.core.groups.AtomGroup</span>
+<span class="sd">        Atoms for which the charges will be guessed</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    charges : numpy.ndarray</span>
+<span class="sd">        Array of float values representing the charge of each atom</span>
+
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mol</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s2">&quot;RDKIT&quot;</span><span class="p">)</span>
+    <span class="kn">from</span> <span class="nn">rdkit.Chem.rdPartialCharges</span> <span class="kn">import</span> <span class="n">ComputeGasteigerCharges</span>
+    <span class="n">ComputeGasteigerCharges</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">throwOnParamFailure</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">atoms</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">(),</span>
+                   <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">GetIntProp</span><span class="p">(</span><span class="s2">&quot;_MDAnalysis_index&quot;</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atom</span><span class="o">.</span><span class="n">GetDoubleProp</span><span class="p">(</span><span class="s2">&quot;_GasteigerCharge&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">],</span>
+                    <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

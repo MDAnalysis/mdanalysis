@@ -323,6 +323,27 @@ Suitable for use in u._topology</td>
 </dd></dl>
 
 <dl class="function">
+<dt id="MDAnalysis.topology.guessers.guess_aromaticities">
+<code class="descclassname">MDAnalysis.topology.guessers.</code><code class="descname">guess_aromaticities</code><span class="sig-paren">(</span><em>atomgroup</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_aromaticities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_aromaticities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Guess aromaticity of atoms using RDKit</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>atomgroup</strong> (<em>mda.core.groups.AtomGroup</em>) – Atoms for which the aromaticity will be guessed</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>aromaticities</strong> – Array of boolean values for the aromaticity of each atom</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="MDAnalysis.topology.guessers.guess_atom_charge">
 <code class="descclassname">MDAnalysis.topology.guessers.</code><code class="descname">guess_atom_charge</code><span class="sig-paren">(</span><em>atomname</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_atom_charge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_atom_charge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guess atom charge from the name.</p>
@@ -455,6 +476,27 @@ Suitable for use in u._topology</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.topology.guessers.guess_gasteiger_charges">
+<code class="descclassname">MDAnalysis.topology.guessers.</code><code class="descname">guess_gasteiger_charges</code><span class="sig-paren">(</span><em>atomgroup</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/guessers.html#guess_gasteiger_charges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.guessers.guess_gasteiger_charges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Guess Gasteiger partial charges using RDKit</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>atomgroup</strong> (<em>mda.core.groups.AtomGroup</em>) – Atoms for which the charges will be guessed</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>charges</strong> – Array of float values representing the charge of each atom</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
