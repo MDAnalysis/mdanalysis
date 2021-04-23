@@ -1098,7 +1098,7 @@ class Atomnames(_AtomStringAttr):
     transplants[ResidueGroup].append(('omega_selections', omega_selections))
 
     def chi1_selection(residue, n_name='N', ca_name='CA', cb_name='CB',
-                       cg_name='CG'):
+                       cg_name='*G *G1 and not name H*'):
         """Select AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.
 
         Parameters
@@ -1125,7 +1125,7 @@ class Atomnames(_AtomStringAttr):
         .. versionadded:: 0.7.5
         """
         names = [n_name, ca_name, cb_name, cg_name]
-        ags = [residue.atoms[residue.atoms.names == n] for n in names]
+        ags = [residue.atoms.select_atoms(f"name {n}") for n in names]
         if any(len(ag) != 1 for ag in ags):
             return None
         return sum(ags)
