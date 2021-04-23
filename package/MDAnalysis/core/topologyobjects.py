@@ -899,22 +899,6 @@ class TopologyGroup(object):
         elif self.btype == 'improper':
             return self.dihedrals(**kwargs)
 
-    def _bondsSlow(self, pbc=False):  # pragma: no cover
-        """Slow version of bond (numpy implementation)"""
-        if not self.btype == 'bond':
-            return TypeError("TopologyGroup is not of type 'bond'")
-        else:
-            bond_dist = self._ags[0].positions - self._ags[1].positions
-            if pbc:
-                box = self._ags[0].dimensions
-                # orthogonal and divide by zero check
-                if (box[6:9] == 90.).all() and not (box[0:3] == 0).any():
-                    bond_dist -= np.rint(bond_dist / box[0:3]) * box[0:3]
-                else:
-                    raise ValueError("Only orthogonal boxes supported")
-
-            return np.array([mdamath.norm(a) for a in bond_dist])
-
     def _calc_connection_values(self, func, *btypes, result=None, pbc=False):
         if not any(self.btype == btype for btype in btypes):
             strbtype = "' or '".join(btypes)
@@ -941,17 +925,6 @@ class TopologyGroup(object):
         return self._calc_connection_values(distances.calc_bonds, "bond",
                                             pbc=pbc, result=result)
 
-    def _anglesSlow(self):  # pragma: no cover
-        """Slow version of angle (numpy implementation)"""
-        if not self.btype == 'angle':
-            raise TypeError("TopologyGroup is not of type 'angle'")
-
-        vec1 = self._ags[0].positions - self._ags[1].positions
-        vec2 = self._ags[2].positions - self._ags[1].positions
-
-        angles = np.array([mdamath.angle(a, b) for a, b in zip(vec1, vec2)])
-        return angles
-
     def angles(self, result=None, pbc=False):
         """Calculates the angle in radians formed between a bond
         between atoms 1 and 2 and a bond between atoms 2 & 3
@@ -976,19 +949,6 @@ class TopologyGroup(object):
         """
         return self._calc_connection_values(distances.calc_angles, "angle",
                                             pbc=pbc, result=result)
-
-    def _dihedralsSlow(self):  # pragma: no cover
-        """Slow version of dihedral (numpy implementation)"""
-        if self.btype not in ['dihedral', 'improper']:
-            raise TypeError("TopologyGroup is not of type 'dihedral' or "
-                            "'improper'")
-
-        ab = self._ags[0].positions - self._ags[1].positions
-        bc = self._ags[1].positions - self._ags[2].positions
-        cd = self._ags[2].positions - self._ags[3].positions
-
-        return np.array([mdamath.dihedral(a, b, c)
-                         for a, b, c in zip(ab, bc, cd)])
 
     def dihedrals(self, result=None, pbc=False):
         """Calculate the dihedral angle in radians for this topology
