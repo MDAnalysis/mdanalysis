@@ -23,6 +23,7 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * ITPParser now accepts relative paths (Issue #3037, PR #3108)
   * Fixed issue with unassigned 'GAP' variable in fasta2algin function when
     resids are provided in input (Issue #3124)
   * Improve diffusionmap coverage (Issue #3208)
