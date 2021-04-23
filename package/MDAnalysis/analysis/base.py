@@ -85,7 +85,7 @@ class _Results:
 
     def __eq__(self, other):
         if self.__dict__.keys() != other.__dict__.keys() :
-            raise TypeError("Can't compare results from with different"
+            raise TypeError("Can't compare results with different"
                             " attributes.")
         return self.__dict__ == other.__dict__
 
