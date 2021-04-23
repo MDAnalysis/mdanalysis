@@ -868,9 +868,7 @@ class TestDihedralSelections(object):
         rssel = [r.chi1_selection() for r in resgroup]
         assert_equal(rgsel, rssel)
 
-    @pytest.mark.parametrize("resname",
-        ["CYSH", "ILE", "SER", "THR", "VAL"]
-        )
+    @pytest.mark.parametrize("resname", ["CYSH", "ILE", "SER", "THR", "VAL"])
     def test_chi1_selection_non_cg(self, resname, TPR):
         resgroup = TPR.select_atoms(f"resname {resname}").residues
         # get middle one
