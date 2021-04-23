@@ -35,8 +35,10 @@ returned.
 import numpy as np
 import warnings
 
+from .base import TransformationBase
 
-class PositionAverager(object):
+
+class PositionAverager(TransformationBase):
     """
     Averages the coordinates of a given timestep so that the coordinates
     of the AtomGroup correspond to the average positions of the N previous
@@ -132,11 +134,18 @@ class PositionAverager(object):
     Returns
     -------
     MDAnalysis.coordinates.base.Timestep
-    
-    
+
+
+    .. versionchanged:: 2.0.0
+       The transformation was changed to inherit from the base class for
+       limiting threads and checking if it can be used in parallel analysis.
     """
 
-    def __init__(self, avg_frames, check_reset=True):
+    def __init__(self, avg_frames, check_reset=True,
+                 max_threads=None,
+                 parallelizable=False):
+        super().__init__(max_threads=max_threads,
+                         parallelizable=parallelizable)
         self.avg_frames = avg_frames
         self.check_reset = check_reset
         self.current_avg = 0
@@ -162,7 +171,7 @@ class PositionAverager(object):
         self.coord_array = np.roll(self.coord_array, 1, axis=2)
         self.coord_array[..., 0] = ts.positions.copy()
 
-    def __call__(self, ts):
+    def _transform(self, ts):
         #  calling the same timestep will not add new data to coord_array
         #  This can prevent from getting different values when
         #  call `u.trajectory[i]` multiple times.
