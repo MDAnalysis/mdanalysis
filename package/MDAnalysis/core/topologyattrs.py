@@ -1098,7 +1098,7 @@ class Atomnames(_AtomStringAttr):
     transplants[ResidueGroup].append(('omega_selections', omega_selections))
 
     def chi1_selection(residue, n_name='N', ca_name='CA', cb_name='CB',
-                       cg_name='*G *G1 and not name H*'):
+                       cg_name='CG CG1 OG OG1 SG'):
         """Select AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.
 
         Parameters
