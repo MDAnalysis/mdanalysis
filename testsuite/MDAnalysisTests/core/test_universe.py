@@ -25,7 +25,7 @@ import pickle
 import os
 import subprocess
 import errno
-
+from collections import defaultdict
 from io import StringIO
 
 import numpy as np
@@ -54,6 +54,7 @@ from MDAnalysis.topology.base import TopologyReaderBase
 from MDAnalysis.transformations import translate
 from MDAnalysisTests import assert_nowarns
 from MDAnalysis.exceptions import NoDataError
+from MDAnalysis.core.topologyattrs import _AtomStringAttr
 
 
 class IOErrorParser(TopologyReaderBase):
@@ -769,7 +770,33 @@ class TestDelTopologyAttr(object):
         assert not hasattr(universe._topology, "elements")
         with pytest.raises(AttributeError):
             universe._topology.del_TopologyAttr("elements")
-    
+
+    def test_del_attr_from_ag(self, universe):
+        ag = universe.atoms[[0]]
+        ag.residues.resnames = "xyz"
+        universe.del_TopologyAttr("resnames")
+        with pytest.raises(NoDataError):
+            ag.resnames
+
+    def test_del_func_from_universe(self, universe):
+        class RootVegetable(_AtomStringAttr):
+            attrname = "tubers"
+            singular = "tuber"
+            transplants = defaultdict(list)
+
+            def potatoes(self):
+                """🥔
+                """
+                return "potoooooooo"
+
+            transplants["Universe"].append(("potatoes", potatoes))
+        
+        universe.add_TopologyAttr("tubers")
+        assert universe.potatoes() == "potoooooooo"
+        universe.del_TopologyAttr("tubers")
+        with pytest.raises(AttributeError):
+            universe.potatoes()
+
 
 def _a_or_reversed_in_b(a, b):
     """

@@ -887,14 +887,13 @@ class Universe(object):
         for cls in attr.target_classes:
             self._class_bases[cls]._del_prop(attr)
 
+        # Universe transplants
+        for funcname, _ in attr.transplants.pop("Universe", []):
+            delattr(self.__class__, funcname)
         # Group transplants
         for cls, transplants in attr.transplants.items():
             for funcname, _ in transplants:
                 delattr(self._class_bases[cls], funcname)
-        # Universe transplants
-        for funcname, _ in attr.transplants['Universe']:
-            delattr(self.__class__, funcname)
-
 
     def add_Residue(self, segment=None, **attrs):
         """Add a new Residue to this Universe
