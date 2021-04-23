@@ -1099,7 +1099,18 @@ class Atomnames(_AtomStringAttr):
 
     def chi1_selection(residue, n_name='N', ca_name='CA', cb_name='CB',
                        cg_name='CG CG1 OG OG1 SG'):
-        """Select AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.
+        r"""Select AtomGroup corresponding to the chi1 sidechain dihedral ``N-CA-CB-*G.``
+        The gamma atom is taken to be the heavy atom in the gamma position. If more than one
+        heavy atom is present (e.g. CG1 and CG2), the one with the lower number is used (CG1).
+
+        .. warning::
+
+            This numbering of chi1 atoms here in following with the IUPAC 1970 rules\.
+            However, it should be noted that analyses which use dihedral angles may have
+            different definitions. For example, the
+            :class:`MDAnalysis.analysis.dihedrals.Janin` class does not incorporate
+            amino acids where the gamma atom is not carbon, into its chi1 selections.
+
 
         Parameters
         ----------
