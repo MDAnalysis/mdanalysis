@@ -1674,3 +1674,80 @@ class TestAtomGroupTimestep(object):
                                 ag.ts.velocities,
                                 self.prec,
                                 err_msg="Partial timestep coordinates wrong")
+
+
+class TestAtomGroupSort(object):
+    """Tests the AtomGroup.sort attribute"""
+
+    @pytest.fixture()
+    def universe(self):
+        u = mda.Universe.empty(
+            n_atoms=7,
+            n_residues=3,
+            n_segments=2,
+            atom_resindex=np.array([0, 0, 0, 1, 1, 1, 2]),
+            residue_segindex=np.array([0, 0, 1]),
+            trajectory=True,
+            velocities=True,
+            forces=True
+        )
+        attributes = ["id", "charge", "mass", "tempfactor"]
+
+        for i in (attributes):
+            u.add_TopologyAttr(i, [6, 5, 4, 3, 2, 1, 0])
+
+        u.add_TopologyAttr('resid', [2, 1, 0])
+        u.add_TopologyAttr('segid', [1, 0])
+        u.add_TopologyAttr('bonds', [(0, 1)])
+
+        return u
+
+    @pytest.fixture()
+    def ag(self, universe):
+        ag = universe.atoms
+        ag.positions = (-np.arange(21)).reshape(7, 3)
+        return ag
+
+    test_ids = [
+       "ix",
+       "ids",
+       "resids",
+       "segids",
+       "charges",
+       "masses",
+       "tempfactors"
+    ]
+
+    test_data = [
+        ("ix", np.array([0, 1, 2, 3, 4, 5, 6])),
+        ("ids", np.array([6, 5, 4, 3, 2, 1, 0])),
+        ("resids", np.array([6, 3, 4, 5, 0, 1, 2])),
+        ("segids", np.array([6, 0, 1, 2, 3, 4, 5])),
+        ("charges", np.array([6, 5, 4, 3, 2, 1, 0])),
+        ("masses", np.array([6, 5, 4, 3, 2, 1, 0])),
+        ("tempfactors", np.array([6, 5, 4, 3, 2, 1, 0])),
+    ]
+
+    @pytest.mark.parametrize("inputs, expected", test_data, ids=test_ids)
+    def test_sort(self, ag, inputs, expected):
+        agsort = ag.sort(inputs)
+        assert np.array_equal(expected, agsort.ix)
+
+    def test_sort_bonds(self, ag):
+        with pytest.raises(ValueError, match=r"The array returned by the "
+                           "attribute"):
+            ag.sort("bonds")
+
+    def test_sort_positions_2D(self, ag):
+        with pytest.raises(ValueError, match=r"The function assigned to"):
+            ag.sort("positions", keyfunc=lambda x: x)
+
+    def test_sort_position_no_keyfunc(self, ag):
+        with pytest.raises(NameError, match=r"The .* attribute returns a "
+                           "multidimensional array. In order to sort it, "):
+            ag.sort("positions")
+
+    def test_sort_position(self, ag):
+        ref = [6, 5, 4, 3, 2, 1, 0]
+        agsort = ag.sort("positions", keyfunc=lambda x: x[:, 1])
+        assert np.array_equal(ref, agsort.ix)
