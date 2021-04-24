@@ -47,7 +47,7 @@ class Results(dict):
     `results["value_key"]`, or by an attribute, `results.value_key`. 
     They store all results obatined from an analysis after the ``run`` call.
 
-    The current is similar to the `Bunch` class in sklearn.
+    The current implementation is similar to the `Bunch` class in `sklearn`.
 
     Examples
     --------
