@@ -107,7 +107,8 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
             self.convert_time_from_native(self.ts.dt)
 
     def _mda_timestep_from_omm_context(self):
-        """ Construct Timestep object from Openmm context """
+        """ Construct Timestep object from OpenMM context """
+        import simtk.unit as u
 
         state = self.filename.context.getState(-1, getVelocities=True, 
                 getForces=True, getEnergy=True)
@@ -117,10 +118,12 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
         ts = self._Timestep(n_atoms, **self._ts_kwargs)
         ts.frame = 0
         ts.data["time"] = state.getTime()._value
-        ts.data["potential_energy"] = self.convert_energies_from_native(
-                state.getPotentialEnergy()._value)
-        ts.data["kinetic_energy"] = self.convert_energies_from_native(
-                state.getKineticEnergy()._value)
+        ts.data["potential_energy"] = (
+            state.getPotentialEnergy().in_units_of(u.kilojoule/u.mole)
+        )
+        ts.data["kinetic_energy"] = (
+            state.getKineticEnergy().in_units_of(u.kilojoule/u.mole)
+        )
         ts.triclinic_dimensions = state.getPeriodicBoxVectors(
                 asNumpy=True)._value
         ts.positions = state.getPositions(asNumpy=True)._value
@@ -128,22 +131,6 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
         ts.forces = state.getForces(asNumpy=True)._value
 
         return ts
-
-    def convert_energies_from_native(self, energy):
-        """Conversion of energies array *energy* from native to base units
-
-        Parameters
-        ----------
-        energy: array_like
-          energies to transform
-
-        """
-        f = units.get_conversion_factor(
-            'energy', self.units['energy'], 'kJ/mol')
-        if f == 1.:
-            return energy
-        energy *= f
-        return energy
 
 
 class OpenMMAppReader(base.SingleFrameReaderBase):
@@ -181,7 +168,7 @@ class OpenMMAppReader(base.SingleFrameReaderBase):
             )
 
     def _mda_timestep_from_omm_app(self):
-        """ Construct Timestep object from Openmm Application object """
+        """ Construct Timestep object from OpenMM Application object """
 
         omm_object = self.filename
         n_atoms = omm_object.topology.getNumAtoms()
