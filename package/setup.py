@@ -253,7 +253,19 @@ def using_clang():
     compiler = new_compiler()
     customize_compiler(compiler)
     compiler_ver = getoutput("{0} -v".format(compiler.compiler[0]))
-    return 'clang' in compiler_ver
+    if 'Spack GCC' in compiler_ver:
+        # when gcc toolchain is built from source with spack
+        # using clang, the 'clang' string may be present in
+        # the compiler metadata, but it is not clang
+        is_clang = False
+    elif 'clang' in compiler_ver:
+        # by default, Apple will typically alias gcc to
+        # clang, with some mention of 'clang' in the
+        # metadata
+        is_clang = True
+    else:
+        is_clang = False
+    return is_clang
 
 
 def extensions(config):
