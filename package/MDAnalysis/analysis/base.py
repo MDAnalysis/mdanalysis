@@ -316,16 +316,15 @@ class AnalysisFromFunction(AnalysisBase):
         super(AnalysisFromFunction, self).__init__(trajectory)
 
     def _prepare(self):
-        self.results.times = []
         self.results.timeseries = []
 
     def _single_frame(self):
-        self.results.times.append(self._ts.time)
         self.results.timeseries.append(self.function(*self.args, 
                                                      **self.kwargs))
 
     def _conclude(self):
-        self.results.times = np.asarray(self.results.times)
+        self.results.frames = self.frames
+        self.results.times = self.times
         self.results.timeseries = np.asarray(self.results.timeseries)
 
 

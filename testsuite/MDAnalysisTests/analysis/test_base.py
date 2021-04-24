@@ -190,19 +190,23 @@ def test_AnalysisFromFunction(u, start, stop, step, nframes):
     ana3 = base.AnalysisFromFunction(simple_function, u.trajectory, u.atoms)
     ana3.run(start=start, stop=stop, step=step)
 
+    frames = []
     times = []
     timeseries = []
 
     for ts in u.trajectory[start:stop:step]:
+        frames.append(ts.frame)
         times.append(ts.time)
         timeseries.append(simple_function(u.atoms))
 
+    frames = np.asarray(frames)
     times = np.asarray(times)
     timeseries = np.asarray(timeseries)
 
     assert np.size(timeseries, 0) == nframes
 
     for ana in (ana1, ana2, ana3):
+        assert_equal(frames, ana.results.frames)
         assert_equal(times, ana.results.times)
         assert_equal(timeseries, ana.results.timeseries)
 
