@@ -461,8 +461,4 @@ class closeContactGNMAnalysis(GNMAnalysis):
                 matrix[iresidue][iresidue] += contact
                 matrix[jresidue][jresidue] += contact
 
-        self.results.times = np.asarray(self.results.times)
-        self.results.eigenvalues = np.asarray(self.results.eigenvalues)
-        self.results.eigenvectors = np.asarray(self.results.eigenvectors)
-
         return matrix
