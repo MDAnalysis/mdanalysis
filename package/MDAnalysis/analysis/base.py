@@ -260,6 +260,8 @@ class AnalysisFromFunction(AnalysisBase):
 
     Attributes
     ----------
+    results.frames : numpy.ndarray
+            simulatiom frames taken for evaluation
     results.times : numpy.ndarray
             simulatiom times taken for evaluation
     results.timeseries : asarray
@@ -353,6 +355,8 @@ def analysis_class(function):
 
     Attributes
     ----------
+    results.frames : numpy.ndarray
+            simulatiom frames taken for evaluation
     results.times : numpy.ndarray
             simulatiom times taken for evaluation
     results.timeseries : asarray
