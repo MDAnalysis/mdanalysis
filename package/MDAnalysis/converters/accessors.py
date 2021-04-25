@@ -56,90 +56,132 @@ Example
 from functools import partial, update_wrapper
 
 from .. import _CONVERTERS
-from ..core._get_readers import get_converter_for
 
 
 class Accessor:
-    """Class that adds a wrapper to an object.
+    """Used to pass data between two classes
 
     Parameters
     ----------
+    name : str
+        Name of the property in the parent class
+    accessor : class
+        A class that needs access to its parent's instance
 
-    wrapper : object
-        A wrapper class that implements the `__call__` method and some other
-        custom methods.
+    Example
+    -------
+    If you want the property to be named "convert_to" in the AtomGroup class,
+    use:
+
+    .. code-block:: python
+    
+        >>> class AtomGroup:
+        >>>     # ...
+        >>>     convert_to = Accessor("convert_to", ConverterWrapper)
+
+    And when calling ``ag.convert_to.rdkit()``, the "rdkit" method of the
+    ConverterWrapper will be able to have access to "ag"
     """
 
-    def __init__(self, wrapper):
-        self._wrapper = wrapper
+    def __init__(self, name, accessor):
+        self._accessor = accessor
+        self._name = name
 
     def __get__(self, obj, cls):
-        return self._wrapper(obj)
+        # instances the accessor class with the parent object as argument
+        wrapped = self._accessor(obj)
+        # replace the parent object's property with the wrapped instance
+        # so we avoid reinstantiating the accessor everytime `obj.<_name>`
+        # is called
+        object.__setattr__(obj, self._name, wrapped)
+        return wrapped
 
 
 class ConverterWrapper:
-    """Wrapper class for AtomGroup converters. The converters are accessible
-    to any AtomGroup through the `convert_to` property.
+    """Convert :class:`AtomGroup` to a structure from another Python
+    package.
 
-    `ag.convert_to` will return this ConverterWrapper, which can be called
-    directly with the name of the destination package as a string (similarly
-    to the old API), or through custom methods named after the package (in
-    lowercase) that are automatically constructed thanks to metaclass magic.
+    The converters are accessible to any AtomGroup through the ``convert_to``
+    property. `ag.convert_to` will return this ConverterWrapper, which can be
+    called directly with the name of the destination package as a string
+    (similarly to the old API), or through custom methods named after the
+    package (in lowercase) that are automatically constructed thanks to
+    metaclass magic.
+
+    Example
+    -------
+    The code below converts a Universe to a :class:`parmed.structure.Structure`.
+
+    .. code-block:: python
+
+        >>> import MDAnalysis as mda
+        >>> from MDAnalysis.tests.datafiles import GRO
+        >>> u = mda.Universe(GRO)
+        >>> parmed_structure = u.atoms.convert_to('PARMED')
+        >>> parmed_structure
+        <Structure 47681 atoms; 11302 residues; 0 bonds; PBC (triclinic); NOT parametrized>
+
+    You can also directly use ``u.atoms.convert_to.parmed()``
 
     Parameters
     ----------
+    package: str
+        The name of the package to convert to, e.g. ``"PARMED"``
+    *args:
+        Positional arguments passed to the converter
+    **kwargs:
+        Keyword arguments passed to the converter
 
-    ag : AtomGroup
-        AtomGroup that will have access to the wrapper as a property
+    Returns
+    -------
+    output:
+        An instance of the structure type from another package.
+
+    Raises
+    ------
+    TypeError:
+        No converter was found for the required package
+
+
+    .. versionadded:: 1.0.0
+    .. versionchanged:: 2.0.0
+        Moved the ``convert_to`` method to its own class. The old API is still
+        available and is now case-insensitive to package names, it also accepts
+        positional and keyword arguments. Each converter function can also
+        be accessed as a method with the name of the package in lowercase, i.e.
+        `convert_to.parmed()`
     """
+    _CONVERTERS = {}
 
     def __init__(self, ag):
-        self._ag = ag
-        for lib, converter in _CONVERTERS.items():
-            method_name = lib.lower()
-            # create partial function that passes ag to the converter
-            fconvert = partial(converter().convert, self._ag)
-            # copy docstring and metadata from the converter to fconvert
-            update_wrapper(fconvert, converter().convert)
-            setattr(self, method_name, fconvert)
-
-    def __call__(self, package, **kwargs):
-        """Convert :class:`AtomGroup` to a structure from another Python
-        package.
-
-        Example
-        -------
-
-        The code below converts a Universe to a :class:`parmed.structure.Structure`.
-
-        .. code-block:: python
-
-            >>> import MDAnalysis as mda
-            >>> from MDAnalysis.tests.datafiles import GRO
-            >>> u = mda.Universe(GRO)
-            >>> parmed_structure = u.atoms.convert_to('PARMED')
-            >>> parmed_structure
-            <Structure 47681 atoms; 11302 residues; 0 bonds; PBC (triclinic); NOT parametrized>
-
+        """
         Parameters
         ----------
-        package: str
-            The name of the package to convert to, e.g. ``"PARMED"``
-        **kwargs:
-            Other parameters passed to the converter
-
-        Returns
-        -------
-        output:
-            An instance of the structure type from another package.
-
-        Raises
-        ------
-        TypeError:
-            No converter was found for the required package
-
-
-        .. versionadded:: 1.0.0
+        ag : AtomGroup
+            The AtomGroup to convert
         """
-        converter = get_converter_for(package.upper())
-        return converter().convert(self._ag, **kwargs)
+        self._ag = ag
+        for lib, converter_cls in _CONVERTERS.items():
+            method_name = lib.lower()
+            # makes sure we always use the same instance of the converter
+            # no matter which atomgroup instance called it
+            try:
+                converter = self._CONVERTERS[method_name]
+            except KeyError:
+                converter = converter_cls().convert
+                # store in class attribute
+                self._CONVERTERS[method_name] = converter
+            # create partial function that passes ag to the converter
+            convert = partial(converter, self._ag)
+            # copy docstring and metadata to the partial function
+            # note: it won't work with help()
+            update_wrapper(convert, converter)
+            setattr(self, method_name, convert)
+
+    def __call__(self, package, *args, **kwargs):
+        try:
+            convert = getattr(self, package.lower())
+        except AttributeError:
+            raise TypeError(f"No {package!r} converter found. Available: "
+                            f"{' '.join(self._CONVERTERS.keys())}") from None
+        return convert(*args, **kwargs)
