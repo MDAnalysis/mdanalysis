@@ -26,7 +26,9 @@ import pytest
 import numpy as np
 from numpy.testing import assert_equal
 
-from MDAnalysis.lib._cutil import unique_int_1d, find_fragments
+from MDAnalysis.lib._cutil import (
+    unique_int_1d, find_fragments, _in2d,
+)
 
 
 @pytest.mark.parametrize('values', (
@@ -64,3 +66,21 @@ def test_find_fragments(edges, ref):
     assert len(fragments) == len(ref)
     for frag, r in zip(fragments, ref):
         assert_equal(frag, r)
+
+
+def test_in2d():
+    arr1 = np.array([[1, 2], [3, 4], [5, 6]], dtype=np.intp)
+    arr2 = np.array([[3, 4], [2, 1], [5, 5], [6, 6]], dtype=np.intp)
+
+    result = _in2d(arr1, arr2)
+
+    assert_equal(result, np.array([False, True, False]))
+
+
+@pytest.mark.parametrize('arr1,arr2', [
+    (np.array([1, 2, 3], dtype=np.intp), np.array([[1, 2], [3, 4]], dtype=np.intp)),
+    (np.array([[1, 2], [3, 4]], dtype=np.intp), np.array([1, 2, 3], dtype=np.intp)),
+])
+def test_in2d_VE(arr1, arr2):
+    with pytest.raises(ValueError):
+        _in2d(arr1, arr2)
