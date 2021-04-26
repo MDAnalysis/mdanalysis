@@ -112,6 +112,19 @@ def _in2d(np.intp_t[:, :] arr1, np.intp_t[:, :] arr2):
     cdef cset[pair[np.intp_t, np.intp_t]] hits
     cdef pair[np.intp_t, np.intp_t] p
 
+    """
+    Construct a set from arr2 called hits
+    then for each entry in arr1, check if there's a hit in this set
+
+    python would look like:
+
+    hits = {(i, j) for (i, j) in arr2}
+    results = np.empty(arr1.shape[0])
+    for i, (x, y) in enumerate(arr1):
+        results[i] = (x, y) in hits
+
+    return results
+    """
     if not arr1.shape[1] == 2 or not arr2.shape[1] == 2:
         raise ValueError("Both arrays must be (n, 2) arrays")
 

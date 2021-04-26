@@ -26,6 +26,8 @@ Fixes
     array warnings (PR #3139, backports PRs #2845 and #2834)
   * Fixed several issues with NSGrid and triclinic boxes not finding some pairs.
     (Issues #2229 #2345 #2919, PR #2937).
+  * Removed deprecation warning from numpy in hbond_autocorrel
+    (Issue #2987 PR #3242)
 
 Changes
   * Maximum pinned versions in setup.py removed for python 3.6+ (PR #3139)
