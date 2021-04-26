@@ -74,10 +74,11 @@ class Results(dict):
         return self.keys()
 
     def __getattr__(self, key):
-        if key in self.keys():
+        try:
             return self[key]
-        else:
-            raise AttributeError(f"'Results' object has no attribute '{key}'")
+        except KeyError as err:
+            raise AttributeError("'Results' object has no " 
+                                f"attribute '{key}'") from err
 
 
 class AnalysisBase(object):
