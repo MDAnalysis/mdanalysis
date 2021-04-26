@@ -321,7 +321,7 @@ class HydrogenBondAutoCorrel(object):
             raise ValueError("Donors and Hydrogen groups must be identical "
                              "length.  Try using `find_hydrogen_donors`.")
 
-        if not exclusions is None:
+        if exclusions is not None:
             if not len(exclusions[0]) == len(exclusions[1]):
                 raise ValueError(
                     "'exclusion' must be two arrays of identical length")
