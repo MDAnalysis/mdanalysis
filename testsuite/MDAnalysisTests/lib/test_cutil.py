@@ -78,9 +78,11 @@ def test_in2d():
 
 
 @pytest.mark.parametrize('arr1,arr2', [
-    (np.array([1, 2, 3], dtype=np.intp), np.array([[1, 2], [3, 4]], dtype=np.intp)),
-    (np.array([[1, 2], [3, 4]], dtype=np.intp), np.array([1, 2, 3], dtype=np.intp)),
+    (np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=np.intp),
+     np.array([[1, 2], [3, 4]], dtype=np.intp)),
+    (np.array([[1, 2], [3, 4]], dtype=np.intp),
+     np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=np.intp)),
 ])
 def test_in2d_VE(arr1, arr2):
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Both arrays must be \(n, 2\) arrays"):
         _in2d(arr1, arr2)
