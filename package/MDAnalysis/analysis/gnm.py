@@ -322,9 +322,9 @@ class GNMAnalysis(AnalysisBase):
             u, w, v = np.linalg.svd(matrix)
         except np.linalg.LinAlgError:
             print("\nFrame skip at", self._ts.time,
-                    "(SVD failed to converge). Cutoff", self.cutoff)
+                  "(SVD failed to converge). Cutoff", self.cutoff)
             return
-        #Save the results somewhere useful in some useful format. Usefully.
+        # Save the results somewhere useful in some useful format. Usefully.
         self._generate_output(
             w,
             v,
