@@ -103,9 +103,7 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
-  * Added intra_bonds, intra_angles, intra_dihedrals etc. to return only
-    the connections involving atoms within the AtomGroup, instead of
-    including atoms outside the AtomGroup (Issue #1264, #2821, PR #3200)
+  * Adds python 3.9 support (Issue #2974, PR #3027, #3245)
   * Added an MDAnalysis shields.io badge to the README (Issue #3227, PR #3229)
   * Added sort method to the atomgroup (Issue #2976, PR #3188) 
   * ITPParser now reads [ atomtypes ] sections in ITP files, used for charges
