@@ -41,18 +41,21 @@ def universe():
 
 
 def test_WaterOrientationalRelaxation(universe):
-    wor = waterdynamics.WaterOrientationalRelaxation(
-        universe, SELECTION1, 0, 5, 2)
-    wor.run()
-    assert_almost_equal(wor.timeseries[1][2], 0.35887,
+    wor = waterdynamics.WaterOrientationalRelaxation(universe, SELECTION1)
+    wor.run(0,5,1)
+    assert_almost_equal(wor.dip[1], 0.35887,
                         decimal=5)
 
+def test_WaterOrientationalRelaxation_different_step(universe):
+    wor = waterdynamics.WaterOrientationalRelaxation(universe, SELECTION1)
+    wor.run(0, 10, 2)
+    assert_almost_equal(wor.dip[1], 0.43486,
+                        decimal=5)
 
 def test_WaterOrientationalRelaxation_zeroMolecules(universe):
-    wor_zero = waterdynamics.WaterOrientationalRelaxation(
-        universe, SELECTION2, 0, 5, 2)
-    wor_zero.run()
-    assert_almost_equal(wor_zero.timeseries[1], (0.0, 0.0, 0.0))
+    wor = waterdynamics.WaterOrientationalRelaxation(universe, SELECTION2)
+    wor.run(0,5,1)
+    assert_almost_equal(wor.dip[1], (0.0, 0.0, 0.0))
 
 
 def test_AngularDistribution(universe):

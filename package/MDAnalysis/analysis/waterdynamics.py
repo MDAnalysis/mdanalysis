@@ -89,62 +89,6 @@ See Also
 :mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis`
 
 
-WaterOrientationalRelaxation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Analyzing water orientational relaxation (WOR)
-:class:`WaterOrientationalRelaxation`. In this case we are analyzing "how fast"
-water molecules are rotating/changing direction. If WOR is very stable we can
-assume that water molecules are rotating/changing direction very slow, on the
-other hand, if WOR decay very fast, we can assume that water molecules are
-rotating/changing direction very fast::
-
-  import MDAnalysis
-  from MDAnalysis.analysis.waterdynamics import WaterOrientationalRelaxation as WOR
-
-  u = MDAnalysis.Universe(pdb, trajectory)
-  select = "byres name OH2 and sphzone 6.0 protein and resid 42"
-  WOR_analysis = WOR(universe, select, 0, 1000, 20)
-  WOR_analysis.run()
-  time = 0
-  #now we print the data ready to plot. The first two columns are WOR_OH vs t plot,
-  #the second two columns are WOR_HH vs t graph and the third two columns are WOR_dip vs t graph
-  for WOR_OH, WOR_HH, WOR_dip in WOR_analysis.timeseries:
-        print("{time} {WOR_OH} {time} {WOR_HH} {time} {WOR_dip}".format(time=time, WOR_OH=WOR_OH, WOR_HH=WOR_HH,WOR_dip=WOR_dip))
-        time += 1
-
-  #now, if we want, we can plot our data
-  plt.figure(1,figsize=(18, 6))
-
-  #WOR OH
-  plt.subplot(131)
-  plt.xlabel('time')
-  plt.ylabel('WOR')
-  plt.title('WOR OH')
-  plt.plot(range(0,time),[column[0] for column in WOR_analysis.timeseries])
-
-  #WOR HH
-  plt.subplot(132)
-  plt.xlabel('time')
-  plt.ylabel('WOR')
-  plt.title('WOR HH')
-  plt.plot(range(0,time),[column[1] for column in WOR_analysis.timeseries])
-
-  #WOR dip
-  plt.subplot(133)
-  plt.xlabel('time')
-  plt.ylabel('WOR')
-  plt.title('WOR dip')
-  plt.plot(range(0,time),[column[2] for column in WOR_analysis.timeseries])
-
-  plt.show()
-
-where t0 = 0, tf = 1000 and dtmax = 20. In this way we create 20 windows
-timesteps (20 values in the x axis), the first window is created with 1000
-timestep average (1000/1), the second window is created with 500 timestep
-average(1000/2), the third window is created with 333 timestep average (1000/3)
-and so on.
-
 AngularDistribution
 ~~~~~~~~~~~~~~~~~~~
 
@@ -309,22 +253,6 @@ simulation is not being reloaded into memory for each lipid::
 Output
 ------
 
-WaterOrientationalRelaxation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Water orientational relaxation (WOR) data is returned per window timestep,
-which is stored in :attr:`WaterOrientationalRelaxation.timeseries`::
-
-    results = [
-        [ # time t0
-            <WOR_OH>, <WOR_HH>, <WOR_dip>
-        ],
-        [ # time t1
-            <WOR_OH>, <WOR_HH>, <WOR_dip>
-        ],
-        ...
-     ]
-
 AngularDistribution
 ~~~~~~~~~~~~~~~~~~~
 
@@ -388,32 +316,36 @@ Classes
    :inherited-members:
 
 """
-from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
-import MDAnalysis.analysis.hbonds
 from itertools import zip_longest
 import logging
-import warnings
+
 import numpy as np
 
+from MDAnalysis.lib.log import ProgressBar
+from MDAnalysis.analysis.base import AnalysisBase
+from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
 
 logger = logging.getLogger('MDAnalysis.analysis.waterdynamics')
-from MDAnalysis.lib.log import ProgressBar
 
 
-class WaterOrientationalRelaxation(object):
+class WaterOrientationalRelaxation(AnalysisBase):
     r"""Water orientation relaxation analysis
 
-    Function to evaluate the Water Orientational Relaxation proposed by Yu-ling
-    Yeh and Chung-Yuan Mou [Yeh1999_]. WaterOrientationalRelaxation indicates
-    "how fast" water molecules are rotating or changing direction. This is a
-    time correlation function given by:
+    Class evaluating the water orientational relaxation proposed by Yu-ling
+    Yeh and Chung-Yuan Mou [Yeh1999_]. 
+    `WaterOrientationalRelaxation` (WOR) indicates
+    "how fast" water molecules are rotating or changing direction. 
+    If WOR is very stable we can assume that water molecules are 
+    rotating/changing direction very slow, on the
+    other hand, if WOR decay very fast, we can assume that water molecules are
+    rotating/changing direction very fast. The results are
+    time correlation functions given by:
 
     .. math::
         C_{\hat u}(\tau)=\langle \mathit{P}_2[\mathbf{\hat{u}}(t_0)\cdot\mathbf{\hat{u}}(t_0+\tau)]\rangle
 
-    where :math:`P_2=(3x^2-1)/2` is the second-order Legendre polynomial and :math:`\hat{u}` is
-    a unit vector along HH, OH or dipole vector.
-
+    where :math:`P_2=(3x^2-1)/2` is the second-order Legendre polynomial 
+    and :math:`\hat{u}` is a unit vector along HH, OH or dipole vector.
 
     Parameters
     ----------
@@ -421,46 +353,110 @@ class WaterOrientationalRelaxation(object):
       Universe object
     selection : str
       Selection string for water [‘byres name OH2’].
-    t0 : int
-      frame  where analysis begins
-    tf : int
-      frame where analysis ends
-    dtmax : int
-      Maximum dt size, `dtmax` < `tf` or it will crash.
+
+    Attributes
+    ----------
+    times : numpy.ndarray
+        times for the correlation functions
+    OH : numpy.ndarray
+        correlation function for oxygen-hydrogen vector
+    HH : numpy.ndarray
+        correlation function for oxygen-hydrogen vector
+    dip : numpy.ndarray
+        correlation function for water dipole vector
+
+
+    Examples
+    --------
+
+    .. code-block:: python
+
+        import matplotlib.pyplot as plt
+        import MDAnalysis as mda
+        from MDAnalysis.analysis.waterdynamics import WaterOrientationalRelaxation as WOR
+
+        u = mda.Universe(waterPSF, waterDCD)
+        select = "byres name OH2"
+        wor = WOR(u, select)
+        wor.run(0, 7, 1)
+
+        # Plot the results
+        plt.figure(1, figsize=(18, 6))
+
+        # WOR OH
+        plt.subplot(131)
+        plt.xlabel('time / ps')
+        plt.ylabel('WOR')
+        plt.title('OH orientational relaxation')
+        plt.plot(wor.times, wor.OH, "o-")
+
+        # WOR HH
+        plt.subplot(132)
+        plt.xlabel('time / ps')
+        plt.ylabel('WOR')
+        plt.title('HH orientational relaxation')
+        plt.plot(wor.times, wor.HH, "o-")
+
+        # WOR dip
+        plt.subplot(133)
+        plt.xlabel('time / ps')
+        plt.ylabel('WOR')
+        plt.title('water dipole orientational relaxation')
+        plt.plot(wor.times, wor.dip, "o-")
+
+        plt.show()
 
 
     .. versionadded:: 0.11.0
 
     .. versionchanged:: 1.0.0
        Changed `selection` keyword to `select`
+
+    .. versionchanged:: 2.0.0
+       `t0`, `tf` and `dtmax` are renamed to start, stop, step as attributes
+       of the `run` method providing a consistent behaviour with other 
+       modules.
     """
 
-    def __init__(self, universe, select, t0, tf, dtmax, nproc=1):
+    def __init__(self, universe, selection):
+        super(WaterOrientationalRelaxation, self).__init__(universe.trajectory)
         self.universe = universe
-        self.selection = select
-        self.t0 = t0
-        self.tf = tf
-        self.dtmax = dtmax
-        self.nproc = nproc
-        self.timeseries = None
+        self.selection = selection
 
-    def _repeatedIndex(self, selection, dt, totalFrames):
+    def _compare_molecules(self, selection, cur_frame, other_frame):
         """
-        Indicates the comparation between all the t+dt.
-        The results is a list of list with all the repeated index per frame
-        (or time).
-        Ex: dt=1, so compare frames (1,2),(2,3),(3,4)...
-        Ex: dt=2, so compare frames (1,3),(3,5),(5,7)...
-        Ex: dt=3, so compare frames (1,4),(4,7),(7,10)...
+        Compare the molecules in the `cur_frame` selection to the 
+        `other_frame` selection and
+        select only those particles that are repeated in both frame. This is to
+        consider only those molecules that remain in the selection after 
+        a certain time has elapsed. The result is a list with the indices of 
+        the atoms.
+        """
+        a = set(selection[cur_frame])
+        b = set(selection[other_frame])
+        return sorted(list(a.intersection(b)))
+
+    def _get_repeated_indices(self, selection, frame):
+        """
+        Indicates the comparation between the current frame and all 
+        following frames.
+        The results is a list of lists with all the repeated index per frame.
+        Ex: frame=1, so compare frames (1,2),(2,3),(3,4)...
+        Ex: frame=2, so compare frames (1,3),(3,5),(5,7)...
+        Ex: frame=3, so compare frames (1,4),(4,7),(7,10)...
         """
         rep = []
-        for i in range(int(round((totalFrames - 1) / float(dt)))):
-            if (dt * i + dt < totalFrames):
-                rep.append(self._sameMolecTandDT(
-                    selection, dt * i, (dt * i) + dt))
+        rep_ind = []
+        for i in range(self.start, self.stop - self.frame, self.frame):
+            rep.append(self._compare_molecules(selection, i, i + self.frame))
         return rep
 
-    def _getOneDeltaPoint(self, universe, repInd, i, t0, dt):
+    @staticmethod
+    def lg2(x):
+        """Second Legendre polynomial"""
+        return (3*x*x - 1)/2
+
+    def _get_one_delta_point(self, universe, repeated_indices, i, eval_frame):
         """
         Gives one point to calculate the mean and gets one point of the plot
         C_vect vs t.
@@ -472,20 +468,20 @@ class WaterOrientationalRelaxation(object):
         valHH = 0
         valdip = 0
         n = 0
-        for j in range(len(repInd[i]) // 3):
+        for j in range(len(repeated_indices[i]) // 3):
             begj = 3 * j
-            universe.trajectory[t0]
-            Ot0 = repInd[i][begj]
-            H1t0 = repInd[i][begj + 1]
-            H2t0 = repInd[i][begj + 2]
+            universe.trajectory[eval_frame]
+            Ot0 = repeated_indices[i][begj]
+            H1t0 = repeated_indices[i][begj + 1]
+            H2t0 = repeated_indices[i][begj + 2]
             OHVector0 = H1t0.position - Ot0.position
             HHVector0 = H1t0.position - H2t0.position
             dipVector0 = ((H1t0.position + H2t0.position) * 0.5) - Ot0.position
 
-            universe.trajectory[t0 + dt]
-            Otp = repInd[i][begj]
-            H1tp = repInd[i][begj + 1]
-            H2tp = repInd[i][begj + 2]
+            universe.trajectory[eval_frame + self.frame]
+            Otp = repeated_indices[i][begj]
+            H1tp = repeated_indices[i][begj + 1]
+            H2tp = repeated_indices[i][begj + 2]
 
             OHVectorp = H1tp.position - Otp.position
             HHVectorp = H1tp.position - H2tp.position
@@ -521,79 +517,65 @@ class WaterOrientationalRelaxation(object):
             valHH += self.lg2(np.dot(unitHHVector0, unitHHVectorp))
             valdip += self.lg2(np.dot(unitdipVector0, unitdipVectorp))
             n += 1
-        return  (valOH/n, valHH/n, valdip/n) if n > 0 else (0, 0, 0)
+        if n > 0:
+            return valOH/n, valHH/n, valdip/n
+        else:
+            return 0, 0, 0
 
 
-    def _getMeanOnePoint(self, universe, selection1, selection_str, dt,
-                         totalFrames):
+    def _get_mean_one_point(self, universe, selections):
         """
         This function gets one point of the plot C_vec vs t. It uses the
         _getOneDeltaPoint() function to calculate the average.
-
         """
-        repInd = self._repeatedIndex(selection1, dt, totalFrames)
-        sumsdt = 0
-        n = 0.0
-        sumDeltaOH = 0.0
-        sumDeltaHH = 0.0
-        sumDeltadip = 0.0
+        repeated_indices = self._get_repeated_indices(selections, self.frame)
+        cum_frames = 0
+        sumDeltaOH = 0
+        sumDeltaHH = 0
+        sumDeltadip = 0
+        n = 0
 
-        for j in range(totalFrames // dt - 1):
-            a = self._getOneDeltaPoint(universe, repInd, j, sumsdt, dt)
+        for i in range(self.start, self.stop // self.frame - 1):
+            a = self._get_one_delta_point(universe, repeated_indices, i - 1, cum_frames)
             sumDeltaOH += a[0]
             sumDeltaHH += a[1]
             sumDeltadip += a[2]
-            sumsdt += dt
+            cum_frames += self.frame + self.step
             n += 1
+
+            if cum_frames + self.frame >= self.stop:
+                break
 
         # if no water molecules remain in selection, there is nothing to get
         # the mean, so n = 0.
-        return (sumDeltaOH / n, sumDeltaHH / n, sumDeltadip / n) if n > 0 else (0, 0, 0)
-
-    def _sameMolecTandDT(self, selection, t0d, tf):
-        """
-        Compare the molecules in the t0d selection and the t0d+dt selection and
-        select only the particles that are repeated in both frame. This is to
-        consider only the molecules that remains in the selection after the dt
-        time has elapsed.
-        The result is a list with the indexs of the atoms.
-        """
-        a = set(selection[t0d])
-        b = set(selection[tf])
-        sort = sorted(list(a.intersection(b)))
-        return sort
-
-    def _selection_serial(self, universe, selection_str):
-        selection = []
-        for ts in ProgressBar(universe.trajectory, verbose=True,
-                              total=universe.trajectory.n_frames):
-            selection.append(universe.select_atoms(selection_str))
-        return selection
-
-    @staticmethod
-    def lg2(x):
-        """Second Legendre polynomial"""
-        return (3*x*x - 1)/2
-
-    def run(self, **kwargs):
-        """Analyze trajectory and produce timeseries"""
-
-        # All the selection to an array, this way is faster than selecting
-        # later.
-        if self.nproc == 1:
-            selection_out = self._selection_serial(
-                self.universe, self.selection)
+        if n > 0:
+            return sumDeltaOH/n, sumDeltaHH/n, sumDeltadip/n
         else:
-            # selection_out = self._selection_parallel(self.universe,
-            # self.selection, self.nproc)
-            # parallel selection to be implemented
-            selection_out = self._selection_serial(
-                self.universe, self.selection)
-        self.timeseries = []
-        for dt in list(range(1, self.dtmax + 1)):
-            output = self._getMeanOnePoint(
-                self.universe, selection_out, self.selection, dt, self.tf)
-            self.timeseries.append(output)
+            return 0, 0, 0
+
+    def _prepare(self):
+        # result lists
+        self.OH = []
+        self.HH = []
+        self.dip = []
+
+        # List storing the atoms inside selection for every frame
+        self.selection_out = []
+        for _ in self._trajectory:
+            self.selection_out.append(self.universe.select_atoms(self.selection))
+
+    def _single_frame(self):
+        self.frame = self._frame_index + self.step
+        results_ts = self._get_mean_one_point(self.universe, 
+                                              self.selection_out)
+        self.OH.append(results_ts[0])
+        self.HH.append(results_ts[1])
+        self.dip.append(results_ts[2])
+
+    def _conclude(self):
+        self.OH = np.array(self.OH)
+        self.OH = np.array(self.HH)
+        self.dip = np.array(self.dip)
 
 
 class AngularDistribution(object):
