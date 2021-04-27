@@ -86,12 +86,13 @@ directly needed to perform the analysis.
 
 """
 import itertools
+import logging
+import warnings
 
 import numpy as np
 
 from .base import AnalysisBase
 
-import logging
 
 logger = logging.getLogger('MDAnalysis.analysis.GNM')
 
@@ -319,10 +320,12 @@ class GNMAnalysis(AnalysisBase):
     def _single_frame(self):
         matrix = self.generate_kirchoff()
         try:
-            u, w, v = np.linalg.svd(matrix)
+            _, w, v = np.linalg.svd(matrix)
         except np.linalg.LinAlgError:
-            print("\nFrame skip at", self._ts.time,
-                  "(SVD failed to converge). Cutoff", self.cutoff)
+            msg = f"SVD with cutoff {self.cutoff} failed to converge. "
+            msg += f"Skip frame at {self._ts.time}."
+            warnings.warn(msg)
+            logger.warning(msg)
             return
         # Save the results somewhere useful in some useful format. Usefully.
         self._generate_output(
