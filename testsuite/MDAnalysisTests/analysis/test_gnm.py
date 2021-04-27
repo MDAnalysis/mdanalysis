@@ -21,6 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import os
+from unittest.mock import patch
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.gnm
@@ -78,6 +79,18 @@ def test_generate_kirchoff(universe):
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+
+def test_gnm_SVD_fail(universe):
+    gnm = mda.analysis.gnm.GNMAnalysis(universe)
+    # Initilize attributes like self._ts 
+    # necessary for print the warning
+    gnm.run(stop=1)
+
+    with patch.object(np.linalg, "svd") as np_load_mock:
+        np_load_mock.side_effect = np.linalg.LinAlgError
+        with pytest.warns(UserWarning):
+            assert gnm._single_frame() is None
 
 
 def test_closeContactGNMAnalysis(universe):
