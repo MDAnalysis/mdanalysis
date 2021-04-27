@@ -90,9 +90,8 @@ class TestOpenMMPDBFileReader(_SingleFrameReader):
 
     def test_dimensions(self):
         assert_almost_equal(
-            # Angles seem to parse differently when openmm reads the pdb file
-            self.universe.trajectory.ts.dimensions[0:3],
-            self.ref.trajectory.ts.dimensions[0:3],
+            self.universe.trajectory.ts.dimensions,
+            self.ref.trajectory.ts.dimensions,
             self.prec,
             "OpenMMPDBFileReader failed to get unitcell dimensions " +
             "from OpenMMPDBFile",
@@ -116,9 +115,8 @@ class TestOpenMMModellerReader(_SingleFrameReader):
 
     def test_dimensions(self):
         assert_almost_equal(
-            # Angles seem to parse differently when openmm reads the pdb file
-            self.universe.trajectory.ts.dimensions[0:3],
-            self.ref.trajectory.ts.dimensions[0:3],
+            self.universe.trajectory.ts.dimensions,
+            self.ref.trajectory.ts.dimensions,
             self.prec,
             "OpenMMModellerReader failed to get unitcell dimensions " +
             "from OpenMMModeller",
@@ -150,9 +148,8 @@ class TestOpenMMSimulationReader(_SingleFrameReader):
 
     def test_dimensions(self):
         assert_almost_equal(
-            # Angles seem to parse differently when openmm reads the pdb file
-            self.universe.trajectory.ts.dimensions[0:3],
-            self.ref.trajectory.ts.dimensions[0:3],
+            self.universe.trajectory.ts.dimensions,
+            self.ref.trajectory.ts.dimensions,
             self.prec,
             "OpenMMSimulationReader failed to get unitcell dimensions " +
             "from OpenMMSimulation",
@@ -163,8 +160,12 @@ class TestOpenMMSimulationReader(_SingleFrameReader):
         rp = self.ref.atoms.positions
         assert_almost_equal(up, rp, decimal=3)
 
+    @pytest.mark.xfail(reason='OpenMM pickling not supported yet')
     def test_pickle_singleframe_reader(self):
-        pass
+        """
+        See `OpenMM SwigPyObject serialisation discussion <https://github.com/MDAnalysis/mdanalysis/issues/2887>`_
+        """
+        super().test_pickle_singleframe_reader()
 
 
 @pytest.fixture

@@ -102,6 +102,7 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
             self.ts.triclinic_dimensions = self.convert_pos_from_native(
                 self.ts.triclinic_dimensions, inplace=False
             )
+            self.ts.dimensions[3:] = _sanitize_box_angles(self.ts.dimensions[3:])
             self.convert_velocities_from_native(self.ts._velocities)
             self.convert_forces_from_native(self.ts._forces)
             self.convert_time_from_native(self.ts.dt)
@@ -126,6 +127,7 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
         )
         ts.triclinic_dimensions = state.getPeriodicBoxVectors(
                 asNumpy=True)._value
+        ts.dimensions[3:] = _sanitize_box_angles(ts.dimensions[3:])
         ts.positions = state.getPositions(asNumpy=True)._value
         ts.velocities = state.getVelocities(asNumpy=True)._value
         ts.forces = state.getForces(asNumpy=True)._value
@@ -166,6 +168,7 @@ class OpenMMAppReader(base.SingleFrameReaderBase):
             self.ts.triclinic_dimensions = self.convert_pos_from_native(
                 self.ts.triclinic_dimensions, inplace=False
             )
+            self.ts.dimensions[3:] = _sanitize_box_angles(self.ts.dimensions[3:])
 
     def _mda_timestep_from_omm_app(self):
         """ Construct Timestep object from OpenMM Application object """
@@ -179,8 +182,16 @@ class OpenMMAppReader(base.SingleFrameReaderBase):
             ts.triclinic_dimensions = np.array(
                 omm_object.topology.getPeriodicBoxVectors()._value
             )
+            ts.dimensions[3:] = _sanitize_box_angles(ts.dimensions[3:])
         ts.positions = np.array(omm_object.getPositions()._value)
 
         return ts
 
+def _sanitize_box_angles(angles):
+    """ Ensure box angles correspond to first quadrant 
 
+    See `discussion on unitcell angles <https://github.com/MDAnalysis/mdanalysis/pull/2917/files#r620558575>`_
+    """
+    inverted = 180 - angles
+
+    return np.min(np.array([angles, inverted]), axis=0)
