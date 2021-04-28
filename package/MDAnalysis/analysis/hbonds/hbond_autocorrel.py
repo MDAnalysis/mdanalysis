@@ -432,7 +432,7 @@ class HydrogenBondAutoCorrel(object):
         # 2d array of all distances
         pair = capped_distance(self.h.positions, self.a.positions, max_cutoff=self.d_crit, box=box,
                                return_distances=False)
-        if not self.exclusions is None:
+        if self.exclusions is not None:
             pair = pair[~ _in2d(pair, self.exclusions)]
 
         hidx, aidx = np.transpose(pair)
