@@ -388,6 +388,9 @@ class closeContactGNMAnalysis(GNMAnalysis):
     .. versionchanged:: 1.0.0
        MassWeight option (see above deprecation entry).
        Changed `selection` keyword to `select`
+
+    .. versionchanged:: 2.0.0
+       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class.
     """
 
     def __init__(self,
