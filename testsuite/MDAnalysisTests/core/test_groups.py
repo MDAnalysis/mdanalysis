@@ -28,6 +28,7 @@ from numpy.testing import (
 )
 import pytest
 import operator
+import warnings
 
 import MDAnalysis as mda
 from MDAnalysis.exceptions import NoDataError
@@ -1465,8 +1466,10 @@ class TestDecorator(object):
 
 @pytest.fixture()
 def tpr():
-    return mda.Universe(TPR)
-
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore",
+                                message="No coordinate reader found")
+        return mda.Universe(TPR)
 
 class TestGetConnectionsAtoms(object):
     """Test Atom and AtomGroup.get_connections"""
