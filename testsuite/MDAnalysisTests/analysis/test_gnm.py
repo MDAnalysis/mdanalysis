@@ -21,6 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import os
+from unittest.mock import patch
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.gnm
@@ -78,6 +79,15 @@ def test_generate_kirchoff(universe):
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+
+def test_gnm_SVD_fail(universe):
+    with patch.object(np.linalg, "svd") as np_load_mock:
+        np_load_mock.side_effect = np.linalg.LinAlgError
+        msg = "SVD with cutoff 7.0 failed to converge. "
+        msg += "Skip frame at 0.0."
+        with pytest.warns(UserWarning, match=msg):
+            mda.analysis.gnm.GNMAnalysis(universe).run(stop=1)
 
 
 def test_closeContactGNMAnalysis(universe):
