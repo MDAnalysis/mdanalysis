@@ -28,6 +28,7 @@ Fixes
     (Issues #2229 #2345 #2919, PR #2937).
   * Removed deprecation warning from numpy in hbond_autocorrel
     (Issue #2987 PR #3242)
+  * Fixed bug in exclusion matrix of hbond_autocorrel (PR #3242)
 
 Changes
   * Maximum pinned versions in setup.py removed for python 3.6+ (PR #3139)
