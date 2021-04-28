@@ -42,9 +42,10 @@ def universe():
 
 def test_WaterOrientationalRelaxation(universe):
     wor = waterdynamics.WaterOrientationalRelaxation(universe, SELECTION1)
-    wor.run(0,5,1)
+    wor.run(0, 5, 1)
     assert_almost_equal(wor.dip[1], 0.35887,
                         decimal=5)
+
 
 def test_WaterOrientationalRelaxation_different_step(universe):
     wor = waterdynamics.WaterOrientationalRelaxation(universe, SELECTION1)
@@ -52,9 +53,10 @@ def test_WaterOrientationalRelaxation_different_step(universe):
     assert_almost_equal(wor.dip[1], 0.43486,
                         decimal=5)
 
+
 def test_WaterOrientationalRelaxation_zeroMolecules(universe):
     wor = waterdynamics.WaterOrientationalRelaxation(universe, SELECTION2)
-    wor.run(0,5,1)
+    wor.run(0, 5, 1)
     assert_almost_equal(wor.dip[1], (0.0, 0.0, 0.0))
 
 

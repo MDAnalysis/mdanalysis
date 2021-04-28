@@ -332,10 +332,10 @@ class WaterOrientationalRelaxation(AnalysisBase):
     r"""Water orientation relaxation analysis
 
     Class evaluating the water orientational relaxation proposed by Yu-ling
-    Yeh and Chung-Yuan Mou [Yeh1999_]. 
+    Yeh and Chung-Yuan Mou [Yeh1999_].
     `WaterOrientationalRelaxation` (WOR) indicates
-    "how fast" water molecules are rotating or changing direction. 
-    If WOR is very stable we can assume that water molecules are 
+    "how fast" water molecules are rotating or changing direction.
+    If WOR is very stable we can assume that water molecules are
     rotating/changing direction very slow, on the
     other hand, if WOR decay very fast, we can assume that water molecules are
     rotating/changing direction very fast. The results are
@@ -344,7 +344,7 @@ class WaterOrientationalRelaxation(AnalysisBase):
     .. math::
         C_{\hat u}(\tau)=\langle \mathit{P}_2[\mathbf{\hat{u}}(t_0)\cdot\mathbf{\hat{u}}(t_0+\tau)]\rangle
 
-    where :math:`P_2=(3x^2-1)/2` is the second-order Legendre polynomial 
+    where :math:`P_2=(3x^2-1)/2` is the second-order Legendre polynomial
     and :math:`\hat{u}` is a unit vector along HH, OH or dipole vector.
 
     Parameters
@@ -373,11 +373,11 @@ class WaterOrientationalRelaxation(AnalysisBase):
 
         import matplotlib.pyplot as plt
         import MDAnalysis as mda
-        from MDAnalysis.analysis.waterdynamics import WaterOrientationalRelaxation as WOR
+        from MDAnalysis.analysis.waterdynamics import WaterOrientationalRelaxation
 
         u = mda.Universe(waterPSF, waterDCD)
         select = "byres name OH2"
-        wor = WOR(u, select)
+        wor = WaterOrientationalRelaxation(u, select)
         wor.run(0, 7, 1)
 
         # Plot the results
@@ -414,7 +414,7 @@ class WaterOrientationalRelaxation(AnalysisBase):
 
     .. versionchanged:: 2.0.0
        `t0`, `tf` and `dtmax` are renamed to start, stop, step as attributes
-       of the `run` method providing a consistent behaviour with other 
+       of the `run` method providing a consistent behaviour with other
        modules.
     """
 
@@ -425,11 +425,11 @@ class WaterOrientationalRelaxation(AnalysisBase):
 
     def _compare_molecules(self, selection, cur_frame, other_frame):
         """
-        Compare the molecules in the `cur_frame` selection to the 
+        Compare the molecules in the `cur_frame` selection to the
         `other_frame` selection and
         select only those particles that are repeated in both frame. This is to
-        consider only those molecules that remain in the selection after 
-        a certain time has elapsed. The result is a list with the indices of 
+        consider only those molecules that remain in the selection after
+        a certain time has elapsed. The result is a list with the indices of
         the atoms.
         """
         a = set(selection[cur_frame])
@@ -438,7 +438,7 @@ class WaterOrientationalRelaxation(AnalysisBase):
 
     def _get_repeated_indices(self, selection, frame):
         """
-        Indicates the comparation between the current frame and all 
+        Indicates the comparation between the current frame and all
         following frames.
         The results is a list of lists with all the repeated index per frame.
         Ex: frame=1, so compare frames (1,2),(2,3),(3,4)...
@@ -522,7 +522,6 @@ class WaterOrientationalRelaxation(AnalysisBase):
         else:
             return 0, 0, 0
 
-
     def _get_mean_one_point(self, universe, selections):
         """
         This function gets one point of the plot C_vec vs t. It uses the
@@ -536,7 +535,10 @@ class WaterOrientationalRelaxation(AnalysisBase):
         n = 0
 
         for i in range(self.start, self.stop // self.frame - 1):
-            a = self._get_one_delta_point(universe, repeated_indices, i - 1, cum_frames)
+            a = self._get_one_delta_point(universe,
+                                          repeated_indices,
+                                          i - 1,
+                                          cum_frames)
             sumDeltaOH += a[0]
             sumDeltaHH += a[1]
             sumDeltadip += a[2]
@@ -560,14 +562,14 @@ class WaterOrientationalRelaxation(AnalysisBase):
         self.dip = []
 
         # List storing the atoms inside selection for every frame
-        self.selection_out = []
+        self.sel_atoms = []
         for _ in self._trajectory:
-            self.selection_out.append(self.universe.select_atoms(self.selection))
+            self.sel_atoms.append(self.universe.select_atoms(self.selection))
 
     def _single_frame(self):
         self.frame = self._frame_index + self.step
-        results_ts = self._get_mean_one_point(self.universe, 
-                                              self.selection_out)
+        results_ts = self._get_mean_one_point(self.universe,
+                                              self.sel_atoms)
         self.OH.append(results_ts[0])
         self.HH.append(results_ts[1])
         self.dip.append(results_ts[2])
@@ -924,7 +926,7 @@ class SurvivalProbability(object):
        Using the MDAnalysis.lib.correlations.py to carry out the intermittency
        and autocorrelation calculations.
        Changed `selection` keyword to `select`.
-       Removed support for the deprecated `t0`, `tf`, and `dtmax` keywords. 
+       Removed support for the deprecated `t0`, `tf`, and `dtmax` keywords.
        These should instead be passed to :meth:`SurvivalProbability.run` as
        the `start`, `stop`, and `tau_max` keywords respectively.
        The `stop` keyword as passed to :meth:`SurvivalProbability.run` has now
