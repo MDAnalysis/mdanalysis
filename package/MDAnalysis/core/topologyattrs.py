@@ -2310,7 +2310,8 @@ class _Connection(AtomAttr):
 
     def get_atoms(self, ag):
         """
-        Get subset for atoms.
+        Get connection values where the atom indices are in
+        the given atomgroup.
 
         Parameters
         ----------
