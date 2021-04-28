@@ -299,7 +299,7 @@ class _TopologyAttrMeta(type):
             attrname = singular
 
         # add intra connections
-        if any("Connection" in x.__name__ for x in cls.__bases__):
+        if any(x.__name__ == "_Connection" for x in cls.__bases__):
             method = MethodType(intra_connection, cls)
             prop = property(method, None, None, method.__doc__)
             cls.transplants[AtomGroup].append((f"intra_{attrname}", prop))
