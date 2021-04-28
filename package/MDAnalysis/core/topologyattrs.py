@@ -1105,7 +1105,7 @@ class Atomnames(_AtomStringAttr):
 
         .. warning::
 
-            This numbering of chi1 atoms here in following with the IUPAC 1970 rules\.
+            This numbering of chi1 atoms here in following with the IUPAC 1970 rules.
             However, it should be noted that analyses which use dihedral angles may have
             different definitions. For example, the
             :class:`MDAnalysis.analysis.dihedrals.Janin` class does not incorporate
