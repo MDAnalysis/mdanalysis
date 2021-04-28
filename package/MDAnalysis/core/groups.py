@@ -389,7 +389,7 @@ class _MutableBase(object):
         """
         # AtomGroup has handy error messages for missing attributes
         ugroup = getattr(self.universe.atoms, typename)
-        if not len(ugroup):
+        if not ugroup:
             return ugroup
         func = np.any if outside else np.all
         try:
