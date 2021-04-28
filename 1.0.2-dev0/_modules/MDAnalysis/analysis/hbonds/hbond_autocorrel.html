@@ -299,7 +299,7 @@
 
 
 <span class="sd">The keyword **exclusions** allows a tuple of array addresses to be provided,</span>
-<span class="sd">(Hidx, Aidx),these pairs of hydrogen-acceptor are then not permitted to be</span>
+<span class="sd">(Hidx, Aidx), these pairs of hydrogen-acceptor are then not permitted to be</span>
 <span class="sd">counted as part of the analysis.  This could be used to exclude the</span>
 <span class="sd">consideration of hydrogen bonds within the same functional group, or to perform</span>
 <span class="sd">analysis on strictly intermolecular hydrogen bonding.</span>
@@ -399,6 +399,7 @@
 
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="kn">import</span> <span class="n">ProgressBar</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="kn">import</span> <span class="n">capped_distance</span><span class="p">,</span> <span class="n">calc_angles</span><span class="p">,</span> <span class="n">calc_bonds</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib._cutil</span> <span class="kn">import</span> <span class="n">_in2d</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.core.groups</span> <span class="kn">import</span> <span class="n">requires</span>
 
 <span class="kn">from</span> <span class="nn">MDAnalysis.due</span> <span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
@@ -504,11 +505,13 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Donors and Hydrogen groups must be identical &quot;</span>
                              <span class="s2">&quot;length.  Try using `find_hydrogen_donors`.&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">exclusions</span> <span class="o">=</span> <span class="n">exclusions</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclusions</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exclusions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exclusions</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">exclusions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">exclusions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">exclusions</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s2">&quot;&#39;exclusion&#39; must be two arrays of identical length&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exclusions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">exclusions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">exclusions</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exclusions</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span> <span class="o">=</span> <span class="n">bond_type</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;continuous&#39;</span><span class="p">,</span> <span class="s1">&#39;intermittent&#39;</span><span class="p">]:</span>
@@ -611,11 +614,10 @@
         <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">dimensions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pbc</span> <span class="k">else</span> <span class="kc">None</span>
 
         <span class="c1"># 2d array of all distances</span>
-        <span class="n">pair</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">capped_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">d_crit</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclusions</span><span class="p">:</span>
-            <span class="c1"># set to above dist crit to exclude</span>
-            <span class="n">exclude</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">exclusions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclusions</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-            <span class="n">pair</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">pair</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pair</span><span class="o">==</span><span class="n">exclude</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">pair</span> <span class="o">=</span> <span class="n">capped_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">max_cutoff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">d_crit</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
+                               <span class="n">return_distances</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclusions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pair</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="o">~</span> <span class="n">_in2d</span><span class="p">(</span><span class="n">pair</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclusions</span><span class="p">)]</span>
 
         <span class="n">hidx</span><span class="p">,</span> <span class="n">aidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
 
