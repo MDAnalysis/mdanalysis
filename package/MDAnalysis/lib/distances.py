@@ -385,11 +385,6 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
                 coord2 = configuration[j]
                 distance = distances[k]
 
-    Note
-    -----
-    Currently supports brute force, and periodic KDtree search
-    methods.
-
     See Also
     --------
     distance_array
