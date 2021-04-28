@@ -1282,8 +1282,19 @@
     <span class="n">transplants</span><span class="p">[</span><span class="n">ResidueGroup</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;omega_selections&#39;</span><span class="p">,</span> <span class="n">omega_selections</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Atomnames.chi1_selection"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.groups.Atomnames.chi1_selection">[docs]</a>    <span class="k">def</span> <span class="nf">chi1_selection</span><span class="p">(</span><span class="n">residue</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">,</span> <span class="n">cb_name</span><span class="o">=</span><span class="s1">&#39;CB&#39;</span><span class="p">,</span>
-                       <span class="n">cg_name</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.</span>
+                       <span class="n">cg_name</span><span class="o">=</span><span class="s1">&#39;CG CG1 OG OG1 SG&#39;</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Select AtomGroup corresponding to the chi1 sidechain dihedral ``N-CA-CB-*G.``</span>
+<span class="sd">        The gamma atom is taken to be the heavy atom in the gamma position. If more than one</span>
+<span class="sd">        heavy atom is present (e.g. CG1 and CG2), the one with the lower number is used (CG1).</span>
+
+<span class="sd">        .. warning::</span>
+
+<span class="sd">            This numbering of chi1 atoms here in following with the IUPAC 1970 rules.</span>
+<span class="sd">            However, it should be noted that analyses which use dihedral angles may have</span>
+<span class="sd">            different definitions. For example, the</span>
+<span class="sd">            :class:`MDAnalysis.analysis.dihedrals.Janin` class does not incorporate</span>
+<span class="sd">            amino acids where the gamma atom is not carbon, into its chi1 selections.</span>
+
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1309,7 +1320,7 @@
 <span class="sd">        .. versionadded:: 0.7.5</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">n_name</span><span class="p">,</span> <span class="n">ca_name</span><span class="p">,</span> <span class="n">cb_name</span><span class="p">,</span> <span class="n">cg_name</span><span class="p">]</span>
-        <span class="n">ags</span> <span class="o">=</span> <span class="p">[</span><span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">]</span>
+        <span class="n">ags</span> <span class="o">=</span> <span class="p">[</span><span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;name </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="n">ags</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ags</span><span class="p">)</span></div>

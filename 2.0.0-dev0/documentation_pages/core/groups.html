@@ -6550,8 +6550,18 @@ specific to <a class="reference internal" href="#MDAnalysis.core.groups.Residue"
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.Residue.chi1_selection">
-<code class="descname">chi1_selection</code><span class="sig-paren">(</span><em>n_name='N'</em>, <em>ca_name='CA'</em>, <em>cb_name='CB'</em>, <em>cg_name='CG'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.Residue.chi1_selection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Select AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.</p>
+<code class="descname">chi1_selection</code><span class="sig-paren">(</span><em>n_name='N'</em>, <em>ca_name='CA'</em>, <em>cb_name='CB'</em>, <em>cg_name='CG CG1 OG OG1 SG'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.Residue.chi1_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select AtomGroup corresponding to the chi1 sidechain dihedral <code class="docutils literal notranslate"><span class="pre">N-CA-CB-*G.</span></code>
+The gamma atom is taken to be the heavy atom in the gamma position. If more than one
+heavy atom is present (e.g. CG1 and CG2), the one with the lower number is used (CG1).</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">This numbering of chi1 atoms here in following with the IUPAC 1970 rules.
+However, it should be noted that analyses which use dihedral angles may have
+different definitions. For example, the
+<a class="reference internal" href="../analysis/dihedrals.html#MDAnalysis.analysis.dihedrals.Janin" title="MDAnalysis.analysis.dihedrals.Janin"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals.Janin</span></code></a> class does not incorporate
+amino acids where the gamma atom is not carbon, into its chi1 selections.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
