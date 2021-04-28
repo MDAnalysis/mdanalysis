@@ -83,7 +83,7 @@ def test_generate_kirchoff(universe):
 
 def test_gnm_SVD_fail(universe):
     gnm = mda.analysis.gnm.GNMAnalysis(universe)
-    # Initilize attributes like self._ts 
+    # Initilize attributes like self._ts
     # necessary for print the warning
     gnm.run(stop=1)
 
