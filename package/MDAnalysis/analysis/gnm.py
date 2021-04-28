@@ -230,6 +230,7 @@ class GNMAnalysis(AnalysisBase):
     --------
     :class:`closeContactGNMAnalysis`
 
+
     .. versionchanged:: 0.16.0
        Made :meth:`generate_output` a private method :meth:`_generate_output`.
 
