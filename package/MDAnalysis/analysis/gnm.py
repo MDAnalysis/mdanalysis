@@ -86,11 +86,13 @@ directly needed to perform the analysis.
 
 """
 import itertools
+import logging
+import warnings
 
 import numpy as np
 
-import warnings
-import logging
+from .base import AnalysisBase
+
 
 logger = logging.getLogger('MDAnalysis.analysis.GNM')
 
@@ -189,7 +191,7 @@ def order_list(w):
     return list_map
 
 
-class GNMAnalysis(object):
+class GNMAnalysis(AnalysisBase):
     """Basic tool for GNM analysis.
 
     Each frame is treated as a novel structure and the GNM
@@ -217,6 +219,13 @@ class GNMAnalysis(object):
           `Bonus_groups` is contained in `selection` as this could lead to
           double counting. No checks are applied. Default is ``None``.
 
+    Attributes
+    ----------
+    results : list
+        GNM results per frame:
+            results = [(time,eigenvalues[1],eigenvectors[1]),
+                       (time,eigenvalues[1],eigenvectors[1]), ...]
+
     See Also
     --------
     :class:`closeContactGNMAnalysis`
@@ -228,6 +237,8 @@ class GNMAnalysis(object):
     .. versionchanged:: 1.0.0
        Changed `selection` keyword to `select`
 
+    .. versionchanged:: 2.0.0
+       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class.
     """
 
     def __init__(self,
@@ -236,6 +247,7 @@ class GNMAnalysis(object):
                  cutoff=7.0,
                  ReportVector=None,
                  Bonus_groups=None):
+        super(GNMAnalysis, self).__init__(universe.trajectory)
         self.u = universe
         self.select = select
         self.cutoff = cutoff
@@ -306,49 +318,31 @@ class GNMAnalysis(object):
 
         return matrix
 
-    def run(self, start=None, stop=None, step=None):
-        """Analyze trajectory and produce timeseries.
-
-        Parameters
-        ----------
-        start : int (optional)
-        stop : int (optional)
-        step : int (optional)
-
-        Returns
-        -------
-        results : list
-            GNM results per frame::
-
-                results = [(time,eigenvalues[1],eigenvectors[1]),(time,eigenvalues[1],eigenvectors[1])... ]
-
-        .. versionchanged:: 0.16.0
-           use start, stop, step instead of skip
-        """
-        logger.info("GNM analysis: starting")
-
+    def _prepare(self):
         self.timeseries = []
-        self._timesteps = []
 
-        for ts in self.u.trajectory[start:stop:step]:
-            self._timesteps.append(ts.time)
+    def _single_frame(self):
+        matrix = self.generate_kirchoff()
+        try:
+            _, w, v = np.linalg.svd(matrix)
+        except np.linalg.LinAlgError:
+            msg = f"SVD with cutoff {self.cutoff} failed to converge. "
+            msg += f"Skip frame at {self._ts.time}."
+            warnings.warn(msg)
+            logger.warning(msg)
+            return
+        # Save the results somewhere useful in some useful format. Usefully.
+        self._generate_output(
+            w,
+            v,
+            self.results,
+            self._ts.time,
+            matrix,
+            ReportVector=self.ReportVector,
+            counter=self._ts.frame)
 
-            matrix = self.generate_kirchoff()
-            try:
-                u, w, v = np.linalg.svd(matrix)
-            except np.linalg.LinAlgError:
-                print("\nFrame skip at", ts.time,
-                      "(SVD failed to converge). Cutoff", self.cutoff)
-                continue
-            #Save the results somewhere useful in some useful format. Usefully.
-            self._generate_output(
-                w,
-                v,
-                self.results,
-                ts.time,
-                matrix,
-                ReportVector=self.ReportVector,
-                counter=ts.frame)
+    def _conclude(self):
+        self._timesteps = self.times
 
 
 class closeContactGNMAnalysis(GNMAnalysis):
@@ -394,6 +388,9 @@ class closeContactGNMAnalysis(GNMAnalysis):
     .. versionchanged:: 1.0.0
        MassWeight option (see above deprecation entry).
        Changed `selection` keyword to `select`
+
+    .. versionchanged:: 2.0.0
+       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class.
     """
 
     def __init__(self,
@@ -402,18 +399,13 @@ class closeContactGNMAnalysis(GNMAnalysis):
                  cutoff=4.5,
                  ReportVector=None,
                  weights="size"):
-        self.u = universe
-        self.select = select
-        self.cutoff = cutoff
-        self.results = []  # final result
-        self._timesteps = None  # time for each frame
-        self.ReportVector = ReportVector
-        self.ca = self.u.select_atoms(self.select)
-
+        super(closeContactGNMAnalysis, self).__init__(universe,
+                                                      select,
+                                                      cutoff,
+                                                      ReportVector)
         self.weights = weights
 
     def generate_kirchoff(self):
-        natoms = self.ca.n_atoms
         nresidues = self.ca.n_residues
         positions = self.ca.positions
         residue_index_map = [
