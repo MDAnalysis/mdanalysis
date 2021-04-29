@@ -84,8 +84,8 @@ class Results(dict):
     def _validate_key(self, key):
         if key in dir(dict):
             raise TypeError(f"'{key}' is a protected dictionary attribute")
-        elif not (isinstance(key, str) and key[0].isalpha() \
-                                       and re.match("^[a-zA-Z0-9_]*$", key)):
+        elif not (isinstance(key, str) and key[0].isalpha()
+                  and re.match("^[a-zA-Z0-9_]*$", key)):
             raise TypeError(f"'{key}' is not able to be accessed by attribute")
 
     def __init__(self, **kwargs):
@@ -140,7 +140,7 @@ class AnalysisBase(object):
     frames: np.ndarray
         array of Timestep frame indices. Only exists after calling run()
     results: :class:`Results`
-        results of calculation are stored after call 
+        results of calculation are stored after call
         to :meth:`AnalysisBase.run`
 
 

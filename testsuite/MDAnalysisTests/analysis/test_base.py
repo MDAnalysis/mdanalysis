@@ -53,7 +53,7 @@ class Test_Results:
     def test_existing_dict_attr(self, results, key):
         msg = f"'{key}' is a protected dictionary attribute"
         with pytest.raises(TypeError, match=key):
-         results[key] = None
+            results[key] = None
 
     @pytest.mark.parametrize('key', dir(dict))
     def test_wrong_init_type(self, key):
@@ -65,7 +65,7 @@ class Test_Results:
     def test_weird_key(self, results, key):
         msg = f"'{key}' is not able to be accessed by attribute"
         with pytest.raises(TypeError, match=msg):
-         results[key] = None
+            results[key] = None
 
 
 
