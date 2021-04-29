@@ -38,8 +38,8 @@ always follows the same structure
 
     from MDAnalysis.anlaysis import AnalysisModule
 
-    analysis_obj = AnalysisModule(<trajectory>, ...)
-    analysis_obj.run(<start>, <stop>, <step>)
+    analysis_obj = AnalysisModule(trajectory, ...)
+    analysis_obj.run(start_frame, stop_frame, step)
     print(analysis_obj.results)
 
 If you use them please check if the documentation mentions any specific caveats

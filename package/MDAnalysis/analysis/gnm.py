@@ -245,8 +245,8 @@ class GNMAnalysis(AnalysisBase):
 
     .. versionchanged:: 2.0.0
        Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and
-       store results as attributes `times`, `eigenvalues` and
-       `eigenvectors` of the `results` attribute.
+       store results as attributes ``times``, ``eigenvalues`` and
+       ``eigenvectors`` of the `results` attribute.
     """
 
     def __init__(self,
@@ -416,8 +416,8 @@ class closeContactGNMAnalysis(GNMAnalysis):
 
     .. versionchanged:: 2.0.0
        Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and
-       store results as attributes `times`, `eigenvalues` and
-       `eigenvectors` of the `results` attribute.
+       store results as attributes ``times``, ``eigenvalues`` and
+       ``eigenvectors`` of the `results` attribute.
     """
 
     def __init__(self,

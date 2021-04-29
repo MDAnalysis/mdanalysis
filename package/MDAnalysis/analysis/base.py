@@ -72,11 +72,11 @@ class Results(dict):
     Raises
     ------
     ValueError
-        If a to assigned attribute has the same name as a default dictionary 
+        If a to assigned attribute has the same name as a default dictionary
         attribute.
 
     ValueError
-        If a key is not of type ``str`` and therefore is not able to be 
+        If a key is not of type ``str`` and therefore is not able to be
         accessed by attribute.
     """
 
@@ -84,9 +84,8 @@ class Results(dict):
         if key in dir(dict):
             raise TypeError(f"'{key}' is a protected dictionary attribute")
         elif not (isinstance(key, str) and key[0].isalpha() \
-                                       and re.match("^[a-zA-Z0-9]*$", key)):
-            raise TypeError("Given key is not able to be "
-                            "accessed by attribute")
+                                       and re.match("^[a-zA-Z0-9_]*$", key)):
+            raise TypeError(f"'{key}' is not able to be accessed by attribute")
 
     def __init__(self, **kwargs):
         for key in kwargs.keys():
@@ -171,7 +170,8 @@ class AnalysisBase(object):
     frames: np.ndarray
         array of Timestep frame indices. Only exists after calling run()
     results: :class:`Results`
-        results of calculation are stored after call to ``run``
+        results of calculation are stored after call 
+        to :meth:`AnalysisBase.run`
 
     """
 
@@ -281,24 +281,27 @@ class AnalysisBase(object):
 class AnalysisFromFunction(AnalysisBase):
     r"""Create an :class:`AnalysisBase` from a function working on AtomGroups
 
-    .. code-block:: python
-
-        def rotation_matrix(mobile, ref):
-            return mda.analysis.align.rotation_matrix(mobile, ref)[0]
-
-        rot = AnalysisFromFunction(rotation_matrix, trajectory,
-                                   mobile, ref).run()
-        print(rot.results.timeseries)
-
     Attributes
     ----------
     results.frames : numpy.ndarray
             simulatiom frames taken for evaluation
     results.times : numpy.ndarray
             simulatiom times taken for evaluation
-    results.timeseries : asarray
-        Results for each frame of the underlaying function
-        stored after call to ``run``.
+    results.timeseries : numpy.ndarray
+            Results for each frame of the underlaying function
+            stored after call to :meth:`AnalysisFromFunction.run`.
+
+    Example
+    -------
+    .. code-block:: python
+
+    def rotation_matrix(mobile, ref):
+        return mda.analysis.align.rotation_matrix(mobile, ref)[0]
+
+    rot = AnalysisFromFunction(rotation_matrix, trajectory,
+                                mobile, ref).run()
+    print(rot.results.timeseries)
+
 
     Raises
     ------
@@ -366,7 +369,20 @@ def analysis_class(function):
     r"""Transform a function operating on a single frame to an
     :class:`AnalysisBase` class.
 
-    For an usage in a library we recommend the following style
+    Attributes
+    ----------
+    results.frames : numpy.ndarray
+            simulatiom frames taken for evaluation
+    results.times : numpy.ndarray
+            simulatiom times taken for evaluation
+    results.timeseries : numpy.ndarray
+            Results for each frame of the underlaying function
+            stored after call to :meth:`AnalysisFromFunction.run`.
+
+    Examples
+    --------
+
+    For an use in a library we recommend the following style
 
     .. code-block:: python
 
@@ -385,22 +401,12 @@ def analysis_class(function):
         rot = RotationMatrix(u.trajectory, mobile, ref).run(step=2)
         print(rot.results.timeseries)
 
-    Attributes
-    ----------
-    results.frames : numpy.ndarray
-            simulatiom frames taken for evaluation
-    results.times : numpy.ndarray
-            simulatiom times taken for evaluation
-    results.timeseries : asarray
-        Results for each frame of the underlaying function
-        stored after call to ``run``.
-
     Raises
     ------
     ValueError : if ``function`` has the same kwargs as ``BaseAnalysis``
 
     .. versionchanged:: 2.0.0
-        Former `results` are now stored as `results.timeseries`
+        Former ``results`` are now stored as ``results.timeseries``
     """
 
     class WrapperClass(AnalysisFromFunction):

@@ -188,7 +188,7 @@ class PersistenceLength(AnalysisBase):
     .. versionchanged:: 1.0.0
        Deprecated :meth:`PersistenceLength.perform_fit` has now been removed.
     .. versionchanged:: 2.0.0
-       Former `results` are now stored as `results.bond_autocorrelation`
+       Former ``results`` are now stored as ``results.bond_autocorrelation``
     """
     def __init__(self, atomgroups, **kwargs):
         super(PersistenceLength, self).__init__(

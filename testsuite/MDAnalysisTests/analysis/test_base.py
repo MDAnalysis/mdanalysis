@@ -63,7 +63,7 @@ class Test_Results:
 
     @pytest.mark.parametrize('key', ("0123", "0j", "1.1", "{}", "a[", "a "))
     def test_weird_key(self, results, key):
-        msg = "Given key is not able to be accessed by attribute"
+        msg = f"'{key}' is not able to be accessed by attribute"
         with pytest.raises(TypeError, match=msg):
          results[key] = None
 

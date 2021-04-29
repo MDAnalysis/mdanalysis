@@ -156,9 +156,9 @@ class LinearDensity(AnalysisBase):
         # Initialize results array with zeros
         for dim in self.results:
             idx = self.results[dim]['dim']
-            self.results[dim]['slice volume'] = slices_vol[idx]
-        for key in self.keys:
-            self.results[dim][key] = np.zeros(self.nbins)
+            self.results[dim]['slice_volume'] = slices_vol[idx]
+            for key in self.keys:
+                self.results[dim][key] = np.zeros(self.nbins)
 
         # Variables later defined in _prepare() method
         self.masses = None
@@ -194,45 +194,45 @@ class LinearDensity(AnalysisBase):
         for dim in ['x', 'y', 'z']:
             idx = self.results[dim]['dim']
 
-        key = 'pos'
-        key_std = 'pos_std'
-        # histogram for positions weighted on masses
-        hist, _ = np.histogram(positions[:, idx],
-                               weights=self.masses,
-                               bins=self.nbins,
-                               range=(0.0, max(self.dimensions)))
+            key = 'pos'
+            key_std = 'pos_std'
+            # histogram for positions weighted on masses
+            hist, _ = np.histogram(positions[:, idx],
+                                   weights=self.masses,
+                                   bins=self.nbins,
+                                   range=(0.0, max(self.dimensions)))
 
-        self.results[dim][key] += hist
-        self.results[dim][key_std] += np.square(hist)
+            self.results[dim][key] += hist
+            self.results[dim][key_std] += np.square(hist)
 
-        key = 'char'
-        key_std = 'char_std'
-        # histogram for positions weighted on charges
-        hist, _ = np.histogram(positions[:, idx],
-                               weights=self.charges,
-                               bins=self.nbins,
-                               range=(0.0, max(self.dimensions)))
+            key = 'char'
+            key_std = 'char_std'
+            # histogram for positions weighted on charges
+            hist, _ = np.histogram(positions[:, idx],
+                                   weights=self.charges,
+                                   bins=self.nbins,
+                                   range=(0.0, max(self.dimensions)))
 
-        self.results[dim][key] += hist
-        self.results[dim][key_std] += np.square(hist)
+            self.results[dim][key] += hist
+            self.results[dim][key_std] += np.square(hist)
 
     def _conclude(self):
         k = 6.022e-1  # divide by avodagro and convert from A3 to cm3
 
-        # Average results over the  number of configurations
+        # Average results over the number of configurations
         for dim in ['x', 'y', 'z']:
             for key in ['pos', 'pos_std', 'char', 'char_std']:
                 self.results[dim][key] /= self.n_frames
             # Compute standard deviation for the error
             self.results[dim]['pos_std'] = np.sqrt(self.results[dim][
-                      'pos_std'] - np.square(self.results[dim]['pos']))
+                'pos_std'] - np.square(self.results[dim]['pos']))
             self.results[dim]['char_std'] = np.sqrt(self.results[dim][
-                      'char_std'] - np.square(self.results[dim]['char']))
+                'char_std'] - np.square(self.results[dim]['char']))
 
         for dim in ['x', 'y', 'z']:
-            norm = k * self.results[dim]['slice volume']
-        for key in self.keys:
-            self.results[dim][key] /= norm
+            norm = k * self.results[dim]['slice_volume']
+            for key in self.keys:
+                self.results[dim][key] /= norm
 
     def _add_other_results(self, other):
         # For parallel analysis
