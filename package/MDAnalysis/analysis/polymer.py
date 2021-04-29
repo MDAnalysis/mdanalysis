@@ -248,7 +248,8 @@ class PersistenceLength(AnalysisBase):
             raise NoDataError("Use the run method first") from None
         self.x = np.arange(len(self.results.bond_autocorrelation)) * self.lb
 
-        self.lp = fit_exponential_decay(self.x, self.results.bond_autocorrelation)
+        self.lp = fit_exponential_decay(self.x, 
+                                        self.results.bond_autocorrelation)
 
         self.fit = np.exp(-self.x/self.lp)
 
@@ -267,8 +268,13 @@ class PersistenceLength(AnalysisBase):
         import matplotlib.pyplot as plt
         if ax is None:
             fig, ax = plt.subplots()
-        ax.plot(self.x, self.results.bond_autocorrelation, 'ro', label='Result')
-        ax.plot(self.x, self.fit, label='Fit')
+        ax.plot(self.x,
+                self.results.bond_autocorrelation,
+                'ro',
+                label='Result')
+        ax.plot(self.x,
+                self.fit,
+                label='Fit')
         ax.set_xlabel(r'x')
         ax.set_ylabel(r'$C(x)$')
         ax.set_xlim(0.0, 40 * self.lb)

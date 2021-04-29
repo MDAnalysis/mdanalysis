@@ -38,7 +38,7 @@ class Test_Results:
     @pytest.fixture
     def results(self):
         return base.Results(a=1, b=2)
-    
+
     def test_get(self, results):
         assert results.a == results["a"]
 

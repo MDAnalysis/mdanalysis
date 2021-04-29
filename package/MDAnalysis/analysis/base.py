@@ -43,9 +43,10 @@ logger = logging.getLogger(__name__)
 class Results(dict):
     r"""Container object for storing results.
 
-    Results are dictionaries that provide two ways in which can values be accessed:
-    by dict key ``results["value_key"]`` or by object attribute, ``results.value_key``. 
-    They store all results obatined from an analysis after the ``run`` call.
+    Results are dictionaries that provide two ways in which can values be
+    accessed: by dict key ``results["value_key"]`` or by object attribute,
+    ``results.value_key``. They store all results obatined from an analysis
+    after the ``run`` call.
 
     The current implementation is similar to the `Bunch` class in `sklearn`.
 
@@ -77,8 +78,8 @@ class Results(dict):
         try:
             return self[key]
         except KeyError as err:
-            raise AttributeError("'Results' object has no " 
-                                f"attribute '{key}'") from err
+            raise AttributeError("'Results' object has no "
+                                 f"attribute '{key}'") from err
 
 
 class AnalysisBase(object):
@@ -90,9 +91,9 @@ class AnalysisBase(object):
     Computed results are stored inside the :attr:`results` attribute.
 
     To define a new Analysis, `AnalysisBase` needs to be subclassed
-    :meth:`_single_frame` must be defined. It is also possible to define 
-    :meth:`_prepare` and :meth:`_conclude` for pre and post processing. 
-    All results should be stored as attributes of the :class:`Results` 
+    :meth:`_single_frame` must be defined. It is also possible to define
+    :meth:`_prepare` and :meth:`_conclude` for pre and post processing.
+    All results should be stored as attributes of the :class:`Results`
     container. See the example below.
 
     .. code-block:: python
@@ -322,7 +323,7 @@ class AnalysisFromFunction(AnalysisBase):
         self.results.timeseries = []
 
     def _single_frame(self):
-        self.results.timeseries.append(self.function(*self.args, 
+        self.results.timeseries.append(self.function(*self.args,
                                                      **self.kwargs))
 
     def _conclude(self):
@@ -332,7 +333,7 @@ class AnalysisFromFunction(AnalysisBase):
 
 
 def analysis_class(function):
-    r"""Transform a function operating on a single frame to an 
+    r"""Transform a function operating on a single frame to an
     :class:`AnalysisBase` class.
 
     For an usage in a library we recommend the following style

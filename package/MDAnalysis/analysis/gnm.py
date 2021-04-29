@@ -244,8 +244,8 @@ class GNMAnalysis(AnalysisBase):
        Changed `selection` keyword to `select`
 
     .. versionchanged:: 2.0.0
-       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and 
-       store results as attributes `times`, `eigenvalues` and 
+       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and
+       store results as attributes `times`, `eigenvalues` and
        `eigenvectors` of the `results` attribute.
     """
 
@@ -415,8 +415,8 @@ class closeContactGNMAnalysis(GNMAnalysis):
        Changed `selection` keyword to `select`
 
     .. versionchanged:: 2.0.0
-       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and 
-       store results as attributes `times`, `eigenvalues` and 
+       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and
+       store results as attributes `times`, `eigenvalues` and
        `eigenvectors` of the `results` attribute.
     """
 
