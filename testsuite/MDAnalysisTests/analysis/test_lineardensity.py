@@ -36,4 +36,4 @@ def test_serial():
     xpos = np.array([0., 0., 0., 0.0072334, 0.00473299, 0.,
                           0., 0., 0., 0.])
     ld = LinearDensity(selection, binsize=5).run()
-    assert_almost_equal(xpos, ld.results.x_pos)
+    assert_almost_equal(xpos, ld.results['x']['pos'])

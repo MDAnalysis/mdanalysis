@@ -96,7 +96,7 @@ import numpy as np
 from .base import AnalysisBase
 
 
-from MDAnalysis.analysis.base import _Results
+from MDAnalysis.analysis.base import Results
 
 logger = logging.getLogger('MDAnalysis.analysis.GNM')
 
@@ -225,11 +225,11 @@ class GNMAnalysis(AnalysisBase):
 
     Attributes
     ----------
-    results.times : list
+    results.times : numpy.ndarray
             simulatiom times taken for evaluation
-    results.eiegenvalues : list
+    results.eigenvalues : numpy.ndarray
             calculated eigenvalues
-    results.eiegenvectors : list
+    results.eigenvectors : numpy.ndarray
             calculated eigenvectors
 
     See Also
@@ -259,7 +259,7 @@ class GNMAnalysis(AnalysisBase):
         self.u = universe
         self.select = select
         self.cutoff = cutoff
-        self.results = _Results(self)
+        self.results = Results()
         self.results.times = []
         self.results.eigenvalues = []
         self.results.eigenvectors = []
@@ -356,6 +356,10 @@ class GNMAnalysis(AnalysisBase):
     def _conclude(self):
         self._timesteps = self.times
 
+        self.results.times = np.asarray(self.results.times)
+        self.results.eigenvalues = np.asarray(self.results.eigenvalues)
+        self.results.eigenvectors = np.asarray(self.results.eigenvectors)
+
 
 class closeContactGNMAnalysis(GNMAnalysis):
     r"""GNMAnalysis only using close contacts.
@@ -385,11 +389,11 @@ class closeContactGNMAnalysis(GNMAnalysis):
 
     Attributes
     ----------
-    results.times : list
+    results.times : numpy.ndarray
             simulatiom times taken for evaluation
-    results.eiegenvalues : list
+    results.eiegenvalues : numpy.ndarray
             calculated eigenvalues
-    results.eiegenvectors : list
+    results.eiegenvectors : numpy.ndarray
             calculated eigenvectors
 
     Notes
@@ -412,7 +416,9 @@ class closeContactGNMAnalysis(GNMAnalysis):
        Changed `selection` keyword to `select`
 
     .. versionchanged:: 2.0.0
-       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class.
+       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and 
+       store results as attributes `times`, `eigenvalues` and 
+       `eigenvectors` of the `results` attribute.
     """
 
     def __init__(self,

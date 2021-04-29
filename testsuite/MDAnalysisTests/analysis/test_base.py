@@ -33,67 +33,21 @@ from MDAnalysisTests.datafiles import PSF, DCD, TPR, XTC
 from MDAnalysisTests.util import no_deprecated_call
 
 
-class DummyClass:
-    def __init__(self):
-        self.results = base._Results(self)
-
-
 class Test_Results:
-    foo = 42
-    bar = "John Doe"
-    baz = np.array([1,2,3,4,5])
 
     @pytest.fixture
-    def dummy_results(self):
-        obj = DummyClass()
-        obj.results.foo = self.foo
-        obj.results.bar = self.bar
-        obj.results.baz = self.baz
-
-        return obj.results
-
-    @pytest.fixture
-    def dummy_results_2(self):
-        obj = DummyClass()
-        obj.results.foo = self.foo
-        obj.results.bar = self.bar
-
-        return obj.results
+    def results(self):
+        return base.Results(a=1, b=2)
     
-    def test_results_length(self, dummy_results):
-        assert dummy_results.__len__() == 3
+    def test_get(self, results):
+        assert results.a == results["a"]
 
-    def test_get_attribute_list(self, dummy_results):
-        assert dummy_results.get_attribute_list() == ["foo", "bar", "baz"]
+    def test_no_attr(self, results):
+        with pytest.raises(AttributeError):
+            results.c
 
-    def test_repr(self, dummy_results):
-        assert dummy_results.__repr__() == ("<DummyClass results with 3"
-                                            " attributes>")
-
-    def test_str(self, dummy_results):
-        assert dummy_results.__str__() == ("<DummyClass results with"
-                                           " attributes: foo, bar, baz>")
-
-    def tes_str_long(self, dummy_results):
-        for i in "abcdefg":
-            dummy_results.__dict__[i] = i
-
-        assert dummy_results.__str__() == ("<DummyClass results with "
-                                           "attributes: foo, bar, baz ..."
-                                           " f, g, i>")
-
-    def test_eq(self, dummy_results, dummy_results_2):
-        assert dummy_results == dummy_results
-
-    def test_eq_err(self, dummy_results, dummy_results_2):
-        msg = ("Can't compare results from with different attributes.")
-        with pytest.raises(TypeError, match=msg):
-            dummy_results == dummy_results_2
-
-    def test_neq(self, dummy_results, dummy_results_2):
-        dummy_results_2.baz = 1 + self.baz
-        assert dummy_results != dummy_results_2
-
+    def test_dir(self, results):
+        assert list(results.__dir__()) == ["a", "b"]
 
 
 class FrameAnalysis(base.AnalysisBase):
@@ -217,7 +171,7 @@ def simple_function(mobile):
 
 def test_results_type(u):
     an = FrameAnalysis(u.trajectory)
-    assert type(an.results) == base._Results
+    assert type(an.results) == base.Results
 
 
 @pytest.mark.parametrize('start, stop, step, nframes', [
@@ -236,17 +190,21 @@ def test_AnalysisFromFunction(u, start, stop, step, nframes):
     ana3 = base.AnalysisFromFunction(simple_function, u.trajectory, u.atoms)
     ana3.run(start=start, stop=stop, step=step)
 
-    results = []
+    times = []
+    timeseries = []
 
     for ts in u.trajectory[start:stop:step]:
-        results.append(simple_function(u.atoms))
+        times.append(ts.time)
+        timeseries.append(simple_function(u.atoms))
 
-    results = np.asarray(results)
+    times = np.asarray(times)
+    timeseries = np.asarray(timeseries)
 
-    assert np.size(results, 0) == nframes
+    assert np.size(timeseries, 0) == nframes
 
     for ana in (ana1, ana2, ana3):
-        assert_equal(results, ana.results)
+        assert_equal(times, ana.results.times)
+        assert_equal(timeseries, ana.results.timeseries)
 
 
 def mass_xyz(atomgroup1, atomgroup2, masses):
@@ -259,7 +217,7 @@ def test_AnalysisFromFunction_args_content(u):
     another = mda.Universe(TPR, XTC).select_atoms("protein")
     ans = base.AnalysisFromFunction(mass_xyz, protein, another, masses)
     assert len(ans.args) == 3
-    result = np.sum(ans.run().results)
+    result = np.sum(ans.run().results.timeseries)
     assert_almost_equal(result, -317054.67757345125, decimal=6)
     assert (ans.args[0] is protein) and (ans.args[1] is another)
     assert ans._trajectory is protein.universe.trajectory
@@ -279,7 +237,7 @@ def test_analysis_class():
         results.append(simple_function(u.atoms))
     results = np.asarray(results)
 
-    assert_equal(results, ana.results)
+    assert_equal(results, ana.results.timeseries)
     with pytest.raises(ValueError):
         ana_class(2)
 

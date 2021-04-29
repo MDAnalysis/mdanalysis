@@ -40,57 +40,44 @@ from MDAnalysis.lib.log import ProgressBar
 logger = logging.getLogger(__name__)
 
 
-class _Results:
-    r"""Class storing results obtained from an analysis.
+class Results(dict):
+    r"""Container object for storing results.
 
-    The class stores all results obatined from
-    an analysis after the ``run`` call.
+    Results are extend dictionaries by enabling values to be accessed by key,
+    `results["value_key"]`, or by an attribute, `results.value_key`. 
+    They store all results obatined from an analysis after the ``run`` call.
+
+    The current is similar to the `Bunch` class in sklearn.
+
+    Examples
+    --------
+    >>> results = Results(a=1, b=2)
+    >>> results['b']
+    2
+    >>> results.b
+    2
+    >>> results.a = 3
+    >>> results['a']
+    3
+    >>> results.c = [1, 2, 3, 4]
+    >>> results['c']
+    [1, 2, 3, 4]
     """
 
-    def __init__(self, analysis_cls):
-        """
-        Parameters
-        ----------
-        analysis_cls : AnalysisClass
-            parent analysis class
-        """
-        self.analysis_cls = analysis_cls
+    def __init__(self, **kwargs):
+        super().__init__(kwargs)
 
-    def __len__(self):
-        # Subract the analysis class attribute
-        return len(self.__dict__) - 1
+    def __setattr__(self, key, value):
+        self[key] = value
 
-    def get_attribute_list(self):
-        """A list of all result attribute names."""
-        return [key for key in self.__dict__.keys() if key != "analysis_cls"]
+    def __dir__(self):
+        return self.keys()
 
-    def __repr__(self):
-        analysis_name = type(self.analysis_cls).__name__
-        return f"<{analysis_name} results with {len(self)}" \
-               f" attribute{'s'[len(self) == 1:]}>"
-
-    def __str__(self):
-        analysis_name = type(self.analysis_cls).__name__
-        attribute_list = self.get_attribute_list()
-        str_repr = f"<{analysis_name} results with "
-        str_repr += f"attribute{'s'[len(self) == 1:]}: "
-
-        if len(self) <= 10:
-            str_repr += ", ".join(attribute_list)
+    def __getattr__(self, key):
+        if key in self.keys():
+            return self[key]
         else:
-            str_repr += ", ".join(attribute_list[:3])
-            str_repr += " ... " + ", ".join(attribute_list[-3:])
-
-        return str_repr + ">"
-
-    def __eq__(self, other):
-        if self.__dict__.keys() != other.__dict__.keys() :
-            raise TypeError("Can't compare results with different"
-                            " attributes.")
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other):
-        return not self == other
+            raise AttributeError(f"'Results' object has no attribute '{key}'")
 
 
 class AnalysisBase(object):
@@ -102,9 +89,10 @@ class AnalysisBase(object):
     Computed results are stored inside the `results` attribute.
 
     To define a new Analysis, `AnalysisBase` needs to be subclassed
-    `_single_frame` must be defined. It is also possible to define `_prepare`
-    and `_conclude` for pre and post processing. All results should be stored
-    as attributes of the `results` object. See the example below.
+    :meth:`_single_frame` must be defined. It is also possible to define 
+    :meth:`_prepare` and :meth:`_conclude` for pre and post processing. 
+    All results should be stored as attributes of the :class:`Results` 
+    container. See the example below.
 
     .. code-block:: python
 
@@ -141,6 +129,8 @@ class AnalysisBase(object):
 
        na = NewAnalysis(u.select_atoms('name CA'), 35).run(start=10, stop=20)
        print(na.results.example_result)
+       # results can also accessed by key
+       print(na.results["example_result"])
 
     Attributes
     ----------
@@ -148,8 +138,9 @@ class AnalysisBase(object):
         array of Timestep times. Only exists after calling run()
     frames: np.ndarray
         array of Timestep frame indices. Only exists after calling run()
-    results: _Results
+    results: :class:`Results`
         results of calculation are stored after call to ``run``
+
     """
 
     def __init__(self, trajectory, verbose=False, **kwargs):
@@ -169,7 +160,7 @@ class AnalysisBase(object):
         """
         self._trajectory = trajectory
         self._verbose = verbose
-        self.results = _Results(self)
+        self.results = Results()
 
     def _setup_frames(self, trajectory, start=None, stop=None, step=None):
         """
@@ -256,7 +247,7 @@ class AnalysisBase(object):
 
 
 class AnalysisFromFunction(AnalysisBase):
-    r"""Create an analysis from a function working on AtomGroups
+    r"""Create an :class:`AnalysisBase` from a function working on AtomGroups
 
     .. code-block:: python
 
@@ -265,17 +256,22 @@ class AnalysisFromFunction(AnalysisBase):
 
         rot = AnalysisFromFunction(rotation_matrix, trajectory,
                                    mobile, ref).run()
-        print(rot.results)
+        print(rot.results.timeseries)
 
     Attributes
     ----------
-    results : asarray
-        calculation results for each frame of the underlaying function
-        stored after call to ``run``
+    results.times : numpy.ndarray
+            simulatiom times taken for evaluation
+    results.timeseries : asarray
+        Results for each frame of the underlaying function
+        stored after call to ``run``.
 
     Raises
     ------
     ValueError : if ``function`` has the same kwargs as ``BaseAnalysis``
+
+    .. versionchanged:: 2.0.0
+        Former `results` are now stored as `results.timeseries`
     """
 
     def __init__(self, function, trajectory=None, *args, **kwargs):
@@ -320,17 +316,22 @@ class AnalysisFromFunction(AnalysisBase):
         super(AnalysisFromFunction, self).__init__(trajectory)
 
     def _prepare(self):
-        self.results = []
+        self.results.times = []
+        self.results.timeseries = []
 
     def _single_frame(self):
-        self.results.append(self.function(*self.args, **self.kwargs))
+        self.results.times.append(self._ts.time)
+        self.results.timeseries.append(self.function(*self.args, 
+                                                     **self.kwargs))
 
     def _conclude(self):
-        self.results = np.asarray(self.results)
+        self.results.times = np.asarray(self.results.times)
+        self.results.timeseries = np.asarray(self.results.timeseries)
 
 
 def analysis_class(function):
-    r"""Transform a function operating on a single frame to an analysis class
+    r"""Transform a function operating on a single frame to an 
+    :class:`AnalysisBase` class.
 
     For an usage in a library we recommend the following style
 
@@ -349,7 +350,22 @@ def analysis_class(function):
             return mda.analysis.align.rotation_matrix(mobile, ref)[0]
 
         rot = RotationMatrix(u.trajectory, mobile, ref).run(step=2)
-        print(rot.results)
+        print(rot.results.timeseries)
+
+    Attributes
+    ----------
+    results.times : numpy.ndarray
+            simulatiom times taken for evaluation
+    results.timeseries : asarray
+        Results for each frame of the underlaying function
+        stored after call to ``run``.
+
+    Raises
+    ------
+    ValueError : if ``function`` has the same kwargs as ``BaseAnalysis``
+
+    .. versionchanged:: 2.0.0
+        Former `results` are now stored as `results.timeseries`
     """
 
     class WrapperClass(AnalysisFromFunction):
