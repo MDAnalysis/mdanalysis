@@ -248,7 +248,7 @@ class PersistenceLength(AnalysisBase):
             raise NoDataError("Use the run method first") from None
         self.x = np.arange(len(self.results.bond_autocorrelation)) * self.lb
 
-        self.lp = fit_exponential_decay(self.x, 
+        self.lp = fit_exponential_decay(self.x,
                                         self.results.bond_autocorrelation)
 
         self.fit = np.exp(-self.x/self.lp)

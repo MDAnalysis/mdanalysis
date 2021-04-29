@@ -48,7 +48,8 @@ class Results(dict):
     ``results.value_key``. They store all results obatined from an analysis
     after the ``run`` call.
 
-    The current implementation is similar to the :class:`sklearn.utils.Bunch` class in `scikit-learn`_.
+    The current implementation is similar to the :class:`sklearn.utils.Bunch`
+    class in `scikit-learn`_.
   
     .. _`scikit-learn`: https://scikit-learn.org/
      
