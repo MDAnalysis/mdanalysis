@@ -44,7 +44,7 @@ class Results(dict):
     r"""Container object for storing results.
 
     Results are dictionaries that provide two ways in which can values be accessed:
-    `results["value_key"]`, or by an attribute, `results.value_key`. 
+    by dict key ``results["value_key"]`` or by object attribute, ``results.value_key``. 
     They store all results obatined from an analysis after the ``run`` call.
 
     The current implementation is similar to the `Bunch` class in `sklearn`.
