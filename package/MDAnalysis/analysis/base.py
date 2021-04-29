@@ -48,7 +48,10 @@ class Results(dict):
     ``results.value_key``. They store all results obatined from an analysis
     after the ``run`` call.
 
-    The current implementation is similar to the `Bunch` class in `sklearn`.
+    The current implementation is similar to the :class:`sklearn.utils.Bunch` class in `scikit-learn`_.
+  
+    .. _`scikit-learn`: https://scikit-learn.org/
+     
 
     Examples
     --------
@@ -275,7 +278,7 @@ class AnalysisFromFunction(AnalysisBase):
     ValueError : if ``function`` has the same kwargs as ``BaseAnalysis``
 
     .. versionchanged:: 2.0.0
-        Former `results` are now stored as `results.timeseries`
+        Former :attr:`results` are now stored as :attr:`results.timeseries`
     """
 
     def __init__(self, function, trajectory=None, *args, **kwargs):
