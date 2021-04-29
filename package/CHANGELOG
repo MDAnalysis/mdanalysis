@@ -18,11 +18,12 @@ The rules for this file:
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
          hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi, hejamu,
          biogen98, orioncohen, z3y50n, hp115, ojeda-e, thadanipaarth, HenryKobin,
-         1ut, sulays
+         1ut, sulays, PicoCentauri
 
   * 2.0.0
 
 Fixes
+  * Get chi1_selection to match canonical gamma atoms (Issue #2044)
   * ITPParser now accepts relative paths (Issue #3037, PR #3108)
   * Fixed issue with unassigned 'GAP' variable in fasta2algin function when
     resids are provided in input (Issue #3124)
@@ -106,6 +107,7 @@ Enhancements
   * Added intra_bonds, intra_angles, intra_dihedrals etc. to return only
     the connections involving atoms within the AtomGroup, instead of
     including atoms outside the AtomGroup (Issue #1264, #2821, PR #3200)
+  * Switch GNMAnalysis to AnalysisBase (Issue #3243)
   * Adds python 3.9 support (Issue #2974, PR #3027, #3245)
   * Added an MDAnalysis shields.io badge to the README (Issue #3227, PR #3229)
   * Added sort method to the atomgroup (Issue #2976, PR #3188) 

@@ -1100,8 +1100,19 @@ class Atomnames(_AtomStringAttr):
     transplants[ResidueGroup].append(('omega_selections', omega_selections))
 
     def chi1_selection(residue, n_name='N', ca_name='CA', cb_name='CB',
-                       cg_name='CG'):
-        """Select AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.
+                       cg_name='CG CG1 OG OG1 SG'):
+        r"""Select AtomGroup corresponding to the chi1 sidechain dihedral ``N-CA-CB-*G.``
+        The gamma atom is taken to be the heavy atom in the gamma position. If more than one
+        heavy atom is present (e.g. CG1 and CG2), the one with the lower number is used (CG1).
+
+        .. warning::
+
+            This numbering of chi1 atoms here in following with the IUPAC 1970 rules.
+            However, it should be noted that analyses which use dihedral angles may have
+            different definitions. For example, the
+            :class:`MDAnalysis.analysis.dihedrals.Janin` class does not incorporate
+            amino acids where the gamma atom is not carbon, into its chi1 selections.
+
 
         Parameters
         ----------
@@ -1127,7 +1138,7 @@ class Atomnames(_AtomStringAttr):
         .. versionadded:: 0.7.5
         """
         names = [n_name, ca_name, cb_name, cg_name]
-        ags = [residue.atoms[residue.atoms.names == n] for n in names]
+        ags = [residue.atoms.select_atoms(f"name {n}") for n in names]
         if any(len(ag) != 1 for ag in ags):
             return None
         return sum(ags)
