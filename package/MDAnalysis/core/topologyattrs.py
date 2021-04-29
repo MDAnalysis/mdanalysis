@@ -265,11 +265,6 @@ def _attach_transplant_stubs(attribute_name, topology_attribute_class):
                 setattr(dest_class, method_name, stub)
 
 
-def intra_connection(self, ag):
-    """Get connections only within this AtomGroup
-    """
-    return ag.get_connections(self.attrname, outside=False)
-
 class _TopologyAttrMeta(type):
     r"""Register TopologyAttrs on class creation
 
@@ -2267,6 +2262,12 @@ class _ConnectionTopologyAttrMeta(_TopologyAttrMeta):
 
         if attrname is not None:
             # add intra connections
+
+            def intra_connection(self, ag):
+                """Get connections only within this AtomGroup
+                """
+                return ag.get_connections(attrname, outside=False)
+
             if any(x.__name__ == "_Connection" for x in cls.__bases__):
                 method = MethodType(intra_connection, cls)
                 prop = property(method, None, None, method.__doc__)
