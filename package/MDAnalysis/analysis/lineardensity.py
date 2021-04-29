@@ -50,8 +50,7 @@ class LinearDensity(AnalysisBase):
           histograms. Defines the resolution of the resulting density
           profile (smaller --> higher resolution)
     verbose : bool (optional)
-          Show detailed progress of the calculation if set to ``True``; the
-          default is ``False``.
+          Show detailed progress of the calculation if set to ``True``
 
     Attributes
     ----------

@@ -163,8 +163,7 @@ class PersistenceLength(AnalysisBase):
        List of AtomGroups.  Each should represent a single
        polymer chain, ordered in the correct order.
     verbose : bool (optional)
-       Show detailed progress of the calculation if set to ``True``; the
-       default is ``False``.
+       Show detailed progress of the calculation if set to ``True``.
 
     Attributes
     ----------

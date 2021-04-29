@@ -208,20 +208,19 @@ class GNMAnalysis(AnalysisBase):
     universe : Universe
           Analyze the full trajectory in the universe.
     select : str (optional)
-          MDAnalysis selection string, default "protein and name CA"
+          MDAnalysis selection string
     cutoff : float (optional)
           Consider selected atoms within the cutoff as neighbors for the
           Gaussian network model.
     ReportVector : str (optional)
           filename to write eigenvectors to, by default no output is written
-          (``None``)
     Bonus_groups : tuple
           This is a tuple of selection strings that identify additional groups
           (such as ligands). The center of mass of each group will be added as
           a single point in the ENM (it is a popular way of treating small
           ligands such as drugs). You need to ensure that none of the atoms in
           `Bonus_groups` is contained in `selection` as this could lead to
-          double counting. No checks are applied. Default is ``None``.
+          double counting. No checks are applied.
 
     Attributes
     ----------
@@ -373,13 +372,12 @@ class closeContactGNMAnalysis(GNMAnalysis):
     universe : Universe
           Analyze the full trajectory in the universe.
     select : str (optional)
-          MDAnalysis selection string, default "protein"
+          MDAnalysis selection string
     cutoff : float (optional)
           Consider selected atoms within the cutoff as neighbors for the
-          Gaussian network model [4.5 Å].
+          Gaussian network model.
     ReportVector : str (optional)
           filename to write eigenvectors to, by default no output is written
-          (``None``)
     weights : {"size", None} (optional)
           If set to "size" (the default) then weight the contact by
           :math:`1/\sqrt{N_i N_j}` where :math:`N_i` and :math:`N_j` are the
