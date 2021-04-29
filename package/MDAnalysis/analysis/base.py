@@ -87,7 +87,7 @@ class AnalysisBase(object):
     The class it is designed as a template for creating multiframe analyses.
     This class will automatically take care of setting up the trajectory
     reader for iterating, and it offers to show a progress meter.
-    Computed results are stored inside the `results` attribute.
+    Computed results are stored inside the :attr:`results` attribute.
 
     To define a new Analysis, `AnalysisBase` needs to be subclassed
     :meth:`_single_frame` must be defined. It is also possible to define 
