@@ -50,9 +50,9 @@ class Results(dict):
 
     The current implementation is similar to the :class:`sklearn.utils.Bunch`
     class in `scikit-learn`_.
-  
+
     .. _`scikit-learn`: https://scikit-learn.org/
-     
+
 
     Examples
     --------
