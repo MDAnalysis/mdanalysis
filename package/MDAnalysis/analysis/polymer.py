@@ -188,7 +188,7 @@ class PersistenceLength(AnalysisBase):
     .. versionchanged:: 1.0.0
        Deprecated :meth:`PersistenceLength.perform_fit` has now been removed.
     .. versionchanged:: 2.0.0
-        Changed structure of the the `results` array to an object.
+        Results are stored in attribute names and not as a numpy.ndarray.
     """
     def __init__(self, atomgroups, **kwargs):
         super(PersistenceLength, self).__init__(

@@ -30,13 +30,13 @@ algorithms that can be used to analyze MD trajectories.
 If not stated differently, an analysis conducted by the available modules
 always follows the same structure
 
-1. Initiliaze the object prevously imported.
+1. Initialize the object previously imported.
 2. Run the analysis for specific trajectory slices
-3. Acces the analysis from the `results` attribute (if available)
+3. Access the analysis from the `results` attribute (if available)
 
  .. code-block:: python
 
-    from MDAnalysis.anlysis import AnalysisModule
+    from MDAnalysis.anlaysis import AnalysisModule
 
     analysis_obj = AnalysisModule(<trajectory>, ...)
     analysis_obj.run(<start>, <stop>, <step>)

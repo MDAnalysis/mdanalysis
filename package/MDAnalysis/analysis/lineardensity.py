@@ -113,7 +113,7 @@ class LinearDensity(AnalysisBase):
        Changed `selection` keyword to `select`
 
     .. versionchanged:: 2.0.0
-        Changed structure of the the `results` dictionary to an object.
+        Results are stored in attribute names and not as keys of a dictionary.
     """
 
     def __init__(self, select, grouping='atoms', binsize=0.25, **kwargs):

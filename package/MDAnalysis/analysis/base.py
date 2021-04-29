@@ -40,10 +40,10 @@ from MDAnalysis.lib.log import ProgressBar
 logger = logging.getLogger(__name__)
 
 
-class _Results(object):
+class _Results:
     r"""Class storing results obtained from an analysis.
 
-    The class is stores all results obatined from
+    The class stores all results obatined from
     an analysis after the ``run`` call.
     """
 
@@ -93,10 +93,9 @@ class AnalysisBase(object):
     Computed results are stored inside the `results` attribute.
 
     To define a new Analysis, `AnalysisBase` needs to be subclassed
-    `_single_frame` must be defined. It is also possible to define
-    `_prepare` and `_conclude` for pre and post processing. All results 
-    should be stored as attributes of the `results` object.
-    See the example below.
+    `_single_frame` must be defined. It is also possible to define `_prepare`
+    and `_conclude` for pre and post processing. All results should be stored
+    as attributes of the `results` object. See the example below.
 
     .. code-block:: python
 
@@ -117,7 +116,7 @@ class AnalysisBase(object):
                # REQUIRED
                # Called after the trajectory is moved onto each new frame.
                # store a example_result of `some_function` for a single frame
-               self.results.example_result.append(some_function(self._ag, 
+               self.results.example_result.append(some_function(self._ag,
                                                               self._parameter))
 
            def _conclude(self):
@@ -255,14 +254,14 @@ class AnalysisFromFunction(AnalysisBase):
         def rotation_matrix(mobile, ref):
             return mda.analysis.align.rotation_matrix(mobile, ref)[0]
 
-        rot = AnalysisFromFunction(rotation_matrix, trajectory, 
+        rot = AnalysisFromFunction(rotation_matrix, trajectory,
                                    mobile, ref).run()
         print(rot.results)
 
     Attributes
     ----------
     results : asarray
-        calculation results for each frame opf the underlaying function
+        calculation results for each frame of the underlaying function
         stored after call to ``run``
 
     Raises
