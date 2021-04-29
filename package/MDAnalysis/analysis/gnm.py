@@ -41,7 +41,9 @@ An example is provided in the MDAnalysis Cookbook_, listed as GNMExample_.
 .. _Cookbook: https://github.com/MDAnalysis/MDAnalysisCookbook
 
 The basic approach is to pass a trajectory to :class:`GNMAnalysis` and then run
-the analysis::
+the analysis:
+
+.. code-block:: python
 
     u = MDAnalysis.Universe(PSF, DCD)
     C = MDAnalysis.analysis.gnm.GNMAnalysis(u, ReportVector="output.txt")
@@ -93,6 +95,8 @@ import numpy as np
 
 from .base import AnalysisBase
 
+
+from MDAnalysis.analysis.base import _Results
 
 logger = logging.getLogger('MDAnalysis.analysis.GNM')
 
@@ -221,10 +225,12 @@ class GNMAnalysis(AnalysisBase):
 
     Attributes
     ----------
-    results : list
-        GNM results per frame:
-            results = [(time,eigenvalues[1],eigenvectors[1]),
-                       (time,eigenvalues[1],eigenvectors[1]), ...]
+    results.times : list
+            simulatiom times taken for evaluation
+    results.eiegenvalues : list
+            calculated eigenvalues
+    results.eiegenvectors : list
+            calculated eigenvectors
 
     See Also
     --------
@@ -238,7 +244,9 @@ class GNMAnalysis(AnalysisBase):
        Changed `selection` keyword to `select`
 
     .. versionchanged:: 2.0.0
-       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class.
+       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and 
+       store results as attributes `times`, `eigenvalues` and 
+       `eigenvectors` of the `results` attribute.
     """
 
     def __init__(self,
@@ -251,7 +259,10 @@ class GNMAnalysis(AnalysisBase):
         self.u = universe
         self.select = select
         self.cutoff = cutoff
-        self.results = []  # final result
+        self.results = _Results(self)
+        self.results.times = []
+        self.results.eigenvalues = []
+        self.results.eigenvectors = []
         self._timesteps = None  # time for each frame
         self.ReportVector = ReportVector
         self.Bonus_groups = [self.u.select_atoms(item) for item in Bonus_groups] \
@@ -260,7 +271,7 @@ class GNMAnalysis(AnalysisBase):
 
     def _generate_output(self, w, v, outputobject, time, matrix,
                          nmodes=2, ReportVector=None, counter=0):
-        """Appends eigenvalues and eigenvectors to results.
+        """Appends time, eigenvalues and eigenvectors to results.
 
         This generates the output by adding eigenvalue and
         eigenvector data to an appendable object and optionally
@@ -280,9 +291,10 @@ class GNMAnalysis(AnalysisBase):
                         w[list_map[1]],
                         item[1],
                         file=oup)
-        outputobject.append((time, w[list_map[1]], v[list_map[1]]))
-        # outputobject.append((time, [ w[list_map[i]] for i in range(nmodes) ],
-        # [ v[list_map[i]] for i in range( nmodes) ] ))
+
+        outputobject.times.append(time)
+        outputobject.eigenvalues.append(w[list_map[1]])
+        outputobject.eigenvectors.append(v[list_map[1]])
 
     def generate_kirchoff(self):
         """Generate the Kirchhoff matrix of contacts.
@@ -369,6 +381,16 @@ class closeContactGNMAnalysis(GNMAnalysis):
           :math:`1/\sqrt{N_i N_j}` where :math:`N_i` and :math:`N_j` are the
           number of atoms in the residues :math:`i` and :math:`j` that contain
           the atoms that form a contact.
+
+
+    Attributes
+    ----------
+    results.times : list
+            simulatiom times taken for evaluation
+    results.eiegenvalues : list
+            calculated eigenvalues
+    results.eiegenvectors : list
+            calculated eigenvectors
 
     Notes
     -----

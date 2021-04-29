@@ -62,14 +62,14 @@ class TestPersistenceLength(object):
             polymer.PersistenceLength(ags)
 
     def test_run(self, p_run):
-        assert len(p_run.results) == 280
+        assert len(p_run.results.bond_autocorrelation) == 280
 
     def test_lb(self, p_run):
         assert_almost_equal(p_run.lb, 1.485, 3)
 
     def test_fit(self, p_run):
         assert_almost_equal(p_run.lp, 6.504, 3)
-        assert len(p_run.fit) == len(p_run.results)
+        assert len(p_run.fit) == len(p_run.results.bond_autocorrelation)
 
     def test_raise_NoDataError(self, p):
         #Ensure that a NoDataError is raised if perform_fit()

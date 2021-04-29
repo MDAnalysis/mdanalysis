@@ -40,12 +40,56 @@ from MDAnalysis.lib.log import ProgressBar
 logger = logging.getLogger(__name__)
 
 
+class _Results(object):
+    r"""Class storing results obtained from an analysis.
+    
+    The class is stores all results obatined from 
+    an analysis after the ``run`` call.
+    """
+    
+    def __init__(self, analysis_cls):
+        """
+        Parameters
+        ----------
+        analysis_cls : AnalysisClass
+            parent analysis class
+        """
+        self.analysis_cls = analysis_cls
+
+    def __len__(self):
+        # Subract the analysis class attribute
+        return len(self.__dict__) - 1
+    
+    def get_attribute_list(self):
+        """A list of all result attribute names."""
+        return [key for key in self.__dict__.keys() if key != "analysis_cls"]
+
+    def __repr__(self):
+        analysis_name = type(self.analysis_cls).__name__
+        return f"<{analysis_name} results with {len(self)} attribute{'s'[len(self) == 1:]}>"
+    
+    def __str__(self):    
+        analysis_name = type(self.analysis_cls).__name__
+        attribute_list = self.get_attribute_list()
+        str_repr = f"<{analysis_name} results with "
+        str_repr += f"attribute{'s'[len(self) == 1:]}: "
+    
+        if len(self) <= 10:
+            str_repr += ", ".join(attribute_list)
+        else:
+            str_repr += ", ".join(attribute_list[:3])
+            str_repr += " ... " + ", ".join(attribute_list[-3:])
+
+        return str_repr + ">"
+
+
 class AnalysisBase(object):
-    """Base class for defining multi frame analysis
+    r"""Base class for defining multi frame analysis
 
     The class it is designed as a template for creating multiframe analyses.
     This class will automatically take care of setting up the trajectory
-    reader for iterating, and it offers to show a progress meter.
+    reader for iterating, and it offers to show a progress meter. 
+    Computed results are stored inside the `results` attribute.
 
     To define a new Analysis, `AnalysisBase` needs to be subclassed
     `_single_frame` must be defined. It is also possible to define
@@ -70,21 +114,22 @@ class AnalysisBase(object):
            def _single_frame(self):
                # REQUIRED
                # Called after the trajectory is moved onto each new frame.
-               # store result of `some_function` for a single frame
-               self.result.append(some_function(self._ag, self._parameter))
+               # store a example_result of `some_function` for a single frame
+               self.example_result.append(some_function(self._ag, self._parameter))
 
            def _conclude(self):
                # OPTIONAL
                # Called once iteration on the trajectory is finished.
                # Apply normalisation and averaging to results here.
-               self.result = np.asarray(self.result) / np.sum(self.result)
+               self.results.example_result = np.asarray(self.example_result)
+               self.results.example_result /=  np.sum(self.result)
 
     Afterwards the new analysis can be run like this.
 
     .. code-block:: python
 
        na = NewAnalysis(u.select_atoms('name CA'), 35).run(start=10, stop=20)
-       print(na.result)
+       print(na.results.example_result)
 
     Attributes
     ----------
@@ -92,7 +137,8 @@ class AnalysisBase(object):
         array of Timestep times. Only exists after calling run()
     frames: np.ndarray
         array of Timestep frame indices. Only exists after calling run()
-
+    results: _Results
+        results of calculation are stored after call to ``run``
     """
 
     def __init__(self, trajectory, verbose=False, **kwargs):
@@ -112,6 +158,7 @@ class AnalysisBase(object):
         """
         self._trajectory = trajectory
         self._verbose = verbose
+        self.results = _Results(self)
 
     def _setup_frames(self, trajectory, start=None, stop=None, step=None):
         """
@@ -198,21 +245,21 @@ class AnalysisBase(object):
 
 
 class AnalysisFromFunction(AnalysisBase):
-    """
-    Create an analysis from a function working on AtomGroups
+    r"""Create an analysis from a function working on AtomGroups
+
+    .. code-block:: python
+
+        def rotation_matrix(mobile, ref):
+            return mda.analysis.align.rotation_matrix(mobile, ref)[0]
+
+        rot = AnalysisFromFunction(rotation_matrix, trajectory, mobile, ref).run()
+        print(rot.results)
 
     Attributes
     ----------
-    results : ndarray
-        results of calculation are stored after call to ``run``
-
-    Example
-    -------
-    >>> def rotation_matrix(mobile, ref):
-    >>>     return mda.analysis.align.rotation_matrix(mobile, ref)[0]
-
-    >>> rot = AnalysisFromFunction(rotation_matrix, trajectory, mobile, ref).run()
-    >>> print(rot.results)
+    results : asarray
+        calculation results for each frame opf the underlaying function 
+        stored after call to ``run``
 
     Raises
     ------
@@ -271,23 +318,25 @@ class AnalysisFromFunction(AnalysisBase):
 
 
 def analysis_class(function):
-    """
-    Transform a function operating on a single frame to an analysis class
+    r"""Transform a function operating on a single frame to an analysis class
 
-    For an usage in a library we recommend the following style:
+    For an usage in a library we recommend the following style
 
-    >>> def rotation_matrix(mobile, ref):
-    >>>     return mda.analysis.align.rotation_matrix(mobile, ref)[0]
-    >>> RotationMatrix = analysis_class(rotation_matrix)
+    .. code-block:: python
 
-    It can also be used as a decorator:
+        def rotation_matrix(mobile, ref):
+            return mda.analysis.align.rotation_matrix(mobile, ref)[0]
+        RotationMatrix = analysis_class(rotation_matrix)
 
-    >>> @analysis_class
-    >>> def RotationMatrix(mobile, ref):
-    >>>     return mda.analysis.align.rotation_matrix(mobile, ref)[0]
+    It can also be used as a decorator
 
-    >>> rot = RotationMatrix(u.trajectory, mobile, ref).run(step=2)
-    >>> print(rot.results)
+    .. code-block:: python
+        @analysis_class
+        def RotationMatrix(mobile, ref):
+            return mda.analysis.align.rotation_matrix(mobile, ref)[0]
+
+        rot = RotationMatrix(u.trajectory, mobile, ref).run(step=2)
+        print(rot.results)
     """
 
     class WrapperClass(AnalysisFromFunction):

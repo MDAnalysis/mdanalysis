@@ -27,6 +27,20 @@
 
 The :mod:`MDAnalysis.analysis` sub-package contains various recipes and
 algorithms that can be used to analyze MD trajectories.
+If not stated differently, an analysis conducted by the available modules 
+always follows the same structure
+
+1. Initiliaze the object prevously imported.
+2. Run the analysis for specific trajectory slices
+3. Acces the analysis from the `results` attribute (if available)
+
+ .. code-block:: python
+
+    from MDAnalysis.anlysis import AnalysisModule
+
+    analysis_obj = AnalysisModule(<trajectory>, ...)
+    analysis_obj.run(<start>, <stop>, <step>)
+    print(analysis_obj.results)
 
 If you use them please check if the documentation mentions any specific caveats
 and also if there are any published papers associated with these algorithms.
