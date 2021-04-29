@@ -44,10 +44,10 @@ logger = logging.getLogger(__name__)
 class Results(dict):
     r"""Container object for storing results.
 
-    Results are dictionaries that provide two ways in which can values be
+    Results are dictionaries that provide two ways by which can values be
     accessed: by dict key ``results["value_key"]`` or by object attribute,
-    ``results.value_key``. They store all results obatined from an analysis
-    after the ``run`` call.
+    ``results.value_key``. They store all results obtained from an analysis
+    after calling :func:`run()`.
 
     The current implementation is similar to the :class:`sklearn.utils.Bunch`
     class in `scikit-learn`_.
@@ -90,7 +90,7 @@ class Results(dict):
             raise TypeError(f"'{key}' is not able to be accessed by attribute")
 
     def __init__(self, **kwargs):
-        for key in kwargs.keys():
+        for key in kwargs:
             self._validate_key(key)
         super().__init__(kwargs)
 
@@ -114,16 +114,16 @@ class Results(dict):
 
 
 class AnalysisBase(object):
-    r"""Base class for defining multi frame analysis
+    r"""Base class for defining multi-frame analysis
 
-    The class it is designed as a template for creating multiframe analyses.
+    The class is designed as a template for creating multi-frame analyses.
     This class will automatically take care of setting up the trajectory
     reader for iterating, and it offers to show a progress meter.
     Computed results are stored inside the :attr:`results` attribute.
 
     To define a new Analysis, `AnalysisBase` needs to be subclassed
-    :meth:`_single_frame` must be defined. It is also possible to define
-    :meth:`_prepare` and :meth:`_conclude` for pre and post processing.
+    and :meth:`_single_frame` must be defined. It is also possible to define
+    :meth:`_prepare` and :meth:`_conclude` for pre- and post-processing.
     All results should be stored as attributes of the :class:`Results`
     container.
 
@@ -169,7 +169,7 @@ class AnalysisBase(object):
            def _single_frame(self):
                # REQUIRED
                # Called after the trajectory is moved onto each new frame.
-               # store a example_result of `some_function` for a single frame
+               # store an example_result of `some_function` for a single frame
                self.results.example_result.append(some_function(self._ag,
                                                                 self._parameter))
 
@@ -192,7 +192,7 @@ class AnalysisBase(object):
        na = NewAnalysis(u.select_atoms('name CA'), 35)
        na.run(start=10, stop=20)
        print(na.results.example_result)
-       # results can also accessed by key
+       # results can also be accessed by key
        print(na.results["example_result"])
 
 
@@ -309,11 +309,11 @@ class AnalysisFromFunction(AnalysisBase):
     Attributes
     ----------
     results.frames : numpy.ndarray
-            simulatiom frames taken for evaluation
+            simulation frames used in analysis
     results.times : numpy.ndarray
-            simulatiom times taken for evaluation
+            simulation times used in analysis
     results.timeseries : numpy.ndarray
-            Results for each frame of the underlaying function
+            Results for each frame of the wrapped function,
             stored after call to :meth:`AnalysisFromFunction.run`.
 
     Example
@@ -391,17 +391,17 @@ def analysis_class(function):
     Attributes
     ----------
     results.frames : numpy.ndarray
-            simulatiom frames taken for evaluation
+            simulation frames used in analysis
     results.times : numpy.ndarray
-            simulatiom times taken for evaluation
+            simulation times used in analysis
     results.timeseries : numpy.ndarray
-            Results for each frame of the underlaying function
+            Results for each frame of the wrapped function,
             stored after call to :meth:`AnalysisFromFunction.run`.
 
     Examples
     --------
 
-    For an use in a library we recommend the following style
+    For use in a library, we recommend the following style
 
     .. code-block:: python
 

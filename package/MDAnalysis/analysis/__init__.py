@@ -27,18 +27,18 @@
 
 The :mod:`MDAnalysis.analysis` sub-package contains various recipes and
 algorithms that can be used to analyze MD trajectories.
-If not stated differently, an analysis conducted by the available modules
+Unless stated otherwise, an analysis using the available modules
 always follows the same structure
 
 1. Initialize the object previously imported.
-2. Run the analysis for specific trajectory slices
+2. Run the analysis, optionally for specific trajectory slices
 3. Access the analysis from the `results` attribute (if available)
 
  .. code-block:: python
 
-    from MDAnalysis.anlaysis import AnalysisModule
+    from MDAnalysis.analysis import ExampleAnalysisModule  # (e.g. RMSD)
 
-    analysis_obj = AnalysisModule(trajectory, ...)
+    analysis_obj = ExampleAnalysisModule(universe, ...)
     analysis_obj.run(start_frame, stop_frame, step)
     print(analysis_obj.results)
 

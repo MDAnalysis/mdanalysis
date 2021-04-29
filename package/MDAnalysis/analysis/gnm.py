@@ -225,7 +225,7 @@ class GNMAnalysis(AnalysisBase):
     Attributes
     ----------
     results.times : numpy.ndarray
-            simulatiom times taken for evaluation
+            simulation times used in analysis
     results.eigenvalues : numpy.ndarray
             calculated eigenvalues
     results.eigenvectors : numpy.ndarray
@@ -245,7 +245,7 @@ class GNMAnalysis(AnalysisBase):
     .. versionchanged:: 2.0.0
        Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and
        store results as attributes ``times``, ``eigenvalues`` and
-       ``eigenvectors`` of the `results` attribute.
+       ``eigenvectors`` of the ``results`` attribute.
     """
 
     def __init__(self,
@@ -387,10 +387,10 @@ class closeContactGNMAnalysis(GNMAnalysis):
     Attributes
     ----------
     results.times : numpy.ndarray
-            simulatiom times taken for evaluation
-    results.eiegenvalues : numpy.ndarray
+            simulation times used in analysis
+    results.eigenvalues : numpy.ndarray
             calculated eigenvalues
-    results.eiegenvectors : numpy.ndarray
+    results.eigenvectors : numpy.ndarray
             calculated eigenvectors
 
     Notes
