@@ -49,6 +49,25 @@ class Test_Results:
     def test_dir(self, results):
         assert list(results.__dir__()) == ["a", "b"]
 
+    @pytest.mark.parametrize('key', dir(dict))
+    def test_existing_dict_attr(self, results, key):
+        msg = f"'{key}' is a protected dictionary attribute"
+        with pytest.raises(TypeError, match=key):
+         results[key] = None
+
+    @pytest.mark.parametrize('key', dir(dict))
+    def test_wrong_init_type(self, key):
+        msg = f"'{key}' is a protected dictionary attribute"
+        with pytest.raises(TypeError, match=msg):
+            base.Results(**{key: None})
+
+    @pytest.mark.parametrize('key', ("0123", "0j", "1.1", "{}", "a[", "a "))
+    def test_weird_key(self, results, key):
+        msg = "Given key is not able to be accessed by attribute"
+        with pytest.raises(TypeError, match=msg):
+         results[key] = None
+
+
 
 class FrameAnalysis(base.AnalysisBase):
     """Just grabs frame numbers of frames it goes over"""

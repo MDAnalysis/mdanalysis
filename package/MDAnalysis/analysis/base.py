@@ -31,6 +31,7 @@ classes.
 import inspect
 import logging
 import itertools
+import re
 
 import numpy as np
 from MDAnalysis import coordinates
@@ -67,13 +68,38 @@ class Results(dict):
     >>> results.c = [1, 2, 3, 4]
     >>> results['c']
     [1, 2, 3, 4]
+
+    Raises
+    ------
+    ValueError
+        If a to assigned attribute has the same name as a default dictionary 
+        attribute.
+
+    ValueError
+        If a key is not of type ``str`` and therefore is not able to be 
+        accessed by attribute.
     """
 
+    def _validate_key(self, key):
+        if key in dir(dict):
+            raise TypeError(f"'{key}' is a protected dictionary attribute")
+        elif not (isinstance(key, str) and key[0].isalpha() \
+                                       and re.match("^[a-zA-Z0-9]*$", key)):
+            raise TypeError("Given key is not able to be "
+                            "accessed by attribute")
+
     def __init__(self, **kwargs):
+        for key in kwargs.keys():
+            self._validate_key(key)
         super().__init__(kwargs)
 
     def __setattr__(self, key, value):
+        self._validate_key(key)
         self[key] = value
+
+    def __setitem__(self, key, value):
+        self._validate_key(key)
+        super().__setitem__(key, value)
 
     def __dir__(self):
         return self.keys()
