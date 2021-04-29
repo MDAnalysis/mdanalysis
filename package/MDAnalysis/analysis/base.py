@@ -57,6 +57,7 @@ class Results(dict):
 
     Examples
     --------
+    >>> from MDAnalysis.analysis.base import Results
     >>> results = Results(a=1, b=2)
     >>> results['b']
     2
@@ -72,11 +73,11 @@ class Results(dict):
 
     Raises
     ------
-    ValueError
-        If a to assigned attribute has the same name as a default dictionary
+    TypeError
+        If an attribute would have the same name as a default dictionary
         attribute.
 
-    ValueError
+    TypeError
         If a key is not of type ``str`` and therefore is not able to be
         accessed by attribute.
     """
@@ -135,10 +136,12 @@ class AnalysisBase(object):
 
     Attributes
     ----------
-    times: np.ndarray
-        array of Timestep times. Only exists after calling run()
-    frames: np.ndarray
-        array of Timestep frame indices. Only exists after calling run()
+    times: numpy.ndarray
+        array of Timestep times. Only exists after calling 
+        :meth:`AnalysisBase.run`
+    frames: numpy.ndarray
+        array of Timestep frame indices. Only exists after calling 
+        :meth:`AnalysisBase.run`
     results: :class:`Results`
         results of calculation are stored after call
         to :meth:`AnalysisBase.run`
@@ -147,6 +150,8 @@ class AnalysisBase(object):
     Example
     -------
     .. code-block:: python
+
+       from MDAnalysis.analysis.base import AnalysisBase
 
        class NewAnalysis(AnalysisBase):
            def __init__(self, atomgroup, parameter, **kwargs):
@@ -175,11 +180,17 @@ class AnalysisBase(object):
                self.results.example_result = np.asarray(self.example_result)
                self.results.example_result /=  np.sum(self.result)
 
-    Afterwards the new analysis can be run like this:
+    Afterwards the new analysis can be run like this
 
     .. code-block:: python
 
-       na = NewAnalysis(u.select_atoms('name CA'), 35).run(start=10, stop=20)
+       import MDAnalysis as mda
+       from MDAnalysisTests.datafiles import PSF, DCD
+
+       u = mda.Universe(PSF, DCD)
+
+       na = NewAnalysis(u.select_atoms('name CA'), 35)
+       na.run(start=10, stop=20)
        print(na.results.example_result)
        # results can also accessed by key
        print(na.results["example_result"])
@@ -287,7 +298,7 @@ class AnalysisFromFunction(AnalysisBase):
     ----------
     function : callable
         function to evaluate at each frame
-    trajectory : mda.coordinates.Reader (optional)
+    trajectory : mda.coordinates.Reader, optional
         trajectory to iterate over. If ``None`` the first AtomGroup found in
         args and kwargs is used as a source for the trajectory.
     *args : list
