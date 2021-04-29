@@ -298,12 +298,6 @@ class _TopologyAttrMeta(type):
         if attrname is None:
             attrname = singular
 
-        # add intra connections
-        if any(x.__name__ == "_Connection" for x in cls.__bases__):
-            method = MethodType(intra_connection, cls)
-            prop = property(method, None, None, method.__doc__)
-            cls.transplants[AtomGroup].append((f"intra_{attrname}", prop))
-
         if singular:
             _TOPOLOGY_ATTRS[singular] = _TOPOLOGY_ATTRS[attrname] = cls
             _singular = singular.lower().replace('_', '')
@@ -2260,7 +2254,28 @@ def _check_connection_values(func):
     return wrapper
 
 
-class _Connection(AtomAttr):
+class _ConnectionTopologyAttrMeta(_TopologyAttrMeta):
+    """
+    Specific metaclass for atom-connectivity topology attributes.
+
+    This class adds an ``intra_{attrname}`` property to groups
+    to return only the connections within the atoms in the group.
+    """
+    def __init__(cls, name, bases, classdict):
+        type.__init__(type, name, bases, classdict)
+        attrname = classdict.get('attrname')
+
+        if attrname is not None:
+            # add intra connections
+            if any(x.__name__ == "_Connection" for x in cls.__bases__):
+                method = MethodType(intra_connection, cls)
+                prop = property(method, None, None, method.__doc__)
+                cls.transplants[AtomGroup].append((f"intra_{attrname}", prop))
+
+        super().__init__(name, bases, classdict)
+
+
+class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
     """Base class for connectivity between atoms
 
     .. versionchanged:: 1.0.0
