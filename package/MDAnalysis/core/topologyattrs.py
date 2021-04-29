@@ -2272,17 +2272,14 @@ class _ConnectionTopologyAttrMeta(_TopologyAttrMeta):
         attrname = classdict.get('attrname')
 
         if attrname is not None:
-            # add intra connections
-
             def intra_connection(self, ag):
                 """Get connections only within this AtomGroup
                 """
                 return ag.get_connections(attrname, outside=False)
 
-            if any(x.__name__ == "_Connection" for x in cls.__bases__):
-                method = MethodType(intra_connection, cls)
-                prop = property(method, None, None, method.__doc__)
-                cls.transplants[AtomGroup].append((f"intra_{attrname}", prop))
+            method = MethodType(intra_connection, cls)
+            prop = property(method, None, None, method.__doc__)
+            cls.transplants[AtomGroup].append((f"intra_{attrname}", prop))
 
         super().__init__(name, bases, classdict)
 
