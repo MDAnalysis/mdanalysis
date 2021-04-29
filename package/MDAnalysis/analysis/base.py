@@ -28,6 +28,7 @@ A collection of useful building blocks for creating Analysis
 classes.
 
 """
+from collections import UserDict
 import inspect
 import logging
 import itertools
@@ -41,7 +42,7 @@ from MDAnalysis.lib.log import ProgressBar
 logger = logging.getLogger(__name__)
 
 
-class Results(dict):
+class Results(UserDict):
     r"""Container object for storing results.
 
     Results are dictionaries that provide two ways by which can values be
@@ -85,8 +86,8 @@ class Results(dict):
     def _validate_key(self, key):
         if key in dir(dict):
             raise TypeError(f"'{key}' is a protected dictionary attribute")
-        elif not (isinstance(key, str) and key[0].isalpha()
-                  and re.match("^[a-zA-Z0-9_]*$", key)):
+        elif not (isinstance(key, str)
+                  and re.match("^[a-zA-Z_][a-zA-Z0-9_]*$", key)):
             raise TypeError(f"'{key}' is not able to be accessed by attribute")
 
     def __init__(self, **kwargs):
@@ -95,7 +96,6 @@ class Results(dict):
         super().__init__(kwargs)
 
     def __setattr__(self, key, value):
-        self._validate_key(key)
         self[key] = value
 
     def __setitem__(self, key, value):
@@ -129,7 +129,7 @@ class AnalysisBase(object):
 
     Parameters
     ----------
-    trajectory : mda.Reader
+    trajectory : MDAnalysis.coordinates.base.ReaderBase
         A trajectory Reader
     verbose : bool, optional
         Turn on more logging and debugging
@@ -304,7 +304,7 @@ class AnalysisFromFunction(AnalysisBase):
     *args : list
         arguments for ``function``
     **kwargs : dict
-        arguments for ``function`` and ``AnalysisBase``
+        arguments for ``function`` and :class:`AnalysisBase`
 
     Attributes
     ----------
@@ -331,7 +331,7 @@ class AnalysisFromFunction(AnalysisBase):
     Raises
     ------
     ValueError
-        if ``function`` has the same ``kwargs`` as ``BaseAnalysis``
+        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`
 
 
     .. versionchanged:: 1.0.0
@@ -424,7 +424,7 @@ def analysis_class(function):
     Raises
     ------
     ValueError
-        if ``function`` has the same ``kwargs`` as ``BaseAnalysis``
+        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`
 
 
     .. versionchanged:: 2.0.0
@@ -460,7 +460,7 @@ def _filter_baseanalysis_kwargs(function, kwargs):
     Raises
     ------
     ValueError
-        if ``function`` has the same ``kwargs`` as ``BaseAnalysis``
+        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`
     """
     try:
         # pylint: disable=deprecated-method

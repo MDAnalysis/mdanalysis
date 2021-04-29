@@ -259,7 +259,6 @@ class GNMAnalysis(AnalysisBase):
         self.select = select
         self.cutoff = cutoff
         self.results = Results()
-        self.results.times = []
         self.results.eigenvalues = []
         self.results.eigenvectors = []
         self._timesteps = None  # time for each frame
@@ -268,8 +267,8 @@ class GNMAnalysis(AnalysisBase):
                             if Bonus_groups else []
         self.ca = self.u.select_atoms(self.select)
 
-    def _generate_output(self, w, v, outputobject, time, matrix,
-                         nmodes=2, ReportVector=None, counter=0):
+    def _generate_output(self, w, v, outputobject,
+                         ReportVector=None, counter=0):
         """Appends time, eigenvalues and eigenvectors to results.
 
         This generates the output by adding eigenvalue and
@@ -285,13 +284,11 @@ class GNMAnalysis(AnalysisBase):
                     print(
                         "",
                         counter,
-                        time,
                         item[0] + 1,
                         w[list_map[1]],
                         item[1],
                         file=oup)
 
-        outputobject.times.append(time)
         outputobject.eigenvalues.append(w[list_map[1]])
         outputobject.eigenvectors.append(v[list_map[1]])
 
@@ -329,9 +326,6 @@ class GNMAnalysis(AnalysisBase):
 
         return matrix
 
-    def _prepare(self):
-        self.timeseries = []
-
     def _single_frame(self):
         matrix = self.generate_kirchoff()
         try:
@@ -347,15 +341,12 @@ class GNMAnalysis(AnalysisBase):
             w,
             v,
             self.results,
-            self._ts.time,
             matrix,
             ReportVector=self.ReportVector,
             counter=self._ts.frame)
 
     def _conclude(self):
-        self._timesteps = self.times
-
-        self.results.times = np.asarray(self.results.times)
+        self.results.times = self.times
         self.results.eigenvalues = np.asarray(self.results.eigenvalues)
         self.results.eigenvectors = np.asarray(self.results.eigenvectors)
 

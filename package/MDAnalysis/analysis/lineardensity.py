@@ -25,7 +25,7 @@ Linear Density --- :mod:`MDAnalysis.analysis.lineardensity`
 ===========================================================
 
 A tool to compute mass and charge density profiles along the three
-cartesian axes of the simulation cell. Works only for orthorombic,
+cartesian axes [xyz] of the simulation cell. Works only for orthorombic,
 fixed volume cells (thus for simulations in canonical NVT ensemble).
 """
 import os.path as path
@@ -49,47 +49,23 @@ class LinearDensity(AnalysisBase):
           Bin width in Angstrom used to build linear density
           histograms. Defines the resolution of the resulting density
           profile (smaller --> higher resolution)
-    verbose : bool (optional)
+    verbose : bool, optional
           Show detailed progress of the calculation if set to ``True``
 
     Attributes
     ----------
     results.x.dim : int
-           index of the x axes (0)
+           index of the [xyz] axes
     results.x.pos : numpy.ndarray
-           mass density in x direction
+           mass density in [xyz] direction
     results.x.pos_std : numpy.ndarray
-           standard deviation of the mass density in x direction
+           standard deviation of the mass density in [xyz] direction
     results.x.char : numpy.ndarray
-           charge density in x direction
+           charge density in [xyz] direction
     results.x.char_std : numpy.ndarray
-           standard deviation of the charge density in x direction
+           standard deviation of the charge density in [xyz] direction
     results.x.slice_volume : float
-           volume of bin in x direction
-    results.y.dim : int
-           index of the y axes (1)
-    results.y.pos : numpy.ndarray
-           mass density in y direction
-    results.y.pos_std : numpy.ndarray
-           standard deviation of the mass density in y direction
-    results.y.char : numpy.ndarray
-           charge density in y direction
-    results.y.char_std : numpy.ndarray
-           standard deviation of the charge density in y direction
-    results.y.slice_volume : float
-           volume of bin in y direction
-    results.z.dim : int
-           index of the z axes (2)
-    results.z.pos : numpy.ndarray
-           mass density in z direction
-    results.z.pos_std : numpy.ndarray
-           standard deviation of the mass density in z direction
-    results.z.char : numpy.ndarray
-           charge density in z direction
-    results.z.char_std : numpy.ndarray
-           standard deviation of the charge density in z direction
-    results.z.slice_volume : float
-           volume of bin in z direction
+           volume of bin in [xyz] direction
 
     Example
     -------
