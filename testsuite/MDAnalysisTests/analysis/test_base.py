@@ -20,6 +20,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from collections import UserDict
+
 import pytest
 
 import numpy as np
@@ -46,27 +48,23 @@ class Test_Results:
         with pytest.raises(AttributeError):
             results.c
 
-    def test_dir(self, results):
-        assert list(results.__dir__()) == ["a", "b"]
-
-    @pytest.mark.parametrize('key', dir(dict))
+    @pytest.mark.parametrize('key', dir(UserDict))
     def test_existing_dict_attr(self, results, key):
         msg = f"'{key}' is a protected dictionary attribute"
-        with pytest.raises(TypeError, match=key):
+        with pytest.raises(ValueError, match=key):
             results[key] = None
 
-    @pytest.mark.parametrize('key', dir(dict))
+    @pytest.mark.parametrize('key', dir(UserDict))
     def test_wrong_init_type(self, key):
         msg = f"'{key}' is a protected dictionary attribute"
-        with pytest.raises(TypeError, match=msg):
+        with pytest.raises(ValueError, match=msg):
             base.Results(**{key: None})
 
-    @pytest.mark.parametrize('key', ("0123", "0j", "1.1", "{}", "a[", "a "))
+    @pytest.mark.parametrize('key', ("0123", "0j", "1.1", "{}", "a b"))
     def test_weird_key(self, results, key):
         msg = f"'{key}' is not able to be accessed by attribute"
         with pytest.raises(TypeError, match=msg):
             results[key] = None
-
 
 
 class FrameAnalysis(base.AnalysisBase):

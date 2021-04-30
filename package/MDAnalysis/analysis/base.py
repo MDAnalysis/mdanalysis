@@ -82,8 +82,13 @@ class Results(UserDict):
         accessed by attribute.
     """
 
+    # The real dictionary used to store the contents of the class.
+    # The dictionary should be initialized, but it is not leading to infinite
+    # rescursions, if not provied here...
+    data = {}
+
     def _validate_key(self, key):
-        if key in dir(dict):
+        if key in dir(UserDict):
             raise ValueError(f"'{key}' is a protected dictionary attribute")
         elif not (isinstance(key, str)
                   and re.match("^[a-zA-Z_][a-zA-Z0-9_]*$", key)):
@@ -92,17 +97,18 @@ class Results(UserDict):
     def __init__(self, **kwargs):
         for key in kwargs:
             self._validate_key(key)
-        super().__init__(kwargs)
+        super().__init__(**kwargs)
 
-    def __setattr__(self, key, value):
-        self[key] = value
+        # Remove the extra defined data key to not appear twice
+        self.__delitem__("data")
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key, item):
         self._validate_key(key)
-        super().__setitem__(key, value)
+        super().__setitem__(key, item)
 
-    def __dir__(self):
-        return self.keys()
+    def __setattr__(self, attr, value):
+        self._validate_key(attr)
+        self[attr] = value
 
     def __getattr__(self, key):
         try:
