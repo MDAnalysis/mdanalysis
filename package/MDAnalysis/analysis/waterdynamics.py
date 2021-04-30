@@ -336,7 +336,7 @@ class WaterOrientationalRelaxation(AnalysisBase):
     `WaterOrientationalRelaxation` (WOR) indicates
     "how fast" water molecules are rotating or changing direction.
     If WOR is very stable we can assume that water molecules are
-    rotating/changing direction very slow, on the
+    rotating/changing direction very slowly, on the
     other hand, if WOR decay very fast, we can assume that water molecules are
     rotating/changing direction very fast. The results are
     time correlation functions given by:
@@ -427,8 +427,8 @@ class WaterOrientationalRelaxation(AnalysisBase):
         """
         Compare the molecules in the `cur_frame` selection to the
         `other_frame` selection and
-        select only those particles that are repeated in both frame. This is to
-        consider only those molecules that remain in the selection after
+        select only those particles that are repeated in both frames. This is 
+        to consider only those molecules that remain in the selection after
         a certain time has elapsed. The result is a list with the indices of
         the atoms.
         """
@@ -438,7 +438,7 @@ class WaterOrientationalRelaxation(AnalysisBase):
 
     def _get_repeated_indices(self, selection, frame):
         """
-        Indicates the comparation between the current frame and all
+        Indicates the comparasion between the current frame and all
         following frames.
         The results is a list of lists with all the repeated index per frame.
         Ex: frame=1, so compare frames (1,2),(2,3),(3,4)...
@@ -777,7 +777,7 @@ class MeanSquareDisplacement(object):
     def _repeatedIndex(self, selection, dt, totalFrames):
         """
         Indicate the comparation between all the t+dt.
-        The results is a list of list with all the repeated index per frame
+        The results is a list of list with all the repeated indices per frame
         (or time).
 
         - Ex: dt=1, so compare frames (1,2),(2,3),(3,4)...
