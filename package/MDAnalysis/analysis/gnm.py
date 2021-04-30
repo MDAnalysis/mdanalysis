@@ -341,7 +341,6 @@ class GNMAnalysis(AnalysisBase):
             w,
             v,
             self.results,
-            matrix,
             ReportVector=self.ReportVector,
             counter=self._ts.frame)
 

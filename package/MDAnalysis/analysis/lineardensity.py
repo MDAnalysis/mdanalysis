@@ -112,9 +112,9 @@ class LinearDensity(AnalysisBase):
         self.grouping = grouping
 
         # Initiate result instances
-        self.results.x = Results(dim=0)
-        self.results.y = Results(dim=1)
-        self.results.z = Results(dim=2)
+        self.results["x"] = Results(dim=0)
+        self.results["y"] = Results(dim=1)
+        self.results["z"] = Results(dim=2)
         # Box sides
         self.dimensions = self._universe.dimensions[:3]
         self.volume = np.prod(self.dimensions)

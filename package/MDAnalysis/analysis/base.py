@@ -73,34 +73,30 @@ class Results(UserDict):
 
     Raises
     ------
-    ValueError
+    AttributeError
         If an attribute would have the same name as a default dictionary
         attribute.
 
-    TypeError
+    ValueError
         If a key is not of type ``str`` and therefore is not able to be
         accessed by attribute.
     """
-
-    # The real dictionary used to store the contents of the class.
-    # The dictionary should be initialized, but it is not leading to infinite
-    # rescursions, if not provied here...
-    data = {}
-
     def _validate_key(self, key):
-        if key in dir(UserDict):
-            raise ValueError(f"'{key}' is a protected dictionary attribute")
-        elif not (isinstance(key, str)
-                  and re.match("^[a-zA-Z_][a-zA-Z0-9_]*$", key)):
-            raise TypeError(f"'{key}' is not able to be accessed by attribute")
+        if key in dir(UserDict) or (key == "data" and self._dict_frozen):
+            raise AttributeError(f"'{key}' is a protected dictionary "
+                                 "attribute")
+        elif isinstance(key, str) and not key.isidentifier():
+            raise ValueError(f"'{key}' is not a valid attribute")
 
     def __init__(self, **kwargs):
+        if "data" in kwargs.keys():
+            raise AttributeError(f"'data' is a protected dictionary attribute")
+
+        self._dict_frozen = False
         for key in kwargs:
             self._validate_key(key)
         super().__init__(**kwargs)
-
-        # Remove the extra defined data key to not appear twice
-        self.__delitem__("data")
+        self._dict_frozen = True
 
     def __setitem__(self, key, item):
         self._validate_key(key)
@@ -108,14 +104,18 @@ class Results(UserDict):
 
     def __setattr__(self, attr, value):
         self._validate_key(attr)
-        self[attr] = value
+        super().__setattr__(attr, value)
 
-    def __getattr__(self, key):
+        # Make attribute available as key
+        if self._dict_frozen and attr != "_dict_frozen":
+            super().__setitem__(attr, value)
+
+    def __getattr__(self, attr):
         try:
-            return self[key]
+            return self.data[attr]
         except KeyError as err:
             raise AttributeError("'Results' object has no "
-                                 f"attribute '{key}'") from err
+                                 f"attribute '{attr}'") from err
 
 
 class AnalysisBase(object):

@@ -42,28 +42,38 @@ class Test_Results:
         return base.Results(a=1, b=2)
 
     def test_get(self, results):
-        assert results.a == results["a"]
+        assert results.a == results["a"] == 1
 
     def test_no_attr(self, results):
         with pytest.raises(AttributeError):
             results.c
 
-    @pytest.mark.parametrize('key', dir(UserDict))
+    def test_set_attr(self, results):
+        value = [1, 2, 3, 4]
+        results.c = value
+        assert results.c == results["c"] == value
+
+    def test_set_key(self, results):
+        value = [1, 2, 3, 4]
+        results["c"] = value
+        assert results.c == results["c"] == value
+
+    @pytest.mark.parametrize('key', dir(UserDict) + ["data"])
     def test_existing_dict_attr(self, results, key):
         msg = f"'{key}' is a protected dictionary attribute"
-        with pytest.raises(ValueError, match=key):
+        with pytest.raises(AttributeError, match=key):
             results[key] = None
 
-    @pytest.mark.parametrize('key', dir(UserDict))
+    @pytest.mark.parametrize('key', dir(UserDict) + ["data"])
     def test_wrong_init_type(self, key):
         msg = f"'{key}' is a protected dictionary attribute"
-        with pytest.raises(ValueError, match=msg):
+        with pytest.raises(AttributeError, match=msg):
             base.Results(**{key: None})
 
     @pytest.mark.parametrize('key', ("0123", "0j", "1.1", "{}", "a b"))
     def test_weird_key(self, results, key):
-        msg = f"'{key}' is not able to be accessed by attribute"
-        with pytest.raises(TypeError, match=msg):
+        msg = f"'{key}' is not a valid attribute"
+        with pytest.raises(ValueError, match=msg):
             results[key] = None
 
 
