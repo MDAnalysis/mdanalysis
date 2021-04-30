@@ -45,8 +45,8 @@ class Results(UserDict):
     r"""Container object for storing results.
 
     ``Results`` are dictionaries that provide two ways by which values can be
-    accessed: by dictionary key ``results["value_key"]`` or by object 
-    attribute, ``results.value_key``. ``Results`` stores all results obtained 
+    accessed: by dictionary key ``results["value_key"]`` or by object
+    attribute, ``results.value_key``. ``Results`` stores all results obtained
     from an analysis after calling :func:`run()`.
 
     The implementation is similar to the :class:`sklearn.utils.Bunch`
@@ -74,8 +74,7 @@ class Results(UserDict):
     Raises
     ------
     AttributeError
-        If an attribute would have the same name as a default dictionary
-        attribute.
+        If an assigned attribute has the same name as a default attribute.
 
     ValueError
         If a key is not of type ``str`` and therefore is not able to be
@@ -106,7 +105,7 @@ class Results(UserDict):
         self._validate_key(attr)
         super().__setattr__(attr, value)
 
-        # Make attribute available as key
+        # attribute available as key
         if self._dict_frozen and attr != "_dict_frozen":
             super().__setitem__(attr, value)
 
@@ -142,10 +141,10 @@ class AnalysisBase(object):
     Attributes
     ----------
     times: numpy.ndarray
-        array of Timestep times. Only exists after calling 
+        array of Timestep times. Only exists after calling
         :meth:`AnalysisBase.run`
     frames: numpy.ndarray
-        array of Timestep frame indices. Only exists after calling 
+        array of Timestep frame indices. Only exists after calling
         :meth:`AnalysisBase.run`
     results: :class:`Results`
         results of calculation are stored after call
@@ -256,7 +255,7 @@ class AnalysisBase(object):
     def _conclude(self):
         """Finalise the results you've gathered.
 
-        Called at the end of the run() method to finish everything up.
+        Called at the end of the :meth:`run` method to finish everything up.
         """
         pass  # pylint: disable=unnecessary-pass
 
