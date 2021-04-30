@@ -31,7 +31,6 @@ from collections import UserDict
 import inspect
 import logging
 import itertools
-import re
 
 import numpy as np
 from MDAnalysis import coordinates
