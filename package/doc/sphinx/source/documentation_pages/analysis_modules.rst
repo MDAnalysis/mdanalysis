@@ -10,11 +10,11 @@ I/O, selections etc). The analysis modules can be used as examples for how to
 use MDAnalysis but also as working code for research projects; typically all
 contributed code has been used by the authors in their own work.
 
-Please see the individual module documentation for additional references and
-citation information.
+Please see the individual module documentation for any specific caveats 
+and also read and cite the reference papers associated with these algorithms.
 
-These modules are not imported by default; in order to use them one has to
-import them from :mod:`MDAnalysis.analysis`, for instance ::
+The analysis modules are not imported by default; in order to use them one 
+has to import them from :mod:`MDAnalysis.analysis`, for instance ::
 
     import MDAnalysis.analysis.align
 
@@ -23,10 +23,12 @@ import them from :mod:`MDAnalysis.analysis`, for instance ::
 Some of the modules in :mod:`MDAnalysis.analysis` require additional Python
 packages to enable full functionality. For example,
 :mod:`MDAnalysis.analysis.encore` provides more options if `scikit-learn`_ is
-installed. These package are *not automatically installed* with
-:program:`pip`(although one can add the ``[analysis]`` requirement to the
-:program:`pip` command line to force their installation). If you install
-MDAnalysis with :program:`conda` (see :ref:`installation-instructions`) then a
+installed. If you installed MDAnalysis with
+:program:`pip` (see :ref:`installation-instructions`) 
+these packages are *not automatically installed*. 
+Although, one can add the ``[analysis]`` tag to the
+:program:`pip` command to force their installation. If you installed
+MDAnalysis with :program:`conda` then a
 *full set of dependencies* is automatically installed.
 
 Other modules require external programs. For instance, the
@@ -38,9 +40,17 @@ corresponding MDAnalysis module.
 .. _scikit-learn: http://scikit-learn.org/
 .. _HOLE: http://www.holeprogram.org/
 
+.. toctree::
+   :maxdepth: 1
+
+   analysis/init
 
 Building blocks for Analysis
 ============================
+
+The building block for the analysis modules is
+:class:`MDAnalysis.analysis.base.AnalysisBase`.
+To build your own analysis class start by reading their documentation.
 
 .. toctree::
    :maxdepth: 1

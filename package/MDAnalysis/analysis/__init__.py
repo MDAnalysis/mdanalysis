@@ -22,17 +22,18 @@
 #
 
 """
-:mod:`MDAnalysis.analysis` --- Analysis code based on MDAnalysis
+Analysis code based on MDAnalysis --- :mod:`MDAnalysis.analysis`
 ================================================================
 
 The :mod:`MDAnalysis.analysis` sub-package contains various recipes and
 algorithms that can be used to analyze MD trajectories.
-Unless stated otherwise, an analysis using the available modules
-always follows the same structure
+An analysis using the available modules
+usually follows the same structure
 
-1. Initialize the object previously imported.
-2. Run the analysis, optionally for specific trajectory slices
-3. Access the analysis from the `results` attribute (if available)
+#. Import the desired module
+#. Initialize the module previously imported.
+#. Run the analysis, optionally for specific trajectory slices
+#. Access the analysis from the `results` attribute
 
  .. code-block:: python
 

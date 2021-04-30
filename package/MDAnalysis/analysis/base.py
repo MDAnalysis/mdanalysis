@@ -24,8 +24,7 @@
 Analysis building blocks --- :mod:`MDAnalysis.analysis.base`
 ============================================================
 
-A collection of useful building blocks for creating Analysis
-classes.
+The building blocks for creating Analysis classes.
 
 """
 from collections import UserDict
@@ -45,12 +44,12 @@ logger = logging.getLogger(__name__)
 class Results(UserDict):
     r"""Container object for storing results.
 
-    Results are dictionaries that provide two ways by which can values be
-    accessed: by dict key ``results["value_key"]`` or by object attribute,
-    ``results.value_key``. They store all results obtained from an analysis
-    after calling :func:`run()`.
+    ``Results`` are dictionaries that provide two ways by which values can be
+    accessed: by dictionary key ``results["value_key"]`` or by object 
+    attribute, ``results.value_key``. ``Results`` stores all results obtained 
+    from an analysis after calling :func:`run()`.
 
-    The current implementation is similar to the :class:`sklearn.utils.Bunch`
+    The implementation is similar to the :class:`sklearn.utils.Bunch`
     class in `scikit-learn`_.
 
     .. _`scikit-learn`: https://scikit-learn.org/
@@ -74,7 +73,7 @@ class Results(UserDict):
 
     Raises
     ------
-    TypeError
+    ValueError
         If an attribute would have the same name as a default dictionary
         attribute.
 
@@ -85,7 +84,7 @@ class Results(UserDict):
 
     def _validate_key(self, key):
         if key in dir(dict):
-            raise TypeError(f"'{key}' is a protected dictionary attribute")
+            raise ValueError(f"'{key}' is a protected dictionary attribute")
         elif not (isinstance(key, str)
                   and re.match("^[a-zA-Z_][a-zA-Z0-9_]*$", key)):
             raise TypeError(f"'{key}' is not able to be accessed by attribute")
