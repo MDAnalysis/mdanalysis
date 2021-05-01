@@ -13,6 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+05/01/21  IAlibay
+
+  * 1.1.1
+
+Fixes
+  * Remove absolute paths from package upload to pypi.
+
+
 04/28/21  richardjgowers, IAlibay, tylerjereddy, xiki-tempula, lilyminium,
           zemanj, PicoCentauri
 
