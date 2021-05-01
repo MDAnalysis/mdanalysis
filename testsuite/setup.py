@@ -88,7 +88,7 @@ if sys.version_info[:2] < (2, 7):
 
 if __name__ == '__main__':
     # this must be in-sync with MDAnalysis
-    RELEASE = "1.1.0"
+    RELEASE = "1.1.1"
 
     with open("README") as summary:
         LONG_DESCRIPTION = summary.read()
