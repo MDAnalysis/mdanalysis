@@ -104,6 +104,7 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Added del_TopologyAttr function (PR #3069)
   * Switch GNMAnalysis to AnalysisBase (Issue #3243)
   * Adds python 3.9 support (Issue #2974, PR #3027, #3245)
   * Added an MDAnalysis shields.io badge to the README (Issue #3227, PR #3229)
