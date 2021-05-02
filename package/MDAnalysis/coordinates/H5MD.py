@@ -588,7 +588,7 @@ class H5MDReader(base.ReaderBase):
 
         # Sets frame box dimensions
         # Note: H5MD files must contain 'box' group in each 'particles' group
-        if 'edges' in particle_group['box'] and ts.dimensions is not None:
+        if 'edges' in particle_group['box']:
             ts.dimensions = core.triclinic_box(*particle_group['box/edges/value'][frame, :])
         else:
             ts.dimensions = None
@@ -649,7 +649,7 @@ class H5MDReader(base.ReaderBase):
 
         self.ts.time = self.convert_time_from_native(self.ts.time)
 
-        if 'edges' in self._particle_group['box']:
+        if 'edges' in self._particle_group['box'] and not self.ts.dimensions is None:
             self.convert_pos_from_native(self.ts.dimensions[:3])
 
         if self._has['position']:
