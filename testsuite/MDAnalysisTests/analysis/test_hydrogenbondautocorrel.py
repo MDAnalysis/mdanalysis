@@ -33,8 +33,8 @@ from unittest import mock
 import os
 
 import MDAnalysis as mda
-from MDAnalysis.analysis import hbonds
-from MDAnalysis.analysis.hbonds import HydrogenBondAutoCorrel as HBAC
+from MDAnalysis.analysis import hydrogenbonds
+from MDAnalysis.analysis.hydrogenbonds import HydrogenBondAutoCorrel as HBAC
 
 
 class TestHydrogenBondAutocorrel(object):
@@ -275,20 +275,29 @@ class TestHydrogenBondAutocorrel(object):
         )
         assert isinstance(repr(hbond), str)
 
+
 def test_find_donors():
     u = mda.Universe(waterPSF, waterDCD)
 
     H = u.select_atoms('name H*')
 
-    D = hbonds.find_hydrogen_donors(H)
+    D = hydrogenbonds.find_hydrogen_donors(H)
 
     assert len(H) == len(D)
     # check each O is bonded to the corresponding H
     for h_atom, o_atom in zip(H, D):
         assert o_atom in h_atom.bonded_atoms
 
+
 def test_donors_nobonds():
     u = mda.Universe(XYZ_mini)
 
     with pytest.raises(mda.NoDataError):
-        hbonds.find_hydrogen_donors(u.atoms)
+        hydrogenbonds.find_hydrogen_donors(u.atoms)
+
+
+def test_moved_module_warning():
+    wmsg = ("This module has been moved to "
+            "MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel")
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        import MDAnalysis.analysis.hbonds.hbond_autocorrel
