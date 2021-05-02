@@ -264,8 +264,8 @@ def using_clang():
 
 
 def extensions(config):
-    # dev installs must build their own cythonized files.
-    use_cython = config.get('use_cython', default=not is_release)
+    # usually (except coming from release tarball) cython files must be generated
+    use_cython = config.get('use_cython', default=cython_found)
     use_openmp = config.get('use_openmp', default=True)
 
     if platform.machine() == 'aarch64':
