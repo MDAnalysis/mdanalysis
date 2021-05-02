@@ -3081,9 +3081,8 @@ class AtomGroup(GroupBase):
                 return attr
 
         # indices of bonds
-        box = self.dimensions if self.dimensions.all() else None
         b = guess_bonds(self.atoms, self.atoms.positions,
-                        vdwradii=vdwradii, box=box)
+                        vdwradii=vdwradii, box=self.dimensions)
         bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
         bondattr._add_bonds(b, guessed=True)
 
