@@ -68,7 +68,6 @@ Hydrogen bonding
    :maxdepth: 1
 
    analysis/hydrogenbonds
-   analysis/hbond_analysis
    analysis/hbond_autocorrel
    analysis/wbridge_analysis
 
