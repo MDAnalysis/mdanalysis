@@ -25,7 +25,7 @@ import pickle
 import os
 import subprocess
 import errno
-
+from collections import defaultdict
 from io import StringIO
 
 import numpy as np
@@ -54,6 +54,7 @@ from MDAnalysis.topology.base import TopologyReaderBase
 from MDAnalysis.transformations import translate
 from MDAnalysisTests import assert_nowarns
 from MDAnalysis.exceptions import NoDataError
+from MDAnalysis.core.topologyattrs import _AtomStringAttr
 
 
 class IOErrorParser(TopologyReaderBase):
@@ -712,7 +713,90 @@ class TestAddTopologyAttr(object):
     def add_connection_error(self, universe, attr, values):
         with pytest.raises(ValueError):
             universe.add_TopologyAttr(attr, values)
-    
+
+
+class TestDelTopologyAttr(object):
+    @pytest.fixture()
+    def universe(self):
+        u = make_Universe(("masses", "charges", "resnames"))
+        u.add_TopologyAttr("bonds", [(0, 1)])
+        return u
+
+    def test_del_TA_fail(self, universe):
+        with pytest.raises(ValueError, match="Unrecognised"):
+            universe.del_TopologyAttr('silly')
+
+    def test_absent_fail(self, universe):
+        with pytest.raises(ValueError, match="not in Universe"):
+            universe.del_TopologyAttr("angles")
+
+    def test_wrongtype_fail(self, universe):
+        with pytest.raises(ValueError, match="must be str or TopologyAttr"):
+            universe.del_TopologyAttr(list)
+
+    @pytest.mark.parametrize(
+        'todel,attrname', [
+            ("charge", "charges"),
+            ("charges", "charges"),
+            ("bonds", "bonds"),
+        ]
+    )
+    def test_del_str(self, universe, todel, attrname):
+        assert hasattr(universe.atoms, attrname)
+        universe.del_TopologyAttr(todel)
+        assert not hasattr(universe.atoms, attrname)
+
+    def test_del_attr(self, universe):
+        assert hasattr(universe.atoms, "resnames")
+        assert hasattr(universe.residues, "resnames")
+        assert hasattr(universe.segments, "resnames")
+        assert hasattr(universe.atoms[0], "resname")
+        assert hasattr(universe.residues[0], "resname")
+        universe.del_TopologyAttr(universe._topology.resnames)
+        assert not hasattr(universe.atoms, "resnames")
+        assert not hasattr(universe.residues, "resnames")
+        assert not hasattr(universe.segments, "resnames")
+        assert not hasattr(universe.atoms[0], "resname")
+        assert not hasattr(universe.residues[0], "resname")
+
+    def test_del_transplants(self, universe):
+        atom = universe.atoms[0]
+        assert hasattr(atom, "fragindex")
+        universe.del_TopologyAttr(universe.bonds)
+        assert not hasattr(atom, "fragindex")
+        assert not hasattr(universe.atoms, "fragindices")
+
+    def test_del_attr_error(self, universe):
+        assert not hasattr(universe._topology, "elements")
+        with pytest.raises(AttributeError):
+            universe._topology.del_TopologyAttr("elements")
+
+    def test_del_attr_from_ag(self, universe):
+        ag = universe.atoms[[0]]
+        ag.residues.resnames = "xyz"
+        universe.del_TopologyAttr("resnames")
+        with pytest.raises(NoDataError):
+            ag.resnames
+
+    def test_del_func_from_universe(self, universe):
+        class RootVegetable(_AtomStringAttr):
+            attrname = "tubers"
+            singular = "tuber"
+            transplants = defaultdict(list)
+
+            def potatoes(self):
+                """🥔
+                """
+                return "potoooooooo"
+
+            transplants["Universe"].append(("potatoes", potatoes))
+        
+        universe.add_TopologyAttr("tubers")
+        assert universe.potatoes() == "potoooooooo"
+        universe.del_TopologyAttr("tubers")
+        with pytest.raises(AttributeError):
+            universe.potatoes()
+
 
 def _a_or_reversed_in_b(a, b):
     """
