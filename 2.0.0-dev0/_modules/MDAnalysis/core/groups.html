@@ -278,6 +278,7 @@
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">numbers</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="p">(</span><span class="n">_CONVERTERS</span><span class="p">,</span>
@@ -438,6 +439,22 @@
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attr</span><span class="o">.</span><span class="n">singular</span><span class="p">,</span>
                     <span class="nb">property</span><span class="p">(</span><span class="n">getter</span><span class="p">,</span> <span class="n">setter</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">attr</span><span class="o">.</span><span class="n">singledoc</span><span class="p">))</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">_SETATTR_WHITELIST</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">singular</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_del_prop</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove `attr` from the namespace for this class.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        attr : A :class:`TopologyAttr` object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">):</span>
+            <span class="nb">delattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attr</span><span class="o">.</span><span class="n">attrname</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">):</span>
+            <span class="nb">delattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attr</span><span class="o">.</span><span class="n">singular</span><span class="p">)</span>
+        
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_SETATTR_WHITELIST</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">attrname</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_SETATTR_WHITELIST</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">singular</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="c1"># `ag.this = 42` calls setattr(ag, &#39;this&#39;, 42)</span>

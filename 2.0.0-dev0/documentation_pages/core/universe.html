@@ -599,6 +599,33 @@ the Universe as a numpy array: <code class="xref py py-meth docutils literal not
 </dd></dl>
 
 <dl class="method">
+<dt id="MDAnalysis.core.universe.Universe.del_TopologyAttr">
+<code class="descname">del_TopologyAttr</code><span class="sig-paren">(</span><em>topologyattr</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.del_TopologyAttr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.del_TopologyAttr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a topology attribute from the Universe</p>
+<p>Removing a TopologyAttribute from the Universe makes it unavailable to
+all AtomGroups etc throughout the Universe.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>topologyattr</strong> (<a class="reference internal" href="topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr" title="MDAnalysis.core.topologyattrs.TopologyAttr"><em>TopologyAttr</em></a><em> or </em><em>string</em>) – Either a MDAnalysis TopologyAttr object or the name of a possible
+topology attribute.</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<p>For example to remove bfactors to a Universe:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">del_TopologyAttr</span><span class="p">(</span><span class="s1">&#39;bfactors&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;bfactors&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="MDAnalysis.core.universe.Universe.delete_angles">
 <code class="descname">delete_angles</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.delete_angles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.delete_angles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete Angles from this Universe.</p>

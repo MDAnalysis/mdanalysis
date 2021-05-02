@@ -240,6 +240,8 @@
 <span class="sd">.. autofunction:: make_downshift_arrays</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">contextlib</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">.topologyattrs</span> <span class="kn">import</span> <span class="n">Atomindices</span><span class="p">,</span> <span class="n">Resindices</span><span class="p">,</span> <span class="n">Segindices</span>
@@ -699,6 +701,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span>
         <span class="n">topologyattr</span><span class="o">.</span><span class="n">top</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="bp">self</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">topologyattr</span><span class="o">.</span><span class="n">attrname</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Topology.del_TopologyAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.del_TopologyAttr">[docs]</a>    <span class="k">def</span> <span class="nf">del_TopologyAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove a TopologyAttr from the Topology.</span>
+
+<span class="sd">        If it is not present, nothing happens.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        topologyattr : TopologyAttr</span>
+
+
+<span class="sd">        .. versionadded:: 2.0.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__delattr__</span><span class="p">(</span><span class="n">topologyattr</span><span class="o">.</span><span class="n">attrname</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">guessed_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

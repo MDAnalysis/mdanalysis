@@ -242,6 +242,7 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">collections</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
@@ -970,6 +971,62 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_process_attr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Universe.del_TopologyAttr"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.del_TopologyAttr">[docs]</a>    <span class="k">def</span> <span class="nf">del_TopologyAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove a topology attribute from the Universe</span>
+
+<span class="sd">        Removing a TopologyAttribute from the Universe makes it unavailable to</span>
+<span class="sd">        all AtomGroups etc throughout the Universe.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        topologyattr: TopologyAttr or string</span>
+<span class="sd">          Either a MDAnalysis TopologyAttr object or the name of a possible</span>
+<span class="sd">          topology attribute.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+<span class="sd">        For example to remove bfactors to a Universe:</span>
+
+<span class="sd">        &gt;&gt;&gt; u.del_TopologyAttr(&#39;bfactors&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; hasattr(u.atoms[:3], &#39;bfactors&#39;)</span>
+<span class="sd">        False</span>
+
+
+<span class="sd">        .. versionadded:: 2.0.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">topologyattr</span> <span class="o">=</span> <span class="n">topologyattr</span><span class="o">.</span><span class="n">attrname</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="c1"># either TopologyGroup or not valid</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="c1"># this may not end well</span>
+                    <span class="c1"># e.g. matrix -&gt; matrices</span>
+                    <span class="n">topologyattr</span> <span class="o">=</span> <span class="n">topologyattr</span><span class="o">.</span><span class="n">btype</span> <span class="o">+</span> <span class="s2">&quot;s&quot;</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Topology attribute must be str or &quot;</span>
+                                     <span class="s2">&quot;TopologyAttr object or class. &quot;</span>
+                                     <span class="sa">f</span><span class="s2">&quot;Given: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">topologyattr</span> <span class="o">=</span> <span class="n">_TOPOLOGY_ATTRS</span><span class="p">[</span><span class="n">topologyattr</span><span class="p">]</span><span class="o">.</span><span class="n">attrname</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">attrs</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">_TOPOLOGY_ATTRS</span><span class="p">))</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognised topology attribute: &#39;</span><span class="si">{</span><span class="n">topologyattr</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;  Possible values: &#39;</span><span class="si">{</span><span class="n">attrs</span><span class="si">}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                      <span class="s2">&quot;To raise an issue go to: &quot;</span>
+                      <span class="s2">&quot;https://github.com/MDAnalysis/mdanalysis/issues&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">topattr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="n">topologyattr</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Topology attribute </span><span class="si">{</span><span class="n">topologyattr</span><span class="si">}</span><span class="s2"> &quot;</span>
+                             <span class="s2">&quot;not in Universe.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">del_TopologyAttr</span><span class="p">(</span><span class="n">topattr</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unprocess_attr</span><span class="p">(</span><span class="n">topattr</span><span class="p">)</span></div>
+
     <span class="k">def</span> <span class="nf">_process_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Squeeze a topologyattr for its information</span>
 
@@ -1003,6 +1060,24 @@
         <span class="c1"># Universe transplants</span>
         <span class="k">for</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">meth</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">transplants</span><span class="p">[</span><span class="s1">&#39;Universe&#39;</span><span class="p">]:</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">meth</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_unprocess_attr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Undo all the stuff in _process_attr.</span>
+
+<span class="sd">        If the topology attribute is not present, nothing happens</span>
+<span class="sd">        (silent fail).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">target_classes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_class_bases</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span><span class="o">.</span><span class="n">_del_prop</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+
+        <span class="c1"># Universe transplants</span>
+        <span class="k">for</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">transplants</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;Universe&quot;</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">funcname</span><span class="p">)</span>
+        <span class="c1"># Group transplants</span>
+        <span class="k">for</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">transplants</span> <span class="ow">in</span> <span class="n">attr</span><span class="o">.</span><span class="n">transplants</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">transplants</span><span class="p">:</span>
+                <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_class_bases</span><span class="p">[</span><span class="bp">cls</span><span class="p">],</span> <span class="n">funcname</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Universe.add_Residue"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_Residue">[docs]</a>    <span class="k">def</span> <span class="nf">add_Residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add a new Residue to this Universe</span>
