@@ -53,6 +53,18 @@ class Results(UserDict):
 
     .. _`scikit-learn`: https://scikit-learn.org/
 
+    Raises
+    ------
+    AttributeError
+        If an assigned attribute has the same name as a default attribute.
+
+    ValueError
+        If a key is not of type ``str`` and therefore is not able to be
+        accessed by attribute.
+
+    Notes
+    -----
+    Pickling of ``Results`` is currently not supported
 
     Examples
     --------
@@ -68,16 +80,6 @@ class Results(UserDict):
     >>> results.c = [1, 2, 3, 4]
     >>> results['c']
     [1, 2, 3, 4]
-
-
-    Raises
-    ------
-    AttributeError
-        If an assigned attribute has the same name as a default attribute.
-
-    ValueError
-        If a key is not of type ``str`` and therefore is not able to be
-        accessed by attribute.
     """
     def _validate_key(self, key):
         if key in dir(UserDict) or (key == "data" and self._dict_frozen):
@@ -319,6 +321,11 @@ class AnalysisFromFunction(AnalysisBase):
             Results for each frame of the wrapped function,
             stored after call to :meth:`AnalysisFromFunction.run`.
 
+    Raises
+    ------
+    ValueError
+        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`
+
     Example
     -------
     .. code-block:: python
@@ -329,12 +336,6 @@ class AnalysisFromFunction(AnalysisBase):
         rot = AnalysisFromFunction(rotation_matrix, trajectory,
                                     mobile, ref).run()
         print(rot.results.timeseries)
-
-
-    Raises
-    ------
-    ValueError
-        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`
 
 
     .. versionchanged:: 1.0.0
@@ -401,6 +402,11 @@ def analysis_class(function):
             Results for each frame of the wrapped function,
             stored after call to :meth:`AnalysisFromFunction.run`.
 
+    Raises
+    ------
+    ValueError
+        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`
+
     Examples
     --------
 
@@ -422,12 +428,6 @@ def analysis_class(function):
 
         rot = RotationMatrix(u.trajectory, mobile, ref).run(step=2)
         print(rot.results.timeseries)
-
-
-    Raises
-    ------
-    ValueError
-        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`
 
 
     .. versionchanged:: 2.0.0
