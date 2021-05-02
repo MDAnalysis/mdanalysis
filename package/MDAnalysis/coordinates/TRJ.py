@@ -454,6 +454,8 @@ class NCDFReader(base.ReaderBase):
     .. versionchanged:: 2.0.0
        Now use a picklable :class:`scipy.io.netcdf.netcdf_file`--
        :class:`NCDFPicklable`.
+       Reading of `dt` now defaults to 1.0 ps if `dt` cannot be extracted from
+       the first two frames of the trajectory.
 
     """
 
