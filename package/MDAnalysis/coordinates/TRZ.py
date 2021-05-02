@@ -330,9 +330,9 @@ class TRZReader(base.ReaderBase):
             t1 = self.ts.time
             dt = t1 - t0
         except StopIteration:
-            wmsg = ('dt information could not be obtained, defaulting to 0 ps. '
-                    'Note: in MDAnalysis 2.1.0 this default will change 1 ps.')
-            warnings.warn(wmsg)
+            msg = ('dt information could not be obtained, defaulting to 0 ps. '
+                   'Note: in MDAnalysis 2.1.0 this default will change 1 ps.')
+            warnings.warn(msg)
             return 0
         else:
             return dt
