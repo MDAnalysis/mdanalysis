@@ -50,7 +50,7 @@ Building blocks for Analysis
 
 The building block for the analysis modules is
 :class:`MDAnalysis.analysis.base.AnalysisBase`.
-To build your own analysis class start by reading their documentation.
+To build your own analysis class start by reading the documentation.
 
 .. toctree::
    :maxdepth: 1
