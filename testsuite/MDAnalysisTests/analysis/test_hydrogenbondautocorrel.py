@@ -31,10 +31,11 @@ from numpy.testing import assert_almost_equal
 import numpy as np
 from unittest import mock
 import os
+from importlib import reload
 
 import MDAnalysis as mda
-from MDAnalysis.analysis import hydrogenbonds
-from MDAnalysis.analysis.hydrogenbonds import HydrogenBondAutoCorrel as HBAC
+from MDAnalysis.analysis import hbonds
+from MDAnalysis.analysis.hbonds import HydrogenBondAutoCorrel as HBAC
 
 
 class TestHydrogenBondAutocorrel(object):
@@ -281,7 +282,7 @@ def test_find_donors():
 
     H = u.select_atoms('name H*')
 
-    D = hydrogenbonds.find_hydrogen_donors(H)
+    D = hbonds.find_hydrogen_donors(H)
 
     assert len(H) == len(D)
     # check each O is bonded to the corresponding H
@@ -293,11 +294,11 @@ def test_donors_nobonds():
     u = mda.Universe(XYZ_mini)
 
     with pytest.raises(mda.NoDataError):
-        hydrogenbonds.find_hydrogen_donors(u.atoms)
+        hbonds.find_hydrogen_donors(u.atoms)
 
 
 def test_moved_module_warning():
-    wmsg = ("This module has been moved to "
+    wmsg = ("This module will be moved to "
             "MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel")
     with pytest.warns(DeprecationWarning, match=wmsg):
-        import MDAnalysis.analysis.hbonds.hbond_autocorrel
+        reload(hbonds.hbond_autocorrel)
