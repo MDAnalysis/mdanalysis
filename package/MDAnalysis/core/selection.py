@@ -309,8 +309,9 @@ class AroundSelection(Selection):
         if not sys or not sel:
             return sys[[]]
 
+        box = group.dimensions if self.periodic else None
         pairs = distances.capped_distance(sel.positions, sys.positions,
-                                          self.cutoff, box=group.dimensions,
+                                          self.cutoff, box=box,
                                           return_distances=False)
         if pairs.size > 0:
             indices = np.sort(pairs[:, 1])
@@ -334,11 +335,11 @@ class SphericalLayerSelection(Selection):
         if len(sel) == 0:
             return group[[]]
 
-        periodic = box is not None
+        box = group.dimensions if self.periodic else None
         ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
         pairs = distances.capped_distance(ref, group.positions, self.exRadius,
                                           min_cutoff=self.inRadius,
-                                          box=group.dimensions,
+                                          box=box,
                                           return_distances=False)
         if pairs.size > 0:
             indices = np.sort(pairs[:, 1])
@@ -362,9 +363,10 @@ class SphericalZoneSelection(Selection):
         if len(sel) == 0:
             return group[[]]
 
+        box = group.dimensions if self.periodic else None
         ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
         pairs = distances.capped_distance(ref, group.positions, self.cutoff,
-                                          box=group.dimensions,
+                                          box=box,
                                           return_distances=False)
         if pairs.size > 0:
             indices = np.sort(pairs[:, 1])
@@ -472,8 +474,9 @@ class PointSelection(Selection):
     def apply(self, group):
         indices = []
 
+        box = group.dimensions if self.periodic else None
         pairs = distances.capped_distance(self.ref[None, :], group.positions, self.cutoff,
-                                          box=group.dimensions,
+                                          box=box,
                                           return_distances=False)
         if pairs.size > 0:
             indices = np.sort(pairs[:, 1])
