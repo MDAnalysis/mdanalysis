@@ -669,8 +669,7 @@ class TestMakeWhole(object):
         u = mda.Universe(fullerene)
 
         bbox = u.atoms.bbox()
-        u.dimensions[:3] = bbox[1] - bbox[0]
-        u.dimensions[3:] = 90.0
+        u.dimensions = np.r_[bbox[1] - bbox[0], [90]*3]
 
         blengths = u.atoms.bonds.values()
         # kaboom
