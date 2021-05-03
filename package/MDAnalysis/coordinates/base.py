@@ -42,7 +42,6 @@ MDAnalysis.
    .. automethod:: __init__
    .. automethod:: from_coordinates
    .. automethod:: from_timestep
-   .. automethod:: _init_unitcell
    .. autoattribute:: n_atoms
    .. attribute::`frame`
 
@@ -300,7 +299,7 @@ class Timestep(object):
         self.has_velocities = kwargs.get('velocities', False)
         self.has_forces = kwargs.get('forces', False)
 
-        self._unitcell = None
+        self._unitcell = np.zeros(6, dtype=np.float32)
 
         # set up aux namespace for adding auxiliary data
         self.aux = Namespace()
@@ -401,11 +400,6 @@ class Timestep(object):
     def __setstate__(self, state):
         self.__dict__.update(state)
 
-    def _init_unitcell(self):
-        """Create custom datastructure for :attr:`_unitcell`."""
-        # override for other Timesteps
-        return np.zeros((6), np.float32)
-
     def __eq__(self, other):
         """Compare with another Timestep
 
@@ -424,6 +418,15 @@ class Timestep(object):
             return False
         if self.has_positions:
             if not (self.positions == other.positions).all():
+                return False
+
+        if self.dimensions is None:
+            if not other.dimensions is None:
+                return False
+        else:
+            if other.dimensions is None:
+                return False
+            if not (self.dimensions == other.dimensions).all():
                 return False
 
         if not self.has_velocities == other.has_velocities:
@@ -787,21 +790,25 @@ class Timestep(object):
         lengths *a*, *b*, *c* are in the MDAnalysis length unit (Å), and
         angles are in degrees.
         """
-        return self._unitcell
+        if (self._unitcell[:3] == 0).all():
+            return None
+        else:
+            return self._unitcell
 
     @dimensions.setter
     def dimensions(self, box):
         if box is None:
-            self._unitcell = None
+            self._unitcell[:] = 0
         else:
-            if self._unitcell is None:
-                self._unitcell = self._init_unitcell()
             self._unitcell[:] = box
 
     @property
     def volume(self):
         """volume of the unitcell"""
-        return core.box_volume(self.dimensions)
+        if self.dimensions is None:
+            return 0
+        else:
+            return core.box_volume(self.dimensions)
 
     @property
     def triclinic_dimensions(self):

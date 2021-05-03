@@ -266,20 +266,29 @@ class BaseReaderTest(object):
 
     def test_first_dimensions(self, ref, reader):
         reader.rewind()
-        assert_array_almost_equal(reader.ts.dimensions,
-                                  ref.dimensions,
-                                  decimal=ref.prec)
+        if ref.dimensions is None:
+            assert reader.ts.dimensions is None
+        else:
+            assert_array_almost_equal(reader.ts.dimensions,
+                                      ref.dimensions,
+                                      decimal=ref.prec)
 
     def test_changing_dimensions(self, ref, reader):
         if ref.changing_dimensions:
             reader.rewind()
-            assert_array_almost_equal(reader.ts.dimensions,
-                                      ref.dimensions,
-                                      decimal=ref.prec)
+            if ref.dimensions is None:
+                assert reader.ts.dimensions is None
+            else:
+                assert_array_almost_equal(reader.ts.dimensions,
+                                          ref.dimensions,
+                                          decimal=ref.prec)
             reader[1]
-            assert_array_almost_equal(reader.ts.dimensions,
-                                      ref.dimensions_second_frame,
-                                      decimal=ref.prec)
+            if ref.dimensions_second_frame is None:
+                assert reader.ts.dimensions is None
+            else:
+                assert_array_almost_equal(reader.ts.dimensions,
+                                          ref.dimensions_second_frame,
+                                          decimal=ref.prec)
 
     def test_volume(self, ref, reader):
         reader.rewind()

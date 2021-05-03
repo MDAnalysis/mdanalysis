@@ -1010,7 +1010,7 @@ class NCDFWriter(base.WriterBase):
         bool
             Return ``True`` if `ts` contains a valid simulation box
         """
-        return np.all(ts.dimensions > 0)
+        return not ts.dimensions is None
 
     def _write_next_frame(self, ag):
         """Write information associated with ``ag`` at current frame into trajectory
