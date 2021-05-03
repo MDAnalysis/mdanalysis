@@ -453,8 +453,7 @@
         
         <span class="c1"># bonds</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">params</span> <span class="o">=</span> <span class="n">ag_or_ts</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">atomgroup_intersection</span><span class="p">(</span><span class="n">ag_or_ts</span><span class="p">,</span> 
-                                                           <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="n">ag_or_ts</span><span class="o">.</span><span class="n">intra_bonds</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>

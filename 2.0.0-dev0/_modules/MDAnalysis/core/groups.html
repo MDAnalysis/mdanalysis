@@ -566,6 +566,41 @@
                 <span class="n">err</span> <span class="o">+=</span> <span class="s1">&#39;Did you mean </span><span class="si">{match}</span><span class="s1">?&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">match</span><span class="o">=</span><span class="n">match</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">get_connections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">typename</span><span class="p">,</span> <span class="n">outside</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get bonded connections between atoms as a</span>
+<span class="sd">        :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        typename : str</span>
+<span class="sd">            group name. One of {&quot;bonds&quot;, &quot;angles&quot;, &quot;dihedrals&quot;,</span>
+<span class="sd">            &quot;impropers&quot;, &quot;ureybradleys&quot;, &quot;cmaps&quot;}</span>
+<span class="sd">        outside : bool (optional)</span>
+<span class="sd">            Whether to include connections involving atoms outside</span>
+<span class="sd">            this group.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        TopologyGroup</span>
+<span class="sd">            containing the bonded group of choice, i.e. bonds, angles,</span>
+<span class="sd">            dihedrals, impropers, ureybradleys or cmaps.</span>
+
+<span class="sd">        .. versionadded:: 1.1.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># AtomGroup has handy error messages for missing attributes</span>
+        <span class="n">ugroup</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">typename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ugroup</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ugroup</span>
+        <span class="n">func</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span> <span class="k">if</span> <span class="n">outside</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">ix_array</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>  <span class="c1"># if self is an Atom</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix_array</span>
+        <span class="n">seen</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">col</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">ugroup</span><span class="o">.</span><span class="n">_bix</span><span class="o">.</span><span class="n">T</span><span class="p">]</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">seen</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ugroup</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
 
 <span class="k">class</span> <span class="nc">_ImmutableBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class used to shortcut :meth:`__new__` to :meth:`object.__new__`.</span>
