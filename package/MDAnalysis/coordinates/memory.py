@@ -375,9 +375,8 @@ class MemoryReader(base.ProtoReader):
 
         self.ts = self._Timestep(self.n_atoms, **kwargs)
         self.ts.dt = dt
-        if dimensions is None:
-            dimensions = np.zeros((self.n_frames, 6), dtype=np.float32)
-        else:
+
+        if not dimensions is None:
             try:
                 dimensions = np.asarray(dimensions, dtype=np.float32)
             except ValueError:
@@ -392,6 +391,7 @@ class MemoryReader(base.ProtoReader):
                 raise ValueError("Provided dimensions array has shape {}. "
                                  "This must be a array of shape (6,) or "
                                  "(n_frames, 6)".format(dimensions.shape))
+
         self.dimensions_array = dimensions
         self.ts.frame = -1
         self.ts.time = -1
@@ -434,7 +434,8 @@ class MemoryReader(base.ProtoReader):
                 if self.velocity_array is not None else None)
         fors = (self.force_array.copy()
                 if self.force_array is not None else None)
-        dims = self.dimensions_array.copy()
+        dims = (self.dimensions_array.copy()
+                if self.dimensions_array is not None else None)
 
         new = self.__class__(
             self.coordinate_array.copy(),
@@ -560,7 +561,8 @@ class MemoryReader(base.ProtoReader):
                        [self.ts.frame] +
                        [slice(None)]*(2-f_index))
         ts._replace_positions_array(self.coordinate_array[tuple(basic_slice)])
-        ts._replace_dimensions(self.dimensions_array[self.ts.frame])
+        if not self.dimensions_array is None:
+            ts._replace_dimensions(self.dimensions_array[self.ts.frame])
         if self.velocity_array is not None:
             ts._replace_velocities_array(self.velocity_array[tuple(basic_slice)])
         if self.force_array is not None:
