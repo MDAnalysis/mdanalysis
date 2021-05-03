@@ -453,20 +453,22 @@ class GROWriter(base.WriterBase):
                     ))
 
             # Footer: box dimensions
-            if np.allclose(ag.dimensions[3:], [90., 90., 90.]):
-                box = self.convert_pos_to_native(
-                    ag.dimensions[:3], inplace=False)
+            if (ag.dimensions is None or
+                np.allclose(ag.dimensions[3:], [90., 90., 90.])):
+                if ag.dimensions is None:
+                    box = np.zeros(3)
+                else:
+                    box = self.convert_pos_to_native(
+                        ag.dimensions[:3], inplace=False)
                 # orthorhombic cell, only lengths along axes needed in gro
                 output_gro.write(self.fmt['box_orthorhombic'].format(
                     box=box)
                 )
             else:
-
                 try:  # for AtomGroup/Universe
                     tri_dims = obj.universe.coord.triclinic_dimensions
                 except AttributeError:  # for Timestep
                     tri_dims = obj.triclinic_dimensions
-
                 # full output
                 box = self.convert_pos_to_native(tri_dims.flatten(), inplace=False)
                 output_gro.write(self.fmt['box_triclinic'].format(box=box))
