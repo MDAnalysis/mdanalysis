@@ -237,6 +237,26 @@ class Timestep(base.Timestep):
     def _replace_dimensions(self, new):
         self._unitcell = new
 
+    @property
+    def dimensions(self):
+        """View of unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
+
+        lengths *a*, *b*, *c* are in the MDAnalysis length unit (Å), and
+        angles are in degrees.
+        """
+        # memoryreader always has (nframes, 6) array for positions, but is sometimes 0 (i.e. None)
+        if (self._unitcell[:3] == 0).any():
+            return None
+        else:
+            return self._unitcell
+
+    @dimensions.setter
+    def dimensions(self, new):
+        if new is None:
+            self._unitcell[:] = [0., 0., 0., 0., 0., 0.]
+        else:
+            self._unitcell[:] = new
+
 
 class MemoryReader(base.ProtoReader):
     """
@@ -391,6 +411,8 @@ class MemoryReader(base.ProtoReader):
                 raise ValueError("Provided dimensions array has shape {}. "
                                  "This must be a array of shape (6,) or "
                                  "(n_frames, 6)".format(dimensions.shape))
+        else:
+            dimensions = np.zeros((self.n_frames, 6), dtype=np.float32)
 
         self.dimensions_array = dimensions
         self.ts.frame = -1
