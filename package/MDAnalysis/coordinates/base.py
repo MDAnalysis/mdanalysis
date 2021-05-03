@@ -786,14 +786,7 @@ class Timestep(object):
 
         lengths *a*, *b*, *c* are in the MDAnalysis length unit (Å), and
         angles are in degrees.
-
-        Setting dimensions will populate the underlying native format
-        description of box dimensions
         """
-        # The actual Timestep._unitcell depends on the underlying
-        # trajectory format. It can be e.g. six floats representing
-        # the box edges and angles or the 6 unique components of the
-        # box matrix or the full box matrix.
         return self._unitcell
 
     @dimensions.setter
