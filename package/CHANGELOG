@@ -23,6 +23,8 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * NCDFReader now defaults to a dt value of 1.0 ps when it cannot estimate
+    it from the first two frames of the file (Issue #3166)
   * Get chi1_selection to match canonical gamma atoms (Issue #2044)
   * ITPParser now accepts relative paths (Issue #3037, PR #3108)
   * Fixed issue with unassigned 'GAP' variable in fasta2algin function when
@@ -214,6 +216,9 @@ Changes
   * `threadpoolctl` is required for installation (Issue #2860)
 
 Deprecations
+  * In 2.1.0 the TRZReader will default to a dt of 1.0 ps when failing to
+    read it from the input TRZ trajectory.
+
 
 06/09/20 richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
