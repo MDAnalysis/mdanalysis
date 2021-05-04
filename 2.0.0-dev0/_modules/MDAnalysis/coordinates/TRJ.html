@@ -638,6 +638,8 @@
 <span class="sd">    .. versionchanged:: 2.0.0</span>
 <span class="sd">       Now use a picklable :class:`scipy.io.netcdf.netcdf_file`--</span>
 <span class="sd">       :class:`NCDFPicklable`.</span>
+<span class="sd">       Reading of `dt` now defaults to 1.0 ps if `dt` cannot be extracted from</span>
+<span class="sd">       the first two frames of the trajectory.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -878,8 +880,15 @@
             <span class="k">raise</span> <span class="ne">IOError</span> <span class="kn">from</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="nf">_get_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">t1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">t0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="sd">&quot;&quot;&quot;Gets dt based on the time difference between the first and second</span>
+<span class="sd">        frame. If missing (i.e. an IndexError is triggered), raises an</span>
+<span class="sd">        AttributeError which triggers the default 1 ps return of dt().</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">t1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">t0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span>
         <span class="k">return</span> <span class="n">t1</span> <span class="o">-</span> <span class="n">t0</span>
 
 <div class="viewcode-block" id="NCDFReader.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.NCDFReader.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

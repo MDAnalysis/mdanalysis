@@ -373,7 +373,9 @@ removed (Issue #2327)</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 2.0.0: </span>Now use a picklable <code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf.netcdf_file</span></code>–
-<a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFPicklable" title="MDAnalysis.coordinates.TRJ.NCDFPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFPicklable</span></code></a>.</p>
+<a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFPicklable" title="MDAnalysis.coordinates.TRJ.NCDFPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFPicklable</span></code></a>.
+Reading of <cite>dt</cite> now defaults to 1.0 ps if <cite>dt</cite> cannot be extracted from
+the first two frames of the trajectory.</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFReader.Writer">
