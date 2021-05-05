@@ -42,7 +42,7 @@ class TestDMSReader(object):
         return universe.trajectory.ts
 
     def test_global_cell(self, ts):
-        assert_equal(ts.dimensions, [0., 0., 0., 0., 0., 0.])
+        assert ts.dimensions is None
 
     def test_velocities(self, ts):
         assert_equal(hasattr(ts, "_velocities"), False)

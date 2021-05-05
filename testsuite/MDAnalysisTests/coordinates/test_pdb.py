@@ -210,16 +210,12 @@ class TestPDBWriter(object):
         return mda.Universe(mol2_molecule)
 
     @pytest.fixture(params=[
-            [PDB_CRYOEM_BOX, np.zeros(6)],
+            [PDB_CRYOEM_BOX, None],
             [MMTF_NOCRYST, None]
         ])
     def universe_and_expected_dims(self, request):
         """
         File with meaningless CRYST1 record and expected dimensions.
-
-        Notes
-        -----
-        This will need to be made consistent, see Issue #2698
         """
         filein = request.param[0]
         expected_dims = request.param[1]
