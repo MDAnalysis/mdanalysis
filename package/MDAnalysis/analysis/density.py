@@ -385,6 +385,9 @@ class DensityAnalysis(AnalysisBase):
     .. versionadded:: 1.0.0
     .. versionchanged:: 2.0.0
        :func:`_set_user_grid` is now a method of :class:`DensityAnalysis`.
+    .. deprecated:: 2.0.0
+       The :attr:`density` attribute is deprecated in favour of
+       :attr:`results.density`
     """
 
     def __init__(self, atomgroup, delta=1.0,

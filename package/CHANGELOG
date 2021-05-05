@@ -18,7 +18,7 @@ The rules for this file:
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
          hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi, hejamu,
          biogen98, orioncohen, z3y50n, hp115, ojeda-e, thadanipaarth, HenryKobin,
-         1ut, sulays, PicoCentauri, ahy3nz
+         1ut, sulays, ahy3nz
 
   * 2.0.0
 
@@ -173,6 +173,9 @@ Enhancements
     checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
 
 Changes
+  * `DensityAnalysis` now uses the `results.density` attribute for storing
+    data. The `DensityAnalysis.density` attribute is now deprecated
+    (Issue #3233)
   * Fixed inaccurate docstring inside the RMSD class (Issue #2796, PR #3134) 
   * TPRParser now loads TPR files with `tpr_resid_from_one=True` by default,
     which starts TPR resid indexing from 1 (instead of 0 as in 1.x) (Issue #2364, PR #3152)
