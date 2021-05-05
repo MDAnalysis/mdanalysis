@@ -25,15 +25,15 @@
 ================================================================
 
 
-Read coordinates data from a 
-`OpenMM <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation>`_ 
-:class:`simtk.openmm.app.simulation.Simulation` with :class:`OpenMMReader` 
-into a MDAnalysis Universe. 
+Read coordinates data from a
+`OpenMM <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation>`_
+:class:`simtk.openmm.app.simulation.Simulation` with :class:`OpenMMReader`
+into a MDAnalysis Universe.
 
-Also converts other objects within the 
+Also converts other objects within the
 `OpenMM Application Layer <http://docs.openmm.org/latest/api-python/app.html>`_:
 
-    - `simtk.openmm.app.pdbfile.PDBFile <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbfile.PDBFile.html#simtk.openmm.app.pdbfile.PDBFile>`_ 
+    - `simtk.openmm.app.pdbfile.PDBFile <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbfile.PDBFile.html#simtk.openmm.app.pdbfile.PDBFile>`_
     - `simtk.openmm.app.modeller.Modeller <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.modeller.Modeller.html#simtk.openmm.app.modeller.Modeller>`_
     - `simtk.openmm.app.pdbxfile.PDBxFile <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbxfile.PDBxFile.html#simtk.openmm.app.pdbxfile.PDBxFile>`_
 
@@ -78,8 +78,8 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
     """
 
     format = "OPENMMSIMULATION"
-    units = {"time": "ps", "length": "nm", "velocity": "nm/ps", 
-            "force": "kJ/(mol*nm)", "energy": "kJ/mol"}
+    units = {"time": "ps", "length": "nm", "velocity": "nm/ps",
+             "force": "kJ/(mol*nm)", "energy": "kJ/mol"}
 
     @staticmethod
     def _format_hint(thing):
@@ -111,7 +111,7 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
         """ Construct Timestep object from OpenMM context """
         import simtk.unit as u
 
-        state = self.filename.context.getState(-1, getVelocities=True, 
+        state = self.filename.context.getState(-1, getVelocities=True,
                 getForces=True, getEnergy=True)
 
         n_atoms = self.filename.context.getSystem().getNumParticles()
@@ -136,9 +136,9 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
 
 
 class OpenMMAppReader(base.SingleFrameReaderBase):
-    """Reader for OpenMM Application layer objects 
+    """Reader for OpenMM Application layer objects
 
-    See also `OpenMM Application layer <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation>`_ 
+    See also `the object definition in the OpenMM Application layer <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation>`_
 
     .. versionadded:: 2.0.0
     """
@@ -187,8 +187,9 @@ class OpenMMAppReader(base.SingleFrameReaderBase):
 
         return ts
 
+
 def _sanitize_box_angles(angles):
-    """ Ensure box angles correspond to first quadrant 
+    """ Ensure box angles correspond to first quadrant
 
     See `discussion on unitcell angles <https://github.com/MDAnalysis/mdanalysis/pull/2917/files#r620558575>`_
     """

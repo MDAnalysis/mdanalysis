@@ -31,6 +31,7 @@ from MDAnalysisTests.datafiles import CONECT, PDBX
 
 app = pytest.importorskip('simtk.openmm.app')
 
+
 class OpenMMTopologyBase(ParserBase):
     parser = mda.topology.OpenMMParser.OpenMMTopologyParser
     expected_attrs = [
@@ -93,6 +94,7 @@ class OpenMMTopologyBase(ParserBase):
             assert isinstance(top.segids.values, np.ndarray)
         else:
             assert top.segids.values == []
+
 
 class OpenMMAppTopologyBase(OpenMMTopologyBase):
     parser = mda.topology.OpenMMParser.OpenMMAppTopologyParser
