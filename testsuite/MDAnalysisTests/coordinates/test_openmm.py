@@ -35,6 +35,7 @@ mm = pytest.importorskip("simtk.openmm")
 unit = pytest.importorskip("simtk.unit")
 app = pytest.importorskip("simtk.openmm.app")
 
+
 class TestOpenMMBasicSimulationReader():
     @pytest.fixture
     def omm_sim_uni(self):
@@ -46,14 +47,15 @@ class TestOpenMMBasicSimulationReader():
         for i in range(5):
             system.addParticle(1.0)
             topology.addAtom(hydrogen.symbol, hydrogen, residue)
-        positions = np.ones((5,3)) * unit.angstrom
-        integrator = mm.LangevinIntegrator(273 * unit.kelvin,
-            1.0 / unit.picoseconds, 2.0 * unit.femtoseconds)
+        positions = np.ones((5, 3)) * unit.angstrom
+        integrator = mm.LangevinIntegrator(
+            273 * unit.kelvin,
+            1.0 / unit.picoseconds, 2.0 * unit.femtoseconds,
+        )
         simulation = app.Simulation(topology, system, integrator)
         simulation.context.setPositions(positions)
 
         return mda.Universe(simulation)
-
 
     def test_dimensions(self, omm_sim_uni):
         assert_almost_equal(
@@ -66,7 +68,7 @@ class TestOpenMMBasicSimulationReader():
 
     def test_coordinates(self, omm_sim_uni):
         up = omm_sim_uni.atoms.positions
-        reference = np.ones((5,3))
+        reference = np.ones((5, 3))
         assert_almost_equal(up, reference, decimal=3)
 
     def test_basic_topology(self, omm_sim_uni):
@@ -76,8 +78,6 @@ class TestOpenMMBasicSimulationReader():
         assert omm_sim_uni.segments.n_segments == 1
         assert omm_sim_uni.segments.segids[0] == 0
         assert len(omm_sim_uni.bonds.indices) == 0
-
-
 
 
 class TestOpenMMPDBFileReader(_SingleFrameReader):
