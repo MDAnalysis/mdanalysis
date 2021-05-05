@@ -109,7 +109,8 @@ class DMSReader(base.SingleFrameReaderBase):
 
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
-            self.convert_pos_from_native(self.ts.dimensions[:3])  # in-place !
+            if self.ts.dimensions is not None:
+                self.convert_pos_from_native(self.ts.dimensions[:3])  # in-place !
             if self.ts.has_velocities:
                 # converts nm/ps to A/ps units
                 self.convert_velocities_from_native(self.ts._velocities)

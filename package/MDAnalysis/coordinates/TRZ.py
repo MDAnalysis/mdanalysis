@@ -261,7 +261,8 @@ class TRZReader(base.ReaderBase):
             # Convert things read into MDAnalysis' native formats (nm -> angstroms)
             if self.convert_units:
                 self.convert_pos_from_native(self.ts._pos)
-                self.convert_pos_from_native(self.ts.dimensions[:3])
+                if self.ts.dimensions is not None:
+                    self.convert_pos_from_native(self.ts.dimensions[:3])
                 self.convert_velocities_from_native(self.ts._velocities)
 
             return ts
@@ -570,7 +571,11 @@ class TRZWriter(base.WriterBase):
                           "".format(", ".join(faked_attrs)))
 
         # Convert other stuff into our format
-        unitcell = triclinic_vectors(ts.dimensions).reshape(9)
+        if ts.dimensions is not None:
+            unitcell = triclinic_vectors(ts.dimensions).reshape(9)
+        else:
+            unitcell = np.zeros(9, dtype=np.float32)
+
         try:
             vels = ts._velocities
         except AttributeError:

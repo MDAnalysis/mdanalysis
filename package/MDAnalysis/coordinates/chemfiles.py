@@ -80,6 +80,7 @@ Helper functions
 
 """
 from distutils.version import LooseVersion
+import numpy as np
 import warnings
 import numpy as np
 
@@ -240,7 +241,7 @@ class ChemfilesReader(base.ReaderBase):
                 "This is not supported by MDAnalysis."
             )
 
-        ts.dimensions[:] = frame.cell.lengths + frame.cell.angles
+        ts.dimensions = np.r_[frame.cell.lengths, frame.cell.angles]
         ts.positions[:] = frame.positions[:]
         if frame.has_velocities():
             ts.has_velocities = True
@@ -393,14 +394,14 @@ class ChemfilesWriter(base.WriterBase):
             frame.add_velocities()
             frame.velocities[:] = ts.velocities[:]
 
-        lengths = ts.dimensions[:3]
-        angles = ts.dimensions[3:]
-
         # if there is no cell information in this universe, still pass a valid
         # cell to chemfiles
-        if np.all(ts.dimensions == 0.0):
-            angles = [90, 90, 90]
-
+        if ts.dimensions is not None:
+            lengths, angles = np.zeros(3), np.zeros(3)
+        else:
+            lengths = ts.dimensions[:3]
+            angles = ts.dimensions[3:]
+            
         if chemfiles.__version__.startswith("0.9"):
             frame.cell = chemfiles.UnitCell(*lengths, *angles)
         else:
