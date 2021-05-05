@@ -173,7 +173,7 @@ Fixes
   * Clarifies density_from_Universe docs and adds user warning (Issue #2372)
   * Fix upstream deprecation of `matplotlib.axis.Tick` attributes in
     `MDAnalysis.analysis.psa`
-  * PDBWriter now uses first character of segid as ChainID (Issue #2224)
+  * PDBWriter now uses last character of segid as ChainID (Issue #2224)
   * Adds a more detailed warning when attempting to read chamber-style parm7
     files (Issue #2475)
   * ClusterCollection.get_ids now returns correctly (Issue #2464)
@@ -187,6 +187,7 @@ Fixes
     than one format (Issue #2353)
   * PDBQTParser now gives icode TopologyAttrs (Issue #2361)
   * GROReader and GROWriter now can handle boxes with box vectors >1000nm
+    (Issue #2371)
   * Guess atom element with uppercase name
   * TopologyGroup no longer reshapes the type, guessed, and order properties
     (Issue #2392)
