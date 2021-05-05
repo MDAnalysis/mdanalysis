@@ -29,3 +29,4 @@ __all__ = [
 
 from .hbond_analysis import HydrogenBondAnalysis
 from .wbridge_analysis import WaterBridgeAnalysis
+from .hbond_autocorrel import HydrogenBondAutoCorrel, find_hydrogen_donors
