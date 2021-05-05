@@ -106,6 +106,7 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Added `Results` class for storing analysis results (#3115, PR #3233)
   * Added intra_bonds, intra_angles, intra_dihedrals etc. to return only
     the connections involving atoms within the AtomGroup, instead of
     including atoms outside the AtomGroup (Issue #1264, #2821, PR #3200)
@@ -173,6 +174,8 @@ Enhancements
     checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
 
 Changes
+  * `GNMAnalysis`, `LinearDensity`, `PersistenceLength` and
+    `AnalysisFromFunction` use the `results` attribute.
   * Fixed inaccurate docstring inside the RMSD class (Issue #2796, PR #3134) 
   * TPRParser now loads TPR files with `tpr_resid_from_one=True` by default,
     which starts TPR resid indexing from 1 (instead of 0 as in 1.x) (Issue #2364, PR #3152)
