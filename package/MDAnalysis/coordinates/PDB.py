@@ -425,11 +425,10 @@ class PDBReader(base.ReaderBase):
                                   "".format(line))
                 else:
                     if np.allclose(cell_dims, np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0])):
-                        # FIXME: Dimensions set to zeros.
-                        # FIXME: This might change with Issue #2698
                         warnings.warn("1 A^3 CRYST1 record,"
                                       " this is usually a placeholder."
                                       " Unit cell dimensions will be set as None")
+                        self.ts.dimensions = None
                     else:
                         self.ts.dimensions = cell_dims
 
@@ -731,7 +730,7 @@ class PDBWriter(base.WriterBase):
 
         # FIXME: Values for meaningless cell dimensions are not consistent.
         # FIXME: See Issue #2698. Here we check for both None and zeros
-        if u.dimensions is None or np.allclose(u.dimensions, np.zeros(6)):
+        if u.trajectory.ts is None:
             # Unitary unit cell by default. See PDB standard:
             # http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1
             self.CRYST1(np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0]))
