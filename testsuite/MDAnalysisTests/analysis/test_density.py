@@ -158,10 +158,10 @@ class TestDensityAnalysis(DensityParameters):
             D = density.DensityAnalysis(ag, delta=self.delta, **kwargs).run(**runargs)
             assert_almost_equal(D.density.grid.mean(), ref_meandensity,
                                 err_msg="mean density does not match")
-            D.density.export(self.outfile)
+            D.results.density.export(self.outfile)
 
             D2 = density.Density(self.outfile)
-            assert_almost_equal(D.density.grid, D2.grid, decimal=self.precision,
+            assert_almost_equal(D.results.density.grid, D2.grid, decimal=self.precision,
                                 err_msg="DX export failed: different grid sizes")
 
     @pytest.mark.parametrize("mode", ("static", "dynamic"))
@@ -211,7 +211,7 @@ class TestDensityAnalysis(DensityParameters):
             universe.select_atoms(self.selections['static']),
             delta=1.0, xdim=8.0, ydim=12.0, zdim=17.0,
             gridcenter=self.gridcenters['static_defined']).run()
-        assert D.density.grid.shape == (8, 12, 17)
+        assert D.results.density.grid.shape == (8, 12, 17)
 
     def test_warn_userdefn_padding(self, universe):
         regex = (r"Box padding \(currently set at 1\.0\) is not used "
@@ -293,6 +293,13 @@ class TestDensityAnalysis(DensityParameters):
                                              "need to be provided instead."):
             D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['none'])).run(step=5)
+
+    def test_warn_results_deprecated(self, universe):
+        D = density.DensityAnalysis(
+                universe.select_atoms(self.selections['static']))
+        with pytest.warns(UserWarning):
+            D.density
+
 
 class TestGridImport(object):
 

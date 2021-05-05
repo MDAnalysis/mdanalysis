@@ -166,14 +166,15 @@ from gridData import Grid
 
 import MDAnalysis
 from MDAnalysis.core import groups
-from MDAnalysis.lib.util import fixedwidth_bins, iterable, asiterable
+from MDAnalysis.lib.util import (fixedwidth_bins, iterable, asiterable,
+                                 deprecate,)
 from MDAnalysis.lib import NeighborSearch as NS
 from MDAnalysis import NoDataError, MissingDataWarning
 from .. import units
 from ..lib import distances
 from MDAnalysis.lib.log import ProgressBar
 
-from .base import AnalysisBase
+from .base import AnalysisBase, Results
 
 import logging
 
@@ -208,9 +209,9 @@ class DensityAnalysis(AnalysisBase):
     zdim : float (optional)
             User defined z dimension box edge in ångström.
 
-    Returns
-    -------
-    :class:`Density`
+    Attributes
+    ----------
+    results.density : :class:`Density`
             A :class:`Density` instance containing a physical density of units
             :math:`Angstrom^{-3}`.
 
@@ -457,7 +458,8 @@ class DensityAnalysis(AnalysisBase):
         self._edges = edges
         self._arange = arange
         self._bins = bins
-        self.density = None
+        self.results = Results()
+        self.results.density = None
 
     def _single_frame(self):
         h, _ = np.histogramdd(self._atomgroup.positions,
@@ -476,7 +478,12 @@ class DensityAnalysis(AnalysisBase):
                           units={'length': "Angstrom"},
                           parameters={'isDensity': False})
         density.make_density()
-        self.density = density
+        self.results.density = density
+
+    @deprecate(release="2.0.0", remove="3.0.0")
+    @property
+    def density(self):
+        return self.results.density
 
     @staticmethod
     def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
