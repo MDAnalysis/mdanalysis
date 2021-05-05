@@ -38,6 +38,7 @@ topology file format in the *topology_format* keyword argument to
    topology/MinimalParser
    topology/MMTFParser
    topology/MOL2Parser
+   topology/OpenMM
    topology/PDBParser
    topology/ExtendedPDBParser
    topology/PDBQTParser
