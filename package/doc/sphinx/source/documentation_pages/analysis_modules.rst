@@ -5,18 +5,31 @@ Analysis modules
 ****************
 
 The :mod:`MDAnalysis.analysis` module contains code to carry out specific
-analysis functionality. It is based on the core functionality (i.e. trajectory
+analysis functionality for MD trajectories. 
+It is based on the core functionality (i.e. trajectory
 I/O, selections etc). The analysis modules can be used as examples for how to
 use MDAnalysis but also as working code for research projects; typically all
 contributed code has been used by the authors in their own work.
+An analysis using the available modules
+usually follows the same structure
+
+#. Import the desired module, since analysis modules are not imported 
+   by default.
+#. Initialize the module previously imported.
+#. Run the analysis, optionally for specific trajectory slices
+#. Access the analysis from the `results` attribute
+
+.. code-block:: python
+
+   from MDAnalysis.analysis import ExampleAnalysisModule  # (e.g. RMSD)
+
+   analysis_obj = ExampleAnalysisModule(universe, ...)
+   analysis_obj.run(start_frame, stop_frame, step)
+   print(analysis_obj.results)
+
 
 Please see the individual module documentation for any specific caveats 
 and also read and cite the reference papers associated with these algorithms.
-
-The analysis modules are not imported by default; in order to use them one 
-has to import them from :mod:`MDAnalysis.analysis`, for instance ::
-
-    import MDAnalysis.analysis.align
 
 .. rubric:: Additional dependencies
 
@@ -39,11 +52,6 @@ corresponding MDAnalysis module.
 
 .. _scikit-learn: http://scikit-learn.org/
 .. _HOLE: http://www.holeprogram.org/
-
-.. toctree::
-   :maxdepth: 1
-
-   analysis/init
 
 Building blocks for Analysis
 ============================

@@ -64,7 +64,7 @@ class Results(UserDict):
 
     Notes
     -----
-    Pickling of ``Results`` is currently not supported
+    Pickling of ``Results`` is currently not supported.
 
     Examples
     --------
@@ -80,6 +80,9 @@ class Results(UserDict):
     >>> results.c = [1, 2, 3, 4]
     >>> results['c']
     [1, 2, 3, 4]
+
+
+    .. versionadded:: 2.0.0
     """
     def _validate_key(self, key):
         if key in dir(UserDict) or (key == "data" and self._dict_frozen):
@@ -206,6 +209,8 @@ class AnalysisBase(object):
         removed. These should now be directly passed to
         :meth:`AnalysisBase.run`.
 
+    .. versionchanged:: 2.0.0
+        Added :attr:`results`
     """
 
     def __init__(self, trajectory, verbose=False, **kwargs):
