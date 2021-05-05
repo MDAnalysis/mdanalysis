@@ -173,6 +173,8 @@ Enhancements
     checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
 
 Changes
+  * Deprecated analysis.hbonds.hbond_analysis has been removed in favour of
+    analysis.hydrogenbonds.hbond_analysis (Issues #2739, #2746)
   * Fixed inaccurate docstring inside the RMSD class (Issue #2796, PR #3134) 
   * TPRParser now loads TPR files with `tpr_resid_from_one=True` by default,
     which starts TPR resid indexing from 1 (instead of 0 as in 1.x) (Issue #2364, PR #3152)
@@ -217,6 +219,8 @@ Changes
   * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
 
 Deprecations
+  * The analysis.hbonds.hbond_autocorrel code has been moved to
+    analysis.hydrogenbonds.hbond_autocorrel (PR #3258)
   * In 2.1.0 the TRZReader will default to a dt of 1.0 ps when failing to
     read it from the input TRZ trajectory.
 

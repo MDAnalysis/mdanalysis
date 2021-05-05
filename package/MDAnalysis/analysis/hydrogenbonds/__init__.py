@@ -23,7 +23,8 @@
 
 __all__ = [
     'HydrogenBondAnalysis',
-    'WaterBridgeAnalysis'
+    'WaterBridgeAnalysis',
+    'HydrogenBondAutoCorrel', 'find_hydrogen_donors'
 ]
 
 from .hbond_analysis import HydrogenBondAnalysis

@@ -31,6 +31,7 @@ from numpy.testing import assert_almost_equal
 import numpy as np
 from unittest import mock
 import os
+from importlib import reload
 
 import MDAnalysis as mda
 from MDAnalysis.analysis import hbonds
@@ -275,6 +276,7 @@ class TestHydrogenBondAutocorrel(object):
         )
         assert isinstance(repr(hbond), str)
 
+
 def test_find_donors():
     u = mda.Universe(waterPSF, waterDCD)
 
@@ -287,8 +289,16 @@ def test_find_donors():
     for h_atom, o_atom in zip(H, D):
         assert o_atom in h_atom.bonded_atoms
 
+
 def test_donors_nobonds():
     u = mda.Universe(XYZ_mini)
 
     with pytest.raises(mda.NoDataError):
         hbonds.find_hydrogen_donors(u.atoms)
+
+
+def test_moved_module_warning():
+    wmsg = ("This module will be moved to "
+            "MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel")
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        reload(hbonds.hbond_autocorrel)

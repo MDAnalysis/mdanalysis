@@ -220,6 +220,12 @@ due.cite(Doi("10.1063/1.4922445"),
 )
 del Doi
 
+with warnings.catch_warnings():
+    warnings.simplefilter('always', DeprecationWarning)
+    wmsg = ("This module will be moved to "
+            "MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel "
+            "in MDAnalysis 2.1.0.")
+    warnings.warn(wmsg, category=DeprecationWarning)
 
 @requires('bonds')
 def find_hydrogen_donors(hydrogens):
@@ -237,6 +243,9 @@ def find_hydrogen_donors(hydrogens):
 
 
     .. versionadded:: 0.20.0
+    .. deprecated:: 2.0.0
+       This method will be moved to analysis.hydrogenbonds.hbond_autocorrel
+       in MDAnalysis 2.1.0
     """
     return sum(h.bonded_atoms[0] for h in hydrogens)
 
@@ -285,6 +294,9 @@ class HydrogenBondAutoCorrel(object):
       ``save_results()`` method was removed. You can instead use ``np.savez()``
       on :attr:`HydrogenBondAutoCorrel.solution['time']` and
       :attr:`HydrogenBondAutoCorrel.solution['results']` instead.
+    .. deprecated:: 2.0.0
+       This class will be moved to analysis.hydrogenbonds.hbond_autocorrel
+       in MDAnalysis 2.1.0
     """
 
     def __init__(self, universe,
