@@ -24,8 +24,9 @@
 """AtomGroup accessors --- :mod:`MDAnalysis.lib.accessors`
 =============================================================
 
-The aim of this module is simply to link a wrapper class to an object in order
-to avoid cluttering the namespace of the object.
+This module provides classes for accessing and converting AtomGroup objects. It
+is used for the :meth:`~AtomGroup.convert_to` method to make it usable in two
+different ways: ``ag.convert_to("PACKAGE")`` or ``ag.convert_to.package()``
 
 Example
 -------
@@ -43,7 +44,7 @@ Example
     >>> class Person:
     ...     def __init__(self, name):
     ...         self.name = name
-    ...     say = Accessor(SpeechWrapper)
+    ...     say = Accessor("say", SpeechWrapper)
     ...
     >>> bob = Person("Bob")
     >>> bob.say("hello")
@@ -81,6 +82,9 @@ class Accessor:
 
     And when calling ``ag.convert_to.rdkit()``, the "rdkit" method of the
     ConverterWrapper will be able to have access to "ag"
+
+
+    .. versionadded:: 2.0.0
     """
 
     def __init__(self, name, accessor):
