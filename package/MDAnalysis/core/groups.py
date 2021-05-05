@@ -94,6 +94,7 @@ import functools
 import itertools
 import numbers
 import os
+import contextlib
 import warnings
 
 from .. import (_CONVERTERS,
@@ -255,6 +256,22 @@ class _TopologyAttrContainer(object):
                     property(getter, setter, None, attr.singledoc))
             cls._SETATTR_WHITELIST.add(attr.singular)
 
+    @classmethod
+    def _del_prop(cls, attr):
+        """Remove `attr` from the namespace for this class.
+
+        Parameters
+        ----------
+        attr : A :class:`TopologyAttr` object
+        """
+        with contextlib.suppress(AttributeError):
+            delattr(cls, attr.attrname)
+        with contextlib.suppress(AttributeError):
+            delattr(cls, attr.singular)
+        
+        cls._SETATTR_WHITELIST.discard(attr.attrname)
+        cls._SETATTR_WHITELIST.discard(attr.singular)
+
     def __setattr__(self, attr, value):
         # `ag.this = 42` calls setattr(ag, 'this', 42)
         if not (attr.startswith('_') or  # 'private' allowed
@@ -364,6 +381,41 @@ class _MutableBase(object):
                 match = _TOPOLOGY_ATTRNAMES[clean]
                 err += 'Did you mean {match}?'.format(match=match)
             raise AttributeError(err)
+
+    def get_connections(self, typename, outside=True):
+        """
+        Get bonded connections between atoms as a
+        :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`.
+
+        Parameters
+        ----------
+        typename : str
+            group name. One of {"bonds", "angles", "dihedrals",
+            "impropers", "ureybradleys", "cmaps"}
+        outside : bool (optional)
+            Whether to include connections involving atoms outside
+            this group.
+
+        Returns
+        -------
+        TopologyGroup
+            containing the bonded group of choice, i.e. bonds, angles,
+            dihedrals, impropers, ureybradleys or cmaps.
+
+        .. versionadded:: 1.1.0
+        """
+        # AtomGroup has handy error messages for missing attributes
+        ugroup = getattr(self.universe.atoms, typename)
+        if not ugroup:
+            return ugroup
+        func = np.any if outside else np.all
+        try:
+            indices = self.atoms.ix_array
+        except AttributeError:  # if self is an Atom
+            indices = self.ix_array
+        seen = [np.in1d(col, indices) for col in ugroup._bix.T]
+        mask = func(seen, axis=0)
+        return ugroup[mask]
 
 
 class _ImmutableBase(object):

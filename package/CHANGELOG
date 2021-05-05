@@ -23,6 +23,8 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * NCDFReader now defaults to a dt value of 1.0 ps when it cannot estimate
+    it from the first two frames of the file (Issue #3166)
   * Get chi1_selection to match canonical gamma atoms (Issue #2044)
   * ITPParser now accepts relative paths (Issue #3037, PR #3108)
   * Fixed issue with unassigned 'GAP' variable in fasta2algin function when
@@ -104,6 +106,10 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Added intra_bonds, intra_angles, intra_dihedrals etc. to return only
+    the connections involving atoms within the AtomGroup, instead of
+    including atoms outside the AtomGroup (Issue #1264, #2821, PR #3200)
+  * Added del_TopologyAttr function (PR #3069)
   * Switch GNMAnalysis to AnalysisBase (Issue #3243)
   * Adds python 3.9 support (Issue #2974, PR #3027, #3245)
   * Added an MDAnalysis shields.io badge to the README (Issue #3227, PR #3229)
@@ -211,6 +217,9 @@ Changes
   * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
 
 Deprecations
+  * In 2.1.0 the TRZReader will default to a dt of 1.0 ps when failing to
+    read it from the input TRZ trajectory.
+
 
 06/09/20 richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
