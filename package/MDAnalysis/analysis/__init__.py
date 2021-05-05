@@ -89,6 +89,9 @@ Available analysis modules
 :mod:`~MDAnalysis.analysis.rdf`
     Calculation of pair distribution functions
 
+:mod:`~MDAnalysis.analysis.RDKit`
+    Calculation of descriptors and fingerprints with RDKit
+
 :mod:`~MDAnalysis.analysis.rms`
     Calculation of RMSD and RMSF.
 
