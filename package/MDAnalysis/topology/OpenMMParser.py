@@ -41,9 +41,6 @@ Also converts some objects within the
 
 The :class:`OpenMMTopologyParser` generates a topology from an OpenMM Topology object. 
 
-.. _OpenMM: http://docs.openmm.org/latest/api-python/app.html
-
-
 
 Classes
 -------

@@ -138,7 +138,7 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
 class OpenMMAppReader(base.SingleFrameReaderBase):
     """Reader for OpenMM Application layer objects 
 
-    See also `OpenMM Application layer <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation>`_ 
+    See also `the object definition in the OpenMM Application layer <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation>`_ 
 
     .. versionadded:: 2.0.0
     """
