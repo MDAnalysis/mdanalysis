@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>6.30. Serialization of Coordinate Readers &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  <title>6.31. Serialization of Coordinate Readers &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -47,8 +47,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="6.31. ChainReader — MDAnalysis.coordinates.chain" href="chain.html" />
-    <link rel="prev" title="6.29. Common functions for coordinate reading — MDAnalysis.coordinates.core" href="core.html" /> 
+    <link rel="next" title="6.32. ChainReader — MDAnalysis.coordinates.chain" href="chain.html" />
+    <link rel="prev" title="6.30. Common functions for coordinate reading — MDAnalysis.coordinates.core" href="core.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -121,39 +121,40 @@
 <li class="toctree-l2"><a class="reference internal" href="MMTF.html">6.12. MMTF trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MMTF</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="MOL2.html">6.13. MOL2 file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="NAMDBIN.html">6.14. NAMDBIN files format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.NAMDBIN</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="PDB.html">6.15. PDB structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="PDBQT.html">6.16. PDBQT structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="PQR.html">6.17. PQR file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="TRJ.html">6.18. AMBER trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="TRR.html">6.19. TRR trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="TRZ.html">6.20. TRZ trajectory I/O  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="TXYZ.html">6.21. TXYZ file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TXYZ</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XTC.html">6.22. XTC trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XYZ.html">6.23. XYZ trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="FHIAIMS.html">6.24. FHI-AIMS file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.FHIAIMS</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory.html">6.25. Reading trajectories from memory — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="chemfiles.html">6.26. Reading trajectories with <em>chemfiles</em> — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="null.html">6.27. Null output — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">6.28. Base classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">6.29. Common functions for coordinate reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">6.30. Serialization of Coordinate Readers</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#how-to-serialize-a-new-reader">6.30.1. How to serialize a new reader</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#file-access">6.30.1.1. File Access</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#to-seek-or-not-to-seek">6.30.1.2. To seek or not to seek</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#miscellaneous">6.30.1.3. Miscellaneous</a></li>
+<li class="toctree-l2"><a class="reference internal" href="OpenMM.html">6.15. OpenMM structure I/O — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.OpenMM</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDB.html">6.16. PDB structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBQT.html">6.17. PDBQT structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PQR.html">6.18. PQR file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRJ.html">6.19. AMBER trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRR.html">6.20. TRR trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRZ.html">6.21. TRZ trajectory I/O  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TXYZ.html">6.22. TXYZ file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TXYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XTC.html">6.23. XTC trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XYZ.html">6.24. XYZ trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="FHIAIMS.html">6.25. FHI-AIMS file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.FHIAIMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory.html">6.26. Reading trajectories from memory — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chemfiles.html">6.27. Reading trajectories with <em>chemfiles</em> — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="null.html">6.28. Null output — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">6.29. Base classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">6.30. Common functions for coordinate reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">6.31. Serialization of Coordinate Readers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-serialize-a-new-reader">6.31.1. How to serialize a new reader</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#file-access">6.31.1.1. File Access</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#to-seek-or-not-to-seek">6.31.1.2. To seek or not to seek</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#miscellaneous">6.31.1.3. Miscellaneous</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#tests">6.30.2. Tests</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#singleframereader-test">6.30.2.1. _SingleFrameReader Test</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#basereadertest-and-multiframereadertest">6.30.2.2. BaseReaderTest and MultiframeReaderTest</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#file-handler-test">6.30.2.3. File handler Test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tests">6.31.2. Tests</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#singleframereader-test">6.31.2.1. _SingleFrameReader Test</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#basereadertest-and-multiframereadertest">6.31.2.2. BaseReaderTest and MultiframeReaderTest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#file-handler-test">6.31.2.3. File handler Test</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#currently-implemented-picklable-io-formats">6.30.3. Currently implemented picklable IO Formats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#currently-implemented-picklable-io-formats">6.31.3. Currently implemented picklable IO Formats</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="chain.html">6.31. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.32. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">6.32. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.33. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
@@ -217,7 +218,7 @@
         
           <li><a href="../coordinates_modules.html">6. Coordinates modules</a> &raquo;</li>
         
-      <li>6.30. Serialization of Coordinate Readers</li>
+      <li>6.31. Serialization of Coordinate Readers</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -237,7 +238,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="serialization-of-coordinate-readers">
-<span id="serialization"></span><h1>6.30. Serialization of Coordinate Readers<a class="headerlink" href="#serialization-of-coordinate-readers" title="Permalink to this headline">¶</a></h1>
+<span id="serialization"></span><h1>6.31. Serialization of Coordinate Readers<a class="headerlink" href="#serialization-of-coordinate-readers" title="Permalink to this headline">¶</a></h1>
 <p>To achieve a working implementation of parallelism, this document illustrates
 the basic idea of how different coordinate readers are being serialized in MDAnalysis,
 and what developers should do to serialize a new reader.</p>
@@ -249,9 +250,9 @@ This means that for a successful unpickle, the original file still has to
 be accessible with its filename. To retain the current frame of the trajectory,
 <code class="xref py py-func docutils literal notranslate"><span class="pre">_read_frame(previous</span> <span class="pre">frame)()</span></code> will be called during unpickling.</p>
 <div class="section" id="how-to-serialize-a-new-reader">
-<span id="id1"></span><h2>6.30.1. How to serialize a new reader<a class="headerlink" href="#how-to-serialize-a-new-reader" title="Permalink to this headline">¶</a></h2>
+<span id="id1"></span><h2>6.31.1. How to serialize a new reader<a class="headerlink" href="#how-to-serialize-a-new-reader" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="file-access">
-<h3>6.30.1.1. File Access<a class="headerlink" href="#file-access" title="Permalink to this headline">¶</a></h3>
+<h3>6.31.1.1. File Access<a class="headerlink" href="#file-access" title="Permalink to this headline">¶</a></h3>
 <p>If the new reader uses <code class="xref py py-func docutils literal notranslate"><span class="pre">util.anyopen()</span></code>
 (e.g. <a class="reference internal" href="PDB.html#MDAnalysis.coordinates.PDB.PDBReader" title="MDAnalysis.coordinates.PDB.PDBReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB.PDBReader</span></code></a>),
 the reading handler can be pickled without modification.
@@ -266,7 +267,7 @@ pickle <a class="reference external" href="https://docs.python.org/3/library/pic
 to allow file handler serialization.</p>
 </div>
 <div class="section" id="to-seek-or-not-to-seek">
-<h3>6.30.1.2. To seek or not to seek<a class="headerlink" href="#to-seek-or-not-to-seek" title="Permalink to this headline">¶</a></h3>
+<h3>6.31.1.2. To seek or not to seek<a class="headerlink" href="#to-seek-or-not-to-seek" title="Permalink to this headline">¶</a></h3>
 <p>Some I/O classes support <code class="xref py py-func docutils literal notranslate"><span class="pre">seek()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">tell()</span></code> functions to allow the file
 to be pickled with an offset. It is normally not needed for MDAnalysis with
 random access. But if error occurs during testing, find a way to make the offset work.
@@ -278,7 +279,7 @@ its previous frame and <code class="xref py py-func docutils literal notranslate
 for such machinery to work.</p>
 </div>
 <div class="section" id="miscellaneous">
-<h3>6.30.1.3. Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permalink to this headline">¶</a></h3>
+<h3>6.31.1.3. Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permalink to this headline">¶</a></h3>
 <p>If pickle still fails due to some unpicklable attributes, try to find a way
 to pickle those, or write custom <code class="xref py py-func docutils literal notranslate"><span class="pre">__getstate__()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">__setstate__()</span></code>
 methods for the reader.</p>
@@ -287,14 +288,14 @@ methods for the reader.</p>
 </div>
 </div>
 <div class="section" id="tests">
-<span id="test-pickle"></span><h2>6.30.2. Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h2>
+<span id="test-pickle"></span><h2>6.31.2. Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="singleframereader-test">
-<h3>6.30.2.1. _SingleFrameReader Test<a class="headerlink" href="#singleframereader-test" title="Permalink to this headline">¶</a></h3>
+<h3>6.31.2.1. _SingleFrameReader Test<a class="headerlink" href="#singleframereader-test" title="Permalink to this headline">¶</a></h3>
 <p>If the new reader is a single-frame reader, the basic test should normally
 inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">_SingleFrameReader</span></code>, where the pickliablity is tested.</p>
 </div>
 <div class="section" id="basereadertest-and-multiframereadertest">
-<h3>6.30.2.2. BaseReaderTest and MultiframeReaderTest<a class="headerlink" href="#basereadertest-and-multiframereadertest" title="Permalink to this headline">¶</a></h3>
+<h3>6.31.2.2. BaseReaderTest and MultiframeReaderTest<a class="headerlink" href="#basereadertest-and-multiframereadertest" title="Permalink to this headline">¶</a></h3>
 <p>If the test for the new reader uses <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseReaderTest</span></code> or
 <code class="xref py py-class docutils literal notranslate"><span class="pre">MultiframeReaderTest</span></code>, whether the current timestep information is
 saved (the former), whether its relative position is maintained,
@@ -302,7 +303,7 @@ i.e. next() reads the right next timestep, and whether its last timestep
 can be pickled, are already tested.</p>
 </div>
 <div class="section" id="file-handler-test">
-<h3>6.30.2.3. File handler Test<a class="headerlink" href="#file-handler-test" title="Permalink to this headline">¶</a></h3>
+<h3>6.31.2.3. File handler Test<a class="headerlink" href="#file-handler-test" title="Permalink to this headline">¶</a></h3>
 <p>If the new reader accesses the file with <code class="xref py py-func docutils literal notranslate"><span class="pre">util.anyopen()</span></code>, add necessary
 tests inside <code class="docutils literal notranslate"><span class="pre">parallelism/test_multiprocessing.py</span></code> for the reader.</p>
 <p>If the new reader accessed the file with a new picklable I/O class,
@@ -311,7 +312,7 @@ add necessary tests inside <code class="docutils literal notranslate"><span clas
 </div>
 </div>
 <div class="section" id="currently-implemented-picklable-io-formats">
-<span id="implemented-fileio"></span><h2>6.30.3. Currently implemented picklable IO Formats<a class="headerlink" href="#currently-implemented-picklable-io-formats" title="Permalink to this headline">¶</a></h2>
+<span id="implemented-fileio"></span><h2>6.31.3. Currently implemented picklable IO Formats<a class="headerlink" href="#currently-implemented-picklable-io-formats" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.FileIOPicklable" title="MDAnalysis.lib.picklable_file_io.FileIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.FileIOPicklable</span></code></a></li>
 <li><a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.BufferIOPicklable" title="MDAnalysis.lib.picklable_file_io.BufferIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.BufferIOPicklable</span></code></a></li>
@@ -332,15 +333,15 @@ add necessary tests inside <code class="docutils literal notranslate"><span clas
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="chain.html" class="btn btn-neutral float-right" title="6.31. ChainReader — MDAnalysis.coordinates.chain" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="core.html" class="btn btn-neutral float-left" title="6.29. Common functions for coordinate reading — MDAnalysis.coordinates.core" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="chain.html" class="btn btn-neutral float-right" title="6.32. ChainReader — MDAnalysis.coordinates.chain" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="core.html" class="btn btn-neutral float-left" title="6.30. Common functions for coordinate reading — MDAnalysis.coordinates.core" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
   </div>

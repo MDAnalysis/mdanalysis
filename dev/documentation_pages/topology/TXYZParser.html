@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>5.22. TXYZ topology parser &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  <title>5.23. TXYZ topology parser &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -47,8 +47,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="5.23. XYZ Topology Parser" href="XYZParser.html" />
-    <link rel="prev" title="5.21. Gromacs portable run input TPR format parser" href="TPRParser.html" /> 
+    <link rel="next" title="5.24. XYZ Topology Parser" href="XYZParser.html" />
+    <link rel="prev" title="5.22. Gromacs portable run input TPR format parser" href="TPRParser.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -120,23 +120,24 @@
 <li class="toctree-l2"><a class="reference internal" href="MinimalParser.html">5.12. Minimal topology parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MMTFParser.html">5.13. MMTF Topology Parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MOL2Parser.html">5.14. MOL2 file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="PDBParser.html">5.15. PDB Topology Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ExtendedPDBParser.html">5.16. Extended PDB topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PDBQTParser.html">5.17. PDBQT topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PQRParser.html">5.18. PQR topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PSFParser.html">5.19. PSF topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TOPParser.html">5.20. AMBER PRMTOP topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TPRParser.html">5.21. Gromacs portable run input TPR format parser</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">5.22. TXYZ topology parser</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#classes">5.22.1. Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="OpenMM.html">5.15. OpenMM topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBParser.html">5.16. PDB Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExtendedPDBParser.html">5.17. Extended PDB topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBQTParser.html">5.18. PDBQT topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PQRParser.html">5.19. PQR topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PSFParser.html">5.20. PSF topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TOPParser.html">5.21. AMBER PRMTOP topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TPRParser.html">5.22. Gromacs portable run input TPR format parser</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.23. TXYZ topology parser</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#classes">5.23.1. Classes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="XYZParser.html">5.23. XYZ Topology Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">5.24. Base topology reader classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">5.25. Common functions for topology building — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="guessers.html">5.26. Guessing unknown Topology information — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="tables.html">5.27. MDAnalysis topology tables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tpr_util.html">5.28. Utility functions for the TPR topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="XYZParser.html">5.24. XYZ Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">5.25. Base topology reader classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">5.26. Common functions for topology building — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html">5.27. Guessing unknown Topology information — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tables.html">5.28. MDAnalysis topology tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tpr_util.html">5.29. Utility functions for the TPR topology parser</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
@@ -201,7 +202,7 @@
         
           <li><a href="../topology_modules.html">5. Topology modules</a> &raquo;</li>
         
-      <li>5.22. TXYZ topology parser</li>
+      <li>5.23. TXYZ topology parser</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -221,7 +222,7 @@
            <div itemprop="articleBody">
             
   <span class="target" id="module-MDAnalysis.topology.TXYZParser"></span><div class="section" id="txyz-topology-parser">
-<h1>5.22. TXYZ topology parser<a class="headerlink" href="#txyz-topology-parser" title="Permalink to this headline">¶</a></h1>
+<h1>5.23. TXYZ topology parser<a class="headerlink" href="#txyz-topology-parser" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://dasher.wustl.edu/tinker/">Tinker</a> topology parser: reads information from .txyz and .arc files.
 Atom types are read from column 6, while bond connectivity is read from column 7
 onwards.</p>
@@ -233,7 +234,7 @@ onwards.</p>
 </dl>
 </div>
 <div class="section" id="classes">
-<h2>5.22.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<h2>5.23.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.topology.TXYZParser.TXYZParser">
 <em class="property">class </em><code class="descclassname">MDAnalysis.topology.TXYZParser.</code><code class="descname">TXYZParser</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TXYZParser.html#TXYZParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TXYZParser.TXYZParser" title="Permalink to this definition">¶</a></dt>
@@ -510,15 +511,15 @@ is avoided.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="XYZParser.html" class="btn btn-neutral float-right" title="5.23. XYZ Topology Parser" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="TPRParser.html" class="btn btn-neutral float-left" title="5.21. Gromacs portable run input TPR format parser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="XYZParser.html" class="btn btn-neutral float-right" title="5.24. XYZ Topology Parser" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="TPRParser.html" class="btn btn-neutral float-left" title="5.22. Gromacs portable run input TPR format parser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
   </div>
