@@ -74,7 +74,7 @@ class Accessor:
     use:
 
     .. code-block:: python
-    
+
         >>> class AtomGroup:
         >>>     # ...
         >>>     convert_to = Accessor("convert_to", ConverterWrapper)
@@ -110,7 +110,7 @@ class ConverterWrapper:
 
     Example
     -------
-    The code below converts a Universe to a :class:`parmed.structure.Structure`.
+    The code below converts a Universe to a :class:`parmed.structure.Structure`
 
     .. code-block:: python
 
@@ -139,7 +139,7 @@ class ConverterWrapper:
 
     Raises
     ------
-    TypeError:
+    ValueError:
         No converter was found for the required package
 
 
@@ -182,6 +182,6 @@ class ConverterWrapper:
         try:
             convert = getattr(self, package.lower())
         except AttributeError:
-            raise TypeError(f"No {package!r} converter found. Available: "
+            raise ValueError(f"No {package!r} converter found. Available: "
                             f"{' '.join(self._CONVERTERS.keys())}") from None
         return convert(*args, **kwargs)

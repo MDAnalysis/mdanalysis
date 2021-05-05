@@ -25,16 +25,13 @@ import MDAnalysis as mda
 from MDAnalysisTests.util import import_not_available
 
 
-requires_rdkit = pytest.mark.skipif(import_not_available("rdkit"),
-                                    reason="requires RDKit")
+pytest.mark.skipif(import_not_available("rdkit"), reason="requires RDKit")
 
+@pytest.fixture(scope="module")
+def u():
+    return mda.Universe.from_smiles("CCO")
 
-@requires_rdkit
 class TestConvertTo:
-    @pytest.fixture(scope="class")
-    def u(self):
-        return mda.Universe.from_smiles("CCO")
-
     def test_convert_to_case_insensitive(self, u):
         mol = u.atoms.convert_to("rdkit")
 
@@ -48,3 +45,16 @@ class TestConvertTo:
     def test_convert_to_lib_method_kwargs(self, u):
         mol = u.atoms.convert_to.rdkit(NoImplicit=False)
         assert mol.GetAtomWithIdx(0).GetNoImplicit() is False
+
+
+class TestConverterWrapper:
+    def test_raises_valueerror(self, u):
+        with pytest.raises(ValueError,
+                           match="No 'mdanalysis' converter found"):
+            u.atoms.convert_to("mdanalysis")
+
+    def test_single_instance(self):
+        u1 = mda.Universe.from_smiles("C")
+        u2 = mda.Universe.from_smiles("CC")
+        assert (u1.atoms.convert_to.rdkit.__wrapped__ is
+                u2.atoms.convert_to.rdkit.__wrapped__)
