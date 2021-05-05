@@ -92,6 +92,9 @@ class Accessor:
         self._name = name
 
     def __get__(self, obj, cls):
+        if obj is None:
+            # accessing from class instead of instance
+            return self._accessor
         # instances the accessor class with the parent object as argument
         wrapped = self._accessor(obj)
         # replace the parent object's property with the wrapped instance

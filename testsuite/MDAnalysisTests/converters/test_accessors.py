@@ -47,6 +47,12 @@ class TestConvertTo:
         assert mol.GetAtomWithIdx(0).GetNoImplicit() is False
 
 
+class TestAccessor:
+    def test_access_from_class(self):
+        assert (mda.core.AtomGroup.convert_to is
+                mda.converters.accessors.ConverterWrapper)
+
+
 class TestConverterWrapper:
     def test_raises_valueerror(self, u):
         with pytest.raises(ValueError,
