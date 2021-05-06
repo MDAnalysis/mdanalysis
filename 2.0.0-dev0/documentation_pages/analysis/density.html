@@ -260,8 +260,8 @@ is suitably superimposed to provide a fixed reference frame) <a class="footnote-
 <span class="n">ow</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name OW&quot;</span><span class="p">)</span>
 <span class="n">D</span> <span class="o">=</span> <span class="n">DensityAnalysis</span><span class="p">(</span><span class="n">ow</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 <span class="n">D</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">D</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s1">&#39;TIP4P&#39;</span><span class="p">)</span>
-<span class="n">D</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;water.dx&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;double&quot;</span><span class="p">)</span>
+<span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s1">&#39;TIP4P&#39;</span><span class="p">)</span>
+<span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;water.dx&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;double&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The positions of all water oxygens (the <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> <cite>ow</cite>) are
@@ -273,9 +273,9 @@ at ambient conditions (see the values in <a class="reference internal" href="../
 details). Finally, the density is written as an <a class="reference external" href="http://www.opendx.org/">OpenDX</a> compatible file that
 can be read in <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>, <a class="reference external" href="https://www.cgl.ucsf.edu/chimera/">Chimera</a>, or <a class="reference external" href="http://www.pymol.org/">PyMOL</a>.</p>
 <p>The <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> object is accessible as the
-<a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis.density" title="MDAnalysis.analysis.density.DensityAnalysis.density"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DensityAnalysis.density</span></code></a> attribute.  In particular, the data for the
-density is stored as a NumPy array in <a class="reference internal" href="#MDAnalysis.analysis.density.Density.grid" title="MDAnalysis.analysis.density.Density.grid"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Density.grid</span></code></a>, which can be
-processed in any manner.</p>
+<a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis.results.density" title="MDAnalysis.analysis.density.DensityAnalysis.results.density"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DensityAnalysis.results.density</span></code></a> attribute.  In particular, the data
+for the density is stored as a NumPy array in <a class="reference internal" href="#MDAnalysis.analysis.density.Density.grid" title="MDAnalysis.analysis.density.Density.grid"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Density.grid</span></code></a>, which can
+be processed in any manner.</p>
 </div>
 <div class="section" id="creating-densities">
 <h2>4.8.1.2. Creating densities<a class="headerlink" href="#creating-densities" title="Permalink to this headline">¶</a></h2>
@@ -291,7 +291,7 @@ histogrammed on a 3D grid with spacing <cite>delta</cite>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup" title="MDAnalysis.core.groups.UpdatingAtomGroup"><em>UpdatingAtomGroup</em></a>) – Group of atoms (such as all the water oxygen atoms) being analyzed.
 This can be an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup" title="MDAnalysis.core.groups.UpdatingAtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpdatingAtomGroup</span></code></a> for
 selections that change every time step.</li>
@@ -307,14 +307,46 @@ center of a user defined grid box in ångström.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> instance containing a physical density of units
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.density.DensityAnalysis.results.density">
+<code class="descclassname">results.</code><code class="descname">density</code><a class="headerlink" href="#MDAnalysis.analysis.density.DensityAnalysis.results.density" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> instance containing a physical density of units
 <span class="math notranslate nohighlight">\(Angstrom^{-3}\)</span>.</p>
-</td>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a></td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a></p>
-</td>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.density.DensityAnalysis.density">
+<code class="descname">density</code><a class="headerlink" href="#MDAnalysis.analysis.density.DensityAnalysis.density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis.results.density" title="MDAnalysis.analysis.density.DensityAnalysis.results.density"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.density</span></code></a>.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis.results.density" title="MDAnalysis.analysis.density.DensityAnalysis.results.density"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.density</span></code></a> instead.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+</tbody>
+</table>
+</dd></dl>
+
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
 <li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – if AtomGroup is empty and no user defined grid is provided, or
 if the user defined grid is not or incorrectly provided</li>
 <li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#UserWarning" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">UserWarning</span></code></a> – if AtomGroup is empty and a user defined grid is provided</li>
@@ -374,12 +406,12 @@ supplying an AtomGroup, then use  the <a class="reference internal" href="#MDAna
 <span class="n">ow</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name OW&quot;</span><span class="p">)</span>
 <span class="n">D</span> <span class="o">=</span> <span class="n">density</span><span class="o">.</span><span class="n">DensityAnalysis</span><span class="p">(</span><span class="n">ow</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 <span class="n">D</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">D</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s1">&#39;TIP4P&#39;</span><span class="p">)</span>
+<span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s1">&#39;TIP4P&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The positions of all water oxygens are histogrammed on a grid with spacing
 <em>delta</em> = 1 Å and stored as a <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> object in the attribute
-<a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis.density" title="MDAnalysis.analysis.density.DensityAnalysis.density"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DensityAnalysis.density</span></code></a>.</p>
+<a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis.results.density" title="MDAnalysis.analysis.density.DensityAnalysis.results.density"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DensityAnalysis.results.density</span></code></a>.</p>
 <p class="rubric">Working with a density</p>
 <p>A <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> contains a large number of methods and attributes that
 are listed in the documentation. Here we use the
@@ -392,7 +424,7 @@ standard conditions. (MDAnalysis stores a number of literature values in
 <p>By default, the <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> object returned contains a physical
 density in units of Å<sup>-3</sup>. If you are interested in recovering the
 underlying <strong>probability density</strong>, simply divide by the sum:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">probability_density</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">grid</span> <span class="o">/</span> <span class="n">D</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">probability_density</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">grid</span> <span class="o">/</span> <span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Similarly, if you would like to recover a grid containing a <strong>histogram of
@@ -402,10 +434,10 @@ in this case you need to ensure that the physical density is measured in
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="c1"># ensure that the density is A^{-3}</span>
-<span class="n">D</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s2">&quot;A^{-3}&quot;</span><span class="p">)</span>
+<span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s2">&quot;A^{-3}&quot;</span><span class="p">)</span>
 
-<span class="n">dV</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">delta</span><span class="p">)</span>
-<span class="n">atom_count_histogram</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">grid</span> <span class="o">*</span> <span class="n">dV</span>
+<span class="n">dV</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">delta</span><span class="p">)</span>
+<span class="n">atom_count_histogram</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">grid</span> <span class="o">*</span> <span class="n">dV</span>
 </pre></div>
 </div>
 <p class="rubric">Writing the density to a file</p>
@@ -414,7 +446,7 @@ in this case you need to ensure that the physical density is measured in
 subclass <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a>, which provides the functionality).
 For example, to <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/basic.html#writing-out-data">write a DX file</a>
 <code class="docutils literal notranslate"><span class="pre">water.dx</span></code> that can be read with VMD, PyMOL, or Chimera:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">D</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;water.dx&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;double&quot;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;water.dx&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;double&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="rubric">Example: Water density in the whole simulation</p>
@@ -461,13 +493,17 @@ defined grid is assigned).</p>
 <p><span class="versionmodified">New in version 1.0.0.</span></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span><a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis._set_user_grid" title="MDAnalysis.analysis.density.DensityAnalysis._set_user_grid"><code class="xref py py-func docutils literal notranslate"><span class="pre">_set_user_grid()</span></code></a> is now a method of <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis" title="MDAnalysis.analysis.density.DensityAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">DensityAnalysis</span></code></a>.</p>
+<p><span class="versionmodified">Changed in version 2.0.0: </span><a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis._set_user_grid" title="MDAnalysis.analysis.density.DensityAnalysis._set_user_grid"><code class="xref py py-func docutils literal notranslate"><span class="pre">_set_user_grid()</span></code></a> is now a method of <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis" title="MDAnalysis.analysis.density.DensityAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">DensityAnalysis</span></code></a>.
+<a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> results are now stored in a
+<a class="reference internal" href="base.html#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.Results</span></code></a> instance.</p>
 </div>
 <dl class="attribute">
-<dt id="MDAnalysis.analysis.density.DensityAnalysis.density">
-<code class="descname">density</code><a class="headerlink" href="#MDAnalysis.analysis.density.DensityAnalysis.density" title="Permalink to this definition">¶</a></dt>
-<dd><p>After the analysis (see the <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis.run" title="MDAnalysis.analysis.density.DensityAnalysis.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> method), the resulting density is
-stored in the <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis.density" title="MDAnalysis.analysis.density.DensityAnalysis.density"><code class="xref py py-attr docutils literal notranslate"><span class="pre">density</span></code></a> attribute as a <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> instance.</p>
+<dt>
+<code class="descclassname">results.</code><code class="descname">density</code></dt>
+<dd><p>After the analysis (see the <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis.run" title="MDAnalysis.analysis.density.DensityAnalysis.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> method), the
+resulting density is stored in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.density</span></code> attribute as
+a <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> instance. Note: this replaces the now deprecated
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">density</span></code> attribute.</p>
 </dd></dl>
 
 <dl class="staticmethod">
