@@ -87,10 +87,10 @@ Output as Network
 Since the waters connecting the two ends of the selections are by nature a
 network. We provide a network representation of the water network. Water bridge
 data are returned per frame, which is stored in
-:attr:`WaterBridgeAnalysis.network`. Each frame is represented as a dictionary,
-where the keys are the hydrogen bonds originating from selection 1 and the
-values are new dictionaries representing the hydrogen bonds coming out of the
-corresponding molecules making hydrogen bonds with selection 1.
+:attr:`WaterBridgeAnalysis.results.network`. Each frame is represented as a
+dictionary, where the keys are the hydrogen bonds originating from selection
+1 and the values are new dictionaries representing the hydrogen bonds coming
+out of the corresponding molecules making hydrogen bonds with selection 1.
 
 As for the hydrogen bonds which reach the selection 2, the values of the
 corresponding keys are None. One example where selection 1 and selection 2 are
@@ -925,7 +925,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                              'Invalid selection type {0!s}'.format(
                                 self.selection1_type))
 
-        self.results.network = []  # final result accessed as self.network
+        self.results.network = []  # final result accessed as self.results.network
         self.timesteps = None  # time for each frame
 
         self._log_parameters()
@@ -1813,3 +1813,11 @@ class WaterBridgeAnalysis(AnalysisBase):
             "WBridge: Stored results as table with %(num_records)d entries.",
             vars())
         self.table = table
+
+    @property
+    def _network(self):
+        wmsg = ("The `_network` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.network` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.network
