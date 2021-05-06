@@ -371,8 +371,11 @@ class Contacts(AnalysisBase):
         2D array containing *Q* for all refgroup pairs and analyzed frames
 
     timeseries : numpy.ndarray
-        Deprecated alias to :attr:`results.timeseries`. Will be removed in
-        MDAnalysis 3.0.0.
+        Alias to the :attr:`results.timeseries` attribute.
+
+        .. deprecated:: 2.0.0
+           Will be removed in MDAnalysis 3.0.0. Please use
+           :attr:`results.timeseries` instead.
 
 
     .. versionchanged:: 1.0.0
@@ -380,10 +383,9 @@ class Contacts(AnalysisBase):
        :attr:`Contacts.results.timeseries` instead.
     .. versionchanged:: 1.0.0
         added ``pbc`` attribute to calculate distances using PBC.
-    .. deprecated:: 2.0.0
-       The :attr:`timeseries` attribute is deprecated in favour of
-       :attr:`results.timeseries`, it will be removed in MDAnalysis 3.0.0.
-
+    .. versionchanged:: 2.0.0
+       :attr:`timeseries` results are now stored in a
+       :class:`MDAnalysis.analysis.base.Results` instance.
     """
     def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
                  pbc=True, kwargs=None, **basekwargs):
