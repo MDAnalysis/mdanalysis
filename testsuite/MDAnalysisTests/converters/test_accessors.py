@@ -25,12 +25,15 @@ import MDAnalysis as mda
 from MDAnalysisTests.util import import_not_available
 
 
-pytest.mark.skipif(import_not_available("rdkit"), reason="requires RDKit")
+requires_rdkit = pytest.mark.skipif(import_not_available("rdkit"),
+                                    reason="requires RDKit")
 
+@requires_rdkit
 @pytest.fixture(scope="module")
 def u():
     return mda.Universe.from_smiles("CCO")
 
+@requires_rdkit
 class TestConvertTo:
     def test_convert_to_case_insensitive(self, u):
         mol = u.atoms.convert_to("rdkit")
@@ -59,6 +62,7 @@ class TestConverterWrapper:
                            match="No 'mdanalysis' converter found"):
             u.atoms.convert_to("mdanalysis")
 
+    @requires_rdkit
     def test_single_instance(self):
         u1 = mda.Universe.from_smiles("C")
         u2 = mda.Universe.from_smiles("CC")
