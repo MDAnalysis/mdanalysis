@@ -33,9 +33,12 @@ from unittest import mock
 from importlib import reload
 
 import MDAnalysis as mda
-from MDAnalysis.analysis.hydrogenbonds import (HydrogenBondAutoCorrel as HBAC,
-                                               find_hydrogen_donors)
+from MDAnalysis.analysis import hbonds
+from MDAnalysis.analysis.hbonds import HydrogenBondAutoCorrel as HBAC
 
+@pytest.fixture(scope="module")
+def u_water():
+    return mda.Universe(waterPSF, waterDCD)
 
 class TestHydrogenBondAutocorrel(object):
     @pytest.fixture()
@@ -275,13 +278,26 @@ class TestHydrogenBondAutocorrel(object):
         )
         assert isinstance(repr(hbond), str)
 
+    def test_deprecation_warning(self, u, hydrogens, oxygens, nitrogens):
+        wmsg = ('`HydrogenBondAutoCorrel` is deprecated!\n'
+                '`HydrogenBondAutoCorrel` will be removed in release 3.0.0.\n'
+                'The class was moved to MDAnalysis.analysis.hbonds.hbond_autocorrel.')
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            HBAC(
+                u,
+                hydrogens=hydrogens,
+                acceptors=oxygens,
+                donors=nitrogens,
+                bond_type='continuous',
+                sample_time=0.06
+            )
 
-def test_find_donors():
-    u = mda.Universe(waterPSF, waterDCD)
 
-    H = u.select_atoms('name H*')
 
-    D = find_hydrogen_donors(H)
+def test_find_donors(u_water):
+    H = u_water.select_atoms('name H*')
+
+    D = hbonds.find_hydrogen_donors(H)
 
     assert len(H) == len(D)
     # check each O is bonded to the corresponding H
@@ -293,4 +309,23 @@ def test_donors_nobonds():
     u = mda.Universe(XYZ_mini)
 
     with pytest.raises(mda.NoDataError):
-        find_hydrogen_donors(u.atoms)
+        hbonds.find_hydrogen_donors(u.atoms)
+
+
+def test_find_hydrogen_donors_deprecation_warning(u_water):
+    H = u_water.select_atoms('name H*')
+    wmsg = ('`find_hydrogen_donors` is deprecated!\n'
+            '`find_hydrogen_donors` will be removed in release 3.0.0.\n'
+            'The function was moved to MDAnalysis.analysis.hbonds.hbond_autocorrel.')
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        hbonds.find_hydrogen_donors(H)
+
+
+def test_moved_module_warning():
+    wmsg = ("This module was moved to "
+            "MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel; "
+            "hbonds.hbond_autocorrel will be removed in 3.0.0.")
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        reload(hbonds.hbond_autocorrel)
+
+
