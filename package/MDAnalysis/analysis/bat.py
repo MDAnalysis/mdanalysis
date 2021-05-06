@@ -93,8 +93,8 @@ of adenylate kinase (AdK). The trajectory is included within the test data files
    R.run()
 
 After :meth:`R.run()<BAT.run>`, the coordinates can be accessed with
-:attr:`R.results.bat<BAT.bat>`. The following code snippets assume that the previous
-snippet has been executed.
+:attr:`R.results.bat<BAT.bat>`. The following code snippets assume that the
+previous snippet has been executed.
 
 Reconstruct Cartesian coordinates for the first frame::
 
@@ -422,7 +422,7 @@ class BAT(AnalysisBase):
         # Wrap torsions to between -np.pi and np.pi
         torsions = ((torsions + np.pi) % (2 * np.pi)) - np.pi
 
-        self.results.bat[self._frame_index, :] =  np.concatenate(
+        self.results.bat[self._frame_index, :] = np.concatenate(
                 (root_based, bonds, angles, torsions))
 
     def load(self, filename, start=None, stop=None, step=None):
@@ -450,14 +450,14 @@ class BAT(AnalysisBase):
         self.results.bat = np.load(filename)
 
         # Check array dimensions
-        if self.results.bat.shape!=(self.n_frames, 3*self._ag.n_atoms):
+        if self.results.bat.shape != (self.n_frames, 3*self._ag.n_atoms):
             errmsg = ('Dimensions of array in loaded file, '
                       f'({self.results.bat.shape[0]},'
                       f'{self.results.bat.shape[1]}), differ from required '
                       f'dimensions of ({self.n_frames, 3*self._ag.n_atoms})')
             raise ValueError(errmsg)
         # Check position of initial atom
-        if (self.results.bat[0,:3] != self._root[0].position).any():
+        if (self.results.bat[0, :3] != self._root[0].position).any():
             raise ValueError('Position of initial atom in file ' + \
                 'inconsistent with current trajectory in starting frame.')
         return self
