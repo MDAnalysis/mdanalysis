@@ -217,6 +217,10 @@ class DensityAnalysis(AnalysisBase):
             A :class:`Density` instance containing a physical density of units
             :math:`Angstrom^{-3}`.
 
+    density : :class:`Density`
+            Deprecated alias to the :attr:`results.density`. Will be removed
+            in MDAnalysis 3.0.0.
+
     Raises
     ------
     ValueError
