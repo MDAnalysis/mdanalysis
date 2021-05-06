@@ -74,8 +74,8 @@ is suitably superimposed to provide a fixed reference frame) [#testraj]_ ::
   ow = u.select_atoms("name OW")
   D = DensityAnalysis(ow, delta=1.0)
   D.run()
-  D.density.convert_density('TIP4P')
-  D.density.export("water.dx", type="double")
+  D.results.density.convert_density('TIP4P')
+  D.results.density.export("water.dx", type="double")
 
 The positions of all water oxygens (the :class:`AtomGroup` `ow`) are
 histogrammed on a grid with spacing *delta* = 1 Å. Initially the density is
@@ -87,9 +87,9 @@ details). Finally, the density is written as an OpenDX_ compatible file that
 can be read in VMD_, Chimera_, or PyMOL_.
 
 The :class:`Density` object is accessible as the
-:attr:`DensityAnalysis.density` attribute.  In particular, the data for the
-density is stored as a NumPy array in :attr:`Density.grid`, which can be
-processed in any manner.
+:attr:`DensityAnalysis.results.density` attribute.  In particular, the data
+for the density is stored as a NumPy array in :attr:`Density.grid`, which can
+be processed in any manner.
 
 
 Creating densities
@@ -102,10 +102,12 @@ atomgroup.
    :members:
    :inherited-members: run
 
-   .. attribute:: density
+   .. attribute:: results.density
 
-      After the analysis (see the :meth:`~DensityAnalysis.run` method), the resulting density is
-      stored in the :attr:`density` attribute as a :class:`Density` instance.
+      After the analysis (see the :meth:`~DensityAnalysis.run` method), the
+      resulting density is stored in the :attr:`results.density` attribute as
+      a :class:`Density` instance. Note: this replaces the now deprecated
+      :attr:`density` attribute.
 
    .. automethod:: _set_user_grid
 
@@ -283,11 +285,11 @@ class DensityAnalysis(AnalysisBase):
         ow = u.select_atoms("name OW")
         D = density.DensityAnalysis(ow, delta=1.0)
         D.run()
-        D.density.convert_density('TIP4P')
+        D.results.density.convert_density('TIP4P')
 
     The positions of all water oxygens are histogrammed on a grid with spacing
     *delta* = 1 Å and stored as a :class:`Density` object in the attribute
-    :attr:`DensityAnalysis.density`.
+    :attr:`DensityAnalysis.results.density`.
 
     .. rubric:: Working with a density
 
@@ -305,7 +307,7 @@ class DensityAnalysis(AnalysisBase):
     density in units of Å\ :sup:`-3`. If you are interested in recovering the
     underlying **probability density**, simply divide by the sum::
 
-      probability_density = D.density.grid / D.density.grid.sum()
+      probability_density = D.results.density.grid / D.results.density.grid.sum()
 
     Similarly, if you would like to recover a grid containing a **histogram of
     atom counts**, simply multiply by the volume `dV` of each bin (or voxel);
@@ -315,10 +317,10 @@ class DensityAnalysis(AnalysisBase):
       import numpy as np
 
       # ensure that the density is A^{-3}
-      D.density.convert_density("A^{-3}")
+      D.results.density.convert_density("A^{-3}")
 
-      dV = np.prod(D.density.delta)
-      atom_count_histogram = D.density.grid * dV
+      dV = np.prod(D.results.density.delta)
+      atom_count_histogram = D.results.density.grid * dV
 
 
     .. rubric:: Writing the density to a file
@@ -331,7 +333,7 @@ class DensityAnalysis(AnalysisBase):
     <https://www.mdanalysis.org/GridDataFormats/gridData/basic.html#writing-out-data>`_
     ``water.dx`` that can be read with VMD, PyMOL, or Chimera::
 
-      D.density.export("water.dx", type="double")
+      D.results.density.export("water.dx", type="double")
 
 
     .. rubric:: Example: Water density in the whole simulation
@@ -484,14 +486,11 @@ class DensityAnalysis(AnalysisBase):
         self.results.density = density
 
     @property
-    @deprecate(release="2.0.0", remove="3.0.0")
     def density(self):
-        """:class:`Density` results attribute
-
-
-        .. deprecated:: 2.0.0
-           Please use :attr:`DensityAnalysis.results.density` instead
-        """
+        wmsg = ("The `density` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.density` instead")
+        warnings.warn(wmsg, DeprecationWarning)
         return self.results.density
 
     @staticmethod

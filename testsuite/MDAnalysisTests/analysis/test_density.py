@@ -300,7 +300,7 @@ class TestDensityAnalysis(DensityParameters):
         D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['static']))
         D.run(stop=1)
-        wmsg = "`density` will be removed in release 3.0.0"
+        wmsg = "The `density` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(D.density.grid, D.results.density.grid)
 
