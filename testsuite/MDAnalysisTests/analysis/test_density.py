@@ -161,8 +161,10 @@ class TestDensityAnalysis(DensityParameters):
             D.results.density.export(self.outfile)
 
             D2 = density.Density(self.outfile)
-            assert_almost_equal(D.results.density.grid, D2.grid, decimal=self.precision,
-                                err_msg="DX export failed: different grid sizes")
+            assert_almost_equal(
+                    D.results.density.grid, D2.grid, decimal=self.precision,
+                    err_msg="DX export failed: different grid sizes"
+            )
 
     @pytest.mark.parametrize("mode", ("static", "dynamic"))
     def test_run(self, mode, universe, tmpdir):
