@@ -124,5 +124,6 @@ class TestBAT(object):
     def test_bat_incorrect_dims(self, bat_npz):
         u = mda.Universe(PSF, DCD)
         selected_residues = u.select_atoms("resid 1-3")
-        with pytest.raises(ValueError):
+        errmsg = 'Dimensions of array in loaded file'
+        with pytest.raises(ValueError, match=errmsg):
             R = BAT(selected_residues, filename=bat_npz)
