@@ -176,6 +176,8 @@ Enhancements
 Changes
   * `analysis.dihedrals` classes now store angle data using the
     `results.angles` attribute (Issue #3261)
+  * `msd.EinsteinMSD` now uses the `analysis.base.Results` class to store
+    analysis results (Issue #3261)
   * `bat.BAT` now uses the `analysis.base.Results` class to store the `bat`
     results attribute (Issue #3261, #3272)
   * `contacts.Contacts` now stores data using the `Contacts.results.timeseries`
