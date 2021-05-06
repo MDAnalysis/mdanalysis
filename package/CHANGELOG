@@ -174,6 +174,8 @@ Enhancements
     checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
 
 Changes
+  * `msd.EinsteinMSD` now uses the `analysis.base.Results` class to store
+    analysis results (Issue #3261)
   * `bat.BAT` now uses the `analysis.base.Results` class to store the `bat`
     results attribute (Issue #3261, #3272)
   * `contacts.Contacts` now stores data using the `Contacts.results.timeseries`
