@@ -122,14 +122,14 @@ Output as Timeseries
 --------------------
 
 For lower order water bridges, it might be desirable to represent the
-connections as :attr:`WaterBridgeAnalysis.timeseries`. The results are returned
-per frame and are a list of hydrogen bonds between the selection 1 or selection
-2 and the bridging waters. Due to the complexity of the higher order water
-bridge and the fact that one hydrogen bond between two waters can appear in
-both third and fourth order water bridge, the hydrogen bonds in the
-:attr:`WaterBridgeAnalysis.timeseries` attribute are generated in a depth-first
-search manner to avoid duplication. Example code of how
-:attr:`WaterBridgeAnalysis.timeseries` is generated::
+connections as :attr:`WaterBridgeAnalysis.results.timeseries`. The results 
+are returned per frame and are a list of hydrogen bonds between the selection
+1 or selection 2 and the bridging waters. Due to the complexity of the higher
+order water bridge and the fact that one hydrogen bond between two waters can
+appear in both third and fourth order water bridge, the hydrogen bonds in the
+:attr:`WaterBridgeAnalysis.results.timeseries` attribute are generated in a
+depth-first search manner to avoid duplication. Example code of how
+:attr:`WaterBridgeAnalysis.results.timeseries` is generated::
 
     def network2timeseries(network, timeseries):
         '''Traverse the network in a depth-first fashion.
@@ -307,7 +307,7 @@ the carboxylic group (ASP3:OD2). ::
   #     3          2          SOL       HW2
   #     4          3          ASP       OD1
   #     5          3          ASP       OD2
-  print(w.timeseries)
+  print(w.results.timeseries)
 
 prints out ::
 
@@ -698,7 +698,7 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     The analysis of the trajectory is performed with the
     :meth:`WaterBridgeAnalysis.run` method. The result is stored in
-    :attr:`WaterBridgeAnalysis.timeseries`. See
+    :attr:`WaterBridgeAnalysis.results.timeseries`. See
     :meth:`~WaterBridgeAnalysis.run` for the format.
 
 
@@ -870,6 +870,10 @@ class WaterBridgeAnalysis(AnalysisBase):
         consider setting the `update_selection` keywords to ``True``
         to ensure correctness.
 
+        .. versionchanged: 2.0.0
+           Deprecated :attr:`WaterBridgeAnalysis.timeseries` in favour of
+           :attr:`WaterBridgeAnalysis.results.timeseries`
+
         .. versionchanged 0.20.0
            The :attr:`WaterBridgeAnalysis.timeseries` has been updated
            see :attr:`WaterBridgeAnalysis.timeseries` for detail.
@@ -921,7 +925,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                              'Invalid selection type {0!s}'.format(
                                 self.selection1_type))
 
-        self._network = []  # final result accessed as self.network
+        self.results.network = []  # final result accessed as self.network
         self.timesteps = None  # time for each frame
 
         self._log_parameters()
@@ -1216,7 +1220,7 @@ class WaterBridgeAnalysis(AnalysisBase):
             if self.update_water_selection:
                 self._update_water_selection()
         else:
-            self._network.append(defaultdict(dict))
+            self.results.network.append(defaultdict(dict))
             return
 
         selection_1 = []
@@ -1365,12 +1369,12 @@ class WaterBridgeAnalysis(AnalysisBase):
             traverse_water_network(water_pool, next_mol, selection_2, route[:],
                                    self.order, result)
 
-        self._network.append(result['start'])
+        self.results.network.append(result['start'])
 
     def _traverse_water_network(self, graph, current, analysis_func=None,
                                 output=None, link_func=None, **kwargs):
         '''
-        This function recursively traverses the water network self._network and
+        This function recursively traverses the water network self.results.network and
          finds the hydrogen bonds which connect the current atom to the next
          atom. The newly found hydrogen bond will be appended to the hydrogen
          bonds connecting the selection 1 to the current atom via link_func.
@@ -1491,7 +1495,12 @@ class WaterBridgeAnalysis(AnalysisBase):
 
            w = WaterBridgeAnalysis(u)
            w.run()
-           timeseries = w.timeseries
+           timeseries = w.results.timeseries
+
+
+        .. versionchanged: 2.0.0
+           Deprecated :attr:`WaterBridgeAnalysis.timeseries` in favour of
+           :attr:`WaterBridgeAnalysis.results.timeseries`
 
         .. versionchanged 0.20.0
            The :attr:`WaterBridgeAnalysis.timeseries` has been updated where
@@ -1506,7 +1515,7 @@ class WaterBridgeAnalysis(AnalysisBase):
             output = current
 
         timeseries = []
-        for frame in self._network:
+        for frame in self.results.network:
             new_frame = []
             self._traverse_water_network(frame, new_frame,
                                          analysis_func=analysis,
@@ -1542,10 +1551,10 @@ class WaterBridgeAnalysis(AnalysisBase):
         .. versionadded:: 0.20.0
 
         '''
-        return self._network
+        return self.results.network
 
     def set_network(self, network):
-        self._network = network
+        self.results.network = network
 
     network = property(_get_network, set_network)
 
@@ -1621,10 +1630,10 @@ class WaterBridgeAnalysis(AnalysisBase):
             analysis_func = self._count_by_type_analysis
             output = 'combined'
 
-        if self._network:
-            length = len(self._network)
+        if self.results.network:
+            length = len(self.results.network)
             result_dict = defaultdict(int)
-            for frame in self._network:
+            for frame in self.results.network:
                 frame_dict = defaultdict(int)
                 self._traverse_water_network(frame, [],
                                              analysis_func=analysis_func,
@@ -1671,9 +1680,9 @@ class WaterBridgeAnalysis(AnalysisBase):
         """
         if analysis_func is None:
             analysis_func = self._count_by_time_analysis
-        if self._network:
+        if self.results.network:
             result = []
-            for time, frame in zip(self.timesteps, self._network):
+            for time, frame in zip(self.timesteps, self.results.network):
                 result_dict = defaultdict(int)
                 self._traverse_water_network(frame, [],
                                              analysis_func=analysis_func,
@@ -1720,13 +1729,13 @@ class WaterBridgeAnalysis(AnalysisBase):
             analysis_func = self._timesteps_by_type_analysis
             output = 'combined'
 
-        if self._network:
+        if self.results.network:
             result = defaultdict(list)
             if self.timesteps is None:
-                timesteps = range(len(self._network))
+                timesteps = range(len(self.results.network))
             else:
                 timesteps = self.timesteps
-            for time, frame in zip(timesteps, self._network):
+            for time, frame in zip(timesteps, self.results.network):
                 self._traverse_water_network(frame, [],
                                              analysis_func=analysis_func,
                                              output=result,
@@ -1754,10 +1763,10 @@ class WaterBridgeAnalysis(AnalysisBase):
 
         The output format of :attr:`~WaterBridgeAnalysis.table` can also be
         changed using output_format in a fashion similar to
-        :attr:`WaterBridgeAnalysis.timeseries`
+        :attr:`WaterBridgeAnalysis.results.timeseries`
         """
         output_format = output_format or self.output_format
-        if self._network == []:
+        if self.results.network == []:
             msg = "No data computed, do run() first."
             warnings.warn(msg, category=MissingDataWarning)
             logger.warning(msg)
