@@ -18,11 +18,14 @@ The rules for this file:
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
          hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi, hejamu,
          biogen98, orioncohen, z3y50n, hp115, ojeda-e, thadanipaarth, HenryKobin,
-         1ut, sulays
+         1ut, sulays, PicoCentauri, ahy3nz
 
   * 2.0.0
 
 Fixes
+  * NCDFReader now defaults to a dt value of 1.0 ps when it cannot estimate
+    it from the first two frames of the file (Issue #3166)
+  * Get chi1_selection to match canonical gamma atoms (Issue #2044)
   * ITPParser now accepts relative paths (Issue #3037, PR #3108)
   * Fixed issue with unassigned 'GAP' variable in fasta2algin function when
     resids are provided in input (Issue #3124)
@@ -103,6 +106,13 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Added `Results` class for storing analysis results (#3115, PR #3233)
+  * Added intra_bonds, intra_angles, intra_dihedrals etc. to return only
+    the connections involving atoms within the AtomGroup, instead of
+    including atoms outside the AtomGroup (Issue #1264, #2821, PR #3200)
+  * Added del_TopologyAttr function (PR #3069)
+  * Switch GNMAnalysis to AnalysisBase (Issue #3243)
+  * Adds python 3.9 support (Issue #2974, PR #3027, #3245)
   * Added an MDAnalysis shields.io badge to the README (Issue #3227, PR #3229)
   * Added sort method to the atomgroup (Issue #2976, PR #3188) 
   * ITPParser now reads [ atomtypes ] sections in ITP files, used for charges
@@ -167,6 +177,8 @@ Changes
   * The `convert_to` method of the AtomGroup is now case-insensitive and
     passes keyword arguments to the underlying converter. It can also be used
     as `convert_to.lowercase_pkg_name()` for tab-completion (PR #2882)
+  * `GNMAnalysis`, `LinearDensity`, `PersistenceLength` and
+    `AnalysisFromFunction` use the `results` attribute.
   * Fixed inaccurate docstring inside the RMSD class (Issue #2796, PR #3134) 
   * TPRParser now loads TPR files with `tpr_resid_from_one=True` by default,
     which starts TPR resid indexing from 1 (instead of 0 as in 1.x) (Issue #2364, PR #3152)
@@ -208,8 +220,12 @@ Changes
     ``analysis.helix_analysis`` (PR #2929)
   * Move water bridge analysis from hbonds to hydrogenbonds (Issue #2739 PR #2913)
   * `threadpoolctl` is required for installation (Issue #2860)
+  * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
 
 Deprecations
+  * In 2.1.0 the TRZReader will default to a dt of 1.0 ps when failing to
+    read it from the input TRZ trajectory.
+
 
 06/09/20 richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,

@@ -47,7 +47,8 @@ from MDAnalysisTests.datafiles import (
     TRZ_psf, TRZ,
     two_water_gro,
     TPR_xvf, TRR_xvf,
-    GRO
+    GRO, GRO_MEMPROT,
+    TPR
 )
 from MDAnalysisTests import make_Universe, no_deprecated_call
 from MDAnalysisTests.core.util import UnWrapUniverse
@@ -707,6 +708,16 @@ class TestDihedralSelections(object):
         return mda.Universe(PSF, DCD)
 
     @staticmethod
+    @pytest.fixture()
+    def TPR():
+        return mda.Universe(TPR)
+
+    @staticmethod
+    @pytest.fixture()
+    def memprot():
+        return mda.Universe(GRO_MEMPROT)
+
+    @staticmethod
     @pytest.fixture(scope='class')
     def resgroup(GRO):
         return GRO.segments[0].residues[8:10]
@@ -861,6 +872,37 @@ class TestDihedralSelections(object):
         rgsel = resgroup.chi1_selections()
         rssel = [r.chi1_selection() for r in resgroup]
         assert_equal(rgsel, rssel)
+
+    @pytest.mark.parametrize("resname", ["CYSH", "ILE", "SER", "THR", "VAL"])
+    def test_chi1_selection_non_cg_gromacs(self, resname, TPR):
+        resgroup = TPR.select_atoms(f"resname {resname}").residues
+        # get middle one
+        res = resgroup[len(resgroup) // 2]
+        assert res.chi1_selection() is not None
+
+    @pytest.mark.parametrize("resname", ["CYS", "ILE", "SER", "THR", "VAL"])
+    def test_chi1_selection_non_cg_charmm(self, resname, PSFDCD):
+        resgroup = PSFDCD.select_atoms(f"resname {resname}").residues
+        # get middle one
+        res = resgroup[len(resgroup) // 2]
+        assert res.chi1_selection() is not None
+
+    @pytest.mark.parametrize("resname", ["ARG", "ASP", "CYS", "GLN", "GLU",
+                                         "HIS", "ILE", "LEU", "LYS", "MET",
+                                         "PHE", "PRO", "SER", "THR", "TRP",
+                                         "TYR", "VAL"])
+    def test_chi1_selection_all_res(self, resname, memprot):
+        resgroup = memprot.select_atoms(f"resname {resname}").residues
+        # get middle one
+        res = resgroup[len(resgroup) // 2]
+        assert res.chi1_selection() is not None
+
+    @pytest.mark.parametrize("resname", ["ALA", "GLY"])
+    def test_no_chi1(self, resname, TPR):
+        resgroup = TPR.select_atoms(f"resname {resname}").residues
+        # get middle one
+        res = resgroup[len(resgroup) // 2]
+        assert res.chi1_selection() is None
 
     def test_phi_sel_fail(self, GRO):
         sel = GRO.residues[0].phi_selection()
