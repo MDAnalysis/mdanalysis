@@ -153,7 +153,7 @@ Reference plots
 ~~~~~~~~~~~~~~~
 
 Reference plots can be added to the axes for both the Ramachandran and Janin
-classes using the kwarg ``ref=True`` for the :meth:`Ramachandran.plot` 
+classes using the kwarg ``ref=True`` for the :meth:`Ramachandran.plot`
 and :meth:`Janin.plot` methods. The Ramachandran reference data
 (:data:`~MDAnalysis.analysis.data.filenames.Rama_ref`) and Janin reference data
 (:data:`~MDAnalysis.analysis.data.filenames.Janin_ref`) were made using data
@@ -179,7 +179,7 @@ Analysis Classes
        Contains the time steps of the angles for each atomgroup in the list as
        an ``n_frames×len(atomgroups)`` :class:`numpy.ndarray` with content
        ``[[angle 1, angle 2, ...], [time step 2], ...]``.
-       
+
        .. versionadded:: 2.0.0
 
    .. attribute:: angles
@@ -200,7 +200,7 @@ Analysis Classes
        Contains the time steps of the :math:`\phi` and :math:`\psi` angles for
        each residue as an ``n_frames×n_residues×2`` :class:`numpy.ndarray` with
        content ``[[[phi, psi], [residue 2], ...], [time step 2], ...]``.
-       
+
        .. versionadded:: 2.0.0
 
    .. attribute:: angles
@@ -221,8 +221,8 @@ Analysis Classes
        Contains the time steps of the :math:`\chi_1` and :math:`\chi_2` angles
        for each residue as an ``n_frames×n_residues×2`` :class:`numpy.ndarray`
        with content ``[[[chi1, chi2], [residue 2], ...], [time step 2], ...]``.
-       
-       .. versionadded:: 2.0.0       
+
+       .. versionadded:: 2.0.0
 
    .. attribute:: angles
 
