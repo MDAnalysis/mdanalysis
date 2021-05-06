@@ -20,6 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+import warnings
 import MDAnalysis as mda
 import pytest
 from MDAnalysis.analysis import contacts
@@ -257,10 +258,6 @@ class TestContacts(object):
                     0.45631068, 0.37864078, 0.42718447]
         assert len(ca.results.timeseries) == len(expected)
         assert_array_almost_equal(ca.results.timeseries[:, 1], expected)
-        # check that results.timeseries and timeseries are the same
-        # remove in 3.0.0
-        with warnings.catch_warnings():
-            assert_equal(ca.results.timeseries, ca.timeseries)
 
     def test_radius_cut_method(self, universe):
         acidic = universe.select_atoms(self.sel_acidic)
@@ -325,10 +322,10 @@ class TestContacts(object):
     def test_warn_deprecated_attr(self, universe):
         """Test for warning message emitted on using deprecated `timeseries`
         attribute"""
-        CA1 = self._run_Contacts(universe, stop=0)
+        CA1 = self._run_Contacts(universe, stop=1)
         wmsg = "The `timeseries` attribute was deprecated in MDAnalysis"
-        with pytest.raises(DeprecationWarning, match=wmsg):
-            assert len(CA1.timeseries) == 0
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            assert_equal(CA1.timeseries, CA1.results.timeseries)
 
 
 def test_q1q2():
