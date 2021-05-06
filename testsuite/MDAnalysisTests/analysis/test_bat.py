@@ -28,7 +28,7 @@ import pytest
 
 import MDAnalysis as mda
 from MDAnalysisTests.datafiles import (PSF, DCD, mol2_comments_header, XYZ_mini,
-                                       BATArray)
+                                       BATArray, TPR, XTC)
 from MDAnalysis.analysis.bat import BAT
 
 
@@ -43,7 +43,7 @@ class TestBAT(object):
     def bat(self, selected_residues):
         R = BAT(selected_residues)
         R.run()
-        return R.bat
+        return R.results.bat
 
     @pytest.fixture
     def bat_npz(self, tmpdir, selected_residues):
@@ -72,7 +72,7 @@ class TestBAT(object):
             err_msg="error: BAT coordinates should match test values")
 
     def test_bat_coordinates_single_frame(self, selected_residues):
-        bat = BAT(selected_residues).run(start=1, stop=2).bat
+        bat = BAT(selected_residues).run(start=1, stop=2).results.bat
         test_bat = [np.load(BATArray)[1]]
         assert_almost_equal(
             bat,
@@ -89,7 +89,7 @@ class TestBAT(object):
 
     def test_bat_IO(self, bat_npz, selected_residues, bat):
         R2 = BAT(selected_residues, filename=bat_npz)
-        test_bat = R2.bat
+        test_bat = R2.results.bat
         assert_almost_equal(
             bat,
             test_bat,
@@ -98,19 +98,28 @@ class TestBAT(object):
 
     def test_bat_nobonds(self):
         u = mda.Universe(XYZ_mini)
-        with pytest.raises(AttributeError):
+        errmsg = "AtomGroup has no attribute bonds"
+        with pytest.raises(AttributeError, match=errmsg):
             Z = BAT(u.atoms)
 
     def test_bat_bad_initial_atom(self, selected_residues):
-        with pytest.raises(ValueError):
+        errmsg = 'Initial atom is not a terminal atom'
+        with pytest.raises(ValueError, match=errmsg):
             R = BAT(selected_residues, initial_atom = selected_residues[0])
 
     def test_bat_disconnected_atom_group(self):
         u = mda.Universe(PSF, DCD)
         selected_residues = u.select_atoms("resid 1-3") + \
             u.select_atoms("resid 5-7")
-        with pytest.raises(ValueError):
+        errmsg = 'Additional torsions not found.'
+        with pytest.raises(ValueError, match=errmsg):
             R = BAT(selected_residues)
+
+    def test_bat_multifragments_atomgroup(self):
+        u = mda.Universe(TPR, XTC)
+        errmsg = 'AtomGroup has more than one molecule'
+        with pytest.raises(ValueError, match=errmsg):
+            BAT(u.select_atoms('resname SOL'))
 
     def test_bat_incorrect_dims(self, bat_npz):
         u = mda.Universe(PSF, DCD)

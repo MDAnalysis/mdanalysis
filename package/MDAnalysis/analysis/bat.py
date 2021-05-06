@@ -93,21 +93,21 @@ of adenylate kinase (AdK). The trajectory is included within the test data files
    R.run()
 
 After :meth:`R.run()<BAT.run>`, the coordinates can be accessed with
-:attr:`R.bat<BAT.bat>`. The following code snippets assume that the previous
+:attr:`R.results.bat<BAT.bat>`. The following code snippets assume that the previous
 snippet has been executed.
 
 Reconstruct Cartesian coordinates for the first frame::
 
    # Reconstruct Cartesian coordinates from BAT coordinates
    # of the first frame
-   XYZ = R.Cartesian(R.bat[0,:])
+   XYZ = R.Cartesian(R.results.bat[0,:])
 
    # The original and reconstructed Cartesian coordinates should all be close
    print(np.allclose(XYZ, selected_residues.positions, atol=1e-6))
 
 Change a single torsion angle by :math:`\pi`::
 
-   bat = R.bat[0,:]
+   bat = R.results.bat[0,:]
    bat[bat.shape[0]-12] += np.pi
    XYZ = R.Cartesian(bat)
 
@@ -124,7 +124,7 @@ Store data to the disk and load it again::
    Rnew = BAT(selected_residues, filename='test.npy')
 
    # The BAT coordinates before and after disk I/O should be close
-   print(np.allclose(Rnew.bat, R.bat))
+   print(np.allclose(Rnew.results.bat, R.results.bat))
 
 
 Analysis classes
@@ -133,7 +133,7 @@ Analysis classes
     :members:
     :inherited-members:
 
-    .. attribute:: bat
+    .. attribute:: results.bat
 
         Contains the time series of the Bond-Angle-Torsion coordinates as a
         (nframes, 3N) :class:`numpy.ndarray` array. Each row corresponds to
@@ -364,8 +364,8 @@ class BAT(AnalysisBase):
             self.load(filename)
 
     def _prepare(self):
-        self.bat = np.zeros((self.n_frames, 3*self._ag.n_atoms), \
-            dtype=np.float64)
+        self.results.bat = np.zeros(
+                (self.n_frames, 3*self._ag.n_atoms), dtype=np.float64)
 
     def _single_frame(self):
         # Calculate coordinates based on the root atoms
@@ -422,8 +422,8 @@ class BAT(AnalysisBase):
         # Wrap torsions to between -np.pi and np.pi
         torsions = ((torsions + np.pi) % (2 * np.pi)) - np.pi
 
-        self.bat[self._frame_index, :] = \
-            np.concatenate((root_based, bonds, angles, torsions))
+        self.results.bat[self._frame_index, :] =  np.concatenate(
+                (root_based, bonds, angles, torsions))
 
     def load(self, filename, start=None, stop=None, step=None):
         """Loads the bat trajectory from a file in numpy binary format
@@ -447,15 +447,17 @@ class BAT(AnalysisBase):
         self._setup_frames(self._trajectory, start, stop, step)
 
         logger.info("Loading file")
-        self.bat = np.load(filename)
+        self.results.bat = np.load(filename)
 
         # Check array dimensions
-        if self.bat.shape!=(self.n_frames, 3*self._ag.n_atoms):
-          raise ValueError('Dimensions of array in loaded file, ' + \
-              f'({self.bat.shape[0]},{self.bat.shape[1]}), differ from ' + \
-              f'required dimensions of ({self.n_frames, 3*self._ag.n_atoms})')
+        if self.results.bat.shape!=(self.n_frames, 3*self._ag.n_atoms):
+            errmsg = ('Dimensions of array in loaded file, '
+                      f'({self.results.bat.shape[0]},'
+                      f'{self.results.bat.shape[1]}), differ from required '
+                      f'dimensions of ({self.n_frames, 3*self._ag.n_atoms})')
+            raise ValueError(errmsg)
         # Check position of initial atom
-        if (self.bat[0,:3] != self._root[0].position).any():
+        if (self.results.bat[0,:3] != self._root[0].position).any():
             raise ValueError('Position of initial atom in file ' + \
                 'inconsistent with current trajectory in starting frame.')
         return self
@@ -467,7 +469,7 @@ class BAT(AnalysisBase):
         --------
         load: Loads the bat trajectory from a file in numpy binary format
         """
-        np.save(filename, self.bat)
+        np.save(filename, self.results.bat)
 
     def Cartesian(self, bat_frame):
         """Conversion of a single frame from BAT to Cartesian coordinates

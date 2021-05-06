@@ -174,6 +174,8 @@ Enhancements
     checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
 
 Changes
+  * `bat.BAT` now uses the `analysis.base.Results` class to store the `bat`
+    results attribute (Issue #3261)
   * `contacts.Contacts` now stores data using the `Contacts.results.timeseries`
     attribute. `Contacts.timeseries` is now deprecated (Issue #3261)
   * `DensityAnalysis` now uses the `results.density` attribute for storing
