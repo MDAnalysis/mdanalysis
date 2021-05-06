@@ -26,6 +26,10 @@ you will have to specify a package name (case-insensitive). ::
 
     pgro2 = ugro.atoms.convert_to('PARMED')  # converts back to parmed structure
 
+Another syntax is also available for tab-completion::
+
+    pgro2 = ugro.atoms.convert_to.parmed()
+
 
 .. rubric:: Available converters
 
@@ -34,4 +38,11 @@ you will have to specify a package name (case-insensitive). ::
 
    converters/ParmEdParser
    converters/RDKitParser
+
+.. rubric:: Converter functionalities
+
+.. toctree::
+    :maxdepth: 1
+
+    converters/Accessors
 
