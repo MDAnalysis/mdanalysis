@@ -176,7 +176,7 @@ Enhancements
 Changes
   * `DensityAnalysis` now uses the `results.density` attribute for storing
     data. The `DensityAnalysis.density` attribute is now deprecated
-    (Issue #3233)
+    (Issue #3261)
   * `GNMAnalysis`, `LinearDensity`, `PersistenceLength` and
     `AnalysisFromFunction` use the `results` attribute.
   * Fixed inaccurate docstring inside the RMSD class (Issue #2796, PR #3134) 
