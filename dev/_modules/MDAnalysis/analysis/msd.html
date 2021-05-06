@@ -274,7 +274,7 @@
 
 <span class="sd">.. code-block:: python</span>
 
-<span class="sd">    msd =  MSD.timeseries</span>
+<span class="sd">    msd =  MSD.results.timeseries</span>
 
 <span class="sd">Visual inspection of the MSD is important, so let&#39;s take a look at it with a</span>
 <span class="sd"> simple plot.</span>
@@ -445,9 +445,9 @@
 <span class="sd">    ----------</span>
 <span class="sd">    dim_fac : int</span>
 <span class="sd">        Dimensionality :math:`d` of the MSD.</span>
-<span class="sd">    timeseries : :class:`numpy.ndarray`</span>
+<span class="sd">    results.timeseries : :class:`numpy.ndarray`</span>
 <span class="sd">        The averaged MSD over all the particles with respect to lag-time.</span>
-<span class="sd">    msds_by_particle : :class:`numpy.ndarray`</span>
+<span class="sd">    results.msds_by_particle : :class:`numpy.ndarray`</span>
 <span class="sd">        The MSD of each individual particle with respect to lag-time.</span>
 <span class="sd">    ag : :class:`AtomGroup`</span>
 <span class="sd">        The :class:`AtomGroup` resulting from your selection</span>
@@ -455,6 +455,9 @@
 <span class="sd">        Number of frames included in the analysis.</span>
 <span class="sd">    n_particles : int</span>
 <span class="sd">        Number of particles MSD was calculated over.</span>
+
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">msd_type</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">fft</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -491,16 +494,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_position_array</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># result</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">msds_by_particle</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msds_by_particle</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># self.n_frames only available here</span>
         <span class="c1"># these need to be zeroed prior to each run() call</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">msds_by_particle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_particles</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msds_by_particle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span>
+                                                  <span class="bp">self</span><span class="o">.</span><span class="n">n_particles</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_position_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
             <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_particles</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim_fac</span><span class="p">))</span>
-        <span class="c1"># self.timeseries not set here</span>
+        <span class="c1"># self.results.timeseries not set here</span>
 
     <span class="k">def</span> <span class="nf">_parse_msd_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sets up the desired dimensionality of the MSD.</span>
@@ -544,8 +548,8 @@
         <span class="k">for</span> <span class="n">lag</span> <span class="ow">in</span> <span class="n">lagtimes</span><span class="p">:</span>
             <span class="n">disp</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[:</span><span class="o">-</span><span class="n">lag</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">positions</span><span class="p">[</span><span class="n">lag</span><span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span>
             <span class="n">sqdist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">disp</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="p">[</span><span class="n">lag</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sqdist</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="p">[</span><span class="n">lag</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sqdist</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_conclude_fft</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># with FFT, np.float64 bit prescision required.</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculates the MSD via the FCA fast correlation algorithm.</span>
@@ -566,9 +570,9 @@
 
         <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position_array</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_particles</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="p">[:,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">tidynamics</span><span class="o">.</span><span class="n">msd</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="p">[:,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">tidynamics</span><span class="o">.</span><span class="n">msd</span><span class="p">(</span>
                 <span class="n">positions</span><span class="p">[:,</span> <span class="n">n</span><span class="p">,</span> <span class="p">:])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

@@ -269,7 +269,7 @@ analysis by using the class <a class="reference internal" href="#MDAnalysis.anal
 </pre></div>
 </div>
 <p>The MSD can then be accessed as</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">msd</span> <span class="o">=</span>  <span class="n">MSD</span><span class="o">.</span><span class="n">timeseries</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">msd</span> <span class="o">=</span>  <span class="n">MSD</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span>
 </pre></div>
 </div>
 <dl class="docutils">
@@ -421,8 +421,8 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.analysis.msd.EinsteinMSD.timeseries">
-<code class="descname">timeseries</code><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.timeseries" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.analysis.msd.EinsteinMSD.results.timeseries">
+<code class="descclassname">results.</code><code class="descname">timeseries</code><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.results.timeseries" title="Permalink to this definition">¶</a></dt>
 <dd><p>The averaged MSD over all the particles with respect to lag-time.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -435,8 +435,8 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.analysis.msd.EinsteinMSD.msds_by_particle">
-<code class="descname">msds_by_particle</code><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.msds_by_particle" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.analysis.msd.EinsteinMSD.results.msds_by_particle">
+<code class="descclassname">results.</code><code class="descname">msds_by_particle</code><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.results.msds_by_particle" title="Permalink to this definition">¶</a></dt>
 <dd><p>The MSD of each individual particle with respect to lag-time.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -490,6 +490,9 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 </table>
 </dd></dl>
 
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
