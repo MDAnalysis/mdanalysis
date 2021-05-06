@@ -194,16 +194,28 @@ class TestTRZWriter2(object):
     def u(self):
         return mda.Universe(two_water_gro)
 
-    def test_writer_trz_from_other(self, u, tmpdir):
-        outfile = os.path.join(str(tmpdir), 'trz-writer-2.trz')
+    @pytest.fixture()
+    def outfile(self, tmpdir):
+        return str(tmpdir.join('/trz-writer-2.trz'))
+
+    def test_writer_trz_from_other(self, u, outfile):
         with mda.coordinates.TRZ.TRZWriter(outfile, len(u.atoms)) as W:
             W.write(u)
-            W.close()
 
-            u2 = mda.Universe(two_water_gro, outfile)
+        u2 = mda.Universe(two_water_gro, outfile)
 
-            assert_almost_equal(u.atoms.positions,
-                                u2.atoms.positions, 3)
+        assert_almost_equal(u.atoms.positions, u2.atoms.positions, 3)
+
+    def test_no_dt_warning(self, u, outfile):
+        with mda.coordinates.TRZ.TRZWriter(outfile, len(u.atoms)) as W:
+            W.write(u)
+
+        u2 = mda.Universe(two_water_gro, outfile)
+
+        wmsg = ('dt information could not be obtained, defaulting to 0 ps. '
+                'Note: in MDAnalysis 2.1.0 this default will change 1 ps.')
+        with pytest.warns(UserWarning, match=wmsg):
+            assert_almost_equal(u2.trajectory.dt, 0)
 
 
 class TestWrite_Partial_Timestep(object):

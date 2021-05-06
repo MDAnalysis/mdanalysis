@@ -56,6 +56,8 @@ Helper functions
 .. autofunction:: make_downshift_arrays
 
 """
+import contextlib
+
 import numpy as np
 
 from .topologyattrs import Atomindices, Resindices, Segindices
@@ -515,6 +517,21 @@ class Topology(object):
         self.attrs.append(topologyattr)
         topologyattr.top = self
         self.__setattr__(topologyattr.attrname, topologyattr)
+
+    def del_TopologyAttr(self, topologyattr):
+        """Remove a TopologyAttr from the Topology.
+
+        If it is not present, nothing happens.
+
+        Parameters
+        ----------
+        topologyattr : TopologyAttr
+
+
+        .. versionadded:: 2.0.0
+        """
+        self.__delattr__(topologyattr.attrname)
+        self.attrs.remove(topologyattr)
 
     @property
     def guessed_attributes(self):

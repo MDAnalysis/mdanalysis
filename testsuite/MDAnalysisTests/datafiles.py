@@ -201,6 +201,7 @@ __all__ = [
     "MMTF_NOCRYST", # File with meaningless CRYST1 record (Issue #2679, PR #2685)
     "FHIAIMS", # to test FHIAIMS coordinate files
     "SDF_molecule",  # MDL SDFile for rdkit
+    "PDBX",  # PDBxfile
     "PDB_elements",  # PDB file with elements
 ]
 
@@ -558,6 +559,8 @@ NAMDBIN = resource_filename(__name__, 'data/adk_open.coor')
 SDF_molecule = resource_filename(__name__, 'data/molecule.sdf')
 
 PDB_elements = resource_filename(__name__, 'data/elements.pdb')
+
+PDBX = resource_filename(__name__, "data/4x8u.pdbx")
 
 # This should be the last line: clean up namespace
 del resource_filename
