@@ -79,4 +79,5 @@ def test_all_import(submodule):
                     and name not in [os.path.splitext(f)[0] for
                                         f in os.listdir(module_path)]]
         assert_equal(missing, [], err_msg="{}".format(submodule) +
-                                          "has errors in __all__ list.")
+                                          " has errors in __all__ list: " +
+                     "missing = {}".format(missing))
