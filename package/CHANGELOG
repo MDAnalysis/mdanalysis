@@ -175,8 +175,7 @@ Enhancements
 
 Changes
   * `msd.EinsteinMSD` now uses the `analysis.base.Results` class to store
-    analysis results. The `EinsteinMSD.timeseries` and
-    `EinsteinMSD.msds_by_particle` attributes are now deprecated (Issue #3261)
+    analysis results (Issue #3261)
   * `GNMAnalysis`, `LinearDensity`, `PersistenceLength` and
     `AnalysisFromFunction` use the `results` attribute.
   * Fixed inaccurate docstring inside the RMSD class (Issue #2796, PR #3134) 

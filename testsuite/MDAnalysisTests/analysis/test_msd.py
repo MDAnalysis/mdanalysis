@@ -148,19 +148,6 @@ class TestMSDSimple(object):
         val = 3932.39927487146
         assert_almost_equal(norm, val, decimal=5)
 
-    def test_deprecated_attributes(self, random_walk_u):
-        msd_rw = MSD(random_walk_u, 'all', msd_type='xyz', fft=False)
-        msd_rw.run(stop=2)
-
-        wmsg = "The `timeseries` attribute was deprecated in MDAnalysis"
-        with pytest.warns(DeprecationWarning, match=wmsg):
-            assert_equal(msd_rw.timeseries, msd_rw.results.timeseries)
-
-        wmsg = "The `msds_by_particle` attribute was deprecated in MDAnalysis"
-        with pytest.warns(DeprecationWarning, match=wmsg):
-            assert_equal(msd_rw.msds_by_particle,
-                         msd_rw.results.msds_by_particle)
-
 
 @pytest.mark.skipif(import_not_available("tidynamics"),
                     reason="Test skipped because tidynamics not found")
