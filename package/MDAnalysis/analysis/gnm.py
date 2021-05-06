@@ -41,7 +41,9 @@ An example is provided in the MDAnalysis Cookbook_, listed as GNMExample_.
 .. _Cookbook: https://github.com/MDAnalysis/MDAnalysisCookbook
 
 The basic approach is to pass a trajectory to :class:`GNMAnalysis` and then run
-the analysis::
+the analysis:
+
+.. code-block:: python
 
     u = MDAnalysis.Universe(PSF, DCD)
     C = MDAnalysis.analysis.gnm.GNMAnalysis(u, ReportVector="output.txt")
@@ -93,6 +95,8 @@ import numpy as np
 
 from .base import AnalysisBase
 
+
+from MDAnalysis.analysis.base import Results
 
 logger = logging.getLogger('MDAnalysis.analysis.GNM')
 
@@ -204,27 +208,28 @@ class GNMAnalysis(AnalysisBase):
     universe : Universe
           Analyze the full trajectory in the universe.
     select : str (optional)
-          MDAnalysis selection string, default "protein and name CA"
+          MDAnalysis selection string
     cutoff : float (optional)
           Consider selected atoms within the cutoff as neighbors for the
           Gaussian network model.
     ReportVector : str (optional)
           filename to write eigenvectors to, by default no output is written
-          (``None``)
     Bonus_groups : tuple
           This is a tuple of selection strings that identify additional groups
           (such as ligands). The center of mass of each group will be added as
           a single point in the ENM (it is a popular way of treating small
           ligands such as drugs). You need to ensure that none of the atoms in
           `Bonus_groups` is contained in `selection` as this could lead to
-          double counting. No checks are applied. Default is ``None``.
+          double counting. No checks are applied.
 
     Attributes
     ----------
-    results : list
-        GNM results per frame:
-            results = [(time,eigenvalues[1],eigenvectors[1]),
-                       (time,eigenvalues[1],eigenvectors[1]), ...]
+    results.times : numpy.ndarray
+            simulation times used in analysis
+    results.eigenvalues : numpy.ndarray
+            calculated eigenvalues
+    results.eigenvectors : numpy.ndarray
+            calculated eigenvectors
 
     See Also
     --------
@@ -238,7 +243,9 @@ class GNMAnalysis(AnalysisBase):
        Changed `selection` keyword to `select`
 
     .. versionchanged:: 2.0.0
-       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class.
+       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and
+       store results as attributes ``times``, ``eigenvalues`` and
+       ``eigenvectors`` of the ``results`` attribute.
     """
 
     def __init__(self,
@@ -251,16 +258,18 @@ class GNMAnalysis(AnalysisBase):
         self.u = universe
         self.select = select
         self.cutoff = cutoff
-        self.results = []  # final result
+        self.results = Results()
+        self.results.eigenvalues = []
+        self.results.eigenvectors = []
         self._timesteps = None  # time for each frame
         self.ReportVector = ReportVector
         self.Bonus_groups = [self.u.select_atoms(item) for item in Bonus_groups] \
                             if Bonus_groups else []
         self.ca = self.u.select_atoms(self.select)
 
-    def _generate_output(self, w, v, outputobject, time, matrix,
-                         nmodes=2, ReportVector=None, counter=0):
-        """Appends eigenvalues and eigenvectors to results.
+    def _generate_output(self, w, v, outputobject,
+                         ReportVector=None, counter=0):
+        """Appends time, eigenvalues and eigenvectors to results.
 
         This generates the output by adding eigenvalue and
         eigenvector data to an appendable object and optionally
@@ -275,14 +284,13 @@ class GNMAnalysis(AnalysisBase):
                     print(
                         "",
                         counter,
-                        time,
                         item[0] + 1,
                         w[list_map[1]],
                         item[1],
                         file=oup)
-        outputobject.append((time, w[list_map[1]], v[list_map[1]]))
-        # outputobject.append((time, [ w[list_map[i]] for i in range(nmodes) ],
-        # [ v[list_map[i]] for i in range( nmodes) ] ))
+
+        outputobject.eigenvalues.append(w[list_map[1]])
+        outputobject.eigenvectors.append(v[list_map[1]])
 
     def generate_kirchoff(self):
         """Generate the Kirchhoff matrix of contacts.
@@ -318,9 +326,6 @@ class GNMAnalysis(AnalysisBase):
 
         return matrix
 
-    def _prepare(self):
-        self.timeseries = []
-
     def _single_frame(self):
         matrix = self.generate_kirchoff()
         try:
@@ -336,13 +341,13 @@ class GNMAnalysis(AnalysisBase):
             w,
             v,
             self.results,
-            self._ts.time,
-            matrix,
             ReportVector=self.ReportVector,
             counter=self._ts.frame)
 
     def _conclude(self):
-        self._timesteps = self.times
+        self.results.times = self.times
+        self.results.eigenvalues = np.asarray(self.results.eigenvalues)
+        self.results.eigenvectors = np.asarray(self.results.eigenvectors)
 
 
 class closeContactGNMAnalysis(GNMAnalysis):
@@ -357,18 +362,26 @@ class closeContactGNMAnalysis(GNMAnalysis):
     universe : Universe
           Analyze the full trajectory in the universe.
     select : str (optional)
-          MDAnalysis selection string, default "protein"
+          MDAnalysis selection string
     cutoff : float (optional)
           Consider selected atoms within the cutoff as neighbors for the
-          Gaussian network model [4.5 Å].
+          Gaussian network model.
     ReportVector : str (optional)
           filename to write eigenvectors to, by default no output is written
-          (``None``)
     weights : {"size", None} (optional)
           If set to "size" (the default) then weight the contact by
           :math:`1/\sqrt{N_i N_j}` where :math:`N_i` and :math:`N_j` are the
           number of atoms in the residues :math:`i` and :math:`j` that contain
           the atoms that form a contact.
+
+    Attributes
+    ----------
+    results.times : numpy.ndarray
+            simulation times used in analysis
+    results.eigenvalues : numpy.ndarray
+            calculated eigenvalues
+    results.eigenvectors : numpy.ndarray
+            calculated eigenvectors
 
     Notes
     -----
@@ -390,7 +403,9 @@ class closeContactGNMAnalysis(GNMAnalysis):
        Changed `selection` keyword to `select`
 
     .. versionchanged:: 2.0.0
-       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class.
+       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and
+       store results as attributes ``times``, ``eigenvalues`` and
+       ``eigenvectors`` of the `results` attribute.
     """
 
     def __init__(self,
