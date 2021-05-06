@@ -176,7 +176,7 @@ from .. import units
 from ..lib import distances
 from MDAnalysis.lib.log import ProgressBar
 
-from .base import AnalysisBase, Results
+from .base import AnalysisBase
 
 import logging
 
