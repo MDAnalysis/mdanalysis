@@ -225,7 +225,9 @@
 <span class="sd">.. _Cookbook: https://github.com/MDAnalysis/MDAnalysisCookbook</span>
 
 <span class="sd">The basic approach is to pass a trajectory to :class:`GNMAnalysis` and then run</span>
-<span class="sd">the analysis::</span>
+<span class="sd">the analysis:</span>
+
+<span class="sd">.. code-block:: python</span>
 
 <span class="sd">    u = MDAnalysis.Universe(PSF, DCD)</span>
 <span class="sd">    C = MDAnalysis.analysis.gnm.GNMAnalysis(u, ReportVector=&quot;output.txt&quot;)</span>
@@ -277,6 +279,8 @@
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
 
+
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.base</span> <span class="kn">import</span> <span class="n">Results</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.analysis.GNM&#39;</span><span class="p">)</span>
 
@@ -388,27 +392,28 @@
 <span class="sd">    universe : Universe</span>
 <span class="sd">          Analyze the full trajectory in the universe.</span>
 <span class="sd">    select : str (optional)</span>
-<span class="sd">          MDAnalysis selection string, default &quot;protein and name CA&quot;</span>
+<span class="sd">          MDAnalysis selection string</span>
 <span class="sd">    cutoff : float (optional)</span>
 <span class="sd">          Consider selected atoms within the cutoff as neighbors for the</span>
 <span class="sd">          Gaussian network model.</span>
 <span class="sd">    ReportVector : str (optional)</span>
 <span class="sd">          filename to write eigenvectors to, by default no output is written</span>
-<span class="sd">          (``None``)</span>
 <span class="sd">    Bonus_groups : tuple</span>
 <span class="sd">          This is a tuple of selection strings that identify additional groups</span>
 <span class="sd">          (such as ligands). The center of mass of each group will be added as</span>
 <span class="sd">          a single point in the ENM (it is a popular way of treating small</span>
 <span class="sd">          ligands such as drugs). You need to ensure that none of the atoms in</span>
 <span class="sd">          `Bonus_groups` is contained in `selection` as this could lead to</span>
-<span class="sd">          double counting. No checks are applied. Default is ``None``.</span>
+<span class="sd">          double counting. No checks are applied.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    results : list</span>
-<span class="sd">        GNM results per frame:</span>
-<span class="sd">            results = [(time,eigenvalues[1],eigenvectors[1]),</span>
-<span class="sd">                       (time,eigenvalues[1],eigenvectors[1]), ...]</span>
+<span class="sd">    results.times : numpy.ndarray</span>
+<span class="sd">            simulation times used in analysis</span>
+<span class="sd">    results.eigenvalues : numpy.ndarray</span>
+<span class="sd">            calculated eigenvalues</span>
+<span class="sd">    results.eigenvectors : numpy.ndarray</span>
+<span class="sd">            calculated eigenvectors</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -422,7 +427,9 @@
 <span class="sd">       Changed `selection` keyword to `select`</span>
 
 <span class="sd">    .. versionchanged:: 2.0.0</span>
-<span class="sd">       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class.</span>
+<span class="sd">       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and</span>
+<span class="sd">       store results as attributes ``times``, ``eigenvalues`` and</span>
+<span class="sd">       ``eigenvectors`` of the ``results`` attribute.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -435,16 +442,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">universe</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">select</span> <span class="o">=</span> <span class="n">select</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="o">=</span> <span class="n">cutoff</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># final result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">Results</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">eigenvalues</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">eigenvectors</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timesteps</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># time for each frame</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ReportVector</span> <span class="o">=</span> <span class="n">ReportVector</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Bonus_groups</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">Bonus_groups</span><span class="p">]</span> \
                             <span class="k">if</span> <span class="n">Bonus_groups</span> <span class="k">else</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ca</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_generate_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">outputobject</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span>
-                         <span class="n">nmodes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ReportVector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">counter</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Appends eigenvalues and eigenvectors to results.</span>
+    <span class="k">def</span> <span class="nf">_generate_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">outputobject</span><span class="p">,</span>
+                         <span class="n">ReportVector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">counter</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Appends time, eigenvalues and eigenvectors to results.</span>
 
 <span class="sd">        This generates the output by adding eigenvalue and</span>
 <span class="sd">        eigenvector data to an appendable object and optionally</span>
@@ -459,14 +468,13 @@
                     <span class="nb">print</span><span class="p">(</span>
                         <span class="s2">&quot;&quot;</span><span class="p">,</span>
                         <span class="n">counter</span><span class="p">,</span>
-                        <span class="n">time</span><span class="p">,</span>
                         <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
                         <span class="n">w</span><span class="p">[</span><span class="n">list_map</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
                         <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                         <span class="n">file</span><span class="o">=</span><span class="n">oup</span><span class="p">)</span>
-        <span class="n">outputobject</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">time</span><span class="p">,</span> <span class="n">w</span><span class="p">[</span><span class="n">list_map</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">v</span><span class="p">[</span><span class="n">list_map</span><span class="p">[</span><span class="mi">1</span><span class="p">]]))</span>
-        <span class="c1"># outputobject.append((time, [ w[list_map[i]] for i in range(nmodes) ],</span>
-        <span class="c1"># [ v[list_map[i]] for i in range( nmodes) ] ))</span>
+
+        <span class="n">outputobject</span><span class="o">.</span><span class="n">eigenvalues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="n">list_map</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="n">outputobject</span><span class="o">.</span><span class="n">eigenvectors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">list_map</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
 
 <div class="viewcode-block" id="GNMAnalysis.generate_kirchoff"><a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.GNMAnalysis.generate_kirchoff">[docs]</a>    <span class="k">def</span> <span class="nf">generate_kirchoff</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generate the Kirchhoff matrix of contacts.</span>
@@ -502,9 +510,6 @@
 
         <span class="k">return</span> <span class="n">matrix</span></div>
 
-    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="p">[]</span>
-
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_kirchoff</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
@@ -520,13 +525,13 @@
             <span class="n">w</span><span class="p">,</span>
             <span class="n">v</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
-            <span class="n">matrix</span><span class="p">,</span>
             <span class="n">ReportVector</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ReportVector</span><span class="p">,</span>
             <span class="n">counter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_timesteps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">times</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">times</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">eigenvalues</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">eigenvalues</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">eigenvectors</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="closeContactGNMAnalysis"><a class="viewcode-back" href="../../../documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.closeContactGNMAnalysis">[docs]</a><span class="k">class</span> <span class="nc">closeContactGNMAnalysis</span><span class="p">(</span><span class="n">GNMAnalysis</span><span class="p">):</span>
@@ -541,18 +546,26 @@
 <span class="sd">    universe : Universe</span>
 <span class="sd">          Analyze the full trajectory in the universe.</span>
 <span class="sd">    select : str (optional)</span>
-<span class="sd">          MDAnalysis selection string, default &quot;protein&quot;</span>
+<span class="sd">          MDAnalysis selection string</span>
 <span class="sd">    cutoff : float (optional)</span>
 <span class="sd">          Consider selected atoms within the cutoff as neighbors for the</span>
-<span class="sd">          Gaussian network model [4.5 Å].</span>
+<span class="sd">          Gaussian network model.</span>
 <span class="sd">    ReportVector : str (optional)</span>
 <span class="sd">          filename to write eigenvectors to, by default no output is written</span>
-<span class="sd">          (``None``)</span>
 <span class="sd">    weights : {&quot;size&quot;, None} (optional)</span>
 <span class="sd">          If set to &quot;size&quot; (the default) then weight the contact by</span>
 <span class="sd">          :math:`1/\sqrt{N_i N_j}` where :math:`N_i` and :math:`N_j` are the</span>
 <span class="sd">          number of atoms in the residues :math:`i` and :math:`j` that contain</span>
 <span class="sd">          the atoms that form a contact.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    results.times : numpy.ndarray</span>
+<span class="sd">            simulation times used in analysis</span>
+<span class="sd">    results.eigenvalues : numpy.ndarray</span>
+<span class="sd">            calculated eigenvalues</span>
+<span class="sd">    results.eigenvectors : numpy.ndarray</span>
+<span class="sd">            calculated eigenvectors</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -574,7 +587,9 @@
 <span class="sd">       Changed `selection` keyword to `select`</span>
 
 <span class="sd">    .. versionchanged:: 2.0.0</span>
-<span class="sd">       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class.</span>
+<span class="sd">       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and</span>
+<span class="sd">       store results as attributes ``times``, ``eigenvalues`` and</span>
+<span class="sd">       ``eigenvectors`` of the `results` attribute.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>

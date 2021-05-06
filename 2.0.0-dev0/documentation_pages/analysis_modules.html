@@ -264,25 +264,39 @@
   <div class="section" id="analysis-modules">
 <h1>4. Analysis modules<a class="headerlink" href="#analysis-modules" title="Permalink to this headline">¶</a></h1>
 <p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis</span></code> module contains code to carry out specific
-analysis functionality. It is based on the core functionality (i.e. trajectory
+analysis functionality for MD trajectories.
+It is based on the core functionality (i.e. trajectory
 I/O, selections etc). The analysis modules can be used as examples for how to
 use MDAnalysis but also as working code for research projects; typically all
-contributed code has been used by the authors in their own work.</p>
-<p>Please see the individual module documentation for additional references and
-citation information.</p>
-<p>These modules are not imported by default; in order to use them one has to
-import them from <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis</span></code>, for instance</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.align</span>
+contributed code has been used by the authors in their own work.
+An analysis using the available modules
+usually follows the same structure</p>
+<ol class="arabic simple">
+<li>Import the desired module, since analysis modules are not imported
+by default.</li>
+<li>Initialize the module previously imported.</li>
+<li>Run the analysis, optionally for specific trajectory slices</li>
+<li>Access the analysis from the <cite>results</cite> attribute</li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">ExampleAnalysisModule</span>  <span class="c1"># (e.g. RMSD)</span>
+
+<span class="n">analysis_obj</span> <span class="o">=</span> <span class="n">ExampleAnalysisModule</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<span class="n">analysis_obj</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">start_frame</span><span class="p">,</span> <span class="n">stop_frame</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">analysis_obj</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Please see the individual module documentation for any specific caveats
+and also read and cite the reference papers associated with these algorithms.</p>
 <p class="rubric">Additional dependencies</p>
 <p>Some of the modules in <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis</span></code> require additional Python
 packages to enable full functionality. For example,
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code> provides more options if <a class="reference external" href="http://scikit-learn.org/">scikit-learn</a> is
-installed. These package are <em>not automatically installed</em> with
-<strong class="program">pip`(although one can add the ``[analysis]`</strong> requirement to the
-<strong class="program">pip</strong> command line to force their installation). If you install
-MDAnalysis with <strong class="program">conda</strong> (see <a class="reference internal" href="../index.html#installation-instructions"><span class="std std-ref">Installing MDAnalysis</span></a>) then a
+installed. If you installed MDAnalysis with
+<strong class="program">pip</strong> (see <a class="reference internal" href="../index.html#installation-instructions"><span class="std std-ref">Installing MDAnalysis</span></a>)
+these packages are <em>not automatically installed</em>.
+Although, one can add the <code class="docutils literal notranslate"><span class="pre">[analysis]</span></code> tag to the
+<strong class="program">pip</strong> command to force their installation. If you installed
+MDAnalysis with <strong class="program">conda</strong> then a
 <em>full set of dependencies</em> is automatically installed.</p>
 <p>Other modules require external programs. For instance, the
 <a class="reference internal" href="analysis/hole2.html#module-MDAnalysis.analysis.hole2.hole" title="MDAnalysis.analysis.hole2.hole"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2.hole</span></code></a> module requires an installation of the
@@ -291,6 +305,9 @@ by following their installation instructions before you can use the
 corresponding MDAnalysis module.</p>
 <div class="section" id="building-blocks-for-analysis">
 <h2>4.1. Building blocks for Analysis<a class="headerlink" href="#building-blocks-for-analysis" title="Permalink to this headline">¶</a></h2>
+<p>The building block for the analysis modules is
+<a class="reference internal" href="analysis/base.html#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.AnalysisBase</span></code></a>.
+To build your own analysis class start by reading the documentation.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="analysis/base.html">4.1.1. Analysis building blocks — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base</span></code></a></li>

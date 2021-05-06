@@ -227,7 +227,7 @@
 <p>An example is provided in the MDAnalysis <a class="reference external" href="https://github.com/MDAnalysis/MDAnalysisCookbook">Cookbook</a>, listed as <a class="reference external" href="https://github.com/MDAnalysis/MDAnalysisCookbook/blob/master/examples/GNMExample.py">GNMExample</a>.</p>
 <p>The basic approach is to pass a trajectory to <a class="reference internal" href="#MDAnalysis.analysis.gnm.GNMAnalysis" title="MDAnalysis.analysis.gnm.GNMAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">GNMAnalysis</span></code></a> and then run
 the analysis:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="n">C</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">gnm</span><span class="o">.</span><span class="n">GNMAnalysis</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">ReportVector</span><span class="o">=</span><span class="s2">&quot;output.txt&quot;</span><span class="p">)</span>
 
 <span class="n">C</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
@@ -238,7 +238,7 @@ the analysis:</p>
         <span class="n">outputfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">item</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The results are found in <a class="reference internal" href="#MDAnalysis.analysis.gnm.GNMAnalysis.results" title="MDAnalysis.analysis.gnm.GNMAnalysis.results"><code class="xref py py-attr docutils literal notranslate"><span class="pre">GNMAnalysis.results</span></code></a>, which can be
+<p>The results are found in <code class="xref py py-attr docutils literal notranslate"><span class="pre">GNMAnalysis.results</span></code>, which can be
 used for further processing (see <a class="reference internal" href="#hall2007" id="id2">[Hall2007]</a>).</p>
 <p class="rubric">References</p>
 <table class="docutils citation" frame="void" id="hall2007" rules="none">
@@ -265,38 +265,58 @@ conformational change in a simulation.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Analyze the full trajectory in the universe.</li>
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – MDAnalysis selection string, default “protein and name CA”</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – MDAnalysis selection string</li>
 <li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Consider selected atoms within the cutoff as neighbors for the
 Gaussian network model.</li>
-<li><strong>ReportVector</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – filename to write eigenvectors to, by default no output is written
-(<code class="docutils literal notranslate"><span class="pre">None</span></code>)</li>
+<li><strong>ReportVector</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – filename to write eigenvectors to, by default no output is written</li>
 <li><strong>Bonus_groups</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)"><em>tuple</em></a>) – This is a tuple of selection strings that identify additional groups
 (such as ligands). The center of mass of each group will be added as
 a single point in the ENM (it is a popular way of treating small
 ligands such as drugs). You need to ensure that none of the atoms in
 <cite>Bonus_groups</cite> is contained in <cite>selection</cite> as this could lead to
-double counting. No checks are applied. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+double counting. No checks are applied.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="attribute">
-<dt id="MDAnalysis.analysis.gnm.GNMAnalysis.results">
-<code class="descname">results</code><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.results" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>GNM results per frame:</dt>
-<dd><dl class="first last docutils">
-<dt>results = [(time,eigenvalues[1],eigenvectors[1]),</dt>
-<dd>(time,eigenvalues[1],eigenvectors[1]), …]</dd>
-</dl>
-</dd>
-</dl>
+<dt id="MDAnalysis.analysis.gnm.GNMAnalysis.results.times">
+<code class="descclassname">results.</code><code class="descname">times</code><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.results.times" title="Permalink to this definition">¶</a></dt>
+<dd><p>simulation times used in analysis</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.gnm.GNMAnalysis.results.eigenvalues">
+<code class="descclassname">results.</code><code class="descname">eigenvalues</code><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.results.eigenvalues" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculated eigenvalues</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.gnm.GNMAnalysis.results.eigenvectors">
+<code class="descclassname">results.</code><code class="descname">eigenvectors</code><a class="headerlink" href="#MDAnalysis.analysis.gnm.GNMAnalysis.results.eigenvectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculated eigenvectors</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
 </tr>
 </tbody>
 </table>
@@ -313,7 +333,9 @@ double counting. No checks are applied. Default is <code class="docutils literal
 <p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span>Use <code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code> as parent class.</p>
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Use <code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code> as parent class and
+store results as attributes <code class="docutils literal notranslate"><span class="pre">times</span></code>, <code class="docutils literal notranslate"><span class="pre">eigenvalues</span></code> and
+<code class="docutils literal notranslate"><span class="pre">eigenvectors</span></code> of the <code class="docutils literal notranslate"><span class="pre">results</span></code> attribute.</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.analysis.gnm.GNMAnalysis.generate_kirchoff">
@@ -349,11 +371,10 @@ in different residues.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Analyze the full trajectory in the universe.</li>
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – MDAnalysis selection string, default “protein”</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – MDAnalysis selection string</li>
 <li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Consider selected atoms within the cutoff as neighbors for the
-Gaussian network model [4.5 Å].</li>
-<li><strong>ReportVector</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – filename to write eigenvectors to, by default no output is written
-(<code class="docutils literal notranslate"><span class="pre">None</span></code>)</li>
+Gaussian network model.</li>
+<li><strong>ReportVector</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – filename to write eigenvectors to, by default no output is written</li>
 <li><strong>weights</strong> (<em>{&quot;size&quot;</em><em>, </em><em>None}</em><em> (</em><em>optional</em><em>)</em>) – If set to “size” (the default) then weight the contact by
 <span class="math notranslate nohighlight">\(1/\sqrt{N_i N_j}\)</span> where <span class="math notranslate nohighlight">\(N_i\)</span> and <span class="math notranslate nohighlight">\(N_j\)</span> are the
 number of atoms in the residues <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span> that contain
@@ -363,6 +384,48 @@ the atoms that form a contact.</li>
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.gnm.closeContactGNMAnalysis.results.times">
+<code class="descclassname">results.</code><code class="descname">times</code><a class="headerlink" href="#MDAnalysis.analysis.gnm.closeContactGNMAnalysis.results.times" title="Permalink to this definition">¶</a></dt>
+<dd><p>simulation times used in analysis</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.gnm.closeContactGNMAnalysis.results.eigenvalues">
+<code class="descclassname">results.</code><code class="descname">eigenvalues</code><a class="headerlink" href="#MDAnalysis.analysis.gnm.closeContactGNMAnalysis.results.eigenvalues" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculated eigenvalues</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.gnm.closeContactGNMAnalysis.results.eigenvectors">
+<code class="descclassname">results.</code><code class="descname">eigenvectors</code><a class="headerlink" href="#MDAnalysis.analysis.gnm.closeContactGNMAnalysis.results.eigenvectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculated eigenvectors</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <p class="rubric">Notes</p>
 <p>The <cite>MassWeight</cite> option has now been removed.</p>
 <div class="admonition seealso">
@@ -380,7 +443,9 @@ the atoms that form a contact.</li>
 Changed <cite>selection</cite> keyword to <cite>select</cite></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span>Use <code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code> as parent class.</p>
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Use <code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code> as parent class and
+store results as attributes <code class="docutils literal notranslate"><span class="pre">times</span></code>, <code class="docutils literal notranslate"><span class="pre">eigenvalues</span></code> and
+<code class="docutils literal notranslate"><span class="pre">eigenvectors</span></code> of the <cite>results</cite> attribute.</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.analysis.gnm.closeContactGNMAnalysis.generate_kirchoff">

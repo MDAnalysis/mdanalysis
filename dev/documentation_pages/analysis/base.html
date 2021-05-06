@@ -205,20 +205,81 @@
             
   <span class="target" id="module-MDAnalysis.analysis.base"></span><div class="section" id="analysis-building-blocks-mdanalysis-analysis-base">
 <h1>4.1.1. Analysis building blocks — <a class="reference internal" href="#module-MDAnalysis.analysis.base" title="MDAnalysis.analysis.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base</span></code></a><a class="headerlink" href="#analysis-building-blocks-mdanalysis-analysis-base" title="Permalink to this headline">¶</a></h1>
-<p>A collection of useful building blocks for creating Analysis
-classes.</p>
+<p>The building blocks for creating Analysis classes.</p>
 <dl class="class">
 <dt id="MDAnalysis.analysis.base.AnalysisBase">
 <em class="property">class </em><code class="descclassname">MDAnalysis.analysis.base.</code><code class="descname">AnalysisBase</code><span class="sig-paren">(</span><em>trajectory</em>, <em>verbose=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class for defining multi frame analysis</p>
-<p>The class it is designed as a template for creating multiframe analyses.
+<dd><p>Base class for defining multi-frame analysis</p>
+<p>The class is designed as a template for creating multi-frame analyses.
 This class will automatically take care of setting up the trajectory
-reader for iterating, and it offers to show a progress meter.</p>
+reader for iterating, and it offers to show a progress meter.
+Computed results are stored inside the <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.results" title="MDAnalysis.analysis.base.AnalysisBase.results"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results</span></code></a> attribute.</p>
 <p>To define a new Analysis, <cite>AnalysisBase</cite> needs to be subclassed
-<cite>_single_frame</cite> must be defined. It is also possible to define
-<cite>_prepare</cite> and <cite>_conclude</cite> for pre and post processing. See the example
-below.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">NewAnalysis</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+and <code class="xref py py-meth docutils literal notranslate"><span class="pre">_single_frame()</span></code> must be defined. It is also possible to define
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">_prepare()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">_conclude()</span></code> for pre- and post-processing.
+All results should be stored as attributes of the <a class="reference internal" href="#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a>
+container.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>trajectory</strong> (<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase" title="MDAnalysis.coordinates.base.ReaderBase"><em>MDAnalysis.coordinates.base.ReaderBase</em></a>) – A trajectory Reader</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on more logging and debugging</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.base.AnalysisBase.times">
+<code class="descname">times</code><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase.times" title="Permalink to this definition">¶</a></dt>
+<dd><p>array of Timestep times. Only exists after calling
+<a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisBase.run()</span></code></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.base.AnalysisBase.frames">
+<code class="descname">frames</code><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase.frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>array of Timestep frame indices. Only exists after calling
+<a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisBase.run()</span></code></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.base.AnalysisBase.results">
+<code class="descname">results</code><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase.results" title="Permalink to this definition">¶</a></dt>
+<dd><p>results of calculation are stored after call
+to <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisBase.run()</span></code></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
+
+<span class="k">class</span> <span class="nc">NewAnalysis</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">NewAnalysis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span>
                                           <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -229,70 +290,43 @@ below.</p>
         <span class="c1"># OPTIONAL</span>
         <span class="c1"># Called before iteration on the trajectory has begun.</span>
         <span class="c1"># Data structures can be set up at this time</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">example_result</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># REQUIRED</span>
         <span class="c1"># Called after the trajectory is moved onto each new frame.</span>
-        <span class="c1"># store result of `some_function` for a single frame</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">some_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameter</span><span class="p">))</span>
+        <span class="c1"># store an example_result of `some_function` for a single frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">example_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">some_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="p">,</span>
+                                                         <span class="bp">self</span><span class="o">.</span><span class="n">_parameter</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># OPTIONAL</span>
         <span class="c1"># Called once iteration on the trajectory is finished.</span>
         <span class="c1"># Apply normalisation and averaging to results here.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">example_result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">example_result</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">example_result</span> <span class="o">/=</span>  <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Afterwards the new analysis can be run like this.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">na</span> <span class="o">=</span> <span class="n">NewAnalysis</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name CA&#39;</span><span class="p">),</span> <span class="mi">35</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">na</span><span class="o">.</span><span class="n">result</span><span class="p">)</span>
+<p>Afterwards the new analysis can be run like this</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+
+<span class="n">na</span> <span class="o">=</span> <span class="n">NewAnalysis</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name CA&#39;</span><span class="p">),</span> <span class="mi">35</span><span class="p">)</span>
+<span class="n">na</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">na</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">example_result</span><span class="p">)</span>
+<span class="c1"># results can also be accessed by key</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">na</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s2">&quot;example_result&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
-<dl class="attribute">
-<dt id="MDAnalysis.analysis.base.AnalysisBase.times">
-<code class="descname">times</code><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase.times" title="Permalink to this definition">¶</a></dt>
-<dd><p>array of Timestep times. Only exists after calling run()</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">np.ndarray</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="MDAnalysis.analysis.base.AnalysisBase.frames">
-<code class="descname">frames</code><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisBase.frames" title="Permalink to this definition">¶</a></dt>
-<dd><p>array of Timestep frame indices. Only exists after calling run()</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">np.ndarray</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>trajectory</strong> (<em>mda.Reader</em>) – A trajectory Reader</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on more logging and debugging, default <code class="docutils literal notranslate"><span class="pre">False</span></code></li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.0.0: </span>Support for setting <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, and <code class="docutils literal notranslate"><span class="pre">step</span></code> has been
 removed. These should now be directly passed to
 <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.run" title="MDAnalysis.analysis.base.AnalysisBase.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisBase.run()</span></code></a>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Added <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase.results" title="MDAnalysis.analysis.base.AnalysisBase.results"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results</span></code></a></p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.analysis.base.AnalysisBase.run">
@@ -319,72 +353,219 @@ removed. These should now be directly passed to
 <dl class="class">
 <dt id="MDAnalysis.analysis.base.AnalysisFromFunction">
 <em class="property">class </em><code class="descclassname">MDAnalysis.analysis.base.</code><code class="descname">AnalysisFromFunction</code><span class="sig-paren">(</span><em>function</em>, <em>trajectory=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#AnalysisFromFunction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisFromFunction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create an analysis from a function working on AtomGroups</p>
-<dl class="attribute">
-<dt id="MDAnalysis.analysis.base.AnalysisFromFunction.results">
-<code class="descname">results</code><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisFromFunction.results" title="Permalink to this definition">¶</a></dt>
-<dd><p>results of calculation are stored after call to <code class="docutils literal notranslate"><span class="pre">run</span></code></p>
+<dd><p>Create an <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a> from a function working on AtomGroups</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">ndarray</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">rotation_matrix</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">ref</span><span class="p">):</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="k">return</span> <span class="n">mda</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">align</span><span class="o">.</span><span class="n">rotation_matrix</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">ref</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rot</span> <span class="o">=</span> <span class="n">AnalysisFromFunction</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">mobile</span><span class="p">,</span> <span class="n">ref</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">rot</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
-</pre></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first">ValueError : if <code class="docutils literal notranslate"><span class="pre">function</span></code> has the same kwargs as <code class="docutils literal notranslate"><span class="pre">BaseAnalysis</span></code></p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>function</strong> (<em>callable</em>) – function to evaluate at each frame</li>
-<li><strong>trajectory</strong> (<em>mda.coordinates.Reader</em><em> (</em><em>optional</em><em>)</em>) – trajectory to iterate over. If <code class="docutils literal notranslate"><span class="pre">None</span></code> the first AtomGroup found in
+<li><strong>trajectory</strong> (<em>mda.coordinates.Reader</em><em>, </em><em>optional</em>) – trajectory to iterate over. If <code class="docutils literal notranslate"><span class="pre">None</span></code> the first AtomGroup found in
 args and kwargs is used as a source for the trajectory.</li>
 <li><strong>*args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – arguments for <code class="docutils literal notranslate"><span class="pre">function</span></code></li>
-<li><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – arguments for <code class="docutils literal notranslate"><span class="pre">function</span></code> and <code class="docutils literal notranslate"><span class="pre">AnalysisBase</span></code></li>
-<li><strong>versionchanged:</strong> (<em>.</em>) – 1.0.0: Support for directly passing the <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, and <code class="docutils literal notranslate"><span class="pre">step</span></code>
-arguments has been removed. These should instead be passed
-to <code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisFromFunction.run()</span></code>.</li>
+<li><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – arguments for <code class="docutils literal notranslate"><span class="pre">function</span></code> and <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a></li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.base.AnalysisFromFunction.results.frames">
+<code class="descclassname">results.</code><code class="descname">frames</code><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisFromFunction.results.frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>simulation frames used in analysis</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.base.AnalysisFromFunction.results.times">
+<code class="descclassname">results.</code><code class="descname">times</code><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisFromFunction.results.times" title="Permalink to this definition">¶</a></dt>
+<dd><p>simulation times used in analysis</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.base.AnalysisFromFunction.results.timeseries">
+<code class="descclassname">results.</code><code class="descname">timeseries</code><a class="headerlink" href="#MDAnalysis.analysis.base.AnalysisFromFunction.results.timeseries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Results for each frame of the wrapped function,
+stored after call to <code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisFromFunction.run()</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – if <code class="docutils literal notranslate"><span class="pre">function</span></code> has the same <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> as <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">rotation_matrix</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">ref</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">mda</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">align</span><span class="o">.</span><span class="n">rotation_matrix</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">ref</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">rot</span> <span class="o">=</span> <span class="n">AnalysisFromFunction</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span>
+                            <span class="n">mobile</span><span class="p">,</span> <span class="n">ref</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">rot</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Support for directly passing the <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, and <code class="docutils literal notranslate"><span class="pre">step</span></code>
+arguments has been removed. These should instead be passed
+to <code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisFromFunction.run()</span></code>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Former <code class="xref py py-attr docutils literal notranslate"><span class="pre">results</span></code> are now stored as <a class="reference internal" href="#MDAnalysis.analysis.base.results.timeseries" title="MDAnalysis.analysis.base.results.timeseries"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.timeseries</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.analysis.base.Results">
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.base.</code><code class="descname">Results</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#Results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.base.Results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Container object for storing results.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Results</span></code> are dictionaries that provide two ways by which values can be
+accessed: by dictionary key <code class="docutils literal notranslate"><span class="pre">results[&quot;value_key&quot;]</span></code> or by object
+attribute, <code class="docutils literal notranslate"><span class="pre">results.value_key</span></code>. <code class="docutils literal notranslate"><span class="pre">Results</span></code> stores all results obtained
+from an analysis after calling <code class="xref py py-func docutils literal notranslate"><span class="pre">run()</span></code>.</p>
+<p>The implementation is similar to the <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.utils.Bunch</span></code>
+class in <a class="reference external" href="https://scikit-learn.org/">scikit-learn</a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">AttributeError</span></code></a> – If an assigned attribute has the same name as a default attribute.</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If a key is not of type <code class="docutils literal notranslate"><span class="pre">str</span></code> and therefore is not able to be
+accessed by attribute.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>Pickling of <code class="docutils literal notranslate"><span class="pre">Results</span></code> is currently not supported.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.base</span> <span class="kn">import</span> <span class="n">Results</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">Results</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span><span class="o">.</span><span class="n">b</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">]</span>
+<span class="go">[1, 2, 3, 4]</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.base.analysis_class">
 <code class="descclassname">MDAnalysis.analysis.base.</code><code class="descname">analysis_class</code><span class="sig-paren">(</span><em>function</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/base.html#analysis_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.base.analysis_class" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transform a function operating on a single frame to an analysis class</p>
-<p>For an usage in a library we recommend the following style:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">rotation_matrix</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">ref</span><span class="p">):</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="k">return</span> <span class="n">mda</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">align</span><span class="o">.</span><span class="n">rotation_matrix</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">ref</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">RotationMatrix</span> <span class="o">=</span> <span class="n">analysis_class</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">)</span>
+<dd><p>Transform a function operating on a single frame to an
+<a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a> class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>function</strong> (<em>callable</em>) – function to evaluate at each frame</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.base.results.frames">
+<code class="descclassname">results.</code><code class="descname">frames</code><a class="headerlink" href="#MDAnalysis.analysis.base.results.frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>simulation frames used in analysis</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.base.results.times">
+<code class="descclassname">results.</code><code class="descname">times</code><a class="headerlink" href="#MDAnalysis.analysis.base.results.times" title="Permalink to this definition">¶</a></dt>
+<dd><p>simulation times used in analysis</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.base.results.timeseries">
+<code class="descclassname">results.</code><code class="descname">timeseries</code><a class="headerlink" href="#MDAnalysis.analysis.base.results.timeseries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Results for each frame of the wrapped function,
+stored after call to <code class="xref py py-meth docutils literal notranslate"><span class="pre">AnalysisFromFunction.run()</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – if <code class="docutils literal notranslate"><span class="pre">function</span></code> has the same <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> as <a class="reference internal" href="#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>For use in a library, we recommend the following style</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">rotation_matrix</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">ref</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">mda</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">align</span><span class="o">.</span><span class="n">rotation_matrix</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">ref</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">RotationMatrix</span> <span class="o">=</span> <span class="n">analysis_class</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>It can also be used as a decorator:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@analysis_class</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">RotationMatrix</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">ref</span><span class="p">):</span>
-<span class="gp">&gt;&gt;&gt; </span>    <span class="k">return</span> <span class="n">mda</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">align</span><span class="o">.</span><span class="n">rotation_matrix</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">ref</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<p>It can also be used as a decorator</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@analysis_class</span>
+<span class="k">def</span> <span class="nf">RotationMatrix</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">ref</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">mda</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">align</span><span class="o">.</span><span class="n">rotation_matrix</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">ref</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">rot</span> <span class="o">=</span> <span class="n">RotationMatrix</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">mobile</span><span class="p">,</span> <span class="n">ref</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">step</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">rot</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rot</span> <span class="o">=</span> <span class="n">RotationMatrix</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">mobile</span><span class="p">,</span> <span class="n">ref</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">step</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">rot</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
-</pre></div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Former <code class="docutils literal notranslate"><span class="pre">results</span></code> are now stored as <code class="docutils literal notranslate"><span class="pre">results.timeseries</span></code></p>
 </div>
 </dd></dl>
 

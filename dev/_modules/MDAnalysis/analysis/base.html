@@ -208,10 +208,10 @@
 <span class="sd">Analysis building blocks --- :mod:`MDAnalysis.analysis.base`</span>
 <span class="sd">============================================================</span>
 
-<span class="sd">A collection of useful building blocks for creating Analysis</span>
-<span class="sd">classes.</span>
+<span class="sd">The building blocks for creating Analysis classes.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">UserDict</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
@@ -224,19 +224,126 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="AnalysisBase"><a class="viewcode-back" href="../../../documentation_pages/analysis/base.html#MDAnalysis.analysis.base.AnalysisBase">[docs]</a><span class="k">class</span> <span class="nc">AnalysisBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for defining multi frame analysis</span>
+<div class="viewcode-block" id="Results"><a class="viewcode-back" href="../../../documentation_pages/analysis/base.html#MDAnalysis.analysis.base.Results">[docs]</a><span class="k">class</span> <span class="nc">Results</span><span class="p">(</span><span class="n">UserDict</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Container object for storing results.</span>
 
-<span class="sd">    The class it is designed as a template for creating multiframe analyses.</span>
+<span class="sd">    ``Results`` are dictionaries that provide two ways by which values can be</span>
+<span class="sd">    accessed: by dictionary key ``results[&quot;value_key&quot;]`` or by object</span>
+<span class="sd">    attribute, ``results.value_key``. ``Results`` stores all results obtained</span>
+<span class="sd">    from an analysis after calling :func:`run()`.</span>
+
+<span class="sd">    The implementation is similar to the :class:`sklearn.utils.Bunch`</span>
+<span class="sd">    class in `scikit-learn`_.</span>
+
+<span class="sd">    .. _`scikit-learn`: https://scikit-learn.org/</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    AttributeError</span>
+<span class="sd">        If an assigned attribute has the same name as a default attribute.</span>
+
+<span class="sd">    ValueError</span>
+<span class="sd">        If a key is not of type ``str`` and therefore is not able to be</span>
+<span class="sd">        accessed by attribute.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Pickling of ``Results`` is currently not supported.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from MDAnalysis.analysis.base import Results</span>
+<span class="sd">    &gt;&gt;&gt; results = Results(a=1, b=2)</span>
+<span class="sd">    &gt;&gt;&gt; results[&#39;b&#39;]</span>
+<span class="sd">    2</span>
+<span class="sd">    &gt;&gt;&gt; results.b</span>
+<span class="sd">    2</span>
+<span class="sd">    &gt;&gt;&gt; results.a = 3</span>
+<span class="sd">    &gt;&gt;&gt; results[&#39;a&#39;]</span>
+<span class="sd">    3</span>
+<span class="sd">    &gt;&gt;&gt; results.c = [1, 2, 3, 4]</span>
+<span class="sd">    &gt;&gt;&gt; results[&#39;c&#39;]</span>
+<span class="sd">    [1, 2, 3, 4]</span>
+
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_validate_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">UserDict</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;data&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict_frozen</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; is a protected dictionary &quot;</span>
+                                 <span class="s2">&quot;attribute&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">key</span><span class="o">.</span><span class="n">isidentifier</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; is not a valid attribute&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;data&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;data&#39; is a protected dictionary attribute&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dict_frozen</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_key</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dict_frozen</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_key</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_key</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="c1"># attribute available as key</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict_frozen</span> <span class="ow">and</span> <span class="n">attr</span> <span class="o">!=</span> <span class="s2">&quot;_dict_frozen&quot;</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;&#39;Results&#39; object has no &quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot;attribute &#39;</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span></div>
+
+
+<div class="viewcode-block" id="AnalysisBase"><a class="viewcode-back" href="../../../documentation_pages/analysis/base.html#MDAnalysis.analysis.base.AnalysisBase">[docs]</a><span class="k">class</span> <span class="nc">AnalysisBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Base class for defining multi-frame analysis</span>
+
+<span class="sd">    The class is designed as a template for creating multi-frame analyses.</span>
 <span class="sd">    This class will automatically take care of setting up the trajectory</span>
 <span class="sd">    reader for iterating, and it offers to show a progress meter.</span>
+<span class="sd">    Computed results are stored inside the :attr:`results` attribute.</span>
 
 <span class="sd">    To define a new Analysis, `AnalysisBase` needs to be subclassed</span>
-<span class="sd">    `_single_frame` must be defined. It is also possible to define</span>
-<span class="sd">    `_prepare` and `_conclude` for pre and post processing. See the example</span>
-<span class="sd">    below.</span>
+<span class="sd">    and :meth:`_single_frame` must be defined. It is also possible to define</span>
+<span class="sd">    :meth:`_prepare` and :meth:`_conclude` for pre- and post-processing.</span>
+<span class="sd">    All results should be stored as attributes of the :class:`Results`</span>
+<span class="sd">    container.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    trajectory : MDAnalysis.coordinates.base.ReaderBase</span>
+<span class="sd">        A trajectory Reader</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        Turn on more logging and debugging</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    times: numpy.ndarray</span>
+<span class="sd">        array of Timestep times. Only exists after calling</span>
+<span class="sd">        :meth:`AnalysisBase.run`</span>
+<span class="sd">    frames: numpy.ndarray</span>
+<span class="sd">        array of Timestep frame indices. Only exists after calling</span>
+<span class="sd">        :meth:`AnalysisBase.run`</span>
+<span class="sd">    results: :class:`Results`</span>
+<span class="sd">        results of calculation are stored after call</span>
+<span class="sd">        to :meth:`AnalysisBase.run`</span>
+
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
 <span class="sd">    .. code-block:: python</span>
+
+<span class="sd">       from MDAnalysis.analysis.base import AnalysisBase</span>
 
 <span class="sd">       class NewAnalysis(AnalysisBase):</span>
 <span class="sd">           def __init__(self, atomgroup, parameter, **kwargs):</span>
@@ -249,53 +356,51 @@
 <span class="sd">               # OPTIONAL</span>
 <span class="sd">               # Called before iteration on the trajectory has begun.</span>
 <span class="sd">               # Data structures can be set up at this time</span>
-<span class="sd">               self.result = []</span>
+<span class="sd">               self.results.example_result = []</span>
 
 <span class="sd">           def _single_frame(self):</span>
 <span class="sd">               # REQUIRED</span>
 <span class="sd">               # Called after the trajectory is moved onto each new frame.</span>
-<span class="sd">               # store result of `some_function` for a single frame</span>
-<span class="sd">               self.result.append(some_function(self._ag, self._parameter))</span>
+<span class="sd">               # store an example_result of `some_function` for a single frame</span>
+<span class="sd">               self.results.example_result.append(some_function(self._ag,</span>
+<span class="sd">                                                                self._parameter))</span>
 
 <span class="sd">           def _conclude(self):</span>
 <span class="sd">               # OPTIONAL</span>
 <span class="sd">               # Called once iteration on the trajectory is finished.</span>
 <span class="sd">               # Apply normalisation and averaging to results here.</span>
-<span class="sd">               self.result = np.asarray(self.result) / np.sum(self.result)</span>
+<span class="sd">               self.results.example_result = np.asarray(self.example_result)</span>
+<span class="sd">               self.results.example_result /=  np.sum(self.result)</span>
 
-<span class="sd">    Afterwards the new analysis can be run like this.</span>
+<span class="sd">    Afterwards the new analysis can be run like this</span>
 
 <span class="sd">    .. code-block:: python</span>
 
-<span class="sd">       na = NewAnalysis(u.select_atoms(&#39;name CA&#39;), 35).run(start=10, stop=20)</span>
-<span class="sd">       print(na.result)</span>
+<span class="sd">       import MDAnalysis as mda</span>
+<span class="sd">       from MDAnalysisTests.datafiles import PSF, DCD</span>
 
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    times: np.ndarray</span>
-<span class="sd">        array of Timestep times. Only exists after calling run()</span>
-<span class="sd">    frames: np.ndarray</span>
-<span class="sd">        array of Timestep frame indices. Only exists after calling run()</span>
+<span class="sd">       u = mda.Universe(PSF, DCD)</span>
 
+<span class="sd">       na = NewAnalysis(u.select_atoms(&#39;name CA&#39;), 35)</span>
+<span class="sd">       na.run(start=10, stop=20)</span>
+<span class="sd">       print(na.results.example_result)</span>
+<span class="sd">       # results can also be accessed by key</span>
+<span class="sd">       print(na.results[&quot;example_result&quot;])</span>
+
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">        Support for setting ``start``, ``stop``, and ``step`` has been</span>
+<span class="sd">        removed. These should now be directly passed to</span>
+<span class="sd">        :meth:`AnalysisBase.run`.</span>
+
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">        Added :attr:`results`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        trajectory : mda.Reader</span>
-<span class="sd">            A trajectory Reader</span>
-<span class="sd">        verbose : bool, optional</span>
-<span class="sd">           Turn on more logging and debugging, default ``False``</span>
-
-
-<span class="sd">        .. versionchanged:: 1.0.0</span>
-<span class="sd">           Support for setting ``start``, ``stop``, and ``step`` has been</span>
-<span class="sd">           removed. These should now be directly passed to</span>
-<span class="sd">           :meth:`AnalysisBase.run`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="o">=</span> <span class="n">trajectory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">Results</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_setup_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -316,7 +421,6 @@
 
 <span class="sd">        .. versionchanged:: 1.0.0</span>
 <span class="sd">            Added .frames and .times arrays as attributes</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="o">=</span> <span class="n">trajectory</span>
         <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">trajectory</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
@@ -341,7 +445,7 @@
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Finalise the results you&#39;ve gathered.</span>
 
-<span class="sd">        Called at the end of the run() method to finish everything up.</span>
+<span class="sd">        Called at the end of the :meth:`run` method to finish everything up.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span>  <span class="c1"># pylint: disable=unnecessary-pass</span>
 
@@ -382,46 +486,57 @@
 
 
 <div class="viewcode-block" id="AnalysisFromFunction"><a class="viewcode-back" href="../../../documentation_pages/analysis/base.html#MDAnalysis.analysis.base.AnalysisFromFunction">[docs]</a><span class="k">class</span> <span class="nc">AnalysisFromFunction</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create an analysis from a function working on AtomGroups</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create an :class:`AnalysisBase` from a function working on AtomGroups</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    function : callable</span>
+<span class="sd">        function to evaluate at each frame</span>
+<span class="sd">    trajectory : mda.coordinates.Reader, optional</span>
+<span class="sd">        trajectory to iterate over. If ``None`` the first AtomGroup found in</span>
+<span class="sd">        args and kwargs is used as a source for the trajectory.</span>
+<span class="sd">    *args : list</span>
+<span class="sd">        arguments for ``function``</span>
+<span class="sd">    **kwargs : dict</span>
+<span class="sd">        arguments for ``function`` and :class:`AnalysisBase`</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    results : ndarray</span>
-<span class="sd">        results of calculation are stored after call to ``run``</span>
-
-<span class="sd">    Example</span>
-<span class="sd">    -------</span>
-<span class="sd">    &gt;&gt;&gt; def rotation_matrix(mobile, ref):</span>
-<span class="sd">    &gt;&gt;&gt;     return mda.analysis.align.rotation_matrix(mobile, ref)[0]</span>
-
-<span class="sd">    &gt;&gt;&gt; rot = AnalysisFromFunction(rotation_matrix, trajectory, mobile, ref).run()</span>
-<span class="sd">    &gt;&gt;&gt; print(rot.results)</span>
+<span class="sd">    results.frames : numpy.ndarray</span>
+<span class="sd">            simulation frames used in analysis</span>
+<span class="sd">    results.times : numpy.ndarray</span>
+<span class="sd">            simulation times used in analysis</span>
+<span class="sd">    results.timeseries : numpy.ndarray</span>
+<span class="sd">            Results for each frame of the wrapped function,</span>
+<span class="sd">            stored after call to :meth:`AnalysisFromFunction.run`.</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
-<span class="sd">    ValueError : if ``function`` has the same kwargs as ``BaseAnalysis``</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        def rotation_matrix(mobile, ref):</span>
+<span class="sd">            return mda.analysis.align.rotation_matrix(mobile, ref)[0]</span>
+
+<span class="sd">        rot = AnalysisFromFunction(rotation_matrix, trajectory,</span>
+<span class="sd">                                    mobile, ref).run()</span>
+<span class="sd">        print(rot.results.timeseries)</span>
+
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">        Support for directly passing the ``start``, ``stop``, and ``step``</span>
+<span class="sd">        arguments has been removed. These should instead be passed</span>
+<span class="sd">        to :meth:`AnalysisFromFunction.run`.</span>
+
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">        Former :attr:`results` are now stored as :attr:`results.timeseries`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">trajectory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        function : callable</span>
-<span class="sd">            function to evaluate at each frame</span>
-<span class="sd">        trajectory : mda.coordinates.Reader (optional)</span>
-<span class="sd">            trajectory to iterate over. If ``None`` the first AtomGroup found in</span>
-<span class="sd">            args and kwargs is used as a source for the trajectory.</span>
-<span class="sd">        *args : list</span>
-<span class="sd">            arguments for ``function``</span>
-<span class="sd">        **kwargs : dict</span>
-<span class="sd">            arguments for ``function`` and ``AnalysisBase``</span>
-
-<span class="sd">        .. versionchanged:: 1.0.0</span>
-<span class="sd">           Support for directly passing the ``start``, ``stop``, and ``step``</span>
-<span class="sd">           arguments has been removed. These should instead be passed</span>
-<span class="sd">           to :meth:`AnalysisFromFunction.run`.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">trajectory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
                 <span class="n">trajectory</span><span class="p">,</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">ProtoReader</span><span class="p">)):</span>
             <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">trajectory</span><span class="p">,)</span> <span class="o">+</span> <span class="n">args</span>
@@ -445,33 +560,67 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">AnalysisFromFunction</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span>
+                                                     <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">times</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="analysis_class"><a class="viewcode-back" href="../../../documentation_pages/analysis/base.html#MDAnalysis.analysis.base.analysis_class">[docs]</a><span class="k">def</span> <span class="nf">analysis_class</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Transform a function operating on a single frame to an analysis class</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Transform a function operating on a single frame to an</span>
+<span class="sd">    :class:`AnalysisBase` class.</span>
 
-<span class="sd">    For an usage in a library we recommend the following style:</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    function : callable</span>
+<span class="sd">        function to evaluate at each frame</span>
 
-<span class="sd">    &gt;&gt;&gt; def rotation_matrix(mobile, ref):</span>
-<span class="sd">    &gt;&gt;&gt;     return mda.analysis.align.rotation_matrix(mobile, ref)[0]</span>
-<span class="sd">    &gt;&gt;&gt; RotationMatrix = analysis_class(rotation_matrix)</span>
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    results.frames : numpy.ndarray</span>
+<span class="sd">            simulation frames used in analysis</span>
+<span class="sd">    results.times : numpy.ndarray</span>
+<span class="sd">            simulation times used in analysis</span>
+<span class="sd">    results.timeseries : numpy.ndarray</span>
+<span class="sd">            Results for each frame of the wrapped function,</span>
+<span class="sd">            stored after call to :meth:`AnalysisFromFunction.run`.</span>
 
-<span class="sd">    It can also be used as a decorator:</span>
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`</span>
 
-<span class="sd">    &gt;&gt;&gt; @analysis_class</span>
-<span class="sd">    &gt;&gt;&gt; def RotationMatrix(mobile, ref):</span>
-<span class="sd">    &gt;&gt;&gt;     return mda.analysis.align.rotation_matrix(mobile, ref)[0]</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 
-<span class="sd">    &gt;&gt;&gt; rot = RotationMatrix(u.trajectory, mobile, ref).run(step=2)</span>
-<span class="sd">    &gt;&gt;&gt; print(rot.results)</span>
+<span class="sd">    For use in a library, we recommend the following style</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        def rotation_matrix(mobile, ref):</span>
+<span class="sd">            return mda.analysis.align.rotation_matrix(mobile, ref)[0]</span>
+<span class="sd">        RotationMatrix = analysis_class(rotation_matrix)</span>
+
+<span class="sd">    It can also be used as a decorator</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        @analysis_class</span>
+<span class="sd">        def RotationMatrix(mobile, ref):</span>
+<span class="sd">            return mda.analysis.align.rotation_matrix(mobile, ref)[0]</span>
+
+<span class="sd">        rot = RotationMatrix(u.trajectory, mobile, ref).run(step=2)</span>
+<span class="sd">        print(rot.results.timeseries)</span>
+
+
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">        Former ``results`` are now stored as ``results.timeseries``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">class</span> <span class="nc">WrapperClass</span><span class="p">(</span><span class="n">AnalysisFromFunction</span><span class="p">):</span>
@@ -502,7 +651,8 @@
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
-<span class="sd">    ValueError : if ``function`` has the same kwargs as ``BaseAnalysis``</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># pylint: disable=deprecated-method</span>

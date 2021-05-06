@@ -209,14 +209,14 @@
 <span class="sd">===========================================================</span>
 
 <span class="sd">A tool to compute mass and charge density profiles along the three</span>
-<span class="sd">cartesian axes of the simulation cell. Works only for orthorombic,</span>
+<span class="sd">cartesian axes [xyz] of the simulation cell. Works only for orthorombic,</span>
 <span class="sd">fixed volume cells (thus for simulations in canonical NVT ensemble).</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">path</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">Results</span>
 
 
 <div class="viewcode-block" id="LinearDensity"><a class="viewcode-back" href="../../../documentation_pages/analysis/lineardensity.html#MDAnalysis.analysis.lineardensity.LinearDensity">[docs]</a><span class="k">class</span> <span class="nc">LinearDensity</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
@@ -233,25 +233,35 @@
 <span class="sd">          Bin width in Angstrom used to build linear density</span>
 <span class="sd">          histograms. Defines the resolution of the resulting density</span>
 <span class="sd">          profile (smaller --&gt; higher resolution)</span>
-<span class="sd">    verbose : bool (optional)</span>
-<span class="sd">          Show detailed progress of the calculation if set to ``True``; the</span>
-<span class="sd">          default is ``False``.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">          Show detailed progress of the calculation if set to ``True``</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    results : dict</span>
-<span class="sd">          Keys &#39;x&#39;, &#39;y&#39;, and &#39;z&#39; for the three directions. Under these</span>
-<span class="sd">          keys, find &#39;pos&#39;, &#39;pos_std&#39; (mass-weighted density and</span>
-<span class="sd">          standard deviation), &#39;char&#39;, &#39;char_std&#39; (charge density and</span>
-<span class="sd">          its standard deviation), &#39;slice_volume&#39; (volume of bin).</span>
+<span class="sd">    results.x.dim : int</span>
+<span class="sd">           index of the [xyz] axes</span>
+<span class="sd">    results.x.pos : numpy.ndarray</span>
+<span class="sd">           mass density in [xyz] direction</span>
+<span class="sd">    results.x.pos_std : numpy.ndarray</span>
+<span class="sd">           standard deviation of the mass density in [xyz] direction</span>
+<span class="sd">    results.x.char : numpy.ndarray</span>
+<span class="sd">           charge density in [xyz] direction</span>
+<span class="sd">    results.x.char_std : numpy.ndarray</span>
+<span class="sd">           standard deviation of the charge density in [xyz] direction</span>
+<span class="sd">    results.x.slice_volume : float</span>
+<span class="sd">           volume of bin in [xyz] direction</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
-<span class="sd">    First create a LinearDensity object by supplying a selection,</span>
-<span class="sd">    then use the :meth:`run` method::</span>
+<span class="sd">    First create a ``LinearDensity`` object by supplying a selection,</span>
+<span class="sd">    then use the :meth:`run` method. Finally access the results</span>
+<span class="sd">    stored in results, i.e. the mass density in the x direction.</span>
 
-<span class="sd">      ldens = LinearDensity(selection)</span>
-<span class="sd">      ldens.run()</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">       ldens = LinearDensity(selection)</span>
+<span class="sd">       ldens.run()</span>
+<span class="sd">       print(ldens.results.x.pos)</span>
 
 
 <span class="sd">    .. versionadded:: 0.14.0</span>
@@ -265,6 +275,11 @@
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       Changed `selection` keyword to `select`</span>
+
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       Results are now instances of</span>
+<span class="sd">       :class:`~MDAnalysis.core.analysis.Results` allowing access</span>
+<span class="sd">       via key and attribute.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">grouping</span><span class="o">=</span><span class="s1">&#39;atoms&#39;</span><span class="p">,</span> <span class="n">binsize</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -280,8 +295,10 @@
         <span class="c1"># AtomGroup.wrap())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">grouping</span> <span class="o">=</span> <span class="n">grouping</span>
 
-        <span class="c1"># Dictionary containing results</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;dim&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;dim&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;dim&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}}</span>
+        <span class="c1"># Initiate result instances</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Results</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Results</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Results</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="c1"># Box sides</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
@@ -298,9 +315,9 @@
         <span class="c1"># Initialize results array with zeros</span>
         <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;dim&#39;</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;slice volume&#39;</span><span class="p">:</span> <span class="n">slices_vol</span><span class="p">[</span><span class="n">idx</span><span class="p">]})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;slice_volume&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">slices_vol</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">)})</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">)</span>
 
         <span class="c1"># Variables later defined in _prepare() method</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">masses</span> <span class="o">=</span> <span class="kc">None</span>
@@ -361,7 +378,7 @@
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">k</span> <span class="o">=</span> <span class="mf">6.022e-1</span>  <span class="c1"># divide by avodagro and convert from A3 to cm3</span>
 
-        <span class="c1"># Average results over the  number of configurations</span>
+        <span class="c1"># Average results over the number of configurations</span>
         <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]:</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;pos&#39;</span><span class="p">,</span> <span class="s1">&#39;pos_std&#39;</span><span class="p">,</span> <span class="s1">&#39;char&#39;</span><span class="p">,</span> <span class="s1">&#39;char_std&#39;</span><span class="p">]:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
@@ -372,10 +389,9 @@
                 <span class="s1">&#39;char_std&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;char&#39;</span><span class="p">]))</span>
 
         <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;pos&#39;</span><span class="p">]</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;slice volume&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">k</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;char&#39;</span><span class="p">]</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;slice volume&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">k</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;pos_std&#39;</span><span class="p">]</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;slice volume&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">k</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;char_std&#39;</span><span class="p">]</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;slice volume&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">k</span>
+            <span class="n">norm</span> <span class="o">=</span> <span class="n">k</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;slice_volume&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">/=</span> <span class="n">norm</span>
 
     <span class="k">def</span> <span class="nf">_add_other_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="c1"># For parallel analysis</span>

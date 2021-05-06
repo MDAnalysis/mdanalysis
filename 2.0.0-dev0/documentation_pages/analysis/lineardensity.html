@@ -208,7 +208,7 @@
   <span class="target" id="module-MDAnalysis.analysis.lineardensity"></span><div class="section" id="linear-density-mdanalysis-analysis-lineardensity">
 <h1>4.8.2. Linear Density — <a class="reference internal" href="#module-MDAnalysis.analysis.lineardensity" title="MDAnalysis.analysis.lineardensity"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.lineardensity</span></code></a><a class="headerlink" href="#linear-density-mdanalysis-analysis-lineardensity" title="Permalink to this headline">¶</a></h1>
 <p>A tool to compute mass and charge density profiles along the three
-cartesian axes of the simulation cell. Works only for orthorombic,
+cartesian axes [xyz] of the simulation cell. Works only for orthorombic,
 fixed volume cells (thus for simulations in canonical NVT ensemble).</p>
 <dl class="class">
 <dt id="MDAnalysis.analysis.lineardensity.LinearDensity">
@@ -225,35 +225,103 @@ of a selected group of atoms</li>
 <li><strong>binsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – Bin width in Angstrom used to build linear density
 histograms. Defines the resolution of the resulting density
 profile (smaller –&gt; higher resolution)</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the
-default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code></li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="attribute">
-<dt id="MDAnalysis.analysis.lineardensity.LinearDensity.results">
-<code class="descname">results</code><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results" title="Permalink to this definition">¶</a></dt>
-<dd><p>Keys ‘x’, ‘y’, and ‘z’ for the three directions. Under these
-keys, find ‘pos’, ‘pos_std’ (mass-weighted density and
-standard deviation), ‘char’, ‘char_std’ (charge density and
-its standard deviation), ‘slice_volume’ (volume of bin).</p>
+<dt id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.dim">
+<code class="descclassname">results.x.</code><code class="descname">dim</code><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.dim" title="Permalink to this definition">¶</a></dt>
+<dd><p>index of the [xyz] axes</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos">
+<code class="descclassname">results.x.</code><code class="descname">pos</code><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>mass density in [xyz] direction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos_std">
+<code class="descclassname">results.x.</code><code class="descname">pos_std</code><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos_std" title="Permalink to this definition">¶</a></dt>
+<dd><p>standard deviation of the mass density in [xyz] direction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char">
+<code class="descclassname">results.x.</code><code class="descname">char</code><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char" title="Permalink to this definition">¶</a></dt>
+<dd><p>charge density in [xyz] direction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char_std">
+<code class="descclassname">results.x.</code><code class="descname">char_std</code><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char_std" title="Permalink to this definition">¶</a></dt>
+<dd><p>standard deviation of the charge density in [xyz] direction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.slice_volume">
+<code class="descclassname">results.x.</code><code class="descname">slice_volume</code><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.slice_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>volume of bin in [xyz] direction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <p class="rubric">Example</p>
-<p>First create a LinearDensity object by supplying a selection,
-then use the <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code> method:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ldens</span> <span class="o">=</span> <span class="n">LinearDensity</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span>
+<p>First create a <code class="docutils literal notranslate"><span class="pre">LinearDensity</span></code> object by supplying a selection,
+then use the <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code> method. Finally access the results
+stored in results, i.e. the mass density in the x direction.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ldens</span> <span class="o">=</span> <span class="n">LinearDensity</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span>
 <span class="n">ldens</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ldens</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="versionadded">
@@ -263,11 +331,16 @@ then use the <code class="xref py py-meth docutils literal notranslate"><span cl
 <p><span class="versionmodified">Changed in version 1.0.0: </span>Support for the <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, and <code class="docutils literal notranslate"><span class="pre">step</span></code> keywords has been
 removed. These should instead be passed to <code class="xref py py-meth docutils literal notranslate"><span class="pre">LinearDensity.run()</span></code>.
 The <code class="docutils literal notranslate"><span class="pre">save()</span></code> method was also removed, you can use <code class="docutils literal notranslate"><span class="pre">np.savetxt()</span></code> or
-<code class="docutils literal notranslate"><span class="pre">np.save()</span></code> on the <a class="reference internal" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results" title="MDAnalysis.analysis.lineardensity.LinearDensity.results"><code class="xref py py-attr docutils literal notranslate"><span class="pre">LinearDensity.results</span></code></a> dictionary contents
+<code class="docutils literal notranslate"><span class="pre">np.save()</span></code> on the <code class="xref py py-attr docutils literal notranslate"><span class="pre">LinearDensity.results</span></code> dictionary contents
 instead.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Results are now instances of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code> allowing access
+via key and attribute.</p>
 </div>
 </dd></dl>
 

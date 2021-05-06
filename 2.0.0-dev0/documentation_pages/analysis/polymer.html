@@ -269,16 +269,15 @@ the persistence length which is fitted</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>atomgroups</strong> (<em>iterable</em>) – List of AtomGroups.  Each should represent a single
 polymer chain, ordered in the correct order.</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the
-default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="attribute">
-<dt id="MDAnalysis.analysis.polymer.PersistenceLength.results">
-<code class="descname">results</code><a class="headerlink" href="#MDAnalysis.analysis.polymer.PersistenceLength.results" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.analysis.polymer.PersistenceLength.results.bond_autocorrelation">
+<code class="descclassname">results.</code><code class="descname">bond_autocorrelation</code><a class="headerlink" href="#MDAnalysis.analysis.polymer.PersistenceLength.results.bond_autocorrelation" title="Permalink to this definition">¶</a></dt>
 <dd><p>the measured bond autocorrelation</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -347,6 +346,8 @@ default is <code class="docutils literal notranslate"><span class="pre">False</s
 <dl class="last docutils">
 <dt><code class="xref py py-class docutils literal notranslate"><span class="pre">Deprecated</span></code></dt>
 <dd>meth:<cite>PersistenceLength.perform_fit</cite> has now been removed.</dd>
+<dt><code class="xref py py-class docutils literal notranslate"></code></dt>
+<dd>Former <code class="docutils literal notranslate"><span class="pre">results</span></code> are now stored as <code class="docutils literal notranslate"><span class="pre">results.bond_autocorrelation</span></code></dd>
 </dl>
 </div>
 <dl class="method">
