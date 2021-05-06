@@ -288,19 +288,19 @@ of adenylate kinase (AdK). The trajectory is included within the test data files
 </pre></div>
 </div>
 <p>After <a class="reference internal" href="#MDAnalysis.analysis.bat.BAT.run" title="MDAnalysis.analysis.bat.BAT.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">R.run()</span></code></a>, the coordinates can be accessed with
-<a class="reference internal" href="#MDAnalysis.analysis.bat.BAT.bat" title="MDAnalysis.analysis.bat.BAT.bat"><code class="xref py py-attr docutils literal notranslate"><span class="pre">R.bat</span></code></a>. The following code snippets assume that the previous
-snippet has been executed.</p>
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">R.results.bat</span></code>. The following code snippets assume that the
+previous snippet has been executed.</p>
 <p>Reconstruct Cartesian coordinates for the first frame:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Reconstruct Cartesian coordinates from BAT coordinates</span>
 <span class="c1"># of the first frame</span>
-<span class="n">XYZ</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">Cartesian</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">bat</span><span class="p">[</span><span class="mi">0</span><span class="p">,:])</span>
+<span class="n">XYZ</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">Cartesian</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="p">[</span><span class="mi">0</span><span class="p">,:])</span>
 
 <span class="c1"># The original and reconstructed Cartesian coordinates should all be close</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">XYZ</span><span class="p">,</span> <span class="n">selected_residues</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Change a single torsion angle by <span class="math notranslate nohighlight">\(\pi\)</span>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bat</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">bat</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bat</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span>
 <span class="n">bat</span><span class="p">[</span><span class="n">bat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">12</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
 <span class="n">XYZ</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">Cartesian</span><span class="p">(</span><span class="n">bat</span><span class="p">)</span>
 
@@ -317,7 +317,7 @@ snippet has been executed.</p>
 <span class="n">Rnew</span> <span class="o">=</span> <span class="n">BAT</span><span class="p">(</span><span class="n">selected_residues</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;test.npy&#39;</span><span class="p">)</span>
 
 <span class="c1"># The BAT coordinates before and after disk I/O should be close</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">Rnew</span><span class="o">.</span><span class="n">bat</span><span class="p">,</span> <span class="n">R</span><span class="o">.</span><span class="n">bat</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">Rnew</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="p">,</span> <span class="n">R</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -360,8 +360,8 @@ instead of being recalculated using the run() method.</li>
 </tbody>
 </table>
 <dl class="attribute">
-<dt id="MDAnalysis.analysis.bat.BAT.bat">
-<code class="descname">bat</code><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.bat" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.analysis.bat.BAT.results.bat">
+<code class="descclassname">results.</code><code class="descname">bat</code><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.results.bat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Contains the time series of the Bond-Angle-Torsion coordinates as a
 (nframes, 3N) <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> array. Each row corresponds to
 a frame in the trajectory. In each column, the first six elements

@@ -277,21 +277,21 @@
 <span class="sd">   R.run()</span>
 
 <span class="sd">After :meth:`R.run()&lt;BAT.run&gt;`, the coordinates can be accessed with</span>
-<span class="sd">:attr:`R.bat&lt;BAT.bat&gt;`. The following code snippets assume that the previous</span>
-<span class="sd">snippet has been executed.</span>
+<span class="sd">:attr:`R.results.bat&lt;BAT.bat&gt;`. The following code snippets assume that the</span>
+<span class="sd">previous snippet has been executed.</span>
 
 <span class="sd">Reconstruct Cartesian coordinates for the first frame::</span>
 
 <span class="sd">   # Reconstruct Cartesian coordinates from BAT coordinates</span>
 <span class="sd">   # of the first frame</span>
-<span class="sd">   XYZ = R.Cartesian(R.bat[0,:])</span>
+<span class="sd">   XYZ = R.Cartesian(R.results.bat[0,:])</span>
 
 <span class="sd">   # The original and reconstructed Cartesian coordinates should all be close</span>
 <span class="sd">   print(np.allclose(XYZ, selected_residues.positions, atol=1e-6))</span>
 
 <span class="sd">Change a single torsion angle by :math:`\pi`::</span>
 
-<span class="sd">   bat = R.bat[0,:]</span>
+<span class="sd">   bat = R.results.bat[0,:]</span>
 <span class="sd">   bat[bat.shape[0]-12] += np.pi</span>
 <span class="sd">   XYZ = R.Cartesian(bat)</span>
 
@@ -308,7 +308,7 @@
 <span class="sd">   Rnew = BAT(selected_residues, filename=&#39;test.npy&#39;)</span>
 
 <span class="sd">   # The BAT coordinates before and after disk I/O should be close</span>
-<span class="sd">   print(np.allclose(Rnew.bat, R.bat))</span>
+<span class="sd">   print(np.allclose(Rnew.results.bat, R.results.bat))</span>
 
 
 <span class="sd">Analysis classes</span>
@@ -317,7 +317,7 @@
 <span class="sd">    :members:</span>
 <span class="sd">    :inherited-members:</span>
 
-<span class="sd">    .. attribute:: bat</span>
+<span class="sd">    .. attribute:: results.bat</span>
 
 <span class="sd">        Contains the time series of the Bond-Angle-Torsion coordinates as a</span>
 <span class="sd">        (nframes, 3N) :class:`numpy.ndarray` array. Each row corresponds to</span>
@@ -548,8 +548,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">),</span> \
-            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Calculate coordinates based on the root atoms</span>
@@ -606,8 +606,8 @@
         <span class="c1"># Wrap torsions to between -np.pi and np.pi</span>
         <span class="n">torsions</span> <span class="o">=</span> <span class="p">((</span><span class="n">torsions</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">bat</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> \
-            <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">root_based</span><span class="p">,</span> <span class="n">bonds</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">torsions</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">root_based</span><span class="p">,</span> <span class="n">bonds</span><span class="p">,</span> <span class="n">angles</span><span class="p">,</span> <span class="n">torsions</span><span class="p">))</span>
 
 <div class="viewcode-block" id="BAT.load"><a class="viewcode-back" href="../../../documentation_pages/analysis/bat.html#MDAnalysis.analysis.bat.BAT.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Loads the bat trajectory from a file in numpy binary format</span>
@@ -631,15 +631,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setup_frames</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading file&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
         <span class="c1"># Check array dimensions</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bat</span><span class="o">.</span><span class="n">shape</span><span class="o">!=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">):</span>
-          <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Dimensions of array in loaded file, &#39;</span> <span class="o">+</span> \
-              <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">), differ from &#39;</span> <span class="o">+</span> \
-              <span class="sa">f</span><span class="s1">&#39;required dimensions of (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">n_atoms</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">):</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Dimensions of array in loaded file, &#39;</span>
+                      <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">,&#39;</span>
+                      <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">), differ from required &#39;</span>
+                      <span class="sa">f</span><span class="s1">&#39;dimensions of (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="o">.</span><span class="n">n_atoms</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
         <span class="c1"># Check position of initial atom</span>
-        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bat</span><span class="p">[</span><span class="mi">0</span><span class="p">,:</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Position of initial atom in file &#39;</span> <span class="o">+</span> \
                 <span class="s1">&#39;inconsistent with current trajectory in starting frame.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
@@ -651,7 +653,7 @@
 <span class="sd">        --------</span>
 <span class="sd">        load: Loads the bat trajectory from a file in numpy binary format</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bat</span><span class="p">)</span></div>
+        <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="BAT.Cartesian"><a class="viewcode-back" href="../../../documentation_pages/analysis/bat.html#MDAnalysis.analysis.bat.BAT.Cartesian">[docs]</a>    <span class="k">def</span> <span class="nf">Cartesian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bat_frame</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Conversion of a single frame from BAT to Cartesian coordinates</span>
