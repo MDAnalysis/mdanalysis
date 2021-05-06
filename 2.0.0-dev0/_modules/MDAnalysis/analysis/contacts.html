@@ -266,11 +266,11 @@
 <span class="sd">    # iterate through trajectory and perform analysis of &quot;native contacts&quot; Q</span>
 <span class="sd">    ca1.run()</span>
 <span class="sd">    # print number of averave contacts</span>
-<span class="sd">    average_contacts = np.mean(ca1.timeseries[:, 1])</span>
+<span class="sd">    average_contacts = np.mean(ca1.results.timeseries[:, 1])</span>
 <span class="sd">    print(&#39;average contacts = {}&#39;.format(average_contacts))</span>
 <span class="sd">    # plot time series q(t)</span>
 <span class="sd">    fig, ax = plt.subplots()</span>
-<span class="sd">    ax.plot(ca1.timeseries[:, 0], ca1.timeseries[:, 1])</span>
+<span class="sd">    ax.plot(ca1.results.timeseries[:, 0], ca1.results.timeseries[:, 1])</span>
 <span class="sd">    ax.set(xlabel=&#39;frame&#39;, ylabel=&#39;fraction of native contacts&#39;,</span>
 <span class="sd">           title=&#39;Native Contacts, average = {:.2f}&#39;.format(average_contacts))</span>
 <span class="sd">    fig.show()</span>
@@ -307,10 +307,13 @@
 <span class="sd">    q1q2.run()</span>
 
 <span class="sd">    f, ax = plt.subplots(1, 2, figsize=plt.figaspect(0.5))</span>
-<span class="sd">    ax[0].plot(q1q2.timeseries[:, 0], q1q2.timeseries[:, 1], label=&#39;q1&#39;)</span>
-<span class="sd">    ax[0].plot(q1q2.timeseries[:, 0], q1q2.timeseries[:, 2], label=&#39;q2&#39;)</span>
+<span class="sd">    ax[0].plot(q1q2.results.timeseries[:, 0], q1q2.results.timeseries[:, 1],</span>
+<span class="sd">               label=&#39;q1&#39;)</span>
+<span class="sd">    ax[0].plot(q1q2.results.timeseries[:, 0], q1q2.results.timeseries[:, 2],</span>
+<span class="sd">               label=&#39;q2&#39;)</span>
 <span class="sd">    ax[0].legend(loc=&#39;best&#39;)</span>
-<span class="sd">    ax[1].plot(q1q2.timeseries[:, 1], q1q2.timeseries[:, 2], &#39;.-&#39;)</span>
+<span class="sd">    ax[1].plot(q1q2.results.timeseries[:, 1],</span>
+<span class="sd">               q1q2.results.timeseries[:, 2], &#39;.-&#39;)</span>
 <span class="sd">    f.show()</span>
 
 <span class="sd">Compare the resulting pathway to the `MinActionPath result for AdK`_</span>
@@ -357,8 +360,8 @@
 <span class="sd">                           refgroup=(acidic, basic), kwargs={&#39;dist&#39;: 2.5})</span>
 <span class="sd">    nc.run()</span>
 
-<span class="sd">    bound = nc.timeseries[:, 1]</span>
-<span class="sd">    frames = nc.timeseries[:, 0]</span>
+<span class="sd">    bound = nc.results.timeseries[:, 1]</span>
+<span class="sd">    frames = nc.results.timeseries[:, 0]</span>
 
 <span class="sd">    f, ax = plt.subplots()</span>
 
@@ -548,15 +551,25 @@
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    timeseries : list</span>
-<span class="sd">        list containing *Q* for all refgroup pairs and analyzed frames</span>
+<span class="sd">    results.timeseries : numpy.ndarray</span>
+<span class="sd">        2D array containing *Q* for all refgroup pairs and analyzed frames</span>
+
+<span class="sd">    timeseries : numpy.ndarray</span>
+<span class="sd">        Alias to the :attr:`results.timeseries` attribute.</span>
+
+<span class="sd">        .. deprecated:: 2.0.0</span>
+<span class="sd">           Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">           :attr:`results.timeseries` instead.</span>
+
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       ``save()`` method has been removed. Use ``np.savetxt()`` on</span>
-<span class="sd">       :attr:`Contacts.timeseries` instead.</span>
+<span class="sd">       :attr:`Contacts.results.timeseries` instead.</span>
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">        added ``pbc`` attribute to calculate distances using PBC.</span>
-
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       :attr:`timeseries` results are now stored in a</span>
+<span class="sd">       :class:`MDAnalysis.analysis.base.Results` instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">refgroup</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;hard_cut&quot;</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">4.5</span><span class="p">,</span>
                  <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">basekwargs</span><span class="p">):</span>
@@ -635,10 +648,10 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">initial_contacts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">contact_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">radius</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">frame</span>
         
         <span class="c1"># compute distance array for a frame</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">distance_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grA</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grB</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
@@ -650,7 +663,15 @@
             <span class="n">r</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">initial_contacts</span><span class="p">]</span>
             <span class="n">r0</span> <span class="o">=</span> <span class="n">r0</span><span class="p">[</span><span class="n">initial_contacts</span><span class="p">]</span>
             <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fraction_contacts</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">fraction_kwargs</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">q</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">q</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `timeseries` attribute was deprecated in MDAnalysis &quot;</span>
+                <span class="s2">&quot;2.0.0 and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
+                <span class="s2">&quot;`results.timeseries` instead&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span></div>
 
 
 <span class="k">def</span> <span class="nf">_new_selections</span><span class="p">(</span><span class="n">u_orig</span><span class="p">,</span> <span class="n">selections</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>

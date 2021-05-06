@@ -266,11 +266,11 @@ in MDAnalysis.</p>
 <span class="c1"># iterate through trajectory and perform analysis of &quot;native contacts&quot; Q</span>
 <span class="n">ca1</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="c1"># print number of averave contacts</span>
-<span class="n">average_contacts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ca1</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">average_contacts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ca1</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;average contacts = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">average_contacts</span><span class="p">))</span>
 <span class="c1"># plot time series q(t)</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ca1</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ca1</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ca1</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ca1</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;fraction of native contacts&#39;</span><span class="p">,</span>
        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Native Contacts, average = </span><span class="si">{:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">average_contacts</span><span class="p">))</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -299,10 +299,13 @@ conformation and plot the trajectory projected on q1-q2 <a class="reference inte
 <span class="n">q1q2</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 
 <span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figaspect</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">q1q2</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">q1q2</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;q1&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">q1q2</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">q1q2</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;q2&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">q1q2</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">q1q2</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+           <span class="n">label</span><span class="o">=</span><span class="s1">&#39;q1&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">q1q2</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">q1q2</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span>
+           <span class="n">label</span><span class="o">=</span><span class="s1">&#39;q2&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">q1q2</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">q1q2</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;.-&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">q1q2</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+           <span class="n">q1q2</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;.-&#39;</span><span class="p">)</span>
 <span class="n">f</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -342,8 +345,8 @@ using the <cite>kwargs</cite> parameter in <a class="reference internal" href="#
                        <span class="n">refgroup</span><span class="o">=</span><span class="p">(</span><span class="n">acidic</span><span class="p">,</span> <span class="n">basic</span><span class="p">),</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dist&#39;</span><span class="p">:</span> <span class="mf">2.5</span><span class="p">})</span>
 <span class="n">nc</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 
-<span class="n">bound</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="n">frames</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">bound</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">frames</span> <span class="o">=</span> <span class="n">nc</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
 
 <span class="n">f</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 
@@ -539,32 +542,48 @@ that only depend on the distances and a possible reference distance. The
 signature <code class="docutils literal notranslate"><span class="pre">func(r,</span> <span class="pre">r0,</span> <span class="pre">**kwargs)</span></code> and must be provided in the keyword
 argument <cite>method</cite>.</p>
 <dl class="attribute">
-<dt id="MDAnalysis.analysis.contacts.Contacts.timeseries">
-<code class="descname">timeseries</code><a class="headerlink" href="#MDAnalysis.analysis.contacts.Contacts.timeseries" title="Permalink to this definition">¶</a></dt>
-<dd><p>list containing <em>Q</em> for all refgroup pairs and analyzed frames</p>
+<dt id="MDAnalysis.analysis.contacts.Contacts.results.timeseries">
+<code class="descclassname">results.</code><code class="descname">timeseries</code><a class="headerlink" href="#MDAnalysis.analysis.contacts.Contacts.results.timeseries" title="Permalink to this definition">¶</a></dt>
+<dd><p>2D array containing <em>Q</em> for all refgroup pairs and analyzed frames</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="attribute">
-<dt>
-<code class="descname">.. versionchanged:: 1.0.0</code></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">save()</span></code> method has been removed. Use <code class="docutils literal notranslate"><span class="pre">np.savetxt()</span></code> on
-<a class="reference internal" href="#MDAnalysis.analysis.contacts.Contacts.timeseries" title="MDAnalysis.analysis.contacts.Contacts.timeseries"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Contacts.timeseries</span></code></a> instead.</p>
+<dt id="MDAnalysis.analysis.contacts.Contacts.timeseries">
+<code class="descname">timeseries</code><a class="headerlink" href="#MDAnalysis.analysis.contacts.Contacts.timeseries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.contacts.Contacts.results.timeseries" title="MDAnalysis.analysis.contacts.Contacts.results.timeseries"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.timeseries</span></code></a> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.contacts.Contacts.results.timeseries" title="MDAnalysis.analysis.contacts.Contacts.results.timeseries"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.timeseries</span></code></a> instead.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">.. versionchanged:: 1.0.0</code></dt>
-<dd><p>added <code class="docutils literal notranslate"><span class="pre">pbc</span></code> attribute to calculate distances using PBC.</p>
-</dd></dl>
-
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span><code class="docutils literal notranslate"><span class="pre">save()</span></code> method has been removed. Use <code class="docutils literal notranslate"><span class="pre">np.savetxt()</span></code> on
+<a class="reference internal" href="#MDAnalysis.analysis.contacts.Contacts.results.timeseries" title="MDAnalysis.analysis.contacts.Contacts.results.timeseries"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Contacts.results.timeseries</span></code></a> instead.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>added <code class="docutils literal notranslate"><span class="pre">pbc</span></code> attribute to calculate distances using PBC.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span><a class="reference internal" href="#MDAnalysis.analysis.contacts.Contacts.timeseries" title="MDAnalysis.analysis.contacts.Contacts.timeseries"><code class="xref py py-attr docutils literal notranslate"><span class="pre">timeseries</span></code></a> results are now stored in a
+<a class="reference internal" href="base.html#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.Results</span></code></a> instance.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
