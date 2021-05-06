@@ -52,6 +52,15 @@ Example
     >>> bob.say.whoami()
     I am Bob
 
+Classes
+-------
+
+.. autoclass:: Accessor
+   :members:
+
+.. autoclass:: ConverterWrapper
+   :members:
+
 """
 
 from functools import partial, update_wrapper
