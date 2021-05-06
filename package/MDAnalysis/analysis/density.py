@@ -483,9 +483,15 @@ class DensityAnalysis(AnalysisBase):
         density.make_density()
         self.results.density = density
 
-    @deprecate(release="2.0.0", remove="3.0.0")
     @property
+    @deprecate(release="2.0.0", remove="3.0.0")
     def density(self):
+        """:class:`Density` results attribute
+
+
+        .. deprecated:: 2.0.0
+           Please use :attr:`DensityAnalysis.results.density` instead
+        """
         return self.results.density
 
     @staticmethod

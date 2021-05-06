@@ -156,7 +156,7 @@ class TestDensityAnalysis(DensityParameters):
         runargs = runargs if runargs else {}
         with tmpdir.as_cwd():
             D = density.DensityAnalysis(ag, delta=self.delta, **kwargs).run(**runargs)
-            assert_almost_equal(D.density.grid.mean(), ref_meandensity,
+            assert_almost_equal(D.results.density.grid.mean(), ref_meandensity,
                                 err_msg="mean density does not match")
             D.results.density.export(self.outfile)
 
@@ -297,8 +297,10 @@ class TestDensityAnalysis(DensityParameters):
     def test_warn_results_deprecated(self, universe):
         D = density.DensityAnalysis(
                 universe.select_atoms(self.selections['static']))
-        with pytest.warns(UserWarning):
-            D.density
+        D.run(stop=1)
+        wmsg = "`density` will be removed in release 3.0.0"
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            assert_equal(D.density.grid, D.results.density.grid)
 
 
 class TestGridImport(object):
