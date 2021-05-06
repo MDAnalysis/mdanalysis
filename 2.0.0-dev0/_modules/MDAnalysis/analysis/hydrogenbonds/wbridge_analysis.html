@@ -205,10 +205,8 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="c1"># Water Bridge Analysis</span>
-<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Water Bridge analysis ---</span>
-<span class="sd">mod:`MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis`</span>
-<span class="sd">===============================================================================</span>
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Water Bridge analysis --- :mod:`MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis`</span>
+<span class="sd">==========================================================================================</span>
 
 <span class="sd">:Author: Zhiyi Wu</span>
 <span class="sd">:Year: 2017-2018</span>
@@ -446,8 +444,18 @@
 <span class="sd">```forcefield` = &quot;OtherFF&quot;``. Please also consider contributing the list of</span>
 <span class="sd">heavy atom names to MDAnalysis.</span>
 
-<span class="sd">How to perform WaterBridgeAnalysis</span>
-<span class="sd">----------------------------------</span>
+
+<span class="sd">.. rubric:: References</span>
+
+<span class="sd">.. [Gregoret1991] L.M. Gregoret, S.D. Rader, R.J. Fletterick, and</span>
+<span class="sd">   F.E. Cohen. Hydrogen bonds involving sulfur atoms in proteins. Proteins,</span>
+<span class="sd">   9(2):99–107, 1991. `10.1002/prot.340090204`_.</span>
+
+<span class="sd">.. _`10.1002/prot.340090204`: http://dx.doi.org/10.1002/prot.340090204</span>
+
+
+<span class="sd">How to perform ``WaterBridgeAnalysis``</span>
+<span class="sd">--------------------------------------</span>
 
 <span class="sd">All water bridges between arginine and aspartic acid can be analysed with ::</span>
 
@@ -456,14 +464,14 @@
 
 <span class="sd">  u = MDAnalysis.Universe(&#39;topology&#39;, &#39;trajectory&#39;)</span>
 <span class="sd">  w = MDAnalysis.analysis.hbonds.WaterBridgeAnalysis(u, &#39;resname ARG&#39;,</span>
-<span class="sd">  &#39;resname ASP&#39;)</span>
+<span class="sd">                                                     &#39;resname ASP&#39;)</span>
 <span class="sd">  w.run()</span>
 
 <span class="sd">The maximum number of bridging waters detected can be changed using the order</span>
 <span class="sd">keyword. ::</span>
 
 <span class="sd">  w = MDAnalysis.analysis.hbonds.WaterBridgeAnalysis(u, &#39;resname ARG&#39;,</span>
-<span class="sd">  &#39;resname ASP&#39;, order=3)</span>
+<span class="sd">                                                     &#39;resname ASP&#39;, order=3)</span>
 
 <span class="sd">Thus, a maximum of three bridging waters will be detected.</span>
 
@@ -485,7 +493,7 @@
 <span class="sd">  #     5          3          ASP       OD2</span>
 <span class="sd">  print(w.timeseries)</span>
 
-<span class="sd">prints out. ::</span>
+<span class="sd">prints out ::</span>
 
 <span class="sd">  [ # frame 1</span>
 <span class="sd">    # A water bridge SOL2 links O from ARG1 to the carboxylic group OD1 of ASP3</span>
@@ -503,8 +511,8 @@
 
 <span class="sd">.. _wb_count_by_type:</span>
 
-<span class="sd">Use count_by_type</span>
-<span class="sd">-----------------</span>
+<span class="sd">Use ``count_by_type``</span>
+<span class="sd">---------------------</span>
 
 <span class="sd">We can use the :meth:`~WaterBridgeAnalysis.count_by_type` to</span>
 <span class="sd">generate the frequence of all water bridges in the simulation. ::</span>
@@ -745,8 +753,8 @@
 
 <span class="sd">.. _wb_count_by_time:</span>
 
-<span class="sd">Use count_by_time</span>
-<span class="sd">-----------------</span>
+<span class="sd">Use ``count_by_time``</span>
+<span class="sd">---------------------</span>
 
 <span class="sd">:meth:`~WaterBridgeAnalysis.count_by_type` aggregates data across frames, which</span>
 <span class="sd">might be desirable in some cases but not the others.</span>

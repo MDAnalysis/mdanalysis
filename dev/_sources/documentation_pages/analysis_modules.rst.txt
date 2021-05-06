@@ -86,9 +86,15 @@ Hydrogen bonding
    :maxdepth: 1
 
    analysis/hydrogenbonds
-   analysis/hbond_analysis
    analysis/hbond_autocorrel
    analysis/wbridge_analysis
+
+Deprecated modules:
+
+.. toctree::
+   :maxdepth: 1
+
+   analysis/hbond_autocorrel_deprecated	      
 
 Membranes and membrane proteins
 ===============================

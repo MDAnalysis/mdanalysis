@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>MDAnalysis.analysis.hbonds.hbond_autocorrel &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  <title>MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -166,7 +166,7 @@
         
           <li><a href="../../../index.html">Module code</a> &raquo;</li>
         
-      <li>MDAnalysis.analysis.hbonds.hbond_autocorrel</li>
+      <li>MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -181,7 +181,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for MDAnalysis.analysis.hbonds.hbond_autocorrel</h1><div class="highlight"><pre>
+  <h1>Source code for MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
 <span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
 <span class="c1">#</span>
@@ -204,15 +204,21 @@
 <span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Hydrogen bond autocorrelation --- :mod:`MDAnalysis.analysis.hbonds.hbond_autocorrel`</span>
-<span class="sd">====================================================================================</span>
+<span class="sd">&quot;&quot;&quot;\</span>
+<span class="sd">Hydrogen bond autocorrelation --- :mod:`MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel`</span>
+<span class="sd">===========================================================================================</span>
 
 <span class="sd">:Author: Richard J. Gowers</span>
 <span class="sd">:Year: 2014</span>
 <span class="sd">:Copyright: GNU Public License v3</span>
 
 <span class="sd">.. versionadded:: 0.9.0</span>
+
+<span class="sd">.. versionchanged:: 2.0.0</span>
+
+<span class="sd">   Module moved from :mod:`MDAnalysis.analysis.hbonds.hbond_autocorrel` to</span>
+<span class="sd">   :mod:`MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel`.</span>
+
 
 <span class="sd">Description</span>
 <span class="sd">-----------</span>
@@ -378,14 +384,13 @@
 <span class="sd">  plt.show()</span>
 
 
-<span class="sd">Classes</span>
-<span class="sd">-------</span>
+<span class="sd">Functions and Classes</span>
+<span class="sd">---------------------</span>
 
 <span class="sd">.. autofunction:: find_hydrogen_donors</span>
 
 <span class="sd">.. autoclass:: HydrogenBondAutoCorrel</span>
 <span class="sd">   :members:</span>
-
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -405,7 +410,7 @@
 <span class="k">del</span> <span class="n">Doi</span>
 
 
-<div class="viewcode-block" id="find_hydrogen_donors"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hbonds.hbond_autocorrel.find_hydrogen_donors">[docs]</a><span class="nd">@requires</span><span class="p">(</span><span class="s1">&#39;bonds&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="find_hydrogen_donors"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.find_hydrogen_donors">[docs]</a><span class="nd">@requires</span><span class="p">(</span><span class="s1">&#39;bonds&#39;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">find_hydrogen_donors</span><span class="p">(</span><span class="n">hydrogens</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Returns the donor atom for each hydrogen</span>
 
@@ -425,7 +430,7 @@
     <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hydrogens</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="HydrogenBondAutoCorrel"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel">[docs]</a><span class="k">class</span> <span class="nc">HydrogenBondAutoCorrel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="HydrogenBondAutoCorrel"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel">[docs]</a><span class="k">class</span> <span class="nc">HydrogenBondAutoCorrel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Perform a time autocorrelation of the hydrogen bonds in the system.</span>
 
 <span class="sd">    Parameters</span>
@@ -558,7 +563,7 @@
                           <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">req_frames</span><span class="p">),</span> <span class="ne">RuntimeWarning</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_skip</span> <span class="o">=</span> <span class="mi">1</span>
 
-<div class="viewcode-block" id="HydrogenBondAutoCorrel.run"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="HydrogenBondAutoCorrel.run"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Run all the required passes</span>
 
 <span class="sd">        Parameters</span>
@@ -667,7 +672,7 @@
 
         <span class="k">return</span> <span class="n">results</span>
 
-<div class="viewcode-block" id="HydrogenBondAutoCorrel.solve"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="HydrogenBondAutoCorrel.solve"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Fit results to an multi exponential decay and integrate to find</span>
 <span class="sd">        characteristic time</span>
 
