@@ -176,6 +176,8 @@ Enhancements
 Changes
   * `analysis.rms.RMSD` and `analysis.rms.RMSF` classes now store `rmsd` and
     `rmsf` data using the `analysis.base.Results` class (Issues #3274 #3261)
+  * `bat.BAT` now uses the `analysis.base.Results` class to store the `bat`
+    results attribute (Issue #3261, #3272)
   * `contacts.Contacts` now stores data using the `Contacts.results.timeseries`
     attribute. `Contacts.timeseries` is now deprecated (Issue #3261)
   * `DensityAnalysis` now uses the `results.density` attribute for storing
