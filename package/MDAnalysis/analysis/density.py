@@ -467,7 +467,6 @@ class DensityAnalysis(AnalysisBase):
         self._edges = edges
         self._arange = arange
         self._bins = bins
-        self.results.density = None
 
     def _single_frame(self):
         h, _ = np.histogramdd(self._atomgroup.positions,
