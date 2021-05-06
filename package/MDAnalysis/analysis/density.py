@@ -218,8 +218,11 @@ class DensityAnalysis(AnalysisBase):
             :math:`Angstrom^{-3}`.
 
     density : :class:`Density`
-            Deprecated alias to the :attr:`results.density`. Will be removed
-            in MDAnalysis 3.0.0.
+            Alias to the :attr:`results.density`.
+
+            .. deprecated:: 2.0.0
+               Will be removed in MDAnalysis 3.0.0. Please use
+               :attr:`results.density` instead.
 
     Raises
     ------
@@ -391,9 +394,8 @@ class DensityAnalysis(AnalysisBase):
     .. versionadded:: 1.0.0
     .. versionchanged:: 2.0.0
        :func:`_set_user_grid` is now a method of :class:`DensityAnalysis`.
-    .. deprecated:: 2.0.0
-       The :attr:`density` attribute is deprecated in favour of
-       :attr:`results.density`
+       :class:`Density` results are now stored in a
+       :class:`MDAnalysis.analysis.base.Results` instance.
     """
 
     def __init__(self, atomgroup, delta=1.0,
