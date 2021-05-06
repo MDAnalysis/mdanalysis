@@ -227,8 +227,8 @@ Changes
   * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
 
 Deprecations
-  * The `timeseries` attribute of analysis.contacts.Contacts is now deprecated
-    in favour of `results.timeseries`. It will be removed in 3.0.0
+  * The `analysis.Contacts.timeseries` attribute is now deprecated in favour of 
+    `analysis.Contacts.results.timeseries`. It will be removed in 3.0.0
     (Issue #3261)
   * The `density` attribute of `analysis.density.DensityAnalysis` is now
     deprecated in favour of `results.density`. It will be removed in 3.0.0
