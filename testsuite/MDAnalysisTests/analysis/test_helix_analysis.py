@@ -20,7 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import, division
 import re
 
 import numpy as np
@@ -112,7 +111,7 @@ def test_local_screw_angles_plane_circle():
     The global axis is the x-axis and ref axis is the y-axis,
     so angles should be calculated to the xy-plane.
     """
-    angdeg = np.arange(0, 360, 12, dtype=np.int)
+    angdeg = np.arange(0, 360, 12, dtype=np.int32)
     angrad = np.deg2rad(angdeg, dtype=np.float64)
     xyz = np.array([[np.cos(a), np.sin(a), 0] for a in angrad],
                    dtype=np.float64)
@@ -129,7 +128,7 @@ def test_local_screw_angles_ortho_circle():
     The global axis is the x-axis and ref axis is the z-axis,
     so angles should be calculated to the xz-plane.
     """
-    angdeg = np.arange(0, 360, 12, dtype=np.int)
+    angdeg = np.arange(0, 360, 12, dtype=np.int32)
     angrad = np.deg2rad(angdeg, dtype=np.float64)
     xyz = np.array([[np.cos(a), np.sin(a), 0] for a in angrad],
                    dtype=np.float64)
@@ -397,6 +396,11 @@ class TestHELANAL(object):
         assert len(u.atoms) == len(helanal.atomgroups[0])-2
         assert len(u.trajectory) == 70
 
+    def test_universe_from_origins_except(self, psf_ca):
+        ha = hel.HELANAL(psf_ca, select='resnum 161-187')
+        with pytest.raises(ValueError, match=r'before universe_from_origins'):
+            u = ha.universe_from_origins()
+
     def test_multiple_atoms_per_residues(self):
         u = mda.Universe(XYZ)
         with pytest.warns(UserWarning) as rec:
@@ -429,6 +433,12 @@ class TestHELANAL(object):
         warnmsg = rec[0].message.args[0]
         assert 'has gaps in the residues' in warnmsg
         assert 'Splitting into' not in warnmsg
+
+    def test_len_groups_short(self, psf_ca):
+        sel = 'resnum 161-168'
+        with pytest.warns(UserWarning, match='Fewer than 9 atoms found'):
+            ha = hel.HELANAL(psf_ca, select=sel)
+            assert len(ha.atomgroups) < 9
 
     @pytest.mark.parametrize('ref_axis,screw_angles', [
         # input vectors zigzag between [-1, 0, 0] and [1, 0, 0]

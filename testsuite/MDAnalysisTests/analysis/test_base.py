@@ -20,6 +20,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from collections import UserDict
+
 import pytest
 
 import numpy as np
@@ -31,6 +33,48 @@ from MDAnalysis.analysis import base
 
 from MDAnalysisTests.datafiles import PSF, DCD, TPR, XTC
 from MDAnalysisTests.util import no_deprecated_call
+
+
+class Test_Results:
+
+    @pytest.fixture
+    def results(self):
+        return base.Results(a=1, b=2)
+
+    def test_get(self, results):
+        assert results.a == results["a"] == 1
+
+    def test_no_attr(self, results):
+        with pytest.raises(AttributeError):
+            results.c
+
+    def test_set_attr(self, results):
+        value = [1, 2, 3, 4]
+        results.c = value
+        assert results.c == results["c"] == value
+
+    def test_set_key(self, results):
+        value = [1, 2, 3, 4]
+        results["c"] = value
+        assert results.c == results["c"] == value
+
+    @pytest.mark.parametrize('key', dir(UserDict) + ["data"])
+    def test_existing_dict_attr(self, results, key):
+        msg = f"'{key}' is a protected dictionary attribute"
+        with pytest.raises(AttributeError, match=key):
+            results[key] = None
+
+    @pytest.mark.parametrize('key', dir(UserDict) + ["data"])
+    def test_wrong_init_type(self, key):
+        msg = f"'{key}' is a protected dictionary attribute"
+        with pytest.raises(AttributeError, match=msg):
+            base.Results(**{key: None})
+
+    @pytest.mark.parametrize('key', ("0123", "0j", "1.1", "{}", "a b"))
+    def test_weird_key(self, results, key):
+        msg = f"'{key}' is not a valid attribute"
+        with pytest.raises(ValueError, match=msg):
+            results[key] = None
 
 
 class FrameAnalysis(base.AnalysisBase):
@@ -152,6 +196,11 @@ def simple_function(mobile):
     return mobile.center_of_geometry()
 
 
+def test_results_type(u):
+    an = FrameAnalysis(u.trajectory)
+    assert type(an.results) == base.Results
+
+
 @pytest.mark.parametrize('start, stop, step, nframes', [
     (None, None, 2, 49),
     (None, 50, 2, 25),
@@ -168,17 +217,25 @@ def test_AnalysisFromFunction(u, start, stop, step, nframes):
     ana3 = base.AnalysisFromFunction(simple_function, u.trajectory, u.atoms)
     ana3.run(start=start, stop=stop, step=step)
 
-    results = []
+    frames = []
+    times = []
+    timeseries = []
 
     for ts in u.trajectory[start:stop:step]:
-        results.append(simple_function(u.atoms))
+        frames.append(ts.frame)
+        times.append(ts.time)
+        timeseries.append(simple_function(u.atoms))
 
-    results = np.asarray(results)
+    frames = np.asarray(frames)
+    times = np.asarray(times)
+    timeseries = np.asarray(timeseries)
 
-    assert np.size(results, 0) == nframes
+    assert np.size(timeseries, 0) == nframes
 
     for ana in (ana1, ana2, ana3):
-        assert_equal(results, ana.results)
+        assert_equal(frames, ana.results.frames)
+        assert_equal(times, ana.results.times)
+        assert_equal(timeseries, ana.results.timeseries)
 
 
 def mass_xyz(atomgroup1, atomgroup2, masses):
@@ -191,7 +248,7 @@ def test_AnalysisFromFunction_args_content(u):
     another = mda.Universe(TPR, XTC).select_atoms("protein")
     ans = base.AnalysisFromFunction(mass_xyz, protein, another, masses)
     assert len(ans.args) == 3
-    result = np.sum(ans.run().results)
+    result = np.sum(ans.run().results.timeseries)
     assert_almost_equal(result, -317054.67757345125, decimal=6)
     assert (ans.args[0] is protein) and (ans.args[1] is another)
     assert ans._trajectory is protein.universe.trajectory
@@ -211,7 +268,7 @@ def test_analysis_class():
         results.append(simple_function(u.atoms))
     results = np.asarray(results)
 
-    assert_equal(results, ana.results)
+    assert_equal(results, ana.results.timeseries)
     with pytest.raises(ValueError):
         ana_class(2)
 

@@ -47,7 +47,8 @@ from MDAnalysisTests.datafiles import (
     TRZ_psf, TRZ,
     two_water_gro,
     TPR_xvf, TRR_xvf,
-    GRO
+    GRO, GRO_MEMPROT,
+    TPR
 )
 from MDAnalysisTests import make_Universe, no_deprecated_call
 from MDAnalysisTests.core.util import UnWrapUniverse
@@ -707,6 +708,16 @@ class TestDihedralSelections(object):
         return mda.Universe(PSF, DCD)
 
     @staticmethod
+    @pytest.fixture()
+    def TPR():
+        return mda.Universe(TPR)
+
+    @staticmethod
+    @pytest.fixture()
+    def memprot():
+        return mda.Universe(GRO_MEMPROT)
+
+    @staticmethod
     @pytest.fixture(scope='class')
     def resgroup(GRO):
         return GRO.segments[0].residues[8:10]
@@ -861,6 +872,37 @@ class TestDihedralSelections(object):
         rgsel = resgroup.chi1_selections()
         rssel = [r.chi1_selection() for r in resgroup]
         assert_equal(rgsel, rssel)
+
+    @pytest.mark.parametrize("resname", ["CYSH", "ILE", "SER", "THR", "VAL"])
+    def test_chi1_selection_non_cg_gromacs(self, resname, TPR):
+        resgroup = TPR.select_atoms(f"resname {resname}").residues
+        # get middle one
+        res = resgroup[len(resgroup) // 2]
+        assert res.chi1_selection() is not None
+
+    @pytest.mark.parametrize("resname", ["CYS", "ILE", "SER", "THR", "VAL"])
+    def test_chi1_selection_non_cg_charmm(self, resname, PSFDCD):
+        resgroup = PSFDCD.select_atoms(f"resname {resname}").residues
+        # get middle one
+        res = resgroup[len(resgroup) // 2]
+        assert res.chi1_selection() is not None
+
+    @pytest.mark.parametrize("resname", ["ARG", "ASP", "CYS", "GLN", "GLU",
+                                         "HIS", "ILE", "LEU", "LYS", "MET",
+                                         "PHE", "PRO", "SER", "THR", "TRP",
+                                         "TYR", "VAL"])
+    def test_chi1_selection_all_res(self, resname, memprot):
+        resgroup = memprot.select_atoms(f"resname {resname}").residues
+        # get middle one
+        res = resgroup[len(resgroup) // 2]
+        assert res.chi1_selection() is not None
+
+    @pytest.mark.parametrize("resname", ["ALA", "GLY"])
+    def test_no_chi1(self, resname, TPR):
+        resgroup = TPR.select_atoms(f"resname {resname}").residues
+        # get middle one
+        res = resgroup[len(resgroup) // 2]
+        assert res.chi1_selection() is None
 
     def test_phi_sel_fail(self, GRO):
         sel = GRO.residues[0].phi_selection()
@@ -1674,3 +1716,80 @@ class TestAtomGroupTimestep(object):
                                 ag.ts.velocities,
                                 self.prec,
                                 err_msg="Partial timestep coordinates wrong")
+
+
+class TestAtomGroupSort(object):
+    """Tests the AtomGroup.sort attribute"""
+
+    @pytest.fixture()
+    def universe(self):
+        u = mda.Universe.empty(
+            n_atoms=7,
+            n_residues=3,
+            n_segments=2,
+            atom_resindex=np.array([0, 0, 0, 1, 1, 1, 2]),
+            residue_segindex=np.array([0, 0, 1]),
+            trajectory=True,
+            velocities=True,
+            forces=True
+        )
+        attributes = ["id", "charge", "mass", "tempfactor"]
+
+        for i in (attributes):
+            u.add_TopologyAttr(i, [6, 5, 4, 3, 2, 1, 0])
+
+        u.add_TopologyAttr('resid', [2, 1, 0])
+        u.add_TopologyAttr('segid', [1, 0])
+        u.add_TopologyAttr('bonds', [(0, 1)])
+
+        return u
+
+    @pytest.fixture()
+    def ag(self, universe):
+        ag = universe.atoms
+        ag.positions = (-np.arange(21)).reshape(7, 3)
+        return ag
+
+    test_ids = [
+       "ix",
+       "ids",
+       "resids",
+       "segids",
+       "charges",
+       "masses",
+       "tempfactors"
+    ]
+
+    test_data = [
+        ("ix", np.array([0, 1, 2, 3, 4, 5, 6])),
+        ("ids", np.array([6, 5, 4, 3, 2, 1, 0])),
+        ("resids", np.array([6, 3, 4, 5, 0, 1, 2])),
+        ("segids", np.array([6, 0, 1, 2, 3, 4, 5])),
+        ("charges", np.array([6, 5, 4, 3, 2, 1, 0])),
+        ("masses", np.array([6, 5, 4, 3, 2, 1, 0])),
+        ("tempfactors", np.array([6, 5, 4, 3, 2, 1, 0])),
+    ]
+
+    @pytest.mark.parametrize("inputs, expected", test_data, ids=test_ids)
+    def test_sort(self, ag, inputs, expected):
+        agsort = ag.sort(inputs)
+        assert np.array_equal(expected, agsort.ix)
+
+    def test_sort_bonds(self, ag):
+        with pytest.raises(ValueError, match=r"The array returned by the "
+                           "attribute"):
+            ag.sort("bonds")
+
+    def test_sort_positions_2D(self, ag):
+        with pytest.raises(ValueError, match=r"The function assigned to"):
+            ag.sort("positions", keyfunc=lambda x: x)
+
+    def test_sort_position_no_keyfunc(self, ag):
+        with pytest.raises(NameError, match=r"The .* attribute returns a "
+                           "multidimensional array. In order to sort it, "):
+            ag.sort("positions")
+
+    def test_sort_position(self, ag):
+        ref = [6, 5, 4, 3, 2, 1, 0]
+        agsort = ag.sort("positions", keyfunc=lambda x: x[:, 1])
+        assert np.array_equal(ref, agsort.ix)

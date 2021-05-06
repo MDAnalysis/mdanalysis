@@ -172,10 +172,7 @@ class ParmEdConverter(base.ConverterBase):
             # make sure to use atoms (Issue 46)
             ag_or_ts = obj.atoms
         except AttributeError:
-            if isinstance(obj, base.Timestep):
-                ag_or_ts = obj.copy()
-            else:
-                raise_from(TypeError("No Timestep found in obj argument"), None)
+            raise TypeError("No atoms found in obj argument") from None
 
         # Check for topology information
         missing_topology = []
@@ -272,8 +269,7 @@ class ParmEdConverter(base.ConverterBase):
         
         # bonds
         try:
-            params = ag_or_ts.bonds.atomgroup_intersection(ag_or_ts, 
-                                                           strict=True)
+            params = ag_or_ts.intra_bonds
         except AttributeError:
             pass
         else:
