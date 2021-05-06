@@ -250,7 +250,7 @@
 <span class="sd">   from MDAnalysis.analysis.dihedrals import Dihedral</span>
 <span class="sd">   R = Dihedral(ags).run()</span>
 
-<span class="sd">The angles can then be accessed with :attr:`Dihedral.angles`.</span>
+<span class="sd">The angles can then be accessed with :attr:`Dihedral.results.angles`.</span>
 
 <span class="sd">Ramachandran analysis</span>
 <span class="sd">~~~~~~~~~~~~~~~~~~~~~</span>
@@ -287,7 +287,7 @@
 <span class="sd">   and the &quot;marginally allowed&quot; regions.</span>
 
 <span class="sd">To plot the data yourself, the angles can be accessed using</span>
-<span class="sd">:attr:`Ramachandran.angles`.</span>
+<span class="sd">:attr:`Ramachandran.results.angles`.</span>
 
 <span class="sd">.. Note::</span>
 
@@ -308,7 +308,7 @@
 <span class="sd">&lt;figure-janin&gt;` as an example.</span>
 
 <span class="sd">The data for the angles can be accessed in the attribute</span>
-<span class="sd">:attr:`Janin.angles`.</span>
+<span class="sd">:attr:`Janin.results.angles`.</span>
 
 <span class="sd">.. _figure-janin:</span>
 
@@ -337,7 +337,8 @@
 <span class="sd">~~~~~~~~~~~~~~~</span>
 
 <span class="sd">Reference plots can be added to the axes for both the Ramachandran and Janin</span>
-<span class="sd">classes using the kwarg ``ref=True``. The Ramachandran reference data</span>
+<span class="sd">classes using the kwarg ``ref=True`` for the :meth:`Ramachandran.plot`</span>
+<span class="sd">and :meth:`Janin.plot` methods. The Ramachandran reference data</span>
 <span class="sd">(:data:`~MDAnalysis.analysis.data.filenames.Rama_ref`) and Janin reference data</span>
 <span class="sd">(:data:`~MDAnalysis.analysis.data.filenames.Janin_ref`) were made using data</span>
 <span class="sd">obtained from a large selection of 500 PDB files, and were analyzed using these</span>
@@ -357,31 +358,64 @@
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
 
-<span class="sd">   .. attribute:: angles</span>
+<span class="sd">   .. attribute:: results.angles</span>
 
 <span class="sd">       Contains the time steps of the angles for each atomgroup in the list as</span>
 <span class="sd">       an ``n_frames×len(atomgroups)`` :class:`numpy.ndarray` with content</span>
 <span class="sd">       ``[[angle 1, angle 2, ...], [time step 2], ...]``.</span>
 
+<span class="sd">       .. versionadded:: 2.0.0</span>
+
+<span class="sd">   .. attribute:: angles</span>
+
+<span class="sd">       Alias to the :attr:`results.angles` attribute.</span>
+
+<span class="sd">       .. deprecated:: 2.0.0</span>
+<span class="sd">          Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">          :attr:`results.angles` instead.</span>
+
+
 <span class="sd">.. autoclass:: Ramachandran</span>
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
 
-<span class="sd">   .. attribute:: angles</span>
+<span class="sd">   .. attribute:: results.angles</span>
 
 <span class="sd">       Contains the time steps of the :math:`\phi` and :math:`\psi` angles for</span>
 <span class="sd">       each residue as an ``n_frames×n_residues×2`` :class:`numpy.ndarray` with</span>
 <span class="sd">       content ``[[[phi, psi], [residue 2], ...], [time step 2], ...]``.</span>
 
+<span class="sd">       .. versionadded:: 2.0.0</span>
+
+<span class="sd">   .. attribute:: angles</span>
+
+<span class="sd">       Alias to the :attr:`results.angles` attribute.</span>
+
+<span class="sd">       .. deprecated:: 2.0.0</span>
+<span class="sd">          Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">          :attr:`results.angles` instead.</span>
+
+
 <span class="sd">.. autoclass:: Janin</span>
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
 
-<span class="sd">   .. attribute:: angles</span>
+<span class="sd">   .. attribute:: results.angles</span>
 
 <span class="sd">       Contains the time steps of the :math:`\chi_1` and :math:`\chi_2` angles</span>
 <span class="sd">       for each residue as an ``n_frames×n_residues×2`` :class:`numpy.ndarray`</span>
 <span class="sd">       with content ``[[[chi1, chi2], [residue 2], ...], [time step 2], ...]``.</span>
+
+<span class="sd">       .. versionadded:: 2.0.0</span>
+
+<span class="sd">   .. attribute:: angles</span>
+
+<span class="sd">       Alias to the :attr:`results.angles` attribute.</span>
+
+<span class="sd">       .. deprecated:: 2.0.0</span>
+<span class="sd">          Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">          :attr:`results.angles` instead.</span>
+
 
 <span class="sd">References</span>
 <span class="sd">----------</span>
@@ -435,6 +469,11 @@
 <span class="sd">    selection of atomgroups. If there is only one atomgroup of interest, then</span>
 <span class="sd">    it must be given as a list of one atomgroup.</span>
 
+
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       :attr:`angles` results are now stored in a</span>
+<span class="sd">       :class:`MDAnalysis.analysis.base.Results` instance.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroups</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -462,16 +501,25 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">([</span><span class="n">ag</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="n">atomgroups</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">angle</span> <span class="o">=</span> <span class="n">calc_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
                                <span class="bp">self</span><span class="o">.</span><span class="n">ag3</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
                                <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `angle` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
+                <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
+                <span class="s2">&quot;`results.angles` instead&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span></div>
+
 
 <div class="viewcode-block" id="Ramachandran"><a class="viewcode-back" href="../../../documentation_pages/analysis/dihedrals.html#MDAnalysis.analysis.dihedrals.Ramachandran">[docs]</a><span class="k">class</span> <span class="nc">Ramachandran</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate :math:`\phi` and :math:`\psi` dihedral angles of selected</span>
@@ -533,6 +581,9 @@
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">        added c_name, n_name, ca_name, and check_protein keyword arguments</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       :attr:`angles` results are now stored in a</span>
+<span class="sd">       :class:`MDAnalysis.analysis.base.Results` instance.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -589,7 +640,7 @@
 
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">phi_angles</span> <span class="o">=</span> <span class="n">calc_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag2</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
@@ -599,16 +650,16 @@
                                     <span class="bp">self</span><span class="o">.</span><span class="n">ag4</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag5</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
                                     <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ag1</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
         <span class="n">phi_psi</span> <span class="o">=</span> <span class="p">[(</span><span class="n">phi</span><span class="p">,</span> <span class="n">psi</span><span class="p">)</span> <span class="k">for</span> <span class="n">phi</span><span class="p">,</span> <span class="n">psi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">phi_angles</span><span class="p">,</span> <span class="n">psi_angles</span><span class="p">)]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phi_psi</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phi_psi</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Ramachandran.plot"><a class="viewcode-back" href="../../../documentation_pages/analysis/dihedrals.html#MDAnalysis.analysis.dihedrals.Ramachandran.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Plots data into standard Ramachandran plot.</span>
 
-<span class="sd">        Each time step in :attr:`Ramachandran.angles` is plotted onto the same</span>
-<span class="sd">        graph.</span>
+<span class="sd">        Each time step in :attr:`Ramachandran.results.angles` is plotted onto</span>
+<span class="sd">        the same graph.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -647,9 +698,18 @@
             <span class="n">levels</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">15000</span><span class="p">]</span>
             <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#A1D4FF&#39;</span><span class="p">,</span> <span class="s1">&#39;#35A1FF&#39;</span><span class="p">]</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">Rama_ref</span><span class="p">),</span> <span class="n">levels</span><span class="o">=</span><span class="n">levels</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">colors</span><span class="p">)</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">a</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">a</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ax</span></div></div>
+        <span class="k">return</span> <span class="n">ax</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `angle` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
+                <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
+                <span class="s2">&quot;`results.angles` instead&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span></div>
 
 
 <div class="viewcode-block" id="Janin"><a class="viewcode-back" href="../../../documentation_pages/analysis/dihedrals.html#MDAnalysis.analysis.dihedrals.Janin">[docs]</a><span class="k">class</span> <span class="nc">Janin</span><span class="p">(</span><span class="n">Ramachandran</span><span class="p">):</span>
@@ -707,7 +767,9 @@
 
 
 <span class="sd">        .. versionchanged:: 2.0.0</span>
-<span class="sd">           `select_remove` and `select_protein` keywords were added</span>
+<span class="sd">           `select_remove` and `select_protein` keywords were added.</span>
+<span class="sd">           :attr:`angles` results are now stored in a</span>
+<span class="sd">           :class:`MDAnalysis.analysis.base.Results` instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Ramachandran</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -741,12 +803,13 @@
                              <span class="s2">&quot;missing or duplicate atoms in topology.&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">))</span> <span class="o">+</span> <span class="mi">360</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span><span class="p">))</span> <span class="o">+</span> <span class="mi">360</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span>
 
 <div class="viewcode-block" id="Janin.plot"><a class="viewcode-back" href="../../../documentation_pages/analysis/dihedrals.html#MDAnalysis.analysis.dihedrals.Janin.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Plots data into standard Janin plot.</span>
 
-<span class="sd">        Each time step in :attr:`Janin.angles` is plotted onto the</span>
+<span class="sd">        Each time step in :attr:`Janin.results.angles` is plotted onto the</span>
 <span class="sd">        same graph.</span>
 
 <span class="sd">        Parameters</span>
@@ -785,7 +848,8 @@
             <span class="n">levels</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">600</span><span class="p">]</span>
             <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#A1D4FF&#39;</span><span class="p">,</span> <span class="s1">&#39;#35A1FF&#39;</span><span class="p">]</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">Janin_ref</span><span class="p">),</span> <span class="n">levels</span><span class="o">=</span><span class="n">levels</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">colors</span><span class="p">)</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">angles</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">a</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">a</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ax</span></div></div>
 </pre></div>

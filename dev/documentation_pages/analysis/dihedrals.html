@@ -259,7 +259,7 @@ the test data files:</p>
 <span class="n">R</span> <span class="o">=</span> <span class="n">Dihedral</span><span class="p">(</span><span class="n">ags</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>The angles can then be accessed with <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Dihedral.angles" title="MDAnalysis.analysis.dihedrals.Dihedral.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Dihedral.angles</span></code></a>.</p>
+<p>The angles can then be accessed with <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Dihedral.results.angles" title="MDAnalysis.analysis.dihedrals.Dihedral.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Dihedral.results.angles</span></code></a>.</p>
 </div>
 <div class="section" id="ramachandran-analysis">
 <h3>4.7.1.3.1.2. Ramachandran analysis<a class="headerlink" href="#ramachandran-analysis" title="Permalink to this headline">¶</a></h3>
@@ -290,7 +290,7 @@ trajectory (XTC). The contours in the background are the “allowed region”
 and the “marginally allowed” regions.</span></p>
 </div>
 <p>To plot the data yourself, the angles can be accessed using
-<a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran.angles" title="MDAnalysis.analysis.dihedrals.Ramachandran.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Ramachandran.angles</span></code></a>.</p>
+<a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran.results.angles" title="MDAnalysis.analysis.dihedrals.Ramachandran.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Ramachandran.results.angles</span></code></a>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The Ramachandran analysis is prone to errors if the topology contains
@@ -307,7 +307,7 @@ only one <cite>altloc</cite> for the atoms with more than one (<code class="docu
 <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin" title="MDAnalysis.analysis.dihedrals.Janin"><code class="xref py py-class docutils literal notranslate"><span class="pre">Janin</span></code></a> class. It works in the same way,
 only needing a list of residues; see the <a class="reference internal" href="#figure-janin"><span class="std std-ref">Janin plot figure</span></a> as an example.</p>
 <p>The data for the angles can be accessed in the attribute
-<a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin.angles" title="MDAnalysis.analysis.dihedrals.Janin.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Janin.angles</span></code></a>.</p>
+<a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin.results.angles" title="MDAnalysis.analysis.dihedrals.Janin.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Janin.results.angles</span></code></a>.</p>
 <div class="figure" id="id8">
 <span id="figure-janin"></span><a class="reference internal image-reference" href="../../_images/janin_demo_plot.png"><img alt="Janin plot" src="../../_images/janin_demo_plot.png" style="width: 240.0px; height: 240.0px;" /></a>
 <p class="caption"><span class="caption-text">Janin plot for all residues of AdK, sampled from the AdK test trajectory
@@ -329,7 +329,8 @@ message <em>Too many or too few atoms selected</em> is raised.</p>
 <div class="section" id="reference-plots">
 <h3>4.7.1.3.1.4. Reference plots<a class="headerlink" href="#reference-plots" title="Permalink to this headline">¶</a></h3>
 <p>Reference plots can be added to the axes for both the Ramachandran and Janin
-classes using the kwarg <code class="docutils literal notranslate"><span class="pre">ref=True</span></code>. The Ramachandran reference data
+classes using the kwarg <code class="docutils literal notranslate"><span class="pre">ref=True</span></code> for the <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran.plot" title="MDAnalysis.analysis.dihedrals.Ramachandran.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Ramachandran.plot()</span></code></a>
+and <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin.plot" title="MDAnalysis.analysis.dihedrals.Janin.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Janin.plot()</span></code></a> methods. The Ramachandran reference data
 (<a class="reference internal" href="data.html#MDAnalysis.analysis.data.filenames.Rama_ref" title="MDAnalysis.analysis.data.filenames.Rama_ref"><code class="xref py py-data docutils literal notranslate"><span class="pre">Rama_ref</span></code></a>) and Janin reference data
 (<a class="reference internal" href="data.html#MDAnalysis.analysis.data.filenames.Janin_ref" title="MDAnalysis.analysis.data.filenames.Janin_ref"><code class="xref py py-data docutils literal notranslate"><span class="pre">Janin_ref</span></code></a>) were made using data
 obtained from a large selection of 500 PDB files, and were analyzed using these
@@ -356,6 +357,10 @@ must contain 4 atoms.</p>
 selection of atomgroups. If there is only one atomgroup of interest, then
 it must be given as a list of one atomgroup.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span><a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Dihedral.angles" title="MDAnalysis.analysis.dihedrals.Dihedral.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">angles</span></code></a> results are now stored in a
+<a class="reference internal" href="base.html#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.Results</span></code></a> instance.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -367,11 +372,24 @@ it must be given as a list of one atomgroup.</p>
 </tbody>
 </table>
 <dl class="attribute">
-<dt id="MDAnalysis.analysis.dihedrals.Dihedral.angles">
-<code class="descname">angles</code><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral.angles" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.analysis.dihedrals.Dihedral.results.angles">
+<code class="descclassname">results.</code><code class="descname">angles</code><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral.results.angles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Contains the time steps of the angles for each atomgroup in the list as
 an <code class="docutils literal notranslate"><span class="pre">n_frames×len(atomgroups)</span></code> <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with content
 <code class="docutils literal notranslate"><span class="pre">[[angle</span> <span class="pre">1,</span> <span class="pre">angle</span> <span class="pre">2,</span> <span class="pre">...],</span> <span class="pre">[time</span> <span class="pre">step</span> <span class="pre">2],</span> <span class="pre">...]</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.dihedrals.Dihedral.angles">
+<code class="descname">angles</code><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral.angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Dihedral.results.angles" title="MDAnalysis.analysis.dihedrals.Dihedral.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.angles</span></code></a> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Dihedral.results.angles" title="MDAnalysis.analysis.dihedrals.Dihedral.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.angles</span></code></a> instead.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -459,20 +477,37 @@ selection cannot be made, that residue will be removed from the analysis.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.0.0: </span>added c_name, n_name, ca_name, and check_protein keyword arguments</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span><a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran.angles" title="MDAnalysis.analysis.dihedrals.Ramachandran.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">angles</span></code></a> results are now stored in a
+<a class="reference internal" href="base.html#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.Results</span></code></a> instance.</p>
+</div>
 <dl class="attribute">
-<dt id="MDAnalysis.analysis.dihedrals.Ramachandran.angles">
-<code class="descname">angles</code><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.angles" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.analysis.dihedrals.Ramachandran.results.angles">
+<code class="descclassname">results.</code><code class="descname">angles</code><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.results.angles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Contains the time steps of the <span class="math notranslate nohighlight">\(\phi\)</span> and <span class="math notranslate nohighlight">\(\psi\)</span> angles for
 each residue as an <code class="docutils literal notranslate"><span class="pre">n_frames×n_residues×2</span></code> <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with
 content <code class="docutils literal notranslate"><span class="pre">[[[phi,</span> <span class="pre">psi],</span> <span class="pre">[residue</span> <span class="pre">2],</span> <span class="pre">...],</span> <span class="pre">[time</span> <span class="pre">step</span> <span class="pre">2],</span> <span class="pre">...]</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.dihedrals.Ramachandran.angles">
+<code class="descname">angles</code><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran.results.angles" title="MDAnalysis.analysis.dihedrals.Ramachandran.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.angles</span></code></a> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran.results.angles" title="MDAnalysis.analysis.dihedrals.Ramachandran.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.angles</span></code></a> instead.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.dihedrals.Ramachandran.plot">
 <code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>ref=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Ramachandran.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots data into standard Ramachandran plot.</p>
-<p>Each time step in <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran.angles" title="MDAnalysis.analysis.dihedrals.Ramachandran.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Ramachandran.angles</span></code></a> is plotted onto the same
-graph.</p>
+<p>Each time step in <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran.results.angles" title="MDAnalysis.analysis.dihedrals.Ramachandran.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Ramachandran.results.angles</span></code></a> is plotted onto
+the same graph.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -566,21 +601,36 @@ or due to non-standard residues</li>
 </tbody>
 </table>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span><cite>select_remove</cite> and <cite>select_protein</cite> keywords were added</p>
+<p><span class="versionmodified">Changed in version 2.0.0: </span><cite>select_remove</cite> and <cite>select_protein</cite> keywords were added.
+<a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin.angles" title="MDAnalysis.analysis.dihedrals.Janin.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">angles</span></code></a> results are now stored in a
+<a class="reference internal" href="base.html#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.Results</span></code></a> instance.</p>
 </div>
 <dl class="attribute">
-<dt id="MDAnalysis.analysis.dihedrals.Janin.angles">
-<code class="descname">angles</code><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin.angles" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.analysis.dihedrals.Janin.results.angles">
+<code class="descclassname">results.</code><code class="descname">angles</code><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin.results.angles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Contains the time steps of the <span class="math notranslate nohighlight">\(\chi_1\)</span> and <span class="math notranslate nohighlight">\(\chi_2\)</span> angles
 for each residue as an <code class="docutils literal notranslate"><span class="pre">n_frames×n_residues×2</span></code> <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>
 with content <code class="docutils literal notranslate"><span class="pre">[[[chi1,</span> <span class="pre">chi2],</span> <span class="pre">[residue</span> <span class="pre">2],</span> <span class="pre">...],</span> <span class="pre">[time</span> <span class="pre">step</span> <span class="pre">2],</span> <span class="pre">...]</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.dihedrals.Janin.angles">
+<code class="descname">angles</code><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin.angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin.results.angles" title="MDAnalysis.analysis.dihedrals.Janin.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.angles</span></code></a> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin.results.angles" title="MDAnalysis.analysis.dihedrals.Janin.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.angles</span></code></a> instead.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.dihedrals.Janin.plot">
 <code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>ref=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Janin.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Janin.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots data into standard Janin plot.</p>
-<p>Each time step in <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin.angles" title="MDAnalysis.analysis.dihedrals.Janin.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Janin.angles</span></code></a> is plotted onto the
+<p>Each time step in <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin.results.angles" title="MDAnalysis.analysis.dihedrals.Janin.results.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Janin.results.angles</span></code></a> is plotted onto the
 same graph.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
