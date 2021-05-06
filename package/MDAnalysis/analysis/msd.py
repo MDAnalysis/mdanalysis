@@ -220,7 +220,6 @@ Classes
 """
 
 import numpy as np
-import warnings
 import logging
 from ..due import due, Doi
 from .base import AnalysisBase
