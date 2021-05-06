@@ -123,7 +123,7 @@ class TestMSDSimple(object):
         m_simple = MSD(step_traj, 'all', msd_type=dim, fft=False)
         m_simple.run()
         poly = characteristic_poly(NSTEP, dim_factor)
-        assert_almost_equal(m_simple.timeseries, poly, decimal=4)
+        assert_almost_equal(m_simple.results.timeseries, poly, decimal=4)
 
     @pytest.mark.parametrize("dim, dim_factor", [
         ('xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1),
@@ -137,15 +137,29 @@ class TestMSDSimple(object):
         m_simple.run(start=10, stop=1000, step=10)
         poly = characteristic_poly(NSTEP, dim_factor)
         # polynomial must take offset start into account
-        assert_almost_equal(m_simple.timeseries, poly[0:990:10], decimal=4)
+        assert_almost_equal(m_simple.results.timeseries, poly[0:990:10],
+                            decimal=4)
 
     def test_random_walk_u_simple(self, random_walk_u):
         # regress against random_walk test data
         msd_rw = MSD(random_walk_u, 'all', msd_type='xyz', fft=False)
         msd_rw.run()
-        norm = np.linalg.norm(msd_rw.timeseries)
+        norm = np.linalg.norm(msd_rw.results.timeseries)
         val = 3932.39927487146
         assert_almost_equal(norm, val, decimal=5)
+
+    def test_deprecated_attributes(self, random_walk_u):
+        msd_rw = MSD(random_walk_u, 'all', msd_type='xyz', fft=False)
+        msd_rw.run(stop=2)
+
+        wmsg = "The `timeseries` attribute was deprecated in MDAnalysis"
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            assert_equal(msd_rw.timeseries, msd_rw.results.timeseries)
+
+        wmsg = "The `msds_by_particle` attribute was deprecated in MDAnalysis"
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            assert_equal(msd_rw.msds_by_particle,
+                         msd_rw.results.msds_by_particle)
 
 
 @pytest.mark.skipif(import_not_available("tidynamics"),
@@ -161,14 +175,14 @@ class TestMSDFFT(object):
 
     def test_fft_vs_simple_default(self, msd, msd_fft):
         # testing on the  PSF, DCD trajectory
-        timeseries_simple = msd.timeseries
-        timeseries_fft = msd_fft.timeseries
+        timeseries_simple = msd.results.timeseries
+        timeseries_fft = msd_fft.results.timeseries
         assert_almost_equal(timeseries_simple, timeseries_fft, decimal=4)
 
     def test_fft_vs_simple_default_per_particle(self, msd, msd_fft):
         # check fft and simple give same result per particle
-        per_particle_simple = msd.msds_by_particle
-        per_particle_fft = msd_fft.msds_by_particle
+        per_particle_simple = msd.results.msds_by_particle
+        per_particle_fft = msd_fft.results.msds_by_particle
         assert_almost_equal(per_particle_simple, per_particle_fft, decimal=4)
 
     @pytest.mark.parametrize("dim", ['xyz', 'xy', 'xz', 'yz', 'x', 'y', 'z'])
@@ -176,10 +190,10 @@ class TestMSDFFT(object):
         # check fft and simple give same result for each dimensionality
         m_simple = MSD(u, SELECTION, msd_type=dim, fft=False)
         m_simple.run()
-        timeseries_simple = m_simple.timeseries
+        timeseries_simple = m_simple.results.timeseries
         m_fft = MSD(u, SELECTION, msd_type=dim, fft=True)
         m_fft.run()
-        timeseries_fft = m_fft.timeseries
+        timeseries_fft = m_fft.results.timeseries
         assert_almost_equal(timeseries_simple, timeseries_fft, decimal=4)
 
     @pytest.mark.parametrize("dim", ['xyz', 'xy', 'xz', 'yz', 'x', 'y', 'z'])
@@ -188,10 +202,10 @@ class TestMSDFFT(object):
         # dimension
         m_simple = MSD(u, SELECTION, msd_type=dim, fft=False)
         m_simple.run()
-        per_particle_simple = m_simple.msds_by_particle
+        per_particle_simple = m_simple.results.msds_by_particle
         m_fft = MSD(u, SELECTION, msd_type=dim, fft=True)
         m_fft.run()
-        per_particle_fft = m_fft.msds_by_particle
+        per_particle_fft = m_fft.results.msds_by_particle
         assert_almost_equal(per_particle_simple, per_particle_fft, decimal=4)
 
     @pytest.mark.parametrize("dim, dim_factor", [
@@ -208,7 +222,7 @@ class TestMSDFFT(object):
         m_simple.run()
         poly = characteristic_poly(NSTEP, dim_factor)
         # this was relaxed from decimal=4 for numpy=1.13 test
-        assert_almost_equal(m_simple.timeseries, poly, decimal=3)
+        assert_almost_equal(m_simple.results.timeseries, poly, decimal=3)
 
     @pytest.mark.parametrize("dim, dim_factor", [(
         'xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1),
@@ -222,12 +236,13 @@ class TestMSDFFT(object):
         m_simple.run(start=10, stop=1000, step=10)
         poly = characteristic_poly(NSTEP, dim_factor)
         # polynomial must take offset start into account
-        assert_almost_equal(m_simple.timeseries, poly[0:990:10], decimal=3)
+        assert_almost_equal(m_simple.results.timeseries, poly[0:990:10],
+                            decimal=3)
 
     def test_random_walk_u_fft(self, random_walk_u):
         # regress against random_walk test data
         msd_rw = MSD(random_walk_u, 'all', msd_type='xyz', fft=True)
         msd_rw.run()
-        norm = np.linalg.norm(msd_rw.timeseries)
+        norm = np.linalg.norm(msd_rw.results.timeseries)
         val = 3932.39927487146
         assert_almost_equal(norm, val, decimal=5)
