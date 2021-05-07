@@ -268,7 +268,7 @@ HBONDS plugin</a>.</p>
 </ul>
 </div></blockquote>
 <p>Hydrogen bond data are returned in a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> on a “one line, one observation” basis
-and can be accessed via <code class="xref py py-attr docutils literal notranslate"><span class="pre">HydrogenBondAnalysis.hbonds</span></code>:</p>
+and can be accessed via <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.results.hbonds" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.results.hbonds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">HydrogenBondAnalysis.results.hbonds</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">[</span>
         <span class="o">&lt;</span><span class="n">frame</span><span class="o">&gt;</span><span class="p">,</span>
@@ -463,6 +463,26 @@ correct identification of donor-hydrogen pairs.</p>
 <p><span class="versionmodified">New in version 2.0.0: </span>Added <cite>between</cite> keyword</p>
 </div>
 </div>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.results.hbonds">
+<code class="descclassname">results.</code><code class="descname">hbonds</code><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.results.hbonds" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> which contains a list of all observed hydrogen
+bond interactions. See <a class="reference internal" href="#output">Output</a> for more information.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.hbonds">
+<code class="descname">hbonds</code><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.hbonds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.results.hbonds" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.results.hbonds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.hbonds</span></code></a> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.results.hbonds" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.results.hbonds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.hbonds</span></code></a> instead.</p>
+</div>
+</dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.count_by_ids">
 <code class="descname">count_by_ids</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hydrogenbonds/hbond_analysis.html#HydrogenBondAnalysis.count_by_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.count_by_ids" title="Permalink to this definition">¶</a></dt>

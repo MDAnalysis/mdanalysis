@@ -251,7 +251,7 @@
 <span class="sd">  - *angle* (degrees): angle of the hydrogen bond</span>
 
 <span class="sd">Hydrogen bond data are returned in a :class:`numpy.ndarray` on a &quot;one line, one observation&quot; basis</span>
-<span class="sd">and can be accessed via :attr:`HydrogenBondAnalysis.hbonds`::</span>
+<span class="sd">and can be accessed via :attr:`HydrogenBondAnalysis.results.hbonds`::</span>
 
 <span class="sd">    results = [</span>
 <span class="sd">        [</span>
@@ -393,13 +393,29 @@
 
 <span class="sd">.. autoclass:: HydrogenBondAnalysis</span>
 <span class="sd">   :members:</span>
+
+<span class="sd">   .. attribute:: results.hbonds</span>
+
+<span class="sd">      A :class:`numpy.ndarray` which contains a list of all observed hydrogen</span>
+<span class="sd">      bond interactions. See `Output`_ for more information.</span>
+
+<span class="sd">      .. versionadded:: 2.0.0</span>
+
+<span class="sd">   .. attribute:: hbonds</span>
+
+<span class="sd">      Alias to the :attr:`results.hbonds` attribute.</span>
+
+<span class="sd">      .. deprecated:: 2.0.0</span>
+<span class="sd">         Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">         :attr:`results.hbonds` instead.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">base</span>
+<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span><span class="p">,</span> <span class="n">Results</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="kn">import</span> <span class="n">capped_distance</span><span class="p">,</span> <span class="n">calc_angles</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.correlations</span> <span class="kn">import</span> <span class="n">autocorrelation</span><span class="p">,</span> <span class="n">correct_intermittency</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
@@ -415,7 +431,7 @@
 <span class="k">del</span> <span class="n">Doi</span>
 
 
-<div class="viewcode-block" id="HydrogenBondAnalysis"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis">[docs]</a><span class="k">class</span> <span class="nc">HydrogenBondAnalysis</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">AnalysisBase</span><span class="p">):</span>
+<div class="viewcode-block" id="HydrogenBondAnalysis"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis">[docs]</a><span class="k">class</span> <span class="nc">HydrogenBondAnalysis</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform an analysis of hydrogen bonds in a Universe.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -514,7 +530,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">d_a_cutoff</span> <span class="o">=</span> <span class="n">d_a_cutoff</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">d_h_a_angle</span> <span class="o">=</span> <span class="n">d_h_a_angle_cutoff</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_selections</span> <span class="o">=</span> <span class="n">update_selections</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">Results</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="HydrogenBondAnalysis.guess_hydrogens"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_hydrogens">[docs]</a>    <span class="k">def</span> <span class="nf">guess_hydrogens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                         <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span>
@@ -747,7 +764,7 @@
 
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]]</span>
 
         <span class="c1"># Set atom selections if they have not been provided</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">acceptors_sel</span><span class="p">:</span>
@@ -809,16 +826,25 @@
         <span class="n">hbond_angles</span> <span class="o">=</span> <span class="n">d_h_a_angles</span><span class="p">[</span><span class="n">hbond_indices</span><span class="p">]</span>
 
         <span class="c1"># Store data on hydrogen bonds found at this frame</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">hbond_donors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">frame</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_donors</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_hydrogens</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_acceptors</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_distances</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_angles</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">hbond_donors</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">frame</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_donors</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_hydrogens</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_acceptors</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_distances</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_angles</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">hbonds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `hbonds` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
+                <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
+                <span class="s2">&quot;`results.hbonds` instead.&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span>
 
 <div class="viewcode-block" id="HydrogenBondAnalysis.lifetime"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.lifetime">[docs]</a>    <span class="k">def</span> <span class="nf">lifetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">window_step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">intermittency</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Computes and returns the time-autocorrelation</span>
@@ -865,7 +891,7 @@
 <span class="sd">            autcorrelation value for each value of `tau`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                 <span class="s2">&quot;Autocorrelation analysis of hydrogen bonds cannot be done&quot;</span>
                 <span class="s2">&quot;before the hydrogen bonds are found&quot;</span>
@@ -893,7 +919,7 @@
         <span class="c1"># [set(superset(x1,x2), superset(x3,x4)), ..]</span>
         <span class="n">found_hydrogen_bonds</span> <span class="o">=</span> <span class="p">[</span><span class="nb">set</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">frame_index</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">hbond</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">frame</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">hbond</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">frame</span><span class="p">]:</span>
                 <span class="n">found_hydrogen_bonds</span><span class="p">[</span><span class="n">frame_index</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">hbond</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]))</span>
 
         <span class="n">intermittent_hbonds</span> <span class="o">=</span> <span class="n">correct_intermittency</span><span class="p">(</span>
@@ -919,7 +945,7 @@
 <span class="sd">             the number of hydrogen bonds over time.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">indices</span><span class="p">,</span> <span class="n">tmp_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">indices</span><span class="p">,</span> <span class="n">tmp_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                                         <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="n">indices</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span>
@@ -944,8 +970,8 @@
 <span class="sd">        acceptor atoms in a hydrogen bond.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span>
 
         <span class="n">tmp_hbonds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">resnames</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">types</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">resnames</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">types</span><span class="p">],</span>
                               <span class="n">dtype</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
@@ -973,9 +999,9 @@
 <span class="sd">        in a hydrogen bond.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span>
 
         <span class="n">tmp_hbonds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">ids</span><span class="p">,</span> <span class="n">h</span><span class="o">.</span><span class="n">ids</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">ids</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
         <span class="n">hbond_ids</span><span class="p">,</span> <span class="n">ids_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">tmp_hbonds</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
