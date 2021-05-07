@@ -243,7 +243,7 @@ class InterRDF(AnalysisBase):
 
         self.rdf_settings = {'bins': nbins,
                              'range': range}
-        self._exclusion_block = exclusion_block
+        self.results._exclusion_block = exclusion_block
 
     def _prepare(self):
         # Empty histogram to store the RDF
@@ -259,15 +259,15 @@ class InterRDF(AnalysisBase):
         # Set the max range to filter the search radius
         self._maxrange = self.rdf_settings['range'][1]
 
-
     def _single_frame(self):
         pairs, dist = distances.capped_distance(self.g1.positions,
                                                 self.g2.positions,
                                                 self._maxrange,
                                                 box=self.u.dimensions)
         # Maybe exclude same molecule distances
-        if self._exclusion_block is not None:
-            idxA, idxB = pairs[:, 0]//self._exclusion_block[0], pairs[:, 1]//self._exclusion_block[1]
+        if self.results._exclusion_block is not None:
+            idxA = pairs[:, 0]//self.results._exclusion_block[0],
+            idxB = pairs[:, 1]//self.results._exclusion_block[1]
             mask = np.where(idxA != idxB)[0]
             dist = dist[mask]
 
@@ -284,14 +284,14 @@ class InterRDF(AnalysisBase):
         N = nA * nB
 
         # If we had exclusions, take these into account
-        if self._exclusion_block:
-            xA, xB = self._exclusion_block
+        if self.results._exclusion_block:
+            xA, xB = self.results._exclusion_block
             nblocks = nA / xA
             N -= xA * xB * nblocks
 
         # Volume in each radial shell
-        vol = np.power(self.edges[1:], 3) - np.power(self.edges[:-1], 3)
-        vol *= 4/3.0 * np.pi
+        vols = np.power(self.results.edges, 3)
+        vol = 4/3.0 * np.pi * (vols[1:] - vols[:-1])
 
         # Average number density
         box_vol = self.results.volume / self.n_frames
@@ -391,10 +391,11 @@ class InterRDF_s(AnalysisBase):
         # Empty list to store the RDF
         count_list = []
         count, edges = np.histogram([-1], **self.rdf_settings)
-        count_list = [np.zeros((ag1.n_atoms, ag2.n_atoms, len(count)), dtype=np.float64)
+        l = len(count)
+        count_ini = [np.zeros((ag1.n_atoms, ag2.n_atoms, l), dtype=np.float64)
                          for ag1, ag2 in self.ags]
 
-        self.results.count = count_list
+        self.results.count = count_ini
         self.results.edges = edges
         self.results.bins = 0.5 * (edges[:-1] + edges[1:])
 
@@ -411,16 +412,16 @@ class InterRDF_s(AnalysisBase):
                                                     box=self.u.dimensions)
 
             for j, (idx1, idx2) in enumerate(pairs):
-                self.count[i][idx1, idx2, :] += np.histogram(dist[j],
-                                                             **self.rdf_settings)[0]
+                self.results.count[i][idx1, idx2, :] += np.histogram(dist[j],
+                                                    **self.rdf_settings)[0]
 
         self.results.volume += self._ts.volume
 
 
     def _conclude(self):
         # Volume in each radial shell
-        vol = np.power(self.edges[1:], 3) - np.power(self.edges[:-1], 3)
-        vol *= 4/3.0 * np.pi
+        vols = np.power(self.results.edges, 3)
+        vol = 4/3.0 * np.pi * (vols[1:] - vols[:-1])
 
         # Empty lists to restore indices, RDF
         indices = []
@@ -437,7 +438,8 @@ class InterRDF_s(AnalysisBase):
             if self._density:
                 rdf.append(self.results.count[i] / (vol * self.n_frames))
             else:
-                rdf.append(self.results.count[i] / (density * vol * self.n_frames))
+                rdf.append(self.results.count[i] /
+                    (density * vol * self.n_frames))
 
         self.results.rdf = rdf
         self.results.indices = indices
@@ -462,11 +464,11 @@ class InterRDF_s(AnalysisBase):
         # Empty list to restore CDF
         cdf = []
 
-        for count in self.count:
+        for count in self.results.count:
             cdf.append(np.cumsum(count, axis=2) / self.n_frames)
 
         # Results stored in self.cdf
         # self.cdf is a list of cdf between pairs of AtomGroups in ags
-        self.cdf = cdf
+        self.results.cdf = cdf
 
         return cdf
