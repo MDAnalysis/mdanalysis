@@ -490,8 +490,8 @@ class TestAverageStructure(object):
     def test_average_structure_in_memory(self, universe):
         avg = align.AverageStructure(universe, in_memory=True).run()
         reference_coordinates = universe.trajectory.timeseries().mean(axis=1)
-        assert_almost_equal(avg.results.universe.atoms.positions, reference_coordinates,
-                            decimal=4)
+        assert_almost_equal(avg.results.universe.atoms.positions,
+                            reference_coordinates, decimal=4)
         assert avg.filename is None
 
 
