@@ -22,7 +22,7 @@
 #
 import pytest
 
-from numpy.testing import assert_almost_equal
+from numpy.testing import assert_almost_equal, assert_equal
 
 import MDAnalysis as mda
 from MDAnalysis.analysis.rdf import InterRDF_s, InterRDF
@@ -61,8 +61,8 @@ def test_range(u, sels):
     rmin, rmax = 1.0, 13.0
     rdf = InterRDF_s(u, sels, range=(rmin, rmax)).run()
 
-    assert rdf.results.edges[0] == rmin
-    assert rdf.results.edges[-1] == rmax
+    assert rdf.edges[0] == rmin
+    assert rdf.edges[-1] == rmax
 
 
 def test_count_size(rdf):
@@ -73,34 +73,34 @@ def test_count_size(rdf):
     # 2 elements in rdf.count[1]
     # 2 elements in rdf.count[1][0]
     # 2 elements in rdf.count[1][1]
-    assert len(rdf.results.count) == 2
-    assert len(rdf.results.count[0]) == 1
-    assert len(rdf.results.count[0][0]) == 2
-    assert len(rdf.results.count[1]) == 2
-    assert len(rdf.results.count[1][0]) == 2
-    assert len(rdf.results.count[1][1]) == 2
+    assert len(rdf.count) == 2
+    assert len(rdf.count[0]) == 1
+    assert len(rdf.count[0][0]) == 2
+    assert len(rdf.count[1]) == 2
+    assert len(rdf.count[1][0]) == 2
+    assert len(rdf.count[1][1]) == 2
 
 
 def test_count(rdf):
     # should see one distance with 5 counts in count[0][0][1]
     # should see one distance with 3 counts in count[1][1][0]
-    sel0 = rdf.results.count[0][0][1] == 5
-    sel1 = rdf.results.count[1][1][0] == 3
-    assert len(rdf.results.count[0][0][1][sel0]) == 1
-    assert len(rdf.results.count[1][1][0][sel1]) == 1
+    sel0 = rdf.count[0][0][1] == 5
+    sel1 = rdf.count[1][1][0] == 3
+    assert len(rdf.count[0][0][1][sel0]) == 1
+    assert len(rdf.count[1][1][0][sel1]) == 1
 
 
 def test_double_run(rdf):
     # running rdf twice should give the same result
-    sel0 = rdf.results.count[0][0][1] == 5
-    sel1 = rdf.results.count[1][1][0] == 3
-    assert len(rdf.results.count[0][0][1][sel0]) == 1
-    assert len(rdf.results.count[1][1][0][sel1]) == 1
+    sel0 = rdf.count[0][0][1] == 5
+    sel1 = rdf.count[1][1][0] == 3
+    assert len(rdf.count[0][0][1][sel0]) == 1
+    assert len(rdf.count[1][1][0][sel1]) == 1
 
 
 def test_cdf(rdf):
     rdf.get_cdf()
-    ref = rdf.results.count[0][0][0].sum()/rdf.n_frames
+    ref = rdf.count[0][0][0].sum()/rdf.n_frames
     assert rdf.results.cdf[0][0][0][-1] == ref
 
 
@@ -118,3 +118,12 @@ def test_density(u, sels, density, value):
                 'name OD1 and resid 51 and sphzone 5.0 (resid 289)')
         rdf_ref = InterRDF(s1, s2).run()
         assert_almost_equal(rdf_ref.results.rdf, rdf.results.rdf[0][0][0])
+
+def test_rdf_attr_warning(rdf):
+    wmsg = "The `rdf` attribute was deprecated in MDAnalysis 2.0.0"
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        assert_equal(rdf.rdf, rdf.results.rdf)
+
+    wmsg = "The `bins` attribute was deprecated in MDAnalysis 2.0.0"
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        assert_equal(rdf.bins, rdf.results.bins)

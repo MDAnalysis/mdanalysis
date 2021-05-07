@@ -172,6 +172,7 @@ protein.
 .. - Coordination number
 
 """
+import warnings
 import numpy as np
 
 from ..lib.util import blocks_of
@@ -243,19 +244,19 @@ class InterRDF(AnalysisBase):
 
         self.rdf_settings = {'bins': nbins,
                              'range': range}
-        self.results._exclusion_block = exclusion_block
+        self._exclusion_block = exclusion_block
 
     def _prepare(self):
         # Empty histogram to store the RDF
         count, edges = np.histogram([-1], **self.rdf_settings)
         count = count.astype(np.float64)
         count *= 0.0
-        self.results.count = count
-        self.results.edges = edges
+        self.count = count
+        self.edges = edges
         self.results.bins = 0.5 * (edges[:-1] + edges[1:])
 
         # Need to know average volume
-        self.results.volume = 0.0
+        self.volume = 0.0
         # Set the max range to filter the search radius
         self._maxrange = self.rdf_settings['range'][1]
 
@@ -265,17 +266,17 @@ class InterRDF(AnalysisBase):
                                                 self._maxrange,
                                                 box=self.u.dimensions)
         # Maybe exclude same molecule distances
-        if self.results._exclusion_block is not None:
-            idxA = pairs[:, 0]//self.results._exclusion_block[0],
-            idxB = pairs[:, 1]//self.results._exclusion_block[1]
+        if self._exclusion_block is not None:
+            idxA = pairs[:, 0]//self._exclusion_block[0],
+            idxB = pairs[:, 1]//self._exclusion_block[1]
             mask = np.where(idxA != idxB)[0]
             dist = dist[mask]
 
 
         count = np.histogram(dist, **self.rdf_settings)[0]
-        self.results.count += count
+        self.count += count
 
-        self.results.volume += self._ts.volume
+        self.volume += self._ts.volume
 
     def _conclude(self):
         # Number of each selection
@@ -284,22 +285,38 @@ class InterRDF(AnalysisBase):
         N = nA * nB
 
         # If we had exclusions, take these into account
-        if self.results._exclusion_block:
-            xA, xB = self.results._exclusion_block
+        if self._exclusion_block:
+            xA, xB = self._exclusion_block
             nblocks = nA / xA
             N -= xA * xB * nblocks
 
         # Volume in each radial shell
-        vols = np.power(self.results.edges, 3)
+        vols = np.power(self.edges, 3)
         vol = 4/3.0 * np.pi * (vols[1:] - vols[:-1])
 
         # Average number density
-        box_vol = self.results.volume / self.n_frames
+        box_vol = self.volume / self.n_frames
         density = N / box_vol
 
-        rdf = self.results.count / (density * vol * self.n_frames)
+        rdf = self.count / (density * vol * self.n_frames)
 
         self.results.rdf = rdf
+
+    @property
+    def bins(self):
+        wmsg = ("The `bins` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.bins` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.bins
+
+    @property
+    def rdf(self):
+        wmsg = ("The `rdf` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.rdf` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.rdf
 
 
 class InterRDF_s(AnalysisBase):
@@ -350,7 +367,7 @@ class InterRDF_s(AnalysisBase):
 
     Results are available through the :attr:`bins` and :attr:`rdf` attributes::
 
-      plt.plot(rdf.bins, rdf.rdf[0][0, 0])
+      plt.plot(rdf.results.bins, rdf.results.rdf[0][0, 0])
 
     (Which plots the rdf between the first atom in ``s1`` and the first atom in
     ``s2``)
@@ -363,7 +380,7 @@ class InterRDF_s(AnalysisBase):
 
     Results are available through the :attr:`cdf` attribute::
 
-      plt.plot(rdf.bins, rdf.cdf[0][0, 0])
+      plt.plot(rdf.results.bins, rdf.results.cdf[0][0, 0])
 
     (Which plots the cdf between the first atom in ``s1`` and the first atom in
     ``s2``)
@@ -395,12 +412,12 @@ class InterRDF_s(AnalysisBase):
         count_ini = [np.zeros((ag1.n_atoms, ag2.n_atoms, l), dtype=np.float64)
                          for ag1, ag2 in self.ags]
 
-        self.results.count = count_ini
-        self.results.edges = edges
+        self.count = count_ini
+        self.edges = edges
         self.results.bins = 0.5 * (edges[:-1] + edges[1:])
 
         # Need to know average volume
-        self.results.volume = 0.0
+        self.volume = 0.0
         self._maxrange = self.rdf_settings['range'][1]
 
 
@@ -412,15 +429,15 @@ class InterRDF_s(AnalysisBase):
                                                     box=self.u.dimensions)
 
             for j, (idx1, idx2) in enumerate(pairs):
-                self.results.count[i][idx1, idx2, :] += np.histogram(dist[j],
+                self.count[i][idx1, idx2, :] += np.histogram(dist[j],
                                                     **self.rdf_settings)[0]
 
-        self.results.volume += self._ts.volume
+        self.volume += self._ts.volume
 
 
     def _conclude(self):
         # Volume in each radial shell
-        vols = np.power(self.results.edges, 3)
+        vols = np.power(self.edges, 3)
         vol = 4/3.0 * np.pi * (vols[1:] - vols[:-1])
 
         # Empty lists to restore indices, RDF
@@ -432,13 +449,13 @@ class InterRDF_s(AnalysisBase):
             indices.append([ag1.indices, ag2.indices])
 
             # Average number density
-            box_vol = self.results.volume / self.n_frames
+            box_vol = self.volume / self.n_frames
             density = 1 / box_vol
 
             if self._density:
-                rdf.append(self.results.count[i] / (vol * self.n_frames))
+                rdf.append(self.count[i] / (vol * self.n_frames))
             else:
-                rdf.append(self.results.count[i] /
+                rdf.append(self.count[i] /
                     (density * vol * self.n_frames))
 
         self.results.rdf = rdf
@@ -464,7 +481,7 @@ class InterRDF_s(AnalysisBase):
         # Empty list to restore CDF
         cdf = []
 
-        for count in self.results.count:
+        for count in self.count:
             cdf.append(np.cumsum(count, axis=2) / self.n_frames)
 
         # Results stored in self.cdf
@@ -472,3 +489,27 @@ class InterRDF_s(AnalysisBase):
         self.results.cdf = cdf
 
         return cdf
+
+    @property
+    def bins(self):
+        wmsg = ("The `bins` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.bins` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.bins
+
+    @property
+    def rdf(self):
+        wmsg = ("The `rdf` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.rdf` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.rdf
+
+    @property
+    def cdf(self):
+        wmsg = ("The `cdf` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.cdf` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.cdf
