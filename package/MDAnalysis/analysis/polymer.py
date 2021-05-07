@@ -213,7 +213,7 @@ class PersistenceLength(AnalysisBase):
         # Run the analysis, this will average over all polymer chains
         # and all timesteps in trajectory
         persistence_length = persistence_length.run()
-        print('The persistence length is: {}'.format(persistence_length.results.lp))
+        print(f'The persistence length is: {persistence_length.results.lp}')
 
         # always check the visualisation of this:
         persistence_length.plot()
@@ -226,7 +226,7 @@ class PersistenceLength(AnalysisBase):
        Deprecated :meth:`PersistenceLength.perform_fit` has now been removed.
     .. versionchanged:: 2.0.0
        Former ``results`` are now stored as ``results.bond_autocorrelation``.
-       :attr:`lb`, :attr:`lp`, :attr:`fit` are now stored in a 
+       :attr:`lb`, :attr:`lp`, :attr:`fit` are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
     """
     def __init__(self, atomgroups, **kwargs):
@@ -313,7 +313,7 @@ class PersistenceLength(AnalysisBase):
                             np.arange(len(self.results.bond_autocorrelation))
 
         self.results.lp = fit_exponential_decay(self.results.x,
-                                        self.results.bond_autocorrelation)
+                                             self.results.bond_autocorrelation)
 
         self.results.fit = np.exp(-self.results.x/self.results.lp)
 
