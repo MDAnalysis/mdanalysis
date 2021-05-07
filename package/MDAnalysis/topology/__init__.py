@@ -307,8 +307,7 @@ __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser',
            'CRDParser', 'TOPParser', 'PDBQTParser', 'TPRParser',
            'LAMMPSParser', 'XYZParser', 'GMSParser', 'DLPolyParser',
            'HoomdXMLParser','GSDParser', 'ITPParser', 'ParmEdParser', 
-           'RDKitParser']
-
+           'RDKitParser', 'OpenMMParser']
 from . import core
 from . import PSFParser
 from . import TOPParser
@@ -331,6 +330,7 @@ from . import MMTFParser
 from . import GSDParser
 from . import MinimalParser
 from . import ITPParser
+from . import OpenMMParser
 from . import ParmEdParser
 from . import RDKitParser
 from . import FHIAIMSParser

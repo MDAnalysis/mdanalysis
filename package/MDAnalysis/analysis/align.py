@@ -1073,12 +1073,12 @@ def fasta2select(fastafilename, is_aligned=False,
     # implict assertion that we only have two sequences in the alignment
     orig_resids = [ref_resids, target_resids]
     offsets = [ref_offset, target_offset]
+    GAP = "-"
     for iseq, a in enumerate(alignment):
         # need iseq index to change orig_resids
         if orig_resids[iseq] is None:
             # build default: assume consecutive numbering of all
             # residues in the alignment
-            GAP = "-"
             length = len(a.seq) - a.seq.count(GAP)
             orig_resids[iseq] = np.arange(1, length + 1)
         else:

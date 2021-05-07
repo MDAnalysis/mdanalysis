@@ -32,17 +32,19 @@ TopologyAttrs are used to contain attributes such as atom names or resids.
 These are usually read by the TopologyParser.
 """
 
-import Bio.Seq
-import Bio.SeqRecord
 from collections import defaultdict
 import copy
 import functools
 import itertools
 import numbers
-import numpy as np
+from inspect import signature as inspect_signature
 import warnings
 import textwrap
-from inspect import signature as inspect_signature
+from types import MethodType
+
+import Bio.Seq
+import Bio.SeqRecord
+import numpy as np
 
 from ..lib.util import (cached, convert_aa_code, iterable, warn_if_not_unique,
                         unique_int_1d)
@@ -1098,8 +1100,19 @@ class Atomnames(_AtomStringAttr):
     transplants[ResidueGroup].append(('omega_selections', omega_selections))
 
     def chi1_selection(residue, n_name='N', ca_name='CA', cb_name='CB',
-                       cg_name='CG'):
-        """Select AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.
+                       cg_name='CG CG1 OG OG1 SG'):
+        r"""Select AtomGroup corresponding to the chi1 sidechain dihedral ``N-CA-CB-*G.``
+        The gamma atom is taken to be the heavy atom in the gamma position. If more than one
+        heavy atom is present (e.g. CG1 and CG2), the one with the lower number is used (CG1).
+
+        .. warning::
+
+            This numbering of chi1 atoms here in following with the IUPAC 1970 rules.
+            However, it should be noted that analyses which use dihedral angles may have
+            different definitions. For example, the
+            :class:`MDAnalysis.analysis.dihedrals.Janin` class does not incorporate
+            amino acids where the gamma atom is not carbon, into its chi1 selections.
+
 
         Parameters
         ----------
@@ -1125,7 +1138,7 @@ class Atomnames(_AtomStringAttr):
         .. versionadded:: 0.7.5
         """
         names = [n_name, ca_name, cb_name, cg_name]
-        ags = [residue.atoms[residue.atoms.names == n] for n in names]
+        ags = [residue.atoms.select_atoms(f"name {n}") for n in names]
         if any(len(ag) != 1 for ag in ags):
             return None
         return sum(ags)
@@ -2247,7 +2260,31 @@ def _check_connection_values(func):
     return wrapper
 
 
-class _Connection(AtomAttr):
+class _ConnectionTopologyAttrMeta(_TopologyAttrMeta):
+    """
+    Specific metaclass for atom-connectivity topology attributes.
+
+    This class adds an ``intra_{attrname}`` property to groups
+    to return only the connections within the atoms in the group.
+    """
+    def __init__(cls, name, bases, classdict):
+        type.__init__(type, name, bases, classdict)
+        attrname = classdict.get('attrname')
+
+        if attrname is not None:
+            def intra_connection(self, ag):
+                """Get connections only within this AtomGroup
+                """
+                return ag.get_connections(attrname, outside=False)
+
+            method = MethodType(intra_connection, cls)
+            prop = property(method, None, None, method.__doc__)
+            cls.transplants[AtomGroup].append((f"intra_{attrname}", prop))
+
+        super().__init__(name, bases, classdict)
+
+
+class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
     """Base class for connectivity between atoms
 
     .. versionchanged:: 1.0.0
@@ -2296,14 +2333,23 @@ class _Connection(AtomAttr):
         return NotImplementedError("Cannot set bond information")
 
     def get_atoms(self, ag):
+        """
+        Get connection values where the atom indices are in
+        the given atomgroup.
+
+        Parameters
+        ----------
+        ag : AtomGroup
+
+        """
         try:
             unique_bonds = set(itertools.chain(
                 *[self._bondDict[a] for a in ag.ix]))
         except TypeError:
             # maybe we got passed an Atom
             unique_bonds = self._bondDict[ag.ix]
-        bond_idx, types, guessed, order = np.hsplit(
-            np.array(sorted(unique_bonds), dtype=object), 4)
+        unique_bonds = np.array(sorted(unique_bonds), dtype=object)
+        bond_idx, types, guessed, order = np.hsplit(unique_bonds, 4)
         bond_idx = np.array(bond_idx.ravel().tolist(), dtype=np.int32)
         types = types.ravel()
         guessed = guessed.ravel()
@@ -2404,6 +2450,7 @@ class Bonds(_Connection):
         """
         return self.universe._fragdict[self.ix].ix
 
+    @cached('fragindices', universe_validation=True)
     def fragindices(self):
         r"""The
         :class:`fragment indices<MDAnalysis.core.topologyattrs.Bonds.fragindex>`
@@ -2437,6 +2484,7 @@ class Bonds(_Connection):
         """
         return self.universe._fragdict[self.ix].fragment
 
+    @cached('fragments', universe_validation=True)
     def fragments(self):
         """Read-only :class:`tuple` of
         :class:`fragments<MDAnalysis.core.topologyattrs.Bonds.fragment>`.

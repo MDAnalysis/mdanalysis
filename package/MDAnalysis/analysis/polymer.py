@@ -163,12 +163,11 @@ class PersistenceLength(AnalysisBase):
        List of AtomGroups.  Each should represent a single
        polymer chain, ordered in the correct order.
     verbose : bool (optional)
-       Show detailed progress of the calculation if set to ``True``; the
-       default is ``False``.
+       Show detailed progress of the calculation if set to ``True``.
 
     Attributes
     ----------
-    results : numpy.ndarray
+    results.bond_autocorrelation : numpy.ndarray
        the measured bond autocorrelation
     lb : float
        the average bond length
@@ -187,6 +186,8 @@ class PersistenceLength(AnalysisBase):
        The run method now automatically performs the exponential fit
     .. versionchanged:: 1.0.0
        Deprecated :meth:`PersistenceLength.perform_fit` has now been removed.
+    .. versionchanged:: 2.0.0
+       Former ``results`` are now stored as ``results.bond_autocorrelation``
     """
     def __init__(self, atomgroups, **kwargs):
         super(PersistenceLength, self).__init__(
@@ -224,7 +225,7 @@ class PersistenceLength(AnalysisBase):
         norm = np.linspace(n - 1, 1, n - 1)
         norm *= len(self._atomgroups) * self.n_frames
 
-        self.results = self._results / norm
+        self.results.bond_autocorrelation = self._results / norm
         self._calc_bond_length()
 
         self._perform_fit()
@@ -241,12 +242,13 @@ class PersistenceLength(AnalysisBase):
     def _perform_fit(self):
         """Fit the results to an exponential decay"""
         try:
-            self.results
+            self.results.bond_autocorrelation
         except AttributeError:
             raise NoDataError("Use the run method first") from None
-        self.x = np.arange(len(self.results)) * self.lb
+        self.x = np.arange(len(self.results.bond_autocorrelation)) * self.lb
 
-        self.lp = fit_exponential_decay(self.x, self.results)
+        self.lp = fit_exponential_decay(self.x,
+                                        self.results.bond_autocorrelation)
 
         self.fit = np.exp(-self.x/self.lp)
 
@@ -265,8 +267,13 @@ class PersistenceLength(AnalysisBase):
         import matplotlib.pyplot as plt
         if ax is None:
             fig, ax = plt.subplots()
-        ax.plot(self.x, self.results, 'ro', label='Result')
-        ax.plot(self.x, self.fit, label='Fit')
+        ax.plot(self.x,
+                self.results.bond_autocorrelation,
+                'ro',
+                label='Result')
+        ax.plot(self.x,
+                self.fit,
+                label='Fit')
         ax.set_xlabel(r'x')
         ax.set_ylabel(r'$C(x)$')
         ax.set_xlim(0.0, 40 * self.lb)
