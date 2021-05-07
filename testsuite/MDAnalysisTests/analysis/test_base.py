@@ -45,23 +45,24 @@ class Test_Results:
         assert results.a == results["a"] == 1
 
     def test_no_attr(self, results):
-        with pytest.raises(AttributeError):
+        msg = "'Results' object has no attribute 'c'"
+        with pytest.raises(AttributeError, match=msg):
             results.c
 
     def test_set_attr(self, results):
         value = [1, 2, 3, 4]
         results.c = value
-        assert results.c == results["c"] == value
+        assert results.c is results["c"] is value
 
     def test_set_key(self, results):
         value = [1, 2, 3, 4]
         results["c"] = value
-        assert results.c == results["c"] == value
+        assert results.c is results["c"] is value
 
     @pytest.mark.parametrize('key', dir(UserDict) + ["data"])
     def test_existing_dict_attr(self, results, key):
         msg = f"'{key}' is a protected dictionary attribute"
-        with pytest.raises(AttributeError, match=key):
+        with pytest.raises(AttributeError, match=msg):
             results[key] = None
 
     @pytest.mark.parametrize('key', dir(UserDict) + ["data"])
@@ -76,13 +77,11 @@ class Test_Results:
         with pytest.raises(ValueError, match=msg):
             results[key] = None
 
-    @pytest.mark.xfail(reason="conflict in key validation", strict=True)
     def test_setattr_modify_item(self, results):
         setattr(results, "myattr", 0)
         assert results.myattr == 0
         results["myattr"] = 3
         assert results.myattr == 3
-
 
 
 class FrameAnalysis(base.AnalysisBase):
