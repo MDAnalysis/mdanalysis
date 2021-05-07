@@ -94,7 +94,8 @@ class Results(UserDict):
         elif isinstance(key, str) and not key.isidentifier():
             raise ValueError(f"'{key}' is not a valid attribute")
 
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
+        kwargs = dict(*args, **kwargs)
         if "data" in kwargs.keys():
             raise AttributeError(f"'data' is a protected dictionary attribute")
         self.__dict__["data"] = {}

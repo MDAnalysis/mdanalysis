@@ -119,6 +119,18 @@ class Test_Results:
         with pytest.raises(AttributeError, match=msg):
             results.update({"data": 0})
 
+    @pytest.mark.parametrize("args, kwargs, length", [
+        (({"darth": "tater"},), {}, 1),
+        ([], {"darth": "tater"}, 1),
+        (({"darth": "tater"},), {"yam": "solo"}, 2),
+        (({"darth": "tater"},), {"darth": "vader"}, 1),
+    ])
+    def test_initialize_arguments(self, args, kwargs, length):
+        results = base.Results(*args, **kwargs)
+        ref = dict(*args, **kwargs)
+        assert ref == results
+        assert len(results) == length
+
 
 class FrameAnalysis(base.AnalysisBase):
     """Just grabs frame numbers of frames it goes over"""
