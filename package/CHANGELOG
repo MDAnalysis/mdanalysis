@@ -23,6 +23,7 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * WaterBridgeAnalysis double counts the water (Issue #3119, PR #3120)
   * NCDFReader now defaults to a dt value of 1.0 ps when it cannot estimate
     it from the first two frames of the file (Issue #3166)
   * Get chi1_selection to match canonical gamma atoms (Issue #2044)
