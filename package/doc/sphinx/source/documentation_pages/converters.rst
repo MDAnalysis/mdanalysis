@@ -38,6 +38,7 @@ Another syntax is also available for tab-completion support::
 
    converters/ParmEd
    converters/RDKit
+   converters/OpenMM
 
 .. rubric:: Converter functionalities
 
