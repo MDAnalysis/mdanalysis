@@ -53,7 +53,7 @@ class TestConvertTo:
 class TestAccessor:
     def test_access_from_class(self):
         assert (mda.core.AtomGroup.convert_to is
-                mda.converters.accessors.ConverterWrapper)
+                mda.core.accessors.ConverterWrapper)
 
 
 class TestConverterWrapper:
