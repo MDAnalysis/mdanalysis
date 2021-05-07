@@ -90,34 +90,59 @@ solvent with itself or with another solute.
    :members:
    :inherited-members:
 
+   .. attribute:: results.bins
+
+       :class:`numpy.ndarray` of the centers of the `nbins` histogram
+       bins.
+
+       .. versionadded:: 2.0.0
+
    .. attribute:: bins
 
-      :class:`numpy.ndarray` of the centers of the `nbins` histogram
-      bins.
+       Alias to the :attr:`results.bins` attribute.
 
        .. deprecated:: 2.0.0
            This attribute will be removed in 3.0.0.
            Use :attr:`results.bins` instead.
 
-   .. attribute:: edges
+   .. attribute:: results.edges
 
       :class:`numpy.ndarray` of the `nbins + 1` edges of the histogram
       bins.
 
-   .. attribute:: rdf
+   .. attribute:: edges
+
+       Alias to the :attr:`results.edges` attribute.
+
+       .. deprecated:: 2.0.0
+           This attribute will be removed in 3.0.0.
+           Use :attr:`results.edges` instead.
+
+   .. attribute:: results.rdf
 
       :class:`numpy.ndarray` of the :ref:`radial distribution
-      function<equation-gab>` values for the :attr:`bins`.
+      function<equation-gab>` values for the :attr:`results.bins`.
 
-         .. deprecated:: 2.0.0
-             This attribute will be removed in 3.0.0.
-             Use :attr:`results.rdf` instead.
+   .. attribute:: rdf
+
+       Alias to the :attr:`results.rdf` attribute.
+
+       .. deprecated:: 2.0.0
+           This attribute will be removed in 3.0.0.
+           Use :attr:`results.rdf` instead.
+
+   .. attribute:: results.count
+
+      :class:`numpy.ndarray` representing the radial histogram, i.e.,
+      the raw counts, for all :attr:`results.bins`.
 
    .. attribute:: count
 
-      :class:`numpy.ndarray` representing the radial histogram, i.e.,
-      the raw counts, for all :attr:`bins`.
+       Alias to the :attr:`results.count` attribute.
 
+       .. deprecated:: 2.0.0
+           This attribute will be removed in 3.0.0.
+           Use :attr:`results.count` instead.
 
 Site-specific radial distribution function
 ------------------------------------------
@@ -136,21 +161,33 @@ protein.
    :members:
    :inherited-members:
 
-   .. attribute:: bins
+   .. attribute:: results.bins
 
       :class:`numpy.ndarray` of the centers of the `nbins` histogram
       bins; all individual site-specific RDFs have the same bins.
 
-      .. deprecated:: 2.0.0
-          This attribute will be removed in 3.0.0.
-          Use :attr:`results.bins` instead.
+   .. attribute:: bins
 
-   .. attribute:: edges
+       Alias to the :attr:`results.bins` attribute.
+
+       .. deprecated:: 2.0.0
+           This attribute will be removed in 3.0.0.
+           Use :attr:`results.bins` instead.
+
+   .. attribute:: results.edges
 
       :class:`numpy.ndarray` of the `nbins + 1` edges of the histogram
       bins; all individual site-specific RDFs have the same bins.
 
-   .. attribute:: rdf
+   .. attribute:: edges
+
+       Alias to the :attr:`results.edges` attribute.
+
+       .. deprecated:: 2.0.0
+           This attribute will be removed in 3.0.0.
+           Use :attr:`results.edges` instead.
+
+   .. attribute:: results.rdf
 
       :class:`list` of the site-specific :ref:`radial distribution
       functions<equation-gab>` or :ref:`density
@@ -158,32 +195,48 @@ protein.
       ``len(ags)`` entries. Each entry for the ``i``-th pair ``[A, B]
       = ags[i]`` in `ags` is a :class:`numpy.ndarray` with shape
       ``(len(A), len(B))``, i.e., a stack of RDFs. For example,
-      ``rdf[i][0, 2]`` is the RDF between atoms ``A[0]`` and ``B[2]``.
+      ``results.rdf[i][0, 2]`` is the RDF between atoms ``A[0]``
+      and ``B[2]``.
 
-      .. deprecated:: 2.0.0
-          This attribute will be removed in 3.0.0.
-          Use :attr:`results.rdf` instead.
+   .. attribute:: rdf
+
+       Alias to the :attr:`results.rdf` attribute.
+
+       .. deprecated:: 2.0.0
+           This attribute will be removed in 3.0.0.
+           Use :attr:`results.rdf` instead.
+
+   .. attribute:: results.count
+
+      :class:`list` of the site-specific radial histograms, i.e., the
+      raw counts, for all :attr:`results.bins`. The data have the same
+      structure as :attr:`results.rdf` except that the arrays contain
+      the raw counts.
 
    .. attribute:: count
 
-      :class:`list` of the site-specific radial histograms, i.e., the
-      raw counts, for all :attr:`bins`. The data have the same
-      structure as :attr:`rdf` except that the arrays contain the raw
-      counts.
+       Alias to the :attr:`results.count` attribute.
 
-   .. attribute:: cdf
+       .. deprecated:: 2.0.0
+           This attribute will be removed in 3.0.0.
+           Use :attr:`results.count` instead.
+
+   .. attribute:: results.cdf
 
       :class:`list` of the site-specific :ref:`cumulative
-      counts<equation-countab>`, for all :attr:`bins`. The data have the same
-      structure as :attr:`rdf` except that the arrays contain the cumulative
-      counts.
+      counts<equation-countab>`, for all :attr:`results.bins`. The data
+      have the same structure as :attr:`results.rdf` except that the arrays
+      contain the cumulative counts.
 
       This attribute only exists after :meth:`get_cdf` has been run.
 
-      .. deprecated:: 2.0.0
-          This attribute will be removed in 3.0.0.
-          Use :attr:`results.cdf` instead.
+   .. attribute:: cdf
 
+       Alias to the :attr:`results.cdf` attribute.
+
+       .. deprecated:: 2.0.0
+           This attribute will be removed in 3.0.0.
+           Use :attr:`results.cdf` instead.
 
 .. Not Implemented yet:
 .. - Structure factor?
@@ -235,10 +288,10 @@ class InterRDF(AnalysisBase):
       rdf = InterRDF(ag1, ag2)
       rdf.run()
 
-    Results are available through the :attr:`bins` and :attr:`rdf`
-    attributes::
+    Results are available through the :attr:`results.bins` and
+    :attr:`results.rdf` attributes::
 
-      plt.plot(rdf.bins, rdf.rdf)
+      plt.plot(rdf.results.bins, rdf.results.rdf)
 
     The `exclusion_block` keyword allows the masking of pairs from
     within the same molecule.  For example, if there are 7 of each
@@ -251,6 +304,10 @@ class InterRDF(AnalysisBase):
        Support for the ``start``, ``stop``, and ``step`` keywords has been
        removed. These should instead be passed to :meth:`InterRDF.run`.
 
+    .. versionchanged:: 2.0.0
+       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and
+       store results as attributes ``bins``, ``edges``, ``rdf`` and ``count``
+       of the ``results`` attribute.
     """
     def __init__(self, g1, g2,
                  nbins=75, range=(0.0, 15.0), exclusion_block=None,
@@ -399,7 +456,8 @@ class InterRDF_s(AnalysisBase):
       rdf = InterRDF_s(u, ags)
       rdf.run()
 
-    Results are available through the :attr:`bins` and :attr:`rdf` attributes::
+    Results are available through the :attr:`results.bins`
+    and :attr:`results.rdf` attributes::
 
       plt.plot(rdf.results.bins, rdf.results.rdf[0][0, 0])
 
@@ -412,7 +470,7 @@ class InterRDF_s(AnalysisBase):
 
       cdf = rdf.get_cdf()
 
-    Results are available through the :attr:`cdf` attribute::
+    Results are available through the :attr:`results.cdf` attribute::
 
       plt.plot(rdf.results.bins, rdf.results.cdf[0][0, 0])
 
@@ -426,6 +484,10 @@ class InterRDF_s(AnalysisBase):
        Support for the ``start``, ``stop``, and ``step`` keywords has been
        removed. These should instead be passed to :meth:`InterRDF_s.run`.
 
+    .. versionchanged:: 2.0.0
+       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and
+       store results as attributes ``bins``, ``edges``, ``rdf``, ``count``
+       and ``cdf`` of the ``results`` attribute.
     """
     def __init__(self, u, ags,
                  nbins=75, range=(0.0, 15.0), density=False, **kwargs):
