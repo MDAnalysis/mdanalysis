@@ -130,6 +130,6 @@ def test_rdf_attr_warning(rdf):
         assert_equal(rdf.bins, rdf.results.bins)
 
     rdf.get_cdf()
-    wmsg = "The `bins` attribute was deprecated in MDAnalysis 2.0.0"
+    wmsg = "The `cdf` attribute was deprecated in MDAnalysis 2.0.0"
     with pytest.warns(DeprecationWarning, match=wmsg):
         assert_equal(rdf.cdf, rdf.results.cdf)
