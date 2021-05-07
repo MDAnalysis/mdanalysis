@@ -308,7 +308,7 @@ to the second atom.
 __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser',
            'CRDParser', 'TOPParser', 'PDBQTParser', 'TPRParser',
            'LAMMPSParser', 'XYZParser', 'GMSParser', 'DLPolyParser',
-           'HoomdXMLParser','GSDParser', 'ITPParser', 'OpenMMParser']
+           'HoomdXMLParser','GSDParser', 'ITPParser']
 
 from . import core
 from . import PSFParser
@@ -332,5 +332,4 @@ from . import MMTFParser
 from . import GSDParser
 from . import MinimalParser
 from . import ITPParser
-from . import OpenMMParser
 from . import FHIAIMSParser
