@@ -85,8 +85,6 @@ class Results(UserDict):
     .. versionadded:: 2.0.0
     """
 
-    data = None
-
     def _validate_key(self, key):
         if key in dir(self):
             raise AttributeError(f"'{key}' is a protected dictionary "

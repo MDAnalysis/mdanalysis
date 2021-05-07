@@ -131,6 +131,10 @@ class Test_Results:
         assert ref == results
         assert len(results) == length
 
+    def test_different_instances(self, results):
+        new_results = base.Results(darth="tater")
+        assert new_results.data is not results.data
+
 
 class FrameAnalysis(base.AnalysisBase):
     """Just grabs frame numbers of frames it goes over"""
