@@ -175,6 +175,9 @@ Enhancements
     checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
 
 Changes
+  * `analysis.align.AlignTraj` and `analysis.align.AverageStructure` now store
+    their result attributes using the `analysis.base.Results` class
+    (Issues #3278 and #3261)
   * `analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalyis` now stores
     `hbonds` data using the `analysis.base.Results class (Issues #3271, #3261)
   * `analysis.rms.RMSD` and `analysis.rms.RMSF` classes now store `rmsd` and
@@ -238,6 +241,12 @@ Changes
   * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
 
 Deprecations
+  * The `analysis.align.AlignTraj.rmsd` attribute is now deprecated in
+    favour of `analysis.align.AlignTraj.results.rmsd` (Issue #3278, #3261)
+  * The `universe`, `positions`, and `rmsd` attributes of
+    `analysis.align.AverageStructure` are now deprecated in favour of
+    `results.universe`, `results.positions`, and `results.rmsd`
+    (Issue #3278, #3261)
   * The `hbonds` attribute of
     `hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.hbonds` is now
     deprecated in favour of `results.hbonds` (Issues #3271, #3261)
