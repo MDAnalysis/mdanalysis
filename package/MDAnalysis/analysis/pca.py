@@ -91,8 +91,8 @@ Inspect the components to determine the principal components you would like
 to retain. The choice is arbitrary, but I will stop when 95 percent of the
 variance is explained by the components. This cumulated variance by the
 components is conveniently stored in the one-dimensional array attribute
-``results.cumulated_variance``. The value at the ith index of `results.cumulated_variance`
-is the sum of the variances from 0 to i.
+``results.cumulated_variance``. The value at the ith index of
+``results.cumulated_variance`` is the sum of the variances from 0 to i.
 
 .. code-block:: python
 
