@@ -23,6 +23,7 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * WaterBridgeAnalysis double counts the water (Issue #3119, PR #3120)
   * NCDFReader now defaults to a dt value of 1.0 ps when it cannot estimate
     it from the first two frames of the file (Issue #3166)
   * Get chi1_selection to match canonical gamma atoms (Issue #2044)
@@ -174,6 +175,8 @@ Enhancements
     checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
 
 Changes
+  * `analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalyis` now stores
+    `hbonds` data using the `analysis.base.Results class (Issues #3271, #3261)
   * `analysis.rms.RMSD` and `analysis.rms.RMSF` classes now store `rmsd` and
     `rmsf` data using the `analysis.base.Results` class (Issues #3274 #3261)
   * `analysis.dihedrals` classes now store angle data using the
@@ -235,6 +238,9 @@ Changes
   * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
 
 Deprecations
+  * The `hbonds` attribute of
+    `hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.hbonds` is now
+    deprecated in favour of `results.hbonds` (Issues #3271, #3261)
   * The `analysis.rms.RMSD.rmsd` and `analysis.rms.RMSF.rmsf` attributes are
     now deprecated in favour of `analysis.rms.RMSD.results.rmsd` and
     `analysis.rms.RMSF.results.rmsf` respectively. They will be removed in
