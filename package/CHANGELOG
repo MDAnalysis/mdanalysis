@@ -175,7 +175,8 @@ Enhancements
 
 Changes
   * `hydrogenbonds.WaterBridgeAnalysis` now stores data using the
-    `WaterBridgeAnalysis.results.network` (Issue #3261, Issue #3270)
+    `hydrogenbonds.WaterBridgeAnalysis.results` attribute
+    (Issue #3261, Issue #3270)
   * `contacts.Contacts` now stores data using the `Contacts.results.timeseries`
     attribute. `Contacts.timeseries` is now deprecated (Issue #3261)
   * `DensityAnalysis` now uses the `results.density` attribute for storing
@@ -229,6 +230,9 @@ Changes
   * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
 
 Deprecations
+  * The `hydrogenbonds.WaterBridgeAnalysis.table` attribute is now deprecated
+     in favour of `hydrogenbonds.WaterBridgeAnalysis.results.table`. It will be
+     removes in 3.0.0 (Issue #3261, Issue #3270)
    * The `hydrogenbonds.WaterBridgeAnalysis._network` attribute is now deprecated
      in favour of `hydrogenbonds.WaterBridgeAnalysis.results.network`. It will be
      removes in 3.0.0 (Issue #3261, Issue #3270)

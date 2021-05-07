@@ -122,14 +122,14 @@ Output as Timeseries
 --------------------
 
 For lower order water bridges, it might be desirable to represent the
-connections as :attr:`WaterBridgeAnalysis.results.timeseries`. The results 
+connections as :attr:`WaterBridgeAnalysis.timeseries`. The results 
 are returned per frame and are a list of hydrogen bonds between the selection
 1 or selection 2 and the bridging waters. Due to the complexity of the higher
 order water bridge and the fact that one hydrogen bond between two waters can
 appear in both third and fourth order water bridge, the hydrogen bonds in the
-:attr:`WaterBridgeAnalysis.results.timeseries` attribute are generated in a
+:attr:`WaterBridgeAnalysis.timeseries` attribute are generated in a
 depth-first search manner to avoid duplication. Example code of how
-:attr:`WaterBridgeAnalysis.results.timeseries` is generated::
+:attr:`WaterBridgeAnalysis.timeseries` is generated::
 
     def network2timeseries(network, timeseries):
         '''Traverse the network in a depth-first fashion.
@@ -307,7 +307,7 @@ the carboxylic group (ASP3:OD2). ::
   #     3          2          SOL       HW2
   #     4          3          ASP       OD1
   #     5          3          ASP       OD2
-  print(w.results.timeseries)
+  print(w.timeseries)
 
 prints out ::
 
@@ -678,6 +678,25 @@ Classes
       :attr:`~WaterBridgeAnalysis.timeseries` to find the specific time point
       of a water bridge existence.
 
+   .. attribute:: results.network
+
+      .. versionadded:: 2.0.0
+
+   .. attribute:: network
+
+      Alias to the :attr:`results.network` attribute.
+
+      .. deprecated:: 2.0.0
+         Will be removed in MDAnalysis 3.0.0. Please use
+         :attr:`results.hbonds` instead.
+
+   .. attribute:: _network
+
+      Alias to the :attr:`results.network` attribute.
+
+      .. deprecated:: 2.0.0
+         Will be removed in MDAnalysis 3.0.0. Please use
+         :attr:`results.hbonds` instead.
 """
 from collections import defaultdict
 import logging
@@ -698,7 +717,7 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     The analysis of the trajectory is performed with the
     :meth:`WaterBridgeAnalysis.run` method. The result is stored in
-    :attr:`WaterBridgeAnalysis.results.timeseries`. See
+    :attr:`WaterBridgeAnalysis.timeseries`. See
     :meth:`~WaterBridgeAnalysis.run` for the format.
 
 
@@ -872,7 +891,7 @@ class WaterBridgeAnalysis(AnalysisBase):
 
         .. versionchanged: 2.0.0
            Deprecated :attr:`WaterBridgeAnalysis.timeseries` in favour of
-           :attr:`WaterBridgeAnalysis.results.timeseries`
+           :attr:`WaterBridgeAnalysis.timeseries`
 
         .. versionchanged 0.20.0
            The :attr:`WaterBridgeAnalysis.timeseries` has been updated
@@ -1495,12 +1514,7 @@ class WaterBridgeAnalysis(AnalysisBase):
 
            w = WaterBridgeAnalysis(u)
            w.run()
-           timeseries = w.results.timeseries
-
-
-        .. versionchanged: 2.0.0
-           Deprecated :attr:`WaterBridgeAnalysis.timeseries` in favour of
-           :attr:`WaterBridgeAnalysis.results.timeseries`
+           timeseries = w.timeseries
 
         .. versionchanged 0.20.0
            The :attr:`WaterBridgeAnalysis.timeseries` has been updated where
@@ -1740,7 +1754,7 @@ class WaterBridgeAnalysis(AnalysisBase):
 
         The output format of :attr:`~WaterBridgeAnalysis.table` can also be
         changed using output_format in a fashion similar to
-        :attr:`WaterBridgeAnalysis.results.timeseries`
+        :attr:`WaterBridgeAnalysis.timeseries`
         """
         output_format = output_format or self.output_format
         if self.results.network == []:
