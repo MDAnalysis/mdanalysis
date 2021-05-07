@@ -76,6 +76,14 @@ class Test_Results:
         with pytest.raises(ValueError, match=msg):
             results[key] = None
 
+    @pytest.mark.xfail(reason="conflict in key validation", strict=True)
+    def test_setattr_modify_item(self, results):
+        setattr(results, "myattr", 0)
+        assert results.myattr == 0
+        results["myattr"] = 3
+        assert results.myattr == 3
+
+
 
 class FrameAnalysis(base.AnalysisBase):
     """Just grabs frame numbers of frames it goes over"""
