@@ -70,6 +70,7 @@ PCA class.
 First load all modules and test data
 
 .. code-block:: python
+
     import MDAnalysis as mda
     import MDAnalysis.analysis.pca as pca
     rom MDAnalysis.tests.datafiles import PSF, DCD
@@ -80,6 +81,7 @@ Analyis by using the class :class:`PCA` and retrieving the principal
 components.
 
 .. code-block:: python
+
     u = mda.Universe(PSF, DCD)
     PSF_pca = pca.PCA(u, select='backbone')
     PSF_pca.run()
@@ -93,6 +95,7 @@ components is conveniently stored in the one-dimensional array attribute
 is the sum of the variances from 0 to i.
 
 .. code-block:: python
+
     n_pcs = np.where(PSF_pca.cumulated_variance > 0.95)[0][0]
     atomgroup = u.select_atoms('backbone')
     pca_space = PSF_pca.transform(atomgroup, n_components=n_pcs)
@@ -130,6 +133,7 @@ class PCA(AnalysisBase):
     variance will be available for analysis. As an example:
 
     .. code-block:: python
+
         pca = PCA(universe, select='backbone').run()
         pca_space = pca.transform(universe.select_atoms('backbone'), 3)
 
@@ -166,23 +170,27 @@ class PCA(AnalysisBase):
         The column vector p_components[:, i] is the eigenvector
         corresponding to the variance[i].
 
+        .. versionadded:: 2.0.0
+
     p_components: array, (n_atoms * 3, n_components)
         Alias to the :attr:`results.p_components`.
 
         .. deprecated:: 2.0.0
                 Will be removed in MDAnalysis 3.0.0. Please use
-                :attr:`results.density` instead.
+                :attr:`results.p_components` instead.
 
     results.variance : array (n_components, )
         Raw variance explained by each eigenvector of the covariance
         matrix.
+
+        .. versionadded:: 2.0.0
 
     variance : array (n_components, )
         Alias to the :attr:`results.variance`.
 
         .. deprecated:: 2.0.0
                 Will be removed in MDAnalysis 3.0.0. Please use
-                :attr:`results.density` instead.
+                :attr:`results.variance` instead.
 
     results.cumulated_variance : array, (n_components, )
         Percentage of variance explained by the selected components and the sum
@@ -190,22 +198,26 @@ class PCA(AnalysisBase):
         then all components are stored and the cumulated variance will converge
         to 1.
 
+        .. versionadded:: 2.0.0
+
     cumulated_variance : array, (n_components, )
         Alias to the :attr:`results.cumulated_variance`.
 
         .. deprecated:: 2.0.0
                 Will be removed in MDAnalysis 3.0.0. Please use
-                :attr:`results.density` instead.
+                :attr:`results.cumulated_variance` instead.
 
     results.mean_atoms: MDAnalyis atomgroup
         Atoms used for the creation of the covariance matrix.
+
+        .. versionadded:: 2.0.0
 
     mean_atoms: MDAnalyis atomgroup
         Alias to the :attr:`results.mean_atoms`.
 
         .. deprecated:: 2.0.0
                 Will be removed in MDAnalysis 3.0.0. Please use
-                :attr:`results.density` instead.
+                :attr:`results.mean_atoms` instead.
 
     Methods
     -------
@@ -218,6 +230,9 @@ class PCA(AnalysisBase):
     -----
     Computation can be sped up by supplying a precalculated mean structure.
 
+    .. versionchanged:: 0.19.0
+       The start frame is used when performing selections and calculating
+       mean positions.  Previously the 0th frame was always used.
     .. versionchanged:: 1.0.0
        ``n_components`` now limits the correct axis of ``p_components``.
        ``cumulated_variance`` now accurately represents the contribution of
@@ -226,10 +241,10 @@ class PCA(AnalysisBase):
        ``p_components``, ``cumulated_variance`` will not sum to 1.
        ``align=True`` now correctly aligns the trajectory and computes the
        correct means and covariance matrix.
-
-    .. versionchanged:: 0.19.0
-       The start frame is used when performing selections and calculating
-       mean positions.  Previously the 0th frame was always used.
+    .. versionchanged:: 2.0.0
+        :attr:`p_components`, :attr:`variance`, :attr:`cumulated_variance`
+        and :attr:`mean_atoms` are now stored in a
+        :class:`MDAnalysis.analysis.base.Results` instance.
     """
 
     def __init__(self, universe, select='all', align=False, mean=None,
