@@ -176,7 +176,12 @@ Enhancements
 
 Changes
   * `analysis.diffusionmap.DistanceMatrix` class now stores `dist_matrix`
-    using the `analysis.base.Results` class (Issue #3288)
+    using the `analysis.base.Results` class (Issues #3288, #3290)
+  * `analysis.align.AlignTraj` and `analysis.align.AverageStructure` now store
+    their result attributes using the `analysis.base.Results` class
+    (Issues #3278 and #3261)
+  * `analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalyis` now stores
+    `hbonds` data using the `analysis.base.Results class (Issues #3271, #3261)
   * `analysis.rms.RMSD` and `analysis.rms.RMSF` classes now store `rmsd` and
     `rmsf` data using the `analysis.base.Results` class (Issues #3274 #3261)
   * `analysis.dihedrals` classes now store angle data using the
@@ -240,7 +245,16 @@ Changes
 Deprecations
   * The `analysis.diffusionmap.DistanceMatrix.dist_matrix` is now deprecated in
     favour of `analysis.diffusionmap.DistanceMatrix.results.dist_matrix`. 
-    It will be removed in 3.0.0 (Issue #3288)
+    It will be removed in 3.0.0 (Issues #3288, #3290)
+  * The `analysis.align.AlignTraj.rmsd` attribute is now deprecated in
+    favour of `analysis.align.AlignTraj.results.rmsd` (Issue #3278, #3261)
+  * The `universe`, `positions`, and `rmsd` attributes of
+    `analysis.align.AverageStructure` are now deprecated in favour of
+    `results.universe`, `results.positions`, and `results.rmsd`
+    (Issue #3278, #3261)
+  * The `hbonds` attribute of
+    `hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.hbonds` is now
+    deprecated in favour of `results.hbonds` (Issues #3271, #3261)
   * The `analysis.rms.RMSD.rmsd` and `analysis.rms.RMSF.rmsf` attributes are
     now deprecated in favour of `analysis.rms.RMSD.results.rmsd` and
     `analysis.rms.RMSF.results.rmsf` respectively. They will be removed in
