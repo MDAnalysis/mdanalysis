@@ -175,6 +175,8 @@ Enhancements
     checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
 
 Changes
+  * `analysis.diffusionmap.DistanceMatrix` class now stores `dist_matrix`
+    using the `analysis.base.Results` class (Issue #???)
   * `helix_analysis.HELANAL` now uses the `analysis.base.Results` class to
     store results attributes (Issue #3261, #3267)
   * `analysis.align.AlignTraj` and `analysis.align.AverageStructure` now store
@@ -243,15 +245,12 @@ Changes
   * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
 
 Deprecations
-  * The `analysis.align.AlignTraj.rmsd` attribute is now deprecated in
-    favour of `analysis.align.AlignTraj.results.rmsd` (Issue #3278, #3261)
-  * The `universe`, `positions`, and `rmsd` attributes of
-    `analysis.align.AverageStructure` are now deprecated in favour of
-    `results.universe`, `results.positions`, and `results.rmsd`
-    (Issue #3278, #3261)
-  * The `hbonds` attribute of
-    `hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.hbonds` is now
-    deprecated in favour of `results.hbonds` (Issues #3271, #3261)
+  * The `analysis.diffusionmap.DistanceMatrix.dist_matrix` is now deprecated in
+    favour of `analysis.diffusionmap.DistanceMatrix.results.dist_matrix`. 
+    It will be removed in 3.0.0 (Issue ???)
+  * The `analysis.diffusionmap.DistanceMatrix.dist_matrix` is now deprecated in
+    favour of `analysis.diffusionmap.DistanceMatrix.results.dist_matrix`. 
+    It will be removed in 3.0.0 (Issue ???)
   * The `analysis.rms.RMSD.rmsd` and `analysis.rms.RMSF.rmsf` attributes are
     now deprecated in favour of `analysis.rms.RMSD.results.rmsd` and
     `analysis.rms.RMSF.results.rmsf` respectively. They will be removed in

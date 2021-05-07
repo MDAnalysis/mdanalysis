@@ -25,7 +25,7 @@ import MDAnalysis.analysis.diffusionmap as diffusionmap
 import numpy as np
 import pytest
 from MDAnalysisTests.datafiles import PDB, XTC
-from numpy.testing import assert_array_almost_equal
+from numpy.testing import assert_array_almost_equal, assert_equal
 
 
 @pytest.fixture(scope='module')
@@ -94,3 +94,11 @@ def test_not_universe_error(u):
     trj_only = u.trajectory
     with pytest.raises(ValueError, match='U is not a Universe'):
         diffusionmap.DiffusionMap(trj_only)
+
+
+def test_DistanceMatrix_attr_warning(u):
+     dist = diffusionmap.DistanceMatrix(u,
+                                        select='backbone').run(step=3)
+     wmsg = f"The `dist_matrix` attribute was deprecated in MDAnalysis 2.0.0"
+     with pytest.warns(DeprecationWarning, match=wmsg):
+         assert_equal(getattr(dist, "dist_matrix"), dist.results.dist_matrix)
