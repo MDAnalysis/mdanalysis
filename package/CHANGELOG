@@ -174,6 +174,7 @@ Enhancements
     checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
 
 Changes
+  * The ParmEd classes were moved to the `converters` module (PR #2882)
   * The `convert_to` method of the AtomGroup is now case-insensitive and
     passes keyword arguments to the underlying converter. It can also be used
     as `convert_to.lowercase_pkg_name()` for tab-completion (PR #2882)
@@ -223,6 +224,8 @@ Changes
   * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
 
 Deprecations
+  * In 3.0.0 the ParmEd classes will only be accessible from the
+    `MDAnalysis.converters` module.
   * In 2.1.0 the TRZReader will default to a dt of 1.0 ps when failing to
     read it from the input TRZ trajectory.
 
