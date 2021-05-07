@@ -78,10 +78,26 @@ class Test_Results:
             results[key] = None
 
     def test_setattr_modify_item(self, results):
-        setattr(results, "myattr", 0)
-        assert results.myattr == 0
-        results["myattr"] = 3
-        assert results.myattr == 3
+        mylist = [1, 2]
+        mylist2 = [3, 4]
+        results.myattr = mylist
+        assert results.myattr is mylist
+        results["myattr"] = mylist2
+        assert results.myattr is mylist2
+        mylist2.pop(0)
+        assert len(results.myattr) == 1
+        assert results.myattr is mylist2
+
+    def test_setitem_modify_item(self, results):
+        mylist = [1, 2]
+        mylist2 = [3, 4]
+        results["myattr"] = mylist
+        assert results.myattr is mylist
+        results.myattr = mylist2
+        assert results.myattr is mylist2
+        mylist2.pop(0)
+        assert len(results["myattr"]) == 1
+        assert results["myattr"] is mylist2
 
 
 class FrameAnalysis(base.AnalysisBase):
