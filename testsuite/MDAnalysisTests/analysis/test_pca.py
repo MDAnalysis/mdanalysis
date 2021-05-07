@@ -252,4 +252,4 @@ def test_pca_attr_warning(u, attr):
     pca = PCA(u, select=SELECTION).run(stop=2)
     wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
     with pytest.warns(DeprecationWarning, match=wmsg):
-        assert_equal(getattr(pca, attr), pca.results[attr])
+        getattr(pca, attr) is pca.results[attr]
