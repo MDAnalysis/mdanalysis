@@ -101,7 +101,7 @@ class TestPersistenceLength(object):
         p_run = p.run(step=3)
         wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
-            assert_equal(getattr(p_run, attr), p_run.results[attr])
+            getattr(p_run, attr) is p_run.results[attr]
 
 
 class TestFitExponential(object):
