@@ -624,11 +624,11 @@ class H5MDReader(base.ReaderBase):
         # set the timestep positions, velocities, and forces with
         # current frame dataset
         if self._has['position']:
-            ts.positions = self._get_frame_dataset('position')
+            self._particle_group['position/value'].read_direct(ts.positions, source_sel=np.s_[frame, :])
         if self._has['velocity']:
-            ts.velocities = self._get_frame_dataset('velocity')
+            self._particle_group['velocity/value'].read_direct(ts.velocities, source_sel=np.s_[frame, :])
         if self._has['force']:
-            ts.forces = self._get_frame_dataset('force')
+            self._particle_group['force/value'].read_direct(ts.forces, source_sel=np.s_[frame, :])
 
         if self.convert_units:
             self._convert_units()
