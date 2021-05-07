@@ -177,6 +177,10 @@ Changes
   * `analysis.align.AlignTraj` and `analysis.align.AverageStructure` now store
     their result attributes using the `analysis.base.Results` class
     (Issues #3278 and #3261)
+  * `analysis.rms.RMSD` and `analysis.rms.RMSF` classes now store `rmsd` and
+    `rmsf` data using the `analysis.base.Results` class (Issues #3274 #3261)
+  * `analysis.dihedrals` classes now store angle data using the
+    `results.angles` attribute (Issue #3261)
   * `msd.EinsteinMSD` now uses the `analysis.base.Results` class to store
     analysis results (Issue #3261)
   * `bat.BAT` now uses the `analysis.base.Results` class to store the `bat`
@@ -240,6 +244,13 @@ Deprecations
     `analysis.align.AverageStructure` are now deprecated in favour of
     `results.universe`, `results.positions`, and `results.rmsd`
     (Issue #3278, #3261)
+  * The `analysis.rms.RMSD.rmsd` and `analysis.rms.RMSF.rmsf` attributes are
+    now deprecated in favour of `analysis.rms.RMSD.results.rmsd` and
+    `analysis.rms.RMSF.results.rmsf` respectively. They will be removed in
+    3.0.0 (Issues #3274, #3261)
+  * The `angles` attribute for the `dihedrals` classes (Dihedral,
+    Ramachandran, Janin) is now deprecated in favour of `results.angles`. It
+    will be removed in 3.0.0 (Issue #3261)
   * The `analysis.Contacts.timeseries` attribute is now deprecated in favour of 
     `analysis.Contacts.results.timeseries`. It will be removed in 3.0.0
     (Issue #3261)
