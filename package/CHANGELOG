@@ -23,6 +23,7 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * WaterBridgeAnalysis double counts the water (Issue #3119, PR #3120)
   * NCDFReader now defaults to a dt value of 1.0 ps when it cannot estimate
     it from the first two frames of the file (Issue #3166)
   * Get chi1_selection to match canonical gamma atoms (Issue #2044)
@@ -177,6 +178,14 @@ Changes
   * `hydrogenbonds.WaterBridgeAnalysis` now stores data using the
     `hydrogenbonds.WaterBridgeAnalysis.results` attribute
     (Issue #3261, Issue #3270)
+  * `analysis.rms.RMSD` and `analysis.rms.RMSF` classes now store `rmsd` and
+    `rmsf` data using the `analysis.base.Results` class (Issues #3274 #3261)
+  * `analysis.dihedrals` classes now store angle data using the
+    `results.angles` attribute (Issue #3261)
+  * `msd.EinsteinMSD` now uses the `analysis.base.Results` class to store
+    analysis results (Issue #3261)
+  * `bat.BAT` now uses the `analysis.base.Results` class to store the `bat`
+    results attribute (Issue #3261, #3272)
   * `contacts.Contacts` now stores data using the `Contacts.results.timeseries`
     attribute. `Contacts.timeseries` is now deprecated (Issue #3261)
   * `DensityAnalysis` now uses the `results.density` attribute for storing
@@ -239,6 +248,13 @@ Deprecations
    * The `analysis.Contacts.timeseries` attribute is now deprecated in favour of 
     `analysis.Contacts.results.timeseries`. It will be removed in 3.0.0
     (Issue #3261)
+  * The `analysis.rms.RMSD.rmsd` and `analysis.rms.RMSF.rmsf` attributes are
+    now deprecated in favour of `analysis.rms.RMSD.results.rmsd` and
+    `analysis.rms.RMSF.results.rmsf` respectively. They will be removed in
+    3.0.0 (Issues #3274, #3261)
+  * The `angles` attribute for the `dihedrals` classes (Dihedral,
+    Ramachandran, Janin) is now deprecated in favour of `results.angles`. It
+    will be removed in 3.0.0 (Issue #3261)
   * The `analysis.Contacts.timeseries` attribute is now deprecated in favour of 
     `analysis.Contacts.results.timeseries`. It will be removed in 3.0.0
     (Issue #3261)

@@ -724,6 +724,29 @@ class TestWaterBridgeAnalysis(object):
         timesteps = sorted(wb_multiframe.timesteps_by_type())
         assert_array_equal(timesteps[3], [1, 12, 'ALA', 1, 'H', 'ALA', 6, 'O', 0, 2])
 
+    def test_duplicate_water(self):
+        '''A case #3119 where
+        Acceptor···H−O···H-Donor
+                     |
+                     H···O-H
+        will be recognised as 3rd order water bridge.
+        '''
+        grofile = '''Test gro file
+    7
+    1LEU      O    1   1.876   0.810   1.354
+  117SOL    HW1    2   1.853   0.831   1.162
+  117SOL     OW    3   1.877   0.890   1.081
+  117SOL    HW2    4   1.908   0.828   1.007
+  135SOL     OW    5   1.924   0.713   0.845
+    1LEU      H    6   1.997   0.991   1.194
+    1LEU      N    7   2.041   1.030   1.274
+   2.22092   2.22092   2.22092'''
+        u = MDAnalysis.Universe(StringIO(grofile), format='gro')
+        wb = WaterBridgeAnalysis(u, 'resname LEU and name O',
+                                 'resname LEU and name N H', order=4)
+        wb.run()
+        assert len(wb.timeseries[0]) == 2
+
     def test_warn_results_deprecated(self, universe_DA):
         wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 9)',
                                  'protein and (resid 10)', order=0)

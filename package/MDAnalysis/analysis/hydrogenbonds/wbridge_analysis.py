@@ -1386,7 +1386,8 @@ class WaterBridgeAnalysis(AnalysisBase):
             else:
                 if node in end:
                     # check if any duplication happens
-                    if len(route) == len(set(route)):
+                    heavy_atom = [line[3] or line[2] for line in route]
+                    if len(heavy_atom) == len(set(heavy_atom)):
                         add_route(result, route)
                 else:
                     for new_node in graph[node]:
