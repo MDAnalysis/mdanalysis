@@ -21,12 +21,13 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""AtomGroup accessors --- :mod:`MDAnalysis.lib.accessors`
-=============================================================
+"""AtomGroup accessors --- :mod:`MDAnalysis.converters.accessors`
+====================================================================
 
-This module provides classes for accessing and converting AtomGroup objects. It
-is used for the :meth:`~AtomGroup.convert_to` method to make it usable in two
-different ways: ``ag.convert_to("PACKAGE")`` or ``ag.convert_to.package()``
+This module provides classes for accessing and converting :class:`~MDAnalysis.core.groups.AtomGroup`
+objects. It is used for the :meth:`~MDAnalysis.core.groups.AtomGroup.convert_to`
+method to make it usable in two different ways: ``ag.convert_to("PACKAGE")`` or
+``ag.convert_to.package()``
 
 Example
 -------

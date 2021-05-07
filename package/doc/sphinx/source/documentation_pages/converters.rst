@@ -26,7 +26,7 @@ you will have to specify a package name (case-insensitive). ::
 
     pgro2 = ugro.atoms.convert_to('PARMED')  # converts back to parmed structure
 
-Another syntax is also available for tab-completion::
+Another syntax is also available for tab-completion support::
 
     pgro2 = ugro.atoms.convert_to.parmed()
 
