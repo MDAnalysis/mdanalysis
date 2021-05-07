@@ -81,6 +81,7 @@ Helper functions
 """
 from distutils.version import LooseVersion
 import warnings
+import numpy as np
 
 from . import base
 
@@ -394,7 +395,10 @@ class ChemfilesWriter(base.WriterBase):
 
         lengths = ts.dimensions[:3]
         angles = ts.dimensions[3:]
-        if angles[0] == 0.0 and angles[1] == 0.0 and angles[2] == 0.0:
+
+        # if there is no cell information in this universe, still pass a valid
+        # cell to chemfiles
+        if np.all(ts.dimensions == 0.0):
             angles = [90, 90, 90]
 
         if chemfiles.__version__.startswith("0.9"):
