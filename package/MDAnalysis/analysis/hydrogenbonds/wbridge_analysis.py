@@ -697,6 +697,18 @@ Classes
       .. deprecated:: 2.0.0
          Will be removed in MDAnalysis 3.0.0. Please use
          :attr:`results.hbonds` instead.
+
+    .. attribute:: results.table
+
+      .. versionadded:: 2.0.0
+
+   .. attribute:: table
+
+      Alias to the :attr:`results.table` attribute.
+
+      .. deprecated:: 2.0.0
+         Will be removed in MDAnalysis 3.0.0. Please use
+         :attr:`results.table` instead.
 """
 from collections import defaultdict
 import logging
@@ -1750,10 +1762,10 @@ class WaterBridgeAnalysis(AnalysisBase):
         """Generate a normalised table of the results.
 
         The table is stored as a :class:`numpy.recarray` in the
-        attribute :attr:`~WaterBridgeAnalysis.table`.
+        attribute :attr:`~WaterBridgeAnalysis.results.table`.
 
-        The output format of :attr:`~WaterBridgeAnalysis.table` can also be
-        changed using output_format in a fashion similar to
+        The output format of :attr:`~WaterBridgeAnalysis.results.table` can also
+        be changed using output_format in a fashion similar to
         :attr:`WaterBridgeAnalysis.timeseries`
         """
         output_format = output_format or self.output_format

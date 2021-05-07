@@ -711,12 +711,12 @@ class TestWaterBridgeAnalysis(object):
     def test_generate_table_hba(self, wb_multiframe):
         '''Test generate table using hydrogen bond analysis format'''
         wb_multiframe.generate_table(output_format='donor_acceptor')
-        assert_array_equal(sorted(wb_multiframe.table.donor_resid), [1, 1, 2, 2, 2, 6, 6])
+        assert_array_equal(sorted(wb_multiframe.results.table.donor_resid), [1, 1, 2, 2, 2, 6, 6])
 
     def test_generate_table_s1s2(self, wb_multiframe):
         '''Test generate table using hydrogen bond analysis format'''
         wb_multiframe.generate_table(output_format='sele1_sele2')
-        assert_array_equal(sorted(wb_multiframe.table.sele1_resid), [1, 1, 1, 1, 2, 2, 3])
+        assert_array_equal(sorted(wb_multiframe.results.table.sele1_resid), [1, 1, 1, 1, 2, 2, 3])
 
     def test_timesteps_by_type(self, wb_multiframe):
         '''Test the timesteps_by_type function'''
