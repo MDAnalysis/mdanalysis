@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""AtomGroup accessors --- :mod:`MDAnalysis.converters.accessors`
+"""AtomGroup accessors --- :mod:`MDAnalysis.core.accessors`
 ====================================================================
 
 This module provides classes for accessing and converting :class:`~MDAnalysis.core.groups.AtomGroup`

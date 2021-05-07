@@ -212,7 +212,7 @@ class ParmEdConverter(base.ConverterBase):
             velocities = [None]*ag_or_ts.n_atoms
 
         atom_kwargs = []
-        for atom, name, resname, xyz, vel in zip(ag_or_ts, names, resnames, 
+        for atom, name, resname, xyz, vel in zip(ag_or_ts, names, resnames,
                                                  positions, velocities):
             akwargs = {'name': name}
             chain_seg = {'segid': atom.segid}
@@ -258,7 +258,7 @@ class ParmEdConverter(base.ConverterBase):
                                           akwarg['mass'],
                                           atomic_number=akwargs.get('atomic_number'))
             struct.add_atom(atom, resname, resid, **kw)
-        
+
         try:
             struct.box = ag_or_ts.dimensions
         except AttributeError:
