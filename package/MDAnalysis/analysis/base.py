@@ -31,7 +31,6 @@ from collections import UserDict
 import inspect
 import logging
 import itertools
-import functools
 
 import numpy as np
 from MDAnalysis import coordinates
@@ -85,8 +84,11 @@ class Results(UserDict):
 
     .. versionadded:: 2.0.0
     """
+
+    data = None
+
     def _validate_key(self, key):
-        if key in dir(UserDict) or key == "data":
+        if key in dir(self):
             raise AttributeError(f"'{key}' is a protected dictionary "
                                  "attribute")
         elif isinstance(key, str) and not key.isidentifier():
