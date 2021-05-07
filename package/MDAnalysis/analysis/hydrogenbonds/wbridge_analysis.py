@@ -1528,35 +1528,12 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     timeseries = property(_generate_timeseries)
 
-    def _get_network(self):
-        r'''Network representation of the water network.
-
-        The output is generated per frame as is explained in
-        :ref:`wb_Analysis_Network`. Each hydrogen bond has a compact
-        representation of ::
-
-          [sele1_acceptor_idx, None, sele2_donor_idx, donor_heavy_idx,
-          distance, angle]
-
-        or ::
-
-          [sele1_donor_idx, donor_heavy_idx, sele1_acceptor_idx, None,
-          distance, angle]
-
-        The donor_heavy_idx is the heavy atom bonding to the proton and atoms
-        can be retrived from the universe::
-
-          atom = u.atoms[idx]
-
-        .. versionadded:: 0.20.0
-
-        '''
-        return self.results.network
-
     def set_network(self, network):
+        wmsg = ("The `set_network` method was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.network` instead")
+        warnings.warn(wmsg, DeprecationWarning)
         self.results.network = network
-
-    network = property(_get_network, set_network)
 
     @classmethod
     def _full_link(self, output, node):
@@ -1817,6 +1794,14 @@ class WaterBridgeAnalysis(AnalysisBase):
     @property
     def _network(self):
         wmsg = ("The `_network` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.network` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.network
+
+    @property
+    def network(self):
+        wmsg = ("The `network` attribute was deprecated in MDAnalysis 2.0.0 "
                 "and will be removed in MDAnalysis 3.0.0. Please use "
                 "`results.network` instead")
         warnings.warn(wmsg, DeprecationWarning)
