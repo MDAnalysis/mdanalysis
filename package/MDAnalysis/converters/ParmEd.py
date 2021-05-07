@@ -24,17 +24,17 @@
 """ParmEd structure I/O --- :mod:`MDAnalysis.converters.ParmEd`
 ================================================================
 
-Read coordinates data from a `ParmEd <https://parmed.github.io/ParmEd/html>`_ :class:`parmed.structure.Structure` with :class:`ParmEdReader` 
-into a MDAnalysis Universe. Convert it back to a :class:`parmed.structure.Structure` with 
-:class:`ParmEdConverter`.
+Read coordinates data from a `ParmEd <https://parmed.github.io/ParmEd/html>`_ :class:`parmed.structure.Structure`
+with :class:`ParmEdReader` into a MDAnalysis Universe. Convert it back to a
+:class:`parmed.structure.Structure` with :class:`ParmEdConverter`.
 
 Example
 -------
 
-ParmEd has some neat functions. One such is `HMassRepartition`_. 
-This function changes the mass of the hydrogens in your system to your 
-desired value. It then adjusts the mass of the atom to which it is 
-bonded by the same amount, so that the total mass is unchanged. ::
+ParmEd has some neat functions. One such is `HMassRepartition`_.
+This function changes the mass of the hydrogens in your system to your desired
+value. It then adjusts the mass of the atom to which it is bonded by the same
+amount, so that the total mass is unchanged. ::
 
     >>> import MDAnalysis as mda
     >>> from MDAnalysis.tests.datafiles import PRM
@@ -43,7 +43,8 @@ bonded by the same amount, so that the total mass is unchanged. ::
     array([14.01 ,  1.008,  1.008,  1.008, 12.01 ,  1.008, 12.01 ,  1.008,
         1.008,  1.008])
 
-We can convert our universe to a ParmEd structure to change our hydrogen masses. ::
+We can convert our universe to a ParmEd structure to change our hydrogen
+masses. ::
 
     >>> import parmed.tools as pmt
     >>> parm = u.atoms.convert_to('PARMED')
@@ -112,7 +113,7 @@ class ParmEdReader(base.SingleFrameReaderBase):
 
         self.ts = ts = self._Timestep(self.n_atoms,
                                       **self._ts_kwargs)
-        
+
         if self.filename.coordinates is not None:
             ts._pos = self.filename.coordinates
 
@@ -135,8 +136,10 @@ MDA2PMD = {
     'id': 'number'
 }
 
+
 def get_indices_from_subset(i, atomgroup=None, universe=None):
     return atomgroup[universe.atoms[i]]
+
 
 class ParmEdConverter(base.ConverterBase):
     """Convert MDAnalysis AtomGroup or Universe to ParmEd :class:`~parmed.structure.Structure`.
@@ -153,7 +156,7 @@ class ParmEdConverter(base.ConverterBase):
         mgro = mda.Universe(pgro)
         parmed_subset = mgro.select_atoms('resname SOL').convert_to('PARMED')
 
-        
+
     """
 
     lib = 'PARMED'
@@ -190,22 +193,22 @@ class ParmEdConverter(base.ConverterBase):
         except (AttributeError, NoDataError):
             resnames = itertools.cycle(('UNK',))
             missing_topology.append('resnames')
-        
+
         if missing_topology:
             warnings.warn(
                 "Supplied AtomGroup was missing the following attributes: "
                 "{miss}. These will be written with default values. "
                 "Alternatively these can be supplied as keyword arguments."
                 "".format(miss=', '.join(missing_topology)))
-        
+
         try:
             positions = ag_or_ts.positions
-        except:
+        except (AttributeError, NoDataError):
             positions = [None]*ag_or_ts.n_atoms
-        
+
         try:
             velocities = ag_or_ts.velocities
-        except:
+        except (AttributeError, NoDataError):
             velocities = [None]*ag_or_ts.n_atoms
 
         atom_kwargs = []
@@ -240,7 +243,6 @@ class ParmEdConverter(base.ConverterBase):
             except AttributeError:
                 pass
             atom_kwargs.append((akwargs, resname, atom.resid, chain_seg, xyz, vel))
-        
 
         struct = pmd.Structure()
 
@@ -252,7 +254,7 @@ class ParmEdConverter(base.ConverterBase):
             if vel is not None:
                 atom.vx, atom.vy, atom.vz = vel
 
-            atom.atom_type = pmd.AtomType(akwarg['name'], None, 
+            atom.atom_type = pmd.AtomType(akwarg['name'], None,
                                           akwarg['mass'],
                                           atomic_number=akwargs.get('atomic_number'))
             struct.add_atom(atom, resname, resid, **kw)
@@ -270,7 +272,7 @@ class ParmEdConverter(base.ConverterBase):
                                                  universe=ag_or_ts.universe)
         else:
             get_atom_indices = lambda x: x
-        
+
         # bonds
         try:
             params = ag_or_ts.intra_bonds
@@ -278,7 +280,8 @@ class ParmEdConverter(base.ConverterBase):
             pass
         else:
             for p in params:
-                atoms = [struct.atoms[i] for i in map(get_atom_indices, p.indices)]
+                atoms = [struct.atoms[i] for i in map(get_atom_indices,
+                                                      p.indices)]
                 try:
                     for obj in p.type:
                         bond = pmd.Bond(*atoms, type=obj.type, order=obj.order)
@@ -298,13 +301,14 @@ class ParmEdConverter(base.ConverterBase):
 
         # dihedrals
         try:
-            params = ag_or_ts.dihedrals.atomgroup_intersection(ag_or_ts, 
+            params = ag_or_ts.dihedrals.atomgroup_intersection(ag_or_ts,
                                                                strict=True)
         except AttributeError:
             pass
         else:
             for p in params:
-                atoms = [struct.atoms[i] for i in map(get_atom_indices, p.indices)]
+                atoms = [struct.atoms[i] for i in map(get_atom_indices,
+                                                      p.indices)]
                 try:
                     for obj in p.type:
                         imp = getattr(obj, 'improper', False)
@@ -320,7 +324,7 @@ class ParmEdConverter(base.ConverterBase):
                     imp = getattr(p.type, 'improper', False)
                     ign = getattr(p.type, 'ignore_end', False)
                     dih = pmd.Dihedral(*atoms, type=btype,
-                                        improper=imp, ignore_end=ign)
+                                       improper=imp, ignore_end=ign)
                     struct.dihedrals.append(dih)
                     if isinstance(dih.type, pmd.DihedralType):
                         struct.dihedral_types.append(dih.type)
@@ -339,7 +343,8 @@ class ParmEdConverter(base.ConverterBase):
                 pass
             else:
                 for v in values:
-                    atoms = [struct.atoms[i] for i in map(get_atom_indices, v.indices)]
+                    atoms = [struct.atoms[i] for i in map(get_atom_indices,
+                                                          v.indices)]
 
                     try:
                         for parmed_obj in v.type:

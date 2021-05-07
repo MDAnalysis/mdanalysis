@@ -82,7 +82,8 @@ Classes
    :inherited-members:
 
 .. versionchanged:: 2.0.0
-   The ParmEdParser class was moved from :mod:`~MDAnalysis.topology` to :mod:`~MDAnalysis.converters`
+   The ParmEdParser class was moved from :mod:`~MDAnalysis.topology` to
+   :mod:`~MDAnalysis.converters`
 
 """
 import logging
