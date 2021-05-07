@@ -496,7 +496,7 @@ it is used. The output file format is determined by the file extension of
 current frame.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.0.0: </span><code class="docutils literal notranslate"><span class="pre">save()</span></code> has now been removed, as an alternative use <code class="docutils literal notranslate"><span class="pre">np.savetxt()</span></code>
-on <a class="reference internal" href="#MDAnalysis.analysis.align.AlignTraj.rmsd" title="MDAnalysis.analysis.align.AlignTraj.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rmsd</span></code></a>.</p>
+on <a class="reference internal" href="#MDAnalysis.analysis.align.AlignTraj.results.rmsd" title="MDAnalysis.analysis.align.AlignTraj.results.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rmsd</span></code></a>.</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -561,15 +561,36 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.analysis.align.AlignTraj.rmsd">
-<code class="descname">rmsd</code><a class="headerlink" href="#MDAnalysis.analysis.align.AlignTraj.rmsd" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.analysis.align.AlignTraj.results.rmsd">
+<code class="descclassname">results.</code><code class="descname">rmsd</code><a class="headerlink" href="#MDAnalysis.analysis.align.AlignTraj.results.rmsd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Array of the rmsd values of the least rmsd between the mobile_atoms
 and reference_atoms after superposition and minimimization of rmsd</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">Array</td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.align.AlignTraj.rmsd">
+<code class="descname">rmsd</code><a class="headerlink" href="#MDAnalysis.analysis.align.AlignTraj.rmsd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.align.AlignTraj.results.rmsd" title="MDAnalysis.analysis.align.AlignTraj.results.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rmsd</span></code></a> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.align.AlignTraj.results.rmsd" title="MDAnalysis.analysis.align.AlignTraj.results.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rmsd</span></code></a> instead.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></td>
 </tr>
 </tbody>
 </table>
@@ -620,6 +641,10 @@ already a <code class="xref py py-class docutils literal notranslate"><span clas
 <p><span class="versionmodified">Changed in version 1.0.0: </span>Support for the <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, and <code class="docutils literal notranslate"><span class="pre">step</span></code> keywords has been
 removed. These should instead be passed to <code class="xref py py-meth docutils literal notranslate"><span class="pre">AlignTraj.run()</span></code>.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span><a class="reference internal" href="#MDAnalysis.analysis.align.AlignTraj.rmsd" title="MDAnalysis.analysis.align.AlignTraj.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rmsd</span></code></a> results are now stored in a
+<a class="reference internal" href="base.html#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.Results</span></code></a> instance.</p>
+</div>
 </dd></dl>
 
 <dl class="class">
@@ -642,7 +667,7 @@ current frame.</p>
 
 <span class="c1"># align to the third frame and average structure</span>
 <span class="n">av</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">AverageStructure</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">ref_frame</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="n">averaged_universe</span> <span class="o">=</span> <span class="n">av</span><span class="o">.</span><span class="n">universe</span>
+<span class="n">averaged_universe</span> <span class="o">=</span> <span class="n">av</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">universe</span>
 </pre></div>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
@@ -707,23 +732,47 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.analysis.align.AverageStructure.universe">
-<code class="descname">universe</code><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.universe" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.analysis.align.AverageStructure.results.universe">
+<code class="descclassname">results.</code><code class="descname">universe</code><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.results.universe" title="Permalink to this definition">¶</a></dt>
 <dd><p>New Universe with average positions</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">mda.Universe</td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code></td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.analysis.align.AverageStructure.positions">
-<code class="descname">positions</code><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.positions" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.analysis.align.AverageStructure.universe">
+<code class="descname">universe</code><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.universe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.align.AverageStructure.results.universe" title="MDAnalysis.analysis.align.AverageStructure.results.universe"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.universe</span></code></a> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.align.AverageStructure.results.universe" title="MDAnalysis.analysis.align.AverageStructure.results.universe"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.universe</span></code></a> instead.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.align.AverageStructure.results.positions">
+<code class="descclassname">results.</code><code class="descname">positions</code><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.results.positions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Average positions</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -735,9 +784,48 @@ the calculation if set to <code class="docutils literal notranslate"><span class
 </dd></dl>
 
 <dl class="attribute">
+<dt id="MDAnalysis.analysis.align.AverageStructure.positions">
+<code class="descname">positions</code><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.align.AverageStructure.results.positions" title="MDAnalysis.analysis.align.AverageStructure.results.positions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.positions</span></code></a> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.align.AverageStructure.results.positions" title="MDAnalysis.analysis.align.AverageStructure.results.positions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.positions</span></code></a> instead.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">np.ndarray(dtype=float)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.align.AverageStructure.results.rmsd">
+<code class="descclassname">results.</code><code class="descname">rmsd</code><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.results.rmsd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Average RMSD per frame</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="MDAnalysis.analysis.align.AverageStructure.rmsd">
 <code class="descname">rmsd</code><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.rmsd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Average RMSD per frame</p>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.align.AverageStructure.results.rmsd" title="MDAnalysis.analysis.align.AverageStructure.results.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rmsd</span></code></a> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.align.AverageStructure.results.rmsd" title="MDAnalysis.analysis.align.AverageStructure.results.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rmsd</span></code></a> instead.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -776,6 +864,10 @@ already a <code class="xref py py-class docutils literal notranslate"><span clas
 </ul>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 1.0.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span><a class="reference internal" href="#MDAnalysis.analysis.align.AverageStructure.universe" title="MDAnalysis.analysis.align.AverageStructure.universe"><code class="xref py py-attr docutils literal notranslate"><span class="pre">universe</span></code></a>, <a class="reference internal" href="#MDAnalysis.analysis.align.AverageStructure.positions" title="MDAnalysis.analysis.align.AverageStructure.positions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">positions</span></code></a>, and <a class="reference internal" href="#MDAnalysis.analysis.align.AverageStructure.rmsd" title="MDAnalysis.analysis.align.AverageStructure.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rmsd</span></code></a> are now
+stored in a <a class="reference internal" href="base.html#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.Results</span></code></a> instance.</p>
 </div>
 </dd></dl>
 

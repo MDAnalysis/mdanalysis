@@ -719,7 +719,7 @@
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       ``save()`` has now been removed, as an alternative use ``np.savetxt()``</span>
-<span class="sd">       on :attr:`rmsd`.</span>
+<span class="sd">       on :attr:`results.rmsd`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -773,9 +773,19 @@
 <span class="sd">            Atoms of the reference structure to be aligned against</span>
 <span class="sd">        mobile_atoms : AtomGroup</span>
 <span class="sd">            Atoms inside each trajectory frame to be rmsd_aligned</span>
-<span class="sd">        rmsd : Array</span>
+<span class="sd">        results.rmsd : :class:`numpy.ndarray`</span>
 <span class="sd">            Array of the rmsd values of the least rmsd between the mobile_atoms</span>
 <span class="sd">            and reference_atoms after superposition and minimimization of rmsd</span>
+
+<span class="sd">            .. versionadded:: 2.0.0</span>
+
+<span class="sd">        rmsd : :class:`numpy.ndarray`</span>
+<span class="sd">            Alias to the :attr:`results.rmsd` attribute.</span>
+
+<span class="sd">            .. deprecated:: 2.0.0</span>
+<span class="sd">               Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">               :attr:`results.rmsd` instead.</span>
+
 <span class="sd">        filename : str</span>
 <span class="sd">            String reflecting the filename of the file where the aligned</span>
 <span class="sd">            positions will be written to upon running RMSD alignment</span>
@@ -810,6 +820,10 @@
 <span class="sd">        .. versionchanged:: 1.0.0</span>
 <span class="sd">           Support for the ``start``, ``stop``, and ``step`` keywords has been</span>
 <span class="sd">           removed. These should instead be passed to :meth:`AlignTraj.run`.</span>
+
+<span class="sd">        .. versionchanged:: 2.0.0</span>
+<span class="sd">           :attr:`rmsd` results are now stored in a</span>
+<span class="sd">           :class:`MDAnalysis.analysis.base.Results` instance.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">select</span> <span class="o">=</span> <span class="n">rms</span><span class="o">.</span><span class="n">process_selection</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
@@ -861,24 +875,33 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_ref_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_weights</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ref_coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref_com</span>
         <span class="c1"># allocate the array for selection atom coords</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rmsd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,))</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span>
         <span class="n">mobile_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_weights</span><span class="p">)</span>
         <span class="n">mobile_coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">mobile_com</span>
-        <span class="n">mobile_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmsd</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">_fit_to</span><span class="p">(</span><span class="n">mobile_coordinates</span><span class="p">,</span>
-                                                 <span class="bp">self</span><span class="o">.</span><span class="n">_ref_coordinates</span><span class="p">,</span>
-                                                 <span class="bp">self</span><span class="o">.</span><span class="n">mobile</span><span class="p">,</span>
-                                                 <span class="n">mobile_com</span><span class="p">,</span>
-                                                 <span class="bp">self</span><span class="o">.</span><span class="n">_ref_com</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weights</span><span class="p">)</span>
+        <span class="n">mobile_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsd</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">_fit_to</span><span class="p">(</span>
+                <span class="n">mobile_coordinates</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ref_coordinates</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mobile</span><span class="p">,</span>
+                <span class="n">mobile_com</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ref_com</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weights</span><span class="p">)</span>
         <span class="c1"># write whole aligned input trajectory system</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">mobile_atoms</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">NOTSET</span><span class="p">)</span></div>
+            <span class="n">logging</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">NOTSET</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rmsd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `rmsd` attribute was deprecated in MDAnalysis 2.0.0 and &quot;</span>
+                <span class="s2">&quot;will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
+                <span class="s2">&quot;`results.rmsd` instead.&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsd</span></div>
 
 
 <div class="viewcode-block" id="AverageStructure"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.AverageStructure">[docs]</a><span class="k">class</span> <span class="nc">AverageStructure</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
@@ -906,7 +929,7 @@
 
 <span class="sd">        # align to the third frame and average structure</span>
 <span class="sd">        av = align.AverageStructure(u, ref_frame=3).run()</span>
-<span class="sd">        averaged_universe = av.universe</span>
+<span class="sd">        averaged_universe = av.results.universe</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -959,12 +982,42 @@
 <span class="sd">            Atoms of the reference structure to be aligned against</span>
 <span class="sd">        mobile_atoms : AtomGroup</span>
 <span class="sd">            Atoms inside each trajectory frame to be rmsd_aligned</span>
-<span class="sd">        universe : mda.Universe</span>
+<span class="sd">        results.universe : :class:`MDAnalysis.Universe`</span>
 <span class="sd">            New Universe with average positions</span>
-<span class="sd">        positions : np.ndarray(dtype=float)</span>
+
+<span class="sd">            .. versionadded:: 2.0.0</span>
+
+<span class="sd">        universe : :class:`MDAnalysis.Universe`</span>
+<span class="sd">            Alias to the :attr:`results.universe` attribute.</span>
+
+<span class="sd">            .. deprecated:: 2.0.0</span>
+<span class="sd">               Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">               :attr:`results.universe` instead.</span>
+
+<span class="sd">        results.positions : np.ndarray(dtype=float)</span>
 <span class="sd">            Average positions</span>
-<span class="sd">        rmsd : float</span>
+
+<span class="sd">            .. versionadded:: 2.0.0</span>
+
+<span class="sd">        positions : np.ndarray(dtype=float)</span>
+<span class="sd">            Alias to the :attr:`results.positions` attribute.</span>
+
+<span class="sd">            .. deprecated:: 2.0.0</span>
+<span class="sd">               Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">               :attr:`results.positions` instead.</span>
+
+<span class="sd">        results.rmsd : float</span>
 <span class="sd">            Average RMSD per frame</span>
+
+<span class="sd">            .. versionadded:: 2.0.0</span>
+
+<span class="sd">        rmsd : float</span>
+<span class="sd">            Alias to the :attr:`results.rmsd` attribute.</span>
+
+<span class="sd">            .. deprecated:: 2.0.0</span>
+<span class="sd">               Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">               :attr:`results.rmsd` instead.</span>
+
 <span class="sd">        filename : str</span>
 <span class="sd">            String reflecting the filename of the file where the average</span>
 <span class="sd">            structure is written</span>
@@ -983,6 +1036,9 @@
 
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
+<span class="sd">        .. versionchanged:: 2.0.0</span>
+<span class="sd">           :attr:`universe`, :attr:`positions`, and :attr:`rmsd` are now</span>
+<span class="sd">           stored in a :class:`MDAnalysis.analysis.base.Results` instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">in_memory</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mobile</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">MemoryReader</span><span class="p">):</span>
             <span class="n">mobile</span><span class="o">.</span><span class="n">transfer_to_memory</span><span class="p">()</span>
@@ -1016,9 +1072,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_frame</span> <span class="o">=</span> <span class="n">ref_frame</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Merge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Merge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">)</span>
 
-        <span class="n">natoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+        <span class="n">natoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">get_matching_atoms</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="n">tol_mass</span><span class="p">,</span>
             <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">,</span> <span class="n">match_atoms</span><span class="o">=</span><span class="n">match_atoms</span><span class="p">)</span>
@@ -1047,27 +1103,52 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">current_frame</span><span class="p">]</span>
 
         <span class="c1"># allocate the array for selection atom coords</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rmsd</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsd</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">mobile_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_weights</span><span class="p">)</span>
         <span class="n">mobile_coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">mobile_com</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rmsd</span> <span class="o">+=</span> <span class="n">_fit_to</span><span class="p">(</span><span class="n">mobile_coordinates</span><span class="p">,</span>
-                             <span class="bp">self</span><span class="o">.</span><span class="n">_ref_coordinates</span><span class="p">,</span>
-                             <span class="bp">self</span><span class="o">.</span><span class="n">mobile</span><span class="p">,</span>
-                             <span class="n">mobile_com</span><span class="p">,</span>
-                             <span class="bp">self</span><span class="o">.</span><span class="n">_ref_com</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weights</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">positions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsd</span> <span class="o">+=</span> <span class="n">_fit_to</span><span class="p">(</span><span class="n">mobile_coordinates</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">_ref_coordinates</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">mobile</span><span class="p">,</span>
+                                     <span class="n">mobile_com</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">_ref_com</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weights</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">positions</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">positions</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rmsd</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">load_new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">positions</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsd</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">load_new</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">NOTSET</span><span class="p">)</span></div>
+            <span class="n">logging</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">NOTSET</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">universe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `universe` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
+                <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
+                <span class="s2">&quot;`results.universe` instead.&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">universe</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">positions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `positions` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
+                <span class="s2">&quot;and will be removed in MDAnalyssi 3.0.0. Please use &quot;</span>
+                <span class="s2">&quot;`results.positions` instead.&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">positions</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rmsd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `rmsd` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
+                <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
+                <span class="s2">&quot;`results.rmsd` instead.&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsd</span></div>
 
 
 <div class="viewcode-block" id="sequence_alignment"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.sequence_alignment">[docs]</a><span class="k">def</span> <span class="nf">sequence_alignment</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">match_score</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mismatch_penalty</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
