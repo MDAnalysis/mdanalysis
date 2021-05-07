@@ -104,6 +104,12 @@ class Test_Results:
         delattr(results, "a")
         assert not hasattr(results, "a")
 
+    def test_missing_delattr(self, results):
+        assert not hasattr(results, "d")
+        msg = "'Results' object has no attribute 'd'"
+        with pytest.raises(AttributeError, match=msg):
+            delattr(results, "d")
+
     def test_pop(self, results):
         assert hasattr(results, "a")
         results.pop("a")
