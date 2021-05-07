@@ -907,10 +907,6 @@ class WaterBridgeAnalysis(AnalysisBase):
         consider setting the `update_selection` keywords to ``True``
         to ensure correctness.
 
-        .. versionchanged: 2.0.0
-           Deprecated :attr:`WaterBridgeAnalysis.timeseries` in favour of
-           :attr:`WaterBridgeAnalysis.timeseries`
-
         .. versionchanged 0.20.0
            The :attr:`WaterBridgeAnalysis.timeseries` has been updated
            see :attr:`WaterBridgeAnalysis.timeseries` for detail.
