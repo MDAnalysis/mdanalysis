@@ -448,7 +448,7 @@ class InterRDF_s(AnalysisBase):
 
             for j, (idx1, idx2) in enumerate(pairs):
                 self.count[i][idx1, idx2, :] += np.histogram(dist[j],
-                                                    **self.rdf_settings)[0]
+                    **self.rdf_settings)[0]
 
         self.volume += self._ts.volume
 
@@ -473,8 +473,7 @@ class InterRDF_s(AnalysisBase):
             if self._density:
                 rdf.append(self.count[i] / (vol * self.n_frames))
             else:
-                rdf.append(self.count[i] /
-                    (density * vol * self.n_frames))
+                rdf.append(self.count[i] / (density * vol * self.n_frames))
 
         self.results.rdf = rdf
         self.results.indices = indices

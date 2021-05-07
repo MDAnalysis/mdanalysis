@@ -90,6 +90,7 @@ def test_exclusion(sels):
     rdf = InterRDF(s1, s2, exclusion_block=(1, 2)).run()
     assert rdf.count.sum() == 4
 
+
 def test_rdf_attr_warning(sels):
     s1, s2 = sels
     rdf = InterRDF(s1, s2).run()

@@ -119,6 +119,7 @@ def test_density(u, sels, density, value):
         rdf_ref = InterRDF(s1, s2).run()
         assert_almost_equal(rdf_ref.results.rdf, rdf.results.rdf[0][0][0])
 
+
 def test_rdf_attr_warning(rdf):
     wmsg = "The `rdf` attribute was deprecated in MDAnalysis 2.0.0"
     with pytest.warns(DeprecationWarning, match=wmsg):
@@ -128,7 +129,7 @@ def test_rdf_attr_warning(rdf):
     with pytest.warns(DeprecationWarning, match=wmsg):
         assert_equal(rdf.bins, rdf.results.bins)
 
-    cdf.get_cdf()
+    rdf.get_cdf()
     wmsg = "The `bins` attribute was deprecated in MDAnalysis 2.0.0"
     with pytest.warns(DeprecationWarning, match=wmsg):
         assert_equal(rdf.cdf, rdf.results.cdf)
