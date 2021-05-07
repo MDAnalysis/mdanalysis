@@ -57,8 +57,8 @@ def test_range(u):
     rmin, rmax = 1.0, 13.0
     rdf = InterRDF(s1, s2, range=(rmin, rmax)).run()
 
-    assert rdf.edges[0] == rmin
-    assert rdf.edges[-1] == rmax
+    assert rdf.results.edges[0] == rmin
+    assert rdf.results.edges[-1] == rmax
 
 
 def test_count_sum(sels):
@@ -66,14 +66,14 @@ def test_count_sum(sels):
     # should see 8 comparisons in count
     s1, s2 = sels
     rdf = InterRDF(s1, s2).run()
-    assert rdf.count.sum() == 8
+    assert rdf.results.count.sum() == 8
 
 
 def test_count(sels):
     # should see two distances with 4 counts each
     s1, s2 = sels
     rdf = InterRDF(s1, s2).run()
-    assert len(rdf.count[rdf.count == 4]) == 2
+    assert len(rdf.results.count[rdf.results.count == 4]) == 2
 
 
 def test_double_run(sels):
@@ -81,14 +81,14 @@ def test_double_run(sels):
     s1, s2 = sels
     rdf = InterRDF(s1, s2).run()
     rdf.run()
-    assert len(rdf.count[rdf.count == 4]) == 2
+    assert len(rdf.results.count[rdf.results.count == 4]) == 2
 
 
 def test_exclusion(sels):
     # should see two distances with 4 counts each
     s1, s2 = sels
     rdf = InterRDF(s1, s2, exclusion_block=(1, 2)).run()
-    assert rdf.count.sum() == 4
+    assert rdf.results.count.sum() == 4
 
 
 def test_rdf_attr_warning(sels):
@@ -102,3 +102,11 @@ def test_rdf_attr_warning(sels):
     wmsg = "The `bins` attribute was deprecated in MDAnalysis 2.0.0"
     with pytest.warns(DeprecationWarning, match=wmsg):
         assert_equal(rdf.bins, rdf.results.bins)
+
+    wmsg = "The `edges` attribute was deprecated in MDAnalysis 2.0.0"
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        assert_equal(rdf.edges, rdf.results.edges)
+
+    wmsg = "The `count` attribute was deprecated in MDAnalysis 2.0.0"
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        assert_equal(rdf.count, rdf.results.count)

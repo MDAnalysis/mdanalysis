@@ -269,8 +269,8 @@ class InterRDF(AnalysisBase):
         count, edges = np.histogram([-1], **self.rdf_settings)
         count = count.astype(np.float64)
         count *= 0.0
-        self.count = count
-        self.edges = edges
+        self.results.count = count
+        self.results.edges = edges
         self.results.bins = 0.5 * (edges[:-1] + edges[1:])
 
         # Need to know average volume
@@ -292,7 +292,7 @@ class InterRDF(AnalysisBase):
 
 
         count = np.histogram(dist, **self.rdf_settings)[0]
-        self.count += count
+        self.results.count += count
 
         self.volume += self._ts.volume
 
@@ -309,16 +309,32 @@ class InterRDF(AnalysisBase):
             N -= xA * xB * nblocks
 
         # Volume in each radial shell
-        vols = np.power(self.edges, 3)
-        vol = 4/3.0 * np.pi * (vols[1:] - vols[:-1])
+        vols = np.power(self.results.edges, 3)
+        vol = 4/3 * np.pi * (vols[1:] - vols[:-1])
 
         # Average number density
         box_vol = self.volume / self.n_frames
         density = N / box_vol
 
-        rdf = self.count / (density * vol * self.n_frames)
+        rdf = self.results.count / (density * vol * self.n_frames)
 
         self.results.rdf = rdf
+
+    @property
+    def edges(self):
+        wmsg = ("The `edges` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.bins` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.edges
+
+    @property
+    def count(self):
+        wmsg = ("The `count` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.bins` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.count
 
     @property
     def bins(self):
@@ -426,18 +442,14 @@ class InterRDF_s(AnalysisBase):
         # Empty list to store the RDF
         count_list = []
         count, edges = np.histogram([-1], **self.rdf_settings)
-        l = len(count)
-        count_ini = [np.zeros((ag1.n_atoms, ag2.n_atoms, l), dtype=np.float64)
-                         for ag1, ag2 in self.ags]
-
-        self.count = count_ini
-        self.edges = edges
+        self.results.count  = [np.zeros((ag1.n_atoms, ag2.n_atoms, len(count)),
+                         dtype=np.float64) for ag1, ag2 in self.ags]
+        self.results.edges = edges
         self.results.bins = 0.5 * (edges[:-1] + edges[1:])
 
         # Need to know average volume
         self.volume = 0.0
         self._maxrange = self.rdf_settings['range'][1]
-
 
     def _single_frame(self):
         for i, (ag1, ag2) in enumerate(self.ags):
@@ -447,16 +459,15 @@ class InterRDF_s(AnalysisBase):
                                                     box=self.u.dimensions)
 
             for j, (idx1, idx2) in enumerate(pairs):
-                self.count[i][idx1, idx2, :] += np.histogram(dist[j],
+                self.results.count[i][idx1, idx2, :] += np.histogram(dist[j],
                     **self.rdf_settings)[0]
 
         self.volume += self._ts.volume
 
-
     def _conclude(self):
         # Volume in each radial shell
-        vols = np.power(self.edges, 3)
-        vol = 4/3.0 * np.pi * (vols[1:] - vols[:-1])
+        vols = np.power(self.results.edges, 3)
+        vol = 4/3 * np.pi * (vols[1:] - vols[:-1])
 
         # Empty lists to restore indices, RDF
         indices = []
@@ -471,9 +482,10 @@ class InterRDF_s(AnalysisBase):
             density = 1 / box_vol
 
             if self._density:
-                rdf.append(self.count[i] / (vol * self.n_frames))
+                rdf.append(self.results.count[i] / (vol * self.n_frames))
             else:
-                rdf.append(self.count[i] / (density * vol * self.n_frames))
+                rdf.append(
+                    self.results.count[i] / (density * vol * self.n_frames))
 
         self.results.rdf = rdf
         self.results.indices = indices
@@ -498,7 +510,7 @@ class InterRDF_s(AnalysisBase):
         # Empty list to restore CDF
         cdf = []
 
-        for count in self.count:
+        for count in self.results.count:
             cdf.append(np.cumsum(count, axis=2) / self.n_frames)
 
         # Results stored in self.cdf
@@ -506,6 +518,22 @@ class InterRDF_s(AnalysisBase):
         self.results.cdf = cdf
 
         return cdf
+
+    @property
+    def edges(self):
+        wmsg = ("The `edges` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.bins` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.edges
+
+    @property
+    def count(self):
+        wmsg = ("The `count` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.bins` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.count
 
     @property
     def bins(self):

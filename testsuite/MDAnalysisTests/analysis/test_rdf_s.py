@@ -61,46 +61,46 @@ def test_range(u, sels):
     rmin, rmax = 1.0, 13.0
     rdf = InterRDF_s(u, sels, range=(rmin, rmax)).run()
 
-    assert rdf.edges[0] == rmin
-    assert rdf.edges[-1] == rmax
+    assert rdf.results.edges[0] == rmin
+    assert rdf.results.edges[-1] == rmax
 
 
 def test_count_size(rdf):
     # ZND vs OD1 & OD2
-    # should see 2 elements in rdf.count
-    # 1 element in rdf.count[0]
-    # 2 elements in rdf.count[0][0]
-    # 2 elements in rdf.count[1]
-    # 2 elements in rdf.count[1][0]
-    # 2 elements in rdf.count[1][1]
-    assert len(rdf.count) == 2
-    assert len(rdf.count[0]) == 1
-    assert len(rdf.count[0][0]) == 2
-    assert len(rdf.count[1]) == 2
-    assert len(rdf.count[1][0]) == 2
-    assert len(rdf.count[1][1]) == 2
+    # should see 2 elements in rdf.results.count
+    # 1 element in rdf.results.count[0]
+    # 2 elements in rdf.results.count[0][0]
+    # 2 elements in rdf.results.count[1]
+    # 2 elements in rdf.results.count[1][0]
+    # 2 elements in rdf.results.count[1][1]
+    assert len(rdf.results.count) == 2
+    assert len(rdf.results.count[0]) == 1
+    assert len(rdf.results.count[0][0]) == 2
+    assert len(rdf.results.count[1]) == 2
+    assert len(rdf.results.count[1][0]) == 2
+    assert len(rdf.results.count[1][1]) == 2
 
 
 def test_count(rdf):
     # should see one distance with 5 counts in count[0][0][1]
     # should see one distance with 3 counts in count[1][1][0]
-    sel0 = rdf.count[0][0][1] == 5
-    sel1 = rdf.count[1][1][0] == 3
-    assert len(rdf.count[0][0][1][sel0]) == 1
-    assert len(rdf.count[1][1][0][sel1]) == 1
+    sel0 = rdf.results.count[0][0][1] == 5
+    sel1 = rdf.results.count[1][1][0] == 3
+    assert len(rdf.results.count[0][0][1][sel0]) == 1
+    assert len(rdf.results.count[1][1][0][sel1]) == 1
 
 
 def test_double_run(rdf):
     # running rdf twice should give the same result
-    sel0 = rdf.count[0][0][1] == 5
-    sel1 = rdf.count[1][1][0] == 3
-    assert len(rdf.count[0][0][1][sel0]) == 1
-    assert len(rdf.count[1][1][0][sel1]) == 1
+    sel0 = rdf.results.count[0][0][1] == 5
+    sel1 = rdf.results.count[1][1][0] == 3
+    assert len(rdf.results.count[0][0][1][sel0]) == 1
+    assert len(rdf.results.count[1][1][0][sel1]) == 1
 
 
 def test_cdf(rdf):
     rdf.get_cdf()
-    ref = rdf.count[0][0][0].sum()/rdf.n_frames
+    ref = rdf.results.count[0][0][0].sum()/rdf.n_frames
     assert rdf.results.cdf[0][0][0][-1] == ref
 
 
@@ -129,6 +129,14 @@ def test_rdf_attr_warning(rdf):
     with pytest.warns(DeprecationWarning, match=wmsg):
         assert_equal(rdf.bins, rdf.results.bins)
 
+    wmsg = "The `edges` attribute was deprecated in MDAnalysis 2.0.0"
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        assert_equal(rdf.edges, rdf.results.edges)
+
+    wmsg = "The `count` attribute was deprecated in MDAnalysis 2.0.0"
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        assert_equal(rdf.count, rdf.results.count)
+        
     rdf.get_cdf()
     wmsg = "The `cdf` attribute was deprecated in MDAnalysis 2.0.0"
     with pytest.warns(DeprecationWarning, match=wmsg):
