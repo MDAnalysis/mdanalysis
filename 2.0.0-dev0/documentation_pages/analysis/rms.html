@@ -270,7 +270,7 @@ using backbone atoms</li>
 <li>calculate the backbone RMSD and RMSD for CORE, LID, NMP (backbone atoms)</li>
 </ul>
 <p>The trajectory is included with the test data files. The data in
-<a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">RMSD.rmsd</span></code></a> is plotted with <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v3.4.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.plot()</span></code></a>:</p>
+<a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.results.rmsd" title="MDAnalysis.analysis.rms.RMSD.results.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">RMSD.results.rmsd</span></code></a> is plotted with <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot" title="(in Matplotlib v3.4.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.plot()</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">,</span><span class="n">CRD</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
@@ -287,7 +287,7 @@ using backbone atoms</li>
 <span class="n">R</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="n">rmsd</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">rmsd</span><span class="o">.</span><span class="n">T</span>   <span class="c1"># transpose makes it easier for plotting</span>
+<span class="n">rmsd</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsd</span><span class="o">.</span><span class="n">T</span>   <span class="c1"># transpose makes it easier for plotting</span>
 <span class="n">time</span> <span class="o">=</span> <span class="n">rmsd</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
@@ -387,10 +387,14 @@ performing RMSD calculations so that the centers of mass of the selected
 and reference structure are properly superimposed.</p>
 </div>
 <p>Run the analysis with <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.run" title="MDAnalysis.analysis.rms.RMSD.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">RMSD.run()</span></code></a>, which stores the results
-in the array <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">RMSD.rmsd</span></code></a>.</p>
+in the array <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.results.rmsd" title="MDAnalysis.analysis.rms.RMSD.results.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">RMSD.results.rmsd</span></code></a>.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.0.0: </span><code class="docutils literal notranslate"><span class="pre">save()</span></code> method was removed, use <code class="docutils literal notranslate"><span class="pre">np.savetxt()</span></code> on
-<a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">RMSD.rmsd</span></code></a> instead.</p>
+<a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.results.rmsd" title="MDAnalysis.analysis.rms.RMSD.results.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">RMSD.results.rmsd</span></code></a> instead.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span><a class="reference internal" href="#MDAnalysis.analysis.rms.rmsd" title="MDAnalysis.analysis.rms.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rmsd</span></code></a> results are now stored in a
+<a class="reference internal" href="base.html#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.Results</span></code></a> instance.</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -521,10 +525,23 @@ are <em>not</em> rotationally superimposed any more.</p>
 <p><span class="versionmodified">Changed in version 1.0.0: </span><cite>filename</cite> keyword was removed.</p>
 </div>
 <dl class="attribute">
-<dt id="MDAnalysis.analysis.rms.RMSD.rmsd">
-<code class="descname">rmsd</code><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.analysis.rms.RMSD.results.rmsd">
+<code class="descclassname">results.</code><code class="descname">rmsd</code><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.results.rmsd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Contains the time series of the RMSD as an N×3 <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>
 array with content <code class="docutils literal notranslate"><span class="pre">[[frame,</span> <span class="pre">time</span> <span class="pre">(ps),</span> <span class="pre">RMSD</span> <span class="pre">(A)],</span> <span class="pre">[...],</span> <span class="pre">...]</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rms.RMSD.rmsd">
+<code class="descname">rmsd</code><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.results.rmsd" title="MDAnalysis.analysis.rms.RMSD.results.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rmsd</span></code></a> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.results.rmsd" title="MDAnalysis.analysis.rms.RMSD.results.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rmsd</span></code></a>
+instead.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -562,7 +579,7 @@ protein also has be whole because periodic boundaries are not taken into
 account.</p>
 </div>
 <p>Run the analysis with <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF.run" title="MDAnalysis.analysis.rms.RMSF.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">RMSF.run()</span></code></a>, which stores the results
-in the array <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF.rmsf" title="MDAnalysis.analysis.rms.RMSF.rmsf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">RMSF.rmsf</span></code></a>.</p>
+in the array <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF.results.rmsf" title="MDAnalysis.analysis.rms.RMSF.results.rmsf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">RMSF.results.rmsf</span></code></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -641,7 +658,8 @@ whole trajectory to the reference by minimizing the RMSD. We use
 </pre></div>
 </div>
 <p>The trajectory is now fitted to the reference (the RMSD is stored as
-<cite>aligner.rmsd</cite> for further inspection). Now we can calculate the RMSF:</p>
+<cite>aligner.results.rmsd</cite> for further inspection). Now we can calculate
+the RMSF:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.rms</span> <span class="kn">import</span> <span class="n">RMSF</span>
 
 <span class="n">calphas</span> <span class="o">=</span> <span class="n">protein</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name CA&quot;</span><span class="p">)</span>
@@ -651,7 +669,7 @@ whole trajectory to the reference by minimizing the RMSD. We use
 <p>and plot:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">calphas</span><span class="o">.</span><span class="n">resnums</span><span class="p">,</span> <span class="n">rmsfer</span><span class="o">.</span><span class="n">rmsf</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">calphas</span><span class="o">.</span><span class="n">resnums</span><span class="p">,</span> <span class="n">rmsfer</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rmsf</span><span class="p">)</span>
 </pre></div>
 </div>
 <p class="rubric">References</p>
@@ -680,10 +698,23 @@ Calculating Corrected Sums of Squares and Products.” Technometrics
 removed. These should instead be passed to <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF.run" title="MDAnalysis.analysis.rms.RMSF.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">RMSF.run()</span></code></a>.</p>
 </div>
 <dl class="attribute">
-<dt id="MDAnalysis.analysis.rms.RMSF.rmsf">
-<code class="descname">rmsf</code><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSF.rmsf" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.analysis.rms.RMSF.results.rmsf">
+<code class="descclassname">results.</code><code class="descname">rmsf</code><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSF.results.rmsf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Results are stored in this N-length <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> array,
 giving RMSFs for each of the given atoms.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rms.RMSF.rmsf">
+<code class="descname">rmsf</code><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSF.rmsf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF.results.rmsf" title="MDAnalysis.analysis.rms.RMSF.results.rmsf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rmsf</span></code></a> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSF.results.rmsf" title="MDAnalysis.analysis.rms.RMSF.results.rmsf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rmsf</span></code></a>
+instead.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
