@@ -313,7 +313,7 @@ class PersistenceLength(AnalysisBase):
                             np.arange(len(self.results.bond_autocorrelation))
 
         self.results.lp = fit_exponential_decay(self.results.x,
-                                             self.results.bond_autocorrelation)
+                                                self.results.bond_autocorrelation)
 
         self.results.fit = np.exp(-self.results.x/self.results.lp)
 
