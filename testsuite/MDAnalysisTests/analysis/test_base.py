@@ -99,6 +99,26 @@ class Test_Results:
         assert len(results["myattr"]) == 1
         assert results["myattr"] is mylist2
 
+    def test_delattr(self, results):
+        assert hasattr(results, "a")
+        delattr(results, "a")
+        assert not hasattr(results, "a")
+
+    def test_pop(self, results):
+        assert hasattr(results, "a")
+        results.pop("a")
+        assert not hasattr(results, "a")
+
+    def test_update(self, results):
+        assert not hasattr(results, "spudda")
+        results.update({"spudda": "fett"})
+        assert results.spudda == "fett"
+
+    def test_update_data_fail(self, results):
+        msg = f"'data' is a protected dictionary attribute"
+        with pytest.raises(AttributeError, match=msg):
+            results.update({"data": 0})
+
 
 class FrameAnalysis(base.AnalysisBase):
     """Just grabs frame numbers of frames it goes over"""

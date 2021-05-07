@@ -111,6 +111,13 @@ class Results(UserDict):
             raise AttributeError("'Results' object has no "
                                  f"attribute '{attr}'") from err
 
+    def __delattr__(self, attr):
+        try:
+            del self[attr]
+        except KeyError as err:
+            raise AttributeError("'Results' object has no "
+                                 f"attribute '{attr}'") from err
+
 
 class AnalysisBase(object):
     r"""Base class for defining multi-frame analysis
