@@ -250,12 +250,12 @@ class InterRDF(AnalysisBase):
         count, edges = np.histogram([-1], **self.rdf_settings)
         count = count.astype(np.float64)
         count *= 0.0
-        self.count = count
-        self.edges = edges
-        self.bins = 0.5 * (edges[:-1] + edges[1:])
+        self.results.count = count
+        self.results.edges = edges
+        self.results.bins = 0.5 * (edges[:-1] + edges[1:])
 
         # Need to know average volume
-        self.volume = 0.0
+        self.results.volume = 0.0
         # Set the max range to filter the search radius
         self._maxrange = self.rdf_settings['range'][1]
 
@@ -273,9 +273,9 @@ class InterRDF(AnalysisBase):
 
 
         count = np.histogram(dist, **self.rdf_settings)[0]
-        self.count += count
+        self.results.count += count
 
-        self.volume += self._ts.volume
+        self.results.volume += self._ts.volume
 
     def _conclude(self):
         # Number of each selection
@@ -294,12 +294,12 @@ class InterRDF(AnalysisBase):
         vol *= 4/3.0 * np.pi
 
         # Average number density
-        box_vol = self.volume / self.n_frames
+        box_vol = self.results.volume / self.n_frames
         density = N / box_vol
 
-        rdf = self.count / (density * vol * self.n_frames)
+        rdf = self.results.count / (density * vol * self.n_frames)
 
-        self.rdf = rdf
+        self.results.rdf = rdf
 
 
 class InterRDF_s(AnalysisBase):
@@ -394,12 +394,12 @@ class InterRDF_s(AnalysisBase):
         count_list = [np.zeros((ag1.n_atoms, ag2.n_atoms, len(count)), dtype=np.float64)
                          for ag1, ag2 in self.ags]
 
-        self.count = count_list
-        self.edges = edges
-        self.bins = 0.5 * (edges[:-1] + edges[1:])
+        self.results.count = count_list
+        self.results.edges = edges
+        self.results.bins = 0.5 * (edges[:-1] + edges[1:])
 
         # Need to know average volume
-        self.volume = 0.0
+        self.results.volume = 0.0
         self._maxrange = self.rdf_settings['range'][1]
 
 
@@ -414,7 +414,7 @@ class InterRDF_s(AnalysisBase):
                 self.count[i][idx1, idx2, :] += np.histogram(dist[j],
                                                              **self.rdf_settings)[0]
 
-        self.volume += self._ts.volume
+        self.results.volume += self._ts.volume
 
 
     def _conclude(self):
@@ -431,16 +431,16 @@ class InterRDF_s(AnalysisBase):
             indices.append([ag1.indices, ag2.indices])
 
             # Average number density
-            box_vol = self.volume / self.n_frames
+            box_vol = self.results.volume / self.n_frames
             density = 1 / box_vol
 
             if self._density:
-                rdf.append(self.count[i] / (vol * self.n_frames))
+                rdf.append(self.results.count[i] / (vol * self.n_frames))
             else:
-                rdf.append(self.count[i] / (density * vol * self.n_frames))
+                rdf.append(self.results.count[i] / (density * vol * self.n_frames))
 
-        self.rdf = rdf
-        self.indices = indices
+        self.results.rdf = rdf
+        self.results.indices = indices
 
     def get_cdf(self):
         r"""Calculate the cumulative counts for all sites.
