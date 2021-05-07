@@ -30,7 +30,7 @@ Converts an `RDKit <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdk
 
 See Also
 --------
-:mod:`MDAnalysis.coordinates.RDKit`
+:mod:`MDAnalysis.converters.RDKit`
 
 
 Classes
@@ -46,8 +46,8 @@ import logging
 import warnings
 import numpy as np
 
-from .base import TopologyReaderBase, change_squash
-from . import guessers
+from ..topology.base import TopologyReaderBase, change_squash
+from ..topology import guessers
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
@@ -69,7 +69,7 @@ from ..core.topologyattrs import (
 )
 from ..core.topology import Topology
 
-logger = logging.getLogger("MDAnalysis.topology.RDKitParser")
+logger = logging.getLogger("MDAnalysis.converters.RDKitParser")
 
 
 class RDKitParser(TopologyReaderBase):

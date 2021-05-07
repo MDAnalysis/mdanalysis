@@ -36,8 +36,8 @@ Another syntax is also available for tab-completion support::
 .. toctree::
    :maxdepth: 1
 
-   converters/ParmEdParser
-   converters/RDKitParser
+   converters/ParmEd
+   converters/RDKit
 
 .. rubric:: Converter functionalities
 

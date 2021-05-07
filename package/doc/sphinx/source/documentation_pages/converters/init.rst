@@ -1,0 +1,1 @@
+.. automodule:: MDAnalysis.converters.__init__

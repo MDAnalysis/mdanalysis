@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""ParmEd structure I/O --- :mod:`MDAnalysis.coordinates.ParmEd`
+"""ParmEd structure I/O --- :mod:`MDAnalysis.converters.ParmEd`
 ================================================================
 
 Read coordinates data from a `ParmEd <https://parmed.github.io/ParmEd/html>`_ :class:`parmed.structure.Structure` with :class:`ParmEdReader` 
@@ -71,12 +71,16 @@ Classes
    :members:
 
 
+.. versionchanged:: 2.0.0
+   The ParmEdReader and ParmEdConverter classes were moved from :mod:`~MDAnalysis.coordinates`
+   to :mod:`~MDAnalysis.converters`
+
 """
 import functools
 import itertools
 import warnings
 
-from . import base
+from ..coordinates import base
 from ..topology.tables import SYMB2Z
 from ..core.universe import Universe
 from ..exceptions import NoDataError

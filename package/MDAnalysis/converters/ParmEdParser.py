@@ -81,12 +81,15 @@ Classes
    :members:
    :inherited-members:
 
+.. versionchanged:: 2.0.0
+   The ParmEdParser class was moved from :mod:`~MDAnalysis.topology` to :mod:`~MDAnalysis.converters`
+
 """
 import logging
 import numpy as np
 
-from .base import TopologyReaderBase, change_squash
-from .tables import Z2SYMB
+from ..topology.base import TopologyReaderBase, change_squash
+from ..topology.tables import Z2SYMB
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
@@ -118,7 +121,7 @@ from ..core.topologyattrs import (
 )
 from ..core.topology import Topology
 
-logger = logging.getLogger("MDAnalysis.topology.ParmEdParser")
+logger = logging.getLogger("MDAnalysis.converters.ParmEdParser")
 
 
 def squash_identical(values):
