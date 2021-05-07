@@ -1533,7 +1533,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">end</span><span class="p">:</span>
                     <span class="c1"># check if any duplication happens</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">route</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">route</span><span class="p">)):</span>
+                    <span class="n">heavy_atom</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="ow">or</span> <span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">route</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">heavy_atom</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">heavy_atom</span><span class="p">)):</span>
                         <span class="n">add_route</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">route</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">new_node</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">node</span><span class="p">]:</span>
