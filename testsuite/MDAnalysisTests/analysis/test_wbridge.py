@@ -736,3 +736,8 @@ class TestWaterBridgeAnalysis(object):
         wmsg = "The `network` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(wb.network, wb.results.network)
+
+        wb.generate_table()
+        wmsg = "The `table` attribute was deprecated in MDAnalysis 2.0.0"
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            assert_equal(wb.table, wb.results.table)

@@ -1789,7 +1789,15 @@ class WaterBridgeAnalysis(AnalysisBase):
         logger.debug(
             "WBridge: Stored results as table with %(num_records)d entries.",
             vars())
-        self.table = table
+        self.results.table = table
+
+    @property
+    def table(self):
+        wmsg = ("The `table` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.table` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.table
 
     @property
     def _network(self):
