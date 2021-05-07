@@ -558,7 +558,10 @@ class HoleAnalysis(AnalysisBase):
 
     .. versionadded:: 1.0
 
-
+    .. versionchanged:: 2.0.0
+        :attr:`sphpdbs`, :attr:`outfiles` and :attr:`profiles `
+        are now stored in a :class:`MDAnalysis.analysis.base.Results` 
+        instance.
 
     """
 

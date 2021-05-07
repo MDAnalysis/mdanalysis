@@ -245,6 +245,10 @@ Changes
   * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
 
 Deprecations
+  * The ``sphpdbs``, ``outfiles`` and ``profiles`` attributes of
+    `analysis.hole2.HoleAnalysis` are now deprecated in favour of
+    ``results.sphpdbs``, ``results.outfiles`` and
+    ``results.profiles`` (Issues #3261, #3269)
   * The `analysis.align.AlignTraj.rmsd` attribute is now deprecated in
     favour of `analysis.align.AlignTraj.results.rmsd` (Issue #3278, #3261)
   * The `universe`, `positions`, and `rmsd` attributes of
