@@ -71,7 +71,7 @@ def test_cov(pca, u):
 def test_cum_var(pca):
     assert_almost_equal(pca.results.cumulated_variance[-1], 1)
     cum_var = pca.results.cumulated_variance
-    cum_var = np.sort(l)
+    cum_var = np.sort(cum_var)
     assert_almost_equal(pca.results.cumulated_variance, cum_var, 5)
 
 
