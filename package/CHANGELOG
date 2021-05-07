@@ -174,6 +174,9 @@ Enhancements
     checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
 
 Changes
+  * `analysis.pca.PCA` class now stores `p_components`, `variance`, 
+    `cumulated_variance` and `mean_atoms` using the 
+    `analysis.base.Results` class (Issues #3275 #3285)
   * `analysis.rms.RMSD` and `analysis.rms.RMSF` classes now store `rmsd` and
     `rmsf` data using the `analysis.base.Results` class (Issues #3274 #3261)
   * `analysis.dihedrals` classes now store angle data using the
@@ -235,6 +238,11 @@ Changes
   * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
 
 Deprecations
+  * The attributes `p_components`, `variance`, `cumulated_variance` and 
+    `mean_atoms` in `analysis.pca.PCA` are now deprecated in favour of 
+    `results.p_components`, `results.variance`, `results.cumulated_variance` 
+    and `results.mean_atoms`. They will be removed in 3.0.0 
+    (Issues #3275 #3285)
   * The `analysis.rms.RMSD.rmsd` and `analysis.rms.RMSF.rmsf` attributes are
     now deprecated in favour of `analysis.rms.RMSD.results.rmsd` and
     `analysis.rms.RMSF.results.rmsf` respectively. They will be removed in
