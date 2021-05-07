@@ -122,7 +122,7 @@ Output as Timeseries
 --------------------
 
 For lower order water bridges, it might be desirable to represent the
-connections as :attr:`WaterBridgeAnalysis.timeseries`. The results 
+connections as :attr:`WaterBridgeAnalysis.timeseries`. The results
 are returned per frame and are a list of hydrogen bonds between the selection
 1 or selection 2 and the bridging waters. Due to the complexity of the higher
 order water bridge and the fact that one hydrogen bond between two waters can
@@ -958,7 +958,8 @@ class WaterBridgeAnalysis(AnalysisBase):
                              'Invalid selection type {0!s}'.format(
                                 self.selection1_type))
 
-        self.results.network = []  # final result accessed as self.results.network
+        # final result accessed as self.results.network
+        self.results.network = []
         self.timesteps = None  # time for each frame
 
         self._log_parameters()
@@ -1408,13 +1409,14 @@ class WaterBridgeAnalysis(AnalysisBase):
     def _traverse_water_network(self, graph, current, analysis_func=None,
                                 output=None, link_func=None, **kwargs):
         '''
-        This function recursively traverses the water network self.results.network and
-         finds the hydrogen bonds which connect the current atom to the next
-         atom. The newly found hydrogen bond will be appended to the hydrogen
-         bonds connecting the selection 1 to the current atom via link_func.
-         When selection 2 is reached, the full list of hydrogen bonds
-         connecting the selection 1 to selection 2 will be fed into
-         analysis_func, which will then modify the output in place.
+        This function recursively traverses the water network
+        self.results.network and finds the hydrogen bonds which connect the
+        current atom to the next atom. The newly found hydrogen bond will be
+        appended to the hydrogen bonds connecting the selection 1 to the
+        current atom via link_func. When selection 2 is reached, the full list
+        of hydrogen bonds connecting the selection 1 to selection 2 will be
+        fed into analysis_func, which will then modify the output in place.
+
         :param graph: The connection network describes the connection between
         the atoms in the water network.
         :param current: The hydrogen bonds from selection 1 until now.
@@ -1767,8 +1769,8 @@ class WaterBridgeAnalysis(AnalysisBase):
         The table is stored as a :class:`numpy.recarray` in the
         attribute :attr:`~WaterBridgeAnalysis.results.table`.
 
-        The output format of :attr:`~WaterBridgeAnalysis.results.table` can also
-        be changed using output_format in a fashion similar to
+        The output format of :attr:`~WaterBridgeAnalysis.results.table` can
+        also be changed using output_format in a fashion similar to
         :attr:`WaterBridgeAnalysis.timeseries`
         """
         output_format = output_format or self.output_format

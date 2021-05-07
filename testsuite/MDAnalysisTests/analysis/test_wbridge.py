@@ -720,7 +720,7 @@ class TestWaterBridgeAnalysis(object):
         '''Test generate table using hydrogen bond analysis format'''
         wb_multiframe.generate_table(output_format='sele1_sele2')
         assert_array_equal(
-            sorted(wb_multiframe.results.table.sele1_resid), 
+            sorted(wb_multiframe.results.table.sele1_resid),
             [1, 1, 1, 1, 2, 2, 3],
         )
 
