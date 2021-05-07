@@ -91,22 +91,10 @@ def test_exclusion(sels):
     assert rdf.results.count.sum() == 4
 
 
-def test_rdf_attr_warning(sels):
+@pytest.mark.parametrize("attr", ("rdf", "bins", "edges", "count"))
+def test_rdf_attr_warning(sels, attr):
     s1, s2 = sels
     rdf = InterRDF(s1, s2).run()
-
-    wmsg = "The `rdf` attribute was deprecated in MDAnalysis 2.0.0"
+    wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
     with pytest.warns(DeprecationWarning, match=wmsg):
-        assert_equal(rdf.rdf, rdf.results.rdf)
-
-    wmsg = "The `bins` attribute was deprecated in MDAnalysis 2.0.0"
-    with pytest.warns(DeprecationWarning, match=wmsg):
-        assert_equal(rdf.bins, rdf.results.bins)
-
-    wmsg = "The `edges` attribute was deprecated in MDAnalysis 2.0.0"
-    with pytest.warns(DeprecationWarning, match=wmsg):
-        assert_equal(rdf.edges, rdf.results.edges)
-
-    wmsg = "The `count` attribute was deprecated in MDAnalysis 2.0.0"
-    with pytest.warns(DeprecationWarning, match=wmsg):
-        assert_equal(rdf.count, rdf.results.count)
+        getattr(rdf, attr) is rdf.results[attr]

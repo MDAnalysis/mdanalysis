@@ -559,13 +559,13 @@ class InterRDF_s(AnalysisBase):
         radius, i.e., :math:`N_{ab}(r)`.
 
         The result is returned and also stored in the attribute
-        :attr:`cdf`.
+        :attr:`results.cdf`.
 
 
         Returns
         -------
         cdf : list
-              list of arrays with the same structure as :attr:`rdf`
+              list of arrays with the same structure as :attr:`results.rdf`
 
         """
         # Calculate cumulative distribution function
@@ -575,8 +575,8 @@ class InterRDF_s(AnalysisBase):
         for count in self.results.count:
             cdf.append(np.cumsum(count, axis=2) / self.n_frames)
 
-        # Results stored in self.cdf
-        # self.cdf is a list of cdf between pairs of AtomGroups in ags
+        # Results stored in self.results.cdf
+        # self.results.cdf is a list of cdf between pairs of AtomGroups in ags
         self.results.cdf = cdf
 
         return cdf

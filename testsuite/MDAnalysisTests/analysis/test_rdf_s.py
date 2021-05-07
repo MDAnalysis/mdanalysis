@@ -120,24 +120,10 @@ def test_density(u, sels, density, value):
         assert_almost_equal(rdf_ref.results.rdf, rdf.results.rdf[0][0][0])
 
 
-def test_rdf_attr_warning(rdf):
-    wmsg = "The `rdf` attribute was deprecated in MDAnalysis 2.0.0"
+@pytest.mark.parametrize("attr", ("rdf", "bins", "edges", "count", "cdf"))
+def test_rdf_attr_warning(rdf, attr):
+    if attr == "cdf":
+        rdf.get_cdf()
+    wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
     with pytest.warns(DeprecationWarning, match=wmsg):
-        assert_equal(rdf.rdf, rdf.results.rdf)
-
-    wmsg = "The `bins` attribute was deprecated in MDAnalysis 2.0.0"
-    with pytest.warns(DeprecationWarning, match=wmsg):
-        assert_equal(rdf.bins, rdf.results.bins)
-
-    wmsg = "The `edges` attribute was deprecated in MDAnalysis 2.0.0"
-    with pytest.warns(DeprecationWarning, match=wmsg):
-        assert_equal(rdf.edges, rdf.results.edges)
-
-    wmsg = "The `count` attribute was deprecated in MDAnalysis 2.0.0"
-    with pytest.warns(DeprecationWarning, match=wmsg):
-        assert_equal(rdf.count, rdf.results.count)
-        
-    rdf.get_cdf()
-    wmsg = "The `cdf` attribute was deprecated in MDAnalysis 2.0.0"
-    with pytest.warns(DeprecationWarning, match=wmsg):
-        assert_equal(rdf.cdf, rdf.results.cdf)
+        getattr(rdf, attr) is rdf.results[attr]
