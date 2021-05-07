@@ -224,7 +224,7 @@
 </tbody>
 </table>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 1.0.0.</span></p>
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
 </div>
 <p>This module contains code to analyse protein helices using the
 <a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/10798526/">HELANAL</a> algorithm
@@ -258,8 +258,10 @@ HELANAL - A program to characterise helix geometry in proteins.
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="n">helanal</span> <span class="o">=</span> <span class="n">hel</span><span class="o">.</span><span class="n">HELANAL</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name CA and resnum 161-187&#39;</span><span class="p">)</span>
 <span class="n">helanal</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">helanal</span><span class="o">.</span><span class="n">summary</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>All computed properties are available in <code class="docutils literal notranslate"><span class="pre">.results</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">helanal</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">summary</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Alternatively, you can analyse several helices at once by passing
