@@ -95,6 +95,10 @@ solvent with itself or with another solute.
       :class:`numpy.ndarray` of the centers of the `nbins` histogram
       bins.
 
+       .. deprecated:: 2.0.0
+           This attribute will be removed in 3.0.0.
+           Use :attr:`results.bins` instead.
+
    .. attribute:: edges
 
       :class:`numpy.ndarray` of the `nbins + 1` edges of the histogram
@@ -104,6 +108,10 @@ solvent with itself or with another solute.
 
       :class:`numpy.ndarray` of the :ref:`radial distribution
       function<equation-gab>` values for the :attr:`bins`.
+
+         .. deprecated:: 2.0.0
+             This attribute will be removed in 3.0.0.
+             Use :attr:`results.rdf` instead.
 
    .. attribute:: count
 
@@ -133,6 +141,10 @@ protein.
       :class:`numpy.ndarray` of the centers of the `nbins` histogram
       bins; all individual site-specific RDFs have the same bins.
 
+      .. deprecated:: 2.0.0
+          This attribute will be removed in 3.0.0.
+          Use :attr:`results.bins` instead.
+
    .. attribute:: edges
 
       :class:`numpy.ndarray` of the `nbins + 1` edges of the histogram
@@ -147,6 +159,10 @@ protein.
       = ags[i]`` in `ags` is a :class:`numpy.ndarray` with shape
       ``(len(A), len(B))``, i.e., a stack of RDFs. For example,
       ``rdf[i][0, 2]`` is the RDF between atoms ``A[0]`` and ``B[2]``.
+
+      .. deprecated:: 2.0.0
+          This attribute will be removed in 3.0.0.
+          Use :attr:`results.rdf` instead.
 
    .. attribute:: count
 
@@ -164,7 +180,9 @@ protein.
 
       This attribute only exists after :meth:`get_cdf` has been run.
 
-
+      .. deprecated:: 2.0.0
+          This attribute will be removed in 3.0.0.
+          Use :attr:`results.cdf` instead.
 
 
 .. Not Implemented yet:
