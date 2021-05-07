@@ -420,7 +420,7 @@ class HELANAL(AnalysisBase):
         for key, dims in self.attr_shapes.items():
             empty = [self._zeros_per_frame(
                 dims, n_positions=n) for n in n_res]
-            setattr(self.results, key, empty)
+            self.results[key] = empty
 
         self.results.global_axis = [self._zeros_per_frame((3,)) for n in n_res]
         self.results.all_bends = [self._zeros_per_frame((n-3, n-3)) for n in n_res]
@@ -430,7 +430,7 @@ class HELANAL(AnalysisBase):
         for i, ag in enumerate(self.atomgroups):
             results = helix_analysis(ag.positions, ref_axis=self.ref_axis)
             for key, value in results.items():
-                attr = getattr(self.results, key)
+                attr = self.results[key]
                 attr[i][_f] = value
 
     def _conclude(self):
@@ -450,7 +450,7 @@ class HELANAL(AnalysisBase):
         for i in range(len(self.atomgroups)):
             stats = {}
             for name in attrnames:
-                attr = getattr(self.results, name)
+                attr = self.results[name]
                 mean = attr[i].mean(axis=0)
                 dev = np.abs(attr[i]-mean)
                 stats[name] = {'mean': mean,
@@ -461,8 +461,8 @@ class HELANAL(AnalysisBase):
         # flatten?
         if len(self.atomgroups) == 1 and self._flatten:
             for name in attrnames + ['summary']:
-                attr = getattr(self.results, name)
-                setattr(self.results, name, attr[0])
+                attr = self.results[name]
+                self.results[name] = attr[0]
 
     def universe_from_origins(self):
         """

@@ -368,11 +368,11 @@ class TestHELANAL(object):
 
         for key, value in HELANAL_SINGLE_DATA.items():
             if 'summary' in key:
-                data = getattr(ha.results, key.split()[0])
+                data = ha.results[key.split()[0]]
                 calculated = [data.mean(), data.std(ddof=1),
                               np.fabs(data-data.mean()).mean()]
             else:
-                calculated = getattr(ha.results, key)[0]
+                calculated = ha.results[key][0]
 
             msg = 'Mismatch between calculated and reference {}'
             assert_almost_equal(calculated, value,
