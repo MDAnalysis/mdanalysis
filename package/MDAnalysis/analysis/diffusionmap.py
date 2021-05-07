@@ -93,7 +93,7 @@ spectral gap and should be somewhat apparent for a system at equilibrium with a
 high number of frames.
 
 .. code-block:: python
-   # first cell of  a jupyter notebook should contain: %matplotlib inline
+
    import matplotlib.pyplot as plt
    f, ax = plt.subplots()
    upper_limit = # some reasonably high number less than the n_eigenvectors
@@ -202,7 +202,7 @@ class DistanceMatrix(AnalysisBase):
     ----------
     atoms : `~MDAnalysis.core.groups.AtomGroup`
         Selected atoms in trajectory subject to dimension reduction
-    results.results.dist_matrix : numpy.ndarray, (n_frames, n_frames)
+    results.dist_matrix : numpy.ndarray, (n_frames, n_frames)
         Array of all possible ij metric distances between frames in trajectory.
         This matrix is symmetric with zeros on the diagonal.
 
@@ -212,7 +212,7 @@ class DistanceMatrix(AnalysisBase):
 
         .. deprecated:: 2.0.0
                  Will be removed in MDAnalysis 3.0.0. Please use
-                 :attr:`results.results.dist_matrix` instead.
+                 :attr:`results.dist_matrix` instead.
 
     Example
     -------
@@ -269,10 +269,13 @@ class DistanceMatrix(AnalysisBase):
             self._ts = ts
             j_ref = self.atoms.positions
             dist = self._metric(i_ref, j_ref, weights=self._weights)
-            self.results.dist_matrix[self._frame_index, j+self._frame_index] = (
-                dist if dist > self._cutoff else 0)
-            self.results.dist_matrix[j+self._frame_index, self._frame_index] = (
-                self.results.dist_matrix[self._frame_index, j+self._frame_index])
+            self.results.dist_matrix[self._frame_index,
+                                     j+self._frame_index] = (
+                                            dist if dist > self._cutoff else 0)
+            self.results.dist_matrix[j+self._frame_index,
+                                     self._frame_index] = (
+                                self.results.dist_matrix[self._frame_index,
+                                                         j+self._frame_index])
         self._ts = self._trajectory[iframe]
 
     @property
