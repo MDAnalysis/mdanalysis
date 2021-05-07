@@ -66,8 +66,7 @@ Classes
 
 import numpy as np
 
-from . import base
-from .. import units
+from ..coordinates import base
 
 
 class OpenMMSimulationReader(base.SingleFrameReaderBase):

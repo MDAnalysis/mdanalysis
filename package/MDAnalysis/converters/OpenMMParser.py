@@ -57,8 +57,7 @@ Classes
 
 import numpy as np
 
-from .base import TopologyReaderBase
-from .guessers import guess_types
+from ..topology.base import TopologyReaderBase
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
