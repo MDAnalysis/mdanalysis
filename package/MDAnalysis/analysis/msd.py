@@ -90,7 +90,7 @@ The MSD can then be accessed as
 
 .. code-block:: python
 
-    msd =  MSD.timeseries
+    msd =  MSD.results.timeseries
 
 Visual inspection of the MSD is important, so let's take a look at it with a
  simple plot.
@@ -261,9 +261,9 @@ class EinsteinMSD(AnalysisBase):
     ----------
     dim_fac : int
         Dimensionality :math:`d` of the MSD.
-    timeseries : :class:`numpy.ndarray`
+    results.timeseries : :class:`numpy.ndarray`
         The averaged MSD over all the particles with respect to lag-time.
-    msds_by_particle : :class:`numpy.ndarray`
+    results.msds_by_particle : :class:`numpy.ndarray`
         The MSD of each individual particle with respect to lag-time.
     ag : :class:`AtomGroup`
         The :class:`AtomGroup` resulting from your selection
@@ -271,6 +271,9 @@ class EinsteinMSD(AnalysisBase):
         Number of frames included in the analysis.
     n_particles : int
         Number of particles MSD was calculated over.
+
+
+    .. versionadded:: 2.0.0
     """
 
     def __init__(self, u, select='all', msd_type='xyz', fft=True, **kwargs):
@@ -307,16 +310,17 @@ class EinsteinMSD(AnalysisBase):
         self._position_array = None
 
         # result
-        self.msds_by_particle = None
-        self.timeseries = None
+        self.results.msds_by_particle = None
+        self.results.timeseries = None
 
     def _prepare(self):
         # self.n_frames only available here
         # these need to be zeroed prior to each run() call
-        self.msds_by_particle = np.zeros((self.n_frames, self.n_particles))
+        self.results.msds_by_particle = np.zeros((self.n_frames,
+                                                  self.n_particles))
         self._position_array = np.zeros(
             (self.n_frames, self.n_particles, self.dim_fac))
-        # self.timeseries not set here
+        # self.results.timeseries not set here
 
     def _parse_msd_type(self):
         r""" Sets up the desired dimensionality of the MSD.
@@ -360,8 +364,8 @@ class EinsteinMSD(AnalysisBase):
         for lag in lagtimes:
             disp = positions[:-lag, :, :] - positions[lag:, :, :]
             sqdist = np.square(disp).sum(axis=-1)
-            self.msds_by_particle[lag, :] = np.mean(sqdist, axis=0)
-        self.timeseries = self.msds_by_particle.mean(axis=1)
+            self.results.msds_by_particle[lag, :] = np.mean(sqdist, axis=0)
+        self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
 
     def _conclude_fft(self):  # with FFT, np.float64 bit prescision required.
         r""" Calculates the MSD via the FCA fast correlation algorithm.
@@ -382,6 +386,6 @@ class EinsteinMSD(AnalysisBase):
 
         positions = self._position_array.astype(np.float64)
         for n in range(self.n_particles):
-            self.msds_by_particle[:, n] = tidynamics.msd(
+            self.results.msds_by_particle[:, n] = tidynamics.msd(
                 positions[:, n, :])
-        self.timeseries = self.msds_by_particle.mean(axis=1)
+        self.results.timeseries = self.results.msds_by_particle.mean(axis=1)
