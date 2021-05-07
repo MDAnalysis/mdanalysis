@@ -76,14 +76,14 @@ def test_cum_var(pca):
 
 
 def test_pcs(pca):
-    assert_equal(pca.results.p_components.shape, (pca._n_atoms * 3, 
+    assert_equal(pca.results.p_components.shape, (pca._n_atoms * 3,
                                                   pca._n_atoms * 3))
 
 
 def test_pcs_n_components(u):
     pca = PCA(u, select=SELECTION).run()
     assert_equal(pca.n_components, pca._n_atoms*3)
-    assert_equal(pca.results.p_components.shape, (pca._n_atoms * 3, 
+    assert_equal(pca.results.p_components.shape, (pca._n_atoms * 3,
                                                   pca._n_atoms * 3))
     pca.n_components = 10
     assert_equal(pca.n_components, 10)
@@ -245,7 +245,8 @@ def test_compare_wrong_class(u, pca, method):
         func(3)
     assert 'must be another PCA class' in str(exc.value)
 
-@pytest.mark.parametrize("attr", ("p_components", "variance", 
+
+@pytest.mark.parametrize("attr", ("p_components", "variance",
                                   "cumulated_variance", "mean_atoms"))
 def test_pca_attr_warning(u, attr):
     pca = PCA(u, select=SELECTION).run(stop=2)
