@@ -35,3 +35,5 @@ from . import ParmEdParser
 from . import ParmEd
 from . import RDKitParser
 from . import RDKit
+from . import OpenMMParser
+from . import OpenMM
