@@ -36,7 +36,7 @@ from MDAnalysisTests.util import import_not_available
 try:
     from rdkit import Chem
     from rdkit.Chem import AllChem
-    from MDAnalysis.coordinates.RDKit import (
+    from MDAnalysis.converters.RDKit import (
         RDATTRIBUTES,
         _add_mda_attr_to_rdkit,
         _infer_bo_and_charges,

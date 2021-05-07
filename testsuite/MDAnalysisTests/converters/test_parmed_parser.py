@@ -35,7 +35,7 @@ pmd = pytest.importorskip('parmed')
 
 
 class BaseTestParmedParser(ParserBase):
-    parser = mda.topology.ParmEdParser.ParmEdParser
+    parser = mda.converters.ParmEdParser.ParmEdParser
     expected_attrs = ['ids', 'names', 'types', 'masses',
                       'charges', 'altLocs', 'occupancies',
                       'tempfactors', 'gbscreens', 'solventradii',
