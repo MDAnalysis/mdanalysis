@@ -178,6 +178,9 @@ Changes
   * `analysis.rdf.InterRDF` and `analysis.rdf.InterRDF_s` now store
     their result attributes using the `analysis.base.Results` class
     (Issue #3276, #3261)
+  * `analysis.polymer.PersistenceLength` class now stores `lb`,
+    `lp` and `fit` using the `analysis.base.Results` class 
+    (Issues #3289, #3291)
   * `analysis.hole2.HoleAnalysis` now stores ``sphpdbs``, ``outfiles``
     and ``profiles`` in the `analysis.base.Results` class (Issues #3261, #3269)
   * `helix_analysis.HELANAL` now uses the `analysis.base.Results` class to
@@ -257,6 +260,13 @@ Deprecations
     `analysis.rdf.InterRDF_s` are now deprecated in favour of `results.bins`,
     `results.edges`, `results.count`, `results.rdf` and `results.cdf`
     (Issue #3276, #3261)
+  * The `analysis.polymer.PersistenceLength.lb`,
+    `analysis.polymer.PersistenceLength.lp` and 
+    `analysis.polymer.PersistenceLength.fit` attributes are now deprecated in
+    favour of `analysis.polymer.PersistenceLength.results.lb`,
+    `analysis.polymer.PersistenceLength.results.lp` and
+    `analysis.polymer.PersistenceLength.results.fit` respectively. They will
+    be removed in 3.0.0 (Issues #3289, #3291)
   * The ``sphpdbs``, ``outfiles`` and ``profiles`` attributes of
     `analysis.hole2.HoleAnalysis` are now deprecated in favour of
     ``results.sphpdbs``, ``results.outfiles`` and
