@@ -360,14 +360,10 @@ class TestPDBWriter(object):
         with pytest.warns(UserWarning, match=expected_msg):
             u.atoms.write(outfile)
 
-        with pytest.warns(UserWarning, match="Unit cell dimensions will be set to zeros."):
+        with pytest.warns(UserWarning, match="Unit cell dimensions will be set to None."):
             uout = mda.Universe(outfile)
 
-        assert_almost_equal(
-            uout.dimensions, np.zeros(6),
-            self.prec,
-            err_msg="Problem with default box."
-        )
+        assert uout.dimensions is None, "Problem with default box."
 
         assert_equal(
             uout.trajectory.n_frames, 1,
@@ -1205,7 +1201,7 @@ def test_partially_missing_cryst():
 
     assert len(u.atoms) == 3
     assert len(u.trajectory) == 2
-    assert_array_almost_equal(u.dimensions, 0.0)
+    assert u.dimensions is None
 
 
 @pytest.mark.filterwarnings(IGNORE_NO_INFORMATION_WARNING)
@@ -1268,7 +1264,7 @@ def test_elements_roundtrip(tmpdir):
 def test_cryst_meaningless_warning():
     # issue 2599
     # FIXME: This message might change with Issue #2698
-    with pytest.warns(UserWarning, match="Unit cell dimensions will be set to zeros."):
+    with pytest.warns(UserWarning, match="Unit cell dimensions will be set to None."):
         mda.Universe(PDB_CRYOEM_BOX)
 
 
