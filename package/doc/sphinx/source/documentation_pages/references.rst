@@ -140,7 +140,6 @@ If you use the hydrogen bond analysis code in
 
 .. _`10.1039/C9CP01532A`: http://dx.doi.org/10.1039/C9CP01532A
 
-<<<<<<< HEAD
 If you use :meth:`~MDAnalysis.analysis.pca.PCA.rmsip` or 
 :func:`~MDAnalysis.analysis.pca.rmsip` please cite [Amadei1999]_ and 
 [Leo-Macias2004]_ .
@@ -205,7 +204,6 @@ please cite [Dima2004b]_.
    6564-6570. doi:`10.1021/jp037128y
    <https://doi.org/10.1021/jp037128y>`_
 
-=======
 If you use the dielectric analysis module please cite [Neumann1983b]_.
 
 .. [Neumann1983b] Neumann, M.
@@ -213,7 +211,6 @@ If you use the dielectric analysis module please cite [Neumann1983b]_.
     *Molecular Physics* **50**, no. 4 (1983), 841–858. doi: `10.1080/00268978300102721`_
 
 .. _`10.1080/00268978300102721`: http://doi.org/10.1080/00268978300102721
->>>>>>> f62f7feda (Added option for make_whole + better docu)
 
 .. _citations-using-duecredit:
 
