@@ -238,17 +238,21 @@
 <span class="sd">:data:`~MDAnalysis.tests.datafiles.DCD`). This tutorial shows how to use the</span>
 <span class="sd">Diffusion Map class.</span>
 
-<span class="sd">First load all modules and test data ::</span>
+<span class="sd">First load all modules and test data</span>
 
-<span class="sd">   &gt;&gt;&gt; import MDAnalysis as mda</span>
-<span class="sd">   &gt;&gt;&gt; import MDAnalysis.analysis.diffusionmap as diffusionmap</span>
-<span class="sd">   &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">   import MDAnalysis as mda</span>
+<span class="sd">   import MDAnalysis.analysis.diffusionmap as diffusionmap</span>
+<span class="sd">   from MDAnalysis.tests.datafiles import PSF, DCD</span>
 
 <span class="sd">Given a universe or atom group, we can create and eigenvalue decompose</span>
 <span class="sd">the Diffusion Matrix from that trajectory using :class:`DiffusionMap`:: and get</span>
 <span class="sd">the corresponding eigenvalues and eigenvectors.</span>
 
-<span class="sd">   &gt;&gt;&gt; u = mda.Universe(PSF,DCD)</span>
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">   u = mda.Universe(PSF,DCD)</span>
 
 <span class="sd">We leave determination of the appropriate scale parameter epsilon to the user,</span>
 <span class="sd">[Clementi1]_ uses a complex method involving the k-nearest-neighbors of a</span>
@@ -256,8 +260,10 @@
 <span class="sd">a constant epsilon. Currently, the constant epsilon method is implemented</span>
 <span class="sd">by MDAnalysis.</span>
 
-<span class="sd">   &gt;&gt;&gt; dmap = diffusionmap.DiffusionMap(u, select=&#39;backbone&#39;, epsilon=2)</span>
-<span class="sd">   &gt;&gt;&gt; dmap.run()</span>
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">   dmap = diffusionmap.DiffusionMap(u, select=&#39;backbone&#39;, epsilon=2)</span>
+<span class="sd">   dmap.run()</span>
 
 <span class="sd">From here we can perform an embedding onto the k dominant eigenvectors. The</span>
 <span class="sd">non-linearity of the map means there is no explicit relationship between the</span>
@@ -270,49 +276,27 @@
 <span class="sd">spectral gap and should be somewhat apparent for a system at equilibrium with a</span>
 <span class="sd">high number of frames.</span>
 
-<span class="sd">   &gt;&gt;&gt;  # first cell of  a jupyter notebook should contain: %matplotlib inline</span>
-<span class="sd">   &gt;&gt;&gt;  import matplotlib.pyplot as plt</span>
-<span class="sd">   &gt;&gt;&gt;  f, ax = plt.subplots()</span>
-<span class="sd">   &gt;&gt;&gt;  upper_limit = # some reasonably high number less than the n_eigenvectors</span>
-<span class="sd">   &gt;&gt;&gt;  ax.plot(dmap.eigenvalues[:upper_limit])</span>
-<span class="sd">   &gt;&gt;&gt;  ax.set(xlabel =&#39;eigenvalue index&#39;, ylabel=&#39;eigenvalue&#39;)</span>
-<span class="sd">   &gt;&gt;&gt;  plt.tight_layout()</span>
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">   import matplotlib.pyplot as plt</span>
+<span class="sd">   f, ax = plt.subplots()</span>
+<span class="sd">   upper_limit = # some reasonably high number less than the n_eigenvectors</span>
+<span class="sd">   ax.plot(dmap.eigenvalues[:upper_limit])</span>
+<span class="sd">   ax.set(xlabel =&#39;eigenvalue index&#39;, ylabel=&#39;eigenvalue&#39;)</span>
+<span class="sd">   plt.tight_layout()</span>
 
 <span class="sd">From here we can transform into the diffusion space</span>
 
-<span class="sd">   &gt;&gt;&gt; num_eigenvectors = # some number less than the number of frames after</span>
-<span class="sd">   &gt;&gt;&gt; # inspecting for the spectral gap</span>
-<span class="sd">   &gt;&gt;&gt; fit = dmap.transform(num_eigenvectors, time=1)</span>
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">   num_eigenvectors = # some number less than the number of frames after</span>
+<span class="sd">   # inspecting for the spectral gap</span>
+<span class="sd">   fit = dmap.transform(num_eigenvectors, time=1)</span>
 
 <span class="sd">It can be difficult to interpret the data, and is left as a task</span>
 <span class="sd">for the user. The `diffusion distance` between frames i and j is best</span>
 <span class="sd">approximated by the euclidean distance  between rows i and j of</span>
 <span class="sd">self.diffusion_space.</span>
-
-
-<span class="sd">.. _Distance-Matrix-tutorial:</span>
-
-<span class="sd">Distance Matrix tutorial</span>
-<span class="sd">------------------------</span>
-
-<span class="sd">Often a, a custom distance matrix could be useful for local</span>
-<span class="sd">epsilon determination or other manipulations on the diffusion</span>
-<span class="sd">map method. The :class:`DistanceMatrix` exists in</span>
-<span class="sd">:mod:`~MDAnalysis.analysis.diffusionmap` and can be passed</span>
-<span class="sd">as an initialization argument for :class:`DiffusionMap`.</span>
-
-<span class="sd">    &gt;&gt;&gt; import MDAnalysis as mda</span>
-<span class="sd">    &gt;&gt;&gt; import MDAnalysis.analysis.diffusionmap as diffusionmap</span>
-<span class="sd">    &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD</span>
-
-<span class="sd">Now create the distance matrix and pass it as an argument to</span>
-<span class="sd">:class:`DiffusionMap`.</span>
-
-<span class="sd">    &gt;&gt;&gt; u = mda.Universe(PSF,DCD)</span>
-<span class="sd">    &gt;&gt;&gt; dist_matrix = diffusionmap.DistanceMatrix(u, select=&#39;all&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; dist_matrix.run()</span>
-<span class="sd">    &gt;&gt;&gt; dmap = diffusionmap.DiffusionMap(dist_matrix)</span>
-<span class="sd">    &gt;&gt;&gt; dmap.run()</span>
 
 <span class="sd">Classes</span>
 <span class="sd">-------</span>
@@ -367,68 +351,97 @@
 <span class="sd">    using a given metric</span>
 
 <span class="sd">    A distance matrix can be initialized on its own and used as an</span>
-<span class="sd">    initialization argument in :class:`DiffusionMap`. Refer to the</span>
-<span class="sd">    :ref:`Distance-Matrix-tutorial` for a demonstration.</span>
+<span class="sd">    initialization argument in :class:`DiffusionMap`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    universe : `~MDAnalysis.core.universe.Universe`</span>
+<span class="sd">        The MD Trajectory for dimension reduction, remember that</span>
+<span class="sd">        computational cost of eigenvalue decomposition</span>
+<span class="sd">        scales at O(N^3) where N is the number of frames.</span>
+<span class="sd">        Cost can be reduced by increasing step interval or specifying a</span>
+<span class="sd">        start and stop value when calling :meth:`DistanceMatrix.run`.</span>
+<span class="sd">    select: str, optional</span>
+<span class="sd">        Any valid selection string for</span>
+<span class="sd">        :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms`</span>
+<span class="sd">        This selection of atoms is used to calculate the RMSD between</span>
+<span class="sd">        different frames. Water should be excluded.</span>
+<span class="sd">    metric : function, optional</span>
+<span class="sd">        Maps two numpy arrays to a float, is positive definite and</span>
+<span class="sd">        symmetric. The API for a metric requires that the arrays must have</span>
+<span class="sd">        equal length, and that the function should have weights as an</span>
+<span class="sd">        optional argument. Weights give each index value its own weight for</span>
+<span class="sd">        the metric calculation over the entire arrays. Default: metric is</span>
+<span class="sd">        set to rms.rmsd().</span>
+<span class="sd">    cutoff : float, optional</span>
+<span class="sd">        Specify a given cutoff for metric values to be considered equal,</span>
+<span class="sd">        Default: 1EO-5</span>
+<span class="sd">    weights : array, optional</span>
+<span class="sd">        Weights to be given to coordinates for metric calculation</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">            Show detailed progress of the calculation if set to ``True``; the</span>
+<span class="sd">            default is ``False``.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    atoms : AtomGroup</span>
+<span class="sd">    atoms : `~MDAnalysis.core.groups.AtomGroup`</span>
 <span class="sd">        Selected atoms in trajectory subject to dimension reduction</span>
-<span class="sd">    dist_matrix : array, (n_frames, n_frames)</span>
+<span class="sd">    results.dist_matrix : numpy.ndarray, (n_frames, n_frames)</span>
 <span class="sd">        Array of all possible ij metric distances between frames in trajectory.</span>
 <span class="sd">        This matrix is symmetric with zeros on the diagonal.</span>
 
+<span class="sd">        .. versionadded:: 2.0.0</span>
+
+<span class="sd">    dist_matrix : numpy.ndarray, (n_frames, n_frames)</span>
+
+<span class="sd">        .. deprecated:: 2.0.0</span>
+<span class="sd">                 Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">                 :attr:`results.dist_matrix` instead.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    Often, a custom distance matrix could be useful for local</span>
+<span class="sd">    epsilon determination or other manipulations on the diffusion</span>
+<span class="sd">    map method. The :class:`DistanceMatrix` exists in</span>
+<span class="sd">    :mod:`~MDAnalysis.analysis.diffusionmap` and can be passed</span>
+<span class="sd">    as an initialization argument for :class:`DiffusionMap`.</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        import MDAnalysis as mda</span>
+<span class="sd">        import MDAnalysis.analysis.diffusionmap as diffusionmap</span>
+<span class="sd">        from MDAnalysis.tests.datafiles import PSF, DCD</span>
+
+<span class="sd">    Now create the distance matrix and pass it as an argument to</span>
+<span class="sd">    :class:`DiffusionMap`.</span>
+
+<span class="sd">        u = mda.Universe(PSF,DCD)</span>
+<span class="sd">        dist_matrix = diffusionmap.DistanceMatrix(u, select=&#39;all&#39;)</span>
+<span class="sd">        dist_matrix.run()</span>
+<span class="sd">        dmap = diffusionmap.DiffusionMap(dist_matrix)</span>
+<span class="sd">        dmap.run()</span>
+
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       ``save()`` method has been removed. You can use ``np.save()`` on</span>
-<span class="sd">       :attr:`DistanceMatrix.dist_matrix` instead.</span>
+<span class="sd">       :attr:`DistanceMatrix.results.dist_matrix` instead.</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">         :attr:`dist_matrix` is now stored in a</span>
+<span class="sd">         :class:`MDAnalysis.analysis.base.Results` instance.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">rmsd</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">1E0</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">rmsd</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">1E0</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span>
                  <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        u : universe `~MDAnalysis.core.universe.Universe`</span>
-<span class="sd">            The MD Trajectory for dimension reduction, remember that</span>
-<span class="sd">            computational cost of eigenvalue decomposition</span>
-<span class="sd">            scales at O(N^3) where N is the number of frames.</span>
-<span class="sd">            Cost can be reduced by increasing step interval or specifying a</span>
-<span class="sd">            start and stop value when calling :meth:`DistanceMatrix.run`.</span>
-<span class="sd">        select: str, optional</span>
-<span class="sd">            Any valid selection string for</span>
-<span class="sd">            :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms`</span>
-<span class="sd">            This selection of atoms is used to calculate the RMSD between</span>
-<span class="sd">            different frames. Water should be excluded.</span>
-<span class="sd">        metric : function, optional</span>
-<span class="sd">            Maps two numpy arrays to a float, is positive definite and</span>
-<span class="sd">            symmetric. The API for a metric requires that the arrays must have</span>
-<span class="sd">            equal length, and that the function should have weights as an</span>
-<span class="sd">            optional argument. Weights give each index value its own weight for</span>
-<span class="sd">            the metric calculation over the entire arrays. Default: metric is</span>
-<span class="sd">            set to rms.rmsd().</span>
-<span class="sd">        cutoff : float, optional</span>
-<span class="sd">            Specify a given cutoff for metric values to be considered equal,</span>
-<span class="sd">            Default: 1EO-5</span>
-<span class="sd">        weights : array, optional</span>
-<span class="sd">            Weights to be given to coordinates for metric calculation</span>
-<span class="sd">        verbose : bool (optional)</span>
-<span class="sd">             Show detailed progress of the calculation if set to ``True``; the</span>
-<span class="sd">             default is ``False``.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_u</span> <span class="o">=</span> <span class="n">u</span>
-        <span class="n">traj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="o">.</span><span class="n">trajectory</span>
-
         <span class="c1"># remember that this must be called before referencing self.n_frames</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">DistanceMatrix</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DistanceMatrix</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_metric</span> <span class="o">=</span> <span class="n">metric</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cutoff</span> <span class="o">=</span> <span class="n">cutoff</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_weights</span> <span class="o">=</span> <span class="n">weights</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_calculated</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dist_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dist_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">iframe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">frame</span>
@@ -436,15 +449,26 @@
         <span class="c1"># diagonal entries need not be calculated due to metric(x,x) == 0 in</span>
         <span class="c1"># theory, _ts not updated properly. Possible savings by setting a</span>
         <span class="c1"># cutoff for significant decimal places to sparsify matrix</span>
-        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">iframe</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">[</span><span class="n">iframe</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">]):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span> <span class="o">=</span> <span class="n">ts</span>
             <span class="n">j_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span>
             <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metric</span><span class="p">(</span><span class="n">i_ref</span><span class="p">,</span> <span class="n">j_ref</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_weights</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dist_matrix</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">dist</span> <span class="k">if</span> <span class="n">dist</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cutoff</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dist_matrix</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">dist_matrix</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">iframe</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dist_matrix</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span>
+                                     <span class="n">j</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                                            <span class="n">dist</span> <span class="k">if</span> <span class="n">dist</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cutoff</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dist_matrix</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dist_matrix</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">,</span>
+                                                         <span class="n">j</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">[</span><span class="n">iframe</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dist_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `dist_matrix` attribute was deprecated in &quot;</span>
+                <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
+                <span class="s2">&quot;Please use `results.dist_matrix` instead.&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dist_matrix</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_calculated</span> <span class="o">=</span> <span class="kc">True</span></div>
@@ -522,7 +546,7 @@
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;The distance matrix is very large, and can &quot;</span>
                           <span class="s2">&quot;be very slow to compute. Consider picking a larger &quot;</span>
                           <span class="s2">&quot;step size in distance matrix initialization.&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_scaled_matrix</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dist_matrix</span><span class="o">.</span><span class="n">dist_matrix</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scaled_matrix</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dist_matrix</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">dist_matrix</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span>
                                <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">)</span>
         <span class="c1"># take negative exponent of scaled matrix to create Isotropic kernel</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_kernel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_scaled_matrix</span><span class="p">)</span>
