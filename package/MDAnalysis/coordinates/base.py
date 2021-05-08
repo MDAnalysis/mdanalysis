@@ -857,7 +857,10 @@ class Timestep(object):
 
         .. versionadded:: 0.11.0
         """
-        self.dimensions = core.triclinic_box(*new)
+        if new is None:
+            self.dimensions = None
+        else:
+            self.dimensions = core.triclinic_box(*new)
 
     @property
     def dt(self):
