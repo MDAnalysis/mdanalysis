@@ -383,7 +383,7 @@ class CylindricalSelection(Selection):
         # Calculate vectors between point of interest and our group
         vecs = group.positions - sel.center_of_geometry()
 
-        if self.periodic and not np.any(group.dimensions[:3] == 0):
+        if self.periodic and not group.dimensions is None:
             box = group.dimensions[:3]
             cyl_z_hheight = self.zmax - self.zmin
 
