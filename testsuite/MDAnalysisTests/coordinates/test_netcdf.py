@@ -938,7 +938,7 @@ class TestNCDFWriterScaleFactors:
         [[1.0, 1.0, 1.0, 1.0, 1.0, 1.0], [-2.0, -2.0, -2.0, -2.0, -2.0, -2.0],
          [2.0, 4.0, 8.0, 16.0, 32.0, 64.0]])
     def test_write_read_write(self, outfile, outfile2, universe, stime,
-            slengths, sangles, scoords, svels, sfrcs):
+                              slengths, sangles, scoords, svels, sfrcs):
         """Write out a file with assorted scale_factors, then
         read it back it, then write it out to make sure that the
         new assorted scale_factors have been retrained by Write"""
