@@ -175,6 +175,9 @@ Enhancements
     checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
 
 Changes
+  * NCDFWriter now allows for the writing of `scale_factor` attributes for
+    trajectory variables. Default writing is no `scale_factor` except for
+    velocities where it is 20.455 (Issue #2327)
   * `analysis.rms.RMSD` and `analysis.rms.RMSF` classes now store `rmsd` and
     `rmsf` data using the `analysis.base.Results` class (Issues #3274 #3261)
   * `analysis.dihedrals` classes now store angle data using the

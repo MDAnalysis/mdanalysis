@@ -745,8 +745,6 @@ class NCDFReader(base.ReaderBase):
             filename of the output NCDF trajectory
         n_atoms : int (optional)
             number of atoms
-        dt : float (optional)
-            length of one timestep in picoseconds
         remarks : str (optional)
             string that is stored in the title field
         convert_units : bool (optional)
@@ -774,7 +772,6 @@ class NCDFReader(base.ReaderBase):
         """
         n_atoms = kwargs.pop('n_atoms', self.n_atoms)
         kwargs.setdefault('remarks', self.remarks)
-        kwargs.setdefault('dt', self.dt)
         kwargs.setdefault('convert_units', self.convert_units)
         kwargs.setdefault('velocities', self.has_velocities)
         kwargs.setdefault('forces', self.has_forces)
@@ -812,8 +809,6 @@ class NCDFWriter(base.WriterBase):
         name of output file
     n_atoms : int
         number of atoms in trajectory file
-    dt : float (optional)
-        timestep
     convert_units : bool (optional)
         ``True``: units are converted to the AMBER base format; [``True``]
     velocities : bool (optional)
@@ -893,7 +888,10 @@ class NCDFWriter(base.WriterBase):
        of `degree` instead of the `degrees` written in previous version of
        MDAnalysis (Issue #2327).
     .. versionchanged:: 2.0.0
-       Writing of `scale_factor` values has now been implemented.
+       `dt`, `start`, and `step` keywords were unused and are no longer set.
+       Writing of `scale_factor` values has now been implemented. By default
+       only velocities write a scale_factor of 20.455 (echoing the behaviour
+       seen from AMBER)
 
     """
 
@@ -905,11 +903,11 @@ class NCDFWriter(base.WriterBase):
              'velocity': 'Angstrom/ps',
              'force': 'kcal/(mol*Angstrom)'}
 
-    def __init__(self, filename, n_atoms, dt=1.0, remarks=None,
-                 convert_units=True, velocities=False, forces=False,
-                 scale_time=None, scale_cell_lengths=None,
-                 scale_cell_angles=None, scale_coordinates=None,
-                 scale_velocities=None, scale_forces=None, **kwargs):
+    def __init__(self, filename, n_atoms, remarks=None, convert_units=True,
+                 velocities=False, forces=False, scale_time=None,
+                 scale_cell_lengths=None, scale_cell_angles=None,
+                 scale_coordinates=None, scale_velocities=None,
+                 scale_forces=None, **kwargs):
         self.filename = filename
         if n_atoms == 0:
             raise ValueError("NCDFWriter: no atoms in output trajectory")
@@ -917,7 +915,6 @@ class NCDFWriter(base.WriterBase):
         # convert length and time to base units on the fly?
         self.convert_units = convert_units
 
-        self.dt = dt
         self.remarks = remarks or "AMBER NetCDF format (MDAnalysis.coordinates.trj.NCDFWriter)"
 
         self._first_frame = True  # signals to open trajectory

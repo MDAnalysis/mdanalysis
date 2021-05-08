@@ -896,6 +896,10 @@ class TestNCDFWriterScaleFactors:
         return str(tmpdir) + 'ncdf-write-scale.ncdf'
 
     @pytest.fixture()
+    def outfile2(self, tmpdir):
+        return str(tmpdir) + 'ncdf-write-scale2.ncdf'
+
+    @pytest.fixture()
     def universe(self):
         return mda.Universe(PRM_NCBOX, TRJ_NCBOX)
 
@@ -909,6 +913,11 @@ class TestNCDFWriterScaleFactors:
 
         return sfactors
 
+    def get_variable(self, ncdfile, variable, frame):
+        """Return a varible array from netcdf file"""
+        with netcdf.netcdf_file(ncdfile) as f:
+            return f.variables[variable][frame]
+
     def test_write_read_factors_default(self, outfile, universe):
         with universe.trajectory.Writer(outfile) as W:
             W.write(universe.atoms)
@@ -917,6 +926,77 @@ class TestNCDFWriterScaleFactors:
         sfactors = self.get_scale_factors(outfile)
         assert len(sfactors) == 1
         assert sfactors['velocities'] == 20.455
+
+    def test_write_bad_scale_factor(self, outfile, universe):
+        errmsg = "scale_factor parsnips is not a float"
+        with pytest.raises(TypeError, match=errmsg):
+            NCDFWriter(outfile, n_atoms=len(universe.atoms),
+                       scale_velocities="parsnips")
+
+    @pytest.mark.parametrize(
+        'stime, slengths, sangles, scoords, svels, sfrcs',
+        [[1.0, 1.0, 1.0, 1.0, 1.0, 1.0], [-2.0, -2.0, -2.0, -2.0, -2.0, -2.0],
+         [2.0, 4.0, 8.0, 16.0, 32.0, 64.0]])
+    def test_write_read_write(self, outfile, outfile2, universe, stime,
+            slengths, sangles, scoords, svels, sfrcs):
+        """Write out a file with assorted scale_factors, then
+        read it back it, then write it out to make sure that the
+        new assorted scale_factors have been retrained by Write"""
+
+        with NCDFWriter(outfile, n_atoms=len(universe.atoms), velocities=True,
+                        forces=True, scale_time=stime,
+                        scale_cell_lengths=slengths, scale_cell_angles=sangles,
+                        scale_coordinates=scoords, scale_velocities=svels,
+                        scale_forces=sfrcs) as W:
+            for ts in universe.trajectory:
+                W.write(universe.atoms)
+
+        universe2 = mda.Universe(PRM_NCBOX, outfile)
+
+        # Write back checking that the same scale_factors as used
+        with universe2.trajectory.Writer(outfile2) as OWriter:
+            OWriter.write(universe2.atoms)
+
+        universe3 = mda.Universe(PRM_NCBOX, outfile2)
+
+        # check stored scale_factors
+        sfactors1 = self.get_scale_factors(outfile)
+        sfactors2 = self.get_scale_factors(outfile2)
+
+        assert sfactors1 == sfactors2
+        assert len(sfactors1) == 6
+        assert sfactors1['time'] == stime
+        assert sfactors1['cell_lengths'] == slengths
+        assert sfactors1['cell_angles'] == sangles
+        assert sfactors1['coordinates'] == scoords
+        assert sfactors1['velocities'] == svels
+        assert sfactors1['forces'] == sfrcs
+
+        # check that the stored values are indeed scaled
+        assert_almost_equal(universe.trajectory.time / stime,
+                            self.get_variable(outfile, 'time', 0), 4)
+        assert_almost_equal(universe.dimensions[:3] / slengths,
+                            self.get_variable(outfile, 'cell_lengths', 0), 4)
+        assert_almost_equal(universe.dimensions[3:] / sangles,
+                            self.get_variable(outfile, 'cell_angles', 0), 4)
+        assert_almost_equal(universe.atoms.positions / scoords,
+                            self.get_variable(outfile, 'coordinates', 0), 4)
+        assert_almost_equal(universe.atoms.velocities / svels,
+                            self.get_variable(outfile, 'velocities', 0), 4)
+        # note: kJ/mol -> kcal/mol = 4.184 conversion
+        assert_almost_equal(universe.atoms.forces / (sfrcs * 4.184),
+                            self.get_variable(outfile, 'forces', 0), 4)
+
+        # check that the individual components were saved/read properly
+        for ts1, ts3 in zip(universe.trajectory, universe3.trajectory):
+            assert_almost_equal(ts1.time, ts3.time)
+            assert_almost_equal(ts1.dimensions, ts3.dimensions)
+            assert_almost_equal(universe.atoms.positions,
+                                universe3.atoms.positions, 4)
+            assert_almost_equal(universe.atoms.velocities,
+                                universe3.atoms.velocities, 4)
+            assert_almost_equal(universe.atoms.forces,
+                                universe3.atoms.forces, 4)
 
 
 class TestNCDFWriterUnits(object):
