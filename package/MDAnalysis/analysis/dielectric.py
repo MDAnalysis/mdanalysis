@@ -43,10 +43,11 @@ due.cite(Doi("10.1080/00268978300102721"),
          cite_module=True)
 del Doi
 
+
 class DielectricConstant(AnalysisBase):
     r"""
     Computes the average dipole moment
-    
+
     .. math::
         \boldsymbol M = \sum_i q_i \boldsymbol r_i
 
@@ -84,7 +85,7 @@ class DielectricConstant(AnalysisBase):
     results.M2 : numpy.ndarray
       Directional dependant squared dipole moment
       :math:`\langle \boldsymbol M^2 \rangle` in :math:`(eÅ)^2`
-    results.fluct : float 
+    results.fluct : float
       Directional dependant dipole moment fluctuation
       :math:`\langle \boldsymbol M^2 \rangle - \langle \boldsymbol M \rangle^2`
       in :math:`(eÅ)^2`
@@ -96,7 +97,7 @@ class DielectricConstant(AnalysisBase):
     Example
     -------
     Create a :class:`DielectricConstant` instance by supplying an
-    :class:`~MDAnalysis.core.groups.AtomGroup`, 
+    :class:`~MDAnalysis.core.groups.AtomGroup`,
     then use the :meth:`run` method::
 
       import MDAnalysis as mda
@@ -123,12 +124,10 @@ class DielectricConstant(AnalysisBase):
         self.temperature = temperature
         self.make_whole = make_whole
 
-        try:
-            self.charges = atomgroup.charges
-        except:
+    def _prepare(self):
+        if not hasattr(self.atomgroup, "charges"):
             raise NoDataError("No charges defined given atomgroup.")
 
-    def _prepare(self):
         if not np.allclose(self.atomgroup.total_charge(compound='fragments'),
                            0.0, atol=1E-5):
             raise NotImplementedError("Analysis for non-neutral systems or"
@@ -141,14 +140,14 @@ class DielectricConstant(AnalysisBase):
         self.results.fluct = np.zeros(3)
         self.results.eps = np.zeros(3)
         self.results.eps_mean = 0
-                
+
     def _single_frame(self):
         if self.make_whole:
             self.atomgroup.unwrap()
 
         self.volume += self.atomgroup.universe.trajectory.ts.volume
 
-        M = np.dot(self.charges, self.atomgroup.positions)
+        M = np.dot(self.atomgroup.charges, self.atomgroup.positions)
         self.results.M += M
         self.results.M2 += M * M
 

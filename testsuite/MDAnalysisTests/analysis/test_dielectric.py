@@ -19,13 +19,14 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
 import MDAnalysis as mda
 import pytest
 
 from MDAnalysisTests.datafiles import PSF_TRICLINIC, DCD_TRICLINIC
 from MDAnalysis.analysis.dielectric import DielectricConstant
-from numpy.testing import assert_almost_equal
+from MDAnalysis.exceptions import NoDataError
+from numpy.testing import assert_allclose
+
 
 class TestDielectric(object):
     @pytest.fixture()
@@ -40,8 +41,8 @@ class TestDielectric(object):
             ag.wrap()
 
         eps = DielectricConstant(ag, make_whole=False).run()
-        assert_almost_equal(eps.results['eps_mean'], 721.711, decimal=1)
-        
+        assert_allclose(eps.results['eps_mean'], 721.711, rtol=1e-03)
+
     def test_broken_repaired_molecules(self, ag):
         # cut molecules apart
         ag.universe.transfer_to_memory()
@@ -49,14 +50,21 @@ class TestDielectric(object):
             ag.wrap()
 
         eps = DielectricConstant(ag, make_whole=True).run()
-        assert_almost_equal(eps.results['eps_mean'], 5.088, decimal=1)
+        assert_allclose(eps.results['eps_mean'], 5.088, rtol=1e-03)
 
-    def test_temperature(self, ag):        
+    def test_temperature(self, ag):
         eps = DielectricConstant(ag, temperature=100).run()
-        assert_almost_equal(eps.results['eps_mean'], 9.621, decimal=1)
+        assert_allclose(eps.results['eps_mean'], 9.621, rtol=1e-03)
 
-    def test_non_neutral(self, ag):        
-        with pytest.raises(NotImplementedError):
+    def test_non_charges(self):
+        u = mda.Universe(DCD_TRICLINIC)
+        with pytest.raises(NoDataError,
+                           match="No charges defined given atomgroup."):
+            DielectricConstant(u.atoms).run()
+
+    def test_non_neutral(self, ag):
+        with pytest.raises(NotImplementedError,
+                           match="Analysis for non-neutral systems or"):
             DielectricConstant(ag[:-1]).run()
 
     def test_free_charges(self, ag):
