@@ -501,6 +501,16 @@ class TestScaleFactorImplementation(_NCDFGenerator):
             for ts in u.trajectory:
                 assert_almost_equal(ts.dimensions, expected, self.prec)
 
+    def test_scale_factor_not_float(self, tmpdir):
+        mutation = {'scale_factor': 'coordinates',
+                    'scale_factor_value': 'parsnips'}
+        params = self.gen_params(keypair=mutation, restart=False)
+        with tmpdir.as_cwd():
+            self.create_ncdf(params)
+            errmsg = "b'parsnips' is not a float"
+            with pytest.raises(TypeError, match=errmsg):
+                u = mda.Universe(params['filename'])
+
 
 class TestNCDFReaderExceptionsWarnings(_NCDFGenerator):
 
@@ -875,6 +885,38 @@ class TestNCDFWriterVelsForces(object):
                     getattr(ts, 'forces')
 
         u.trajectory.close()
+
+
+class TestNCDFWriterScaleFactors:
+    """Class to check that the NCDF Writer properly handles the
+    application of scale factors"""
+
+    @pytest.fixture()
+    def outfile(self, tmpdir):
+        return str(tmpdir) + 'ncdf-write-scale.ncdf'
+
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(PRM_NCBOX, TRJ_NCBOX)
+
+    def get_scale_factors(self, ncdfile):
+        """Get a dictionary of scale factors stored in netcdf file"""
+        sfactors = {}
+        with netcdf.netcdf_file(ncdfile) as f:
+            for var in f.variables:
+                if hasattr(f.variables[var], 'scale_factor'):
+                    sfactors[var] = f.variables[var].scale_factor
+
+        return sfactors
+
+    def test_write_read_factors_default(self, outfile, universe):
+        with universe.trajectory.Writer(outfile) as W:
+            W.write(universe.atoms)
+
+        # check scale_factors
+        sfactors = self.get_scale_factors(outfile)
+        assert len(sfactors) == 1
+        assert sfactors['velocities'] == 20.455
 
 
 class TestNCDFWriterUnits(object):
