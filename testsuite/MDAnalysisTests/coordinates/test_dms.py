@@ -29,7 +29,6 @@ from numpy.testing import assert_equal
 from MDAnalysis.lib.mdamath import triclinic_vectors
 
 from MDAnalysisTests.datafiles import (DMS)
-from MDAnalysisTests.coordinates.base import BaseTimestepTest
 
 
 class TestDMSReader(object):
@@ -81,21 +80,3 @@ class TestDMSReader(object):
     def test_frame_index_1_raises_IndexError(self, universe):
         with pytest.raises(IndexError):
             universe.trajectory[1]
-
-
-class TestDMSTimestep(BaseTimestepTest):
-    Timestep = mda.coordinates.DMS.Timestep
-    name = "DMS"
-    has_box = True
-    uni_args = (DMS,)
-
-    @pytest.mark.parametrize('dtype', (int, np.float32, np.float64))
-    def test_dimensions_set_box(self, ts, dtype):
-        ts.dimensions = self.newbox.astype(dtype)
-        assert ts.dimensions.dtype == np.float32
-        assert_equal(ts.dimensions, self.newbox)
-
-    def test_set_triclinic_vectors(self, ts):
-        ref_vec = triclinic_vectors(self.newbox)
-        ts.triclinic_dimensions = ref_vec
-        assert_equal(ts.dimensions, self.newbox)

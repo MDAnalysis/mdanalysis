@@ -29,7 +29,7 @@ from numpy.testing import (assert_equal, assert_allclose)
 from MDAnalysisTests.datafiles import (DLP_CONFIG, DLP_CONFIG_minimal,
                                        DLP_CONFIG_order, DLP_HISTORY,
                                        DLP_HISTORY_minimal, DLP_HISTORY_order)
-from MDAnalysisTests.coordinates.base import BaseTimestepTest
+
 from unittest import TestCase
 
 class _DLPConfig(object):
@@ -210,13 +210,3 @@ class TestDLPolyHistoryMinimal(_DLHistory):
 
     def test_unitcell(self):
         pass
-
-
-class TestDLPolyTimestep(BaseTimestepTest):
-    Timestep = mda.coordinates.DLPoly.Timestep
-    name = "DLPoly"
-    has_box = True
-    set_box = True
-    unitcell = np.array([[10., 0., 0.],
-                         [0., 11., 0.],
-                         [0., 0., 12.]])

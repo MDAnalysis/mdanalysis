@@ -26,7 +26,7 @@ from MDAnalysis.coordinates.GRO import GROReader, GROWriter
 from MDAnalysis.transformations import translate
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.coordinates.base import (
-    BaseReference, BaseReaderTest, BaseWriterTest, BaseTimestepTest,
+    BaseReference, BaseReaderTest, BaseWriterTest,
 )
 from MDAnalysisTests.coordinates.reference import RefAdK
 from MDAnalysisTests.datafiles import (
