@@ -306,6 +306,10 @@ and <code class="docutils literal notranslate"><span class="pre">cvect</span></c
 </div>
 <p>The VMD surface created by the class updates the pore for each frame of the trajectory.
 Use it as normal by loading your trajectory in VMD and sourcing the file in the Tk Console.</p>
+<p>You can access the actual profiles generated in the <code class="docutils literal notranslate"><span class="pre">results</span></code> attribute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">ha</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">profiles</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>Again, HOLE writes out files for each frame. If you would like to delete these files
 after the analysis, you can call <a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.delete_temporary_files" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis.delete_temporary_files"><code class="xref py py-meth docutils literal notranslate"><span class="pre">delete_temporary_files()</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ha</span><span class="o">.</span><span class="n">delete_temporary_files</span><span class="p">()</span>
@@ -486,7 +490,7 @@ by HOLE, e.g. sphpdb files and logfiles.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – The Universe or AtomGroup to apply the analysis to.</li>
 <li><strong>select</strong> (<em>string</em><em>, </em><em>optional</em>) – The selection string to create an atom selection that the HOLE
 analysis is applied to.</li>
@@ -560,17 +564,127 @@ Files are called <cite>hole.inp</cite>.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A dictionary of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.recarray</span></code></a>s, indexed by frame.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></p>
-</td>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.sphpdbs">
+<code class="descclassname">results.</code><code class="descname">sphpdbs</code><a class="headerlink" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.sphpdbs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array of sphpdb filenames</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.outfiles">
+<code class="descclassname">results.</code><code class="descname">outfiles</code><a class="headerlink" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.outfiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Arrau of output filenames</p>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 1.0.</span></p>
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
 </div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.profiles">
+<code class="descclassname">results.</code><code class="descname">profiles</code><a class="headerlink" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.profiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Profiles generated by HOLE2.
+A dictionary of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.recarray</span></code></a>s, indexed by frame.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hole2.hole.HoleAnalysis.sphpdbs">
+<code class="descname">sphpdbs</code><a class="headerlink" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.sphpdbs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias of <a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.sphpdbs" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.sphpdbs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.sphpdbs</span></code></a></p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>This will be removed in MDAnalysis 3.0.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.sphpdbs" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.sphpdbs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.sphpdbs</span></code></a> instead.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hole2.hole.HoleAnalysis.outfiles">
+<code class="descname">outfiles</code><a class="headerlink" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.outfiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias of <a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.outfiles" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.outfiles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.outfiles</span></code></a></p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>This will be removed in MDAnalysis 3.0.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.outfiles" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.outfiles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.outfiles</span></code></a> instead.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.hole2.hole.HoleAnalysis.profiles">
+<code class="descname">profiles</code><a class="headerlink" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.profiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias of <a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.profiles" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.profiles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.profiles</span></code></a></p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>This will be removed in MDAnalysis 3.0.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.profiles" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.profiles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.profiles</span></code></a> instead.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">.. versionadded:: 1.0</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">.. versionchanged:: 2.0.0</code></dt>
+<dd><p><a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.sphpdbs" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis.sphpdbs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sphpdbs</span></code></a>, <a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.outfiles" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis.outfiles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">outfiles</span></code></a> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">profiles</span> <span class="pre">`</span>
+<span class="pre">are</span> <span class="pre">now</span> <span class="pre">stored</span> <span class="pre">in</span> <span class="pre">a</span> <span class="pre">:class:`MDAnalysis.analysis.base.Results</span></code>
+instance.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.analysis.hole2.hole.HoleAnalysis.bin_radii">
 <code class="descname">bin_radii</code><span class="sig-paren">(</span><em>frames=None</em>, <em>bins=100</em>, <em>range=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole2/hole.html#HoleAnalysis.bin_radii"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.bin_radii" title="Permalink to this definition">¶</a></dt>
@@ -1062,7 +1176,7 @@ by HOLE, e.g. sphpdb files and logfiles.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – The Universe or AtomGroup to apply the analysis to.</li>
 <li><strong>select</strong> (<em>string</em><em>, </em><em>optional</em>) – The selection string to create an atom selection that the HOLE
 analysis is applied to.</li>
@@ -1136,17 +1250,127 @@ Files are called <cite>hole.inp</cite>.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A dictionary of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.recarray</span></code></a>s, indexed by frame.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></p>
-</td>
+</tbody>
+</table>
+<dl class="attribute">
+<dt>
+<code class="descclassname">results.</code><code class="descname">sphpdbs</code></dt>
+<dd><p>Array of sphpdb filenames</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descclassname">results.</code><code class="descname">outfiles</code></dt>
+<dd><p>Arrau of output filenames</p>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 1.0.</span></p>
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
 </div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descclassname">results.</code><code class="descname">profiles</code></dt>
+<dd><p>Profiles generated by HOLE2.
+A dictionary of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.recarray</span></code></a>s, indexed by frame.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">sphpdbs</code></dt>
+<dd><p>Alias of <a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.sphpdbs" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.sphpdbs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.sphpdbs</span></code></a></p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>This will be removed in MDAnalysis 3.0.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.sphpdbs" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.sphpdbs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.sphpdbs</span></code></a> instead.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">outfiles</code></dt>
+<dd><p>Alias of <a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.outfiles" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.outfiles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.outfiles</span></code></a></p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>This will be removed in MDAnalysis 3.0.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.outfiles" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.outfiles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.outfiles</span></code></a> instead.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">profiles</code></dt>
+<dd><p>Alias of <a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.profiles" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.profiles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.profiles</span></code></a></p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>This will be removed in MDAnalysis 3.0.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.profiles" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis.results.profiles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.profiles</span></code></a> instead.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">.. versionadded:: 1.0</code></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">.. versionchanged:: 2.0.0</code></dt>
+<dd><p><a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.sphpdbs" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis.sphpdbs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">sphpdbs</span></code></a>, <a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.outfiles" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis.outfiles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">outfiles</span></code></a> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">profiles</span> <span class="pre">`</span>
+<span class="pre">are</span> <span class="pre">now</span> <span class="pre">stored</span> <span class="pre">in</span> <span class="pre">a</span> <span class="pre">:class:`MDAnalysis.analysis.base.Results</span></code>
+instance.</p>
+</dd></dl>
+
 <dl class="method">
 <dt>
 <code class="descname">bin_radii</code><span class="sig-paren">(</span><em>frames=None</em>, <em>bins=100</em>, <em>range=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole2/hole.html#HoleAnalysis.bin_radii"><span class="viewcode-link">[source]</span></a></dt>
