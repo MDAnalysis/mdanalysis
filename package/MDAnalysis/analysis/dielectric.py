@@ -63,7 +63,7 @@ class DielectricConstant(AnalysisBase):
 
     is calculated for a system in tin foil boundary conditions, which is
     the usual case if electrostatics are handled with a Ewald summation
-    technique.
+    technique. See [Neumann1983b]_ for details on the derivation.
 
     Parameters
     ----------
