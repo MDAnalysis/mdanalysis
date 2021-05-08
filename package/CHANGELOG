@@ -178,6 +178,8 @@ Changes
   * `analysis.rdf.InterRDF` and `analysis.rdf.InterRDF_s` now store
     their result attributes using the `analysis.base.Results` class
     (Issue #3276, #3261)
+  * `analysis.diffusionmap.DistanceMatrix` class now stores `dist_matrix`
+    using the `analysis.base.Results` class (Issues #3288, #3290)    
   * `helix_analysis.HELANAL` now uses the `analysis.base.Results` class to
     store results attributes (Issue #3261, #3267)
   * `analysis.align.AlignTraj` and `analysis.align.AverageStructure` now store
@@ -251,6 +253,9 @@ Deprecations
     `analysis.rdf.InterRDF_s` are now deprecated in favour of `results.bins`,
     `results.edges`, `results.count`, `results.rdf` and `results.cdf`
     (Issue #3276, #3261)
+  * The `analysis.diffusionmap.DistanceMatrix.dist_matrix` is now deprecated in
+    favour of `analysis.diffusionmap.DistanceMatrix.results.dist_matrix`. 
+    It will be removed in 3.0.0 (Issues #3288, #3290)
   * The `analysis.align.AlignTraj.rmsd` attribute is now deprecated in
     favour of `analysis.align.AlignTraj.results.rmsd` (Issue #3278, #3261)
   * The `universe`, `positions`, and `rmsd` attributes of
