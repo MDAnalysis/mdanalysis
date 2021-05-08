@@ -28,16 +28,6 @@ Dielectric --- :mod:`MDAnalysis.analysis.dielectric`
 :Authors: Mattia Felice Palermo, Philip Loche
 :Year: 2019
 :Copyright: GNU Public License v2
-
-A tool to compute the average dipole moment :math:`M` and
-the static dielectric constant
-
-.. math::
-
-   \varepsilon = 1 + \frac{\langle M^2 \rangle - \langle M \rangle^2}
-                            {3 \varepsilon_ 0 V k_B T}
-
-for a system simulated in tin foil boundary conditions.
 """
 
 from __future__ import absolute_import, division
@@ -58,11 +48,18 @@ due.cite(Doi("10.1080/00268978300102721"),
 del Doi
 
 class DielectricConstant(AnalysisBase):
-    r"""Dielectric constant
+    r"""Compute the average dipole moment :math:`M` and the static dielectric 
+    constant for a system simulated in tin foil boundary conditions
+
+    .. math::
+
+    \varepsilon = 1 + \frac{\langle M^2 \rangle - \langle M \rangle^2}
+                            {3 \varepsilon_ 0 V k_B T} \,.
+
 
     Parameters
     ----------
-    selection : AtomGroup
+    selection : `~MDAnalysis.core.groups.AtomGroup`
           any atomgroup
     temperature : float
         Temperature (Kelvin) at which the system has been simulated [298.15]
@@ -75,31 +72,35 @@ class DielectricConstant(AnalysisBase):
 
     Attributes
     ----------
-    results : dict
-          * M: Directional dependant dipole moment
-            :math:`\langle \boldsymbol M \rangle` in :math:`eÅ`.
-          * M2: Directional dependant squared dipole moment
-            :math:`\langle \boldsymbol M^2 \rangle` in :math:`(eÅ)^2`
-          * fluct: Directional dependant dipole moment fluctuation
-            :math:`\langle \boldsymbol M^2 \rangle - \langle \boldsymbol M \rangle^2`
-            in :math:`(eÅ)^2`
-          * eps: Directional dependant static dielectric constant
-          * eps_mean: Static dielectric constant
+    results.M : numpy.ndarray
+          Directional dependant dipole moment
+          :math:`\langle \boldsymbol M \rangle` in :math:`eÅ`.
+    results.M2 : numpy.ndarray
+          Directional dependant squared dipole moment
+          :math:`\langle \boldsymbol M^2 \rangle` in :math:`(eÅ)^2`
+    results.fluct : float 
+          Directional dependant dipole moment fluctuation
+          :math:`\langle \boldsymbol M^2 \rangle - \langle \boldsymbol M \rangle^2`
+          in :math:`(eÅ)^2`
+    results.eps : numpy.ndarray
+          Directional dependant static dielectric constant
+    results.eps_mean : float
+          Static dielectric constant
 
     Example
     -------
-    Create a DielectricConstant object by supplying a selection,
-    then use the :meth:`run` method::
+    Create a :class:`DielectricConstant` instance by supplying an 
+    `~MDAnalysis.core.groups.AtomGroup`, then use the :meth:`run` method::
 
       diel = DielectricConstant(selection)
       diel.run()
 
     The static dielectric constant of the system will be returned
-    within the `results` variable of the object.
+    within the class:`~MDAnalysis.analysis.base.Results` 
+    attribute.
 
 
-    .. versionadded:: 0.21.0
-
+    .. versionadded:: 2.0.0
     """
     def __init__(self, selection, temperature=300, make_whole=True, **kwargs):
         super(DielectricConstant, self).__init__(selection.universe.trajectory,
