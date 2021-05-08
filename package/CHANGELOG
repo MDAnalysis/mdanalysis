@@ -178,8 +178,15 @@ Changes
   * `analysis.pca.PCA` class now stores `p_components`, `variance`, 
     `cumulated_variance` and `mean_atoms` using the 
     `analysis.base.Results` class (Issues #3275 #3285)
+  * `analysis.polymer.PersistenceLength` class now stores `lb`,
+    `lp` and `fit` using the `analysis.base.Results` class 
+    (Issues #3289, #3291)
+  * `analysis.hole2.HoleAnalysis` now stores ``sphpdbs``, ``outfiles``
+    and ``profiles`` in the `analysis.base.Results` class (Issues #3261, #3269)
   * `helix_analysis.HELANAL` now uses the `analysis.base.Results` class to
     store results attributes (Issue #3261, #3267)
+  * `analysis.diffusionmap.DistanceMatrix` class now stores `dist_matrix`
+    using the `analysis.base.Results` class (Issues #3288, #3290)
   * `analysis.align.AlignTraj` and `analysis.align.AverageStructure` now store
     their result attributes using the `analysis.base.Results` class
     (Issues #3278 and #3261)
@@ -251,6 +258,20 @@ Deprecations
     `results.p_components`, `results.variance`, `results.cumulated_variance` 
     and `results.mean_atoms`. They will be removed in 3.0.0 
     (Issues #3275 #3285)
+  * The `analysis.polymer.PersistenceLength.lb`,
+    `analysis.polymer.PersistenceLength.lp` and 
+    `analysis.polymer.PersistenceLength.fit` attributes are now deprecated in
+    favour of `analysis.polymer.PersistenceLength.results.lb`,
+    `analysis.polymer.PersistenceLength.results.lp` and
+    `analysis.polymer.PersistenceLength.results.fit` respectively. They will
+    be removed in 3.0.0 (Issues #3289, #3291)
+  * The ``sphpdbs``, ``outfiles`` and ``profiles`` attributes of
+    `analysis.hole2.HoleAnalysis` are now deprecated in favour of
+    ``results.sphpdbs``, ``results.outfiles`` and
+    ``results.profiles`` (Issues #3261, #3269)
+  * The `analysis.diffusionmap.DistanceMatrix.dist_matrix` is now deprecated in
+    favour of `analysis.diffusionmap.DistanceMatrix.results.dist_matrix`. 
+    It will be removed in 3.0.0 (Issues #3288, #3290)
   * The `analysis.align.AlignTraj.rmsd` attribute is now deprecated in
     favour of `analysis.align.AlignTraj.results.rmsd` (Issue #3278, #3261)
   * The `universe`, `positions`, and `rmsd` attributes of
