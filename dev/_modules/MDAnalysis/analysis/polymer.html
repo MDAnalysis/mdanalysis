@@ -215,34 +215,6 @@
 <span class="sd">:Copyright: GNU Public License v3</span>
 
 <span class="sd">This module contains various commonly used tools in analysing polymers.</span>
-
-
-<span class="sd">Persistence length worked example</span>
-<span class="sd">---------------------------------</span>
-
-<span class="sd">This example shows how to find the persistence length of a polymer</span>
-<span class="sd">using MDAnalysis.</span>
-<span class="sd">::</span>
-
-<span class="sd">  from MDAnalysis.tests.datafiles import TRZ_psf, TRZ</span>
-<span class="sd">  import MDAnalysis as mda</span>
-<span class="sd">  from MDAnalysis.analysis import polymer</span>
-<span class="sd">  u = mda.Universe(TRZ_psf, TRZ)</span>
-<span class="sd">  # this system is a pure polymer melt of polyamide,</span>
-<span class="sd">  # so we can select the chains by using the .fragments attribute</span>
-<span class="sd">  chains = u.atoms.fragments</span>
-<span class="sd">  # select only the backbone atoms for each chain</span>
-<span class="sd">  backbones = [chain.select_atoms(&#39;not name O* H*&#39;) for chain in chains]</span>
-<span class="sd">  # sort the chains, removing any non-backbone atoms</span>
-<span class="sd">  sorted_backbones = [polymer.sort_backbone(bb) for bb in backbones]</span>
-<span class="sd">  persistence_length = polymer.PersistenceLength(sorted_backbones)</span>
-<span class="sd">  # Run the analysis, this will average over all polymer chains</span>
-<span class="sd">  # and all timesteps in trajectory</span>
-<span class="sd">  persistence_length = persistence_length.run()</span>
-<span class="sd">  print(&#39;The persistence length is: {}&#39;.format(persistence_length.lp))</span>
-<span class="sd">  # always check the visualisation of this:</span>
-<span class="sd">  persistence_length.plot()</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.optimize</span>
@@ -344,26 +316,92 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    atomgroups : iterable</span>
-<span class="sd">       List of AtomGroups.  Each should represent a single</span>
+<span class="sd">       List of AtomGroups. Each should represent a single</span>
 <span class="sd">       polymer chain, ordered in the correct order.</span>
-<span class="sd">    verbose : bool (optional)</span>
+<span class="sd">    verbose : bool, optional</span>
 <span class="sd">       Show detailed progress of the calculation if set to ``True``.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    results.bond_autocorrelation : numpy.ndarray</span>
 <span class="sd">       the measured bond autocorrelation</span>
-<span class="sd">    lb : float</span>
+<span class="sd">    results.lb : float</span>
 <span class="sd">       the average bond length</span>
-<span class="sd">    lp : float</span>
+
+<span class="sd">       .. versionadded:: 2.0.0</span>
+
+<span class="sd">    lb : float</span>
+
+<span class="sd">       Alias to the :attr:`results.lb`.</span>
+
+<span class="sd">       .. deprecated:: 2.0.0</span>
+<span class="sd">            Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">            :attr:`results.lb` instead.</span>
+
+<span class="sd">    results.x : numpy.ndarray</span>
+<span class="sd">        length of the decorrelation predicted by *lp*</span>
+
+<span class="sd">        .. versionadded:: 2.0.0</span>
+
+<span class="sd">    results.lp : float</span>
 <span class="sd">       calculated persistence length</span>
-<span class="sd">    fit : numpy.ndarray</span>
+
+<span class="sd">       .. versionadded:: 2.0.0</span>
+
+<span class="sd">    lp : float</span>
+
+<span class="sd">       Alias to the :attr:`results.lp`.</span>
+
+<span class="sd">       .. deprecated:: 2.0.0</span>
+<span class="sd">            Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">            :attr:`results.lp` instead.</span>
+
+<span class="sd">    results.fit : numpy.ndarray</span>
 <span class="sd">       the modelled backbone decorrelation predicted by *lp*</span>
+
+<span class="sd">       .. versionadded:: 2.0.0</span>
+
+<span class="sd">    fit : float</span>
+
+<span class="sd">       Alias to the :attr:`results.fit`.</span>
+
+<span class="sd">       .. deprecated:: 2.0.0</span>
+<span class="sd">            Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">            :attr:`results.fit` instead.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    :func:`sort_backbone`</span>
 <span class="sd">       for producing the sorted AtomGroup required for input.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        from MDAnalysis.tests.datafiles import TRZ_psf, TRZ</span>
+<span class="sd">        import MDAnalysis as mda</span>
+<span class="sd">        from MDAnalysis.analysis import polymer</span>
+<span class="sd">        u = mda.Universe(TRZ_psf, TRZ)</span>
+
+<span class="sd">        # this system is a pure polymer melt of polyamide,</span>
+<span class="sd">        # so we can select the chains by using the .fragments attribute</span>
+<span class="sd">        chains = u.atoms.fragments</span>
+
+<span class="sd">        # select only the backbone atoms for each chain</span>
+<span class="sd">        backbones = [chain.select_atoms(&#39;not name O* H*&#39;) for chain in chains]</span>
+
+<span class="sd">        # sort the chains, removing any non-backbone atoms</span>
+<span class="sd">        sorted_backbones = [polymer.sort_backbone(bb) for bb in backbones]</span>
+<span class="sd">        persistence_length = polymer.PersistenceLength(sorted_backbones)</span>
+
+<span class="sd">        # Run the analysis, this will average over all polymer chains</span>
+<span class="sd">        # and all timesteps in trajectory</span>
+<span class="sd">        persistence_length = persistence_length.run()</span>
+<span class="sd">        print(f&#39;The persistence length is: {persistence_length.results.lp}&#39;)</span>
+
+<span class="sd">        # always check the visualisation of this:</span>
+<span class="sd">        persistence_length.plot()</span>
+
 
 <span class="sd">    .. versionadded:: 0.13.0</span>
 <span class="sd">    .. versionchanged:: 0.20.0</span>
@@ -371,7 +409,9 @@
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       Deprecated :meth:`PersistenceLength.perform_fit` has now been removed.</span>
 <span class="sd">    .. versionchanged:: 2.0.0</span>
-<span class="sd">       Former ``results`` are now stored as ``results.bond_autocorrelation``</span>
+<span class="sd">       Former ``results`` are now stored as ``results.bond_autocorrelation``.</span>
+<span class="sd">       :attr:`lb`, :attr:`lp`, :attr:`fit` are now stored in a</span>
+<span class="sd">       :class:`MDAnalysis.analysis.base.Results` instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroups</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">PersistenceLength</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -403,6 +443,30 @@
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[:(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">inner_pr</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">:]</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">lb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `lb` attribute was deprecated in &quot;</span>
+                <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
+                <span class="s2">&quot;Please use `results.variance` instead.&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lb</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">lp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `lp` attribute was deprecated in &quot;</span>
+                <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
+                <span class="s2">&quot;Please use `results.variance` instead.&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lp</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `fit` attribute was deprecated in &quot;</span>
+                <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
+                <span class="s2">&quot;Please use `results.variance` instead.&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">fit</span>
+
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atomgroups</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
@@ -421,7 +485,7 @@
             <span class="n">pos</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">positions</span>
             <span class="n">b</span> <span class="o">=</span> <span class="n">calc_bonds</span><span class="p">(</span><span class="n">pos</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
             <span class="n">bs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">bs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">bs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_perform_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Fit the results to an exponential decay&quot;&quot;&quot;</span>
@@ -429,12 +493,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bond_autocorrelation</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Use the run method first&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bond_autocorrelation</span><span class="p">))</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">lb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lb</span> <span class="o">*</span>\
+                            <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bond_autocorrelation</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">lp</span> <span class="o">=</span> <span class="n">fit_exponential_decay</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
-                                        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bond_autocorrelation</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lp</span> <span class="o">=</span> <span class="n">fit_exponential_decay</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bond_autocorrelation</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">lp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lp</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PersistenceLength.plot"><a class="viewcode-back" href="../../../documentation_pages/analysis/polymer.html#MDAnalysis.analysis.polymer.PersistenceLength.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Visualise the results and fit</span>
@@ -451,16 +516,16 @@
         <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
         <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bond_autocorrelation</span><span class="p">,</span>
                 <span class="s1">&#39;ro&#39;</span><span class="p">,</span>
                 <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Result&#39;</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">fit</span><span class="p">,</span>
                 <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Fit&#39;</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$C(x)$&#39;</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">40</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">lb</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">40</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">lb</span><span class="p">)</span>
 
         <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
 
