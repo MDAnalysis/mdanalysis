@@ -33,7 +33,7 @@ import MDAnalysis as mda
 from MDAnalysis.coordinates.base import Timestep
 from MDAnalysis.transformations import translate
 from MDAnalysis import NoDataError
-from MDAnalysis.lib.mdamath import triclinic_vectors
+
 
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
 from MDAnalysisTests.datafiles import AUX_XVG_HIGHF, AUX_XVG_LOWF

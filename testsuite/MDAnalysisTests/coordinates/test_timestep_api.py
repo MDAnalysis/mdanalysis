@@ -26,9 +26,11 @@
 
 _TestTimestepInterface tests the Readers are correctly using Timesteps
 """
+import itertools
 import numpy as np
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_allclose, assert_array_almost_equal
 
+from MDAnalysis.lib.mdamath import triclinic_vectors
 import MDAnalysis as mda
 from MDAnalysisTests.datafiles import (PSF, XYZ_five, INPCRD, DCD, DLP_CONFIG,
                                        DLP_HISTORY, DMS, GMS_ASYMOPT, GRO, XTC,
@@ -37,7 +39,7 @@ from MDAnalysisTests.datafiles import (PSF, XYZ_five, INPCRD, DCD, DLP_CONFIG,
                                        PDBQT_input, PQR, PRM, TRJ, PRMncdf,
                                        NCDF, TRZ_psf, TRZ)
 
-from MDAnalysisTests.coordinates.base import assert_timestep_equal
+from MDAnalysisTests.coordinates.base import assert_timestep_equal, assert_timestep_almost_equal
 import pytest
 
 
@@ -58,8 +60,6 @@ class TestTimestep(object):
     refvel = np.arange(size * 3, dtype=np.float32).reshape(size, 3) * 2.345
     reffor = np.arange(size * 3, dtype=np.float32).reshape(size, 3) * 3.456
 
-    has_box = True
-    set_box = True  # whether you can set dimensions info.
     # If you can set box, what the underlying unitcell should be
     # if dimensions are:
     newbox = np.array([10., 11., 12., 90., 90., 90.])
@@ -124,29 +124,17 @@ class TestTimestep(object):
     # should raise NotImplementedError for .dimension and .volume
     # Timestep does do them, should return values properly
     def test_dimensions(self, ts):
-        if self.has_box:
-            assert_allclose(ts.dimensions, self.newbox)
-        else:
-            assert ts.dimensions is None
+        assert_allclose(ts.dimensions, self.newbox)
 
     @pytest.mark.parametrize('dtype', (int, np.float32, np.float64))
     def test_dimensions_set_box(self, ts, dtype):
-        if self.set_box:
-            ts.dimensions = self.newbox.astype(dtype)
-            assert ts.dimensions.dtype == np.float32
-            assert_allclose(ts.dimensions, self.newbox)
-        else:
-            pass
+        ts.dimensions = self.newbox.astype(dtype)
+        assert ts.dimensions.dtype == np.float32
+        assert_allclose(ts.dimensions, self.newbox)
 
     def test_volume(self, ts):
-        if self.has_box and self.set_box:
-            ts.dimensions = self.newbox
-            assert_equal(ts.volume, self.ref_volume)
-        elif self.has_box and not self.set_box:
-            pass  # How to test volume of box when I don't set unitcell first?
-        else:
-            with pytest.raises(NotImplementedError):
-                getattr(self.ts, "volume")
+        ts.dimensions = self.newbox
+        assert_equal(ts.volume, self.ref_volume)
 
     def test_triclinic_vectors(self, ts):
         assert_allclose(ts.triclinic_dimensions,
@@ -192,7 +180,7 @@ class TestTimestep(object):
 
     def test_allocate_velocities(self, ts):
         assert_equal(ts.has_velocities, False)
-        with pytest.raises(NoDataError):
+        with pytest.raises(mda.NoDataError):
             getattr(ts, 'velocities')
 
         ts.has_velocities = True
@@ -201,7 +189,7 @@ class TestTimestep(object):
 
     def test_allocate_forces(self, ts):
         assert_equal(ts.has_forces, False)
-        with pytest.raises(NoDataError):
+        with pytest.raises(mda.NoDataError):
             getattr(ts, 'forces')
 
         ts.has_forces = True
@@ -215,7 +203,7 @@ class TestTimestep(object):
 
         ts.has_velocities = False
         assert_equal(ts.has_velocities, False)
-        with pytest.raises(NoDataError):
+        with pytest.raises(mda.NoDataError):
             getattr(ts, 'velocities')
 
     def test_forces_remove(self):
@@ -225,7 +213,7 @@ class TestTimestep(object):
 
         ts.has_forces = False
         assert_equal(ts.has_forces, False)
-        with pytest.raises(NoDataError):
+        with pytest.raises(mda.NoDataError):
             getattr(ts, 'forces')
 
     def test_check_ts(self):
@@ -250,17 +238,17 @@ class TestTimestep(object):
         if p:
             assert_array_almost_equal(ts.positions, self.refpos)
         else:
-            with pytest.raises(NoDataError):
+            with pytest.raises(mda.NoDataError):
                 getattr(ts, 'positions')
         if v:
             assert_array_almost_equal(ts.velocities, self.refvel)
         else:
-            with pytest.raises(NoDataError):
+            with pytest.raises(mda.NoDataError):
                 getattr(ts, 'velocities')
         if f:
             assert_array_almost_equal(ts.forces, self.reffor)
         else:
-            with pytest.raises(NoDataError):
+            with pytest.raises(mda.NoDataError):
                 getattr(ts, 'forces')
 
     def test_from_coordinates_mismatch(self):
@@ -685,3 +673,67 @@ def test_atomgroup_dims_access(uni):
     # but if np array shouldn't be the same object, i.e. it should have been copied
     if dims is not None:
         assert dims is not ts.dimensions
+
+
+class TimeTimestepNoBox:
+    @staticmethod
+    @pytest.fixture
+    def ts():
+        ts = mda.coordinates.base.Timestep(20)
+
+        ts.dimensions = None
+
+        return ts
+
+    def test_Noneness(self, ts):
+        assert ts.dimensions is None
+
+    def test_triclinic_Noneness(self, ts):
+        assert ts.triclinic_dimensions is None
+
+    def test_set_dimensions(self, ts):
+        # None to something
+        box = np.array([10, 10, 10, 90, 90, 90])
+        ts.dimensions = box
+
+        assert_array_equal(ts.dimensions, box)
+
+    def test_set_triclinic_dimensions(self, ts):
+        # None to something via triclinic
+        box = np.array([[10, 0, 0], [5, 10, 0], [0, 5, 10]])
+
+        ts.triclinic_dimensions = box
+
+        assert_array_equal(ts.triclinic_dimensions, box)
+
+    def test_set_None(self, ts):
+        ts.dimensions = [10, 10, 10, 90, 90, 90]
+
+        assert not ts.dimensions is None
+
+        ts.dimensions = None
+
+        assert ts.dimensions is None
+        assert ts.triclinic_dimenions is None
+
+    def test_set_triclinic_None(self, ts):
+        ts.dimensions = [10, 10, 10, 90, 90, 90]
+
+        assert not ts.dimensions is None
+
+        ts.triclinic_dimensions = None
+
+        assert ts.dimensions is None
+        assert ts.triclinic_dimenions is None
+
+    def test_set_zero_box(self, ts):
+        ts.dimensions = np.zeros(6)
+
+        assert ts.dimensions is None
+        assert ts.triclinic_dimenions is None
+
+    def test_set_zero_box_triclinic(self, ts):
+        ts.triclinic_dimensions = np.zeros((3, 3))
+
+        assert ts.dimensions is None
+        assert ts.triclinic_dimenions is None
