@@ -519,7 +519,7 @@ class ChemfilesPicklable(chemfiles.Trajectory):
 
     def __init__(self, path, mode="r", format=""):
         if mode != "r":
-            raise ValueError("Only read mode ('r') " "files can be pickled.")
+            raise ValueError("Only read mode ('r') files can be pickled.")
         super().__init__(path=path, mode=mode, format=format)
 
     def __getstate__(self):
