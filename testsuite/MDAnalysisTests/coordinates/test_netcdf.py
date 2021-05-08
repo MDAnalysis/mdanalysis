@@ -906,7 +906,7 @@ class TestNCDFWriterScaleFactors:
     def get_scale_factors(self, ncdfile):
         """Get a dictionary of scale factors stored in netcdf file"""
         sfactors = {}
-        with netcdf.netcdf_file(ncdfile) as f:
+        with netcdf.netcdf_file(ncdfile, mmap=False) as f:
             for var in f.variables:
                 if hasattr(f.variables[var], 'scale_factor'):
                     sfactors[var] = f.variables[var].scale_factor
@@ -915,7 +915,7 @@ class TestNCDFWriterScaleFactors:
 
     def get_variable(self, ncdfile, variable, frame):
         """Return a varible array from netcdf file"""
-        with netcdf.netcdf_file(ncdfile) as f:
+        with netcdf.netcdf_file(ncdfile, mmap=False) as f:
             return f.variables[variable][frame]
 
     def test_write_read_factors_default(self, outfile, universe):
