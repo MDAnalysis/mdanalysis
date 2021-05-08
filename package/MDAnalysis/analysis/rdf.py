@@ -358,7 +358,7 @@ class InterRDF(AnalysisBase):
                                                 box=self.u.dimensions)
         # Maybe exclude same molecule distances
         if self._exclusion_block is not None:
-            idxA = pairs[:, 0]//self._exclusion_block[0],
+            idxA = pairs[:, 0]//self._exclusion_block[0]
             idxB = pairs[:, 1]//self._exclusion_block[1]
             mask = np.where(idxA != idxB)[0]
             dist = dist[mask]
@@ -521,7 +521,7 @@ class InterRDF_s(AnalysisBase):
         count_list = []
         count, edges = np.histogram([-1], **self.rdf_settings)
         self.results.count  = [np.zeros((ag1.n_atoms, ag2.n_atoms, len(count)),
-                         dtype=np.float64) for ag1, ag2 in self.ags]
+                                        dtype=np.float64) for ag1, ag2 in self.ags]
         self.results.edges = edges
         self.results.bins = 0.5 * (edges[:-1] + edges[1:])
 
@@ -538,7 +538,7 @@ class InterRDF_s(AnalysisBase):
 
             for j, (idx1, idx2) in enumerate(pairs):
                 self.results.count[i][idx1, idx2, :] += np.histogram(dist[j],
-                    **self.rdf_settings)[0]
+                                                                     **self.rdf_settings)[0]
 
         self.volume += self._ts.volume
 
