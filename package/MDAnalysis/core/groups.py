@@ -1564,12 +1564,16 @@ class GroupBase(_MutableBase):
         # Try and auto detect box dimensions:
         if box is None:
             box = self.dimensions
+            if box is None:
+                raise ValueError("No dimensions information in Universe. "
+                                 " Either use the 'box' argument or"
+                                 " set the '.dimensions' attribute")
         else:
             box = np.asarray(box, dtype=np.float32)
-        if not np.all(box > 0.0) or box.shape != (6,):
-            raise ValueError("Invalid box: Box has invalid shape or not all "
-                             "box dimensions are positive. You can specify a "
-                             "valid box using the 'box' argument.")
+            if not np.all(box > 0.0) or box.shape != (6,):
+                raise ValueError("Invalid box: Box has invalid shape or not all "
+                                 "box dimensions are positive. You can specify a "
+                                 "valid box using the 'box' argument.")
 
         # no matter what kind of group we have, we need to work on its (unique)
         # atoms:
