@@ -110,6 +110,8 @@ solvent with itself or with another solute.
       :class:`numpy.ndarray` of the `nbins + 1` edges of the histogram
       bins.
 
+       .. versionadded:: 2.0.0
+
    .. attribute:: edges
 
        Alias to the :attr:`results.edges` attribute.
@@ -123,6 +125,8 @@ solvent with itself or with another solute.
       :class:`numpy.ndarray` of the :ref:`radial distribution
       function<equation-gab>` values for the :attr:`results.bins`.
 
+       .. versionadded:: 2.0.0
+
    .. attribute:: rdf
 
        Alias to the :attr:`results.rdf` attribute.
@@ -135,6 +139,8 @@ solvent with itself or with another solute.
 
       :class:`numpy.ndarray` representing the radial histogram, i.e.,
       the raw counts, for all :attr:`results.bins`.
+
+       .. versionadded:: 2.0.0
 
    .. attribute:: count
 
@@ -166,6 +172,8 @@ protein.
       :class:`numpy.ndarray` of the centers of the `nbins` histogram
       bins; all individual site-specific RDFs have the same bins.
 
+       .. versionadded:: 2.0.0
+
    .. attribute:: bins
 
        Alias to the :attr:`results.bins` attribute.
@@ -179,6 +187,8 @@ protein.
       :class:`numpy.ndarray` of the `nbins + 1` edges of the histogram
       bins; all individual site-specific RDFs have the same bins.
 
+       .. versionadded:: 2.0.0
+
    .. attribute:: edges
 
        Alias to the :attr:`results.edges` attribute.
@@ -189,14 +199,16 @@ protein.
 
    .. attribute:: results.rdf
 
-      :class:`list` of the site-specific :ref:`radial distribution
-      functions<equation-gab>` or :ref:`density
-      functions<equation-nab>` for the :attr:`bins`. The list contains
-      ``len(ags)`` entries. Each entry for the ``i``-th pair ``[A, B]
-      = ags[i]`` in `ags` is a :class:`numpy.ndarray` with shape
-      ``(len(A), len(B))``, i.e., a stack of RDFs. For example,
-      ``results.rdf[i][0, 2]`` is the RDF between atoms ``A[0]``
-      and ``B[2]``.
+       :class:`list` of the site-specific :ref:`radial distribution
+       functions<equation-gab>` or :ref:`density
+       functions<equation-nab>` for the :attr:`bins`. The list contains
+       ``len(ags)`` entries. Each entry for the ``i``-th pair ``[A, B]
+       = ags[i]`` in `ags` is a :class:`numpy.ndarray` with shape
+       ``(len(A), len(B))``, i.e., a stack of RDFs. For example,
+       ``results.rdf[i][0, 2]`` is the RDF between atoms ``A[0]``
+       and ``B[2]``.
+
+       .. versionadded:: 2.0.0
 
    .. attribute:: rdf
 
@@ -208,10 +220,12 @@ protein.
 
    .. attribute:: results.count
 
-      :class:`list` of the site-specific radial histograms, i.e., the
-      raw counts, for all :attr:`results.bins`. The data have the same
-      structure as :attr:`results.rdf` except that the arrays contain
-      the raw counts.
+       :class:`list` of the site-specific radial histograms, i.e., the
+       raw counts, for all :attr:`results.bins`. The data have the same
+       structure as :attr:`results.rdf` except that the arrays contain
+       the raw counts.
+
+       .. versionadded:: 2.0.0
 
    .. attribute:: count
 
@@ -223,12 +237,14 @@ protein.
 
    .. attribute:: results.cdf
 
-      :class:`list` of the site-specific :ref:`cumulative
-      counts<equation-countab>`, for all :attr:`results.bins`. The data
-      have the same structure as :attr:`results.rdf` except that the arrays
-      contain the cumulative counts.
+       :class:`list` of the site-specific :ref:`cumulative
+       counts<equation-countab>`, for all :attr:`results.bins`. The data
+       have the same structure as :attr:`results.rdf` except that the arrays
+       contain the cumulative counts.
 
-      This attribute only exists after :meth:`get_cdf` has been run.
+       This attribute only exists after :meth:`get_cdf` has been run.
+
+       .. versionadded:: 2.0.0
 
    .. attribute:: cdf
 
@@ -305,9 +321,9 @@ class InterRDF(AnalysisBase):
        removed. These should instead be passed to :meth:`InterRDF.run`.
 
     .. versionchanged:: 2.0.0
-       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and
-       store results as attributes ``bins``, ``edges``, ``rdf`` and ``count``
-       of the ``results`` attribute.
+       Store results as attributes ``bins``, ``edges``, ``rdf`` and ``count``
+       of the ``results`` attribute of
+       :class:`~MDAnalysis.analysis.AnalysisBase`.
     """
     def __init__(self, g1, g2,
                  nbins=75, range=(0.0, 15.0), exclusion_block=None,
@@ -485,9 +501,9 @@ class InterRDF_s(AnalysisBase):
        removed. These should instead be passed to :meth:`InterRDF_s.run`.
 
     .. versionchanged:: 2.0.0
-       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and
-       store results as attributes ``bins``, ``edges``, ``rdf``, ``count``
-       and ``cdf`` of the ``results`` attribute.
+       Store results as attributes ``bins``, ``edges``, ``rdf``, ``count``
+       and ``cdf`` of the ``results`` attribute
+       of :class:`~MDAnalysis.analysis.AnalysisBase`.
     """
     def __init__(self, u, ags,
                  nbins=75, range=(0.0, 15.0), density=False, **kwargs):
