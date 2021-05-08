@@ -22,7 +22,7 @@
 #
 import pytest
 
-from numpy.testing import assert_almost_equal, assert_equal
+from numpy.testing import assert_almost_equal
 
 import MDAnalysis as mda
 from MDAnalysis.analysis.rdf import InterRDF_s, InterRDF
