@@ -162,8 +162,12 @@ def test_calculate_mean(pca_aligned, u, u_aligned):
 
 
 def test_given_mean(pca_aligned, u):
+    # create dummy atomgroup to populate with the mean values
+    num_atoms = len(u.select_atoms(SELECTION))
+    ag = mda.Universe.empty(num_atoms, trajectory=True).select_atoms('all')
+    ag.positions = pca_aligned.mean.reshape((num_atoms,3))
     pca = PCA(u, select=SELECTION, align=False,
-              mean=pca_aligned._mean).run()
+              mean=ag).run()
     assert_almost_equal(pca_aligned.cov, pca.cov, decimal=5)
 
 
