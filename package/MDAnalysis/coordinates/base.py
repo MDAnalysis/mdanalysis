@@ -421,7 +421,7 @@ class Timestep(object):
                 return False
 
         if self.dimensions is None:
-            if not other.dimensions is None:
+            if other.dimensions is not None:
                 return False
         else:
             if other.dimensions is None:
