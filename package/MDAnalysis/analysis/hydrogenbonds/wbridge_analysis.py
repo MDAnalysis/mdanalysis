@@ -690,7 +690,7 @@ Classes
 
       .. deprecated:: 2.0.0
          Will be removed in MDAnalysis 3.0.0. Please use
-         :attr:`results.hbonds` instead.
+         :attr:`results.network` instead.
 
    .. attribute:: table
       
