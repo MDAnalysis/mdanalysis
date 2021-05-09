@@ -710,17 +710,17 @@ class TestWaterBridgeAnalysis(object):
 
     def test_generate_table_hba(self, wb_multiframe):
         '''Test generate table using hydrogen bond analysis format'''
-        wb_multiframe.generate_table(output_format='donor_acceptor')
+        table = wb_multiframe.generate_table(output_format='donor_acceptor')
         assert_array_equal(
-            sorted(wb_multiframe.results.table.donor_resid),
+            sorted(table.donor_resid),
             [1, 1, 2, 2, 2, 6, 6],
         )
 
     def test_generate_table_s1s2(self, wb_multiframe):
         '''Test generate table using hydrogen bond analysis format'''
-        wb_multiframe.generate_table(output_format='sele1_sele2')
+        table = wb_multiframe.generate_table(output_format='sele1_sele2')
         assert_array_equal(
-            sorted(wb_multiframe.results.table.sele1_resid),
+            sorted(table.sele1_resid),
             [1, 1, 1, 1, 2, 2, 3],
         )
 
@@ -765,8 +765,3 @@ class TestWaterBridgeAnalysis(object):
         wmsg = "The `network` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(wb.network, wb.results.network)
-
-        wb.generate_table()
-        wmsg = "The `table` attribute was deprecated in MDAnalysis 2.0.0"
-        with pytest.warns(DeprecationWarning, match=wmsg):
-            assert_equal(wb.table, wb.results.table)
