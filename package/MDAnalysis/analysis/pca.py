@@ -220,6 +220,11 @@ class PCA(AnalysisBase):
             self.mean = np.zeros(self._n_atoms*3)
             self._calc_mean = True
         else:
+            if self._n_atoms != len(self._mean): 
+                raise ValueError('Number of atoms in reference ({}) does '
+                                 'not match number of atoms in the '
+                                 'seelction ({})'.format(self._n_atoms,
+                                                         len(self._mean)))
             self.mean = self._mean.positions.ravel()
             self._calc_mean = False
 

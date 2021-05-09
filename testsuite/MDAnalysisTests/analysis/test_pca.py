@@ -173,6 +173,13 @@ def test_given_mean(pca_aligned, u):
     assert_almost_equal(pca_aligned.cov, pca.cov, decimal=5)
 
 
+def test_wrong_num_given_mean(u):
+    ag = u.select_atoms('backbone and name CA and resid 1')
+    with pytest.raises(ValueError) as exc:
+         pca = PCA(u, select=SELECTION, mean=ag).run()
+    assert 'Number of atoms in' in str(exc.value) 
+
+
 def test_alignment(pca_aligned, u, u_aligned):
     pca_pre_align = PCA(u_aligned, select=SELECTION, align=False).run()
     assert_almost_equal(pca_aligned.mean, pca_pre_align.mean)
