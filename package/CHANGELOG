@@ -175,6 +175,8 @@ Enhancements
     checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
 
 Changes
+  * `hydrogenbonds.WaterBridgeAnalysis.generate_table()` now returns the table
+    instead of storing it as an attribute.
   * `hydrogenbonds.WaterBridgeAnalysis` now stores data using the
     `hydrogenbonds.WaterBridgeAnalysis.results` attribute
     (Issue #3261, Issue #3270)
@@ -240,8 +242,7 @@ Changes
 
 Deprecations
   * The `hydrogenbonds.WaterBridgeAnalysis.table` attribute is now deprecated.
-    `generate_table()` will return `table`.
-  * The `hydrogenbonds.WaterBridgeAnalysis._network` attribute is now deprecated
+  * The `hydrogenbonds.WaterBridgeAnalysis.network` attribute is now deprecated
     in favour of `hydrogenbonds.WaterBridgeAnalysis.results.network`. It will be
     removed in 3.0.0 (Issue #3261, Issue #3270)
   * The `analysis.Contacts.timeseries` attribute is now deprecated in favour of 

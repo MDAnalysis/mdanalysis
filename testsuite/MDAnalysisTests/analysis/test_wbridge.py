@@ -758,10 +758,6 @@ class TestWaterBridgeAnalysis(object):
                                  'protein and (resid 10)', order=0)
         wb.run()
 
-        wmsg = "The `_network` attribute was deprecated in MDAnalysis 2.0.0"
-        with pytest.warns(DeprecationWarning, match=wmsg):
-            assert_equal(wb._network, wb.results.network)
-
         wmsg = "The `network` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(wb.network, wb.results.network)

@@ -692,14 +692,6 @@ Classes
          Will be removed in MDAnalysis 3.0.0. Please use
          :attr:`results.hbonds` instead.
 
-   .. attribute:: _network
-
-      Alias to the :attr:`results.network` attribute.
-
-      .. deprecated:: 2.0.0
-         Will be removed in MDAnalysis 3.0.0. Please use
-         :attr:`results.hbonds` instead.
-
    .. attribute:: table
       
       .. deprecated:: 2.0.0
@@ -1713,7 +1705,7 @@ class WaterBridgeAnalysis(AnalysisBase):
         """Frames during which each water bridges existed, sorted by each water
         bridges.
 
-        Processes :attr:`WaterBridgeAnalysis._network` and returns a
+        Processes :attr:`WaterBridgeAnalysis.results.network` and returns a
         :class:`list` containing atom indices, residue names, residue
         numbers (from selection 1 and selection 2) and each timestep at which
         the water bridge was detected.
@@ -1832,14 +1824,6 @@ class WaterBridgeAnalysis(AnalysisBase):
         self.table = table
 
         return table
-
-    @property
-    def _network(self):
-        wmsg = ("The `_network` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
-                "`results.network` instead")
-        warnings.warn(wmsg, DeprecationWarning)
-        return self.results.network
 
     @property
     def network(self):
