@@ -244,7 +244,7 @@ class DCDReader(base.ReaderBase):
         ts.positions = frame.xyz
 
         if self.convert_units:
-            if not ts.dimensions is None:
+            if ts.dimensions is not None:
                 self.convert_pos_from_native(ts.dimensions[:3])
             self.convert_pos_from_native(ts.positions)
 
