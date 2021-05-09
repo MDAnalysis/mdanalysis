@@ -66,7 +66,6 @@ class TestParmEdReaderGRO:
         assert_almost_equal(up, rp, decimal=3)
     
 
-
 class BaseTestParmEdReader(_SingleFrameReader):
     def setUp(self):
         self.universe = mda.Universe(pmd.load_file(self.ref_filename))
@@ -95,6 +94,7 @@ class TestParmEdReaderPDB(BaseTestParmEdReader):
 
         assert isinstance(self.universe.trajectory, ParmEdReader), "failed to choose ParmEdReader"
 
+
 def _parmed_param_eq(a, b):
     a_idx = [a.atom1.idx, a.atom2.idx]
     b_idx = [b.atom1.idx, b.atom2.idx]
@@ -109,6 +109,7 @@ def _parmed_param_eq(a, b):
     
     atoms = a_idx == b_idx or a_idx == b_idx[::-1]
     return atoms and a.type == b.type
+
 
 class BaseTestParmEdConverter:
 
@@ -176,7 +177,6 @@ class BaseTestParmEdConverter:
             ix = (param.atom1.idx, param.atom2.idx)
             assert ix in vals or ix[::-1] in vals
 
-
     def test_equivalent_atoms(self, ref, output):
         for r, o in zip(ref.atoms, output.atoms):
             for attr in self.equal_atom_attrs:
@@ -235,6 +235,7 @@ class BaseTestParmEdConverterSubset(BaseTestParmEdConverter):
         u = mda.Universe(self.ref_filename)
         return mda.Merge(u.atoms[self.start_i:self.end_i:self.skip_i])
 
+
 class BaseTestParmEdConverterFromParmed(BaseTestParmEdConverter):
 
     equal_atom_attrs = ('name', 'number', 'altloc')
@@ -250,11 +251,14 @@ class BaseTestParmEdConverterFromParmed(BaseTestParmEdConverter):
             o = getattr(output, attr)
             assert len(r) == len(o)
 
+
 class TestParmEdConverterPRM(BaseTestParmEdConverter):
     ref_filename = PRM
 
+
 class TestParmEdConverterParmedPRM(BaseTestParmEdConverterFromParmed):
     ref_filename = PRM_UreyBradley
+
 
 # class TestParmEdConverterPDBSubset(BaseTestParmEdConverterSubset):
 #     ref_filename = PDB
@@ -264,11 +268,14 @@ class TestParmEdConverterParmedPRM(BaseTestParmEdConverterFromParmed):
 
 # TODO: Add Subset test for PRMs when mda.Merge accepts Universes without positions
 
+
 class TestParmEdConverterParmedPSF(BaseTestParmEdConverterFromParmed):
     ref_filename = PSF_cmap
 
+
 class TestParmEdConverterPSF(BaseTestParmEdConverter):
     ref_filename = PSF_NAMD
+
 
 class TestParmEdConverterGROSubset(BaseTestParmEdConverterSubset):
     ref_filename = GRO
@@ -287,8 +294,15 @@ class TestParmEdConverterPDB(BaseTestParmEdConverter):
     def test_equivalent_coordinates(self, ref, output):
         assert_almost_equal(ref.coordinates, output.coordinates, decimal=3)
 
+
 def test_incorrect_object_passed_typeerror():
     err = "No atoms found in obj argument"
     with pytest.raises(TypeError, match=err):
         c = ParmEdConverter()
         c.convert("we still don't support emojis :(")
+
+
+def test_old_import_warning():
+    wmsg = "Please import the ParmEd classes from MDAnalysis.converters"
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        from MDAnalysis.coordinates.ParmEd import ParmEdConverter
