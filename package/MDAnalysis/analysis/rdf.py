@@ -383,7 +383,7 @@ class InterRDF(AnalysisBase):
 
         # Volume in each radial shell
         vols = np.power(self.results.edges, 3)
-        vol = 4/3 * np.pi * (vols[1:] - vols[:-1])
+        vol = 4/3 * np.pi * np.diff(vols)
 
         # Average number density
         box_vol = self.volume / self.n_frames
@@ -545,7 +545,7 @@ class InterRDF_s(AnalysisBase):
     def _conclude(self):
         # Volume in each radial shell
         vols = np.power(self.results.edges, 3)
-        vol = 4/3 * np.pi * (vols[1:] - vols[:-1])
+        vol = 4/3 * np.pi * np.diff(vols)
 
         # Empty lists to restore indices, RDF
         indices = []
