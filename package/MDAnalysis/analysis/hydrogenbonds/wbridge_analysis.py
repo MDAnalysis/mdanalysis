@@ -693,7 +693,7 @@ Classes
          :attr:`results.network` instead.
 
    .. attribute:: table
-      
+
       .. deprecated:: 2.0.0
          Will be removed in MDAnalysis 3.0.0. Please generate
          the table with :meth:`generate_table` instead.
@@ -956,6 +956,7 @@ class WaterBridgeAnalysis(AnalysisBase):
 
         # final result accessed as self.results.network
         self.results.network = []
+        self.results.timeseries = None
         self.timesteps = None  # time for each frame
 
         self._log_parameters()
@@ -1754,23 +1755,23 @@ class WaterBridgeAnalysis(AnalysisBase):
         Parameters
         ----------
         output_format : {'sele1_sele2', 'donor_acceptor'}
-            The output format of the `table` can be changed a fashion similar to
-            :attr:`WaterBridgeAnalysis.results.timeseries` by changing the labels
-            of the columns of the participating atoms.
+            The output format of the `table` can be changed a fashion similar
+            to :attr:`WaterBridgeAnalysis.results.timeseries` by changing the
+            labels of the columns of the participating atoms.
 
         Returns
         -------
         table : numpy.recarray
-            A "tidy" table with one hydrogen bond per row, labeled according to 
-            `output_format` and containing information of atom_1, atom_2, distance,
-            and angle.
+            A "tidy" table with one hydrogen bond per row, labeled according to
+            `output_format` and containing information of atom_1, atom_2,
+            distance, and angle.
 
         .. versionchanged:: 2.0.0
            Return the generated table (as well as storing it as :attr:`table`).
 
         .. deprecated:: 2.0.0
-           In release 3.0.0, :meth:`generate_table()` will _only_ return the table
-           and no longer store it in :attr:`table`.
+           In release 3.0.0, :meth:`generate_table()` will _only_ return the
+           table and no longer store it in :attr:`table`.
         """
         output_format = output_format or self.output_format
         if self.results.network == []:
@@ -1779,7 +1780,12 @@ class WaterBridgeAnalysis(AnalysisBase):
             logger.warning(msg)
             return None
 
-        timeseries = self._generate_timeseries(output_format)
+        if self.results.timeseries is not None \
+            and output_format == self.output_format:
+            timeseries = self.results.timeseries
+        else:
+            # Recompute timeseries with correct output format
+            timeseries = self._generate_timeseries(output_format)
 
         num_records = np.sum([len(hframe) for hframe in timeseries])
         # build empty output table
@@ -1824,10 +1830,8 @@ class WaterBridgeAnalysis(AnalysisBase):
 
         return table
 
-
     def _conclude(self):
      self.results.timeseries = self._generate_timeseries()
-
 
     @property
     def network(self):
@@ -1839,8 +1843,8 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     @property
     def timeseries(self):
-        wmsg = ("The `timeseries` attribute was deprecated in MDAnalysis 2.0.0 "
-                "and will be removed in MDAnalysis 3.0.0. Please use "
+        wmsg = ("The `timeseries` attribute was deprecated in MDAnalysis "
+                "2.0.0 and will be removed in MDAnalysis 3.0.0. Please use "
                 "`results.timeseries` instead")
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.timeseries
