@@ -65,7 +65,7 @@ jobs:
   - script: >-
       python -m pip install
       biopython
-      chemfiles
+      chemfiles>=0.9
       duecredit
       gsd==1.9.3
       joblib
