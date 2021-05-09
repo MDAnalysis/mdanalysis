@@ -540,7 +540,7 @@ class TestWaterBridgeAnalysis(object):
                                  'protein and (resid 4 or resid 5)', order=2)
         wb.output_format = 'sele1_sele2'
         wb.run(verbose=False)
-        timeseries = sorted(wb.timeseries[0])
+        timeseries = sorted(wb.results.timeseries[0])
 
         assert_equal(timeseries[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
         assert_equal(timeseries[1][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
@@ -553,7 +553,7 @@ class TestWaterBridgeAnalysis(object):
                                  'protein and (resid 4 or resid 5)', order=2)
         wb.output_format = 'donor_acceptor'
         wb.run(verbose=False)
-        timeseries = sorted(wb.timeseries[0])
+        timeseries = sorted(wb.results.timeseries[0])
 
         assert_equal(timeseries[0][:4], (2, 0, ('SOL', 2, 'HW1'), ('ALA', 1, 'O')))
         assert_equal(timeseries[1][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
@@ -751,7 +751,7 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(u, 'resname LEU and name O',
                                  'resname LEU and name N H', order=4)
         wb.run()
-        assert len(wb.timeseries[0]) == 2
+        assert len(wb.results.timeseries[0]) == 2
 
     def test_warn_results_deprecated(self, universe_DA):
         wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 9)',
@@ -761,3 +761,7 @@ class TestWaterBridgeAnalysis(object):
         wmsg = "The `network` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(wb.network, wb.results.network)
+
+        wmsg = "The `timeseries` attribute was deprecated in MDAnalysis 2.0.0"
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            assert_equal(wb.timeseries, wb.results.timeseries)
