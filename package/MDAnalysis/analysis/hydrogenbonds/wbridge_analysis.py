@@ -1781,7 +1781,7 @@ class WaterBridgeAnalysis(AnalysisBase):
             return None
 
         if self.results.timeseries is not None \
-            and output_format == self.output_format:
+          and output_format == self.output_format:
             timeseries = self.results.timeseries
         else:
             # Recompute timeseries with correct output format
@@ -1831,7 +1831,7 @@ class WaterBridgeAnalysis(AnalysisBase):
         return table
 
     def _conclude(self):
-     self.results.timeseries = self._generate_timeseries()
+        self.results.timeseries = self._generate_timeseries()
 
     @property
     def network(self):
