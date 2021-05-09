@@ -56,7 +56,9 @@ def pca(u):
 
 @pytest.fixture(scope='module')
 def pca_aligned(u):
-    return PCA(u, select=SELECTION, align=True).run()
+    # run on a copy so positions in u are unchanged
+    u_copy = u.copy()
+    return PCA(u_copy, select=SELECTION, align=True).run()
 
 
 def test_cov(pca, u):
@@ -166,7 +168,7 @@ def test_given_mean(pca_aligned, u):
     num_atoms = len(u.select_atoms(SELECTION))
     ag = mda.Universe.empty(num_atoms, trajectory=True).select_atoms('all')
     ag.positions = pca_aligned.mean.reshape((num_atoms,3))
-    pca = PCA(u, select=SELECTION, align=False,
+    pca = PCA(u, select=SELECTION, align=True,
               mean=ag).run()
     assert_almost_equal(pca_aligned.cov, pca.cov, decimal=5)
 
