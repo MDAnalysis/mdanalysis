@@ -351,7 +351,7 @@ class TestHELANAL(object):
         return ha.run(start=10, stop=80)
 
     def test_regression_summary(self, helanal):
-        bends = helanal.summary['all_bends']
+        bends = helanal.results.summary['all_bends']
         old_helanal = read_bending_matrix(HELANAL_BENDING_MATRIX_SUBSET)
         assert_almost_equal(np.triu(bends['mean'], 1), old_helanal['Mean'],
                             decimal=1)
@@ -368,11 +368,11 @@ class TestHELANAL(object):
 
         for key, value in HELANAL_SINGLE_DATA.items():
             if 'summary' in key:
-                data = getattr(ha, key.split()[0])
+                data = ha.results[key.split()[0]]
                 calculated = [data.mean(), data.std(ddof=1),
                               np.fabs(data-data.mean()).mean()]
             else:
-                calculated = getattr(ha, key)[0]
+                calculated = ha.results[key][0]
 
             msg = 'Mismatch between calculated and reference {}'
             assert_almost_equal(calculated, value,
@@ -385,10 +385,10 @@ class TestHELANAL(object):
         ha.run()
         n_frames = len(psf_ca.universe.trajectory)
         assert len(ha.atomgroups) == 2
-        assert len(ha.summary) == 2
-        assert len(ha.all_bends) == 2
-        assert ha.all_bends[0].shape == (n_frames, 8, 8)
-        assert ha.all_bends[1].shape == (n_frames, 18, 18)
+        assert len(ha.results.summary) == 2
+        assert len(ha.results.all_bends) == 2
+        assert ha.results.all_bends[0].shape == (n_frames, 8, 8)
+        assert ha.results.all_bends[1].shape == (n_frames, 18, 18)
 
     def test_universe_from_origins(self, helanal):
         u = helanal.universe_from_origins()
@@ -464,22 +464,22 @@ class TestHELANAL(object):
     def test_helanal_zigzag(self, zigzag, ref_axis, screw_angles):
         ha = hel.HELANAL(zigzag, select="all", ref_axis=ref_axis,
                          flatten_single_helix=True).run()
-        assert_almost_equal(ha.local_twists, 180, decimal=4)
-        assert_almost_equal(ha.local_nres_per_turn, 2, decimal=4)
-        assert_almost_equal(ha.global_axis, [[0, 0, -1]], decimal=4)
+        assert_almost_equal(ha.results.local_twists, 180, decimal=4)
+        assert_almost_equal(ha.results.local_nres_per_turn, 2, decimal=4)
+        assert_almost_equal(ha.results.global_axis, [[0, 0, -1]], decimal=4)
         # all 0 vectors
-        assert_almost_equal(ha.local_axes, 0, decimal=4)
-        assert_almost_equal(ha.local_bends, 0, decimal=4)
-        assert_almost_equal(ha.all_bends, 0, decimal=4)
-        assert_almost_equal(ha.local_heights, 0, decimal=4)
-        assert_almost_equal(ha.local_helix_directions[0][0::2],
+        assert_almost_equal(ha.results.local_axes, 0, decimal=4)
+        assert_almost_equal(ha.results.local_bends, 0, decimal=4)
+        assert_almost_equal(ha.results.all_bends, 0, decimal=4)
+        assert_almost_equal(ha.results.local_heights, 0, decimal=4)
+        assert_almost_equal(ha.results.local_helix_directions[0][0::2],
                             [[-1, 0, 0]]*49, decimal=4)
-        assert_almost_equal(ha.local_helix_directions[0][1::2],
+        assert_almost_equal(ha.results.local_helix_directions[0][1::2],
                             [[1, 0, 0]]*49, decimal=4)
         origins = zigzag.atoms.positions[1:-1].copy()
         origins[:, 0] = 0
-        assert_almost_equal(ha.local_origins[0], origins, decimal=4)
-        assert_almost_equal(ha.local_screw_angles[0],
+        assert_almost_equal(ha.results.local_origins[0], origins, decimal=4)
+        assert_almost_equal(ha.results.local_screw_angles[0],
                             screw_angles*49, decimal=4)
 
 

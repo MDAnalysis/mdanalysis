@@ -54,17 +54,21 @@ The example uses files provided as part of the MDAnalysis test suite
 :data:`~MDAnalysis.tests.datafiles.DCD`). This tutorial shows how to use the
 Diffusion Map class.
 
-First load all modules and test data ::
+First load all modules and test data
 
-   >>> import MDAnalysis as mda
-   >>> import MDAnalysis.analysis.diffusionmap as diffusionmap
-   >>> from MDAnalysis.tests.datafiles import PSF, DCD
+.. code-block:: python
+
+   import MDAnalysis as mda
+   import MDAnalysis.analysis.diffusionmap as diffusionmap
+   from MDAnalysis.tests.datafiles import PSF, DCD
 
 Given a universe or atom group, we can create and eigenvalue decompose
 the Diffusion Matrix from that trajectory using :class:`DiffusionMap`:: and get
 the corresponding eigenvalues and eigenvectors.
 
-   >>> u = mda.Universe(PSF,DCD)
+.. code-block:: python
+
+   u = mda.Universe(PSF,DCD)
 
 We leave determination of the appropriate scale parameter epsilon to the user,
 [Clementi1]_ uses a complex method involving the k-nearest-neighbors of a
@@ -72,8 +76,10 @@ trajectory frame, whereas others simple use a trial-and-error approach with
 a constant epsilon. Currently, the constant epsilon method is implemented
 by MDAnalysis.
 
-   >>> dmap = diffusionmap.DiffusionMap(u, select='backbone', epsilon=2)
-   >>> dmap.run()
+.. code-block:: python
+
+   dmap = diffusionmap.DiffusionMap(u, select='backbone', epsilon=2)
+   dmap.run()
 
 From here we can perform an embedding onto the k dominant eigenvectors. The
 non-linearity of the map means there is no explicit relationship between the
@@ -86,49 +92,27 @@ diminish at a constant rate until falling off, this is referred to as a
 spectral gap and should be somewhat apparent for a system at equilibrium with a
 high number of frames.
 
-   >>>  # first cell of  a jupyter notebook should contain: %matplotlib inline
-   >>>  import matplotlib.pyplot as plt
-   >>>  f, ax = plt.subplots()
-   >>>  upper_limit = # some reasonably high number less than the n_eigenvectors
-   >>>  ax.plot(dmap.eigenvalues[:upper_limit])
-   >>>  ax.set(xlabel ='eigenvalue index', ylabel='eigenvalue')
-   >>>  plt.tight_layout()
+.. code-block:: python
+
+   import matplotlib.pyplot as plt
+   f, ax = plt.subplots()
+   upper_limit = # some reasonably high number less than the n_eigenvectors
+   ax.plot(dmap.eigenvalues[:upper_limit])
+   ax.set(xlabel ='eigenvalue index', ylabel='eigenvalue')
+   plt.tight_layout()
 
 From here we can transform into the diffusion space
 
-   >>> num_eigenvectors = # some number less than the number of frames after
-   >>> # inspecting for the spectral gap
-   >>> fit = dmap.transform(num_eigenvectors, time=1)
+.. code-block:: python
+
+   num_eigenvectors = # some number less than the number of frames after
+   # inspecting for the spectral gap
+   fit = dmap.transform(num_eigenvectors, time=1)
 
 It can be difficult to interpret the data, and is left as a task
 for the user. The `diffusion distance` between frames i and j is best
 approximated by the euclidean distance  between rows i and j of
 self.diffusion_space.
-
-
-.. _Distance-Matrix-tutorial:
-
-Distance Matrix tutorial
-------------------------
-
-Often a, a custom distance matrix could be useful for local
-epsilon determination or other manipulations on the diffusion
-map method. The :class:`DistanceMatrix` exists in
-:mod:`~MDAnalysis.analysis.diffusionmap` and can be passed
-as an initialization argument for :class:`DiffusionMap`.
-
-    >>> import MDAnalysis as mda
-    >>> import MDAnalysis.analysis.diffusionmap as diffusionmap
-    >>> from MDAnalysis.tests.datafiles import PSF, DCD
-
-Now create the distance matrix and pass it as an argument to
-:class:`DiffusionMap`.
-
-    >>> u = mda.Universe(PSF,DCD)
-    >>> dist_matrix = diffusionmap.DistanceMatrix(u, select='all')
-    >>> dist_matrix.run()
-    >>> dmap = diffusionmap.DiffusionMap(dist_matrix)
-    >>> dmap.run()
 
 Classes
 -------
@@ -183,68 +167,97 @@ class DistanceMatrix(AnalysisBase):
     using a given metric
 
     A distance matrix can be initialized on its own and used as an
-    initialization argument in :class:`DiffusionMap`. Refer to the
-    :ref:`Distance-Matrix-tutorial` for a demonstration.
+    initialization argument in :class:`DiffusionMap`.
+
+    Parameters
+    ----------
+    universe : `~MDAnalysis.core.universe.Universe`
+        The MD Trajectory for dimension reduction, remember that
+        computational cost of eigenvalue decomposition
+        scales at O(N^3) where N is the number of frames.
+        Cost can be reduced by increasing step interval or specifying a
+        start and stop value when calling :meth:`DistanceMatrix.run`.
+    select: str, optional
+        Any valid selection string for
+        :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms`
+        This selection of atoms is used to calculate the RMSD between
+        different frames. Water should be excluded.
+    metric : function, optional
+        Maps two numpy arrays to a float, is positive definite and
+        symmetric. The API for a metric requires that the arrays must have
+        equal length, and that the function should have weights as an
+        optional argument. Weights give each index value its own weight for
+        the metric calculation over the entire arrays. Default: metric is
+        set to rms.rmsd().
+    cutoff : float, optional
+        Specify a given cutoff for metric values to be considered equal,
+        Default: 1EO-5
+    weights : array, optional
+        Weights to be given to coordinates for metric calculation
+    verbose : bool, optional
+            Show detailed progress of the calculation if set to ``True``; the
+            default is ``False``.
 
     Attributes
     ----------
-    atoms : AtomGroup
+    atoms : `~MDAnalysis.core.groups.AtomGroup`
         Selected atoms in trajectory subject to dimension reduction
-    dist_matrix : array, (n_frames, n_frames)
+    results.dist_matrix : numpy.ndarray, (n_frames, n_frames)
         Array of all possible ij metric distances between frames in trajectory.
         This matrix is symmetric with zeros on the diagonal.
 
+        .. versionadded:: 2.0.0
+
+    dist_matrix : numpy.ndarray, (n_frames, n_frames)
+
+        .. deprecated:: 2.0.0
+                 Will be removed in MDAnalysis 3.0.0. Please use
+                 :attr:`results.dist_matrix` instead.
+
+    Example
+    -------
+    Often, a custom distance matrix could be useful for local
+    epsilon determination or other manipulations on the diffusion
+    map method. The :class:`DistanceMatrix` exists in
+    :mod:`~MDAnalysis.analysis.diffusionmap` and can be passed
+    as an initialization argument for :class:`DiffusionMap`.
+
+    .. code-block:: python
+
+        import MDAnalysis as mda
+        import MDAnalysis.analysis.diffusionmap as diffusionmap
+        from MDAnalysis.tests.datafiles import PSF, DCD
+
+    Now create the distance matrix and pass it as an argument to
+    :class:`DiffusionMap`.
+
+        u = mda.Universe(PSF,DCD)
+        dist_matrix = diffusionmap.DistanceMatrix(u, select='all')
+        dist_matrix.run()
+        dmap = diffusionmap.DiffusionMap(dist_matrix)
+        dmap.run()
+
     .. versionchanged:: 1.0.0
        ``save()`` method has been removed. You can use ``np.save()`` on
-       :attr:`DistanceMatrix.dist_matrix` instead.
+       :attr:`DistanceMatrix.results.dist_matrix` instead.
+    .. versionchanged:: 2.0.0
+         :attr:`dist_matrix` is now stored in a
+         :class:`MDAnalysis.analysis.base.Results` instance.
 
     """
-    def __init__(self, u, select='all', metric=rmsd, cutoff=1E0-5,
+    def __init__(self, universe, select='all', metric=rmsd, cutoff=1E0-5,
                  weights=None, **kwargs):
-        """
-        Parameters
-        ----------
-        u : universe `~MDAnalysis.core.universe.Universe`
-            The MD Trajectory for dimension reduction, remember that
-            computational cost of eigenvalue decomposition
-            scales at O(N^3) where N is the number of frames.
-            Cost can be reduced by increasing step interval or specifying a
-            start and stop value when calling :meth:`DistanceMatrix.run`.
-        select: str, optional
-            Any valid selection string for
-            :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms`
-            This selection of atoms is used to calculate the RMSD between
-            different frames. Water should be excluded.
-        metric : function, optional
-            Maps two numpy arrays to a float, is positive definite and
-            symmetric. The API for a metric requires that the arrays must have
-            equal length, and that the function should have weights as an
-            optional argument. Weights give each index value its own weight for
-            the metric calculation over the entire arrays. Default: metric is
-            set to rms.rmsd().
-        cutoff : float, optional
-            Specify a given cutoff for metric values to be considered equal,
-            Default: 1EO-5
-        weights : array, optional
-            Weights to be given to coordinates for metric calculation
-        verbose : bool (optional)
-             Show detailed progress of the calculation if set to ``True``; the
-             default is ``False``.
-        """
-        self._u = u
-        traj = self._u.trajectory
-
         # remember that this must be called before referencing self.n_frames
-        super(DistanceMatrix, self).__init__(self._u.trajectory, **kwargs)
+        super(DistanceMatrix, self).__init__(universe.trajectory, **kwargs)
 
-        self.atoms = self._u.select_atoms(select)
+        self.atoms = universe.select_atoms(select)
         self._metric = metric
         self._cutoff = cutoff
         self._weights = weights
         self._calculated = False
 
     def _prepare(self):
-        self.dist_matrix = np.zeros((self.n_frames, self.n_frames))
+        self.results.dist_matrix = np.zeros((self.n_frames, self.n_frames))
 
     def _single_frame(self):
         iframe = self._ts.frame
@@ -252,15 +265,26 @@ class DistanceMatrix(AnalysisBase):
         # diagonal entries need not be calculated due to metric(x,x) == 0 in
         # theory, _ts not updated properly. Possible savings by setting a
         # cutoff for significant decimal places to sparsify matrix
-        for j, ts in enumerate(self._u.trajectory[iframe:self.stop:self.step]):
+        for j, ts in enumerate(self._trajectory[iframe:self.stop:self.step]):
             self._ts = ts
             j_ref = self.atoms.positions
             dist = self._metric(i_ref, j_ref, weights=self._weights)
-            self.dist_matrix[self._frame_index, j+self._frame_index] = (
-                dist if dist > self._cutoff else 0)
-            self.dist_matrix[j+self._frame_index, self._frame_index] = (
-                self.dist_matrix[self._frame_index, j+self._frame_index])
-        self._ts = self._u.trajectory[iframe]
+            self.results.dist_matrix[self._frame_index,
+                                     j+self._frame_index] = (
+                                            dist if dist > self._cutoff else 0)
+            self.results.dist_matrix[j+self._frame_index,
+                                     self._frame_index] = (
+                                self.results.dist_matrix[self._frame_index,
+                                                         j+self._frame_index])
+        self._ts = self._trajectory[iframe]
+
+    @property
+    def dist_matrix(self):
+        wmsg = ("The `dist_matrix` attribute was deprecated in "
+                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+                "Please use `results.dist_matrix` instead.")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.dist_matrix
 
     def _conclude(self):
         self._calculated = True
@@ -338,7 +362,7 @@ class DiffusionMap(object):
             warnings.warn("The distance matrix is very large, and can "
                           "be very slow to compute. Consider picking a larger "
                           "step size in distance matrix initialization.")
-        self._scaled_matrix = (self._dist_matrix.dist_matrix ** 2 /
+        self._scaled_matrix = (self._dist_matrix.results.dist_matrix ** 2 /
                                self._epsilon)
         # take negative exponent of scaled matrix to create Isotropic kernel
         self._kernel = np.exp(-self._scaled_matrix)

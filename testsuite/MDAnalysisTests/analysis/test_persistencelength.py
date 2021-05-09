@@ -65,11 +65,11 @@ class TestPersistenceLength(object):
         assert len(p_run.results.bond_autocorrelation) == 280
 
     def test_lb(self, p_run):
-        assert_almost_equal(p_run.lb, 1.485, 3)
+        assert_almost_equal(p_run.results.lb, 1.485, 3)
 
     def test_fit(self, p_run):
-        assert_almost_equal(p_run.lp, 6.504, 3)
-        assert len(p_run.fit) == len(p_run.results.bond_autocorrelation)
+        assert_almost_equal(p_run.results.lp, 6.504, 3)
+        assert len(p_run.results.fit) == len(p_run.results.bond_autocorrelation)
 
     def test_raise_NoDataError(self, p):
         #Ensure that a NoDataError is raised if perform_fit()
@@ -95,6 +95,13 @@ class TestPersistenceLength(object):
         fig, ax = plt.subplots()
         ax2 = p_run.plot(ax=None)
         assert ax2 is not ax
+
+    @pytest.mark.parametrize("attr", ("lb", "lp", "fit"))
+    def test(self, p, attr):
+        p_run = p.run(step=3)
+        wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            getattr(p_run, attr) is p_run.results[attr]
 
 
 class TestFitExponential(object):
