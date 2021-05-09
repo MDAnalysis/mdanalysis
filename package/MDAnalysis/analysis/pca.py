@@ -220,7 +220,7 @@ class PCA(AnalysisBase):
             self.mean = np.zeros(self._n_atoms*3)
             self._calc_mean = True
         else:
-            self.mean = self._mean.positions
+            self.mean = self._mean.positions.ravel()
             self._calc_mean = False
 
         if self.n_frames == 1:
