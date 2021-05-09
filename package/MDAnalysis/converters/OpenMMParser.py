@@ -21,14 +21,14 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""OpenMM topology parser
-=========================
+"""OpenMM topology parser :mod:`MDAnalysis.converters.OpenMMParser`
+===================================================================
 
 .. versionadded:: 2.0.0
 
 
 Converts an
-`OpenMM <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.topology.Topology.html#simtk.openmm.app.topology.Topology>`_
+`OpenMM topology <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.topology.Topology.html#simtk.openmm.app.topology.Topology>`_
 :class:`simtk.openmm.app.topology.Topology` into a :class:`MDAnalysis.core.Topology`.
 
 Also converts some objects within the

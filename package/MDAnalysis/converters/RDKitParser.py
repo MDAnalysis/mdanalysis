@@ -22,8 +22,8 @@
 #
 
 """
-RDKit topology parser
-=====================
+RDKit topology parser --- :mod:`MDAnalysis.converters.RDKitParser`
+==================================================================
 
 Converts an `RDKit <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol>`_ :class:`rdkit.Chem.rdchem.Mol` into a :class:`MDAnalysis.core.Topology`.
 

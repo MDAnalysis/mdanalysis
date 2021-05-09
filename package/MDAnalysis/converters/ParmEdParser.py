@@ -22,8 +22,8 @@
 #
 
 """
-ParmEd topology parser
-======================
+ParmEd topology parser --- :mod:`MDAnalysis.converters.ParmEdParser`
+====================================================================
 
 Converts a `ParmEd <https://parmed.github.io/ParmEd/html>`_
 :class:`parmed.structure.Structure` into a :class:`MDAnalysis.core.Topology`.

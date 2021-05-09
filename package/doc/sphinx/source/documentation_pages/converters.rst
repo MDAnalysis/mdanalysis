@@ -36,6 +36,7 @@ Another syntax is also available for tab-completion support::
 .. toctree::
    :maxdepth: 1
 
+   converters/init
    converters/ParmEd
    converters/RDKit
    converters/OpenMM
