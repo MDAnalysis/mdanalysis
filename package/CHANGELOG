@@ -18,11 +18,13 @@ The rules for this file:
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
          hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi, hejamu,
          biogen98, orioncohen, z3y50n, hp115, ojeda-e, thadanipaarth, HenryKobin,
-         1ut, sulays, ahy3nz
+         1ut, sulays, ahy3nz, fiona-naughton
 
   * 2.0.0
 
 Fixes
+  * Fixed missing array flatten preventing PCA from running when mean positions  
+    provided and bugs causing tests to incorrectly pass (Issue #2728, PR #3296)
   * WaterBridgeAnalysis double counts the water (Issue #3119, PR #3120)
   * NCDFReader now defaults to a dt value of 1.0 ps when it cannot estimate
     it from the first two frames of the file (Issue #3166)
