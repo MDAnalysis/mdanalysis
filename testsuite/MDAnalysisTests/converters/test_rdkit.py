@@ -434,9 +434,11 @@ class TestRDKitFunctions(object):
 
     @pytest.mark.parametrize("attr, value, getter", [
         ("index", 42, "GetIntProp"),
-        ("index", np.int(42), "GetIntProp"),
+        ("index", np.int32(42), "GetIntProp"),
+        ("index", np.int64(42), "GetIntProp"),
         ("charge", 4.2, "GetDoubleProp"),
-        ("charge", np.float(4.2), "GetDoubleProp"),
+        ("charge", np.float32(4.2), "GetDoubleProp"),
+        ("charge", np.float64(4.2), "GetDoubleProp"),
         ("type", "C.3", "GetProp"),
     ])
     def test_set_atom_property(self, attr, value, getter):
