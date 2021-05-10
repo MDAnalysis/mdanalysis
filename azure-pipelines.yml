@@ -52,7 +52,7 @@ jobs:
       hypothesis
       matplotlib
       numpy
-      pytest==6.1.2
+      pytest
       pytest-cov
       pytest-xdist
       scikit-learn

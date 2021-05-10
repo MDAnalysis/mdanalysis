@@ -33,7 +33,7 @@ app = pytest.importorskip('simtk.openmm.app')
 
 
 class OpenMMTopologyBase(ParserBase):
-    parser = mda.topology.OpenMMParser.OpenMMTopologyParser
+    parser = mda.converters.OpenMMParser.OpenMMTopologyParser
     expected_attrs = [
         "ids",
         "names",
@@ -97,7 +97,7 @@ class OpenMMTopologyBase(ParserBase):
 
 
 class OpenMMAppTopologyBase(OpenMMTopologyBase):
-    parser = mda.topology.OpenMMParser.OpenMMAppTopologyParser
+    parser = mda.converters.OpenMMParser.OpenMMAppTopologyParser
     expected_attrs = [
         "ids",
         "names",

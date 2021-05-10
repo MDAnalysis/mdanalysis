@@ -23,6 +23,8 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * Fixed OpenMM converter documentation not showing up in the Converters
+    section (Issue #3262, PR #2882)
   * WaterBridgeAnalysis double counts the water (Issue #3119, PR #3120)
   * NCDFReader now defaults to a dt value of 1.0 ps when it cannot estimate
     it from the first two frames of the file (Issue #3166)
@@ -178,6 +180,17 @@ Changes
   * `analysis.rdf.InterRDF` and `analysis.rdf.InterRDF_s` now store
     their result attributes using the `analysis.base.Results` class
     (Issue #3276, #3261)
+  * `hydrogenbonds.WaterBridgeAnalysis.generate_table()` now returns the table; as previously, 
+    it also generates the `table` attribute but the attribute will be removed in 3.0.0.
+  * `hydrogenbonds.WaterBridgeAnalysis` now stores data using the
+    `hydrogenbonds.WaterBridgeAnalysis.results` attribute
+    (Issue #3261, Issue #3270)
+  * Introduces a new converter API with all converters in MDAnalysis.converters
+    (Issue #2790, PR #2882)
+  * The ParmEd classes were moved to the `converters` module (PR #2882)
+  * The `convert_to` method of the AtomGroup is now case-insensitive and
+    passes keyword arguments to the underlying converter. It can also be used
+    as `convert_to.lowercase_pkg_name()` for tab-completion (PR #2882)
   * `analysis.polymer.PersistenceLength` class now stores `lb`,
     `lp` and `fit` using the `analysis.base.Results` class 
     (Issues #3289, #3291)
@@ -258,6 +271,16 @@ Deprecations
     `analysis.rdf.InterRDF_s` are now deprecated in favour of `results.bins`,
     `results.edges`, `results.count`, `results.rdf` and `results.cdf`
     (Issue #3276, #3261)
+  * The `hydrogenbonds.WaterBridgeAnalysis.table` attribute is now deprecated and will
+    be removed in 3.0.0.
+  * The `hydrogenbonds.WaterBridgeAnalysis.network` attribute is now deprecated
+    in favour of `hydrogenbonds.WaterBridgeAnalysis.results.network`. It will be
+    removed in 3.0.0 (Issue #3261, Issue #3270)
+  * The `analysis.Contacts.timeseries` attribute is now deprecated in favour of 
+    `analysis.Contacts.results.timeseries`. It will be removed in 3.0.0
+    (Issue #3261)
+  * In 3.0.0 the ParmEd classes will only be accessible from the
+    `MDAnalysis.converters` module.
   * The `analysis.polymer.PersistenceLength.lb`,
     `analysis.polymer.PersistenceLength.lp` and 
     `analysis.polymer.PersistenceLength.fit` attributes are now deprecated in

@@ -20,14 +20,20 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import warnings
-from ..converters.ParmEd import (ParmEdConverter, ParmEdReader,
-                                 get_indices_from_subset, MDA2PMD,)
+"""
+Topology and trajectory converters --- :mod:`MDAnalysis.converters`
+===================================================================
+
+The converters module contains the classes that let users convert topology and
+trajectory objects from other packages to an MDAnalysis object, and vice-versa.
 
 
-warnings.warn(
-    "This module is deprecated as of MDAnalysis version 2.0.0. "
-    "It will be removed in MDAnalysis version 3.0.0. "
-    "Please import the ParmEd classes from MDAnalysis.converters instead.",
-    category=DeprecationWarning
-)
+.. versionadded:: 2.0.0
+
+"""
+from . import ParmEdParser
+from . import ParmEd
+from . import RDKitParser
+from . import RDKit
+from . import OpenMMParser
+from . import OpenMM
