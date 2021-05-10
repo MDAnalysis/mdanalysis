@@ -271,10 +271,10 @@
 <span class="sd">Since the waters connecting the two ends of the selections are by nature a</span>
 <span class="sd">network. We provide a network representation of the water network. Water bridge</span>
 <span class="sd">data are returned per frame, which is stored in</span>
-<span class="sd">:attr:`WaterBridgeAnalysis.network`. Each frame is represented as a dictionary,</span>
-<span class="sd">where the keys are the hydrogen bonds originating from selection 1 and the</span>
-<span class="sd">values are new dictionaries representing the hydrogen bonds coming out of the</span>
-<span class="sd">corresponding molecules making hydrogen bonds with selection 1.</span>
+<span class="sd">:attr:`WaterBridgeAnalysis.results.network`. Each frame is represented as a</span>
+<span class="sd">dictionary, where the keys are the hydrogen bonds originating from selection</span>
+<span class="sd">1 and the values are new dictionaries representing the hydrogen bonds coming</span>
+<span class="sd">out of the corresponding molecules making hydrogen bonds with selection 1.</span>
 
 <span class="sd">As for the hydrogen bonds which reach the selection 2, the values of the</span>
 <span class="sd">corresponding keys are None. One example where selection 1 and selection 2 are</span>
@@ -306,14 +306,14 @@
 <span class="sd">--------------------</span>
 
 <span class="sd">For lower order water bridges, it might be desirable to represent the</span>
-<span class="sd">connections as :attr:`WaterBridgeAnalysis.timeseries`. The results are returned</span>
-<span class="sd">per frame and are a list of hydrogen bonds between the selection 1 or selection</span>
-<span class="sd">2 and the bridging waters. Due to the complexity of the higher order water</span>
-<span class="sd">bridge and the fact that one hydrogen bond between two waters can appear in</span>
-<span class="sd">both third and fourth order water bridge, the hydrogen bonds in the</span>
-<span class="sd">:attr:`WaterBridgeAnalysis.timeseries` attribute are generated in a depth-first</span>
-<span class="sd">search manner to avoid duplication. Example code of how</span>
-<span class="sd">:attr:`WaterBridgeAnalysis.timeseries` is generated::</span>
+<span class="sd">connections as :attr:`WaterBridgeAnalysis.results.timeseries`. The results</span>
+<span class="sd">are returned per frame and are a list of hydrogen bonds between the selection</span>
+<span class="sd">1 or selection 2 and the bridging waters. Due to the complexity of the higher</span>
+<span class="sd">order water bridge and the fact that one hydrogen bond between two waters can</span>
+<span class="sd">appear in both third and fourth order water bridge, the hydrogen bonds in the</span>
+<span class="sd">:attr:`WaterBridgeAnalysis.results.timeseries` attribute are generated in a</span>
+<span class="sd">depth-first search manner to avoid duplication. Example code of how</span>
+<span class="sd">:attr:`WaterBridgeAnalysis.results.timeseries` is generated::</span>
 
 <span class="sd">    def network2timeseries(network, timeseries):</span>
 <span class="sd">        &#39;&#39;&#39;Traverse the network in a depth-first fashion.</span>
@@ -491,7 +491,7 @@
 <span class="sd">  #     3          2          SOL       HW2</span>
 <span class="sd">  #     4          3          ASP       OD1</span>
 <span class="sd">  #     5          3          ASP       OD2</span>
-<span class="sd">  print(w.timeseries)</span>
+<span class="sd">  print(w.results.timeseries)</span>
 
 <span class="sd">prints out ::</span>
 
@@ -859,9 +859,43 @@
 <span class="sd">   .. attribute:: timesteps</span>
 
 <span class="sd">      List of the times of each timestep. This can be used together with</span>
-<span class="sd">      :attr:`~WaterBridgeAnalysis.timeseries` to find the specific time point</span>
-<span class="sd">      of a water bridge existence.</span>
+<span class="sd">      :attr:`~WaterBridgeAnalysis.results.timeseries` to find the specific</span>
+<span class="sd">      time point of a water bridge existence.</span>
 
+<span class="sd">   .. attribute:: results.network</span>
+
+<span class="sd">      Network representation of the water network.</span>
+
+<span class="sd">      .. versionadded:: 2.0.0</span>
+
+<span class="sd">   .. attribute:: network</span>
+
+<span class="sd">      Alias to the :attr:`results.network` attribute.</span>
+
+<span class="sd">      .. deprecated:: 2.0.0</span>
+<span class="sd">         Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">         :attr:`results.network` instead.</span>
+
+<span class="sd">   .. attribute:: table</span>
+
+<span class="sd">      .. deprecated:: 2.0.0</span>
+<span class="sd">         Will be removed in MDAnalysis 3.0.0. Please generate</span>
+<span class="sd">         the table with :meth:`generate_table` instead.</span>
+
+<span class="sd">   .. attribute:: results.timeseries</span>
+
+<span class="sd">      List of hydrogen bonds between the selection 1 or selection 2</span>
+<span class="sd">      and the bridging waters, for each frame.</span>
+
+<span class="sd">      .. versionadded:: 2.0.0</span>
+
+<span class="sd">   .. attribute:: timeseries</span>
+
+<span class="sd">      Alias to the :attr:`results.timeseries` attribute.</span>
+
+<span class="sd">      .. deprecated:: 2.0.0</span>
+<span class="sd">         Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">         :attr:`results.timeseries` instead.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -882,9 +916,8 @@
 
 <span class="sd">    The analysis of the trajectory is performed with the</span>
 <span class="sd">    :meth:`WaterBridgeAnalysis.run` method. The result is stored in</span>
-<span class="sd">    :attr:`WaterBridgeAnalysis.timeseries`. See</span>
+<span class="sd">    :attr:`WaterBridgeAnalysis.results.timeseries`. See</span>
 <span class="sd">    :meth:`~WaterBridgeAnalysis.run` for the format.</span>
-
 
 <span class="sd">    .. versionadded:: 0.17.0</span>
 
@@ -934,7 +967,7 @@
 <span class="sd">        universe.</span>
 
 <span class="sd">        The timeseries is accessible as the attribute</span>
-<span class="sd">        :attr:`WaterBridgeAnalysis.timeseries`.</span>
+<span class="sd">        :attr:`WaterBridgeAnalysis.results.timeseries`.</span>
 
 <span class="sd">        If no hydrogen bonds are detected or if the initial check fails, look</span>
 <span class="sd">        at the log output (enable with :func:`MDAnalysis.start_logging` and set</span>
@@ -1105,7 +1138,9 @@
                              <span class="s1">&#39;Invalid selection type </span><span class="si">{0!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                                 <span class="bp">self</span><span class="o">.</span><span class="n">selection1_type</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_network</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># final result accessed as self.network</span>
+        <span class="c1"># final result accessed as self.results.network</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># time for each frame</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_parameters</span><span class="p">()</span>
@@ -1400,7 +1435,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_water_selection</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_update_water_selection</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_network</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">))</span>
             <span class="k">return</span>
 
         <span class="n">selection_1</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1550,18 +1585,19 @@
             <span class="n">traverse_water_network</span><span class="p">(</span><span class="n">water_pool</span><span class="p">,</span> <span class="n">next_mol</span><span class="p">,</span> <span class="n">selection_2</span><span class="p">,</span> <span class="n">route</span><span class="p">[:],</span>
                                    <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_network</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">_traverse_water_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">current</span><span class="p">,</span> <span class="n">analysis_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                 <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">link_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        This function recursively traverses the water network self._network and</span>
-<span class="sd">         finds the hydrogen bonds which connect the current atom to the next</span>
-<span class="sd">         atom. The newly found hydrogen bond will be appended to the hydrogen</span>
-<span class="sd">         bonds connecting the selection 1 to the current atom via link_func.</span>
-<span class="sd">         When selection 2 is reached, the full list of hydrogen bonds</span>
-<span class="sd">         connecting the selection 1 to selection 2 will be fed into</span>
-<span class="sd">         analysis_func, which will then modify the output in place.</span>
+<span class="sd">        This function recursively traverses the water network</span>
+<span class="sd">        self.results.network and finds the hydrogen bonds which connect the</span>
+<span class="sd">        current atom to the next atom. The newly found hydrogen bond will be</span>
+<span class="sd">        appended to the hydrogen bonds connecting the selection 1 to the</span>
+<span class="sd">        current atom via link_func. When selection 2 is reached, the full list</span>
+<span class="sd">        of hydrogen bonds connecting the selection 1 to selection 2 will be</span>
+<span class="sd">        fed into analysis_func, which will then modify the output in place.</span>
+
 <span class="sd">        :param graph: The connection network describes the connection between</span>
 <span class="sd">        the atoms in the water network.</span>
 <span class="sd">        :param current: The hydrogen bonds from selection 1 until now.</span>
@@ -1668,16 +1704,6 @@
 <span class="sd">        To find an acceptor atom in :attr:`Universe.atoms` by</span>
 <span class="sd">        *index* one would use ``u.atoms[acceptor_index]``.</span>
 
-<span class="sd">        The :attr:`timeseries` is a managed attribute and it is generated</span>
-<span class="sd">        from the underlying data in :attr:`_network` every time the</span>
-<span class="sd">        attribute is accessed. It is therefore costly to call and if</span>
-<span class="sd">        :attr:`timeseries` is needed repeatedly it is recommended that you</span>
-<span class="sd">        assign to a variable::</span>
-
-<span class="sd">           w = WaterBridgeAnalysis(u)</span>
-<span class="sd">           w.run()</span>
-<span class="sd">           timeseries = w.timeseries</span>
-
 <span class="sd">        .. versionchanged 0.20.0</span>
 <span class="sd">           The :attr:`WaterBridgeAnalysis.timeseries` has been updated where</span>
 <span class="sd">           the donor and acceptor string has been changed to tuple</span>
@@ -1691,7 +1717,7 @@
             <span class="n">output</span> <span class="o">=</span> <span class="n">current</span>
 
         <span class="n">timeseries</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_network</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span><span class="p">:</span>
             <span class="n">new_frame</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_water_network</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">new_frame</span><span class="p">,</span>
                                          <span class="n">analysis_func</span><span class="o">=</span><span class="n">analysis</span><span class="p">,</span>
@@ -1702,37 +1728,13 @@
                 <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">new_frame</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">timeseries</span>
 
-    <span class="n">timeseries</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_generate_timeseries</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_get_network</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&#39;&#39;&#39;Network representation of the water network.</span>
-
-<span class="sd">        The output is generated per frame as is explained in</span>
-<span class="sd">        :ref:`wb_Analysis_Network`. Each hydrogen bond has a compact</span>
-<span class="sd">        representation of ::</span>
-
-<span class="sd">          [sele1_acceptor_idx, None, sele2_donor_idx, donor_heavy_idx,</span>
-<span class="sd">          distance, angle]</span>
-
-<span class="sd">        or ::</span>
-
-<span class="sd">          [sele1_donor_idx, donor_heavy_idx, sele1_acceptor_idx, None,</span>
-<span class="sd">          distance, angle]</span>
-
-<span class="sd">        The donor_heavy_idx is the heavy atom bonding to the proton and atoms</span>
-<span class="sd">        can be retrived from the universe::</span>
-
-<span class="sd">          atom = u.atoms[idx]</span>
-
-<span class="sd">        .. versionadded:: 0.20.0</span>
-
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_network</span>
 
     <span class="k">def</span> <span class="nf">set_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_network</span> <span class="o">=</span> <span class="n">network</span>
-
-    <span class="n">network</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_get_network</span><span class="p">,</span> <span class="n">set_network</span><span class="p">)</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `set_network` method was deprecated in MDAnalysis 2.0.0 &quot;</span>
+                <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
+                <span class="s2">&quot;`results.network` instead&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">network</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_full_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
@@ -1806,10 +1808,10 @@
             <span class="n">analysis_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count_by_type_analysis</span>
             <span class="n">output</span> <span class="o">=</span> <span class="s1">&#39;combined&#39;</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_network</span><span class="p">:</span>
-            <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_network</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span><span class="p">:</span>
+            <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span><span class="p">)</span>
             <span class="n">result_dict</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_network</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span><span class="p">:</span>
                 <span class="n">frame_dict</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_water_network</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">[],</span>
                                              <span class="n">analysis_func</span><span class="o">=</span><span class="n">analysis_func</span><span class="p">,</span>
@@ -1856,9 +1858,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">analysis_func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">analysis_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count_by_time_analysis</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_network</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">time</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_network</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">time</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span><span class="p">):</span>
                 <span class="n">result_dict</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_water_network</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">[],</span>
                                              <span class="n">analysis_func</span><span class="o">=</span><span class="n">analysis_func</span><span class="p">,</span>
@@ -1886,7 +1888,7 @@
         <span class="sd">&quot;&quot;&quot;Frames during which each water bridges existed, sorted by each water</span>
 <span class="sd">        bridges.</span>
 
-<span class="sd">        Processes :attr:`WaterBridgeAnalysis._network` and returns a</span>
+<span class="sd">        Processes :attr:`WaterBridgeAnalysis.results.network` and returns a</span>
 <span class="sd">        :class:`list` containing atom indices, residue names, residue</span>
 <span class="sd">        numbers (from selection 1 and selection 2) and each timestep at which</span>
 <span class="sd">        the water bridge was detected.</span>
@@ -1905,13 +1907,13 @@
             <span class="n">analysis_func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timesteps_by_type_analysis</span>
             <span class="n">output</span> <span class="o">=</span> <span class="s1">&#39;combined&#39;</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_network</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">timesteps</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_network</span><span class="p">))</span>
+                <span class="n">timesteps</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">timesteps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timesteps</span>
-            <span class="k">for</span> <span class="n">time</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">timesteps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_network</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">time</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">timesteps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_water_network</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">[],</span>
                                              <span class="n">analysis_func</span><span class="o">=</span><span class="n">analysis_func</span><span class="p">,</span>
                                              <span class="n">output</span><span class="o">=</span><span class="n">result</span><span class="p">,</span>
@@ -1934,20 +1936,40 @@
 <div class="viewcode-block" id="WaterBridgeAnalysis.generate_table"><a class="viewcode-back" href="../../../../documentation_pages/analysis/wbridge_analysis.html#MDAnalysis.analysis.hydrogenbonds.wbridge_analysis.WaterBridgeAnalysis.generate_table">[docs]</a>    <span class="k">def</span> <span class="nf">generate_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generate a normalised table of the results.</span>
 
-<span class="sd">        The table is stored as a :class:`numpy.recarray` in the</span>
-<span class="sd">        attribute :attr:`~WaterBridgeAnalysis.table`.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        output_format : {&#39;sele1_sele2&#39;, &#39;donor_acceptor&#39;}</span>
+<span class="sd">            The output format of the `table` can be changed a fashion similar</span>
+<span class="sd">            to :attr:`WaterBridgeAnalysis.results.timeseries` by changing the</span>
+<span class="sd">            labels of the columns of the participating atoms.</span>
 
-<span class="sd">        The output format of :attr:`~WaterBridgeAnalysis.table` can also be</span>
-<span class="sd">        changed using output_format in a fashion similar to</span>
-<span class="sd">        :attr:`WaterBridgeAnalysis.timeseries`</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        table : numpy.recarray</span>
+<span class="sd">            A &quot;tidy&quot; table with one hydrogen bond per row, labeled according to</span>
+<span class="sd">            `output_format` and containing information of atom_1, atom_2,</span>
+<span class="sd">            distance, and angle.</span>
+
+<span class="sd">        .. versionchanged:: 2.0.0</span>
+<span class="sd">           Return the generated table (as well as storing it as :attr:`table`).</span>
+
+<span class="sd">        .. deprecated:: 2.0.0</span>
+<span class="sd">           In release 3.0.0, :meth:`generate_table()` will _only_ return the</span>
+<span class="sd">           table and no longer store it in :attr:`table`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">output_format</span> <span class="o">=</span> <span class="n">output_format</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_format</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_network</span> <span class="o">==</span> <span class="p">[]:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span> <span class="o">==</span> <span class="p">[]:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;No data computed, do run() first.&quot;</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">MissingDataWarning</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
-        <span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_timeseries</span><span class="p">(</span><span class="n">output_format</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> \
+          <span class="ow">and</span> <span class="n">output_format</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_format</span><span class="p">:</span>
+            <span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Recompute timeseries with correct output format</span>
+            <span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_timeseries</span><span class="p">(</span><span class="n">output_format</span><span class="p">)</span>
 
         <span class="n">num_records</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">hframe</span><span class="p">)</span> <span class="k">for</span> <span class="n">hframe</span> <span class="ow">in</span> <span class="n">timeseries</span><span class="p">])</span>
         <span class="c1"># build empty output table</span>
@@ -1988,7 +2010,28 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="s2">&quot;WBridge: Stored results as table with </span><span class="si">%(num_records)d</span><span class="s2"> entries.&quot;</span><span class="p">,</span>
             <span class="nb">vars</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="n">table</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="n">table</span>
+
+        <span class="k">return</span> <span class="n">table</span></div>
+
+    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_timeseries</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">network</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `network` attribute was deprecated in MDAnalysis 2.0.0 &quot;</span>
+                <span class="s2">&quot;and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
+                <span class="s2">&quot;`results.network` instead&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">network</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `timeseries` attribute was deprecated in MDAnalysis &quot;</span>
+                <span class="s2">&quot;2.0.0 and will be removed in MDAnalysis 3.0.0. Please use &quot;</span>
+                <span class="s2">&quot;`results.timeseries` instead&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">timeseries</span></div>
 </pre></div>
 
            </div>
