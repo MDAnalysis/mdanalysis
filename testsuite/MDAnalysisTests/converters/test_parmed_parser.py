@@ -35,7 +35,7 @@ pmd = pytest.importorskip('parmed')
 
 
 class BaseTestParmedParser(ParserBase):
-    parser = mda.topology.ParmEdParser.ParmEdParser
+    parser = mda.converters.ParmEdParser.ParmEdParser
     expected_attrs = ['ids', 'names', 'types', 'masses',
                       'charges', 'altLocs', 'occupancies',
                       'tempfactors', 'gbscreens', 'solventradii',
@@ -254,3 +254,9 @@ class TestParmedParserPRM(BaseTestParmedParser):
         )):
             assert dih.type[i].type.phi_k == phi_k
             assert dih.type[i].type.per == per
+
+
+def test_old_import_warning():
+    wmsg = "Please import the ParmEd classes from MDAnalysis.converters"
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        from MDAnalysis.topology.ParmEdParser import squash_identical

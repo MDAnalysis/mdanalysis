@@ -21,10 +21,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-# Water Bridge Analysis
-r"""Water Bridge analysis ---
-mod:`MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis`
-===============================================================================
+r"""Water Bridge analysis --- :mod:`MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis`
+==========================================================================================
 
 :Author: Zhiyi Wu
 :Year: 2017-2018
@@ -262,8 +260,18 @@ Then simply use the new class instead of the parent class and call it with
 ```forcefield` = "OtherFF"``. Please also consider contributing the list of
 heavy atom names to MDAnalysis.
 
-How to perform WaterBridgeAnalysis
-----------------------------------
+
+.. rubric:: References
+
+.. [Gregoret1991] L.M. Gregoret, S.D. Rader, R.J. Fletterick, and
+   F.E. Cohen. Hydrogen bonds involving sulfur atoms in proteins. Proteins,
+   9(2):99–107, 1991. `10.1002/prot.340090204`_.
+
+.. _`10.1002/prot.340090204`: http://dx.doi.org/10.1002/prot.340090204
+
+
+How to perform ``WaterBridgeAnalysis``
+--------------------------------------
 
 All water bridges between arginine and aspartic acid can be analysed with ::
 
@@ -272,14 +280,14 @@ All water bridges between arginine and aspartic acid can be analysed with ::
 
   u = MDAnalysis.Universe('topology', 'trajectory')
   w = MDAnalysis.analysis.hbonds.WaterBridgeAnalysis(u, 'resname ARG',
-  'resname ASP')
+                                                     'resname ASP')
   w.run()
 
 The maximum number of bridging waters detected can be changed using the order
 keyword. ::
 
   w = MDAnalysis.analysis.hbonds.WaterBridgeAnalysis(u, 'resname ARG',
-  'resname ASP', order=3)
+                                                     'resname ASP', order=3)
 
 Thus, a maximum of three bridging waters will be detected.
 
@@ -301,7 +309,7 @@ the carboxylic group (ASP3:OD2). ::
   #     5          3          ASP       OD2
   print(w.timeseries)
 
-prints out. ::
+prints out ::
 
   [ # frame 1
     # A water bridge SOL2 links O from ARG1 to the carboxylic group OD1 of ASP3
@@ -319,8 +327,8 @@ prints out. ::
 
 .. _wb_count_by_type:
 
-Use count_by_type
------------------
+Use ``count_by_type``
+---------------------
 
 We can use the :meth:`~WaterBridgeAnalysis.count_by_type` to
 generate the frequence of all water bridges in the simulation. ::
@@ -561,8 +569,8 @@ Additional keywords can be supplied to the analysis function by passing through
 
 .. _wb_count_by_time:
 
-Use count_by_time
------------------
+Use ``count_by_time``
+---------------------
 
 :meth:`~WaterBridgeAnalysis.count_by_type` aggregates data across frames, which
 might be desirable in some cases but not the others.
@@ -1341,7 +1349,8 @@ class WaterBridgeAnalysis(AnalysisBase):
             else:
                 if node in end:
                     # check if any duplication happens
-                    if len(route) == len(set(route)):
+                    heavy_atom = [line[3] or line[2] for line in route]
+                    if len(heavy_atom) == len(set(heavy_atom)):
                         add_route(result, route)
                 else:
                     for new_node in graph[node]:
