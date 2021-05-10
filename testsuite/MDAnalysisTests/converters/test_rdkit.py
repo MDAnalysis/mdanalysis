@@ -36,7 +36,7 @@ from MDAnalysisTests.util import import_not_available
 try:
     from rdkit import Chem
     from rdkit.Chem import AllChem
-    from MDAnalysis.coordinates.RDKit import (
+    from MDAnalysis.converters.RDKit import (
         RDATTRIBUTES,
         _add_mda_attr_to_rdkit,
         _infer_bo_and_charges,
@@ -333,7 +333,7 @@ class TestRDKitConverter(object):
     def test_cache(self):
         u = mda.Universe.from_smiles("CCO", numConfs=5)
         ag = u.atoms
-        cache = mda.coordinates.RDKit.RDKitConverter._cache
+        cache = mda.converters.RDKit.RDKitConverter._cache
         previous_cache = None
         for ts in u.trajectory:
             mol = ag.convert_to("RDKIT")
@@ -351,7 +351,7 @@ class TestRDKitConverter(object):
         assert len(cache) == 1
         assert cache != previous_cache
         # converter with kwargs
-        rdkit_converter = mda.coordinates.RDKit.RDKitConverter().convert
+        rdkit_converter = mda.converters.RDKit.RDKitConverter().convert
         # cache should depend on passed arguments
         previous_cache = copy.deepcopy(cache)
         mol = rdkit_converter(u.atoms, NoImplicit=False)

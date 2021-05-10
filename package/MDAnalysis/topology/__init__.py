@@ -214,6 +214,8 @@ Developer Notes
 .. versionchanged:: 0.16.0
    The new array-based topology system completely replaced the old
    system that was based on a list of Atom instances.
+.. versionchanged:: 2.0.0
+   The ParmEdParser was moved to the :mod:`~MDAnalysis.converters` module
 
 Topology information consists of data that do not change over time,
 i.e. information that is the same for all time steps of a
@@ -306,8 +308,8 @@ to the second atom.
 __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser',
            'CRDParser', 'TOPParser', 'PDBQTParser', 'TPRParser',
            'LAMMPSParser', 'XYZParser', 'GMSParser', 'DLPolyParser',
-           'HoomdXMLParser','GSDParser', 'ITPParser', 'ParmEdParser', 
-           'RDKitParser', 'OpenMMParser']
+           'HoomdXMLParser','GSDParser', 'ITPParser']
+
 from . import core
 from . import PSFParser
 from . import TOPParser
@@ -330,7 +332,4 @@ from . import MMTFParser
 from . import GSDParser
 from . import MinimalParser
 from . import ITPParser
-from . import OpenMMParser
-from . import ParmEdParser
-from . import RDKitParser
 from . import FHIAIMSParser

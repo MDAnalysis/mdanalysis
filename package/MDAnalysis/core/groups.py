@@ -104,6 +104,7 @@ from ..lib.util import cached, warn_if_not_unique, unique_int_1d
 from ..lib import distances
 from ..lib import transformations
 from ..lib import mdamath
+from .accessors import Accessor, ConverterWrapper
 from ..selections import get_writer as get_selection_writer_for
 from . import selection
 from ..exceptions import NoDataError
@@ -3198,46 +3199,7 @@ class AtomGroup(GroupBase):
                 "cmap only makes sense for a group with exactly 5 atoms")
         return topologyobjects.CMap(self.ix, self.universe)
 
-    def convert_to(self, package):
-        """
-        Convert :class:`AtomGroup` to a structure from another Python package.
-
-        Example
-        -------
-
-        The code below converts a Universe to a :class:`parmed.structure.Structure`.
-
-        .. code-block:: python
-
-            >>> import MDAnalysis as mda
-            >>> from MDAnalysis.tests.datafiles import GRO
-            >>> u = mda.Universe(GRO)
-            >>> parmed_structure = u.atoms.convert_to('PARMED')
-            >>> parmed_structure
-            <Structure 47681 atoms; 11302 residues; 0 bonds; PBC (triclinic); NOT parametrized>
-
-
-        Parameters
-        ----------
-        package: str
-            The name of the package to convert to, e.g. ``"PARMED"``
-
-
-        Returns
-        -------
-        output:
-            An instance of the structure type from another package.
-
-        Raises
-        ------
-        TypeError:
-            No converter was found for the required package
-
-
-        .. versionadded:: 1.0.0
-        """
-        converter = get_converter_for(package)
-        return converter().convert(self.atoms)
+    convert_to = Accessor("convert_to", ConverterWrapper)
 
     def write(self, filename=None, file_format=None,
               filenamefmt="{trjname}_{frame}", frames=None, **kwargs):
