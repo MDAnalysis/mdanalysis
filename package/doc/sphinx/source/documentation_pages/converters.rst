@@ -4,8 +4,9 @@
 Converter modules
 **************************
 
-Converters are the classes that MDAnalysis uses to convert MDAnalysis 
-structures to and from other Python packages. 
+The :mod:`MDAnalysis.converters` module contains the Converter classes that
+MDAnalysis uses to convert MDAnalysis  structures to and from other Python
+packages. 
 
 If you are converting *to* MDAnalysis, you can use the normal syntax for 
 creating a Universe from files. Typically MDAnalysis will recognise which 
@@ -36,7 +37,6 @@ Another syntax is also available for tab-completion support::
 .. toctree::
    :maxdepth: 1
 
-   converters/init
    converters/ParmEd
    converters/RDKit
    converters/OpenMM
