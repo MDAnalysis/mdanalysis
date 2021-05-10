@@ -73,7 +73,7 @@ First load all modules and test data
 
     import MDAnalysis as mda
     import MDAnalysis.analysis.pca as pca
-    rom MDAnalysis.tests.datafiles import PSF, DCD
+    from MDAnalysis.tests.datafiles import PSF, DCD
 
 
 Given a universe containing trajectory data we can perform Principal Component
@@ -96,7 +96,7 @@ components is conveniently stored in the one-dimensional array attribute
 
 .. code-block:: python
 
-    n_pcs = np.where(PSF_pca.cumulated_variance > 0.95)[0][0]
+    n_pcs = np.where(PSF_pca.results.cumulated_variance > 0.95)[0][0]
     atomgroup = u.select_atoms('backbone')
     pca_space = PSF_pca.transform(atomgroup, n_components=n_pcs)
 
