@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>11.2.2. Core Topology Objects — MDAnalysis.core.topologyobjects &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  <title>11.3.2. Core Topology Objects — MDAnalysis.core.topologyobjects &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -47,8 +47,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="11.2.3. Topology attribute objects — MDAnalysis.core.topologyattrs" href="topologyattrs.html" />
-    <link rel="prev" title="11.2.1. Core Topology object — MDAnalysis.core.topology" href="topology.html" /> 
+    <link rel="next" title="11.3.3. Topology attribute objects — MDAnalysis.core.topologyattrs" href="topologyattrs.html" />
+    <link rel="prev" title="11.3.1. Core Topology object — MDAnalysis.core.topology" href="topology.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -112,15 +112,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../core_modules.html">11. Core modules</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#important-objects-for-users">11.1. Important objects for users</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../core_modules.html#topology-system">11.2. Topology system</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="topology.html">11.2.1. Core Topology object — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.topology</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">11.2.2. Core Topology Objects — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyobjects</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html">11.2.3. Topology attribute objects — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyattrs</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="init.html">11.1. Core functions of MDAnalysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#important-objects-for-users">11.2. Important objects for users</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../core_modules.html#topology-system">11.3. Topology system</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="topology.html">11.3.1. Core Topology object — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.topology</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">11.3.2. Core Topology Objects — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyobjects</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="topologyattrs.html">11.3.3. Topology attribute objects — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyattrs</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#selection-system">11.3. Selection system</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#flag-system">11.4. Flag system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#selection-system">11.4. Selection system</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
@@ -179,7 +179,7 @@
         
           <li><a href="../core_modules.html">11. Core modules</a> &raquo;</li>
         
-      <li>11.2.2. Core Topology Objects — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyobjects</span></code></li>
+      <li>11.3.2. Core Topology Objects — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyobjects</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -199,7 +199,7 @@
            <div itemprop="articleBody">
             
   <span class="target" id="module-MDAnalysis.core.topologyobjects"></span><div class="section" id="core-topology-objects-mdanalysis-core-topologyobjects">
-<h1>11.2.2. Core Topology Objects — <a class="reference internal" href="#module-MDAnalysis.core.topologyobjects" title="MDAnalysis.core.topologyobjects"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyobjects</span></code></a><a class="headerlink" href="#core-topology-objects-mdanalysis-core-topologyobjects" title="Permalink to this headline">¶</a></h1>
+<h1>11.3.2. Core Topology Objects — <a class="reference internal" href="#module-MDAnalysis.core.topologyobjects" title="MDAnalysis.core.topologyobjects"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyobjects</span></code></a><a class="headerlink" href="#core-topology-objects-mdanalysis-core-topologyobjects" title="Permalink to this headline">¶</a></h1>
 <p>The building blocks for MDAnalysis’ description of topology</p>
 <dl class="class">
 <dt id="MDAnalysis.core.topologyobjects.Angle">
@@ -1021,8 +1021,8 @@ numbers are involved.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="topologyattrs.html" class="btn btn-neutral float-right" title="11.2.3. Topology attribute objects — MDAnalysis.core.topologyattrs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="topology.html" class="btn btn-neutral float-left" title="11.2.1. Core Topology object — MDAnalysis.core.topology" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="topologyattrs.html" class="btn btn-neutral float-right" title="11.3.3. Topology attribute objects — MDAnalysis.core.topologyattrs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="topology.html" class="btn btn-neutral float-left" title="11.3.1. Core Topology object — MDAnalysis.core.topology" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
