@@ -177,6 +177,8 @@ Enhancements
     checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
 
 Changes
+  * Introduces a new converter API with all converters in MDAnalysis.converters
+    (Issue #2790, PR #2882)
   * The ParmEd classes were moved to the `converters` module (PR #2882)
   * The `convert_to` method of the AtomGroup is now case-insensitive and
     passes keyword arguments to the underlying converter. It can also be used
