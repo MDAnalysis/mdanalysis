@@ -47,8 +47,8 @@
           href="../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="7.1. ParmEd topology parser" href="converters/ParmEdParser.html" />
-    <link rel="prev" title="6.33. XDR based trajectory files — MDAnalysis.coordinates.XDR" href="coordinates/XDR.html" /> 
+    <link rel="next" title="7.1. ParmEd topology parser — MDAnalysis.converters.ParmEdParser" href="converters/ParmEd.html" />
+    <link rel="prev" title="6.32. XDR based trajectory files — MDAnalysis.coordinates.XDR" href="coordinates/XDR.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -108,10 +108,13 @@
 <li class="toctree-l1"><a class="reference internal" href="topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="coordinates_modules.html">6. Coordinates modules</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">7. Converter modules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="converters/ParmEdParser.html">7.1. ParmEd topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="converters/ParmEdParser.html#parmed-structure-i-o-mdanalysis-coordinates-parmed">7.2. ParmEd structure I/O — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.ParmEd</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="converters/RDKitParser.html">7.3. RDKit topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="converters/RDKitParser.html#rdkit-molecule-i-o-mdanalysis-coordinates-rdkit">7.4. RDKit molecule I/O — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.RDKit</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="converters/ParmEd.html">7.1. ParmEd topology parser — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.converters.ParmEdParser</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="converters/ParmEd.html#parmed-structure-i-o-mdanalysis-converters-parmed">7.2. ParmEd structure I/O — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.converters.ParmEd</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="converters/RDKit.html">7.3. RDKit topology parser — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKitParser</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="converters/RDKit.html#rdkit-molecule-i-o-mdanalysis-converters-rdkit">7.4. RDKit molecule I/O — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKit</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="converters/OpenMM.html">7.5. OpenMM topology parser <code class="docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMMParser</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="converters/OpenMM.html#openmm-structure-i-o-mdanalysis-converters-openmm">7.6. OpenMM structure I/O — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMM</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/accessors.html">7.7. AtomGroup accessors — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.accessors</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
@@ -193,8 +196,9 @@
             
   <div class="section" id="converter-modules">
 <h1>7. Converter modules<a class="headerlink" href="#converter-modules" title="Permalink to this headline">¶</a></h1>
-<p>Converters are the classes that MDAnalysis uses to convert MDAnalysis
-structures to and from other Python packages.</p>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters</span></code> module contains the Converter classes that
+MDAnalysis uses to convert MDAnalysis  structures to and from other Python
+packages.</p>
 <p>If you are converting <em>to</em> MDAnalysis, you can use the normal syntax for
 creating a Universe from files. Typically MDAnalysis will recognise which
 library it is dealing with, so you will not need to pass in a <code class="docutils literal notranslate"><span class="pre">format</span></code> keyword.</p>
@@ -213,13 +217,25 @@ you will have to specify a package name (case-insensitive).</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pgro2</span> <span class="o">=</span> <span class="n">ugro</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s1">&#39;PARMED&#39;</span><span class="p">)</span>  <span class="c1"># converts back to parmed structure</span>
 </pre></div>
 </div>
+<p>Another syntax is also available for tab-completion support:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pgro2</span> <span class="o">=</span> <span class="n">ugro</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">convert_to</span><span class="o">.</span><span class="n">parmed</span><span class="p">()</span>
+</pre></div>
+</div>
 <p class="rubric">Available converters</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="converters/ParmEdParser.html">7.1. ParmEd topology parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="converters/ParmEdParser.html#parmed-structure-i-o-mdanalysis-coordinates-parmed">7.2. ParmEd structure I/O — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.ParmEd</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="converters/RDKitParser.html">7.3. RDKit topology parser</a></li>
-<li class="toctree-l1"><a class="reference internal" href="converters/RDKitParser.html#rdkit-molecule-i-o-mdanalysis-coordinates-rdkit">7.4. RDKit molecule I/O — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.RDKit</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="converters/ParmEd.html">7.1. ParmEd topology parser — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.converters.ParmEdParser</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="converters/ParmEd.html#parmed-structure-i-o-mdanalysis-converters-parmed">7.2. ParmEd structure I/O — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.converters.ParmEd</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="converters/RDKit.html">7.3. RDKit topology parser — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKitParser</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="converters/RDKit.html#rdkit-molecule-i-o-mdanalysis-converters-rdkit">7.4. RDKit molecule I/O — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.converters.RDKit</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="converters/OpenMM.html">7.5. OpenMM topology parser <code class="docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMMParser</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="converters/OpenMM.html#openmm-structure-i-o-mdanalysis-converters-openmm">7.6. OpenMM structure I/O — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.converters.OpenMM</span></code></a></li>
+</ul>
+</div>
+<p class="rubric">Converter functionalities</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="core/accessors.html">7.7. AtomGroup accessors — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.accessors</span></code></a></li>
 </ul>
 </div>
 </div>
@@ -230,8 +246,8 @@ you will have to specify a package name (case-insensitive).</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="converters/ParmEdParser.html" class="btn btn-neutral float-right" title="7.1. ParmEd topology parser" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="coordinates/XDR.html" class="btn btn-neutral float-left" title="6.33. XDR based trajectory files — MDAnalysis.coordinates.XDR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="converters/ParmEd.html" class="btn btn-neutral float-right" title="7.1. ParmEd topology parser — MDAnalysis.converters.ParmEdParser" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="coordinates/XDR.html" class="btn btn-neutral float-left" title="6.32. XDR based trajectory files — MDAnalysis.coordinates.XDR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

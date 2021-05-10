@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>MDAnalysis.coordinates.RDKit &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  <title>MDAnalysis.converters.RDKit &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -166,7 +166,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>MDAnalysis.coordinates.RDKit</li>
+      <li>MDAnalysis.converters.RDKit</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -181,7 +181,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for MDAnalysis.coordinates.RDKit</h1><div class="highlight"><pre>
+  <h1>Source code for MDAnalysis.converters.RDKit</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
 <span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
 <span class="c1">#</span>
@@ -205,7 +205,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;RDKit molecule I/O --- :mod:`MDAnalysis.coordinates.RDKit`</span>
+<span class="sd">&quot;&quot;&quot;RDKit molecule I/O --- :mod:`MDAnalysis.converters.RDKit`</span>
 <span class="sd">================================================================</span>
 
 <span class="sd">Read coordinates data from an `RDKit &lt;https://www.rdkit.org/docs/&gt;`__ :class:`rdkit.Chem.rdchem.Mol` with</span>
@@ -257,8 +257,8 @@
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
 <span class="kn">from</span> <span class="nn">..topology.guessers</span> <span class="kn">import</span> <span class="n">guess_atom_element</span>
 <span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="n">_TOPOLOGY_ATTRS</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">memory</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
+<span class="kn">from</span> <span class="nn">..coordinates</span> <span class="kn">import</span> <span class="n">memory</span>
+<span class="kn">from</span> <span class="nn">..coordinates</span> <span class="kn">import</span> <span class="n">base</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
@@ -290,7 +290,7 @@
     <span class="n">PERIODIC_TABLE</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">GetPeriodicTable</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="RDKitReader"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKitParser.html#MDAnalysis.coordinates.RDKit.RDKitReader">[docs]</a><span class="k">class</span> <span class="nc">RDKitReader</span><span class="p">(</span><span class="n">memory</span><span class="o">.</span><span class="n">MemoryReader</span><span class="p">):</span>
+<div class="viewcode-block" id="RDKitReader"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit.RDKitReader">[docs]</a><span class="k">class</span> <span class="nc">RDKitReader</span><span class="p">(</span><span class="n">memory</span><span class="o">.</span><span class="n">MemoryReader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Coordinate reader for RDKit.</span>
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
@@ -332,7 +332,7 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">RDKitReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="RDKitConverter"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKitParser.html#MDAnalysis.coordinates.RDKit.RDKitConverter">[docs]</a><span class="k">class</span> <span class="nc">RDKitConverter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ConverterBase</span><span class="p">):</span>
+<div class="viewcode-block" id="RDKitConverter"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit.RDKitConverter">[docs]</a><span class="k">class</span> <span class="nc">RDKitConverter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ConverterBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Convert MDAnalysis :class:`~MDAnalysis.core.groups.AtomGroup` or</span>
 <span class="sd">    :class:`~MDAnalysis.core.universe.Universe` to RDKit</span>
 <span class="sd">    :class:`~rdkit.Chem.rdchem.Mol`</span>
@@ -451,7 +451,7 @@
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">}</span>
     <span class="n">_cache</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
-<div class="viewcode-block" id="RDKitConverter.convert"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKitParser.html#MDAnalysis.coordinates.RDKit.RDKitConverter.convert">[docs]</a>    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">NoImplicit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+<div class="viewcode-block" id="RDKitConverter.convert"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit.RDKitConverter.convert">[docs]</a>    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">NoImplicit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write selection at current trajectory frame to</span>
 <span class="sd">        :class:`~rdkit.Chem.rdchem.Mol`.</span>
 
@@ -523,7 +523,7 @@
 
         <span class="k">return</span> <span class="n">mol</span></div>
 
-<div class="viewcode-block" id="RDKitConverter.atomgroup_to_mol"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKitParser.html#MDAnalysis.coordinates.RDKit.RDKitConverter.atomgroup_to_mol">[docs]</a>    <span class="k">def</span> <span class="nf">atomgroup_to_mol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">NoImplicit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+<div class="viewcode-block" id="RDKitConverter.atomgroup_to_mol"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit.RDKitConverter.atomgroup_to_mol">[docs]</a>    <span class="k">def</span> <span class="nf">atomgroup_to_mol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">NoImplicit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Converts an AtomGroup to an RDKit molecule.</span>
 
 <span class="sd">        Parameters</span>
@@ -672,7 +672,7 @@
         <span class="n">atom</span><span class="o">.</span><span class="n">SetProp</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="_infer_bo_and_charges"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKitParser.html#MDAnalysis.coordinates.RDKit._infer_bo_and_charges">[docs]</a><span class="k">def</span> <span class="nf">_infer_bo_and_charges</span><span class="p">(</span><span class="n">mol</span><span class="p">):</span>
+<div class="viewcode-block" id="_infer_bo_and_charges"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit._infer_bo_and_charges">[docs]</a><span class="k">def</span> <span class="nf">_infer_bo_and_charges</span><span class="p">(</span><span class="n">mol</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Infer bond orders and formal charges from a molecule.</span>
 
 <span class="sd">    Since most MD topology files don&#39;t explicitly retain information on bond</span>
@@ -761,7 +761,7 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">v</span> <span class="o">-</span> <span class="n">current_v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">expected_vs</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="_standardize_patterns"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKitParser.html#MDAnalysis.coordinates.RDKit._standardize_patterns">[docs]</a><span class="k">def</span> <span class="nf">_standardize_patterns</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+<div class="viewcode-block" id="_standardize_patterns"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit._standardize_patterns">[docs]</a><span class="k">def</span> <span class="nf">_standardize_patterns</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Standardizes functional groups</span>
 
 <span class="sd">    Uses :func:`_rebuild_conjugated_bonds` to standardize conjugated systems,</span>
@@ -888,7 +888,7 @@
     <span class="k">return</span> <span class="n">reactant</span>
 
 
-<div class="viewcode-block" id="_rebuild_conjugated_bonds"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKitParser.html#MDAnalysis.coordinates.RDKit._rebuild_conjugated_bonds">[docs]</a><span class="k">def</span> <span class="nf">_rebuild_conjugated_bonds</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+<div class="viewcode-block" id="_rebuild_conjugated_bonds"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit._rebuild_conjugated_bonds">[docs]</a><span class="k">def</span> <span class="nf">_rebuild_conjugated_bonds</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Rebuild conjugated bonds without negatively charged atoms at the</span>
 <span class="sd">    beginning and end of the conjugated system</span>
 

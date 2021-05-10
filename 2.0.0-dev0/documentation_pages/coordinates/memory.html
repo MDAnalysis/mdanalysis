@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>6.26. Reading trajectories from memory — MDAnalysis.coordinates.memory &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  <title>6.25. Reading trajectories from memory — MDAnalysis.coordinates.memory &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -47,8 +47,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="6.27. Reading trajectories with chemfiles — MDAnalysis.coordinates.chemfiles" href="chemfiles.html" />
-    <link rel="prev" title="6.25. FHI-AIMS file format — MDAnalysis.coordinates.FHIAIMS" href="FHIAIMS.html" /> 
+    <link rel="next" title="6.26. Reading trajectories with chemfiles — MDAnalysis.coordinates.chemfiles" href="chemfiles.html" />
+    <link rel="prev" title="6.24. FHI-AIMS file format — MDAnalysis.coordinates.FHIAIMS" href="FHIAIMS.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -121,35 +121,34 @@
 <li class="toctree-l2"><a class="reference internal" href="MMTF.html">6.12. MMTF trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MMTF</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="MOL2.html">6.13. MOL2 file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="NAMDBIN.html">6.14. NAMDBIN files format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.NAMDBIN</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="OpenMM.html">6.15. OpenMM structure I/O — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.OpenMM</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="PDB.html">6.16. PDB structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="PDBQT.html">6.17. PDBQT structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="PQR.html">6.18. PQR file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="TRJ.html">6.19. AMBER trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="TRR.html">6.20. TRR trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="TRZ.html">6.21. TRZ trajectory I/O  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="TXYZ.html">6.22. TXYZ file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TXYZ</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XTC.html">6.23. XTC trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XYZ.html">6.24. XYZ trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="FHIAIMS.html">6.25. FHI-AIMS file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.FHIAIMS</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">6.26. Reading trajectories from memory — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#how-to-use-the-memoryreader">6.26.1. How to use the <code class="docutils literal notranslate"><span class="pre">MemoryReader</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#in-memory-representation-of-arbitrary-trajectories">6.26.1.1. In-memory representation of arbitrary trajectories</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#switching-a-trajectory-to-an-in-memory-representation">6.26.1.2. Switching a trajectory to an in-memory representation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#constructing-a-reader-from-a-numpy-array">6.26.1.3. Constructing a Reader from a numpy array</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#creating-an-in-memory-trajectory-of-a-sub-system">6.26.1.4. Creating an in-memory trajectory of a sub-system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDB.html">6.15. PDB structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBQT.html">6.16. PDBQT structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PQR.html">6.17. PQR file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRJ.html">6.18. AMBER trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRR.html">6.19. TRR trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRZ.html">6.20. TRZ trajectory I/O  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TXYZ.html">6.21. TXYZ file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TXYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XTC.html">6.22. XTC trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XYZ.html">6.23. XYZ trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="FHIAIMS.html">6.24. FHI-AIMS file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.FHIAIMS</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">6.25. Reading trajectories from memory — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-use-the-memoryreader">6.25.1. How to use the <code class="docutils literal notranslate"><span class="pre">MemoryReader</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#in-memory-representation-of-arbitrary-trajectories">6.25.1.1. In-memory representation of arbitrary trajectories</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#switching-a-trajectory-to-an-in-memory-representation">6.25.1.2. Switching a trajectory to an in-memory representation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#constructing-a-reader-from-a-numpy-array">6.25.1.3. Constructing a Reader from a numpy array</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#creating-an-in-memory-trajectory-of-a-sub-system">6.25.1.4. Creating an in-memory trajectory of a sub-system</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#classes">6.26.2. Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#classes">6.25.2. Classes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="chemfiles.html">6.27. Reading trajectories with <em>chemfiles</em> — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="null.html">6.28. Null output — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">6.29. Base classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">6.30. Common functions for coordinate reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.31. Serialization of Coordinate Readers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chain.html">6.32. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.33. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chemfiles.html">6.26. Reading trajectories with <em>chemfiles</em> — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="null.html">6.27. Null output — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">6.28. Base classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">6.29. Common functions for coordinate reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.30. Serialization of Coordinate Readers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">6.31. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.32. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
@@ -213,7 +212,7 @@
         
           <li><a href="../coordinates_modules.html">6. Coordinates modules</a> &raquo;</li>
         
-      <li>6.26. Reading trajectories from memory — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></li>
+      <li>6.25. Reading trajectories from memory — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -233,7 +232,7 @@
            <div itemprop="articleBody">
             
   <span class="target" id="module-MDAnalysis.coordinates.memory"></span><div class="section" id="reading-trajectories-from-memory-mdanalysis-coordinates-memory">
-<h1>6.26. Reading trajectories from memory — <a class="reference internal" href="#module-MDAnalysis.coordinates.memory" title="MDAnalysis.coordinates.memory"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a><a class="headerlink" href="#reading-trajectories-from-memory-mdanalysis-coordinates-memory" title="Permalink to this headline">¶</a></h1>
+<h1>6.25. Reading trajectories from memory — <a class="reference internal" href="#module-MDAnalysis.coordinates.memory" title="MDAnalysis.coordinates.memory"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a><a class="headerlink" href="#reading-trajectories-from-memory-mdanalysis-coordinates-memory" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -259,12 +258,12 @@ trajectory (e.g. through
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.positions" title="MDAnalysis.core.groups.AtomGroup.positions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.positions</span></code></a>) without having
 to write the entire state to file.</p>
 <div class="section" id="how-to-use-the-memoryreader">
-<h2>6.26.1. How to use the <a class="reference internal" href="#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryReader</span></code></a><a class="headerlink" href="#how-to-use-the-memoryreader" title="Permalink to this headline">¶</a></h2>
+<h2>6.25.1. How to use the <a class="reference internal" href="#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryReader</span></code></a><a class="headerlink" href="#how-to-use-the-memoryreader" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryReader</span></code></a> can be used to either directly generate a
 trajectory as a numpy array or by transferring an existing trajectory
 to memory.</p>
 <div class="section" id="in-memory-representation-of-arbitrary-trajectories">
-<h3>6.26.1.1. In-memory representation of arbitrary trajectories<a class="headerlink" href="#in-memory-representation-of-arbitrary-trajectories" title="Permalink to this headline">¶</a></h3>
+<h3>6.25.1.1. In-memory representation of arbitrary trajectories<a class="headerlink" href="#in-memory-representation-of-arbitrary-trajectories" title="Permalink to this headline">¶</a></h3>
 <p>If sufficient memory is available to hold a whole trajectory in memory
 then analysis can be sped up substantially by transferring the
 trajectory to memory.</p>
@@ -282,7 +281,7 @@ automatically transfers a trajectory to memory:</p>
 trajectory.</p>
 </div>
 <div class="section" id="switching-a-trajectory-to-an-in-memory-representation">
-<h3>6.26.1.2. Switching a trajectory to an in-memory representation<a class="headerlink" href="#switching-a-trajectory-to-an-in-memory-representation" title="Permalink to this headline">¶</a></h3>
+<h3>6.25.1.2. Switching a trajectory to an in-memory representation<a class="headerlink" href="#switching-a-trajectory-to-an-in-memory-representation" title="Permalink to this headline">¶</a></h3>
 <p>The decision to transfer the trajectory to memory can be made at any
 time with the
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe.transfer_to_memory" title="MDAnalysis.core.universe.Universe.transfer_to_memory"><code class="xref py py-meth docutils literal notranslate"><span class="pre">transfer_to_memory()</span></code></a> method
@@ -296,7 +295,7 @@ displayed) but then subsequent operations on the trajectory directly
 operate on the in-memory array and will be very fast.</p>
 </div>
 <div class="section" id="constructing-a-reader-from-a-numpy-array">
-<h3>6.26.1.3. Constructing a Reader from a numpy array<a class="headerlink" href="#constructing-a-reader-from-a-numpy-array" title="Permalink to this headline">¶</a></h3>
+<h3>6.25.1.3. Constructing a Reader from a numpy array<a class="headerlink" href="#constructing-a-reader-from-a-numpy-array" title="Permalink to this headline">¶</a></h3>
 <p>The <a class="reference internal" href="#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryReader</span></code></a> provides great flexibility because it
 becomes possible to create a <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> directly
 from a numpy array.</p>
@@ -335,7 +334,7 @@ same functionality for any supported trajectory format:</p>
 </div>
 </div>
 <div class="section" id="creating-an-in-memory-trajectory-of-a-sub-system">
-<span id="creating-in-memory-trajectory-label"></span><h3>6.26.1.4. Creating an in-memory trajectory of a sub-system<a class="headerlink" href="#creating-an-in-memory-trajectory-of-a-sub-system" title="Permalink to this headline">¶</a></h3>
+<span id="creating-in-memory-trajectory-label"></span><h3>6.25.1.4. Creating an in-memory trajectory of a sub-system<a class="headerlink" href="#creating-an-in-memory-trajectory-of-a-sub-system" title="Permalink to this headline">¶</a></h3>
 <p>Creating a trajectory for just a selection of an existing trajectory
 requires the transfer of the appropriate coordinates as well as
 creation of a topology of the sub-system. For the latter one can use
@@ -374,7 +373,7 @@ on the sub-system.</p>
 </div>
 </div>
 <div class="section" id="classes">
-<h2>6.26.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<h2>6.25.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.memory.Timestep">
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.memory.</code><code class="descname">Timestep</code><span class="sig-paren">(</span><em>n_atoms</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/memory.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep" title="Permalink to this definition">¶</a></dt>
@@ -1440,8 +1439,8 @@ be considered to have a length of a single time step <cite>dt</cite> and a
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="chemfiles.html" class="btn btn-neutral float-right" title="6.27. Reading trajectories with chemfiles — MDAnalysis.coordinates.chemfiles" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="FHIAIMS.html" class="btn btn-neutral float-left" title="6.25. FHI-AIMS file format — MDAnalysis.coordinates.FHIAIMS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="chemfiles.html" class="btn btn-neutral float-right" title="6.26. Reading trajectories with chemfiles — MDAnalysis.coordinates.chemfiles" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="FHIAIMS.html" class="btn btn-neutral float-left" title="6.24. FHI-AIMS file format — MDAnalysis.coordinates.FHIAIMS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

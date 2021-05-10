@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>5.20. PSF topology parser &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  <title>5.19. PSF topology parser &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -47,8 +47,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="5.21. AMBER PRMTOP topology parser" href="TOPParser.html" />
-    <link rel="prev" title="5.19. PQR topology parser" href="PQRParser.html" /> 
+    <link rel="next" title="5.20. AMBER PRMTOP topology parser" href="TOPParser.html" />
+    <link rel="prev" title="5.18. PQR topology parser" href="PQRParser.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -120,24 +120,23 @@
 <li class="toctree-l2"><a class="reference internal" href="MinimalParser.html">5.12. Minimal topology parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MMTFParser.html">5.13. MMTF Topology Parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MOL2Parser.html">5.14. MOL2 file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="OpenMM.html">5.15. OpenMM topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PDBParser.html">5.16. PDB Topology Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ExtendedPDBParser.html">5.17. Extended PDB topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PDBQTParser.html">5.18. PDBQT topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PQRParser.html">5.19. PQR topology parser</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">5.20. PSF topology parser</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#classes">5.20.1. Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBParser.html">5.15. PDB Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExtendedPDBParser.html">5.16. Extended PDB topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBQTParser.html">5.17. PDBQT topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PQRParser.html">5.18. PQR topology parser</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.19. PSF topology parser</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#classes">5.19.1. Classes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="TOPParser.html">5.21. AMBER PRMTOP topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TPRParser.html">5.22. Gromacs portable run input TPR format parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TXYZParser.html">5.23. TXYZ topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="XYZParser.html">5.24. XYZ Topology Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">5.25. Base topology reader classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">5.26. Common functions for topology building — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="guessers.html">5.27. Guessing unknown Topology information — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="tables.html">5.28. MDAnalysis topology tables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tpr_util.html">5.29. Utility functions for the TPR topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TOPParser.html">5.20. AMBER PRMTOP topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TPRParser.html">5.21. Gromacs portable run input TPR format parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TXYZParser.html">5.22. TXYZ topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="XYZParser.html">5.23. XYZ Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">5.24. Base topology reader classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">5.25. Common functions for topology building — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html">5.26. Guessing unknown Topology information — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tables.html">5.27. MDAnalysis topology tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tpr_util.html">5.28. Utility functions for the TPR topology parser</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
@@ -202,7 +201,7 @@
         
           <li><a href="../topology_modules.html">5. Topology modules</a> &raquo;</li>
         
-      <li>5.20. PSF topology parser</li>
+      <li>5.19. PSF topology parser</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -222,7 +221,7 @@
            <div itemprop="articleBody">
             
   <span class="target" id="module-MDAnalysis.topology.PSFParser"></span><div class="section" id="psf-topology-parser">
-<h1>5.20. PSF topology parser<a class="headerlink" href="#psf-topology-parser" title="Permalink to this headline">¶</a></h1>
+<h1>5.19. PSF topology parser<a class="headerlink" href="#psf-topology-parser" title="Permalink to this headline">¶</a></h1>
 <p>Reads a CHARMM/NAMD/XPLOR <a class="reference external" href="http://www.charmm.org/documentation/c35b1/struct.html">PSF</a> file to build the system. The topology will
 contain atom IDs, segids, residue IDs, residue names, atom names, atom types,
 charges and masses. Bonds, angles, dihedrals and impropers are also read from
@@ -230,7 +229,7 @@ the file.</p>
 <p>It reads both standard and extended (“EXT”) PSF formats and can also parse NAMD
 space-separated “PSF” file variants.</p>
 <div class="section" id="classes">
-<h2>5.20.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<h2>5.19.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.topology.PSFParser.PSFParser">
 <em class="property">class </em><code class="descclassname">MDAnalysis.topology.PSFParser.</code><code class="descname">PSFParser</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/PSFParser.html#PSFParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.PSFParser.PSFParser" title="Permalink to this definition">¶</a></dt>
@@ -512,8 +511,8 @@ is avoided.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="TOPParser.html" class="btn btn-neutral float-right" title="5.21. AMBER PRMTOP topology parser" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="PQRParser.html" class="btn btn-neutral float-left" title="5.19. PQR topology parser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="TOPParser.html" class="btn btn-neutral float-right" title="5.20. AMBER PRMTOP topology parser" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="PQRParser.html" class="btn btn-neutral float-left" title="5.18. PQR topology parser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

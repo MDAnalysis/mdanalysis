@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>MDAnalysis.topology.ParmEdParser &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  <title>MDAnalysis.converters.ParmEdParser &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -166,7 +166,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>MDAnalysis.topology.ParmEdParser</li>
+      <li>MDAnalysis.converters.ParmEdParser</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -181,7 +181,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for MDAnalysis.topology.ParmEdParser</h1><div class="highlight"><pre>
+  <h1>Source code for MDAnalysis.converters.ParmEdParser</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
 <span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
 <span class="c1">#</span>
@@ -206,8 +206,8 @@
 <span class="c1">#</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">ParmEd topology parser</span>
-<span class="sd">======================</span>
+<span class="sd">ParmEd topology parser --- :mod:`MDAnalysis.converters.ParmEdParser`</span>
+<span class="sd">====================================================================</span>
 
 <span class="sd">Converts a `ParmEd &lt;https://parmed.github.io/ParmEd/html&gt;`_</span>
 <span class="sd">:class:`parmed.structure.Structure` into a :class:`MDAnalysis.core.Topology`.</span>
@@ -265,12 +265,16 @@
 <span class="sd">   :members:</span>
 <span class="sd">   :inherited-members:</span>
 
+<span class="sd">.. versionchanged:: 2.0.0</span>
+<span class="sd">   The ParmEdParser class was moved from :mod:`~MDAnalysis.topology` to</span>
+<span class="sd">   :mod:`~MDAnalysis.converters`</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span><span class="p">,</span> <span class="n">change_squash</span>
-<span class="kn">from</span> <span class="nn">.tables</span> <span class="kn">import</span> <span class="n">Z2SYMB</span>
+<span class="kn">from</span> <span class="nn">..topology.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span><span class="p">,</span> <span class="n">change_squash</span>
+<span class="kn">from</span> <span class="nn">..topology.tables</span> <span class="kn">import</span> <span class="n">Z2SYMB</span>
 <span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Atomids</span><span class="p">,</span>
     <span class="n">Atomnames</span><span class="p">,</span>
@@ -302,7 +306,7 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..core.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.topology.ParmEdParser&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.converters.ParmEdParser&quot;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">squash_identical</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
@@ -312,7 +316,7 @@
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="ParmEdParser"><a class="viewcode-back" href="../../../documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser">[docs]</a><span class="k">class</span> <span class="nc">ParmEdParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
+<div class="viewcode-block" id="ParmEdParser"><a class="viewcode-back" href="../../../documentation_pages/converters/ParmEd.html#MDAnalysis.converters.ParmEdParser.ParmEdParser">[docs]</a><span class="k">class</span> <span class="nc">ParmEdParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    For ParmEd structures</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -331,7 +335,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">pmd</span><span class="o">.</span><span class="n">Structure</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ParmEdParser.parse"><a class="viewcode-back" href="../../../documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ParmEdParser.parse"><a class="viewcode-back" href="../../../documentation_pages/converters/ParmEd.html#MDAnalysis.converters.ParmEdParser.ParmEdParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse PARMED into Topology</span>
 
 <span class="sd">        Returns</span>

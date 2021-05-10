@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>6.19. AMBER trajectories — MDAnalysis.coordinates.TRJ &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  <title>6.18. AMBER trajectories — MDAnalysis.coordinates.TRJ &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -47,8 +47,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="6.20. TRR trajectory files — MDAnalysis.coordinates.TRR" href="TRR.html" />
-    <link rel="prev" title="6.18. PQR file format — MDAnalysis.coordinates.PQR" href="PQR.html" /> 
+    <link rel="next" title="6.19. TRR trajectory files — MDAnalysis.coordinates.TRR" href="TRR.html" />
+    <link rel="prev" title="6.17. PQR file format — MDAnalysis.coordinates.PQR" href="PQR.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -121,29 +121,28 @@
 <li class="toctree-l2"><a class="reference internal" href="MMTF.html">6.12. MMTF trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MMTF</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="MOL2.html">6.13. MOL2 file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="NAMDBIN.html">6.14. NAMDBIN files format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.NAMDBIN</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="OpenMM.html">6.15. OpenMM structure I/O — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.OpenMM</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="PDB.html">6.16. PDB structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="PDBQT.html">6.17. PDBQT structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="PQR.html">6.18. PQR file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">6.19. AMBER trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#binary-netcdf-trajectories">6.19.1. Binary NetCDF trajectories</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ascii-traj-trajectories">6.19.2. ASCII TRAJ trajectories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDB.html">6.15. PDB structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBQT.html">6.16. PDBQT structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PQR.html">6.17. PQR file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">6.18. AMBER trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#binary-netcdf-trajectories">6.18.1. Binary NetCDF trajectories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ascii-traj-trajectories">6.18.2. ASCII TRAJ trajectories</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="TRR.html">6.20. TRR trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="TRZ.html">6.21. TRZ trajectory I/O  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="TXYZ.html">6.22. TXYZ file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TXYZ</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XTC.html">6.23. XTC trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XYZ.html">6.24. XYZ trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="FHIAIMS.html">6.25. FHI-AIMS file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.FHIAIMS</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory.html">6.26. Reading trajectories from memory — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="chemfiles.html">6.27. Reading trajectories with <em>chemfiles</em> — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="null.html">6.28. Null output — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">6.29. Base classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">6.30. Common functions for coordinate reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.31. Serialization of Coordinate Readers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chain.html">6.32. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.33. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRR.html">6.19. TRR trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRZ.html">6.20. TRZ trajectory I/O  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TXYZ.html">6.21. TXYZ file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TXYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XTC.html">6.22. XTC trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XYZ.html">6.23. XYZ trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="FHIAIMS.html">6.24. FHI-AIMS file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.FHIAIMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory.html">6.25. Reading trajectories from memory — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chemfiles.html">6.26. Reading trajectories with <em>chemfiles</em> — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="null.html">6.27. Null output — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">6.28. Base classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">6.29. Common functions for coordinate reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.30. Serialization of Coordinate Readers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">6.31. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.32. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
@@ -207,7 +206,7 @@
         
           <li><a href="../coordinates_modules.html">6. Coordinates modules</a> &raquo;</li>
         
-      <li>6.19. AMBER trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></li>
+      <li>6.18. AMBER trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -227,7 +226,7 @@
            <div itemprop="articleBody">
             
   <span class="target" id="module-MDAnalysis.coordinates.TRJ"></span><div class="section" id="amber-trajectories-mdanalysis-coordinates-trj">
-<h1>6.19. AMBER trajectories — <a class="reference internal" href="#module-MDAnalysis.coordinates.TRJ" title="MDAnalysis.coordinates.TRJ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a><a class="headerlink" href="#amber-trajectories-mdanalysis-coordinates-trj" title="Permalink to this headline">¶</a></h1>
+<h1>6.18. AMBER trajectories — <a class="reference internal" href="#module-MDAnalysis.coordinates.TRJ" title="MDAnalysis.coordinates.TRJ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a><a class="headerlink" href="#amber-trajectories-mdanalysis-coordinates-trj" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="http://ambermd.org">AMBER</a> can write <a class="reference internal" href="#ascii-trajectories"><span class="std std-ref">ASCII trajectories</span></a> (“traj”) and
 <a class="reference internal" href="#netcdf-trajectories"><span class="std std-ref">binary trajectories</span></a> (“netcdf”). MDAnalysis supports
 reading of both formats and writing for the binary trajectories.</p>
@@ -305,7 +304,7 @@ only available if the trajectory contains forces or if the
 </dd></dl>
 
 <div class="section" id="binary-netcdf-trajectories">
-<span id="netcdf-trajectories"></span><h2>6.19.1. Binary NetCDF trajectories<a class="headerlink" href="#binary-netcdf-trajectories" title="Permalink to this headline">¶</a></h2>
+<span id="netcdf-trajectories"></span><h2>6.18.1. Binary NetCDF trajectories<a class="headerlink" href="#binary-netcdf-trajectories" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference external" href="http://ambermd.org/netcdf/nctraj.xhtml">AMBER netcdf</a> format make use of <a class="reference external" href="http://www.unidata.ucar.edu/software/netcdf">NetCDF</a> (Network Common Data
 Form) format. Such binary trajectories are recognized in MDAnalysis by
 the ‘.ncdf’ suffix and read by the <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFReader" title="MDAnalysis.coordinates.TRJ.NCDFReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFReader</span></code></a>.</p>
@@ -596,7 +595,7 @@ is a file name, False when <cite>filename</cite> is a file-like object.</li>
 
 </div>
 <div class="section" id="ascii-traj-trajectories">
-<span id="ascii-trajectories"></span><h2>6.19.2. ASCII TRAJ trajectories<a class="headerlink" href="#ascii-traj-trajectories" title="Permalink to this headline">¶</a></h2>
+<span id="ascii-trajectories"></span><h2>6.18.2. ASCII TRAJ trajectories<a class="headerlink" href="#ascii-traj-trajectories" title="Permalink to this headline">¶</a></h2>
 <p>ASCII <a class="reference external" href="http://ambermd.org">AMBER</a> TRJ coordinate files (as defined in <a class="reference external" href="http://ambermd.org/formats.html#trajectory">AMBER TRJ format</a>)
 are handled by the <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.TRJReader" title="MDAnalysis.coordinates.TRJ.TRJReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">TRJReader</span></code></a>. It is also possible to directly
 read <em>bzip2</em> or <em>gzip</em> compressed files.</p>
@@ -672,8 +671,8 @@ kwarg <cite>delta</cite> renamed to <cite>dt</cite>, for uniformity with other R
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="TRR.html" class="btn btn-neutral float-right" title="6.20. TRR trajectory files — MDAnalysis.coordinates.TRR" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="PQR.html" class="btn btn-neutral float-left" title="6.18. PQR file format — MDAnalysis.coordinates.PQR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="TRR.html" class="btn btn-neutral float-right" title="6.19. TRR trajectory files — MDAnalysis.coordinates.TRR" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="PQR.html" class="btn btn-neutral float-left" title="6.17. PQR file format — MDAnalysis.coordinates.PQR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

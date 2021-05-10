@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>MDAnalysis.topology.OpenMMParser &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  <title>MDAnalysis.converters.OpenMMParser &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -166,7 +166,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>MDAnalysis.topology.OpenMMParser</li>
+      <li>MDAnalysis.converters.OpenMMParser</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -181,7 +181,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for MDAnalysis.topology.OpenMMParser</h1><div class="highlight"><pre>
+  <h1>Source code for MDAnalysis.converters.OpenMMParser</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
 <span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
 <span class="c1">#</span>
@@ -205,14 +205,14 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;OpenMM topology parser</span>
-<span class="sd">=========================</span>
+<span class="sd">&quot;&quot;&quot;OpenMM topology parser :mod:`MDAnalysis.converters.OpenMMParser`</span>
+<span class="sd">===================================================================</span>
 
 <span class="sd">.. versionadded:: 2.0.0</span>
 
 
 <span class="sd">Converts an</span>
-<span class="sd">`OpenMM &lt;http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.topology.Topology.html#simtk.openmm.app.topology.Topology&gt;`_</span>
+<span class="sd">`OpenMM topology &lt;http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.topology.Topology.html#simtk.openmm.app.topology.Topology&gt;`_</span>
 <span class="sd">:class:`simtk.openmm.app.topology.Topology` into a :class:`MDAnalysis.core.Topology`.</span>
 
 <span class="sd">Also converts some objects within the</span>
@@ -241,8 +241,7 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span>
-<span class="kn">from</span> <span class="nn">.guessers</span> <span class="kn">import</span> <span class="n">guess_types</span>
+<span class="kn">from</span> <span class="nn">..topology.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span>
 <span class="kn">from</span> <span class="nn">..core.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
 <span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Atomids</span><span class="p">,</span>
@@ -259,7 +258,7 @@
 <span class="p">)</span>
 
 
-<div class="viewcode-block" id="OpenMMTopologyParser"><a class="viewcode-back" href="../../../documentation_pages/topology/OpenMM.html#MDAnalysis.topology.OpenMMParser.OpenMMTopologyParser">[docs]</a><span class="k">class</span> <span class="nc">OpenMMTopologyParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
+<div class="viewcode-block" id="OpenMMTopologyParser"><a class="viewcode-back" href="../../../documentation_pages/converters/OpenMM.html#MDAnalysis.converters.OpenMMParser.OpenMMTopologyParser">[docs]</a><span class="k">class</span> <span class="nc">OpenMMTopologyParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;OPENMMTOPOLOGY&quot;</span>
 
     <span class="nd">@staticmethod</span>
@@ -341,7 +340,7 @@
         <span class="k">return</span> <span class="n">top</span></div>
 
 
-<div class="viewcode-block" id="OpenMMAppTopologyParser"><a class="viewcode-back" href="../../../documentation_pages/topology/OpenMM.html#MDAnalysis.topology.OpenMMParser.OpenMMAppTopologyParser">[docs]</a><span class="k">class</span> <span class="nc">OpenMMAppTopologyParser</span><span class="p">(</span><span class="n">OpenMMTopologyParser</span><span class="p">):</span>
+<div class="viewcode-block" id="OpenMMAppTopologyParser"><a class="viewcode-back" href="../../../documentation_pages/converters/OpenMM.html#MDAnalysis.converters.OpenMMParser.OpenMMAppTopologyParser">[docs]</a><span class="k">class</span> <span class="nc">OpenMMAppTopologyParser</span><span class="p">(</span><span class="n">OpenMMTopologyParser</span><span class="p">):</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;OPENMMAPP&quot;</span>
 
     <span class="nd">@staticmethod</span>

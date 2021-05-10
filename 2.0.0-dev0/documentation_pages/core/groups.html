@@ -1055,37 +1055,10 @@ are preserved when performing a concatenation.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="attribute">
 <dt id="MDAnalysis.core.groups.AtomGroup.convert_to">
-<code class="descname">convert_to</code><span class="sig-paren">(</span><em>package</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/groups.html#AtomGroup.convert_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.convert_to" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> to a structure from another Python package.</p>
-<p class="rubric">Example</p>
-<p>The code below converts a Universe to a <a class="reference external" href="https://parmed.github.io/ParmEd/html/structobj/parmed.structure.Structure.html#parmed.structure.Structure" title="(in ParmEd v0+untagged.3319.g7a6168d)"><code class="xref py py-class docutils literal notranslate"><span class="pre">parmed.structure.Structure</span></code></a>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">GRO</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">GRO</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">parmed_structure</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s1">&#39;PARMED&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">parmed_structure</span>
-<span class="go">&lt;Structure 47681 atoms; 11302 residues; 0 bonds; PBC (triclinic); NOT parametrized&gt;</span>
-</pre></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>package</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The name of the package to convert to, e.g. <code class="docutils literal notranslate"><span class="pre">&quot;PARMED&quot;</span></code></td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An instance of the structure type from another package.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">output</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body">TypeError: – No converter was found for the required package</td>
-</tr>
-</tbody>
-</table>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 1.0.0.</span></p>
-</div>
+<code class="descname">convert_to</code><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.convert_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="accessors.html#MDAnalysis.core.accessors.ConverterWrapper" title="MDAnalysis.core.accessors.ConverterWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.accessors.ConverterWrapper</span></code></a></p>
 </dd></dl>
 
 <dl class="method">

@@ -288,6 +288,7 @@
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">distances</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">transformations</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">mdamath</span>
+<span class="kn">from</span> <span class="nn">.accessors</span> <span class="kn">import</span> <span class="n">Accessor</span><span class="p">,</span> <span class="n">ConverterWrapper</span>
 <span class="kn">from</span> <span class="nn">..selections</span> <span class="kn">import</span> <span class="n">get_writer</span> <span class="k">as</span> <span class="n">get_selection_writer_for</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">selection</span>
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
@@ -3382,46 +3383,7 @@
                 <span class="s2">&quot;cmap only makes sense for a group with exactly 5 atoms&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">topologyobjects</span><span class="o">.</span><span class="n">CMap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AtomGroup.convert_to"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.convert_to">[docs]</a>    <span class="k">def</span> <span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Convert :class:`AtomGroup` to a structure from another Python package.</span>
-
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
-
-<span class="sd">        The code below converts a Universe to a :class:`parmed.structure.Structure`.</span>
-
-<span class="sd">        .. code-block:: python</span>
-
-<span class="sd">            &gt;&gt;&gt; import MDAnalysis as mda</span>
-<span class="sd">            &gt;&gt;&gt; from MDAnalysis.tests.datafiles import GRO</span>
-<span class="sd">            &gt;&gt;&gt; u = mda.Universe(GRO)</span>
-<span class="sd">            &gt;&gt;&gt; parmed_structure = u.atoms.convert_to(&#39;PARMED&#39;)</span>
-<span class="sd">            &gt;&gt;&gt; parmed_structure</span>
-<span class="sd">            &lt;Structure 47681 atoms; 11302 residues; 0 bonds; PBC (triclinic); NOT parametrized&gt;</span>
-
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        package: str</span>
-<span class="sd">            The name of the package to convert to, e.g. ``&quot;PARMED&quot;``</span>
-
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        output:</span>
-<span class="sd">            An instance of the structure type from another package.</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        TypeError:</span>
-<span class="sd">            No converter was found for the required package</span>
-
-
-<span class="sd">        .. versionadded:: 1.0.0</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">converter</span> <span class="o">=</span> <span class="n">get_converter_for</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">converter</span><span class="p">()</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span></div>
+    <span class="n">convert_to</span> <span class="o">=</span> <span class="n">Accessor</span><span class="p">(</span><span class="s2">&quot;convert_to&quot;</span><span class="p">,</span> <span class="n">ConverterWrapper</span><span class="p">)</span>
 
 <div class="viewcode-block" id="AtomGroup.write"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">filenamefmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{trjname}</span><span class="s2">_</span><span class="si">{frame}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>

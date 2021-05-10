@@ -401,7 +401,7 @@
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">asiterable</span><span class="p">,</span> <span class="n">Namespace</span>
 
 
-<div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Timestep data for one frame</span>
 
 <span class="sd">    :Methods:</span>
@@ -424,7 +424,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">order</span> <span class="o">=</span> <span class="s1">&#39;F&#39;</span>
 
-<div class="viewcode-block" id="Timestep.__init__"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.Timestep.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep.__init__"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.Timestep.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a Timestep, representing a frame of a trajectory</span>
 
 <span class="sd">        Parameters</span>
@@ -488,7 +488,7 @@
         <span class="c1"># set up aux namespace for adding auxiliary data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">aux</span> <span class="o">=</span> <span class="n">Namespace</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Timestep.from_timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.topology.ParmEdParser.Timestep.from_timestep">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Timestep.from_timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.converters.OpenMMParser.Timestep.from_timestep">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_timestep</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a copy of another Timestep, in the format of this Timestep</span>
 
@@ -529,7 +529,7 @@
 
         <span class="k">return</span> <span class="n">ts</span></div>
 
-<div class="viewcode-block" id="Timestep.from_coordinates"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.topology.ParmEdParser.Timestep.from_coordinates">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Timestep.from_coordinates"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.converters.OpenMMParser.Timestep.from_coordinates">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_coordinates</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
                          <span class="n">positions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                          <span class="n">velocities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -584,12 +584,12 @@
     <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Timestep._init_unitcell"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.Timestep._init_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">_init_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep._init_unitcell"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.Timestep._init_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">_init_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create custom datastructure for :attr:`_unitcell`.&quot;&quot;&quot;</span>
         <span class="c1"># override for other Timesteps</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">6</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Timestep.__eq__"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.Timestep.__eq__">[docs]</a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep.__eq__"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.Timestep.__eq__">[docs]</a>    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Compare with another Timestep</span>
 
 <span class="sd">        .. versionadded:: 0.11.0</span>
@@ -626,7 +626,7 @@
     <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">other</span>
 
-<div class="viewcode-block" id="Timestep.__getitem__"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.Timestep.__getitem__">[docs]</a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep.__getitem__"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.Timestep.__getitem__">[docs]</a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get a selection of coordinates</span>
 
 <span class="sd">        ``ts[i]``</span>
@@ -657,7 +657,7 @@
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
 
-<div class="viewcode-block" id="Timestep.__iter__"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.Timestep.__iter__">[docs]</a>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep.__iter__"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.Timestep.__iter__">[docs]</a>    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Iterate over coordinates</span>
 
 <span class="sd">        ``for x in ts``</span>
@@ -675,14 +675,14 @@
             <span class="n">tail</span> <span class="o">=</span> <span class="s2">&quot; &gt;&quot;</span>
         <span class="k">return</span> <span class="n">desc</span> <span class="o">+</span> <span class="n">tail</span>
 
-<div class="viewcode-block" id="Timestep.copy"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.topology.ParmEdParser.Timestep.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep.copy"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.converters.OpenMMParser.Timestep.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Make an independent (&quot;deep&quot;) copy of the whole :class:`Timestep`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__deepcopy__</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Timestep.copy_slice"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.topology.ParmEdParser.Timestep.copy_slice">[docs]</a>    <span class="k">def</span> <span class="nf">copy_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">):</span>
+<div class="viewcode-block" id="Timestep.copy_slice"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.converters.OpenMMParser.Timestep.copy_slice">[docs]</a>    <span class="k">def</span> <span class="nf">copy_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Make a new `Timestep` containing a subset of the original `Timestep`.</span>
 
 <span class="sd">        Parameters</span>
@@ -1094,7 +1094,7 @@
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="FrameIteratorBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.FrameIteratorBase">[docs]</a><span class="k">class</span> <span class="nc">FrameIteratorBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="FrameIteratorBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.FrameIteratorBase">[docs]</a><span class="k">class</span> <span class="nc">FrameIteratorBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base iterable over the frames of a trajectory.</span>
 
@@ -1123,7 +1123,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span></div>
 
 
-<div class="viewcode-block" id="FrameIteratorSliced"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.FrameIteratorSliced">[docs]</a><span class="k">class</span> <span class="nc">FrameIteratorSliced</span><span class="p">(</span><span class="n">FrameIteratorBase</span><span class="p">):</span>
+<div class="viewcode-block" id="FrameIteratorSliced"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.FrameIteratorSliced">[docs]</a><span class="k">class</span> <span class="nc">FrameIteratorSliced</span><span class="p">(</span><span class="n">FrameIteratorBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Iterable over the frames of a trajectory on the basis of a slice.</span>
 
@@ -1217,7 +1217,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span></div>
 
 
-<div class="viewcode-block" id="FrameIteratorAll"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.FrameIteratorAll">[docs]</a><span class="k">class</span> <span class="nc">FrameIteratorAll</span><span class="p">(</span><span class="n">FrameIteratorBase</span><span class="p">):</span>
+<div class="viewcode-block" id="FrameIteratorAll"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.FrameIteratorAll">[docs]</a><span class="k">class</span> <span class="nc">FrameIteratorAll</span><span class="p">(</span><span class="n">FrameIteratorBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Iterable over all the frames of a trajectory.</span>
 
@@ -1246,7 +1246,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="FrameIteratorIndices"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.FrameIteratorIndices">[docs]</a><span class="k">class</span> <span class="nc">FrameIteratorIndices</span><span class="p">(</span><span class="n">FrameIteratorBase</span><span class="p">):</span>
+<div class="viewcode-block" id="FrameIteratorIndices"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.FrameIteratorIndices">[docs]</a><span class="k">class</span> <span class="nc">FrameIteratorIndices</span><span class="p">(</span><span class="n">FrameIteratorBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Iterable over the frames of a trajectory listed in a sequence of indices.</span>
 
@@ -1292,7 +1292,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frames</span></div>
 
 
-<div class="viewcode-block" id="IOBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.IOBase">[docs]</a><span class="k">class</span> <span class="nc">IOBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="IOBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.IOBase">[docs]</a><span class="k">class</span> <span class="nc">IOBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class bundling common functionality for trajectory I/O.</span>
 
 <span class="sd">    .. versionchanged:: 0.8</span>
@@ -1303,7 +1303,7 @@
     <span class="c1">#: ... for formats that support it)</span>
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
 
-<div class="viewcode-block" id="IOBase.convert_pos_from_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.IOBase.convert_pos_from_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="IOBase.convert_pos_from_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.IOBase.convert_pos_from_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Conversion of coordinate array x from native units to base units.</span>
 
 <span class="sd">        Parameters</span>
@@ -1336,7 +1336,7 @@
         <span class="n">x</span> <span class="o">*=</span> <span class="n">f</span>
         <span class="k">return</span> <span class="n">x</span></div>
 
-<div class="viewcode-block" id="IOBase.convert_velocities_from_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.IOBase.convert_velocities_from_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_velocities_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="IOBase.convert_velocities_from_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.IOBase.convert_velocities_from_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_velocities_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Conversion of velocities array *v* from native to base units</span>
 
 <span class="sd">        Parameters</span>
@@ -1364,7 +1364,7 @@
         <span class="n">v</span> <span class="o">*=</span> <span class="n">f</span>
         <span class="k">return</span> <span class="n">v</span></div>
 
-<div class="viewcode-block" id="IOBase.convert_forces_from_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.IOBase.convert_forces_from_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_forces_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="IOBase.convert_forces_from_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.IOBase.convert_forces_from_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_forces_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Conversion of forces array *force* from native to base units</span>
 
 <span class="sd">        Parameters</span>
@@ -1391,7 +1391,7 @@
         <span class="n">force</span> <span class="o">*=</span> <span class="n">f</span>
         <span class="k">return</span> <span class="n">force</span></div>
 
-<div class="viewcode-block" id="IOBase.convert_time_from_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.IOBase.convert_time_from_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_time_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="IOBase.convert_time_from_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.IOBase.convert_time_from_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_time_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert time *t* from native units to base units.</span>
 
 <span class="sd">        Parameters</span>
@@ -1426,7 +1426,7 @@
         <span class="n">t</span> <span class="o">*=</span> <span class="n">f</span>
         <span class="k">return</span> <span class="n">t</span></div>
 
-<div class="viewcode-block" id="IOBase.convert_pos_to_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.IOBase.convert_pos_to_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_pos_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="IOBase.convert_pos_to_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.IOBase.convert_pos_to_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_pos_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Conversion of coordinate array `x` from base units to native units.</span>
 
 <span class="sd">        Parameters</span>
@@ -1459,7 +1459,7 @@
         <span class="n">x</span> <span class="o">*=</span> <span class="n">f</span>
         <span class="k">return</span> <span class="n">x</span></div>
 
-<div class="viewcode-block" id="IOBase.convert_velocities_to_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.IOBase.convert_velocities_to_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_velocities_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="IOBase.convert_velocities_to_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.IOBase.convert_velocities_to_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_velocities_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Conversion of coordinate array `v` from base to native units</span>
 
 <span class="sd">        Parameters</span>
@@ -1487,7 +1487,7 @@
         <span class="n">v</span> <span class="o">*=</span> <span class="n">f</span>
         <span class="k">return</span> <span class="n">v</span></div>
 
-<div class="viewcode-block" id="IOBase.convert_forces_to_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.IOBase.convert_forces_to_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_forces_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="IOBase.convert_forces_to_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.IOBase.convert_forces_to_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_forces_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Conversion of force array *force* from base to native units.</span>
 
 <span class="sd">        Parameters</span>
@@ -1515,7 +1515,7 @@
         <span class="n">force</span> <span class="o">*=</span> <span class="n">f</span>
         <span class="k">return</span> <span class="n">force</span></div>
 
-<div class="viewcode-block" id="IOBase.convert_time_to_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.IOBase.convert_time_to_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_time_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="IOBase.convert_time_to_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.IOBase.convert_time_to_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_time_to_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert time *t* from base units to native units.</span>
 
 <span class="sd">        Parameters</span>
@@ -1548,7 +1548,7 @@
         <span class="n">t</span> <span class="o">*=</span> <span class="n">f</span>
         <span class="k">return</span> <span class="n">t</span></div>
 
-<div class="viewcode-block" id="IOBase.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.IOBase.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IOBase.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.IOBase.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Close the trajectory file.&quot;&quot;&quot;</span>
         <span class="k">pass</span> <span class="c1"># pylint: disable=unnecessary-pass</span></div>
 
@@ -1584,7 +1584,7 @@
                     <span class="n">_READER_HINTS</span><span class="p">[</span><span class="n">fmt_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">classdict</span><span class="p">[</span><span class="s1">&#39;_format_hint&#39;</span><span class="p">]</span><span class="o">.</span><span class="vm">__func__</span>
 
 
-<div class="viewcode-block" id="ProtoReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader">[docs]</a><span class="k">class</span> <span class="nc">ProtoReader</span><span class="p">(</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Readermeta</span><span class="p">):</span>
+<div class="viewcode-block" id="ProtoReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ProtoReader">[docs]</a><span class="k">class</span> <span class="nc">ProtoReader</span><span class="p">(</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Readermeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for Readers, without a :meth:`__del__` method.</span>
 
 <span class="sd">    Extends :class:`IOBase` with most attributes and methods of a generic</span>
@@ -1621,7 +1621,7 @@
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
 
-<div class="viewcode-block" id="ProtoReader.parse_n_atoms"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader.parse_n_atoms">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="ProtoReader.parse_n_atoms"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ProtoReader.parse_n_atoms">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">parse_n_atoms</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read the coordinate file and deduce the number of atoms</span>
 
@@ -1638,7 +1638,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> cannot deduce the number of atoms&quot;</span>
                                   <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="ProtoReader.next"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ProtoReader.next"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ProtoReader.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Forward one step to next frame.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
@@ -1657,7 +1657,7 @@
         <span class="sd">&quot;&quot;&quot;Forward one step to next frame when using the `next` builtin.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
 
-<div class="viewcode-block" id="ProtoReader.rewind"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader.rewind">[docs]</a>    <span class="k">def</span> <span class="nf">rewind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ProtoReader.rewind"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ProtoReader.rewind">[docs]</a>    <span class="k">def</span> <span class="nf">rewind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Position at beginning of trajectory&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_reopen</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span></div>
@@ -1701,14 +1701,14 @@
         <span class="c1"># Makes a reader effectively commpatible with a FrameIteratorBase</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-<div class="viewcode-block" id="ProtoReader.Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ProtoReader.Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ProtoReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A trajectory writer with the same properties as this trajectory.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
             <span class="s2">&quot;Sorry, there is no Writer for this format in MDAnalysis. &quot;</span>
             <span class="s2">&quot;Please file an enhancement request at &quot;</span>
             <span class="s2">&quot;https://github.com/MDAnalysis/mdanalysis/issues&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ProtoReader.OtherWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader.OtherWriter">[docs]</a>    <span class="k">def</span> <span class="nf">OtherWriter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ProtoReader.OtherWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ProtoReader.OtherWriter">[docs]</a>    <span class="k">def</span> <span class="nf">OtherWriter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a writer appropriate for *filename*.</span>
 
 <span class="sd">        Sets the default keywords *start*, *step* and *dt* (if</span>
@@ -1831,7 +1831,7 @@
             <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> does not support slicing.&quot;</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
-<div class="viewcode-block" id="ProtoReader.check_slice_indices"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader.check_slice_indices">[docs]</a>    <span class="k">def</span> <span class="nf">check_slice_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+<div class="viewcode-block" id="ProtoReader.check_slice_indices"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ProtoReader.check_slice_indices">[docs]</a>    <span class="k">def</span> <span class="nf">check_slice_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check frame indices are valid and clip to fit trajectory.</span>
 
 <span class="sd">        The usage follows standard Python conventions for :func:`range` but see</span>
@@ -1928,7 +1928,7 @@
             <span class="n">natoms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
         <span class="p">))</span>
 
-<div class="viewcode-block" id="ProtoReader.add_auxiliary"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader.add_auxiliary">[docs]</a>    <span class="k">def</span> <span class="nf">add_auxiliary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">auxdata</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ProtoReader.add_auxiliary"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ProtoReader.add_auxiliary">[docs]</a>    <span class="k">def</span> <span class="nf">add_auxiliary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">auxdata</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add auxiliary data to be read alongside trajectory.</span>
 
 <span class="sd">        Auxiliary data may be any data timeseries from the trajectory additional</span>
@@ -1975,7 +1975,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="p">[</span><span class="n">auxname</span><span class="p">]</span> <span class="o">=</span> <span class="n">aux</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">aux</span><span class="o">.</span><span class="n">update_ts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ProtoReader.remove_auxiliary"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader.remove_auxiliary">[docs]</a>    <span class="k">def</span> <span class="nf">remove_auxiliary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">):</span>
+<div class="viewcode-block" id="ProtoReader.remove_auxiliary"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ProtoReader.remove_auxiliary">[docs]</a>    <span class="k">def</span> <span class="nf">remove_auxiliary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Clear data and close the :class:`~MDAnalysis.auxiliary.base.AuxReader`</span>
 <span class="sd">        for the auxiliary *auxname*.</span>
 
@@ -2002,7 +2002,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No auxiliary named </span><span class="si">{name}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">auxname</span><span class="p">))</span>
 
-<div class="viewcode-block" id="ProtoReader.next_as_aux"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader.next_as_aux">[docs]</a>    <span class="k">def</span> <span class="nf">next_as_aux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">):</span>
+<div class="viewcode-block" id="ProtoReader.next_as_aux"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ProtoReader.next_as_aux">[docs]</a>    <span class="k">def</span> <span class="nf">next_as_aux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Move to the next timestep for which there is at least one step from</span>
 <span class="sd">        the auxiliary *auxname* within the cutoff specified in *auxname*.</span>
 
@@ -2040,7 +2040,7 @@
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">ts</span></div>
 
-<div class="viewcode-block" id="ProtoReader.iter_as_aux"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader.iter_as_aux">[docs]</a>    <span class="k">def</span> <span class="nf">iter_as_aux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">):</span>
+<div class="viewcode-block" id="ProtoReader.iter_as_aux"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ProtoReader.iter_as_aux">[docs]</a>    <span class="k">def</span> <span class="nf">iter_as_aux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Iterate through timesteps for which there is at least one assigned</span>
 <span class="sd">        step from the auxiliary *auxname* within the cutoff specified in *auxname*.</span>
 
@@ -2058,7 +2058,7 @@
             <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
                 <span class="k">return</span></div>
 
-<div class="viewcode-block" id="ProtoReader.iter_auxiliary"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader.iter_auxiliary">[docs]</a>    <span class="k">def</span> <span class="nf">iter_auxiliary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<div class="viewcode-block" id="ProtoReader.iter_auxiliary"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ProtoReader.iter_auxiliary">[docs]</a>    <span class="k">def</span> <span class="nf">iter_auxiliary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                        <span class="n">selected</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Iterate through the auxiliary *auxname* independently of the trajectory.</span>
 
@@ -2095,7 +2095,7 @@
             <span class="k">yield</span> <span class="n">i</span>
         <span class="n">aux</span><span class="o">.</span><span class="n">read_ts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ProtoReader.get_aux_attribute"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader.get_aux_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">get_aux_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">attrname</span><span class="p">):</span>
+<div class="viewcode-block" id="ProtoReader.get_aux_attribute"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ProtoReader.get_aux_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">get_aux_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">attrname</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the value of *attrname* from the auxiliary *auxname*</span>
 
 <span class="sd">        Parameters</span>
@@ -2112,7 +2112,7 @@
         <span class="n">aux</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_for_aux</span><span class="p">(</span><span class="n">auxname</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">aux</span><span class="p">,</span> <span class="n">attrname</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ProtoReader.set_aux_attribute"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader.set_aux_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">set_aux_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">attrname</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+<div class="viewcode-block" id="ProtoReader.set_aux_attribute"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ProtoReader.set_aux_attribute">[docs]</a>    <span class="k">def</span> <span class="nf">set_aux_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">attrname</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Set the value of *attrname* in the auxiliary *auxname*.</span>
 
 <span class="sd">        Parameters</span>
@@ -2135,7 +2135,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="n">aux</span><span class="p">,</span> <span class="n">attrname</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ProtoReader.rename_aux"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader.rename_aux">[docs]</a>    <span class="k">def</span> <span class="nf">rename_aux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+<div class="viewcode-block" id="ProtoReader.rename_aux"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ProtoReader.rename_aux">[docs]</a>    <span class="k">def</span> <span class="nf">rename_aux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Change the name of the auxiliary *auxname* to *new*.</span>
 
 <span class="sd">        Provided there is not already an auxiliary named *new*, the auxiliary</span>
@@ -2163,7 +2163,7 @@
         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">aux</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">aux</span><span class="p">[</span><span class="n">auxname</span><span class="p">])</span>
         <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">aux</span><span class="p">,</span> <span class="n">auxname</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ProtoReader.get_aux_descriptions"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader.get_aux_descriptions">[docs]</a>    <span class="k">def</span> <span class="nf">get_aux_descriptions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxnames</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ProtoReader.get_aux_descriptions"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ProtoReader.get_aux_descriptions">[docs]</a>    <span class="k">def</span> <span class="nf">get_aux_descriptions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auxnames</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get descriptions to allow reloading the specified auxiliaries.</span>
 
 <span class="sd">        If no auxnames are provided, defaults to the full list of added</span>
@@ -2204,7 +2204,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Transformations are already set&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ProtoReader.add_transformations"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader.add_transformations">[docs]</a>    <span class="k">def</span> <span class="nf">add_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">transformations</span><span class="p">):</span>
+<div class="viewcode-block" id="ProtoReader.add_transformations"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ProtoReader.add_transformations">[docs]</a>    <span class="k">def</span> <span class="nf">add_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">transformations</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add all transformations to be applied to the trajectory.</span>
 
 <span class="sd">        This function take as list of transformations as an argument. These</span>
@@ -2271,7 +2271,7 @@
         <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="ReaderBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ReaderBase">[docs]</a><span class="k">class</span> <span class="nc">ReaderBase</span><span class="p">(</span><span class="n">ProtoReader</span><span class="p">):</span>
+<div class="viewcode-block" id="ReaderBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ReaderBase">[docs]</a><span class="k">class</span> <span class="nc">ReaderBase</span><span class="p">(</span><span class="n">ProtoReader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for trajectory readers that extends :class:`ProtoReader` with a</span>
 <span class="sd">    :meth:`__del__` method.</span>
 
@@ -2317,7 +2317,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span> <span class="o">=</span> <span class="n">ts_kwargs</span>
 
-<div class="viewcode-block" id="ReaderBase.copy"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ReaderBase.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ReaderBase.copy"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ReaderBase.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return independent copy of this Reader.</span>
 
 <span class="sd">        New Reader will have its own file handle and can seek/iterate</span>
@@ -2371,7 +2371,7 @@
                     <span class="n">_MULTIFRAME_WRITERS</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
 
 
-<div class="viewcode-block" id="WriterBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.WriterBase">[docs]</a><span class="k">class</span> <span class="nc">WriterBase</span><span class="p">(</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Writermeta</span><span class="p">):</span>
+<div class="viewcode-block" id="WriterBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.WriterBase">[docs]</a><span class="k">class</span> <span class="nc">WriterBase</span><span class="p">(</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Writermeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for trajectory writers.</span>
 
 <span class="sd">    See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for</span>
@@ -2383,7 +2383,7 @@
 <span class="sd">       :func:`write` instead.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="WriterBase.convert_dimensions_to_unitcell"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.WriterBase.convert_dimensions_to_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="WriterBase.convert_dimensions_to_unitcell"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.WriterBase.convert_dimensions_to_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read dimensions from timestep *ts* and return appropriate unitcell.</span>
 
 <span class="sd">        The default is to return ``[A,B,C,alpha,beta,gamma]``; if this</span>
@@ -2397,7 +2397,7 @@
         <span class="n">lengths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">lengths</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">lengths</span><span class="p">,</span> <span class="n">angles</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="WriterBase.write"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.WriterBase.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="WriterBase.write"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.WriterBase.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write current timestep, using the supplied `obj`.</span>
 
 <span class="sd">        Parameters</span>
@@ -2428,7 +2428,7 @@
             <span class="c1"># self.n_atoms</span>
             <span class="k">return</span> <span class="s2">&quot;&lt; </span><span class="si">{0!s}</span><span class="s2"> </span><span class="si">{1!r}</span><span class="s2"> &gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
 
-<div class="viewcode-block" id="WriterBase.has_valid_coordinates"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.WriterBase.has_valid_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">has_valid_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="WriterBase.has_valid_coordinates"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.WriterBase.has_valid_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">has_valid_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns ``True`` if all values are within limit values of their formats.</span>
 
 <span class="sd">        Due to rounding, the test is asymmetric (and *min* is supposed to be negative):</span>
@@ -2450,7 +2450,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">criteria</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">criteria</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">])</span></div></div>
 
 
-<div class="viewcode-block" id="SingleFrameReaderBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.SingleFrameReaderBase">[docs]</a><span class="k">class</span> <span class="nc">SingleFrameReaderBase</span><span class="p">(</span><span class="n">ProtoReader</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleFrameReaderBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.SingleFrameReaderBase">[docs]</a><span class="k">class</span> <span class="nc">SingleFrameReaderBase</span><span class="p">(</span><span class="n">ProtoReader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for Readers that only have one frame.</span>
 
 <span class="sd">    To use this base class, define the method :meth:`_read_first_frame` to</span>
@@ -2485,7 +2485,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span> <span class="o">=</span> <span class="n">ts_kwargs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_first_frame</span><span class="p">()</span>
 
-<div class="viewcode-block" id="SingleFrameReaderBase.copy"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.SingleFrameReaderBase.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleFrameReaderBase.copy"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.SingleFrameReaderBase.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return independent copy of this Reader.</span>
 
 <span class="sd">        New Reader will have its own file handle and can seek/iterate</span>
@@ -2509,7 +2509,7 @@
         <span class="c1"># Override this in subclasses to create and fill a Timestep</span>
         <span class="k">pass</span>
 
-<div class="viewcode-block" id="SingleFrameReaderBase.rewind"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.SingleFrameReaderBase.rewind">[docs]</a>    <span class="k">def</span> <span class="nf">rewind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleFrameReaderBase.rewind"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.SingleFrameReaderBase.rewind">[docs]</a>    <span class="k">def</span> <span class="nf">rewind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_first_frame</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">auxname</span><span class="p">,</span> <span class="n">auxread</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auxs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">auxread</span><span class="o">.</span><span class="n">update_ts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="p">)</span>
@@ -2518,7 +2518,7 @@
     <span class="k">def</span> <span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
-<div class="viewcode-block" id="SingleFrameReaderBase.next"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.SingleFrameReaderBase.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleFrameReaderBase.next"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.SingleFrameReaderBase.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_err</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span></div>
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2531,13 +2531,13 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
 
-<div class="viewcode-block" id="SingleFrameReaderBase.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.SingleFrameReaderBase.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleFrameReaderBase.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.SingleFrameReaderBase.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># all single frame readers should use context managers to access</span>
         <span class="c1"># self.filename. Explicitly setting it to the null action in case</span>
         <span class="c1"># the IOBase.close method is ever changed from that.</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="SingleFrameReaderBase.add_transformations"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.SingleFrameReaderBase.add_transformations">[docs]</a>    <span class="k">def</span> <span class="nf">add_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">transformations</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleFrameReaderBase.add_transformations"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.SingleFrameReaderBase.add_transformations">[docs]</a>    <span class="k">def</span> <span class="nf">add_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">transformations</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Add all transformations to be applied to the trajectory.</span>
 
 <span class="sd">        This function take as list of transformations as an argument. These</span>
@@ -2606,7 +2606,7 @@
                 <span class="n">f</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
                 <span class="n">_CONVERTERS</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
 
-<div class="viewcode-block" id="ConverterBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ConverterBase">[docs]</a><span class="k">class</span> <span class="nc">ConverterBase</span><span class="p">(</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Convertermeta</span><span class="p">):</span>
+<div class="viewcode-block" id="ConverterBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ConverterBase">[docs]</a><span class="k">class</span> <span class="nc">ConverterBase</span><span class="p">(</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Convertermeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for converting to other libraries.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 

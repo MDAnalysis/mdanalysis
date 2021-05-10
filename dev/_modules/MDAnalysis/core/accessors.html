@@ -1,0 +1,452 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>MDAnalysis.core.accessors &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0-dev0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.core.accessors</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.core.accessors</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+<span class="sd">&quot;&quot;&quot;AtomGroup accessors --- :mod:`MDAnalysis.core.accessors`</span>
+<span class="sd">====================================================================</span>
+
+<span class="sd">This module provides classes for accessing and converting :class:`~MDAnalysis.core.groups.AtomGroup`</span>
+<span class="sd">objects. It is used for the :meth:`~MDAnalysis.core.groups.AtomGroup.convert_to`</span>
+<span class="sd">method to make it usable in two different ways: ``ag.convert_to(&quot;PACKAGE&quot;)`` or</span>
+<span class="sd">``ag.convert_to.package()``</span>
+
+<span class="sd">Example</span>
+<span class="sd">-------</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    &gt;&gt;&gt; class SpeechWrapper:</span>
+<span class="sd">    ...     def __init__(self, person):</span>
+<span class="sd">    ...         self.person = person</span>
+<span class="sd">    ...     def __call__(self, *args):</span>
+<span class="sd">    ...         print(self.person.name, &quot;says&quot;, *args)</span>
+<span class="sd">    ...     def whoami(self):</span>
+<span class="sd">    ...         print(&quot;I am %s&quot; % self.person.name)</span>
+<span class="sd">    ...</span>
+<span class="sd">    &gt;&gt;&gt; class Person:</span>
+<span class="sd">    ...     def __init__(self, name):</span>
+<span class="sd">    ...         self.name = name</span>
+<span class="sd">    ...     say = Accessor(&quot;say&quot;, SpeechWrapper)</span>
+<span class="sd">    ...</span>
+<span class="sd">    &gt;&gt;&gt; bob = Person(&quot;Bob&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; bob.say(&quot;hello&quot;)</span>
+<span class="sd">    Bob says hello</span>
+<span class="sd">    &gt;&gt;&gt; bob.say.whoami()</span>
+<span class="sd">    I am Bob</span>
+
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+
+<span class="sd">.. autoclass:: Accessor</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">.. autoclass:: ConverterWrapper</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span><span class="p">,</span> <span class="n">update_wrapper</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">_CONVERTERS</span>
+
+
+<div class="viewcode-block" id="Accessor"><a class="viewcode-back" href="../../../documentation_pages/core/accessors.html#MDAnalysis.core.accessors.Accessor">[docs]</a><span class="k">class</span> <span class="nc">Accessor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Used to pass data between two classes</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the property in the parent class</span>
+<span class="sd">    accessor : class</span>
+<span class="sd">        A class that needs access to its parent&#39;s instance</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    If you want the property to be named &quot;convert_to&quot; in the AtomGroup class,</span>
+<span class="sd">    use:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        &gt;&gt;&gt; class AtomGroup:</span>
+<span class="sd">        &gt;&gt;&gt;     # ...</span>
+<span class="sd">        &gt;&gt;&gt;     convert_to = Accessor(&quot;convert_to&quot;, ConverterWrapper)</span>
+
+<span class="sd">    And when calling ``ag.convert_to.rdkit()``, the &quot;rdkit&quot; method of the</span>
+<span class="sd">    ConverterWrapper will be able to have access to &quot;ag&quot;</span>
+
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">accessor</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_accessor</span> <span class="o">=</span> <span class="n">accessor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># accessing from class instead of instance</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_accessor</span>
+        <span class="c1"># instances the accessor class with the parent object as argument</span>
+        <span class="n">wrapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_accessor</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="c1"># replace the parent object&#39;s property with the wrapped instance</span>
+        <span class="c1"># so we avoid reinstantiating the accessor everytime `obj.&lt;_name&gt;`</span>
+        <span class="c1"># is called</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">wrapped</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">wrapped</span></div>
+
+
+<div class="viewcode-block" id="ConverterWrapper"><a class="viewcode-back" href="../../../documentation_pages/core/accessors.html#MDAnalysis.core.accessors.ConverterWrapper">[docs]</a><span class="k">class</span> <span class="nc">ConverterWrapper</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Convert :class:`AtomGroup` to a structure from another Python</span>
+<span class="sd">    package.</span>
+
+<span class="sd">    The converters are accessible to any AtomGroup through the ``convert_to``</span>
+<span class="sd">    property. `ag.convert_to` will return this ConverterWrapper, which can be</span>
+<span class="sd">    called directly with the name of the destination package as a string</span>
+<span class="sd">    (similarly to the old API), or through custom methods named after the</span>
+<span class="sd">    package (in lowercase) that are automatically constructed thanks to</span>
+<span class="sd">    metaclass magic.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    The code below converts a Universe to a :class:`parmed.structure.Structure`</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        &gt;&gt;&gt; import MDAnalysis as mda</span>
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis.tests.datafiles import GRO</span>
+<span class="sd">        &gt;&gt;&gt; u = mda.Universe(GRO)</span>
+<span class="sd">        &gt;&gt;&gt; parmed_structure = u.atoms.convert_to(&#39;PARMED&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; parmed_structure</span>
+<span class="sd">        &lt;Structure 47681 atoms; 11302 residues; 0 bonds; PBC (triclinic); NOT parametrized&gt;</span>
+
+<span class="sd">    You can also directly use ``u.atoms.convert_to.parmed()``</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    package: str</span>
+<span class="sd">        The name of the package to convert to, e.g. ``&quot;PARMED&quot;``</span>
+<span class="sd">    *args:</span>
+<span class="sd">        Positional arguments passed to the converter</span>
+<span class="sd">    **kwargs:</span>
+<span class="sd">        Keyword arguments passed to the converter</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    output:</span>
+<span class="sd">        An instance of the structure type from another package.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError:</span>
+<span class="sd">        No converter was found for the required package</span>
+
+
+<span class="sd">    .. versionadded:: 1.0.0</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">        Moved the ``convert_to`` method to its own class. The old API is still</span>
+<span class="sd">        available and is now case-insensitive to package names, it also accepts</span>
+<span class="sd">        positional and keyword arguments. Each converter function can also</span>
+<span class="sd">        be accessed as a method with the name of the package in lowercase, i.e.</span>
+<span class="sd">        `convert_to.parmed()`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_CONVERTERS</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ag : AtomGroup</span>
+<span class="sd">            The AtomGroup to convert</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ag</span> <span class="o">=</span> <span class="n">ag</span>
+        <span class="k">for</span> <span class="n">lib</span><span class="p">,</span> <span class="n">converter_cls</span> <span class="ow">in</span> <span class="n">_CONVERTERS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">method_name</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="c1"># makes sure we always use the same instance of the converter</span>
+            <span class="c1"># no matter which atomgroup instance called it</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">converter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_CONVERTERS</span><span class="p">[</span><span class="n">method_name</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">converter</span> <span class="o">=</span> <span class="n">converter_cls</span><span class="p">()</span><span class="o">.</span><span class="n">convert</span>
+                <span class="c1"># store in class attribute</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_CONVERTERS</span><span class="p">[</span><span class="n">method_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">converter</span>
+            <span class="c1"># create partial function that passes ag to the converter</span>
+            <span class="n">convert</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">converter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ag</span><span class="p">)</span>
+            <span class="c1"># copy docstring and metadata to the partial function</span>
+            <span class="c1"># note: it won&#39;t work with help()</span>
+            <span class="n">update_wrapper</span><span class="p">(</span><span class="n">convert</span><span class="p">,</span> <span class="n">converter</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">convert</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">convert</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No </span><span class="si">{</span><span class="n">package</span><span class="si">!r}</span><span class="s2"> converter found. Available: &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_CONVERTERS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="n">convert</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+
+    </p>
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.0.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>MDAnalysis.topology.RDKitParser &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  <title>MDAnalysis.converters.RDKitParser &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -166,7 +166,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>MDAnalysis.topology.RDKitParser</li>
+      <li>MDAnalysis.converters.RDKitParser</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -181,7 +181,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for MDAnalysis.topology.RDKitParser</h1><div class="highlight"><pre>
+  <h1>Source code for MDAnalysis.converters.RDKitParser</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
 <span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 </span>
 <span class="c1">#</span>
@@ -206,15 +206,15 @@
 <span class="c1">#</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">RDKit topology parser</span>
-<span class="sd">=====================</span>
+<span class="sd">RDKit topology parser --- :mod:`MDAnalysis.converters.RDKitParser`</span>
+<span class="sd">==================================================================</span>
 
 <span class="sd">Converts an `RDKit &lt;https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol&gt;`_ :class:`rdkit.Chem.rdchem.Mol` into a :class:`MDAnalysis.core.Topology`.</span>
 
 
 <span class="sd">See Also</span>
 <span class="sd">--------</span>
-<span class="sd">:mod:`MDAnalysis.coordinates.RDKit`</span>
+<span class="sd">:mod:`MDAnalysis.converters.RDKit`</span>
 
 
 <span class="sd">Classes</span>
@@ -230,8 +230,8 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span><span class="p">,</span> <span class="n">change_squash</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">guessers</span>
+<span class="kn">from</span> <span class="nn">..topology.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span><span class="p">,</span> <span class="n">change_squash</span>
+<span class="kn">from</span> <span class="nn">..topology</span> <span class="kn">import</span> <span class="n">guessers</span>
 <span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Atomids</span><span class="p">,</span>
     <span class="n">Atomnames</span><span class="p">,</span>
@@ -253,10 +253,10 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..core.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
 
-<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.topology.RDKitParser&quot;</span><span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.converters.RDKitParser&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="RDKitParser"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser">[docs]</a><span class="k">class</span> <span class="nc">RDKitParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
+<div class="viewcode-block" id="RDKitParser"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitParser.RDKitParser">[docs]</a><span class="k">class</span> <span class="nc">RDKitParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    For RDKit structures</span>
 
@@ -334,7 +334,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">Chem</span><span class="o">.</span><span class="n">Mol</span><span class="p">)</span>
 
-<div class="viewcode-block" id="RDKitParser.parse"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="RDKitParser.parse"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitParser.RDKitParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse RDKit into Topology</span>
 
 <span class="sd">        Returns</span>
