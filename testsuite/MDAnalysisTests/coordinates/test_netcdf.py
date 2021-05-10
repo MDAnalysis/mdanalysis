@@ -914,7 +914,7 @@ class TestNCDFWriterScaleFactors:
         return sfactors
 
     def get_variable(self, ncdfile, variable, frame):
-        """Return a varible array from netcdf file"""
+        """Return a variable array from netcdf file"""
         with netcdf.netcdf_file(ncdfile, mmap=False) as f:
             return f.variables[variable][frame]
 
@@ -941,8 +941,8 @@ class TestNCDFWriterScaleFactors:
     def test_write_read_write(self, outfile, outfile2, universe, stime,
                               slengths, sangles, scoords, svels, sfrcs):
         """Write out a file with assorted scale_factors, then
-        read it back it, then write it out to make sure that the
-        new assorted scale_factors have been retrained by Write"""
+        read it back in, then write it out to make sure that the
+        new assorted scale_factors have been retained by Write"""
 
         with NCDFWriter(outfile, n_atoms=len(universe.atoms), velocities=True,
                         forces=True, scale_time=stime,

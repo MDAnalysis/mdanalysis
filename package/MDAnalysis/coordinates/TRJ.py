@@ -791,11 +791,10 @@ class NCDFWriter(base.WriterBase):
     for the lengths and picoseconds for the time (and hence Å/ps for
     velocities and kilocalorie/mole/Å for forces).
 
-    If passed, `scale_factor` variables for time / velocities / cell lengths /
-    cell angles / coordinates / velocities / forces will be written to the
+    Scale factor variables for time, velocities, cell lengths, cell angles, coordinates, velocities, or forces can be passed into the writer. If so, they will be written to the
     NetCDF file. In this case, the trajectory data will be written to the
-    NetCDF file divided by the scale_factor value. By default, `scale_factor`
-    variables are not written, except for velocities where it is set to 20.455
+    NetCDF file divided by the scale factor value. By default, scale factor
+    variables are not written. The only exception is for velocities, where it is set to 20.455,
     replicating the default behaviour of AMBER.
 
     Unit cell information is written if available.
