@@ -183,6 +183,11 @@ Changes
   * Adds a `force` parameter to the RDKitConverter to allow conversion of
     molecules with no hydrogen atom, and a `set_converter_cache_size` function
     to change how many items are retained in the cache (PR #2942)
+  * `hydrogenbonds.WaterBridgeAnalysis.generate_table()` now returns the table; as previously, 
+    it also generates the `table` attribute but the attribute will be removed in 3.0.0.
+  * `hydrogenbonds.WaterBridgeAnalysis` now stores data using the
+    `hydrogenbonds.WaterBridgeAnalysis.results` attribute
+    (Issue #3261, Issue #3270)
   * Introduces a new converter API with all converters in MDAnalysis.converters
     (Issue #2790, PR #2882)
   * The ParmEd classes were moved to the `converters` module (PR #2882)
@@ -264,6 +269,14 @@ Changes
   * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
 
 Deprecations
+  * The `hydrogenbonds.WaterBridgeAnalysis.table` attribute is now deprecated and will
+    be removed in 3.0.0.
+  * The `hydrogenbonds.WaterBridgeAnalysis.network` attribute is now deprecated
+    in favour of `hydrogenbonds.WaterBridgeAnalysis.results.network`. It will be
+    removed in 3.0.0 (Issue #3261, Issue #3270)
+  * The `analysis.Contacts.timeseries` attribute is now deprecated in favour of 
+    `analysis.Contacts.results.timeseries`. It will be removed in 3.0.0
+    (Issue #3261)
   * In 3.0.0 the ParmEd classes will only be accessible from the
     `MDAnalysis.converters` module.
   * The `analysis.polymer.PersistenceLength.lb`,
