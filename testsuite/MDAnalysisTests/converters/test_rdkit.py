@@ -410,6 +410,19 @@ class TestRDKitConverter(object):
         new_cache = cached_func.cache_info()
         assert cache == new_cache
 
+    def test_sanitize_fail_warning(self):
+        mol = Chem.MolFromSmiles("[H]-N(-[H])(-[H])-[H]", sanitize=False)
+        mol.UpdatePropertyCache(strict=False)
+        mol = Chem.AddHs(mol)
+        u = mda.Universe(mol)
+        with pytest.warns(UserWarning, match="Could not sanitize molecule"):
+            u.atoms.convert_to.rdkit(NoImplicit=False)
+        with pytest.warns(None) as record:
+            u.atoms.convert_to.rdkit()
+        if record:
+            assert all("Could not sanitize molecule" not in str(w.message)
+                       for w in record.list)
+
 
 @requires_rdkit
 class TestRDKitFunctions(object):

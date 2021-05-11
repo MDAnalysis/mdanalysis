@@ -433,8 +433,11 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
         _infer_bo_and_charges(mol)
         mol = _standardize_patterns(mol, max_iter)
 
-    # sanitize
-    Chem.SanitizeMol(mol)
+    # sanitize if possible
+    err = Chem.SanitizeMol(mol, catchErrors=True)
+    if err:
+        warnings.warn("Could not sanitize molecule: "
+                      f"failed during step {err!r}")
 
     return mol
 
