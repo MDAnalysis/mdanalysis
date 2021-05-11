@@ -23,6 +23,7 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * New RDKitConverter cache system to fix issue #2958 (PR #2942)
   * Fixed OpenMM converter documentation not showing up in the Converters
     section (Issue #3262, PR #2882)
   * WaterBridgeAnalysis double counts the water (Issue #3119, PR #3120)
@@ -109,6 +110,8 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Added guessers for aromaticity and Gasteiger partial charges (Issue #2468,
+    PR #2926)
   * Added `Results` class for storing analysis results (#3115, PR #3233)
   * Added intra_bonds, intra_angles, intra_dihedrals etc. to return only
     the connections involving atoms within the AtomGroup, instead of
@@ -180,6 +183,9 @@ Changes
   * `analysis.rdf.InterRDF` and `analysis.rdf.InterRDF_s` now store
     their result attributes using the `analysis.base.Results` class
     (Issue #3276, #3261)
+  * Adds a `force` parameter to the RDKitConverter to allow conversion of
+    molecules with no hydrogen atom, and a `set_converter_cache_size` function
+    to change how many items are retained in the cache (PR #2942)
   * `hydrogenbonds.WaterBridgeAnalysis.generate_table()` now returns the table; as previously, 
     it also generates the `table` attribute but the attribute will be removed in 3.0.0.
   * `hydrogenbonds.WaterBridgeAnalysis` now stores data using the
