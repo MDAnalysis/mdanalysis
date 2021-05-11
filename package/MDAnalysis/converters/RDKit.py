@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""RDKit molecule I/O --- :mod:`MDAnalysis.coordinates.RDKit`
+"""RDKit molecule I/O --- :mod:`MDAnalysis.converters.RDKit`
 ================================================================
 
 Read coordinates data from an `RDKit <https://www.rdkit.org/docs/>`__ :class:`rdkit.Chem.rdchem.Mol` with
@@ -73,8 +73,8 @@ import numpy as np
 from ..exceptions import NoDataError
 from ..topology.guessers import guess_atom_element
 from ..core.topologyattrs import _TOPOLOGY_ATTRS
-from . import memory
-from . import base
+from ..coordinates import memory
+from ..coordinates import base
 
 try:
     from rdkit import Chem
