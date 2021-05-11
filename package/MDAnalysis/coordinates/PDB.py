@@ -505,6 +505,9 @@ class PDBWriter(base.WriterBase):
     keywords are written out accordingly. Otherwise, the ATOM_ record type
     is the default output.
 
+    The CONECT_ record is written out, if required, when the output stream
+    is closed.
+
     See Also
     --------
     This class is identical to :class:`MultiPDBWriter` with the one
@@ -532,6 +535,10 @@ class PDBWriter(base.WriterBase):
     .. versionchanged:: 1.0.0
        ChainID now comes from the last character of segid, as stated in the documentation.
        An indexing issue meant it previously used the first charater (Issue #2224)
+
+    .. versionchanged:: 2.0.0
+        Add the `redindex` argument. Setting this keyword to ``True``
+        (the default) preserves the behavior in earlier versions of MDAnalysis.
 
     """
     fmt = {
@@ -596,7 +603,7 @@ class PDBWriter(base.WriterBase):
 
     def __init__(self, filename, bonds="conect", n_atoms=None, start=0, step=1,
                  remarks="Created by PDBWriter",
-                 convert_units=True, multiframe=None):
+                 convert_units=True, multiframe=None, reindex=True):
         """Create a new PDBWriter
 
         Parameters
@@ -624,6 +631,9 @@ class PDBWriter(base.WriterBase):
            ``False``: write a single frame to the file; ``True``: create a
            multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_
            records. If ``None``, then the class default is chosen.    [``None``]
+        reindex: bool (optional)
+            If ``True`` (default), the atom serial is set to be consecutive
+            numbers starting at 1. Else, use the atom id.
 
         """
         # n_atoms = None : dummy keyword argument
@@ -637,6 +647,7 @@ class PDBWriter(base.WriterBase):
         self.convert_units = convert_units
         self._multiframe = self.multiframe if multiframe is None else multiframe
         self.bonds = bonds
+        self._reindex = reindex
 
         if start < 0:
             raise ValueError("'Start' must be a positive value")
@@ -650,9 +661,16 @@ class PDBWriter(base.WriterBase):
         self.first_frame_done = False
 
     def close(self):
-        """Close PDB file and write END record"""
+        """
+        Close PDB file and write CONECT and END record
+
+
+        .. versionchanged:: 2.0.0
+           CONECT_ record written just before END_ record
+        """
         if hasattr(self, 'pdbfile') and self.pdbfile is not None:
             if not self.has_END:
+                self._write_pdb_bonds()
                 self.END()
             else:
                 logger.warning("END record has already been written"
@@ -789,17 +807,40 @@ class PDBWriter(base.WriterBase):
         if self.bonds is None:
             return
 
-        if not self.obj or not hasattr(self.obj.universe, 'bonds'):
+        if (not hasattr(self, "obj") or
+                not self.obj or
+                not hasattr(self.obj.universe, 'bonds')):
             return
 
-        mapping = {index: i for i, index in enumerate(self.obj.atoms.indices)}
-
         bondset = set(itertools.chain(*(a.bonds for a in self.obj.atoms)))
+        if self._reindex:
+            index_attribute = 'index'
+            mapping = {
+                index: i
+                for i, index in enumerate(self.obj.atoms.indices, start=1)
+            }
+            atoms = np.sort(self.obj.atoms.indices)
+        else:
+            index_attribute = 'id'
+            mapping = {id_: id_ for id_ in self.obj.atoms.ids}
+            atoms = np.sort(self.obj.atoms.ids)
         if self.bonds == "conect":
             # Write out only the bonds that were defined in CONECT records
-            bonds = ((bond[0].index, bond[1].index) for bond in bondset if not bond.is_guessed)
+            bonds = (
+                (
+                    getattr(bond[0], index_attribute),
+                    getattr(bond[1], index_attribute),
+                )
+                for bond in bondset if not bond.is_guessed
+            )
         elif self.bonds == "all":
-            bonds = ((bond[0].index, bond[1].index) for bond in bondset)
+            bonds = (
+                (
+                    getattr(bond[0], index_attribute),
+                    getattr(bond[1], index_attribute),
+                )
+                for bond in bondset
+            )
         else:
             raise ValueError("bonds has to be either None, 'conect' or 'all'")
 
@@ -809,8 +850,6 @@ class PDBWriter(base.WriterBase):
                 continue
             con[a2].append(a1)
             con[a1].append(a2)
-
-        atoms = np.sort(self.obj.atoms.indices)
 
         conect = ([mapping[a]] + sorted([mapping[at] for at in con[a]])
                   for a in atoms if a in con)
@@ -871,8 +910,7 @@ class PDBWriter(base.WriterBase):
         # write_all_timesteps() to dump everything in one go, or do the
         # traditional loop over frames
         self._write_next_frame(self.ts, multiframe=self._multiframe)
-        self._write_pdb_bonds()
-        # END record is written when file is being close()d
+        # END and CONECT records are written when file is being close()d
 
     def write_all_timesteps(self, obj):
         """Write all timesteps associated with *obj* to the PDB file.
@@ -895,8 +933,12 @@ class PDBWriter(base.WriterBase):
 
         will be writing frames 12, 14, 16, ...
 
+
         .. versionchanged:: 0.11.0
            Frames now 0-based instead of 1-based
+
+        .. versionchanged:: 2.0.0
+           CONECT_ record moved to :meth:`close`
         """
 
         self._update_frame(obj)
@@ -915,7 +957,7 @@ class PDBWriter(base.WriterBase):
             traj[framenumber]
             self._write_next_frame(self.ts, multiframe=True)
 
-        self._write_pdb_bonds()
+        # CONECT record is written when the file is being close()d
         self.close()
 
         # Set the trajectory to the starting position
@@ -1006,6 +1048,11 @@ class PDBWriter(base.WriterBase):
            When only :attr:`record_types` attribute is present, instead of
            using ATOM_ for both ATOM_ and HETATM_, HETATM_ record
            types are properly written out (Issue #1753).
+           Writing now only uses the contents of the elements attribute
+           instead of guessing by default. If the elements are missing,
+           empty records are written out (Issue #2423).
+           Atoms are now checked for a valid chainID instead of being
+           overwritten by the last letter of the `segid` (Issue #3144).
 
         """
         atoms = self.obj.atoms
@@ -1036,26 +1083,78 @@ class PDBWriter(base.WriterBase):
         resnames = get_attr('resnames', 'UNK')
         icodes = get_attr('icodes', ' ')
         segids = get_attr('segids', ' ')
+        chainids = get_attr('chainIDs', '')
         resids = get_attr('resids', 1)
         occupancies = get_attr('occupancies', 1.0)
         tempfactors = get_attr('tempfactors', 0.0)
         atomnames = get_attr('names', 'X')
+        elements = get_attr('elements', ' ')
         record_types = get_attr('record_types', 'ATOM')
+
+        def validate_chainids(chainids, default):
+            """Validate each atom's chainID
+
+            chainids - np array of chainIDs
+            default - default value in case chainID is considered invalid
+            """
+            invalid_length_ids = False
+            invalid_char_ids = False
+            missing_ids = False
+
+            for (i, chainid) in enumerate(chainids):
+                if chainid == "":
+                    missing_ids = True
+                    chainids[i] = default
+                elif len(chainid) > 1:
+                    invalid_length_ids = True
+                    chainids[i] = default
+                elif not chainid.isalnum():
+                    invalid_char_ids = True
+                    chainids[i] = default
+
+            if invalid_length_ids:
+                warnings.warn("Found chainIDs with invalid length."
+                              " Corresponding atoms will use value of '{}'"
+                              "".format(default))
+            if invalid_char_ids:
+                warnings.warn("Found chainIDs using unnaccepted character."
+                              " Corresponding atoms will use value of '{}'"
+                              "".format(default))
+            if missing_ids:
+                warnings.warn("Found missing chainIDs."
+                              " Corresponding atoms will use value of '{}'"
+                              "".format(default))
+            return chainids
+
+        chainids = validate_chainids(chainids, "X")
+
+        # If reindex == False, we use the atom ids for the serial. We do not
+        # want to use a fallback here.
+        if not self._reindex:
+            try:
+                atom_ids = atoms.ids
+            except AttributeError:
+                raise NoDataError(
+                    'The "id" topology attribute is not set. '
+                    'Either set the attribute or use reindex=True.'
+                )
+        else:
+            atom_ids = np.arange(len(atoms)) + 1
 
         for i, atom in enumerate(atoms):
             vals = {}
-            vals['serial'] = util.ltruncate_int(i + 1, 5)  # check for overflow here?
+            vals['serial'] = util.ltruncate_int(atom_ids[i], 5)  # check for overflow here?
             vals['name'] = self._deduce_PDB_atom_name(atomnames[i], resnames[i])
             vals['altLoc'] = altlocs[i][:1]
             vals['resName'] = resnames[i][:4]
-            vals['chainID'] = segids[i][-1:]
             vals['resSeq'] = util.ltruncate_int(resids[i], 4)
             vals['iCode'] = icodes[i][:1]
             vals['pos'] = pos[i]  # don't take off atom so conversion works
             vals['occupancy'] = occupancies[i]
             vals['tempFactor'] = tempfactors[i]
             vals['segID'] = segids[i][:4]
-            vals['element'] = guess_atom_element(atomnames[i].strip())[:2]
+            vals['chainID'] = chainids[i]
+            vals['element'] = elements[i][:2].upper()
 
             # record_type attribute, if exists, can be ATOM or HETATM
             try:
@@ -1153,7 +1252,7 @@ class PDBWriter(base.WriterBase):
         """Write CONECT_ record.
 
         """
-        conect = ["{0:5d}".format(entry + 1) for entry in conect]
+        conect = ["{0:5d}".format(entry) for entry in conect]
         conect = "".join(conect)
         self.pdbfile.write(self.fmt['CONECT'].format(conect))
 

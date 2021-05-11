@@ -594,6 +594,19 @@ class TestNCDFReaderExceptionsWarnings(_NCDFGenerator):
                     "attributes are missing")
             assert str(record[0].message.args[0]) == wmsg
 
+    def test_no_dt_warning(self, tmpdir):
+        """Issue 3166 - not being able to call dt should throw a warning.
+        Also at the same time checks that single frame chain reading works"""
+        u = mda.Universe(PFncdf_Top, PFncdf_Trj)
+        with tmpdir.as_cwd():
+            with NCDFWriter('single_frame.nc', u.atoms.n_atoms) as W:
+                W.write(u)
+
+            # Using the ChainReader implicitly calls dt() and thus _get_dt()
+            wmsg = "Reader has no dt information, set to 1.0 ps"
+            with pytest.warns(UserWarning, match=wmsg):
+                u2 = mda.Universe(PFncdf_Top, [PFncdf_Trj, 'single_frame.nc'])
+
 
 class _NCDFWriterTest(object):
     prec = 5
@@ -601,6 +614,12 @@ class _NCDFWriterTest(object):
     @pytest.fixture()
     def universe(self):
         return mda.Universe(self.topology, self.filename)
+
+    @pytest.fixture(params=['nc', 'ncdf'])
+    def outfile_extensions(self, tmpdir, request):
+        # Issue 3030, test all extensions of NCDFWriter
+        ext = request.param
+        return str(tmpdir) + f'ncdf-writer-1.{ext}'
 
     @pytest.fixture()
     def outfile(self, tmpdir):
@@ -654,11 +673,11 @@ class _NCDFWriterTest(object):
         finally:
             sys.modules['MDAnalysis.coordinates.TRJ'].netCDF4 = loaded_netCDF4
 
-    def test_OtherWriter(self, universe, outfile):
+    def test_OtherWriter(self, universe, outfile_extensions):
         t = universe.trajectory
-        with t.OtherWriter(outfile) as W:
+        with t.OtherWriter(outfile_extensions) as W:
             self._copy_traj(W, universe)
-        self._check_new_traj(universe, outfile)
+        self._check_new_traj(universe, outfile_extensions)
 
     def _copy_traj(self, writer, universe):
         for ts in universe.trajectory:
@@ -885,20 +904,16 @@ class TestNCDFWriterUnits(object):
             assert_equal(unit, expected)
 
 
-class TestNCDFWriterErrors(object):
+class TestNCDFWriterErrorsWarnings(object):
     @pytest.fixture()
     def outfile(self, tmpdir):
         return str(tmpdir) + 'out.ncdf'
 
     def test_zero_atoms_VE(self, outfile):
-        from MDAnalysis.coordinates.TRJ import NCDFWriter
-
         with pytest.raises(ValueError):
             NCDFWriter(outfile, 0)
 
     def test_wrong_n_atoms(self, outfile):
-        from MDAnalysis.coordinates.TRJ import NCDFWriter
-
         with NCDFWriter(outfile, 100) as w:
             u = make_Universe(trajectory=True)
             with pytest.raises(IOError):

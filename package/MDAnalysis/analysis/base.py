@@ -24,10 +24,10 @@
 Analysis building blocks --- :mod:`MDAnalysis.analysis.base`
 ============================================================
 
-A collection of useful building blocks for creating Analysis
-classes.
+The building blocks for creating Analysis classes.
 
 """
+from collections import UserDict
 import inspect
 import logging
 import itertools
@@ -40,19 +40,125 @@ from MDAnalysis.lib.log import ProgressBar
 logger = logging.getLogger(__name__)
 
 
-class AnalysisBase(object):
-    """Base class for defining multi frame analysis
+class Results(UserDict):
+    r"""Container object for storing results.
 
-    The class it is designed as a template for creating multiframe analyses.
+    ``Results`` are dictionaries that provide two ways by which values can be
+    accessed: by dictionary key ``results["value_key"]`` or by object
+    attribute, ``results.value_key``. ``Results`` stores all results obtained
+    from an analysis after calling :func:`run()`.
+
+    The implementation is similar to the :class:`sklearn.utils.Bunch`
+    class in `scikit-learn`_.
+
+    .. _`scikit-learn`: https://scikit-learn.org/
+
+    Raises
+    ------
+    AttributeError
+        If an assigned attribute has the same name as a default attribute.
+
+    ValueError
+        If a key is not of type ``str`` and therefore is not able to be
+        accessed by attribute.
+
+    Notes
+    -----
+    Pickling of ``Results`` is currently not supported.
+
+    Examples
+    --------
+    >>> from MDAnalysis.analysis.base import Results
+    >>> results = Results(a=1, b=2)
+    >>> results['b']
+    2
+    >>> results.b
+    2
+    >>> results.a = 3
+    >>> results['a']
+    3
+    >>> results.c = [1, 2, 3, 4]
+    >>> results['c']
+    [1, 2, 3, 4]
+
+
+    .. versionadded:: 2.0.0
+    """
+
+    def _validate_key(self, key):
+        if key in dir(self):
+            raise AttributeError(f"'{key}' is a protected dictionary "
+                                 "attribute")
+        elif isinstance(key, str) and not key.isidentifier():
+            raise ValueError(f"'{key}' is not a valid attribute")
+
+    def __init__(self, *args, **kwargs):
+        kwargs = dict(*args, **kwargs)
+        if "data" in kwargs.keys():
+            raise AttributeError(f"'data' is a protected dictionary attribute")
+        self.__dict__["data"] = {}
+        self.update(kwargs)
+
+    def __setitem__(self, key, item):
+        self._validate_key(key)
+        super().__setitem__(key, item)
+
+    __setattr__ = __setitem__
+
+    def __getattr__(self, attr):
+        try:
+            return self[attr]
+        except KeyError as err:
+            raise AttributeError("'Results' object has no "
+                                 f"attribute '{attr}'") from err
+
+    def __delattr__(self, attr):
+        try:
+            del self[attr]
+        except KeyError as err:
+            raise AttributeError("'Results' object has no "
+                                 f"attribute '{attr}'") from err
+
+
+class AnalysisBase(object):
+    r"""Base class for defining multi-frame analysis
+
+    The class is designed as a template for creating multi-frame analyses.
     This class will automatically take care of setting up the trajectory
     reader for iterating, and it offers to show a progress meter.
+    Computed results are stored inside the :attr:`results` attribute.
 
     To define a new Analysis, `AnalysisBase` needs to be subclassed
-    `_single_frame` must be defined. It is also possible to define
-    `_prepare` and `_conclude` for pre and post processing. See the example
-    below.
+    and :meth:`_single_frame` must be defined. It is also possible to define
+    :meth:`_prepare` and :meth:`_conclude` for pre- and post-processing.
+    All results should be stored as attributes of the :class:`Results`
+    container.
 
+    Parameters
+    ----------
+    trajectory : MDAnalysis.coordinates.base.ReaderBase
+        A trajectory Reader
+    verbose : bool, optional
+        Turn on more logging and debugging
+
+    Attributes
+    ----------
+    times: numpy.ndarray
+        array of Timestep times. Only exists after calling
+        :meth:`AnalysisBase.run`
+    frames: numpy.ndarray
+        array of Timestep frame indices. Only exists after calling
+        :meth:`AnalysisBase.run`
+    results: :class:`Results`
+        results of calculation are stored after call
+        to :meth:`AnalysisBase.run`
+
+
+    Example
+    -------
     .. code-block:: python
+
+       from MDAnalysis.analysis.base import AnalysisBase
 
        class NewAnalysis(AnalysisBase):
            def __init__(self, atomgroup, parameter, **kwargs):
@@ -65,53 +171,51 @@ class AnalysisBase(object):
                # OPTIONAL
                # Called before iteration on the trajectory has begun.
                # Data structures can be set up at this time
-               self.result = []
+               self.results.example_result = []
 
            def _single_frame(self):
                # REQUIRED
                # Called after the trajectory is moved onto each new frame.
-               # store result of `some_function` for a single frame
-               self.result.append(some_function(self._ag, self._parameter))
+               # store an example_result of `some_function` for a single frame
+               self.results.example_result.append(some_function(self._ag,
+                                                                self._parameter))
 
            def _conclude(self):
                # OPTIONAL
                # Called once iteration on the trajectory is finished.
                # Apply normalisation and averaging to results here.
-               self.result = np.asarray(self.result) / np.sum(self.result)
+               self.results.example_result = np.asarray(self.example_result)
+               self.results.example_result /=  np.sum(self.result)
 
-    Afterwards the new analysis can be run like this.
+    Afterwards the new analysis can be run like this
 
     .. code-block:: python
 
-       na = NewAnalysis(u.select_atoms('name CA'), 35).run(start=10, stop=20)
-       print(na.result)
+       import MDAnalysis as mda
+       from MDAnalysisTests.datafiles import PSF, DCD
 
-    Attributes
-    ----------
-    times: np.ndarray
-        array of Timestep times. Only exists after calling run()
-    frames: np.ndarray
-        array of Timestep frame indices. Only exists after calling run()
+       u = mda.Universe(PSF, DCD)
 
+       na = NewAnalysis(u.select_atoms('name CA'), 35)
+       na.run(start=10, stop=20)
+       print(na.results.example_result)
+       # results can also be accessed by key
+       print(na.results["example_result"])
+
+
+    .. versionchanged:: 1.0.0
+        Support for setting ``start``, ``stop``, and ``step`` has been
+        removed. These should now be directly passed to
+        :meth:`AnalysisBase.run`.
+
+    .. versionchanged:: 2.0.0
+        Added :attr:`results`
     """
 
     def __init__(self, trajectory, verbose=False, **kwargs):
-        """
-        Parameters
-        ----------
-        trajectory : mda.Reader
-            A trajectory Reader
-        verbose : bool, optional
-           Turn on more logging and debugging, default ``False``
-
-
-        .. versionchanged:: 1.0.0
-           Support for setting ``start``, ``stop``, and ``step`` has been
-           removed. These should now be directly passed to
-           :meth:`AnalysisBase.run`.
-        """
         self._trajectory = trajectory
         self._verbose = verbose
+        self.results = Results()
 
     def _setup_frames(self, trajectory, start=None, stop=None, step=None):
         """
@@ -132,7 +236,6 @@ class AnalysisBase(object):
 
         .. versionchanged:: 1.0.0
             Added .frames and .times arrays as attributes
-
         """
         self._trajectory = trajectory
         start, stop, step = trajectory.check_slice_indices(start, stop, step)
@@ -157,7 +260,7 @@ class AnalysisBase(object):
     def _conclude(self):
         """Finalise the results you've gathered.
 
-        Called at the end of the run() method to finish everything up.
+        Called at the end of the :meth:`run` method to finish everything up.
         """
         pass  # pylint: disable=unnecessary-pass
 
@@ -198,46 +301,57 @@ class AnalysisBase(object):
 
 
 class AnalysisFromFunction(AnalysisBase):
-    """
-    Create an analysis from a function working on AtomGroups
+    r"""Create an :class:`AnalysisBase` from a function working on AtomGroups
+
+    Parameters
+    ----------
+    function : callable
+        function to evaluate at each frame
+    trajectory : mda.coordinates.Reader, optional
+        trajectory to iterate over. If ``None`` the first AtomGroup found in
+        args and kwargs is used as a source for the trajectory.
+    *args : list
+        arguments for ``function``
+    **kwargs : dict
+        arguments for ``function`` and :class:`AnalysisBase`
 
     Attributes
     ----------
-    results : ndarray
-        results of calculation are stored after call to ``run``
-
-    Example
-    -------
-    >>> def rotation_matrix(mobile, ref):
-    >>>     return mda.analysis.align.rotation_matrix(mobile, ref)[0]
-
-    >>> rot = AnalysisFromFunction(rotation_matrix, trajectory, mobile, ref).run()
-    >>> print(rot.results)
+    results.frames : numpy.ndarray
+            simulation frames used in analysis
+    results.times : numpy.ndarray
+            simulation times used in analysis
+    results.timeseries : numpy.ndarray
+            Results for each frame of the wrapped function,
+            stored after call to :meth:`AnalysisFromFunction.run`.
 
     Raises
     ------
-    ValueError : if ``function`` has the same kwargs as ``BaseAnalysis``
+    ValueError
+        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`
+
+    Example
+    -------
+    .. code-block:: python
+
+        def rotation_matrix(mobile, ref):
+            return mda.analysis.align.rotation_matrix(mobile, ref)[0]
+
+        rot = AnalysisFromFunction(rotation_matrix, trajectory,
+                                    mobile, ref).run()
+        print(rot.results.timeseries)
+
+
+    .. versionchanged:: 1.0.0
+        Support for directly passing the ``start``, ``stop``, and ``step``
+        arguments has been removed. These should instead be passed
+        to :meth:`AnalysisFromFunction.run`.
+
+    .. versionchanged:: 2.0.0
+        Former :attr:`results` are now stored as :attr:`results.timeseries`
     """
 
     def __init__(self, function, trajectory=None, *args, **kwargs):
-        """Parameters
-        ----------
-        function : callable
-            function to evaluate at each frame
-        trajectory : mda.coordinates.Reader (optional)
-            trajectory to iterate over. If ``None`` the first AtomGroup found in
-            args and kwargs is used as a source for the trajectory.
-        *args : list
-            arguments for ``function``
-        **kwargs : dict
-            arguments for ``function`` and ``AnalysisBase``
-
-        .. versionchanged:: 1.0.0
-           Support for directly passing the ``start``, ``stop``, and ``step``
-           arguments has been removed. These should instead be passed
-           to :meth:`AnalysisFromFunction.run`.
-
-        """
         if (trajectory is not None) and (not isinstance(
                 trajectory, coordinates.base.ProtoReader)):
             args = (trajectory,) + args
@@ -261,33 +375,67 @@ class AnalysisFromFunction(AnalysisBase):
         super(AnalysisFromFunction, self).__init__(trajectory)
 
     def _prepare(self):
-        self.results = []
+        self.results.timeseries = []
 
     def _single_frame(self):
-        self.results.append(self.function(*self.args, **self.kwargs))
+        self.results.timeseries.append(self.function(*self.args,
+                                                     **self.kwargs))
 
     def _conclude(self):
-        self.results = np.asarray(self.results)
+        self.results.frames = self.frames
+        self.results.times = self.times
+        self.results.timeseries = np.asarray(self.results.timeseries)
 
 
 def analysis_class(function):
-    """
-    Transform a function operating on a single frame to an analysis class
+    r"""Transform a function operating on a single frame to an
+    :class:`AnalysisBase` class.
 
-    For an usage in a library we recommend the following style:
+    Parameters
+    ----------
+    function : callable
+        function to evaluate at each frame
 
-    >>> def rotation_matrix(mobile, ref):
-    >>>     return mda.analysis.align.rotation_matrix(mobile, ref)[0]
-    >>> RotationMatrix = analysis_class(rotation_matrix)
+    Attributes
+    ----------
+    results.frames : numpy.ndarray
+            simulation frames used in analysis
+    results.times : numpy.ndarray
+            simulation times used in analysis
+    results.timeseries : numpy.ndarray
+            Results for each frame of the wrapped function,
+            stored after call to :meth:`AnalysisFromFunction.run`.
 
-    It can also be used as a decorator:
+    Raises
+    ------
+    ValueError
+        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`
 
-    >>> @analysis_class
-    >>> def RotationMatrix(mobile, ref):
-    >>>     return mda.analysis.align.rotation_matrix(mobile, ref)[0]
+    Examples
+    --------
 
-    >>> rot = RotationMatrix(u.trajectory, mobile, ref).run(step=2)
-    >>> print(rot.results)
+    For use in a library, we recommend the following style
+
+    .. code-block:: python
+
+        def rotation_matrix(mobile, ref):
+            return mda.analysis.align.rotation_matrix(mobile, ref)[0]
+        RotationMatrix = analysis_class(rotation_matrix)
+
+    It can also be used as a decorator
+
+    .. code-block:: python
+
+        @analysis_class
+        def RotationMatrix(mobile, ref):
+            return mda.analysis.align.rotation_matrix(mobile, ref)[0]
+
+        rot = RotationMatrix(u.trajectory, mobile, ref).run(step=2)
+        print(rot.results.timeseries)
+
+
+    .. versionchanged:: 2.0.0
+        Former ``results`` are now stored as ``results.timeseries``
     """
 
     class WrapperClass(AnalysisFromFunction):
@@ -318,7 +466,8 @@ def _filter_baseanalysis_kwargs(function, kwargs):
 
     Raises
     ------
-    ValueError : if ``function`` has the same kwargs as ``BaseAnalysis``
+    ValueError
+        if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`
     """
     try:
         # pylint: disable=deprecated-method

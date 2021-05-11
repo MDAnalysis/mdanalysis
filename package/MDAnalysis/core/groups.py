@@ -94,6 +94,7 @@ import functools
 import itertools
 import numbers
 import os
+import contextlib
 import warnings
 
 from .. import (_CONVERTERS,
@@ -103,6 +104,7 @@ from ..lib.util import cached, warn_if_not_unique, unique_int_1d
 from ..lib import distances
 from ..lib import transformations
 from ..lib import mdamath
+from .accessors import Accessor, ConverterWrapper
 from ..selections import get_writer as get_selection_writer_for
 from . import selection
 from ..exceptions import NoDataError
@@ -121,7 +123,7 @@ def _unpickle_uag(basepickle, selections, selstrs):
 
 
 def make_classes():
-    """Make a fresh copy of all classes
+    r"""Make a fresh copy of all classes
 
     Returns
     -------
@@ -129,7 +131,6 @@ def make_classes():
     to serve as bases for :class:`~MDAnalysis.core.universe.Universe`\ -specific
     MDA container classes. Another with the final merged versions of those
     classes. The classes themselves are used as hashing keys.
-
     """
     bases = {}
     classes = {}
@@ -228,7 +229,7 @@ class _TopologyAttrContainer(object):
             A class of parents :class:`_ImmutableBase`, *other* and this class.
             Its name is the same as *other*'s.
         """
-        newcls = type(other.__name__, (_ImmutableBase, other, cls), {})
+        newcls = type(other.__name__, (_ImmutableBase, cls, other), {})
         newcls._derived_class = newcls
         return newcls
 
@@ -255,6 +256,22 @@ class _TopologyAttrContainer(object):
             setattr(cls, attr.singular,
                     property(getter, setter, None, attr.singledoc))
             cls._SETATTR_WHITELIST.add(attr.singular)
+
+    @classmethod
+    def _del_prop(cls, attr):
+        """Remove `attr` from the namespace for this class.
+
+        Parameters
+        ----------
+        attr : A :class:`TopologyAttr` object
+        """
+        with contextlib.suppress(AttributeError):
+            delattr(cls, attr.attrname)
+        with contextlib.suppress(AttributeError):
+            delattr(cls, attr.singular)
+        
+        cls._SETATTR_WHITELIST.discard(attr.attrname)
+        cls._SETATTR_WHITELIST.discard(attr.singular)
 
     def __setattr__(self, attr, value):
         # `ag.this = 42` calls setattr(ag, 'this', 42)
@@ -356,7 +373,7 @@ class _MutableBase(object):
                 raise NoDataError(err.format(selfcls=selfcls,
                                              attrname=attrname,
                                              topattr=topattr))
-        
+
         else:
             clean = attr.lower().replace('_', '')
             err = '{selfcls} has no attribute {attr}. '.format(selfcls=selfcls,
@@ -365,6 +382,41 @@ class _MutableBase(object):
                 match = _TOPOLOGY_ATTRNAMES[clean]
                 err += 'Did you mean {match}?'.format(match=match)
             raise AttributeError(err)
+
+    def get_connections(self, typename, outside=True):
+        """
+        Get bonded connections between atoms as a
+        :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`.
+
+        Parameters
+        ----------
+        typename : str
+            group name. One of {"bonds", "angles", "dihedrals",
+            "impropers", "ureybradleys", "cmaps"}
+        outside : bool (optional)
+            Whether to include connections involving atoms outside
+            this group.
+
+        Returns
+        -------
+        TopologyGroup
+            containing the bonded group of choice, i.e. bonds, angles,
+            dihedrals, impropers, ureybradleys or cmaps.
+
+        .. versionadded:: 1.1.0
+        """
+        # AtomGroup has handy error messages for missing attributes
+        ugroup = getattr(self.universe.atoms, typename)
+        if not ugroup:
+            return ugroup
+        func = np.any if outside else np.all
+        try:
+            indices = self.atoms.ix_array
+        except AttributeError:  # if self is an Atom
+            indices = self.ix_array
+        seen = [np.in1d(col, indices) for col in ugroup._bix.T]
+        mask = func(seen, axis=0)
+        return ugroup[mask]
 
 
 class _ImmutableBase(object):
@@ -410,7 +462,7 @@ def _only_same_level(function):
 
 
 class GroupBase(_MutableBase):
-    """Base class from which a :class:`<~MDAnalysis.core.universe.Universe`\ 's
+    r"""Base class from which a :class:`<~MDAnalysis.core.universe.Universe`\ 's
     Group class is built.
 
     Instances of :class:`GroupBase` provide the following operations that
@@ -525,7 +577,7 @@ class GroupBase(_MutableBase):
             # subclasses, such as UpdatingAtomGroup, to control the class
             # resulting from slicing.
             return self._derived_class(self.ix[item], self.universe)
-    
+
     def __getattr__(self, attr):
         selfcls = type(self).__name__
         if attr in _TOPOLOGY_ATTRS:
@@ -705,6 +757,122 @@ class GroupBase(_MutableBase):
         #    return ``not np.any(mask)`` here but using the following is faster:
         return not np.count_nonzero(mask)
 
+    def _get_compound_indices(self, compound):
+        if compound == 'residues':
+            compound_indices = self.atoms.resindices
+        elif compound == 'segments':
+            compound_indices = self.atoms.segindices
+        elif compound == 'molecules':
+            try:
+                compound_indices = self.atoms.molnums
+            except AttributeError:
+                errmsg = ("Cannot use compound='molecules': No molecule "
+                          "information in topology.")
+                raise NoDataError(errmsg) from None
+        elif compound == 'fragments':
+            try:
+                compound_indices = self.atoms.fragindices
+            except NoDataError:
+                errmsg = ("Cannot use compound='fragments': No bond "
+                          "information in topology.")
+                raise NoDataError(errmsg) from None
+        elif compound == 'group':
+            raise ValueError("This method does not accept compound='group'")
+        else:
+            raise ValueError("Unrecognized compound definition: {}\nPlease use"
+                             " one of 'residues', 'segments', 'molecules',"
+                             " or 'fragments'.".format(compound))
+        return compound_indices
+
+    def _split_by_compound_indices(self, compound, stable_sort=False):
+        """Splits a group's compounds into groups of equal compound size.
+
+        Grouping equal sizes together facilitates subsequent vectorization.
+
+        For a 10-atom molecule with atoms organized into compounds C0 through
+        C2::
+
+           at.id:  0  1  2  3  4  5  6  7  8  9
+        compound: C0 C0 C0 C0 C1 C1 C2 C2 C2 C2
+
+        this function will yield an `atom_masks` list with two submasks: one
+        for compounds of size 2 and one for compounds of size 4:
+        [array([[4, 5]]),
+         array([[1, 2, 3, 0],
+                [8, 7, 6, 9]])]
+
+        (Note that atom order within component submasks may be lost unless a
+        `stable_sort` is requested)
+        These submasks can be used directly to fancy-index arrays of the same
+        length as self (including :class:`AtomGroups<AtomGroup>`).
+
+        This function also returns `compound_masks`, the boolean mapping of
+        each of the `atom_masks` submask into the original compound order::
+        [array([False,  True, False]),
+         array([ True, False,  True])]
+
+        Parameters
+        ----------
+        compound : {'segments', 'residues', 'molecules', 'fragments'}
+            The compound type to base splitting on.
+        stable_sort : bool, optional
+            Whether to ensure that, when needed, sorting does not affect an
+            atom's order within a compound (at a cost to performance). E.g.,
+            for an unwrap operation it is important that the first atom of a
+            compound is always the same, whereas a center-of-geometry
+            computation wouldn't care.
+
+        Returns
+        -------
+        atom_masks : list of numpy.ndarray
+            Integer masks for fancy-indexing atoms/weights lists; masks are
+            already shaped as ``(number of compounds of a given size,
+            compound_size)``.
+        compound_masks : list of numpy.ndarray
+            1D boolean masks for fancy-indexing lists of compounds. Translate
+            the distribution of the compounds in each mask of `atom_masks` into
+            their original order.
+        n_compounds : int
+            The number of individual compounds.
+        """
+        # Caching would help here, especially when repeating the operation
+        # over different frames, since these masks are coordinate-independent.
+        # However, cache must be invalidated whenever new compound indices are
+        # modified, which is not yet implemented.
+        # Also, should we include here the grouping for 'group', which is
+        # essentially a non-split?
+
+        compound_indices = self._get_compound_indices(compound)
+        # Are we already sorted? argsorting and fancy-indexing can be expensive
+        # so we do a quick pre-check.
+        needs_sorting = np.any(np.diff(compound_indices) < 0)
+        if needs_sorting:
+            # stable sort ensures reproducibility, especially concerning who
+            # gets to be a compound's atom[0] and be a reference for unwrap.
+            if stable_sort:
+                sort_indices = np.argsort(compound_indices, kind='stable')
+            else:
+                # Quicksort
+                sort_indices = np.argsort(compound_indices)
+
+        compound_sizes = np.bincount(compound_indices)
+        size_per_atom = compound_sizes[compound_indices]
+        compound_sizes = compound_sizes[compound_sizes != 0]
+        unique_compound_sizes = unique_int_1d(compound_sizes)
+
+        compound_masks = []
+        atom_masks = []
+        for compound_size in unique_compound_sizes:
+            compound_masks.append(compound_sizes == compound_size)
+            if needs_sorting:
+                atom_masks.append(sort_indices[size_per_atom == compound_size]
+                                   .reshape(-1, compound_size))
+            else:
+                atom_masks.append(np.where(size_per_atom == compound_size)[0]
+                                   .reshape(-1, compound_size))
+
+        return atom_masks, compound_masks, len(compound_sizes)
+
     @warn_if_not_unique
     @check_pbc_and_unwrap
     def center(self, weights, pbc=False, compound='group', unwrap=False):
@@ -738,7 +906,10 @@ class GroupBase(_MutableBase):
             Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
             *belonging to the group* will be taken into account.
         unwrap : bool, optional
-            If ``True``, compounds will be unwrapped before computing their centers.
+            If ``True``, compounds will be unwrapped before computing their
+            centers. The position of the first atom of each compound will be
+            taken as the reference to unwrap from; as such, results may differ
+            for the same :class:`AtomGroup` if atoms are ordered differently.
 
         Returns
         -------
@@ -806,61 +977,34 @@ class GroupBase(_MutableBase):
             # promote weights to dtype if required:
             weights = weights.astype(dtype, copy=False)
             return (coords * weights[:, None]).sum(axis=0) / weights.sum()
-        elif comp == 'residues':
-            compound_indices = atoms.resindices
-        elif comp == 'segments':
-            compound_indices = atoms.segindices
-        elif comp == 'molecules':
-            try:
-                compound_indices = atoms.molnums
-            except AttributeError:
-                errmsg = ("Cannot use compound='molecules': No molecule "
-                          "information in topology.")
-                raise NoDataError(errmsg) from None
-        elif comp == 'fragments':
-            try:
-                compound_indices = atoms.fragindices
-            except NoDataError:
-                errmsg = ("Cannot use compound='fragments': No bond "
-                          "information in topology.")
-                raise NoDataError(errmsg) from None
-        else:
-            raise ValueError("Unrecognized compound definition: {}\nPlease use"
-                             " one of 'group', 'residues', 'segments', "
-                             "'molecules', or 'fragments'.".format(compound))
 
-        # Sort positions and weights by compound index and promote to dtype if
-        # required:
-        sort_indices = np.argsort(compound_indices)
-        compound_indices = compound_indices[sort_indices]
+        # When compound split caching gets implemented it will be clever to
+        # preempt at this point whether or not stable sorting will be needed
+        # later for unwrap (so that we don't split now with non-stable sort,
+        # only to have to re-split with stable sort if unwrap is requested).
+        (atom_masks,
+         compound_masks,
+         n_compounds) = self._split_by_compound_indices(comp)
 
         # Unwrap Atoms
         if unwrap:
             coords = atoms.unwrap(compound=comp, reference=None, inplace=False)
         else:
-            coords = atoms.positions[sort_indices]
+            coords = atoms.positions
         if weights is None:
             coords = coords.astype(dtype, copy=False)
         else:
             weights = weights.astype(dtype, copy=False)
-            weights = weights[sort_indices]
-        # Get sizes of compounds:
-        unique_compound_indices, compound_sizes = np.unique(compound_indices,
-                                                            return_counts=True)
-        n_compounds = len(unique_compound_indices)
-        unique_compound_sizes = unique_int_1d(compound_sizes)
+
         # Allocate output array:
-        centers = np.zeros((n_compounds, 3), dtype=dtype)
+        centers = np.empty((n_compounds, 3), dtype=dtype)
         # Compute centers per compound for each compound size:
-        for compound_size in unique_compound_sizes:
-            compound_mask = compound_sizes == compound_size
-            _compound_indices = unique_compound_indices[compound_mask]
-            atoms_mask = np.in1d(compound_indices, _compound_indices)
-            _coords = coords[atoms_mask].reshape((-1, compound_size, 3))
+        for compound_mask, atom_mask in zip(compound_masks, atom_masks):
+            _coords = coords[atom_mask]
             if weights is None:
                 _centers = _coords.mean(axis=1)
             else:
-                _weights = weights[atoms_mask].reshape((-1, compound_size))
+                _weights = weights[atom_mask]
                 _centers = (_coords * _weights[:, :, None]).sum(axis=1)
                 _centers /= _weights.sum(axis=1)[:, None]
             centers[compound_mask] = _centers
@@ -921,7 +1065,7 @@ class GroupBase(_MutableBase):
 
     @warn_if_not_unique
     def accumulate(self, attribute, function=np.sum, compound='group'):
-        """Accumulates the attribute associated with (compounds of) the group.
+        r"""Accumulates the attribute associated with (compounds of) the group.
 
         Accumulates the attribute of :class:`Atoms<Atom>` in the group.
         The accumulation per :class:`Residue`, :class:`Segment`, molecule,
@@ -1014,50 +1158,19 @@ class GroupBase(_MutableBase):
 
         if comp == 'group':
             return function(attribute_values, axis=0)
-        elif comp == 'residues':
-            compound_indices = atoms.resindices
-        elif comp == 'segments':
-            compound_indices = atoms.segindices
-        elif comp == 'molecules':
-            try:
-                compound_indices = atoms.molnums
-            except AttributeError:
-                errmsg = ("Cannot use compound='molecules': No molecule "
-                          "information in topology.")
-                raise NoDataError(errmsg) from None
-        elif comp == 'fragments':
-            try:
-                compound_indices = atoms.fragindices
-            except NoDataError:
-                errmsg = ("Cannot use compound='fragments': No bond "
-                          "information in topology.")
-                raise NoDataError(errmsg) from None
-        else:
-            raise ValueError("Unrecognized compound definition: '{}'. Please "
-                             "use one of 'group', 'residues', 'segments', "
-                             "'molecules', or 'fragments'.".format(compound))
+
+        (atom_masks,
+         compound_masks,
+         n_compounds) = self._split_by_compound_indices(comp)
 
         higher_dims = list(attribute_values.shape[1:])
 
-        # Sort attribute values by compound
-        sort_indices = np.argsort(compound_indices)
-        compound_indices = compound_indices[sort_indices]
-
-        attribute_values = attribute_values[sort_indices]
-        # Get sizes of compounds:
-        unique_compound_indices, compound_sizes = np.unique(compound_indices,
-                                                            return_counts=True)
-        n_compounds = len(unique_compound_indices)
-        unique_compound_sizes = unique_int_1d(compound_sizes)
         # Allocate output array:
-        accumulation = np.zeros([n_compounds] + higher_dims)
-        # Compute sums per compound for each compound size:
-        for compound_size in unique_compound_sizes:
-            compound_mask = compound_sizes == compound_size
-            _compound_indices = unique_compound_indices[compound_mask]
-            atoms_mask = np.in1d(compound_indices, _compound_indices)
-            _elements = attribute_values[atoms_mask].reshape([-1, compound_size]
-                                                             + higher_dims)
+        # (what dtype should this be?)
+        accumulation = np.empty([n_compounds] + higher_dims)
+        # Apply the accumulation function per compound for each compound size:
+        for compound_mask, atom_mask in zip(compound_masks, atom_masks):
+            _elements = attribute_values[atom_mask]
             _accumulation = function(_elements, axis=1)
             accumulation[compound_mask] = _accumulation
         return accumulation
@@ -1347,7 +1460,7 @@ class GroupBase(_MutableBase):
         return self.wrap(box=box, inplace=inplace)
 
     def wrap(self, compound="atoms", center="com", box=None, inplace=True):
-        """Shift the contents of this group back into the primary unit cell
+        r"""Shift the contents of this group back into the primary unit cell
         according to periodic boundary conditions.
 
         Specifying a `compound` will keep the :class:`Atoms<Atom>` in each
@@ -1359,7 +1472,7 @@ class GroupBase(_MutableBase):
         ----------
         compound : {'atoms', 'group', 'segments', 'residues', 'molecules', \
                     'fragments'}, optional
-            Which type of component to keep together during wrapping. Note that,
+            Which type of compound to keep together during wrapping. Note that,
             in any case, *only* the positions of :class:`Atoms<Atom>`
             *belonging to the group* will be taken into account.
         center : {'com', 'cog'}
@@ -1368,8 +1481,8 @@ class GroupBase(_MutableBase):
         box : array_like, optional
             The unitcell dimensions of the system, which can be orthogonal or
             triclinic and must be provided in the same format as returned by
-            :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
-            ``[lx, ly, lz, alpha, beta, gamma]``.\n
+            :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+            ``[lx, ly, lz, alpha, beta, gamma]``.
             If ``None``, uses the
             dimensions of the current time step.
         inplace: bool, optional
@@ -1406,20 +1519,21 @@ class GroupBase(_MutableBase):
 
         .. math::
 
-           x_i' = x_i - \left\lfloor\\frac{x_i}{L_i}\\right\\rfloor\,.
+           x_i' = x_i - \left\lfloor\frac{x_i}{L_i}\right\rfloor\,.
 
         When specifying a `compound`, the translation is calculated based on
         each compound. The same translation is applied to all atoms
         within this compound, meaning it will not be broken by the shift.
         This might however mean that not all atoms of a compound will be
         inside the unit cell after wrapping, but rather will be the center of
-        the compound.\n
+        the compound.
         Be aware of the fact that only atoms *belonging to the group* will be
         taken into account!
 
         `center` allows to define how the center of each group is computed.
-        This can be either ``'com'`` for center of mass, or ``'cog'`` for center
-        of geometry.
+        This can be either ``'com'`` for center of mass, or ``'cog'`` for
+        center of geometry.
+
 
         `box` allows a unit cell to be given for the transformation. If not
         specified, the :attr:`~MDAnalysis.coordinates.base.Timestep.dimensions`
@@ -1486,52 +1600,26 @@ class GroupBase(_MutableBase):
                 raise ValueError("Unrecognized center definition '{}'. Please "
                                  "use one of 'com' or 'cog'.".format(center))
             positions = atoms.positions
-            if comp == 'group':
-                # compute and apply required shift:
-                if ctr == 'com':
-                    ctrpos = atoms.center_of_mass(pbc=False, compound=comp)
-                    if np.isnan(ctrpos[0]):
-                        raise ValueError("Cannot use compound='group' with "
-                                         "center='com' because the total mass "
-                                         "of the group is zero.")
-                else:  # ctr == 'cog'
-                    ctrpos = atoms.center_of_geometry(pbc=False, compound=comp)
-                ctrpos = ctrpos.astype(np.float32, copy=False)
-                target = distances.apply_PBC(ctrpos, box)
-                positions += target - ctrpos
-            else:
-                if comp == 'segments':
-                    compound_indices = atoms.segindices
-                elif comp == 'residues':
-                    compound_indices = atoms.resindices
-                elif comp == 'molecules':
-                    try:
-                        compound_indices = atoms.molnums
-                    except AttributeError:
-                        errmsg = ("Cannot use compound='molecules', this "
-                                  "requires molnums.")
-                        raise NoDataError(errmsg) from None
-                else:  # comp == 'fragments'
-                    try:
-                        compound_indices = atoms.fragindices
-                    except NoDataError:
-                        errmsg = ("Cannot use compound='fragments', this "
-                                  "requires bonds.")
-                        raise NoDataError(errmsg) from None
 
-                # compute required shifts:
-                if ctr == 'com':
-                    ctrpos = atoms.center_of_mass(pbc=False, compound=comp)
-                    if np.any(np.isnan(ctrpos)):
-                        raise ValueError("Cannot use compound='{0}' with "
-                                         "center='com' because the total mass "
-                                         "of at least one of the {0} is zero."
-                                         "".format(comp))
-                else:  # ctr == 'cog'
-                    ctrpos = atoms.center_of_geometry(pbc=False, compound=comp)
-                ctrpos = ctrpos.astype(np.float32, copy=False)
-                target = distances.apply_PBC(ctrpos, box)
-                shifts = target - ctrpos
+            # compute and apply required shift:
+            if ctr == 'com':
+                ctrpos = atoms.center_of_mass(pbc=False, compound=comp)
+                if np.any(np.isnan(ctrpos)):
+                    specifier = 'the' if comp == 'group' else 'one of the'
+                    raise ValueError("Cannot use compound='{0}' with "
+                                     "center='com' because {1} {0}\'s total "
+                                     "mass is zero.".format(comp, specifier))
+            else:  # ctr == 'cog'
+                ctrpos = atoms.center_of_geometry(pbc=False, compound=comp)
+            ctrpos = ctrpos.astype(np.float32, copy=False)
+            target = distances.apply_PBC(ctrpos, box)
+            shifts = target - ctrpos
+
+            if comp == 'group':
+                positions += shifts
+
+            else:
+                compound_indices = atoms._get_compound_indices(comp)
 
                 # apply the shifts:
                 unique_compound_indices = unique_int_1d(compound_indices)
@@ -1548,7 +1636,7 @@ class GroupBase(_MutableBase):
         return positions
 
     def unwrap(self, compound='fragments', reference='com', inplace=True):
-        """Move atoms of this group so that bonds within the
+        r"""Move atoms of this group so that bonds within the
         group's compounds aren't split across periodic boundaries.
 
         This function is most useful when atoms have been packed into the
@@ -1570,7 +1658,7 @@ class GroupBase(_MutableBase):
         ----------
         compound : {'group', 'segments', 'residues', 'molecules', \
                     'fragments'}, optional
-            Which type of component to unwrap. Note that, in any case, all
+            Which type of compound to unwrap. Note that, in any case, all
             atoms within each compound must be interconnected by bonds, i.e.,
             compounds must correspond to (parts of) molecules.
         reference : {'com', 'cog', None}, optional
@@ -1601,7 +1689,7 @@ class GroupBase(_MutableBase):
         ----
         Be aware of the fact that only atoms *belonging to the group* will
         be unwrapped! If you want entire molecules to be unwrapped, make sure
-        that all atoms of these molecules are part of the group.\n
+        that all atoms of these molecules are part of the group.
         An AtomGroup containing all atoms of all fragments in the group ``ag``
         can be created with::
 
@@ -1624,29 +1712,36 @@ class GroupBase(_MutableBase):
             raise NoDataError("{}.unwrap() not available; this requires Bonds"
                               "".format(self.__class__.__name__))
         unique_atoms = atoms.unique
+
+        # Parameter sanity checking
         if reference is not None:
-            ref = reference.lower()
-            if ref == 'com':
-                # Don't use hasattr(self, 'masses') because that's incredibly
-                # slow for ResidueGroups or SegmentGroups
-                if not hasattr(unique_atoms, 'masses'):
-                    raise NoDataError("Cannot perform unwrap with "
-                                      "reference='com', this requires masses.")
-            elif ref != 'cog':
+            try:
+                reference = reference.lower()
+                if reference not in ('cog', 'com'):
+                    raise ValueError
+            except (AttributeError, ValueError):
                 raise ValueError("Unrecognized reference '{}'. Please use one "
                                  "of 'com', 'cog', or None.".format(reference))
+        # Don't use hasattr(self, 'masses') because that's incredibly slow for
+        # ResidueGroups or SegmentGroups
+        if reference == 'com' and not hasattr(unique_atoms, 'masses'):
+            raise NoDataError("Cannot perform unwrap with reference='com', "
+                              "this requires masses.")
+
+        # Sanity checking of the compound parameter is done downstream in
+        # _split_by_compound_indices
         comp = compound.lower()
-        if comp not in ('fragments', 'group', 'residues', 'segments',
-                        'molecules'):
-            raise ValueError("Unrecognized compound definition '{}'. Please "
-                             "use one of 'group', 'residues', 'segments', "
-                             "'molecules', or 'fragments'.".format(compound))
+
         # The 'group' needs no splitting:
+        #  There is a lot of code duplication with the multi-compound split
+        #  case below. Both code paths could be merged, but 'group' can be done
+        #  unidimensionally whereas the general multi-compound case involves
+        #  more indexing and is therefore slower. Leaving separate for now.
         if comp == 'group':
             positions = mdamath.make_whole(unique_atoms, inplace=False)
             # Apply reference shift if required:
             if reference is not None and len(positions) > 0:
-                if ref == 'com':
+                if reference == 'com':
                     masses = unique_atoms.masses
                     total_mass = masses.sum()
                     if np.isclose(total_mass, 0.0):
@@ -1655,51 +1750,42 @@ class GroupBase(_MutableBase):
                                          "mass of the group is zero.")
                     refpos = np.sum(positions * masses[:, None], axis=0)
                     refpos /= total_mass
-                else:  # ref == 'cog'
+                else:  # reference == 'cog'
                     refpos = positions.mean(axis=0)
                 refpos = refpos.astype(np.float32, copy=False)
                 target = distances.apply_PBC(refpos, self.dimensions)
                 positions += target - refpos
-        # We need to split the group into compounds:
-        else:
-            if comp == 'fragments':
-                compound_indices = unique_atoms.fragindices
-            elif comp == 'residues':
-                compound_indices = unique_atoms.resindices
-            elif comp == 'segments':
-                compound_indices = unique_atoms.segindices
-            else:  # comp == 'molecules'
-                try:
-                    compound_indices = unique_atoms.molnums
-                except AttributeError:
-                    errmsg = ("Cannot use compound='molecules', this "
-                              "requires molnums.")
-                    raise NoDataError(errmsg) from None
-            # Now process every compound:
-            unique_compound_indices = unique_int_1d(compound_indices)
+
+        else:  # We need to split the group into compounds
+            # When unwrapping and not shifting with a cog/com reference we
+            # need to make sure that the first atom of each compound is stable
+            # regarding sorting.
+            atom_masks = unique_atoms._split_by_compound_indices(comp,
+                                              stable_sort=reference is None)[0]
             positions = unique_atoms.positions
-            for i in unique_compound_indices:
-                mask = np.where(compound_indices == i)
-                c = unique_atoms[mask]
-                positions[mask] = mdamath.make_whole(c, inplace=False)
+            for atom_mask in atom_masks:
+                for mask in atom_mask:
+                    positions[mask] = mdamath.make_whole(unique_atoms[mask],
+                                                         inplace=False)
                 # Apply reference shift if required:
                 if reference is not None:
-                    if ref == 'com':
-                        masses = c.masses
-                        total_mass = masses.sum()
-                        if np.isclose(total_mass, 0.0):
+                    if reference == 'com':
+                        masses = unique_atoms.masses[atom_mask]
+                        total_mass = masses.sum(axis=1)
+                        if np.any(np.isclose(total_mass, 0.0)):
                             raise ValueError("Cannot perform unwrap with "
                                              "reference='com' because the "
                                              "total mass of at least one of "
                                              "the {} is zero.".format(comp))
-                        refpos = np.sum(positions[mask] * masses[:, None],
-                                        axis=0)
-                        refpos /= total_mass
-                    else:  # ref == 'cog'
-                        refpos = positions[mask].mean(axis=0)
+                        refpos = np.sum(positions[atom_mask]
+                                        * masses[:, :, None], axis=1)
+                        refpos /= total_mass[:, None]
+                    else:  # reference == 'cog'
+                        refpos = positions[atom_mask].mean(axis=1)
                     refpos = refpos.astype(np.float32, copy=False)
                     target = distances.apply_PBC(refpos, self.dimensions)
-                    positions[mask] += target - refpos
+                    positions[atom_mask] += (target[:, None, :]
+                                             - refpos[:, None, :])
         if inplace:
             unique_atoms.positions = positions
         if not atoms.isunique:
@@ -2486,7 +2572,7 @@ class AtomGroup(GroupBase):
 
     @property
     def positions(self):
-        """Coordinates of the :class:`Atoms<Atom>` in the :class:`AtomGroup`.
+        r"""Coordinates of the :class:`Atoms<Atom>` in the :class:`AtomGroup`.
 
         A :class:`numpy.ndarray` with
         :attr:`~numpy.ndarray.shape`\ ``=(``\ :attr:`~AtomGroup.n_atoms`\ ``, 3)``
@@ -2524,7 +2610,7 @@ class AtomGroup(GroupBase):
 
     @property
     def velocities(self):
-        """Velocities of the :class:`Atoms<Atom>` in the :class:`AtomGroup`.
+        r"""Velocities of the :class:`Atoms<Atom>` in the :class:`AtomGroup`.
 
         A :class:`numpy.ndarray` with
         :attr:`~numpy.ndarray.shape`\ ``=(``\ :attr:`~AtomGroup.n_atoms`\ ``, 3)``
@@ -2553,7 +2639,7 @@ class AtomGroup(GroupBase):
 
     @property
     def forces(self):
-        """Forces on each :class:`Atom` in the :class:`AtomGroup`.
+        r"""Forces on each :class:`Atom` in the :class:`AtomGroup`.
 
         A :class:`numpy.ndarray` with
         :attr:`~numpy.ndarray.shape`\ ``=(``\ :attr:`~AtomGroup.n_atoms`\ ``, 3)``
@@ -2601,7 +2687,9 @@ class AtomGroup(GroupBase):
 
     # As with universe.select_atoms, needing to fish out specific kwargs
     # (namely, 'updating') doesn't allow a very clean signature.
-    def select_atoms(self, sel, *othersel, **selgroups):
+
+    def select_atoms(self, sel, *othersel, periodic=True, rtol=1e-05,
+                     atol=1e-08, updating=False, **selgroups):
         """Select atoms from within this Group using a selection string.
 
         Returns an :class:`AtomGroup` sorted according to their index in the
@@ -2618,6 +2706,12 @@ class AtomGroup(GroupBase):
         periodic : bool (optional)
           for geometric selections, whether to account for atoms in different
           periodic images when searching
+        atol : float, optional
+            The absolute tolerance parameter for float comparisons.
+            Passed to :func:``numpy.isclose``.
+        rtol : float, optional
+            The relative tolerance parameter for float comparisons.
+            Passed to :func:``numpy.isclose``.
         updating : bool (optional)
           force the selection to be re evaluated each time the Timestep of the
           trajectory is changed.  See section on **Dynamic selections** below.
@@ -2888,7 +2982,8 @@ class AtomGroup(GroupBase):
            Removed flags affecting default behaviour for periodic selections;
            periodic are now on by default (as with default flags)
         .. versionchanged:: 2.0.0
-            Added the *smarts* selection.
+            Added the *smarts* selection. Added `atol` and `rtol` keywords
+            to select float values.
         """
 
         if not sel:
@@ -2896,9 +2991,6 @@ class AtomGroup(GroupBase):
                           UserWarning)
             return self[[]]
 
-        periodic = selgroups.pop('periodic', True)
-
-        updating = selgroups.pop('updating', False)
         sel_strs = (sel,) + othersel
 
         for group, thing in selgroups.items():
@@ -2907,7 +2999,9 @@ class AtomGroup(GroupBase):
                                 "You provided {} for group '{}'".format(
                                     thing.__class__.__name__, group))
 
-        selections = tuple((selection.Parser.parse(s, selgroups, periodic=periodic)
+        selections = tuple((selection.Parser.parse(s, selgroups,
+                                                   periodic=periodic,
+                                                   atol=atol, rtol=rtol)
                             for s in sel_strs))
         if updating:
             atomgrp = UpdatingAtomGroup(self, selections, sel_strs)
@@ -3105,46 +3199,7 @@ class AtomGroup(GroupBase):
                 "cmap only makes sense for a group with exactly 5 atoms")
         return topologyobjects.CMap(self.ix, self.universe)
 
-    def convert_to(self, package):
-        """
-        Convert :class:`AtomGroup` to a structure from another Python package.
-
-        Example
-        -------
-
-        The code below converts a Universe to a :class:`parmed.structure.Structure`.
-
-        .. code-block:: python
-
-            >>> import MDAnalysis as mda
-            >>> from MDAnalysis.tests.datafiles import GRO
-            >>> u = mda.Universe(GRO)
-            >>> parmed_structure = u.atoms.convert_to('PARMED')
-            >>> parmed_structure
-            <Structure 47681 atoms; 11302 residues; 0 bonds; PBC (triclinic); NOT parametrized>
-
-
-        Parameters
-        ----------
-        package: str
-            The name of the package to convert to, e.g. ``"PARMED"``
-
-
-        Returns
-        -------
-        output:
-            An instance of the structure type from another package.
-
-        Raises
-        ------
-        TypeError:
-            No converter was found for the required package
-
-
-        .. versionadded:: 1.0.0
-        """
-        converter = get_converter_for(package)
-        return converter().convert(self.atoms)
+    convert_to = Accessor("convert_to", ConverterWrapper)
 
     def write(self, filename=None, file_format=None,
               filenamefmt="{trjname}_{frame}", frames=None, **kwargs):
@@ -3282,6 +3337,83 @@ class AtomGroup(GroupBase):
             return
 
         raise ValueError("No writer found for format: {}".format(filename))
+
+    def sort(self, key='ix', keyfunc=None):
+        """
+        Returns a sorted ``AtomGroup`` using a specified attribute as the key.
+
+        Parameters
+        ----------
+        key: str, optional
+            The name of the ``AtomGroup`` attribute to sort by (e.g. ``ids``,
+            ``ix``. default= ``ix`` ).
+        keyfunc: callable, optional
+            A function to convert multidimensional arrays to a single
+            dimension. This 1D array will be used as the sort key and
+            is required when sorting with an ``AtomGroup`` attribute
+            key which has multiple dimensions. Note: this argument
+            is ignored when the attribute is one dimensional.
+
+        Returns
+        ----------
+        :class:`AtomGroup`
+            Sorted ``AtomGroup``.
+
+        Example
+        ----------
+
+        .. code-block:: python
+
+            >>> import MDAnalysis as mda
+            >>> from MDAnalysisTests.datafiles import PDB_small
+            >>> u = mda.Universe(PDB_small)
+            >>> ag = u.atoms[[3, 2, 1, 0]]
+            >>> ag.ix
+            array([3 2 1 0])
+            >>> ag = ag.sort()
+            >>> ag.ix
+            array([0 1 2 3])
+            >>> ag.positions
+            array([[-11.921,  26.307,  10.41 ],
+                   [-11.447,  26.741,   9.595],
+                   [-12.44 ,  27.042,  10.926],
+                   [-12.632,  25.619,  10.046]], dtype=float32)
+            >>> ag = ag.sort("positions", lambda x: x[:, 1])
+            >>> ag.positions
+            array([[-12.632,  25.619,  10.046],
+                   [-11.921,  26.307,  10.41 ],
+                   [-11.447,  26.741,   9.595],
+                   [-12.44 ,  27.042,  10.926]], dtype=float32)
+
+        Note
+        ----------
+        This uses a stable sort as implemented by
+        `numpy.argsort(kind='stable')`.
+
+
+        .. versionadded:: 2.0.0
+        """
+        idx = getattr(self.atoms, key)
+        if len(idx) != len(self.atoms):
+            raise ValueError("The array returned by the attribute '{}' "
+                             "must have the same length as the number of "
+                             "atoms in the input AtomGroup".format(key))
+        if idx.ndim == 1:
+            order = np.argsort(idx, kind='stable')
+        elif idx.ndim > 1:
+            if keyfunc is None:
+                raise NameError("The {} attribute returns a multidimensional "
+                                "array. In order to sort it, a function "
+                                "returning a 1D array (to be used as the sort "
+                                "key) must be passed to the keyfunc argument"
+                                .format(key))
+            sortkeys = keyfunc(idx)
+            if sortkeys.ndim != 1:
+                raise ValueError("The function assigned to the argument "
+                                 "'keyfunc':{} doesn't return a 1D array."
+                                 .format(keyfunc))
+            order = np.argsort(sortkeys, kind='stable')
+        return self.atoms[order]
 
 
 class ResidueGroup(GroupBase):
@@ -3591,7 +3723,7 @@ class SegmentGroup(GroupBase):
 
 @functools.total_ordering
 class ComponentBase(_MutableBase):
-    """Base class from which a :class:`~MDAnalysis.core.universe.Universe`\ 's
+    r"""Base class from which a :class:`~MDAnalysis.core.universe.Universe`\ 's
     Component class is built.
 
     Components are the individual objects that are found in Groups.

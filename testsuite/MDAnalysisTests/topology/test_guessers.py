@@ -32,6 +32,19 @@ from MDAnalysisTests import make_Universe
 from MDAnalysisTests.core.test_fragments import make_starshape
 import MDAnalysis.tests.datafiles as datafiles
 
+from MDAnalysisTests.util import import_not_available
+
+
+try:
+    from rdkit import Chem
+    from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
+except ImportError:
+    pass
+
+requires_rdkit = pytest.mark.skipif(import_not_available("rdkit"),
+                                    reason="requires RDKit")
+
+
 class TestGuessMasses(object):
     def test_guess_masses(self):
         out = guessers.guess_masses(['C', 'C', 'H'])
@@ -139,3 +152,39 @@ def test_guess_bonds_peptide():
     bonds = guessers.guess_bonds(u.atoms, u.atoms.positions)
     assert_equal(np.sort(u.bonds.indices, axis=0),
                  np.sort(bonds, axis=0))
+
+
+@pytest.mark.parametrize("smi", [
+    "c1ccccc1",
+    "C1=CC=CC=C1",
+    "CCO",
+    "c1ccccc1Cc1ccccc1",
+    "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+])
+@requires_rdkit
+def test_guess_aromaticities(smi):
+    mol = Chem.MolFromSmiles(smi)
+    mol = Chem.AddHs(mol)
+    expected = np.array([atom.GetIsAromatic() for atom in mol.GetAtoms()])
+    u = mda.Universe(mol)
+    values = guessers.guess_aromaticities(u.atoms)
+    assert_equal(values, expected)
+
+
+@pytest.mark.parametrize("smi", [
+    "c1ccccc1",
+    "C1=CC=CC=C1",
+    "CCO",
+    "c1ccccc1Cc1ccccc1",
+    "CN1C=NC2=C1C(=O)N(C(=O)N2C)C",
+])
+@requires_rdkit
+def test_guess_gasteiger_charges(smi):
+    mol = Chem.MolFromSmiles(smi)
+    mol = Chem.AddHs(mol)
+    ComputeGasteigerCharges(mol, throwOnParamFailure=True)
+    expected = np.array([atom.GetDoubleProp("_GasteigerCharge")
+                         for atom in mol.GetAtoms()], dtype=np.float32)
+    u = mda.Universe(mol)
+    values = guessers.guess_gasteiger_charges(u.atoms)
+    assert_equal(values, expected)

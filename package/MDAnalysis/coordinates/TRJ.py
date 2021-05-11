@@ -454,6 +454,8 @@ class NCDFReader(base.ReaderBase):
     .. versionchanged:: 2.0.0
        Now use a picklable :class:`scipy.io.netcdf.netcdf_file`--
        :class:`NCDFPicklable`.
+       Reading of `dt` now defaults to 1.0 ps if `dt` cannot be extracted from
+       the first two frames of the trajectory.
 
     """
 
@@ -694,8 +696,15 @@ class NCDFReader(base.ReaderBase):
             raise IOError from None
 
     def _get_dt(self):
-        t1 = self.trjfile.variables['time'][1]
-        t0 = self.trjfile.variables['time'][0]
+        """Gets dt based on the time difference between the first and second
+        frame. If missing (i.e. an IndexError is triggered), raises an
+        AttributeError which triggers the default 1 ps return of dt().
+        """
+        try:
+            t1 = self.trjfile.variables['time'][1]
+            t0 = self.trjfile.variables['time'][0]
+        except IndexError:
+            raise AttributeError
         return t1 - t0
 
     def close(self):
@@ -837,7 +846,7 @@ class NCDFWriter(base.WriterBase):
 
     """
 
-    format = 'NCDF'
+    format = ['NC', 'NCDF']
     multiframe = True
     version = "1.0"
     units = {'time': 'ps',

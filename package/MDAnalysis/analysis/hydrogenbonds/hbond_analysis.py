@@ -67,7 +67,7 @@ Output
   - *angle* (degrees): angle of the hydrogen bond
 
 Hydrogen bond data are returned in a :class:`numpy.ndarray` on a "one line, one observation" basis
-and can be accessed via :attr:`HydrogenBondAnalysis.hbonds`::
+and can be accessed via :attr:`HydrogenBondAnalysis.results.hbonds`::
 
     results = [
         [
@@ -209,13 +209,29 @@ The class and its methods
 
 .. autoclass:: HydrogenBondAnalysis
    :members:
+
+   .. attribute:: results.hbonds
+
+      A :class:`numpy.ndarray` which contains a list of all observed hydrogen
+      bond interactions. See `Output`_ for more information.
+
+      .. versionadded:: 2.0.0
+
+   .. attribute:: hbonds
+
+      Alias to the :attr:`results.hbonds` attribute.
+
+      .. deprecated:: 2.0.0
+         Will be removed in MDAnalysis 3.0.0. Please use
+         :attr:`results.hbonds` instead.
 """
 import logging
+import warnings
 from collections.abc import Iterable
 
 import numpy as np
 
-from .. import base
+from ..base import AnalysisBase, Results
 from MDAnalysis.lib.distances import capped_distance, calc_angles
 from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
 from MDAnalysis.exceptions import NoDataError
@@ -231,7 +247,7 @@ due.cite(Doi("10.1039/C9CP01532A"),
 del Doi
 
 
-class HydrogenBondAnalysis(base.AnalysisBase):
+class HydrogenBondAnalysis(AnalysisBase):
     """
     Perform an analysis of hydrogen bonds in a Universe.
     """
@@ -276,14 +292,16 @@ class HydrogenBondAnalysis(base.AnalysisBase):
             bonds but not water-water hydrogen bonds. If `None`, hydrogen
             bonds between all donors and acceptors will be calculated.
         d_h_cutoff : float (optional)
-            Distance cutoff used for finding donor-hydrogen pairs [1.2]. Only used to find donor-hydrogen pairs if the
+            Distance cutoff used for finding donor-hydrogen pairs.
+            Only used to find donor-hydrogen pairs if the
             universe topology does not contain bonding information
         d_a_cutoff : float (optional)
-            Distance cutoff for hydrogen bonds. This cutoff refers to the D-A distance. [3.0]
-        d_h_a_angle_cutoff: float (optional)
-            D-H-A angle cutoff for hydrogen bonds, in degrees. [150]
-        update_selections: bool (optional)
-            Whether or not to update the acceptor, donor and hydrogen lists at each frame. [True]
+            Distance cutoff for hydrogen bonds. This cutoff refers to the D-A distance.
+        d_h_a_angle_cutoff : float (optional)
+            D-H-A angle cutoff for hydrogen bonds, in degrees.
+        update_selections : bool (optional)
+            Whether or not to update the acceptor, donor and hydrogen
+            lists at each frame.
 
         Note
         ----
@@ -328,7 +346,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         self.d_a_cutoff = d_a_cutoff
         self.d_h_a_angle = d_h_a_angle_cutoff
         self.update_selections = update_selections
-        self.hbonds = None
+        self.results = Results()
+        self.results.hbonds = None
 
     def guess_hydrogens(self,
                         select='all',
@@ -561,7 +580,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
 
     def _prepare(self):
-        self.hbonds = [[], [], [], [], [], []]
+        self.results.hbonds = [[], [], [], [], [], []]
 
         # Set atom selections if they have not been provided
         if not self.acceptors_sel:
@@ -623,16 +642,25 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         hbond_angles = d_h_a_angles[hbond_indices]
 
         # Store data on hydrogen bonds found at this frame
-        self.hbonds[0].extend(np.full_like(hbond_donors, self._ts.frame))
-        self.hbonds[1].extend(hbond_donors.indices)
-        self.hbonds[2].extend(hbond_hydrogens.indices)
-        self.hbonds[3].extend(hbond_acceptors.indices)
-        self.hbonds[4].extend(hbond_distances)
-        self.hbonds[5].extend(hbond_angles)
+        self.results.hbonds[0].extend(np.full_like(hbond_donors,
+                                      self._ts.frame))
+        self.results.hbonds[1].extend(hbond_donors.indices)
+        self.results.hbonds[2].extend(hbond_hydrogens.indices)
+        self.results.hbonds[3].extend(hbond_acceptors.indices)
+        self.results.hbonds[4].extend(hbond_distances)
+        self.results.hbonds[5].extend(hbond_angles)
 
     def _conclude(self):
 
-        self.hbonds = np.asarray(self.hbonds).T
+        self.results.hbonds = np.asarray(self.results.hbonds).T
+
+    @property
+    def hbonds(self):
+        wmsg = ("The `hbonds` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.hbonds` instead.")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.hbonds
 
     def lifetime(self, tau_max=20, window_step=1, intermittency=0):
         """Computes and returns the time-autocorrelation
@@ -679,7 +707,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
             autcorrelation value for each value of `tau`
         """
 
-        if self.hbonds is None:
+        if self.results.hbonds is None:
             logging.error(
                 "Autocorrelation analysis of hydrogen bonds cannot be done"
                 "before the hydrogen bonds are found"
@@ -707,7 +735,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         # [set(superset(x1,x2), superset(x3,x4)), ..]
         found_hydrogen_bonds = [set() for _ in self.frames]
         for frame_index, frame in enumerate(self.frames):
-            for hbond in self.hbonds[self.hbonds[:, 0] == frame]:
+            for hbond in self.results.hbonds[self.results.hbonds[:, 0] == frame]:
                 found_hydrogen_bonds[frame_index].add(frozenset(hbond[2:4]))
 
         intermittent_hbonds = correct_intermittency(
@@ -733,7 +761,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
              the number of hydrogen bonds over time.
         """
 
-        indices, tmp_counts = np.unique(self.hbonds[:, 0], axis=0,
+        indices, tmp_counts = np.unique(self.results.hbonds[:, 0], axis=0,
                                         return_counts=True)
 
         indices -= self.start
@@ -758,8 +786,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         acceptor atoms in a hydrogen bond.
         """
 
-        d = self.u.atoms[self.hbonds[:, 1].astype(int)]
-        a = self.u.atoms[self.hbonds[:, 3].astype(int)]
+        d = self.u.atoms[self.results.hbonds[:, 1].astype(int)]
+        a = self.u.atoms[self.results.hbonds[:, 3].astype(int)]
 
         tmp_hbonds = np.array([d.resnames, d.types, a.resnames, a.types],
                               dtype=str).T
@@ -787,9 +815,9 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         in a hydrogen bond.
         """
 
-        d = self.u.atoms[self.hbonds[:, 1].astype(int)]
-        h = self.u.atoms[self.hbonds[:, 2].astype(int)]
-        a = self.u.atoms[self.hbonds[:, 3].astype(int)]
+        d = self.u.atoms[self.results.hbonds[:, 1].astype(int)]
+        h = self.u.atoms[self.results.hbonds[:, 2].astype(int)]
+        a = self.u.atoms[self.results.hbonds[:, 3].astype(int)]
 
         tmp_hbonds = np.array([d.ids, h.ids, a.ids]).T
         hbond_ids, ids_counts = np.unique(tmp_hbonds, axis=0,

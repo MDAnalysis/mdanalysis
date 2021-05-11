@@ -16,6 +16,7 @@ import xml.etree.ElementTree as ET
 import errno
 import glob
 import textwrap
+import shutil
 
 try:
     from urllib.request import Request, urlopen
@@ -76,9 +77,10 @@ existing = [item['version'] for item in versions]
 already_exists = VERSION in existing
 latest = 'dev' not in VERSION
 
-if not already_exists and latest:
-    for ver in versions:
-        ver['latest'] = False
+if not already_exists:
+    if latest:
+        for ver in versions:
+            ver['latest'] = False
 
     versions.append({
         'version': VERSION,
@@ -86,17 +88,6 @@ if not already_exists and latest:
         'url': os.path.join(URL, VERSION),
         'latest': latest
     })
-
-versions.sort(key=lambda x: x["version"])
-
-with open("versions.json", 'w') as f:
-    json.dump(versions, f, indent=2)
-
-# ========= WRITE HTML STUBS =========
-# Add HTML files to redirect:
-# index.html -> latest release
-# latest/index.html -> latest release
-# dev/index.html -> dev docs
 
 for ver in versions[::-1]:
     if ver['latest']:
@@ -109,7 +100,7 @@ else:
         latest_version = None
 
 for ver in versions[::-1]:
-    if 'dev' in ver['version']:
+    if '-dev' in ver['version']:
         dev_version = ver['version']
         break
 else:
@@ -118,11 +109,68 @@ else:
     except IndexError:
         dev_version = None
 
+versions.sort(key=lambda x: x["version"])
 
+# ========= WRITE HTML STUBS AND COPY DOCS =========
+# Add HTML files to redirect:
+# index.html -> stable/ docs
+# latest/index.html -> latest release (not dev docs)
+# stable/ : a copy of the release docs with the highest number (2.0.0 instead of 1.0.0)
+# dev/ : a copy of the develop docs with the highest number (2.0.0-dev instead of 1.0.1-dev)
+# sitemap.xml files are updated by replacing URL strings
+
+
+def redirect_sitemap(old_version, new_version):
+    """Replace paths in copied sitemap.xml with new directory path
+
+    Sitemaps can only contain URLs 'within' that directory structure.
+    For more, see https://www.sitemaps.org/faq.html#faq_sitemap_location
+    """
+    file = f"{new_version}/sitemap.xml"
+    old = f"{URL}/{old_version}/"
+    new = f"{URL}/{new_version}/"
+    try:
+        with open(file, "r") as f:
+            contents = f.read()
+    except OSError:
+        raise ValueError(f"{file} not found")
+    redirected = contents.replace(old, new)
+    with open(file, "w") as f:
+        f.write(redirected)
+    print(f"Redirected URLs in {file} from {old} to {new}")
+
+
+def add_or_update_version(version):
+    """Add or update the version path to versions.json"""
+    for ver in versions:
+        if ver["version"] == version:
+            ver["url"] = os.path.join(URL, version)
+            break
+    else:
+        versions.append({
+            "version": version,
+            "display": version,
+            "url": os.path.join(URL, version),
+            "latest": False
+        })
+
+
+def copy_version(old_version, new_version):
+    """Copy docs from one directory to another with all bells and whistles"""
+    shutil.copytree(old_version, new_version)
+    print(f"Copied {old_version} to {new_version}")
+    redirect_sitemap(old_version, new_version)
+    add_or_update_version(new_version)
+
+
+# Copy stable/ docs and write redirects from root level docs
 if latest:
-    html_files = glob.glob(f'{VERSION}/**/*.html', recursive=True)
+    copy_version(VERSION, "stable")
+    html_files = glob.glob(f'stable/**/*.html', recursive=True)
     for file in html_files:
-        outfile = file.strip(f'{VERSION}/')
+        # below should be true because we only globbed stable/* paths
+        assert file.startswith("stable/")
+        outfile = file[7:]  # strip "stable/"
         dirname = os.path.dirname(outfile)
         if dirname and not os.path.exists(dirname):
             try:
@@ -133,14 +181,20 @@ if latest:
 
         write_redirect(file, '', outfile)
 
+# Separate just in case we update versions.json or muck around manually
+# with docs
 if latest_version:
-    write_redirect('index.html', latest_version)
-    write_redirect('objects.inv', latest_version, 'latest/objects.inv')
+    write_redirect('index.html', "stable")
     write_redirect('index.html', latest_version, 'latest/index.html')
 
+# Copy dev/ docs
+if dev_version and dev_version == VERSION:
+    copy_version(VERSION, "dev")
 
-if dev_version:
-    write_redirect('index.html', dev_version, 'dev/index.html')
+# update versions.json online
+with open("versions.json", 'w') as f:
+    json.dump(versions, f, indent=2)
+
 
 # ========= WRITE SUPER SITEMAP.XML =========
 # make one big sitemap.xml

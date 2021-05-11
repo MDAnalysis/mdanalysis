@@ -35,6 +35,9 @@ jobs:
         Python38-64bit-full:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
+        Python39-64bit-full:
+          PYTHON_VERSION: '3.9'
+          PYTHON_ARCH: 'x64'
   steps:
   - task: UsePythonVersion@0
     inputs:
@@ -44,7 +47,7 @@ jobs:
   - script: python -m pip install --upgrade pip setuptools wheel
     displayName: 'Install tools'
   - script: >-
-      python -m pip install
+      python -m pip install --only-binary=h5py
       cython
       hypothesis
       matplotlib
@@ -56,12 +59,13 @@ jobs:
       scipy
       h5py
       tqdm
+      threadpoolctl
     displayName: 'Install dependencies'
   # TODO: recent rdkit is not on PyPI
   - script: >-
       python -m pip install
       biopython
-      chemfiles
+      chemfiles>=0.9
       duecredit
       gsd==1.9.3
       joblib

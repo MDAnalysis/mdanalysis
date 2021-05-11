@@ -236,7 +236,7 @@ class Timestep(base.Timestep):
 
 
 class H5MDReader(base.ReaderBase):
-    """Reader for the H5MD format.
+    r"""Reader for the H5MD format.
 
     See `h5md documentation <https://nongnu.org/h5md/h5md.html>`_
     for a detailed overview of the H5MD file format.
@@ -600,7 +600,7 @@ class H5MDReader(base.ReaderBase):
             else:
                 raise NoDataError("Provide at least a position, velocity"
                                   " or force group in the h5md file.")
-        except ValueError:
+        except (ValueError, IndexError):
             raise IOError from None
 
         self._frame = frame

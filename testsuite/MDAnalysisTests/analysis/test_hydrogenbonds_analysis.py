@@ -59,18 +59,22 @@ class TestHydrogenBondAnalysisTIP3P(object):
 
     def test_hbond_analysis(self, h):
 
-        assert len(np.unique(h.hbonds[:, 0])) == 10
-        assert len(h.hbonds) == 32
+        assert len(np.unique(h.results.hbonds[:, 0])) == 10
+        assert len(h.results.hbonds) == 32
 
         reference = {
             'distance': {'mean': 2.7627309, 'std': 0.0905052},
             'angle': {'mean': 158.9038039, 'std': 12.0362826},
         }
 
-        assert_allclose(np.mean(h.hbonds[:, 4]), reference['distance']['mean'])
-        assert_allclose(np.std(h.hbonds[:, 4]), reference['distance']['std'])
-        assert_allclose(np.mean(h.hbonds[:, 5]), reference['angle']['mean'])
-        assert_allclose(np.std(h.hbonds[:, 5]), reference['angle']['std'])
+        assert_allclose(np.mean(h.results.hbonds[:, 4]),
+                        reference['distance']['mean'])
+        assert_allclose(np.std(h.results.hbonds[:, 4]),
+                        reference['distance']['std'])
+        assert_allclose(np.mean(h.results.hbonds[:, 5]),
+                        reference['angle']['mean'])
+        assert_allclose(np.std(h.results.hbonds[:, 5]),
+                        reference['angle']['std'])
 
     def test_count_by_time(self, h):
 
@@ -102,6 +106,11 @@ class TestHydrogenBondAnalysisTIP3P(object):
         counts = unique_hbonds[:, 3] / len(h.times)
 
         assert_allclose(counts, ref_counts)
+
+    def test_hbonds_deprecated_attr(self, h):
+        wmsg = "The `hbonds` attribute was deprecated in MDAnalysis 2.0.0"
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            assert_equal(h.hbonds, h.results.hbonds)
 
 
 class TestHydrogenBondAnalysisIdeal(object):
@@ -196,10 +205,10 @@ class TestHydrogenBondAnalysisIdeal(object):
             h._get_dh_pairs()
 
     def test_first_hbond(self, hydrogen_bonds):
-        assert len(hydrogen_bonds.hbonds) == 2
+        assert len(hydrogen_bonds.results.hbonds) == 2
 
         frame_no, donor_index, hydrogen_index, acceptor_index, da_dst, angle =\
-            hydrogen_bonds.hbonds[0]
+            hydrogen_bonds.results.hbonds[0]
         assert_equal(donor_index, 0)
         assert_equal(hydrogen_index, 2)
         assert_equal(acceptor_index, 3)
@@ -333,7 +342,8 @@ class TestHydrogenBondAnalysisBetween(object):
             [3, 4, 6],  # protein-water
             [6, 7, 8]   # protein-protein
         ]
-        assert_array_equal(hbonds.hbonds[:, 1:4], expected_hbond_indices)
+        assert_array_equal(hbonds.results.hbonds[:, 1:4],
+                           expected_hbond_indices)
 
     def test_between_PW(self, universe):
         # Find only protein-water hydrogen bonds
@@ -348,7 +358,8 @@ class TestHydrogenBondAnalysisBetween(object):
         expected_hbond_indices = [
             [3, 4, 6]  # protein-water
         ]
-        assert_array_equal(hbonds.hbonds[:, 1:4], expected_hbond_indices)
+        assert_array_equal(hbonds.results.hbonds[:, 1:4],
+                           expected_hbond_indices)
 
     def test_between_PW_PP(self, universe):
         # Find protein-water and protein-protein hydrogen bonds (not
@@ -368,7 +379,8 @@ class TestHydrogenBondAnalysisBetween(object):
             [3, 4, 6],  # protein-water
             [6, 7, 8]   # protein-protein
         ]
-        assert_array_equal(hbonds.hbonds[:, 1:4], expected_hbond_indices)
+        assert_array_equal(hbonds.results.hbonds[:, 1:4],
+                           expected_hbond_indices)
 
 
 class TestHydrogenBondAnalysisTIP3P_GuessAcceptors_GuessHydrogens_UseTopology_(TestHydrogenBondAnalysisTIP3P):
@@ -396,7 +408,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessAcceptors_GuessHydrogens_UseTopology_(T
 
         assert h._hydrogens.n_atoms == 0
         assert h._donors.n_atoms == 0
-        assert h.hbonds.size == 0
+        assert h.results.hbonds.size == 0
 
 class TestHydrogenBondAnalysisTIP3P_GuessDonors_NoTopology(object):
     """Guess the donor atoms involved in hydrogen bonds using the partial charges of the atoms.
@@ -474,7 +486,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessHydrogens_NoTopology(object):
 
     def test_guess_hydrogens_min_max_mass(self, h):
 
-        errmsg = "min_mass is higher than \(or equal to\) max_mass"
+        errmsg = r"min_mass is higher than \(or equal to\) max_mass"
 
         with pytest.raises(ValueError, match=errmsg):
 
@@ -507,18 +519,22 @@ class TestHydrogenBondAnalysisTIP3PStartStep(object):
 
     def test_hbond_analysis(self, h):
 
-        assert len(np.unique(h.hbonds[:, 0])) == 5
-        assert len(h.hbonds) == 15
+        assert len(np.unique(h.results.hbonds[:, 0])) == 5
+        assert len(h.results.hbonds) == 15
 
         reference = {
             'distance': {'mean': 2.73942464, 'std': 0.05867924},
             'angle': {'mean': 157.07768079, 'std': 9.72636682},
         }
 
-        assert_allclose(np.mean(h.hbonds[:, 4]), reference['distance']['mean'])
-        assert_allclose(np.std(h.hbonds[:, 4]), reference['distance']['std'])
-        assert_allclose(np.mean(h.hbonds[:, 5]), reference['angle']['mean'])
-        assert_allclose(np.std(h.hbonds[:, 5]), reference['angle']['std'])
+        assert_allclose(np.mean(h.results.hbonds[:, 4]),
+                        reference['distance']['mean'])
+        assert_allclose(np.std(h.results.hbonds[:, 4]),
+                        reference['distance']['std'])
+        assert_allclose(np.mean(h.results.hbonds[:, 5]),
+                        reference['angle']['mean'])
+        assert_allclose(np.std(h.results.hbonds[:, 5]),
+                        reference['angle']['std'])
 
     def test_count_by_time(self, h):
 
