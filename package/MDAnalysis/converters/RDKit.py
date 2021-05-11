@@ -268,7 +268,7 @@ class RDKitConverter(base.ConverterBase):
 
         Parameters
         -----------
-        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or 
+        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or
             :class:`~MDAnalysis.core.universe.Universe`
         cache : bool
             Use a cached copy of the molecule's topology when available. To be
@@ -529,7 +529,7 @@ def _infer_bo_and_charges(mol):
     MONATOMIC_CATION_CHARGES = {
         3: 1, 11: 1, 19: 1, 37: 1, 47: 1, 55: 1,
         12: 2, 20: 2, 29: 2, 30: 2, 38: 2, 56: 2,
-        26: 2, # Fe could also be +3
+        26: 2,  # Fe could also be +3
         13: 3,
     }
 
@@ -800,7 +800,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
                 for neighbor in term_atom.GetNeighbors():
                     bond = mol.GetBondBetweenAtoms(anion2, neighbor.GetIdx())
                     if (neighbor.GetAtomicNum() == 8 and
-                        bond.GetBondTypeAsDouble() == 2):
+                            bond.GetBondTypeAsDouble() == 2):
                         bond.SetBondType(Chem.BondType.SINGLE)
                         neighbor.SetFormalCharge(-1)
                         break
@@ -811,7 +811,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
                     bond = mol.GetBondBetweenAtoms(anion2, neighbor.GetIdx())
                     if (neighbor.GetAtomicNum() == 8 and
                         neighbor.GetFormalCharge() == -1 and
-                        bond.GetBondTypeAsDouble() == 1):
+                            bond.GetBondTypeAsDouble() == 1):
                         bond.SetBondType(Chem.BondType.DOUBLE)
                         neighbor.SetFormalCharge(0)
                         break
