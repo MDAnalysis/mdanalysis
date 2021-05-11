@@ -55,7 +55,9 @@ def test_eg(dist, dmap):
 def test_dist_weights(u):
     backbone = u.select_atoms('backbone')
     weights_atoms = np.ones(len(backbone.atoms))
-    dist = diffusionmap.DistanceMatrix(u, select='backbone', weights=weights_atoms)
+    dist = diffusionmap.DistanceMatrix(u,
+                                       select='backbone',
+                                       weights=weights_atoms)
     dist.run(step=3)
     dmap = diffusionmap.DiffusionMap(dist)
     dmap.run()
@@ -94,3 +96,10 @@ def test_not_universe_error(u):
     trj_only = u.trajectory
     with pytest.raises(ValueError, match='U is not a Universe'):
         diffusionmap.DiffusionMap(trj_only)
+
+
+def test_DistanceMatrix_attr_warning(u):
+    dist = diffusionmap.DistanceMatrix(u, select='backbone').run(step=3)
+    wmsg = f"The `dist_matrix` attribute was deprecated in MDAnalysis 2.0.0"
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        assert getattr(dist, "dist_matrix") is dist.results.dist_matrix

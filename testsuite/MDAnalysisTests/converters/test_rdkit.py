@@ -36,7 +36,7 @@ from MDAnalysisTests.util import import_not_available
 try:
     from rdkit import Chem
     from rdkit.Chem import AllChem
-    from MDAnalysis.coordinates.RDKit import (
+    from MDAnalysis.converters.RDKit import (
         RDATTRIBUTES,
         _add_mda_attr_to_rdkit,
         _infer_bo_and_charges,
@@ -370,7 +370,7 @@ class TestRDKitConverter(object):
           might change the output molecule
         * the cache can be ignored
         """
-        cached_func = mda.coordinates.RDKit.atomgroup_to_mol
+        cached_func = mda.converters.RDKit.atomgroup_to_mol
         # create universes
         utraj = mda.Universe.from_smiles("CCO", numConfs=5)
         uc = mda.Universe.from_smiles("C")
@@ -399,8 +399,8 @@ class TestRDKitConverter(object):
         assert cached_func.cache_info().hits == 1
         assert cached_func.cache_info().misses == 4
         # test (3): increase cache size
-        mda.coordinates.RDKit.set_converter_cache_size(3)
-        cached_func = mda.coordinates.RDKit.atomgroup_to_mol
+        mda.converters.RDKit.set_converter_cache_size(3)
+        cached_func = mda.converters.RDKit.atomgroup_to_mol
         assert cached_func.cache_info().maxsize == 3
         # test (4): caching is sensitive to converter arguments
         previous_cache = cached_func.cache_info()
@@ -487,9 +487,11 @@ class TestRDKitFunctions(object):
 
     @pytest.mark.parametrize("attr, value, getter", [
         ("index", 42, "GetIntProp"),
-        ("index", np.int(42), "GetIntProp"),
+        ("index", np.int32(42), "GetIntProp"),
+        ("index", np.int64(42), "GetIntProp"),
         ("charge", 4.2, "GetDoubleProp"),
-        ("charge", np.float(4.2), "GetDoubleProp"),
+        ("charge", np.float32(4.2), "GetDoubleProp"),
+        ("charge", np.float64(4.2), "GetDoubleProp"),
         ("type", "C.3", "GetProp"),
     ])
     def test_set_atom_property(self, attr, value, getter):
