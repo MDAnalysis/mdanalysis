@@ -204,13 +204,12 @@ class TestRDKitConverter(object):
         sel = pdb.select_atoms(sel_str)
         umol = sel.convert_to.rdkit(NoImplicit=False)
         atom = umol.GetAtomWithIdx(atom_index)
-        mda_index = atom.GetIntProp("_MDAnalysis_index")
         mi = atom.GetMonomerInfo()
 
         for mda_attr, rd_attr in RDATTRIBUTES.items():
             rd_value = getattr(mi, "Get%s" % rd_attr)()
             if hasattr(sel, mda_attr):
-                mda_value = getattr(sel, mda_attr)[mda_index]
+                mda_value = getattr(sel, mda_attr)[atom_index]
                 if mda_attr == "names":
                     rd_value = rd_value.strip()
                 assert rd_value == mda_value
@@ -303,10 +302,9 @@ class TestRDKitConverter(object):
         mol = mol2.atoms.convert_to("RDKIT")
         rdatom = mol.GetAtomWithIdx(idx)
         rdprops = rdatom.GetPropsAsDict()
-        mda_idx = int(rdprops["_MDAnalysis_index"])
         for prop in ["charge", "segid", "type"]:
             rdprop = rdprops["_MDAnalysis_%s" % prop]
-            mdaprop = getattr(mol2.atoms[mda_idx], prop)
+            mdaprop = getattr(mol2.atoms[idx], prop)
             assert rdprop == mdaprop
 
     @pytest.mark.parametrize("sel_str", [
@@ -317,17 +315,13 @@ class TestRDKitConverter(object):
         ag = pdb.select_atoms(sel_str)
         mol = ag.convert_to.rdkit(NoImplicit=False)
         expected = [i for i in range(len(ag))]
-        indices = sorted([a.GetIntProp("_MDAnalysis_index")
-                          for a in mol.GetAtoms()])
+        indices = [a.GetIntProp("_MDAnalysis_index") for a in mol.GetAtoms()]
         assert_equal(indices, expected)
 
     def test_assign_coordinates(self, pdb):
         mol = pdb.atoms.convert_to.rdkit(NoImplicit=False)
         positions = mol.GetConformer().GetPositions()
-        indices = sorted(mol.GetAtoms(),
-                         key=lambda a: a.GetIntProp("_MDAnalysis_index"))
-        indices = [a.GetIdx() for a in indices]
-        assert_almost_equal(positions[indices], pdb.atoms.positions)
+        assert_almost_equal(positions, pdb.atoms.positions)
 
     def test_assign_stereochemistry(self, mol2):
         umol = mol2.atoms.convert_to("RDKIT")
@@ -342,10 +336,7 @@ class TestRDKitConverter(object):
         for ts in u.trajectory:
             mol = u.atoms.convert_to("RDKIT")
             positions = mol.GetConformer().GetPositions()
-            indices = sorted(mol.GetAtoms(),
-                             key=lambda a: a.GetIntProp("_MDAnalysis_index"))
-            indices = [a.GetIdx() for a in indices]
-            assert_almost_equal(positions[indices], ts.positions)
+            assert_almost_equal(positions, ts.positions)
 
     def test_nan_coords(self):
         u = mda.Universe.from_smiles("CCO")

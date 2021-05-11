@@ -439,6 +439,11 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
         warnings.warn("Could not sanitize molecule: "
                       f"failed during step {err!r}")
 
+    # reorder atoms to match MDAnalysis
+    order = np.argsort([atom.GetIntProp("_MDAnalysis_index")
+                        for atom in mol.GetAtoms()])
+    mol = Chem.RenumberAtoms(mol, order.astype(int).tolist())
+
     return mol
 
 
