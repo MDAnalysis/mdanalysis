@@ -263,9 +263,14 @@ class TestRDKitConverter(object):
             uo2.atoms.convert_to.rdkit(NoImplicit=False, force=True)
 
     @pytest.mark.parametrize("attr, value, expected", [
-        ("names", "C1", " C1 "),
-        ("names", "C12", " C12"),
-        ("names", "Cl1", "Cl1 "),
+        ("names", "N",    " N  "),
+        ("names", "CA",   " CA "),
+        ("names", "CAT",  " CAT"),
+        ("names", "N1",   " N1 "),
+        ("names", "CE2",  " CE2"),
+        ("names", "C12",  " C12"),
+        ("names", "HD12", "HD12"),
+        ("names", "C123", "C123"),
         ("altLocs", "A", "A"),
         ("chainIDs", "B", "B"),
         ("icodes", "C", "C"),

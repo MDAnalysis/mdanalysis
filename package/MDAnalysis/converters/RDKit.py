@@ -474,14 +474,14 @@ def _add_mda_attr_to_rdkit(attr, value, mi):
         # PDB file (1 letter elements start at col 14)
         name = re.findall(r'(\D+|\d+)', value)
         if len(name) == 2:
-            symbol, number = name
-            if len(number) > 2 and len(symbol) == 1:
-                value = "{}{}".format(symbol, number)
+            if len(value) == 2:
+                value = f" {value} "
             else:
-                value = "{:>2.2}{:<2.2}".format(symbol, number)
+                symbol, number = name
+                value = f"{symbol + number:>4.4}"
         else:
             # no number in the name
-            value = " {:<}".format(name[0])
+            value = f" {name[0]:<3.3}"
 
     # set attribute value in RDKit MonomerInfo
     rdattr = RDATTRIBUTES[attr]
