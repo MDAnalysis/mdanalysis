@@ -280,9 +280,9 @@ AtomGroups then use the <a class="reference internal" href="#MDAnalysis.analysis
 <span class="n">rdf</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Results are available through the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.bins" title="MDAnalysis.analysis.rdf.InterRDF.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bins</span></code></a> and <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.rdf" title="MDAnalysis.analysis.rdf.InterRDF.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rdf</span></code></a>
-attributes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rdf</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="n">rdf</span><span class="o">.</span><span class="n">rdf</span><span class="p">)</span>
+<p>Results are available through the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.results.bins" title="MDAnalysis.analysis.rdf.InterRDF.results.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.bins</span></code></a> and
+<a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.results.rdf" title="MDAnalysis.analysis.rdf.InterRDF.results.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rdf</span></code></a> attributes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rdf</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="n">rdf</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rdf</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The <cite>exclusion_block</cite> keyword allows the masking of pairs from
@@ -295,32 +295,95 @@ atom in each molecule, the exclusion mask <cite>(7, 7)</cite> can be used.</p>
 <p><span class="versionmodified">Changed in version 1.0.0: </span>Support for the <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, and <code class="docutils literal notranslate"><span class="pre">step</span></code> keywords has been
 removed. These should instead be passed to <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.run" title="MDAnalysis.analysis.rdf.InterRDF.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">InterRDF.run()</span></code></a>.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Store results as attributes <code class="docutils literal notranslate"><span class="pre">bins</span></code>, <code class="docutils literal notranslate"><span class="pre">edges</span></code>, <code class="docutils literal notranslate"><span class="pre">rdf</span></code> and <code class="docutils literal notranslate"><span class="pre">count</span></code>
+of the <code class="docutils literal notranslate"><span class="pre">results</span></code> attribute of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code>.</p>
+</div>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rdf.InterRDF.results.bins">
+<code class="descclassname">results.</code><code class="descname">bins</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.results.bins" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the centers of the <cite>nbins</cite> histogram
+bins.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.rdf.InterRDF.bins">
 <code class="descname">bins</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.bins" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the centers of the <cite>nbins</cite> histogram
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.results.bins" title="MDAnalysis.analysis.rdf.InterRDF.results.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.bins</span></code></a> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>This attribute will be removed in 3.0.0.
+Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.results.bins" title="MDAnalysis.analysis.rdf.InterRDF.results.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.bins</span></code></a> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rdf.InterRDF.results.edges">
+<code class="descclassname">results.</code><code class="descname">edges</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.results.edges" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the <cite>nbins + 1</cite> edges of the histogram
 bins.</p>
+<blockquote>
+<div><div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+</div></blockquote>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.rdf.InterRDF.edges">
 <code class="descname">edges</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.edges" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the <cite>nbins + 1</cite> edges of the histogram
-bins.</p>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.results.edges" title="MDAnalysis.analysis.rdf.InterRDF.results.edges"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.edges</span></code></a> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>This attribute will be removed in 3.0.0.
+Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.results.edges" title="MDAnalysis.analysis.rdf.InterRDF.results.edges"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.edges</span></code></a> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rdf.InterRDF.results.rdf">
+<code class="descclassname">results.</code><code class="descname">rdf</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.results.rdf" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the <a class="reference internal" href="#equation-gab"><span class="std std-ref">radial distribution
+function</span></a> values for the <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.bins</span></code>.</p>
+<blockquote>
+<div><div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+</div></blockquote>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.rdf.InterRDF.rdf">
 <code class="descname">rdf</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.rdf" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the <a class="reference internal" href="#equation-gab"><span class="std std-ref">radial distribution
-function</span></a> values for the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.bins" title="MDAnalysis.analysis.rdf.InterRDF.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bins</span></code></a>.</p>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.results.rdf" title="MDAnalysis.analysis.rdf.InterRDF.results.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rdf</span></code></a> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>This attribute will be removed in 3.0.0.
+Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.results.rdf" title="MDAnalysis.analysis.rdf.InterRDF.results.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rdf</span></code></a> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rdf.InterRDF.results.count">
+<code class="descclassname">results.</code><code class="descname">count</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.results.count" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> representing the radial histogram, i.e.,
+the raw counts, for all <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.bins</span></code>.</p>
+<blockquote>
+<div><div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+</div></blockquote>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.rdf.InterRDF.count">
 <code class="descname">count</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.count" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> representing the radial histogram, i.e.,
-the raw counts, for all <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.bins" title="MDAnalysis.analysis.rdf.InterRDF.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bins</span></code></a>.</p>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.results.count" title="MDAnalysis.analysis.rdf.InterRDF.results.count"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.count</span></code></a> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>This attribute will be removed in 3.0.0.
+Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.results.count" title="MDAnalysis.analysis.rdf.InterRDF.results.count"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.count</span></code></a> instead.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -403,8 +466,9 @@ method:</p>
 <span class="n">rdf</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Results are available through the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.bins" title="MDAnalysis.analysis.rdf.InterRDF_s.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bins</span></code></a> and <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.rdf" title="MDAnalysis.analysis.rdf.InterRDF_s.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rdf</span></code></a> attributes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rdf</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="n">rdf</span><span class="o">.</span><span class="n">rdf</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<p>Results are available through the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.bins" title="MDAnalysis.analysis.rdf.InterRDF_s.results.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.bins</span></code></a>
+and <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.rdf" title="MDAnalysis.analysis.rdf.InterRDF_s.results.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rdf</span></code></a> attributes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rdf</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="n">rdf</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">rdf</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>(Which plots the rdf between the first atom in <code class="docutils literal notranslate"><span class="pre">s1</span></code> and the first atom in
@@ -415,8 +479,8 @@ method:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cdf</span> <span class="o">=</span> <span class="n">rdf</span><span class="o">.</span><span class="n">get_cdf</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Results are available through the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.cdf" title="MDAnalysis.analysis.rdf.InterRDF_s.cdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cdf</span></code></a> attribute:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rdf</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="n">rdf</span><span class="o">.</span><span class="n">cdf</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<p>Results are available through the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.cdf" title="MDAnalysis.analysis.rdf.InterRDF_s.results.cdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.cdf</span></code></a> attribute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rdf</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="n">rdf</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">cdf</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>(Which plots the cdf between the first atom in <code class="docutils literal notranslate"><span class="pre">s1</span></code> and the first atom in
@@ -428,49 +492,124 @@ method:</p>
 <p><span class="versionmodified">Changed in version 1.0.0: </span>Support for the <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, and <code class="docutils literal notranslate"><span class="pre">step</span></code> keywords has been
 removed. These should instead be passed to <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.run" title="MDAnalysis.analysis.rdf.InterRDF_s.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">InterRDF_s.run()</span></code></a>.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Store results as attributes <code class="docutils literal notranslate"><span class="pre">bins</span></code>, <code class="docutils literal notranslate"><span class="pre">edges</span></code>, <code class="docutils literal notranslate"><span class="pre">rdf</span></code>, <code class="docutils literal notranslate"><span class="pre">count</span></code>
+and <code class="docutils literal notranslate"><span class="pre">cdf</span></code> of the <code class="docutils literal notranslate"><span class="pre">results</span></code> attribute
+of <code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code>.</p>
+</div>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rdf.InterRDF_s.results.bins">
+<code class="descclassname">results.</code><code class="descname">bins</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.bins" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the centers of the <cite>nbins</cite> histogram
+bins; all individual site-specific RDFs have the same bins.</p>
+<blockquote>
+<div><div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+</div></blockquote>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.rdf.InterRDF_s.bins">
 <code class="descname">bins</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.bins" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the centers of the <cite>nbins</cite> histogram
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.bins" title="MDAnalysis.analysis.rdf.InterRDF_s.results.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.bins</span></code></a> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>This attribute will be removed in 3.0.0.
+Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.bins" title="MDAnalysis.analysis.rdf.InterRDF_s.results.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.bins</span></code></a> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rdf.InterRDF_s.results.edges">
+<code class="descclassname">results.</code><code class="descname">edges</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.edges" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the <cite>nbins + 1</cite> edges of the histogram
 bins; all individual site-specific RDFs have the same bins.</p>
+<blockquote>
+<div><div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+</div></blockquote>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.rdf.InterRDF_s.edges">
 <code class="descname">edges</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.edges" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the <cite>nbins + 1</cite> edges of the histogram
-bins; all individual site-specific RDFs have the same bins.</p>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.edges" title="MDAnalysis.analysis.rdf.InterRDF_s.results.edges"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.edges</span></code></a> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>This attribute will be removed in 3.0.0.
+Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.edges" title="MDAnalysis.analysis.rdf.InterRDF_s.results.edges"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.edges</span></code></a> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rdf.InterRDF_s.results.rdf">
+<code class="descclassname">results.</code><code class="descname">rdf</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.rdf" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of the site-specific <a class="reference internal" href="#equation-gab"><span class="std std-ref">radial distribution
+functions</span></a> or <a class="reference internal" href="#equation-nab"><span class="std std-ref">density
+functions</span></a> for the <code class="xref py py-attr docutils literal notranslate"><span class="pre">bins</span></code>. The list contains
+<code class="docutils literal notranslate"><span class="pre">len(ags)</span></code> entries. Each entry for the <code class="docutils literal notranslate"><span class="pre">i</span></code>-th pair <code class="docutils literal notranslate"><span class="pre">[A,</span> <span class="pre">B]</span>
+<span class="pre">=</span> <span class="pre">ags[i]</span></code> in <cite>ags</cite> is a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with shape
+<code class="docutils literal notranslate"><span class="pre">(len(A),</span> <span class="pre">len(B))</span></code>, i.e., a stack of RDFs. For example,
+<code class="docutils literal notranslate"><span class="pre">results.rdf[i][0,</span> <span class="pre">2]</span></code> is the RDF between atoms <code class="docutils literal notranslate"><span class="pre">A[0]</span></code>
+and <code class="docutils literal notranslate"><span class="pre">B[2]</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.rdf.InterRDF_s.rdf">
 <code class="descname">rdf</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.rdf" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of the site-specific <a class="reference internal" href="#equation-gab"><span class="std std-ref">radial distribution
-functions</span></a> or <a class="reference internal" href="#equation-nab"><span class="std std-ref">density
-functions</span></a> for the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.bins" title="MDAnalysis.analysis.rdf.InterRDF_s.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bins</span></code></a>. The list contains
-<code class="docutils literal notranslate"><span class="pre">len(ags)</span></code> entries. Each entry for the <code class="docutils literal notranslate"><span class="pre">i</span></code>-th pair <code class="docutils literal notranslate"><span class="pre">[A,</span> <span class="pre">B]</span>
-<span class="pre">=</span> <span class="pre">ags[i]</span></code> in <cite>ags</cite> is a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with shape
-<code class="docutils literal notranslate"><span class="pre">(len(A),</span> <span class="pre">len(B))</span></code>, i.e., a stack of RDFs. For example,
-<code class="docutils literal notranslate"><span class="pre">rdf[i][0,</span> <span class="pre">2]</span></code> is the RDF between atoms <code class="docutils literal notranslate"><span class="pre">A[0]</span></code> and <code class="docutils literal notranslate"><span class="pre">B[2]</span></code>.</p>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.rdf" title="MDAnalysis.analysis.rdf.InterRDF_s.results.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rdf</span></code></a> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>This attribute will be removed in 3.0.0.
+Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.rdf" title="MDAnalysis.analysis.rdf.InterRDF_s.results.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rdf</span></code></a> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rdf.InterRDF_s.results.count">
+<code class="descclassname">results.</code><code class="descname">count</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.count" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of the site-specific radial histograms, i.e., the
+raw counts, for all <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.bins</span></code>. The data have the same
+structure as <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rdf</span></code> except that the arrays contain
+the raw counts.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.rdf.InterRDF_s.count">
 <code class="descname">count</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.count" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of the site-specific radial histograms, i.e., the
-raw counts, for all <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.bins" title="MDAnalysis.analysis.rdf.InterRDF_s.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bins</span></code></a>. The data have the same
-structure as <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.rdf" title="MDAnalysis.analysis.rdf.InterRDF_s.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rdf</span></code></a> except that the arrays contain the raw
-counts.</p>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.count" title="MDAnalysis.analysis.rdf.InterRDF_s.results.count"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.count</span></code></a> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>This attribute will be removed in 3.0.0.
+Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.count" title="MDAnalysis.analysis.rdf.InterRDF_s.results.count"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.count</span></code></a> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rdf.InterRDF_s.results.cdf">
+<code class="descclassname">results.</code><code class="descname">cdf</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.cdf" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of the site-specific <a class="reference internal" href="#equation-countab"><span class="std std-ref">cumulative
+counts</span></a>, for all <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.bins</span></code>. The data
+have the same structure as <code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rdf</span></code> except that the arrays
+contain the cumulative counts.</p>
+<p>This attribute only exists after <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_cdf()</span></code> has been run.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.rdf.InterRDF_s.cdf">
 <code class="descname">cdf</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.cdf" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of the site-specific <a class="reference internal" href="#equation-countab"><span class="std std-ref">cumulative
-counts</span></a>, for all <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.bins" title="MDAnalysis.analysis.rdf.InterRDF_s.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bins</span></code></a>. The data have the same
-structure as <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.rdf" title="MDAnalysis.analysis.rdf.InterRDF_s.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rdf</span></code></a> except that the arrays contain the cumulative
-counts.</p>
-<p>This attribute only exists after <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.get_cdf" title="MDAnalysis.analysis.rdf.InterRDF_s.get_cdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_cdf()</span></code></a> has been run.</p>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.cdf" title="MDAnalysis.analysis.rdf.InterRDF_s.results.cdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.cdf</span></code></a> attribute.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>This attribute will be removed in 3.0.0.
+Use <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.cdf" title="MDAnalysis.analysis.rdf.InterRDF_s.results.cdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.cdf</span></code></a> instead.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -480,12 +619,12 @@ counts.</p>
 <p>This is the <a class="reference internal" href="#equation-countab"><span class="std std-ref">cumulative count</span></a> within a given
 radius, i.e., <span class="math notranslate nohighlight">\(N_{ab}(r)\)</span>.</p>
 <p>The result is returned and also stored in the attribute
-<a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.cdf" title="MDAnalysis.analysis.rdf.InterRDF_s.cdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cdf</span></code></a>.</p>
+<a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.cdf" title="MDAnalysis.analysis.rdf.InterRDF_s.results.cdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.cdf</span></code></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>cdf</strong> – list of arrays with the same structure as <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.rdf" title="MDAnalysis.analysis.rdf.InterRDF_s.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rdf</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>cdf</strong> – list of arrays with the same structure as <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.results.rdf" title="MDAnalysis.analysis.rdf.InterRDF_s.results.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.rdf</span></code></a></td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></td>
 </tr>
