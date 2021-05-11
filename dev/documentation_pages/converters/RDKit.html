@@ -716,45 +716,19 @@ implicit hydrogens and disable inferring bond orders and charges.</p>
 <p>Since one of the main use case of the converter is converting trajectories
 and not just a topology, creating a new molecule from scratch for every
 frame would be too slow so the converter uses a caching system. The cache
-only remembers the id of the last AtomGroup that was converted, as well
-as the arguments that were passed to the converter. This means that using
-<code class="docutils literal notranslate"><span class="pre">u.select_atoms(&quot;protein&quot;).convert_to(&quot;RDKIT&quot;)</span></code> will not benefit from the
-cache since the selection is deleted from memory as soon as the conversion
-is finished. Instead, users should do this in two steps by first saving the
-selection in a variable and then converting the saved AtomGroup. It also
-means that <code class="docutils literal notranslate"><span class="pre">ag.convert_to(&quot;RDKIT&quot;)</span></code> followed by
-<code class="docutils literal notranslate"><span class="pre">ag.convert_to(&quot;RDKIT&quot;,</span> <span class="pre">NoImplicit=False)</span></code> will not use the cache.
-Finally if you’re modifying the AtomGroup in place between two conversions,
-the id of the AtomGroup won’t change and thus the converter will use the
-cached molecule. For this reason, you can pass a <code class="docutils literal notranslate"><span class="pre">cache=False</span></code> argument
-to the converter to bypass the caching system.
-Note that the cached molecule doesn’t contain the coordinates of the atoms.</p>
+only stores the 2 most recent AtomGroups that were converted, and is
+sensitive to the arguments that were passed to the converter. The number of
+objects cached can be changed with the function
+<code class="xref py py-func docutils literal notranslate"><span class="pre">set_converter_cache_size()</span></code>. However, <code class="docutils literal notranslate"><span class="pre">ag.convert_to(&quot;RDKIT&quot;)</span></code>
+followed by <code class="docutils literal notranslate"><span class="pre">ag.convert_to(&quot;RDKIT&quot;,</span> <span class="pre">NoImplicit=False)</span></code> will not use the
+cache since the arguments given are different. You can pass a
+<code class="docutils literal notranslate"><span class="pre">cache=False</span></code> argument to the converter to bypass the caching system.</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 2.0.0.</span></p>
 </div>
 <dl class="method">
-<dt id="MDAnalysis.converters.RDKit.RDKitConverter.atomgroup_to_mol">
-<code class="descname">atomgroup_to_mol</code><span class="sig-paren">(</span><em>ag</em>, <em>NoImplicit=True</em>, <em>max_iter=200</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#RDKitConverter.atomgroup_to_mol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit.RDKitConverter.atomgroup_to_mol" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts an AtomGroup to an RDKit molecule.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>ag</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>MDAnalysis.core.groups.AtomGroup</em></a>) – The AtomGroup to convert</li>
-<li><strong>NoImplicit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Prevent adding hydrogens to the molecule</li>
-<li><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Maximum number of iterations to standardize conjugated systems.
-See <a class="reference internal" href="#MDAnalysis.converters.RDKit._rebuild_conjugated_bonds" title="MDAnalysis.converters.RDKit._rebuild_conjugated_bonds"><code class="xref py py-func docutils literal notranslate"><span class="pre">_rebuild_conjugated_bonds()</span></code></a></li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="MDAnalysis.converters.RDKit.RDKitConverter.convert">
-<code class="descname">convert</code><span class="sig-paren">(</span><em>obj</em>, <em>cache=True</em>, <em>NoImplicit=True</em>, <em>max_iter=200</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#RDKitConverter.convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit.RDKitConverter.convert" title="Permalink to this definition">¶</a></dt>
+<code class="descname">convert</code><span class="sig-paren">(</span><em>obj</em>, <em>cache=True</em>, <em>NoImplicit=True</em>, <em>max_iter=200</em>, <em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/converters/RDKit.html#RDKitConverter.convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.converters.RDKit.RDKitConverter.convert" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write selection at current trajectory frame to
 <a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol" title="(in The RDKit v2021.03)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mol</span></code></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -765,11 +739,13 @@ See <a class="reference internal" href="#MDAnalysis.converters.RDKit._rebuild_co
 <li><strong>obj</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>) – </li>
 <li><strong>cache</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Use a cached copy of the molecule’s topology when available. To be
 used, the cached molecule and the new one have to be made from the
-same AtomGroup object (same id) and with the same arguments passed
-to the converter (with the exception of this <cite>cache</cite> argument)</li>
+same AtomGroup selection and with the same arguments passed
+to the converter</li>
 <li><strong>NoImplicit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Prevent adding hydrogens to the molecule</li>
 <li><strong>max_iter</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Maximum number of iterations to standardize conjugated systems.
 See <a class="reference internal" href="#MDAnalysis.converters.RDKit._rebuild_conjugated_bonds" title="MDAnalysis.converters.RDKit._rebuild_conjugated_bonds"><code class="xref py py-func docutils literal notranslate"><span class="pre">_rebuild_conjugated_bonds()</span></code></a></li>
+<li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Force the conversion when no hydrogens were detected but
+<code class="docutils literal notranslate"><span class="pre">NoImplicit=True</span></code>. Useful for inorganic molecules mostly.</li>
 </ul>
 </td>
 </tr>

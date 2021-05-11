@@ -251,6 +251,7 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -428,19 +429,13 @@
 <span class="sd">    Since one of the main use case of the converter is converting trajectories</span>
 <span class="sd">    and not just a topology, creating a new molecule from scratch for every</span>
 <span class="sd">    frame would be too slow so the converter uses a caching system. The cache</span>
-<span class="sd">    only remembers the id of the last AtomGroup that was converted, as well</span>
-<span class="sd">    as the arguments that were passed to the converter. This means that using</span>
-<span class="sd">    ``u.select_atoms(&quot;protein&quot;).convert_to(&quot;RDKIT&quot;)`` will not benefit from the</span>
-<span class="sd">    cache since the selection is deleted from memory as soon as the conversion</span>
-<span class="sd">    is finished. Instead, users should do this in two steps by first saving the</span>
-<span class="sd">    selection in a variable and then converting the saved AtomGroup. It also</span>
-<span class="sd">    means that ``ag.convert_to(&quot;RDKIT&quot;)`` followed by</span>
-<span class="sd">    ``ag.convert_to(&quot;RDKIT&quot;, NoImplicit=False)`` will not use the cache.</span>
-<span class="sd">    Finally if you&#39;re modifying the AtomGroup in place between two conversions,</span>
-<span class="sd">    the id of the AtomGroup won&#39;t change and thus the converter will use the</span>
-<span class="sd">    cached molecule. For this reason, you can pass a ``cache=False`` argument</span>
-<span class="sd">    to the converter to bypass the caching system.</span>
-<span class="sd">    Note that the cached molecule doesn&#39;t contain the coordinates of the atoms.</span>
+<span class="sd">    only stores the 2 most recent AtomGroups that were converted, and is</span>
+<span class="sd">    sensitive to the arguments that were passed to the converter. The number of</span>
+<span class="sd">    objects cached can be changed with the function</span>
+<span class="sd">    :func:`set_converter_cache_size`. However, ``ag.convert_to(&quot;RDKIT&quot;)``</span>
+<span class="sd">    followed by ``ag.convert_to(&quot;RDKIT&quot;, NoImplicit=False)`` will not use the</span>
+<span class="sd">    cache since the arguments given are different. You can pass a</span>
+<span class="sd">    ``cache=False`` argument to the converter to bypass the caching system.</span>
 
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
@@ -449,9 +444,9 @@
 
     <span class="n">lib</span> <span class="o">=</span> <span class="s1">&#39;RDKIT&#39;</span>
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">}</span>
-    <span class="n">_cache</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
-<div class="viewcode-block" id="RDKitConverter.convert"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit.RDKitConverter.convert">[docs]</a>    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">NoImplicit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+<div class="viewcode-block" id="RDKitConverter.convert"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit.RDKitConverter.convert">[docs]</a>    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">NoImplicit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+                <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write selection at current trajectory frame to</span>
 <span class="sd">        :class:`~rdkit.Chem.rdchem.Mol`.</span>
 
@@ -462,16 +457,17 @@
 <span class="sd">        cache : bool</span>
 <span class="sd">            Use a cached copy of the molecule&#39;s topology when available. To be</span>
 <span class="sd">            used, the cached molecule and the new one have to be made from the</span>
-<span class="sd">            same AtomGroup object (same id) and with the same arguments passed</span>
-<span class="sd">            to the converter (with the exception of this `cache` argument)</span>
+<span class="sd">            same AtomGroup selection and with the same arguments passed</span>
+<span class="sd">            to the converter</span>
 <span class="sd">        NoImplicit : bool</span>
 <span class="sd">            Prevent adding hydrogens to the molecule</span>
 <span class="sd">        max_iter : int</span>
 <span class="sd">            Maximum number of iterations to standardize conjugated systems.</span>
 <span class="sd">            See :func:`_rebuild_conjugated_bonds`</span>
+<span class="sd">        force : bool</span>
+<span class="sd">            Force the conversion when no hydrogens were detected but</span>
+<span class="sd">            ``NoImplicit=True``. Useful for inorganic molecules mostly.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># parameters passed to atomgroup_to_mol and used by the cache</span>
-        <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">NoImplicit</span><span class="o">=</span><span class="n">NoImplicit</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
@@ -487,22 +483,13 @@
                             <span class="s2">&quot;please use a valid AtomGroup or Universe&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                                 <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)))</span> <span class="kn">from</span> <span class="bp">None</span>
 
+        <span class="c1"># parameters passed to atomgroup_to_mol</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">NoImplicit</span><span class="o">=</span><span class="n">NoImplicit</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cache</span><span class="p">:</span>
-            <span class="c1"># key used to search the cache</span>
-            <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span><span class="si">:</span><span class="s2">#x</span><span class="si">}</span><span class="s2">&gt;&quot;</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
-                                            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">mol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="c1"># only keep the current molecule in cache</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-                <span class="c1"># create the topology</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">mol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup_to_mol</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="c1"># continue on copy of the cached molecule</span>
+            <span class="n">mol</span> <span class="o">=</span> <span class="n">atomgroup_to_mol</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="n">mol</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-            <span class="n">mol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atomgroup_to_mol</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">mol</span> <span class="o">=</span> <span class="n">atomgroup_to_mol</span><span class="o">.</span><span class="n">__wrapped__</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># add a conformer for the current Timestep</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="s2">&quot;positions&quot;</span><span class="p">):</span>
@@ -521,110 +508,133 @@
                 <span class="n">Chem</span><span class="o">.</span><span class="n">AssignStereochemistryFrom3D</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
                 <span class="n">Chem</span><span class="o">.</span><span class="n">SetDoubleBondNeighborDirections</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">mol</span></div>
-
-<div class="viewcode-block" id="RDKitConverter.atomgroup_to_mol"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKit.RDKitConverter.atomgroup_to_mol">[docs]</a>    <span class="k">def</span> <span class="nf">atomgroup_to_mol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">NoImplicit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Converts an AtomGroup to an RDKit molecule.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        -----------</span>
-<span class="sd">        ag : MDAnalysis.core.groups.AtomGroup</span>
-<span class="sd">            The AtomGroup to convert</span>
-<span class="sd">        NoImplicit : bool</span>
-<span class="sd">            Prevent adding hydrogens to the molecule</span>
-<span class="sd">        max_iter : int</span>
-<span class="sd">            Maximum number of iterations to standardize conjugated systems.</span>
-<span class="sd">            See :func:`_rebuild_conjugated_bonds`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">elements</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">elements</span>
-        <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                <span class="s2">&quot;The `elements` attribute is required for the RDKitConverter &quot;</span>
-                <span class="s2">&quot;but is not present in this AtomGroup. Please refer to the &quot;</span>
-                <span class="s2">&quot;documentation to guess elements from other attributes or &quot;</span>
-                <span class="s2">&quot;type `help(mda.topology.guessers)`&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
-
-        <span class="k">if</span> <span class="s2">&quot;H&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ag</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;No hydrogen atom could be found in the topology, but the &quot;</span>
-                <span class="s2">&quot;converter requires all hydrogens to be explicit. Please &quot;</span>
-                <span class="s2">&quot;check carefully the output molecule as the converter is &quot;</span>
-                <span class="s2">&quot;likely to add negative charges and assign incorrect bond &quot;</span>
-                <span class="s2">&quot;orders to structures with implicit hydrogens. Alternatively, &quot;</span>
-                <span class="s2">&quot;you can use the parameter `NoImplicit=False` when using the &quot;</span>
-                <span class="s2">&quot;converter to allow implicit hydrogens and disable inferring &quot;</span>
-                <span class="s2">&quot;bond orders and charges.&quot;</span>
-            <span class="p">)</span>
-
-        <span class="c1"># attributes accepted in PDBResidueInfo object</span>
-        <span class="n">pdb_attrs</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="s2">&quot;bfactors&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="s2">&quot;tempfactors&quot;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                <span class="s2">&quot;Both `tempfactors` and `bfactors` attributes are present but &quot;</span>
-                <span class="s2">&quot;only one can be assigned to the RDKit molecule. Please &quot;</span>
-                <span class="s2">&quot;delete the unnecessary one and retry.&quot;</span>
-            <span class="p">)</span>
-        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">RDATTRIBUTES</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-                <span class="n">pdb_attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
-
-        <span class="n">other_attrs</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;charges&quot;</span><span class="p">,</span> <span class="s2">&quot;segids&quot;</span><span class="p">,</span> <span class="s2">&quot;types&quot;</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-                <span class="n">other_attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
-
-        <span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">RWMol</span><span class="p">()</span>
-        <span class="c1"># map index in universe to index in mol</span>
-        <span class="n">atom_mapper</span> <span class="o">=</span> <span class="p">{}</span>
-
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">elements</span><span class="p">)):</span>
-            <span class="c1"># create atom</span>
-            <span class="n">rdatom</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
-            <span class="c1"># enable/disable adding implicit H to the molecule</span>
-            <span class="n">rdatom</span><span class="o">.</span><span class="n">SetNoImplicit</span><span class="p">(</span><span class="n">NoImplicit</span><span class="p">)</span>
-            <span class="c1"># add PDB-like properties</span>
-            <span class="n">mi</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">AtomPDBResidueInfo</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">pdb_attrs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">_add_mda_attr_to_rdkit</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">mi</span><span class="p">)</span>
-            <span class="n">rdatom</span><span class="o">.</span><span class="n">SetMonomerInfo</span><span class="p">(</span><span class="n">mi</span><span class="p">)</span>
-            <span class="c1"># other properties</span>
-            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">other_attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="n">other_attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
-                <span class="n">attr</span> <span class="o">=</span> <span class="s2">&quot;_MDAnalysis_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">_TOPOLOGY_ATTRS</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span><span class="o">.</span><span class="n">singular</span>
-                <span class="n">_set_atom_property</span><span class="p">(</span><span class="n">rdatom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-            <span class="n">_set_atom_property</span><span class="p">(</span><span class="n">rdatom</span><span class="p">,</span> <span class="s2">&quot;_MDAnalysis_index&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
-            <span class="c1"># add atom</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">AddAtom</span><span class="p">(</span><span class="n">rdatom</span><span class="p">)</span>
-            <span class="n">atom_mapper</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">index</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">ag</span><span class="o">.</span><span class="n">bonds</span>
-        <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;No `bonds` attribute in this AtomGroup. Guessing bonds based &quot;</span>
-                <span class="s2">&quot;on atoms coordinates&quot;</span><span class="p">)</span>
-            <span class="n">ag</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">()</span>
-
-        <span class="k">for</span> <span class="n">bond</span> <span class="ow">in</span> <span class="n">ag</span><span class="o">.</span><span class="n">bonds</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">bond_indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">atom_mapper</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">bond</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="n">bond_type</span> <span class="o">=</span> <span class="n">RDBONDORDER</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">bond</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="n">Chem</span><span class="o">.</span><span class="n">BondType</span><span class="o">.</span><span class="n">SINGLE</span><span class="p">)</span>
-            <span class="n">mol</span><span class="o">.</span><span class="n">AddBond</span><span class="p">(</span><span class="o">*</span><span class="n">bond_indices</span><span class="p">,</span> <span class="n">bond_type</span><span class="p">)</span>
-
-        <span class="n">mol</span><span class="o">.</span><span class="n">UpdatePropertyCache</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">NoImplicit</span><span class="p">:</span>
-            <span class="c1"># infer bond orders and formal charges from the connectivity</span>
-            <span class="n">_infer_bo_and_charges</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-            <span class="n">mol</span> <span class="o">=</span> <span class="n">_standardize_patterns</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">)</span>
-
-        <span class="c1"># sanitize</span>
-        <span class="n">Chem</span><span class="o">.</span><span class="n">SanitizeMol</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
-
         <span class="k">return</span> <span class="n">mol</span></div></div>
+
+
+<span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">atomgroup_to_mol</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">NoImplicit</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts an AtomGroup to an RDKit molecule without coordinates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    ag : MDAnalysis.core.groups.AtomGroup</span>
+<span class="sd">        The AtomGroup to convert</span>
+<span class="sd">    NoImplicit : bool</span>
+<span class="sd">        Prevent adding hydrogens to the molecule and allow bond orders and</span>
+<span class="sd">        formal charges to be guessed from the valence of each atom.</span>
+<span class="sd">    max_iter : int</span>
+<span class="sd">        Maximum number of iterations to standardize conjugated systems.</span>
+<span class="sd">        See :func:`_rebuild_conjugated_bonds`</span>
+<span class="sd">    force : bool</span>
+<span class="sd">        Force the conversion when no hydrogens were detected but</span>
+<span class="sd">        ``NoImplicit=True``. Mostly useful for inorganic molecules.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">elements</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">elements</span>
+    <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+            <span class="s2">&quot;The `elements` attribute is required for the RDKitConverter &quot;</span>
+            <span class="s2">&quot;but is not present in this AtomGroup. Please refer to the &quot;</span>
+            <span class="s2">&quot;documentation to guess elements from other attributes or &quot;</span>
+            <span class="s2">&quot;type `help(MDAnalysis.topology.guessers)`&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+
+    <span class="k">if</span> <span class="s2">&quot;H&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ag</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">force</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;No hydrogen atom found in the topology. &quot;</span>
+                <span class="s2">&quot;Forcing to continue the conversion.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">NoImplicit</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="s2">&quot;No hydrogen atom could be found in the topology, but the &quot;</span>
+                <span class="s2">&quot;converter requires all hydrogens to be explicit. You can use &quot;</span>
+                <span class="s2">&quot;the parameter ``NoImplicit=False`` when using the converter &quot;</span>
+                <span class="s2">&quot;to allow implicit hydrogens and disable inferring bond &quot;</span>
+                <span class="s2">&quot;orders and charges. You can also use ``force=True`` to &quot;</span>
+                <span class="s2">&quot;ignore this error.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># attributes accepted in PDBResidueInfo object</span>
+    <span class="n">pdb_attrs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="s2">&quot;bfactors&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="s2">&quot;tempfactors&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+            <span class="s2">&quot;Both `tempfactors` and `bfactors` attributes are present but &quot;</span>
+            <span class="s2">&quot;only one can be assigned to the RDKit molecule. Please &quot;</span>
+            <span class="s2">&quot;delete the unnecessary one and retry.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">RDATTRIBUTES</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+            <span class="n">pdb_attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+
+    <span class="n">other_attrs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;charges&quot;</span><span class="p">,</span> <span class="s2">&quot;segids&quot;</span><span class="p">,</span> <span class="s2">&quot;types&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+            <span class="n">other_attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+
+    <span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">RWMol</span><span class="p">()</span>
+    <span class="c1"># map index in universe to index in mol</span>
+    <span class="n">atom_mapper</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">elements</span><span class="p">)):</span>
+        <span class="c1"># create atom</span>
+        <span class="n">rdatom</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">capitalize</span><span class="p">())</span>
+        <span class="c1"># enable/disable adding implicit H to the molecule</span>
+        <span class="n">rdatom</span><span class="o">.</span><span class="n">SetNoImplicit</span><span class="p">(</span><span class="n">NoImplicit</span><span class="p">)</span>
+        <span class="c1"># add PDB-like properties</span>
+        <span class="n">mi</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">AtomPDBResidueInfo</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">pdb_attrs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">_add_mda_attr_to_rdkit</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">mi</span><span class="p">)</span>
+        <span class="n">rdatom</span><span class="o">.</span><span class="n">SetMonomerInfo</span><span class="p">(</span><span class="n">mi</span><span class="p">)</span>
+        <span class="c1"># other properties</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">other_attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">other_attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">attr</span> <span class="o">=</span> <span class="s2">&quot;_MDAnalysis_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">_TOPOLOGY_ATTRS</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span><span class="o">.</span><span class="n">singular</span>
+            <span class="n">_set_atom_property</span><span class="p">(</span><span class="n">rdatom</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="n">_set_atom_property</span><span class="p">(</span><span class="n">rdatom</span><span class="p">,</span> <span class="s2">&quot;_MDAnalysis_index&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="c1"># add atom</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">AddAtom</span><span class="p">(</span><span class="n">rdatom</span><span class="p">)</span>
+        <span class="n">atom_mapper</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">index</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ag</span><span class="o">.</span><span class="n">bonds</span>
+    <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;No `bonds` attribute in this AtomGroup. Guessing bonds based &quot;</span>
+            <span class="s2">&quot;on atoms coordinates&quot;</span><span class="p">)</span>
+        <span class="n">ag</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">bond</span> <span class="ow">in</span> <span class="n">ag</span><span class="o">.</span><span class="n">bonds</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">bond_indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">atom_mapper</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">bond</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">bond_type</span> <span class="o">=</span> <span class="n">RDBONDORDER</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">bond</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="n">Chem</span><span class="o">.</span><span class="n">BondType</span><span class="o">.</span><span class="n">SINGLE</span><span class="p">)</span>
+        <span class="n">mol</span><span class="o">.</span><span class="n">AddBond</span><span class="p">(</span><span class="o">*</span><span class="n">bond_indices</span><span class="p">,</span> <span class="n">bond_type</span><span class="p">)</span>
+
+    <span class="n">mol</span><span class="o">.</span><span class="n">UpdatePropertyCache</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">NoImplicit</span><span class="p">:</span>
+        <span class="c1"># infer bond orders and formal charges from the connectivity</span>
+        <span class="n">_infer_bo_and_charges</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+        <span class="n">mol</span> <span class="o">=</span> <span class="n">_standardize_patterns</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">)</span>
+
+    <span class="c1"># sanitize</span>
+    <span class="n">Chem</span><span class="o">.</span><span class="n">SanitizeMol</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mol</span>
+
+
+<span class="k">def</span> <span class="nf">set_converter_cache_size</span><span class="p">(</span><span class="n">maxsize</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Set the maximum cache size of the RDKit converter</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    maxsize : int or None</span>
+<span class="sd">        If int, the cache will only keep the ``maxsize`` most recent</span>
+<span class="sd">        conversions in memory. Using ``maxsize=None`` will remove all limits</span>
+<span class="sd">        to the cache size, i.e. everything is cached.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">atomgroup_to_mol</span>
+    <span class="n">atomgroup_to_mol</span> <span class="o">=</span> <span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="n">maxsize</span><span class="p">)(</span><span class="n">atomgroup_to_mol</span><span class="o">.</span><span class="n">__wrapped__</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_add_mda_attr_to_rdkit</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">mi</span><span class="p">):</span>
