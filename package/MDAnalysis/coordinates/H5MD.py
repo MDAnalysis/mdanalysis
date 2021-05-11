@@ -649,7 +649,7 @@ class H5MDReader(base.ReaderBase):
 
         self.ts.time = self.convert_time_from_native(self.ts.time)
 
-        if 'edges' in self._particle_group['box'] and not self.ts.dimensions is None:
+        if 'edges' in self._particle_group['box'] and self.ts.dimensions is not None:
             self.convert_pos_from_native(self.ts.dimensions[:3])
 
         if self._has['position']:

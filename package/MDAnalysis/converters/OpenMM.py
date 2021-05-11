@@ -164,7 +164,7 @@ class OpenMMAppReader(base.SingleFrameReaderBase):
 
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)
-            if not self.ts.dimensions is None:
+            if self.ts.dimensions is not None:
                 self.ts.triclinic_dimensions = self.convert_pos_from_native(
                     self.ts.triclinic_dimensions, inplace=False
                 )

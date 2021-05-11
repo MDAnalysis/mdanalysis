@@ -171,7 +171,7 @@ class PDBQTReader(base.SingleFrameReaderBase):
         if self.convert_units:
             # in-place !
             self.convert_pos_from_native(self.ts._pos)
-            if not self.ts.dimensions is None:
+            if self.ts.dimensions is not None:
                 self.convert_pos_from_native(self.ts.dimensions[:3])
 
     def Writer(self, filename, **kwargs):
