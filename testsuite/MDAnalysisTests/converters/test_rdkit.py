@@ -180,8 +180,7 @@ class TestRDKitConverter(object):
     def test_single_atom_mol(self, smi):
         u = mda.Universe.from_smiles(smi, addHs=False,
                                      generate_coordinates=False)
-        rdkit_converter = mda._CONVERTERS["RDKIT"]().convert
-        mol = rdkit_converter(u.atoms, NoImplicit=False)
+        mol = u.atoms.convert_to.rdkit(NoImplicit=False)
         assert mol.GetNumAtoms() == 1
         assert mol.GetAtomWithIdx(0).GetSymbol() == smi.strip("[]")
 
@@ -202,9 +201,8 @@ class TestRDKitConverter(object):
         ("resid 34 and altloc B", 2),
     ])
     def test_monomer_info(self, pdb, sel_str, atom_index):
-        rdkit_converter = mda._CONVERTERS["RDKIT"]().convert
         sel = pdb.select_atoms(sel_str)
-        umol = rdkit_converter(sel, NoImplicit=False)
+        umol = sel.convert_to.rdkit(NoImplicit=False)
         atom = umol.GetAtomWithIdx(atom_index)
         mda_index = atom.GetIntProp("_MDAnalysis_index")
         mi = atom.GetMonomerInfo()
@@ -246,8 +244,7 @@ class TestRDKitConverter(object):
     def test_bonds_outside_sel(self):
         u = mda.Universe(Chem.MolFromSmiles("CC(=O)C"))
         ag = u.select_atoms("index 1")
-        rdkit_converter = mda._CONVERTERS["RDKIT"]().convert
-        rdkit_converter(ag, NoImplicit=False)
+        ag.convert_to.rdkit(NoImplicit=False)
 
     def test_error_no_hydrogen(self, uo2):
         with pytest.raises(AttributeError,
@@ -256,16 +253,14 @@ class TestRDKitConverter(object):
             uo2.atoms.convert_to("RDKIT")
 
     def test_error_no_hydrogen_implicit(self, uo2):
-        rdkit_converter = mda._CONVERTERS["RDKIT"]().convert
         with pytest.warns(None) as record:
-            rdkit_converter(uo2.atoms, NoImplicit=False)
+            uo2.atoms.convert_to.rdkit(NoImplicit=False)
         assert len(record) == 0
 
     def test_warning_no_hydrogen_force(self, uo2):
-        rdkit_converter = mda._CONVERTERS["RDKIT"]().convert
         with pytest.warns(UserWarning,
                           match="Forcing to continue the conversion"):
-            rdkit_converter(uo2.atoms, NoImplicit=False, force=True)
+            uo2.atoms.convert_to.rdkit(NoImplicit=False, force=True)
 
     @pytest.mark.parametrize("attr, value, expected", [
         ("names", "C1", " C1 "),
@@ -314,17 +309,15 @@ class TestRDKitConverter(object):
         "resname PRO and segid A",
     ])
     def test_index_property(self, pdb, sel_str):
-        rdkit_converter = mda._CONVERTERS["RDKIT"]().convert
         ag = pdb.select_atoms(sel_str)
-        mol = rdkit_converter(ag, NoImplicit=False)
+        mol = ag.convert_to.rdkit(NoImplicit=False)
         expected = [i for i in range(len(ag))]
         indices = sorted([a.GetIntProp("_MDAnalysis_index")
                           for a in mol.GetAtoms()])
         assert_equal(indices, expected)
 
     def test_assign_coordinates(self, pdb):
-        rdkit_converter = mda._CONVERTERS["RDKIT"]().convert
-        mol = rdkit_converter(pdb.atoms, NoImplicit=False)
+        mol = pdb.atoms.convert_to.rdkit(NoImplicit=False)
         positions = mol.GetConformer().GetPositions()
         indices = sorted(mol.GetAtoms(),
                          key=lambda a: a.GetIntProp("_MDAnalysis_index"))
@@ -379,7 +372,7 @@ class TestRDKitConverter(object):
         # test (1): iterating over frames in a trajectory
         previous_cache = None
         for ts in utraj.trajectory:
-            mol = utraj.atoms.convert_to("RDKIT")
+            utraj.atoms.convert_to("RDKIT")
             cache = cached_func.cache_info()
             if previous_cache:
                 # the cache shouldn't change when iterating on timesteps
@@ -387,15 +380,15 @@ class TestRDKitConverter(object):
                 previous_cache = copy.deepcopy(cache)
         # test (2): only 2 molecules should be cached by default
         cached_func.cache_clear()
-        mol = uc.atoms.convert_to("RDKIT")
-        mol = ucc.atoms.convert_to("RDKIT")
-        mol = uccc.atoms.convert_to("RDKIT")
+        uc.atoms.convert_to("RDKIT")
+        ucc.atoms.convert_to("RDKIT")
+        uccc.atoms.convert_to("RDKIT")
         cache = cached_func.cache_info()
         assert cache.currsize == 2
         assert cache.misses == 3
-        mol = ucc.atoms.convert_to("RDKIT")  # should be inside of the cache
+        ucc.atoms.convert_to("RDKIT")  # should be inside of the cache
         assert cached_func.cache_info().hits == 1
-        mol = uc.atoms.convert_to("RDKIT")  # outside of the cache
+        uc.atoms.convert_to("RDKIT")  # outside of the cache
         assert cached_func.cache_info().hits == 1
         assert cached_func.cache_info().misses == 4
         # test (3): increase cache size
@@ -404,12 +397,11 @@ class TestRDKitConverter(object):
         assert cached_func.cache_info().maxsize == 3
         # test (4): caching is sensitive to converter arguments
         previous_cache = cached_func.cache_info()
-        rdkit_converter = mda._CONVERTERS["RDKIT"]().convert
-        mol = rdkit_converter(uc.atoms, NoImplicit=False)
+        uc.atoms.convert_to.rdkit(NoImplicit=False)
         cache = cached_func.cache_info()
         assert cache.misses == previous_cache.misses + 1
         # test (5): skip cache
-        mol = rdkit_converter(uc.atoms, cache=False)
+        uc.atoms.convert_to.rdkit(cache=False)
         new_cache = cached_func.cache_info()
         assert cache == new_cache
 
