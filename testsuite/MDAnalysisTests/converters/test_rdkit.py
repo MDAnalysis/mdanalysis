@@ -547,7 +547,7 @@ class TestRDKitFunctions(object):
         ("smi", "O=C([C@H](CC1=CNC=N1)N)O"),
         ("smi", "O=C([C@H](CC1=CN=CN1)N)O"),
         ("smi", "O=C([C@H](CC1=C[NH1+]=CN1)[NH3+])[O-]"),
-        # fixes from PR #???
+        # fixes from PR #3044
         ("smi", "CCOC(=O)c1cc2cc(C(=O)O)ccc2[nH]1"),
         ("smi", "[O-][n+]1cccnc1"),
         ("smi", "C[n+]1ccccc1"),

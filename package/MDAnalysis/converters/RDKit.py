@@ -497,17 +497,26 @@ def _add_mda_attr_to_rdkit(attr, value, mi):
 def _set_str_prop(atom, attr, value):
     atom.SetProp(attr, value)
 
+
 def _set_float_prop(atom, attr, value):
     atom.SetDoubleProp(attr, value)
+
 
 def _set_np_float_prop(atom, attr, value):
     atom.SetDoubleProp(attr, float(value))
 
+
 def _set_int_prop(atom, attr, value):
     atom.SetIntProp(attr, value)
 
+
 def _set_np_int_prop(atom, attr, value):
     atom.SetIntProp(attr, int(value))
+
+
+def _ignore_prop(atom, attr, value):
+    pass
+
 
 _atom_property_dispatcher = {
     str: _set_str_prop,
@@ -527,7 +536,7 @@ _atom_property_dispatcher = {
 
 def _set_atom_property(atom, attr, value):
     """Saves any attribute and value into an RDKit atom property"""
-    _atom_property_dispatcher[type(value)](atom, attr, value)
+    _atom_property_dispatcher.get(type(value), _ignore_prop)(atom, attr, value)
 
 
 def _infer_bo_and_charges(mol):
@@ -863,7 +872,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
             # increment the charge
             else:
                 term_atom.SetFormalCharge(term_atom.GetFormalCharge() + 1)
-            # common to all cases: 
+            # common to all cases:
             # [*-]-*=*-[R] --> *=*-*=[R]
             # increment the charge and switch single and double bonds
             a = mol.GetAtomWithIdx(anion1)
