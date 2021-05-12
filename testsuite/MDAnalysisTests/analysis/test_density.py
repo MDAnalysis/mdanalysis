@@ -22,6 +22,7 @@
 #
 import numpy as np
 import pytest
+import copy
 import sys
 import warnings
 from unittest.mock import Mock, patch
@@ -33,7 +34,7 @@ import gridData.OpenDX
 import MDAnalysis as mda
 from MDAnalysis.analysis import density
 
-from MDAnalysisTests.datafiles import TPR, XTC, GRO, PDB_full
+from MDAnalysisTests.datafiles import TPR, XTC
 from MDAnalysisTests.util import block_import
 
 
@@ -59,6 +60,13 @@ class TestDensity(object):
         d = density.Density(h, edges, parameters={'isDensity': False},
                             units={'length': 'A'})
         d.make_density()
+        return d
+
+    @pytest.fixture()
+    def D1(self, h_and_edges):
+        h, edges = h_and_edges
+        d = density.Density(h, edges, parameters={},
+                            units={})
         return d
 
     def test_shape(self, D):
@@ -105,6 +113,76 @@ class TestDensity(object):
         with pytest.raises(ValueError):
             D._check_set_unit(units)
 
+    def test_check_set_unit_density_none(self, D):
+        units = {'density': None}
+        assert D._check_set_unit(units) == None
+
+    def test_check_set_unit_density_none(self, D):
+        del D.units['density']
+        D._check_set_unit({})
+        assert D.units['density'] == None
+        assert D._check_set_unit(D.units) == None
+
+    def test_parameters_isdensity(self, D):
+        with pytest.warns(UserWarning, match='Running make_density()'):
+            D.make_density()
+
+    def test_check_convert_density_grid_not_density(self, D1):
+        unit = 'nm^{-3}'
+        with pytest.raises(RuntimeError, match="The grid is not a density"):
+            D1.convert_density(unit)
+
+    def test_check_convert_density_value_error(self, D):
+        unit = 'A^{-2}'
+        with pytest.raises(ValueError, match="The name of the unit"):
+            D.convert_density(unit)
+
+    def test_check_convert_density_units_same_density_units(self, D):
+        unit = 'A^{-3}'
+        D_orig = copy.deepcopy(D)
+        D.convert_density(unit)
+        assert D.units['density'] == D_orig.units['density'] == unit
+        assert_almost_equal(D.grid, D_orig.grid)
+
+    def test_check_convert_density_units_density(self, D):
+        unit = 'nm^{-3}'
+        D_orig = copy.deepcopy(D)
+        D.convert_density(unit)
+        assert D.units['density'] == 'nm^{-3}'
+        assert_almost_equal(D.grid, 10**3 * D_orig.grid)
+
+    def test_convert_length_same_length_units(self, D):
+        unit = 'A'
+        D_orig = copy.deepcopy(D)
+        D.convert_length(unit)
+        assert D.units['length'] == D_orig.units['length'] == unit
+        assert_almost_equal(D.grid, D_orig.grid)
+
+    def test_convert_length_other_length_units(self, D):
+        unit = 'nm'
+        D_orig = copy.deepcopy(D)
+        D.convert_length(unit)
+        assert D.units['length'] == unit
+        assert_almost_equal(D.grid, D_orig.grid)
+
+    def test_repr(self, D, D1):
+        assert str(D) == '<Density density with (3, 4, 5) bins>'
+        assert str(D1) == '<Density histogram with (3, 4, 5) bins>'
+
+    def test_check_convert_length_edges(self, D):
+        D1 = copy.deepcopy(D)
+        unit = 'nm'
+        D.convert_length(unit)
+        for prev_edge, conv_edge in zip(D1.edges, D.edges):
+            assert_almost_equal(prev_edge, 10*conv_edge)
+
+    def test_check_convert_density_edges(self, D):
+        unit = 'nm^{-3}'
+        D_orig = copy.deepcopy(D)
+        D.convert_density(unit)
+        for new_den, orig_den in zip(D.edges, D_orig.edges):
+            assert_almost_equal(new_den, orig_den)
+
     @pytest.mark.parametrize('dxtype',
                              ("float", "double", "int", "byte"))
     def test_export_types(self, D, dxtype, tmpdir, outfile="density.dx"):
@@ -116,6 +194,7 @@ class TestDensity(object):
             data = dx.components['data']
         assert data.type == dxtype
 
+
 class DensityParameters(object):
     topology = TPR
     trajectory = XTC
@@ -126,7 +205,7 @@ class DensityParameters(object):
                   'solute': "protein and not name H*",
                   }
     references = {'static':
-                      {'meandensity': 0.016764271713091212, },
+                  {'meandensity': 0.016764271713091212, },
                   'static_sliced':
                       {'meandensity': 0.016764270747693617, },
                   'static_defined':
@@ -150,6 +229,7 @@ class DensityParameters(object):
     def universe(self):
         return mda.Universe(self.topology, self.trajectory, tpr_resid_from_one=False)
 
+
 class TestDensityAnalysis(DensityParameters):
     def check_DensityAnalysis(self, ag, ref_meandensity,
                                     tmpdir, runargs=None, **kwargs):
@@ -162,8 +242,8 @@ class TestDensityAnalysis(DensityParameters):
 
             D2 = density.Density(self.outfile)
             assert_almost_equal(
-                    D.results.density.grid, D2.grid, decimal=self.precision,
-                    err_msg="DX export failed: different grid sizes"
+                D.results.density.grid, D2.grid, decimal=self.precision,
+                err_msg="DX export failed: different grid sizes"
             )
 
     @pytest.mark.parametrize("mode", ("static", "dynamic"))
@@ -298,7 +378,7 @@ class TestDensityAnalysis(DensityParameters):
 
     def test_warn_results_deprecated(self, universe):
         D = density.DensityAnalysis(
-                universe.select_atoms(self.selections['static']))
+        universe.select_atoms(self.selections['static']))
         D.run(stop=1)
         wmsg = "The `density` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
@@ -323,7 +403,7 @@ class TestGridImport(object):
         # mock gridData in case there are testing scenarios where
         # it is not available
         mock = Mock()
-        with patch.dict('sys.modules', {'gridData':mock}):
+        with patch.dict('sys.modules', {'gridData': mock}):
             try:
                 import MDAnalysis.analysis.density
             except ImportError:
