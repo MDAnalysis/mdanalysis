@@ -72,7 +72,6 @@ from functools import lru_cache
 import numpy as np
 
 from ..exceptions import NoDataError
-from ..topology.guessers import guess_atom_element
 from ..core.topologyattrs import _TOPOLOGY_ATTRS
 from ..coordinates import memory
 from ..coordinates import base
@@ -316,9 +315,9 @@ class RDKitConverter(base.ConverterBase):
                 # assign coordinates
                 conf = Chem.Conformer(mol.GetNumAtoms())
                 for atom in mol.GetAtoms():
-                    idx = atom.GetIntProp("_MDAnalysis_index")
+                    idx = atom.GetIdx()
                     xyz = ag.positions[idx].astype(float)
-                    conf.SetAtomPosition(atom.GetIdx(), xyz)
+                    conf.SetAtomPosition(idx, xyz)
                 mol.AddConformer(conf)
                 # assign R/S to atoms and Z/E to bonds
                 Chem.AssignStereochemistryFrom3D(mol)
@@ -432,17 +431,16 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
         # infer bond orders and formal charges from the connectivity
         _infer_bo_and_charges(mol)
         mol = _standardize_patterns(mol, max_iter)
+        # reorder atoms to match MDAnalysis
+        order = np.argsort([atom.GetIntProp("_MDAnalysis_index")
+                            for atom in mol.GetAtoms()])
+        mol = Chem.RenumberAtoms(mol, order.astype(int).tolist())
 
     # sanitize if possible
     err = Chem.SanitizeMol(mol, catchErrors=True)
     if err:
         warnings.warn("Could not sanitize molecule: "
                       f"failed during step {err!r}")
-
-    # reorder atoms to match MDAnalysis
-    order = np.argsort([atom.GetIntProp("_MDAnalysis_index")
-                        for atom in mol.GetAtoms()])
-    mol = Chem.RenumberAtoms(mol, order.astype(int).tolist())
 
     return mol
 
@@ -496,14 +494,40 @@ def _add_mda_attr_to_rdkit(attr, value, mi):
     getattr(mi, "Set%s" % rdattr)(value)
 
 
+def _set_str_prop(atom, attr, value):
+    atom.SetProp(attr, value)
+
+def _set_float_prop(atom, attr, value):
+    atom.SetDoubleProp(attr, value)
+
+def _set_np_float_prop(atom, attr, value):
+    atom.SetDoubleProp(attr, float(value))
+
+def _set_int_prop(atom, attr, value):
+    atom.SetIntProp(attr, value)
+
+def _set_np_int_prop(atom, attr, value):
+    atom.SetIntProp(attr, int(value))
+
+_atom_property_dispatcher = {
+    str: _set_str_prop,
+    float: _set_float_prop,
+    np.float32: _set_np_float_prop,
+    np.float64: _set_np_float_prop,
+    int: _set_int_prop,
+    np.int8: _set_np_int_prop,
+    np.int16: _set_np_int_prop,
+    np.int32: _set_np_int_prop,
+    np.int64: _set_np_int_prop,
+    np.uint8: _set_np_int_prop,
+    np.uint16: _set_np_int_prop,
+    np.uint32: _set_np_int_prop,
+    np.uint64: _set_np_int_prop,
+}
+
 def _set_atom_property(atom, attr, value):
     """Saves any attribute and value into an RDKit atom property"""
-    if isinstance(value, (float, np.floating)):
-        atom.SetDoubleProp(attr, float(value))
-    elif isinstance(value, (int, np.integer)):
-        atom.SetIntProp(attr, int(value))
-    else:
-        atom.SetProp(attr, value)
+    _atom_property_dispatcher[type(value)](atom, attr, value)
 
 
 def _infer_bo_and_charges(mol):
@@ -690,11 +714,19 @@ def _standardize_patterns(mol, max_iter=200):
         fragments.append(reactant)
 
     # recombine fragments
-    mol = fragments.pop(0)
+    newmol = fragments.pop(0)
     for fragment in fragments:
-        mol = Chem.CombineMols(mol, fragment)
+        newmol = Chem.CombineMols(newmol, fragment)
 
-    return mol
+    # reassign all properties
+    _transfer_properties(mol, newmol)
+
+    # fix bonds with "crossed" stereo
+    for bond in newmol.GetBonds():
+        if bond.GetStereo() == Chem.BondStereo.STEREOANY:
+            bond.SetStereo(Chem.BondStereo.STEREONONE)
+
+    return newmol
 
 
 def _run_reaction(reaction, reactant):
@@ -724,7 +756,7 @@ def _run_reaction(reaction, reactant):
         if products:
             product = products[0][0]
             # map back atom properties from the reactant to the product
-            _reassign_props_after_reaction(reactant, product)
+            _reassign_index_after_reaction(reactant, product)
             # apply the next reaction to the product
             reactant = product
         else:
@@ -903,23 +935,34 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
                   "reasonable number of iterations")
 
 
-def _reassign_props_after_reaction(reactant, product):
-    """Maps back atomic properties from the reactant to the product.
+def _reassign_index_after_reaction(reactant, product):
+    """Maps back MDAnalysis index from the reactant to the product.
     The product molecule is modified inplace.
     """
-    for atom in product.GetAtoms():
-        try:
-            atom.GetIntProp("old_mapno")
-        except KeyError:
-            pass
-        else:
-            atom.ClearProp("old_mapno")
+    prop = "_MDAnalysis_index"
+    if reactant.GetAtoms()[0].HasProp(prop):
+        for atom in product.GetAtoms():
             idx = atom.GetUnsignedProp("react_atom_idx")
             old_atom = reactant.GetAtomWithIdx(idx)
-            for prop, value in old_atom.GetPropsAsDict().items():
-                _set_atom_property(atom, prop, value)
-            # fix bonds with "crossed" stereo
-            for bond in atom.GetBonds():
-                if bond.GetStereo() == Chem.BondStereo.STEREOANY:
-                    bond.SetStereo(Chem.BondStereo.STEREONONE)
-        atom.ClearProp("react_atom_idx")
+            value = old_atom.GetIntProp(prop)
+            _set_atom_property(atom, prop, value)
+
+
+def _transfer_properties(mol, newmol):
+    """Transfer properties between two RDKit molecules. Requires the
+    `_MDAnalysis_index` property to be present. Modifies `newmol` inplace.
+    """
+    atoms = mol.GetAtoms()
+    if atoms[0].HasProp("_MDAnalysis_index"):
+        props = {}
+        for atom in atoms:
+            ix = atom.GetIntProp("_MDAnalysis_index")
+            p = atom.GetPropsAsDict()
+            # remove properties assigned during reactions
+            p.pop("old_mapno", None)
+            p.pop("react_atom_idx", None)
+            props[ix] = p
+        for atom in newmol.GetAtoms():
+            ix = atom.GetIntProp("_MDAnalysis_index")
+            for attr, value in props[ix].items():
+                _set_atom_property(atom, attr, value)

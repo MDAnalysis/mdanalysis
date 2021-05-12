@@ -43,7 +43,7 @@ try:
         _standardize_patterns,
         _rebuild_conjugated_bonds,
         _set_atom_property,
-        _reassign_props_after_reaction,
+        _reassign_index_after_reaction,
     )
 except ImportError:
     pass
@@ -82,26 +82,10 @@ class MolFactory:
         mol.AddAtom(atom)
         return mol
 
-    def dummy_product_nomap():
-        mol = Chem.RWMol()
-        atom = Chem.Atom(1)
-        atom.SetUnsignedProp("react_atom_idx", 0)
-        mol.AddAtom(atom)
-        return mol
-
-    def dummy_reactant_noprops():
-        mol = Chem.RWMol()
-        atom = Chem.Atom(1)
-        mol.AddAtom(atom)
-        return mol
-
     def dummy_reactant():
         mol = Chem.RWMol()
         atom = Chem.Atom(1)
-        atom.SetProp("foo", "bar")
         atom.SetIntProp("_MDAnalysis_index", 1)
-        atom.SetDoubleProp("_MDAnalysis_charge", 4.2)
-        atom.SetProp("_MDAnalysis_type", "C.3")
         mol.AddAtom(atom)
         return mol
 
@@ -515,33 +499,36 @@ class TestRDKitFunctions(object):
         _set_atom_property(atom, prop, value)
         assert getattr(atom, getter)(prop) == value
 
-    @pytest.mark.parametrize("rdmol, product, name", [
-        ("dummy_reactant", "dummy_product", "props"),
-        ("dummy_reactant_noprops", "dummy_product", "noprops"),
-        ("dummy_reactant", "dummy_product_nomap", "nomap"),
+    @pytest.mark.parametrize("rdmol, product", [
+        ("dummy_reactant", "dummy_product"),
     ], indirect=["rdmol", "product"])
-    def test_reassign_props_after_reaction(self, rdmol, product, name):
-        _reassign_props_after_reaction(rdmol, product)
+    def test_reassign_index_after_reaction(self, rdmol, product):
+        _reassign_index_after_reaction(rdmol, product)
         atom = product.GetAtomWithIdx(0)
-        if name == "props":
-            assert atom.GetProp("foo") == "bar"
-            assert atom.GetIntProp("_MDAnalysis_index") == 1
-            assert atom.GetDoubleProp("_MDAnalysis_charge") == 4.2
-            assert atom.GetProp("_MDAnalysis_type") == "C.3"
-            with pytest.raises(KeyError, match="old_mapno"):
-                atom.GetIntProp("old_mapno")
-            with pytest.raises(KeyError, match="react_atom_idx"):
-                atom.GetUnsignedProp("react_atom_idx")
-        elif name == "noprops":
-            with pytest.raises(KeyError, match="old_mapno"):
-                atom.GetIntProp("old_mapno")
-            with pytest.raises(KeyError, match="react_atom_idx"):
-                atom.GetUnsignedProp("react_atom_idx")
-        elif name == "nomap":
-            with pytest.raises(KeyError, match="react_atom_idx"):
-                atom.GetUnsignedProp("react_atom_idx")
-            with pytest.raises(KeyError, match="_MDAnalysis_index"):
-                atom.GetIntProp("_MDAnalysis_index")
+        assert atom.GetIntProp("_MDAnalysis_index") == 1
+
+    @pytest.mark.parametrize("smi", [
+        "c1ccc(cc1)-c1ccccc1-c1ccccc1",
+        "c1cc[nH]c1",
+        "O=C([C@H](CC1=C[NH1+]=CN1)[NH3+])[O-]",
+    ])
+    def test_transfer_properties(self, smi):
+        mol = Chem.MolFromSmiles(smi)
+        mol = self.mol_to_template(mol)
+        old = {}
+        for atom in mol.GetAtoms():
+            ix = atom.GetIdx()
+            atom.SetIntProp("_MDAnalysis_index", ix)
+            atom.SetProp("dummy", f"foo_{ix}")
+            old[ix] = {"_MDAnalysis_index": ix, "dummy": f"foo_{ix}"}
+        _infer_bo_and_charges(mol)
+        newmol = _standardize_patterns(mol)
+        new = {}
+        for a in newmol.GetAtoms():
+            ix = a.GetIntProp("_MDAnalysis_index")
+            new[ix] = {"_MDAnalysis_index": ix,
+                       "dummy": a.GetProp("dummy")}
+        assert new == old
 
     @pytest.mark.parametrize("input_type, input_str", [
         ("smi", "c1ccc(cc1)-c1ccccc1-c1ccccc1"),
