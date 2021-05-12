@@ -486,8 +486,14 @@ class TestRDKitFunctions(object):
 
     @pytest.mark.parametrize("attr, value, getter", [
         ("index", 42, "GetIntProp"),
+        ("index", np.int8(42), "GetIntProp"),
+        ("index", np.int16(42), "GetIntProp"),
         ("index", np.int32(42), "GetIntProp"),
         ("index", np.int64(42), "GetIntProp"),
+        ("index", np.uint8(42), "GetIntProp"),
+        ("index", np.uint16(42), "GetIntProp"),
+        ("index", np.uint32(42), "GetIntProp"),
+        ("index", np.uint64(42), "GetIntProp"),
         ("charge", 4.2, "GetDoubleProp"),
         ("charge", np.float32(4.2), "GetDoubleProp"),
         ("charge", np.float64(4.2), "GetDoubleProp"),
@@ -498,6 +504,11 @@ class TestRDKitFunctions(object):
         prop = "_MDAnalysis_%s" % attr
         _set_atom_property(atom, prop, value)
         assert getattr(atom, getter)(prop) == value
+
+    def test_ignore_prop(self):
+        atom = Chem.Atom(1)
+        _set_atom_property(atom, "foo", {"bar": "baz"})
+        assert "foo" not in atom.GetPropsAsDict().items()
 
     @pytest.mark.parametrize("rdmol, product", [
         ("dummy_reactant", "dummy_product"),
@@ -528,6 +539,9 @@ class TestRDKitFunctions(object):
             ix = a.GetIntProp("_MDAnalysis_index")
             new[ix] = {"_MDAnalysis_index": ix,
                        "dummy": a.GetProp("dummy")}
+            props = a.GetPropsAsDict().keys()
+            assert "old_mapno" not in props
+            assert "react_atom_idx" not in props
         assert new == old
 
     @pytest.mark.parametrize("input_type, input_str", [
@@ -634,9 +648,9 @@ class TestRDKitFunctions(object):
             _rebuild_conjugated_bonds(mol, 2)
 
     @pytest.mark.parametrize("smi", [
-        "[Li+]", "[Na+]", "[K+]", "[Ag+]",
-        "[Mg+2]", "[Ca+2]", "[Cu+2]", "[Zn+2]", "[Fe+2]",
-        "[Al+3]",
+        "[Li+]", "[Na+]", "[K+]", "[Rb+]", "[Ag+]", "[Cs+]",
+        "[Mg+2]", "[Ca+2]", "[Cu+2]", "[Zn+2]", "[Sr+2]", "[Ba+2]",
+        "[Al+3]", "[Fe+2]",
         "[Cl-]",
         "[O-2]",
         "[Na+].[Cl-]",

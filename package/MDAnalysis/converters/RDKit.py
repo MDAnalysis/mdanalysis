@@ -966,12 +966,11 @@ def _transfer_properties(mol, newmol):
         props = {}
         for atom in atoms:
             ix = atom.GetIntProp("_MDAnalysis_index")
-            p = atom.GetPropsAsDict()
-            # remove properties assigned during reactions
-            p.pop("old_mapno", None)
-            p.pop("react_atom_idx", None)
-            props[ix] = p
+            props[ix] = atom.GetPropsAsDict()
         for atom in newmol.GetAtoms():
             ix = atom.GetIntProp("_MDAnalysis_index")
             for attr, value in props[ix].items():
                 _set_atom_property(atom, attr, value)
+            # remove properties assigned during reactions
+            atom.ClearProp("old_mapno")
+            atom.ClearProp("react_atom_idx")
