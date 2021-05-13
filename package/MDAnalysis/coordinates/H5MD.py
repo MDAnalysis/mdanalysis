@@ -643,12 +643,18 @@ class H5MDReader(base.ReaderBase):
                 self.ts.data[key] = self._file['observables'][key][
                     'value'][self._frame]
 
-        # pulls 'time' out of first available parent group
+        # pulls 'time' and 'step' out of first available parent group
         for name, value in self._has.items():
             if value:
                 if 'time' in self._particle_group[name]:
                     self.ts.data['time'] = self._particle_group[name][
                         'time'][self._frame]
+                    break
+        for name, value in self._has.items():
+            if value:
+                if 'step' in self._particle_group[name]:
+                    self.ts.data['step'] = self._particle_group[name][
+                        'step'][self._frame]
                     break
 
     def _get_frame_dataset(self, dataset):
@@ -868,6 +874,9 @@ class H5MDWriter(base.WriterBase):
     #: These variables are not written from :attr:`Timestep.data`
     #: dictionary to the observables group in the H5MD file
     data_blacklist = ['step', 'time', 'dt']
+
+    # This dictionary is used to translate MDAnalysis units to H5MD units.
+    # (https://nongnu.org/h5md/modules/units.html)
     _unit_translation_dict = {
         'time': {
             'ps': 'ps',
@@ -912,12 +921,12 @@ class H5MDWriter(base.WriterBase):
     def __init__(self,
                  filename,
                  n_atoms,
-                 n_frames=None,
                  driver=None,
                  comm=None,
                  convert_units=True,
-                 units=None,
+                 chunks=None,
                  compression=None,
+                 compression_opts=None,
                  **kwargs):
         """
         Parameters
@@ -926,11 +935,32 @@ class H5MDWriter(base.WriterBase):
             trajectory filename or open h5py file
         n_atoms : int
             number of atoms in trajectory
-        n_frames: int
-            number of frames in trajectory
+        driver : str (optional)
+            H5PY file driver used to open H5MD file
+        comm : :class:`MPI.Comm` (optional)
+            MPI communicator used to open H5MD file
+            Must be passed with `'mpio'` file driver
         convert_units : bool (optional)
             convert units from MDAnalysis to desired units
+        chunks : tuple
+            custom chunk layout to be applied to the position,
+            velocity, and force datasets. By default, these datasets
+            are chunked in (1, n_atoms, 3) blocks
+        compression : str or int
+            HDF5 dataset compression setting to be applied
+            to position, velocity, and force datasets. Allowed
+            settings are 'gzip', 'szip', 'lzf'. If an integer
+            in range(10), this indicates gzip compression level.
+            Otherwise, an integer indicates the number of a
+            dynamically loaded compression filter.
+        compression_opts :
+            Compression settings.  This is an integer for gzip, 2-tuple for
+            szip, etc. If specifying a dynamically loaded compression filter
+            number, this must be a tuple of values.
         **kwargs : dict
+
+        Raises
+        ------
 
         """
 
@@ -940,19 +970,20 @@ class H5MDWriter(base.WriterBase):
         self._driver = driver
         self._comm = comm
         self.n_atoms = n_atoms
-        self.n_frames = n_frames
-        self.units = units
+        self.units = None
+        self.chunks = (1, n_atoms, 3) if chunks is None else chunks
         self.compression = compression
+        self.compression_opts = compression_opts
         self.convert_units = convert_units
-
         self.h5md_file = None
+
+        # check which datasets are to be written
         self.has_positions = kwargs.get('positions', False)
         self.has_velocities = kwargs.get('velocities', False)
         self.has_forces = kwargs.get('forces', False)
         self._has = {'position': self.has_positions,
                      'velocity': self.has_velocities,
                      'force': self.has_forces}
-        self.chunks = kwargs.get('chunks', None)
 
         # Pull out various keywords to store in 'h5md' group
         self.author = kwargs.pop('author', 'N/A')
@@ -975,11 +1006,13 @@ class H5MDWriter(base.WriterBase):
             # Atomgroup?
             ts = ag.ts
             self.units = ag.universe.trajectory.units
+            self.max_frames = ag.universe.trajectory.n_frames
         except AttributeError:
             try:
                 # Universe?
                 ts = ag.trajectory.ts
                 self.units = ag.trajectory.units
+                self.max_frames = ag.universe.trajectory.n_frames
             except AttributeError:
                 errmsg = "Input obj is neither an AtomGroup or Universe"
                 raise TypeError(errmsg) from None
@@ -990,6 +1023,7 @@ class H5MDWriter(base.WriterBase):
 
         # Opens H5MD file to write with H5PY library and initializes
         # 'h5md' group and checks if unitcell is periodic
+        # This should only be called once when first timestep is read
         if self.h5md_file is None:
             self._init_h5md(ts)
 
@@ -1036,37 +1070,61 @@ class H5MDWriter(base.WriterBase):
         creator_group.attrs['name'] = self.creator
         creator_group.attrs['version'] = self.creator_version
 
-        self.data_keys = [key for key in ts.data.keys() if key not in self.data_blacklist]
-        if self.data_keys:
-            h5md_file.require_group('observables')
-            for key in self.data_keys:
-                self._create_observables_dataset(key)
-
+        # initialize trajectory group
         h5md_file.require_group('particles').require_group('trajectory')
         trajectory = self.h5md_file['particles/trajectory']
+
+        # intialize box group that contains unitcell information in box/edges
         trajectory.require_group('box').require_group('edges')
         trajectory['box'].attrs['dimension'] = 3
         if self.is_periodic(ts):
-            trajectory.require_dataset('box/edges/value', shape=(self.n_frames, 3, 3), dtype=np.float32)
-            trajectory.require_dataset('box/edges/step', shape=(self.n_frames,), dtype=np.int32)
-            trajectory.require_dataset('box/edges/time', shape=(self.n_frames,), dtype=np.float32)
+            trajectory.require_dataset('box/edges/value',
+                                        shape=(self.max_frames, 3, 3),
+                                        maxshape=(self.max_frames, 3, 3),
+                                        dtype=np.float32)
+            trajectory.require_dataset('box/edges/step',
+                                        shape=(self.max_frames,),
+                                        maxshape=(self.max_frames,),
+                                        dtype=np.int32)
+            trajectory.require_dataset('box/edges/time',
+                                        shape=(self.max_frames,),
+                                        maxshape=(self.max_frames,),
+                                        dtype=np.float32)
             trajectory['box'].attrs['boundary'] = ['periodic', 'periodic', 'periodic']
         else:
             trajectory['box'].attrs['boundary'] = [None, None, None]
 
+        # intialize pos, vel, force datasets from _has dictionary
         for name, value in self._has.items():
             if value:
                 self._create_trajectory_dataset(name)
 
-    def _create_observables_dataset(self, group):
+        # intialize observable datasets from ts.data dictionary that
+        # are NOT in self.data_blacklist
+        self.data_keys = [key for key in ts.data.keys() if key not in self.data_blacklist]
+        if self.data_keys:
+            h5md_file.require_group('observables')
+            for key in self.data_keys:
+                self._create_observables_dataset(key, ts.data[key])
+
+    def _create_observables_dataset(self, group, data):
         """ """
 
         observables = self.h5md_file['observables']
 
         observables.require_group(group)
-        observables.require_dataset(f'{group}/value', shape=(self.n_frames,), dtype=np.float32)
-        observables.require_dataset(f'{group}/step', shape=(self.n_frames,), dtype=np.int32)
-        observables.require_dataset(f'{group}/time', shape=(self.n_frames,), dtype=np.float32)
+        observables.require_dataset(f'{group}/value',
+                                    shape=(self.max_frames,) + data.shape,
+                                    maxshape=(self.max_frames,) + data.shape,
+                                    dtype=data.dtype)
+        observables.require_dataset(f'{group}/step',
+                                    shape=(self.max_frames,),
+                                    maxshape=(self.max_frames,),
+                                    dtype=np.int32)
+        observables.require_dataset(f'{group}/time',
+                                    shape=(self.max_frames,),
+                                    maxshape=(self.max_frames,),
+                                    dtype=np.float32)
 
     def _create_trajectory_dataset(self, group):
         """ """
@@ -1079,11 +1137,23 @@ class H5MDWriter(base.WriterBase):
         trajectory = self.h5md_file['particles/trajectory']
 
         trajectory.require_group(group)
-        trajectory.require_dataset(f'{group}/value', shape=(self.n_frames, self.n_atoms, 3), dtype=np.float32, chunks=self.chunks, compression=self.compression)
-        trajectory.require_dataset(f'{group}/step', shape=(self.n_frames,), dtype=np.int32)
-        trajectory.require_dataset(f'{group}/time', shape=(self.n_frames,), dtype=np.float32)
+        trajectory.require_dataset(f'{group}/value',
+                                   shape=(self.max_frames,self.n_atoms,3),
+                                   dtype=np.float32, chunks=self.chunks,
+                                   compression=self.compression,
+                                   compression_opts=self.compression_opts)
+        trajectory.require_dataset(f'{group}/step',
+                                   shape=(self.max_frames,),
+                                   maxshape=(self.max_frames,),
+                                   dtype=np.int32)
+        trajectory.require_dataset(f'{group}/time',
+                                   shape=(self.max_frames,),
+                                   maxshape=(self.max_frames,),
+                                   dtype=np.float32)
         if self.units is not None:
-            trajectory[f'{group}/value'].attrs['unit'] = self._unit_translation_dict[_group_unit_dict[group]][self.units[_group_unit_dict[group]]]
+            trajectory[f'{group}/value'].attrs['unit'] = self._unit_translation_dict[
+                                                         _group_unit_dict[group]][
+                                                         self.units[_group_unit_dict[group]]]
             trajectory[f'{group}/time'].attrs['unit'] = self._unit_translation_dict['time'][self.units['time']]
 
     def _write_next_timestep(self, ts):
@@ -1096,34 +1166,25 @@ class H5MDWriter(base.WriterBase):
         """
 
         file = self.h5md_file
+        _ts_dict = {'position': ts._pos if self.has_positions else None,
+                    'velocity': ts._velocities if self.has_velocities else None,
+                    'force': ts._forces if self.has_forces else None}
 
-        # temporarily commenting out, need to figure out how to fill this
-        # dictionary if velocities/forces do not exist
-        '''_group_ts_dict = {'position': ts._pos,
-                          'velocity': ts._velocities,
-                          'force': ts._forces}'''
+        # fill in the box dataset
+        file['particles/trajectory/box/edges/value'][ts.frame] = ts._unitcell
+        file['particles/trajectory/box/edges/step'][ts.frame] = ts.data['step']
+        file['particles/trajectory/box/edges/time'][ts.frame] = ts.time
 
+        # write values to position, velocity, and force datasets from ts if they exist
+        for key, value in self._has.items():
+            if value:
+                file[f'particles/trajectory/{key}/value'][ts.frame] = _ts_dict[key]
+                file[f'particles/trajectory/{key}/step'][ts.frame] = ts.data['step']
+                file[f'particles/trajectory/{key}/time'][ts.frame] = ts.time
+
+        # write values to any ts.data observables from current timestep
         if self.data_keys:
             for key in self.data_keys:
                 file[f'observables/{key}/value'][ts.frame] = ts.data[key]
                 file[f'observables/{key}/step'][ts.frame] = ts.data['step']
                 file[f'observables/{key}/time'][ts.frame] = ts.time
-
-        if self.has_positions:
-            file['particles/trajectory/position/value'][ts.frame] = ts._pos
-            file['particles/trajectory/position/step'][ts.frame] = ts.data['step']
-            file['particles/trajectory/position/time'][ts.frame] = ts.time
-
-        if self.has_velocities:
-            file['particles/trajectory/velocity/value'][ts.frame] = ts._velocities
-            file['particles/trajectory/velocity/step'][ts.frame] = ts.data['step']
-            file['particles/trajectory/velocity/time'][ts.frame] = ts.time
-
-        if self.has_forces:
-            file['particles/trajectory/force/value'][ts.frame] = ts._forces
-            file['particles/trajectory/force/step'][ts.frame] = ts.data['step']
-            file['particles/trajectory/force/time'][ts.frame] = ts.time
-
-        file['particles/trajectory/box/edges/value'][ts.frame] = ts._unitcell
-        file['particles/trajectory/box/edges/step'][ts.frame] = ts.data['step']
-        file['particles/trajectory/box/edges/time'][ts.frame] = ts.time
