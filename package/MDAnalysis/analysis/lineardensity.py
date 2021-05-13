@@ -116,15 +116,10 @@ class LinearDensity(AnalysisBase):
         # AtomGroup.wrap())
         self.grouping = grouping
 
-        # Dictionary containing results
-        self.results = {'x': {'dim': 0}, 'y': {'dim': 1}, 'z': {'dim': 2}}
-
-        warnings.warn(
-            "The structure of the `results` dictionary will change in "
-            "MDAnalysis version 2.0.",
-            category=DeprecationWarning
-        )
-
+        # Initiate result instances
+        self.results["x"] = Results(dim=0)
+        self.results["y"] = Results(dim=1)
+        self.results["z"] = Results(dim=2)
         # Box sides
         self.dimensions = self._universe.dimensions[:3]
         self.volume = np.prod(self.dimensions)
