@@ -9,6 +9,10 @@ on:
       - develop
       - master
 
+concurrency: 
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
 defaults:
   run:
     shell: bash -l {0}
