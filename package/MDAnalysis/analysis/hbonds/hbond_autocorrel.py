@@ -30,6 +30,7 @@
 .. versionadded:: 0.9.0
 
 .. deprecated:: 2.0.0
+
    This module was moved to
    :mod:`MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel` and access to this
    module through :mod:`MDAnalysis.analysis.hbonds.hbond_autocorrel` will be
