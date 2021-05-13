@@ -254,8 +254,9 @@ class RDKitConverter(base.ConverterBase):
 
     To get a better understanding of how the converter works under the hood,
     please refer to the following RDKit UGM presentation:
-    - `Video (4:55 to 8:05) <https://youtu.be/5b5wYmK4URU>`__
-    - Slides <https://github.com/rdkit/UGM_2020/blob/master/Presentations/C%C3%A9dricBouysset_From_RDKit_to_the_Universe.pdf>`__
+
+    * `Video (4:55 to 8:05) <https://youtu.be/5b5wYmK4URU>`__
+    * `Slides <https://github.com/rdkit/UGM_2020/blob/master/Presentations/C%C3%A9dricBouysset_From_RDKit_to_the_Universe.pdf>`__
 
 
     .. versionadded:: 2.0.0
