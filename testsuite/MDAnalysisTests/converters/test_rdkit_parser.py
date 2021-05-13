@@ -34,7 +34,7 @@ Chem = pytest.importorskip('rdkit.Chem')
 AllChem = pytest.importorskip('rdkit.Chem.AllChem')
 
 class RDKitParserBase(ParserBase):
-    parser = mda.topology.RDKitParser.RDKitParser
+    parser = mda.converters.RDKitParser.RDKitParser
     expected_attrs = ['ids', 'names', 'elements', 'masses', 'aromaticities',
                       'resids', 'resnums',
                       'segids',

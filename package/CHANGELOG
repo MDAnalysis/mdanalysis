@@ -23,6 +23,9 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * New RDKitConverter cache system to fix issue #2958 (PR #2942)
+  * Fixed OpenMM converter documentation not showing up in the Converters
+    section (Issue #3262, PR #2882)
   * WaterBridgeAnalysis double counts the water (Issue #3119, PR #3120)
   * NCDFReader now defaults to a dt value of 1.0 ps when it cannot estimate
     it from the first two frames of the file (Issue #3166)
@@ -107,6 +110,8 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Added guessers for aromaticity and Gasteiger partial charges (Issue #2468,
+    PR #2926)
   * Added `Results` class for storing analysis results (#3115, PR #3233)
   * Added intra_bonds, intra_angles, intra_dihedrals etc. to return only
     the connections involving atoms within the AtomGroup, instead of
@@ -175,6 +180,32 @@ Enhancements
     checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
 
 Changes
+  * `analysis.rdf.InterRDF` and `analysis.rdf.InterRDF_s` now store
+    their result attributes using the `analysis.base.Results` class
+    (Issue #3276, #3261)
+  * Adds a `force` parameter to the RDKitConverter to allow conversion of
+    molecules with no hydrogen atom, and a `set_converter_cache_size` function
+    to change how many items are retained in the cache (PR #2942)
+  * `hydrogenbonds.WaterBridgeAnalysis.generate_table()` now returns the table; as previously, 
+    it also generates the `table` attribute but the attribute will be removed in 3.0.0.
+  * `hydrogenbonds.WaterBridgeAnalysis` now stores data using the
+    `hydrogenbonds.WaterBridgeAnalysis.results` attribute
+    (Issue #3261, Issue #3270)
+  * Introduces a new converter API with all converters in MDAnalysis.converters
+    (Issue #2790, PR #2882)
+  * The ParmEd classes were moved to the `converters` module (PR #2882)
+  * The `convert_to` method of the AtomGroup is now case-insensitive and
+    passes keyword arguments to the underlying converter. It can also be used
+    as `convert_to.lowercase_pkg_name()` for tab-completion (PR #2882)
+  * `analysis.polymer.PersistenceLength` class now stores `lb`,
+    `lp` and `fit` using the `analysis.base.Results` class 
+    (Issues #3289, #3291)
+  * `analysis.hole2.HoleAnalysis` now stores ``sphpdbs``, ``outfiles``
+    and ``profiles`` in the `analysis.base.Results` class (Issues #3261, #3269)
+  * `analysis.diffusionmap.DistanceMatrix` class now stores `dist_matrix`
+    using the `analysis.base.Results` class (Issues #3288, #3290)
+  * `helix_analysis.HELANAL` now uses the `analysis.base.Results` class to
+    store results attributes (Issue #3261, #3267)
   * `analysis.align.AlignTraj` and `analysis.align.AverageStructure` now store
     their result attributes using the `analysis.base.Results` class
     (Issues #3278 and #3261)
@@ -197,7 +228,7 @@ Changes
     analysis.hydrogenbonds.hbond_analysis (Issues #2739, #2746)
   * `GNMAnalysis`, `LinearDensity`, `PersistenceLength` and
     `AnalysisFromFunction` use the `results` attribute.
-  * Fixed inaccurate docstring inside the RMSD class (Issue #2796, PR #3134) 
+  * Fixed inaccurate docstring inside the RMSD class (Issue #2796, PR #3134)
   * TPRParser now loads TPR files with `tpr_resid_from_one=True` by default,
     which starts TPR resid indexing from 1 (instead of 0 as in 1.x) (Issue #2364, PR #3152)
   * Introduces encore specific C compiler arguments to allow for lowering of
@@ -241,6 +272,35 @@ Changes
   * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
 
 Deprecations
+  * The `bins`, `edges`, `count`, `rdf` attributes for `analysis.rdf.InterRDF`
+    and `analysis.rdf.InterRDF_s`, and `cdf` attributes for
+    `analysis.rdf.InterRDF_s` are now deprecated in favour of `results.bins`,
+    `results.edges`, `results.count`, `results.rdf` and `results.cdf`
+    (Issue #3276, #3261)
+  * The `hydrogenbonds.WaterBridgeAnalysis.table` attribute is now deprecated and will
+    be removed in 3.0.0.
+  * The `hydrogenbonds.WaterBridgeAnalysis.network` attribute is now deprecated
+    in favour of `hydrogenbonds.WaterBridgeAnalysis.results.network`. It will be
+    removed in 3.0.0 (Issue #3261, Issue #3270)
+  * The `analysis.Contacts.timeseries` attribute is now deprecated in favour of 
+    `analysis.Contacts.results.timeseries`. It will be removed in 3.0.0
+    (Issue #3261)
+  * In 3.0.0 the ParmEd classes will only be accessible from the
+    `MDAnalysis.converters` module.
+  * The `analysis.polymer.PersistenceLength.lb`,
+    `analysis.polymer.PersistenceLength.lp` and 
+    `analysis.polymer.PersistenceLength.fit` attributes are now deprecated in
+    favour of `analysis.polymer.PersistenceLength.results.lb`,
+    `analysis.polymer.PersistenceLength.results.lp` and
+    `analysis.polymer.PersistenceLength.results.fit` respectively. They will
+    be removed in 3.0.0 (Issues #3289, #3291)
+  * The ``sphpdbs``, ``outfiles`` and ``profiles`` attributes of
+    `analysis.hole2.HoleAnalysis` are now deprecated in favour of
+    ``results.sphpdbs``, ``results.outfiles`` and
+    ``results.profiles`` (Issues #3261, #3269)
+  * The `analysis.diffusionmap.DistanceMatrix.dist_matrix` is now deprecated in
+    favour of `analysis.diffusionmap.DistanceMatrix.results.dist_matrix`.
+    It will be removed in 3.0.0 (Issues #3288, #3290)
   * The `analysis.align.AlignTraj.rmsd` attribute is now deprecated in
     favour of `analysis.align.AlignTraj.results.rmsd` (Issue #3278, #3261)
   * The `universe`, `positions`, and `rmsd` attributes of
@@ -257,7 +317,7 @@ Deprecations
   * The `angles` attribute for the `dihedrals` classes (Dihedral,
     Ramachandran, Janin) is now deprecated in favour of `results.angles`. It
     will be removed in 3.0.0 (Issue #3261)
-  * The `analysis.Contacts.timeseries` attribute is now deprecated in favour of 
+  * The `analysis.Contacts.timeseries` attribute is now deprecated in favour of
     `analysis.Contacts.results.timeseries`. It will be removed in 3.0.0
     (Issue #3261)
   * The `density` attribute of `analysis.density.DensityAnalysis` is now

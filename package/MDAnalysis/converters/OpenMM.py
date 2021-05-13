@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""OpenMM structure I/O --- :mod:`MDAnalysis.coordinates.OpenMM`
+"""OpenMM structure I/O --- :mod:`MDAnalysis.converters.OpenMM`
 ================================================================
 
 
@@ -66,8 +66,7 @@ Classes
 
 import numpy as np
 
-from . import base
-from .. import units
+from ..coordinates import base
 
 
 class OpenMMSimulationReader(base.SingleFrameReaderBase):
