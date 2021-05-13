@@ -275,15 +275,15 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(u, 'protein and (resid 1)', 'protein and (resid 4)',
                                  order=4)
         # Build an dummy WaterBridgeAnalysis object for testing
-        wb._network = []
-        wb._network.append({(1, 0, 12, None, 2.0, 180.0): None})
-        wb._network.append({(0, None, 12, 13, 2.0, 180.0): None})
-        wb._network.append({(1, 0, 3, None, 2.0, 180.0):
+        wb.results.network = []
+        wb.results.network.append({(1, 0, 12, None, 2.0, 180.0): None})
+        wb.results.network.append({(0, None, 12, 13, 2.0, 180.0): None})
+        wb.results.network.append({(1, 0, 3, None, 2.0, 180.0):
                             {(4, 2, 12, None, 2.0, 180.0): None}})
-        wb._network.append({(0, None, 3, 2, 2.0, 180.0):
+        wb.results.network.append({(0, None, 3, 2, 2.0, 180.0):
                             {(4, 2, 5, None, 2.0, 180.0):
                              {(5, None, 11, 12, 2.0, 180.0): None}}})
-        wb.timesteps = range(len(wb._network))
+        wb.timesteps = range(len(wb.results.network))
         return wb
 
     def test_nodata(self, universe_DA):
@@ -311,21 +311,21 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 9)',
                                  'protein and (resid 10)', order=0)
         wb.run()
-        assert wb._network == [{}]
+        assert wb.results.network == [{}]
 
     def test_loop(self, universe_loop):
         '''Test if loop can be handled correctly'''
         wb = WaterBridgeAnalysis(universe_loop, 'protein and (resid 1)',
                                  'protein and (resid 1 or resid 4)')
         wb.run()
-        assert_equal(len(wb._network[0].keys()), 2)
+        assert_equal(len(wb.results.network[0].keys()), 2)
 
     def test_donor_accepter(self, universe_DA):
         '''Test zeroth order donor to acceptor hydrogen bonding'''
         wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 1)',
         'protein and (resid 4)', order=0, update_selection=True, debug=True)
         wb.run(verbose=False)
-        network = wb._network[0]
+        network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
 
     def test_donor_accepter_heavy(self, universe_DA):
@@ -333,7 +333,7 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 1)',
         'protein and (resid 4)', order=0, update_selection=True, debug=True, distance_type='heavy')
         wb.run(verbose=False)
-        network = wb._network[0]
+        network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
 
     def test_donor_accepter_pbc(self, universe_DA_PBC):
@@ -341,7 +341,7 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_DA_PBC, 'protein and (resid 1)',
             'protein and (resid 4)', order=0, pbc=True)
         wb.run(verbose=False)
-        network = wb._network[0]
+        network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
 
     def test_accepter_donor(self, universe_AD):
@@ -349,7 +349,7 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_AD, 'protein and (resid 1)',
                                  'protein and (resid 4)', order=0)
         wb.run(verbose=False)
-        network = wb._network[0]
+        network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 1, 2))
 
     def test_acceptor_water_accepter(self, universe_AWA):
@@ -358,7 +358,7 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_AWA, 'protein and (resid 1)',
                                  'protein and (resid 4)')
         wb.run(verbose=False)
-        network = wb._network[0]
+        network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
         assert_equal(list(second.keys())[0][:4], (3, 1, 4, None))
@@ -370,7 +370,7 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_DWA, 'protein and (resid 1)',
                                  'protein and (resid 4)')
         wb.run(verbose=False)
-        network = wb._network[0]
+        network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
         second = network[list(network.keys())[0]]
         assert_equal(list(second.keys())[0][:4], (3, 2, 4, None))
@@ -382,7 +382,7 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_AWD, 'protein and (resid 1)',
                                  'protein and (resid 4)')
         wb.run(verbose=False)
-        network = wb._network[0]
+        network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
         assert_equal(list(second.keys())[0][:4], (1, None, 3, 4))
@@ -394,7 +394,7 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_DWD, 'protein and (resid 1)',
                                  'protein and (resid 4)')
         wb.run(verbose=False)
-        network = wb._network[0]
+        network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
         second = network[list(network.keys())[0]]
         assert_equal(list(second.keys())[0][:4], (2, None, 3, 4))
@@ -404,7 +404,7 @@ class TestWaterBridgeAnalysis(object):
         '''Test case where no water bridge exists'''
         wb = WaterBridgeAnalysis(universe_empty, 'protein', 'protein')
         wb.run(verbose=False)
-        assert_equal(wb._network[0], defaultdict(dict))
+        assert_equal(wb.results.network[0], defaultdict(dict))
 
     def test_same_selection(self, universe_DWA):
         '''
@@ -415,7 +415,7 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_DWA, 'protein and resid 1',
                                  'protein and resid 1')
         wb.run(verbose=False)
-        assert_equal(wb._network[0], defaultdict(dict))
+        assert_equal(wb.results.network[0], defaultdict(dict))
 
     def test_acceptor_2water_accepter(self, universe_AWWA):
         '''Test case where the hydrogen bond acceptor from selection 1 form second order
@@ -424,12 +424,12 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_AWWA, 'protein and (resid 1)',
                                  'protein and (resid 4)')
         wb.run(verbose=False)
-        assert_equal(wb._network[0], defaultdict(dict))
+        assert_equal(wb.results.network[0], defaultdict(dict))
         # test second order
         wb = WaterBridgeAnalysis(universe_AWWA, 'protein and (resid 1)',
                                 'protein and (resid 4)', order=2)
         wb.run(verbose=False)
-        network = wb._network[0]
+        network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
         assert_equal(list(second.keys())[0][:4], (3, 1, 4, None))
@@ -440,7 +440,7 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_AWWA, 'protein and (resid 1)',
                                  'protein and (resid 4)', order=3)
         wb.run(verbose=False)
-        network = wb._network[0]
+        network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
         assert_equal(list(second.keys())[0][:4], (3, 1, 4, None))
@@ -454,12 +454,12 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_AWWWA, 'protein and (resid 1)',
                                  'protein and (resid 5)', order=2)
         wb.run(verbose=False)
-        assert_equal(wb._network[0], defaultdict(dict))
+        assert_equal(wb.results.network[0], defaultdict(dict))
 
         wb = WaterBridgeAnalysis(universe_AWWWA, 'protein and (resid 1)',
                                  'protein and (resid 5)', order=3)
         wb.run(verbose=False)
-        network = wb._network[0]
+        network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
         assert_equal(list(second.keys())[0][:4], (3, 1, 4, None))
@@ -472,7 +472,7 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_AWWWA, 'protein and (resid 1)',
                                  'protein and (resid 5)', order=4)
         wb.run(verbose=False)
-        network = wb._network[0]
+        network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
         assert_equal(list(second.keys())[0][:4], (3, 1, 4, None))
@@ -488,12 +488,12 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_AWWWWA, 'protein and (resid 1)',
                                  'protein and (resid 6)', order=3)
         wb.run(verbose=False)
-        assert_equal(wb._network[0], defaultdict(dict))
+        assert_equal(wb.results.network[0], defaultdict(dict))
 
         wb = WaterBridgeAnalysis(universe_AWWWWA, 'protein and (resid 1)',
                                  'protein and (resid 6)', order=4)
         wb.run(verbose=False)
-        network = wb._network[0]
+        network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
         assert_equal(list(second.keys())[0][:4], (3, 1, 4, None))
@@ -508,7 +508,7 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_AWWWWA, 'protein and (resid 1)',
                                  'protein and (resid 6)', order=5)
         wb.run(verbose=False)
-        network = wb._network[0]
+        network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
         assert_equal(list(second.keys())[0][:4], (3, 1, 4, None))
@@ -527,7 +527,7 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_branch, 'protein and (resid 1)',
                                  'protein and (resid 4 or resid 5)', order=2)
         wb.run(verbose=False)
-        network = wb._network[0]
+        network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
         assert_equal(list(second.keys())[0][:4], (3, 1, 4, None))
@@ -541,7 +541,7 @@ class TestWaterBridgeAnalysis(object):
                                  'protein and (resid 4 or resid 5)', order=2)
         wb.output_format = 'sele1_sele2'
         wb.run(verbose=False)
-        timeseries = sorted(wb.timeseries[0])
+        timeseries = sorted(wb.results.timeseries[0])
 
         assert_equal(timeseries[0][:4], (0, 2, ('ALA', 1, 'O'), ('SOL', 2, 'HW1')))
         assert_equal(timeseries[1][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
@@ -554,7 +554,7 @@ class TestWaterBridgeAnalysis(object):
                                  'protein and (resid 4 or resid 5)', order=2)
         wb.output_format = 'donor_acceptor'
         wb.run(verbose=False)
-        timeseries = sorted(wb.timeseries[0])
+        timeseries = sorted(wb.results.timeseries[0])
 
         assert_equal(timeseries[0][:4], (2, 0, ('SOL', 2, 'HW1'), ('ALA', 1, 'O')))
         assert_equal(timeseries[1][:4], (3, 4, ('SOL', 2, 'HW2'), ('SOL', 3, 'OW')))
@@ -566,16 +566,16 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)',
                                  'protein and (resid 4 or resid 8)', order=1)
         wb.run(verbose=False)
-        network = wb._network[0]
+        network = wb.results.network[0]
         assert_equal(list(network.keys())[0][:4], (0, None, 2, 1))
         second = network[list(network.keys())[0]]
         assert_equal(list(second.keys())[0][:4], (3, 1, 4, None))
         assert_equal(second[list(second.keys())[0]], None)
-        network = wb._network[0]
+        network = wb.results.network[0]
         wb = WaterBridgeAnalysis(universe_AWA_AWWA, 'protein and (resid 1 or resid 5)',
                                  'protein and (resid 4 or resid 8)', order=2)
         wb.run(verbose=False)
-        network = wb._network[0]
+        network = wb.results.network[0]
         assert_equal([(0, None, 2, 1), (5, None, 7, 6)],
                      sorted([key[:4] for key in list(network.keys())]))
 
@@ -711,13 +711,19 @@ class TestWaterBridgeAnalysis(object):
 
     def test_generate_table_hba(self, wb_multiframe):
         '''Test generate table using hydrogen bond analysis format'''
-        wb_multiframe.generate_table(output_format='donor_acceptor')
-        assert_array_equal(sorted(wb_multiframe.table.donor_resid), [1, 1, 2, 2, 2, 6, 6])
+        table = wb_multiframe.generate_table(output_format='donor_acceptor')
+        assert_array_equal(
+            sorted(table.donor_resid),
+            [1, 1, 2, 2, 2, 6, 6],
+        )
 
     def test_generate_table_s1s2(self, wb_multiframe):
         '''Test generate table using hydrogen bond analysis format'''
-        wb_multiframe.generate_table(output_format='sele1_sele2')
-        assert_array_equal(sorted(wb_multiframe.table.sele1_resid), [1, 1, 1, 1, 2, 2, 3])
+        table = wb_multiframe.generate_table(output_format='sele1_sele2')
+        assert_array_equal(
+            sorted(table.sele1_resid),
+            [1, 1, 1, 1, 2, 2, 3],
+        )
 
     def test_timesteps_by_type(self, wb_multiframe):
         '''Test the timesteps_by_type function'''
@@ -748,8 +754,20 @@ class TestWaterBridgeAnalysis(object):
         wb.run()
         assert len(wb.timeseries[0]) == 2
 
+    def test_warn_results_deprecated(self, universe_DA):
+        wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 9)',
+                                 'protein and (resid 10)', order=0)
+        wb.run()
+
+        wmsg = "The `network` attribute was deprecated in MDAnalysis 2.0.0"
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            assert_equal(wb.network, wb.results.network)
+
+        wmsg = "The `timeseries` attribute was deprecated in MDAnalysis 2.0.0"
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            assert_equal(wb.timeseries, wb.results.timeseries)
+
 def test_import_warning():
     wmsg = 'This module has been moved to'
     with pytest.warns(DeprecationWarning, match=wmsg):
         reload_module(MDAnalysis.analysis.hbonds.wbridge_analysis)
-
