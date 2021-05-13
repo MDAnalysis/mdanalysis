@@ -386,11 +386,6 @@ class AnalysisFromFunction(AnalysisBase):
         self.results.times = self.times
         self.results.timeseries = np.asarray(self.results.timeseries)
 
-        warnings.warn(
-                "The structure of the `results` array will change in "
-                "MDAnalysis version 2.0.", category=DeprecationWarning
-                )
-
 
 def analysis_class(function):
     r"""Transform a function operating on a single frame to an
