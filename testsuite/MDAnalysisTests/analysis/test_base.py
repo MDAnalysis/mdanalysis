@@ -338,19 +338,10 @@ def test_analysis_class():
         ana_class(2)
 
 
-def test_AnalysisFromFunction_warning(u):
-    func = base.AnalysisFromFunction(simple_function, mobile=u.atoms)
-    msg = ("The structure of the `results` array will change in MDAnalysis "
-           "version 2.0.")
-    with pytest.warns(DeprecationWarning, match=msg):
-        func.run()
-
-
 def test_analysis_class_decorator():
     # Issue #1511
     # analysis_class should not raise
     # a DeprecationWarning
-    # PR 3194 - only one specific DeprecationWarning should be raised
     u = mda.Universe(PSF, DCD)
 
     def distance(a, b):
@@ -358,13 +349,5 @@ def test_analysis_class_decorator():
 
     Distances = base.analysis_class(distance)
 
-    # temporarily switch from no_deprecated_call to a standard warn capture
-    # revert in version 2.0
-    # with no_deprecated_call():
-    with pytest.warns(DeprecationWarning) as record:
+    with no_deprecated_call():
         d = Distances(u.atoms[:10], u.atoms[10:20]).run()
-
-    assert len(record) == 1
-    msg = ("The structure of the `results` array will change in MDAnalysis "
-           "version 2.0.")
-    assert str(record[0].message) == msg

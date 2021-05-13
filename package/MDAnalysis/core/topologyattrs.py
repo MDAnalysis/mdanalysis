@@ -45,7 +45,6 @@ from types import MethodType
 import Bio.Seq
 import Bio.SeqRecord
 import numpy as np
-from inspect import signature as inspect_signature
 
 from ..lib.util import (cached, convert_aa_code, iterable, warn_if_not_unique,
                         unique_int_1d)

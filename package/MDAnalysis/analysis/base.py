@@ -31,7 +31,6 @@ from collections import UserDict
 import inspect
 import logging
 import itertools
-import warnings
 
 import numpy as np
 from MDAnalysis import coordinates
@@ -330,10 +329,6 @@ class AnalysisFromFunction(AnalysisBase):
     ------
     ValueError
         if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`
-
-        .. deprecated:: 1.1.0
-           The structure of the ``results`` array will change in
-           MDAnalysis 2.0.
 
     Example
     -------

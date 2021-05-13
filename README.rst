@@ -61,7 +61,7 @@ of MDAnalysis.
 
 **Developers** may also want to refer to the `MDAnalysis API docs`_.
 
-A growing number of **tutorials_** are available that explain how to
+A growing number of `tutorials`_ are available that explain how to
 conduct RMSD calculations, structural alignment, distance and contact
 analysis, and many more.
 

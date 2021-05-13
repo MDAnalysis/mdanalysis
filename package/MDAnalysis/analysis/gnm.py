@@ -303,12 +303,6 @@ class GNMAnalysis(AnalysisBase):
         outputobject.eigenvalues.append(w[list_map[1]])
         outputobject.eigenvectors.append(v[list_map[1]])
 
-        warnings.warn(
-            "The structure of the `results` list will change in "
-            "MDAnalysis version 2.0.",
-            category=DeprecationWarning
-        )
-
     def generate_kirchoff(self):
         """Generate the Kirchhoff matrix of contacts.
 

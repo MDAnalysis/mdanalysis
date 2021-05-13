@@ -24,6 +24,7 @@ import warnings
 from ..converters.ParmEd import (ParmEdConverter, ParmEdReader,
                                  get_indices_from_subset, MDA2PMD,)
 
+
 warnings.warn(
     "This module is deprecated as of MDAnalysis version 2.0.0. "
     "It will be removed in MDAnalysis version 3.0.0. "

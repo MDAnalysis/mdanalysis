@@ -218,18 +218,6 @@ def return_empty_on_apply(func):
     return apply
 
 
-def return_empty_on_apply(func):
-    """
-    Decorator to return empty AtomGroups from the apply() function
-    without evaluating it
-    """
-    @functools.wraps(func)
-    def apply(self, group):
-        if len(group) == 0:
-            return group
-        return func(self, group)
-    return apply
-
 class _Selectionmeta(type):
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
@@ -1042,7 +1030,6 @@ class NucleicSelection(Selection):
 
     .. versionchanged:: 0.8
        additional Gromacs selections
-
     .. versionchanged:: 1.0.1
        nucl_res changed to set (from numpy array)
        performance improved by ~100x on larger systems

@@ -1,6 +1,5 @@
 from io import StringIO
 from collections import defaultdict
-from six.moves import reload_module
 
 from numpy.testing import (
     assert_equal, assert_array_equal,)
@@ -752,7 +751,7 @@ class TestWaterBridgeAnalysis(object):
         wb = WaterBridgeAnalysis(u, 'resname LEU and name O',
                                  'resname LEU and name N H', order=4)
         wb.run()
-        assert len(wb.timeseries[0]) == 2
+        assert len(wb.results.timeseries[0]) == 2
 
     def test_warn_results_deprecated(self, universe_DA):
         wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 9)',
@@ -766,8 +765,3 @@ class TestWaterBridgeAnalysis(object):
         wmsg = "The `timeseries` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
             assert_equal(wb.timeseries, wb.results.timeseries)
-
-def test_import_warning():
-    wmsg = 'This module has been moved to'
-    with pytest.warns(DeprecationWarning, match=wmsg):
-        reload_module(MDAnalysis.analysis.hbonds.wbridge_analysis)

@@ -185,6 +185,7 @@ jobs:
         fail_ci_if_error: True
         verbose: True
 
+
   build_docs:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
@@ -291,7 +292,6 @@ jobs:
         channel-priority: flexible
         channels: conda-forge
         add-pip-as-python-dependency: true
-        mamba-version: "*"
         architecture: x64
 
     - name: install
@@ -323,7 +323,6 @@ jobs:
         channels: conda-forge
         add-pip-as-python-dependency: true
         # mamba not enabled as install longer than deps install
-        mamba-version: "*"
         architecture: x64
 
     - name: install_conda

@@ -1344,8 +1344,8 @@ def get_weights(atoms, weights):
             raise ValueError("weights must be a 1D array, not with shape "
                             "{}".format(np.asarray(weights, dtype=object).shape))
         elif len(weights) != len(atoms):
-            raise ValueError("weights (length {}) must be of same length as "
-                             "the atoms ({})".format(
+            raise ValueError("weights (length {0}) must be of same length as "
+                             "the atoms ({1})".format(
                                  len(weights), len(atoms)))
     elif weights is not None:
         raise ValueError("weights must be {'mass', None} or an iterable of the "

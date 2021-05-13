@@ -328,7 +328,8 @@ Deprecations
     from analysis.hbonds in 3.0.0 (PR #3258)
   * In 2.1.0 the TRZReader will default to a dt of 1.0 ps when failing to
     read it from the input TRZ trajectory.
-        
+
+
 05/01/21  IAlibay
 
   * 1.1.1

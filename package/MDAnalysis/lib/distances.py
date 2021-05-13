@@ -330,7 +330,7 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
     An automatic guessing of the optimal method to calculate the distances is
     included in the function. An optional keyword for the method is also
     provided. Users can enforce a particular method with this functionality.
-    Currently brute force and periodic KDtree methods are
+    Currently brute force, grid search, and periodic KDtree methods are
     implemented.
 
     Parameters
@@ -348,7 +348,7 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
-    method : {'bruteforce', 'pkdtree'}, optional
+    method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
         method.
     return_distances : bool, optional
@@ -383,6 +383,7 @@ def capped_distance(reference, configuration, max_cutoff, min_cutoff=None,
     --------
     distance_array
     MDAnalysis.lib.pkdtree.PeriodicKDTree.search
+    MDAnalysis.lib.nsgrid.FastNS.search
 
 
     .. versionchanged:: 1.0.1
@@ -426,7 +427,7 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
-    method : {'bruteforce', 'pkdtree'}, optional
+    method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
         method.
 
@@ -440,7 +441,7 @@ def _determine_method(reference, configuration, max_cutoff, min_cutoff=None,
        nsgrid was temporarily removed and replaced with pkdtree due to issues
        relating to its reliability and accuracy (Issues #2919, #2229, #2345,
        #2670, #2930)
-    .. versionchanged:: 1.0.2
+    .. versionchanged:: 1.1.0
        enabled nsgrid again
     """
     methods = {'bruteforce': _bruteforce_capped,
@@ -746,7 +747,7 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
     An automatic guessing of the optimal method to calculate the distances is
     included in the function. An optional keyword for the method is also
     provided. Users can enforce a particular method with this functionality.
-    Currently brute force, and periodic KDtree methods are
+    Currently brute force, grid search, and periodic KDtree methods are
     implemented.
 
     Parameters
@@ -762,7 +763,7 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
-    method : {'bruteforce', 'pkdtree'}, optional
+    method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
         method.
     return_distances : bool, optional
@@ -794,13 +795,14 @@ def self_capped_distance(reference, max_cutoff, min_cutoff=None, box=None,
 
     Note
     -----
-    Currently supports brute force, and periodic KDtree search
+    Currently supports brute force, grid-based, and periodic KDtree search
     methods.
 
     See Also
     --------
     self_distance_array
     MDAnalysis.lib.pkdtree.PeriodicKDTree.search
+    MDAnalysis.lib.nsgrid.FastNS.self_search
 
 
     .. versionchanged:: 0.20.0
@@ -844,7 +846,7 @@ def _determine_method_self(reference, max_cutoff, min_cutoff=None, box=None,
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
-    method : {'bruteforce', 'pkdtree'}, optional
+    method : {'bruteforce', 'nsgrid', 'pkdtree'}, optional
         Keyword to override the automatic guessing of the employed search
         method.
 
