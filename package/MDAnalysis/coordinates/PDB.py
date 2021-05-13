@@ -539,6 +539,9 @@ class PDBWriter(base.WriterBase):
     .. versionchanged:: 2.0.0
         Add the `redindex` argument. Setting this keyword to ``True``
         (the default) preserves the behavior in earlier versions of MDAnalysis.
+        The PDB writer checks for a valid chainID entry instead of using the
+        last character of segid. Should a chainID not be present, or not
+        conform to the PDB standard, the default value of  'X' is used.
 
     """
     fmt = {
@@ -903,10 +906,6 @@ class PDBWriter(base.WriterBase):
             The :class:`~MDAnalysis.core.groups.AtomGroup` or
             :class:`~MDAnalysis.core.universe.Universe` to write.
         """
-        warnings.warn("Using the last letter of the segid for the chainID "
-                      "is now deprecated and will be changed in 2.0. "
-                      "In 2.0, the chainID attribute will be used if it "
-                      "exists, or a placeholder value.", DeprecationWarning)
 
         self._update_frame(obj)
         self._write_pdb_header()
