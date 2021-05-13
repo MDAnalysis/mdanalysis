@@ -99,7 +99,6 @@ from .topology import Topology
 from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr
 from .topologyobjects import TopologyObject
 
-from ..lib.util import deprecate
 
 logger = logging.getLogger("MDAnalysis.core.universe")
 
