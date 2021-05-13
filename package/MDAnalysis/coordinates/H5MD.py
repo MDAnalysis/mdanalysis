@@ -600,7 +600,7 @@ class H5MDReader(base.ReaderBase):
             else:
                 raise NoDataError("Provide at least a position, velocity"
                                   " or force group in the h5md file.")
-        except ValueError:
+        except (ValueError, IndexError):
             raise IOError from None
 
         self._frame = frame
