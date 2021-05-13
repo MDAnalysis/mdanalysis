@@ -252,6 +252,11 @@ class RDKitConverter(base.ConverterBase):
     cache since the arguments given are different. You can pass a
     ``cache=False`` argument to the converter to bypass the caching system.
 
+    To get a better understanding of how the converter works under the hood,
+    please refer to the following RDKit UGM presentation:
+    - `Video (4:55 to 8:05) <https://youtu.be/5b5wYmK4URU>`__
+    - Slides <https://github.com/rdkit/UGM_2020/blob/master/Presentations/C%C3%A9dricBouysset_From_RDKit_to_the_Universe.pdf>`__
+
 
     .. versionadded:: 2.0.0
 
@@ -478,15 +483,18 @@ def _add_mda_attr_to_rdkit(attr, value, mi):
     if attr == "names":
         # RDKit needs the name to be properly formatted for a
         # PDB file (1 letter elements start at col 14)
-        name = re.findall(r'(\D+|\d+)', value)
+        name = re.findall(r'(\D+|\d+)', value)  # splits alphabet from numeric
+        # alpha-numeric name
         if len(name) == 2:
+            # only two characters
             if len(value) == 2:
                 value = f" {value} "
+            # more than two --> cut to 4 characters
             else:
                 symbol, number = name
                 value = f"{symbol + number:>4.4}"
+        # no number in the name
         else:
-            # no number in the name
             value = f" {name[0]:<3.3}"
 
     # set attribute value in RDKit MonomerInfo
@@ -563,10 +571,15 @@ def _infer_bo_and_charges(mol):
     R-C(-O)-O the first oxygen read will receive a double bond and the other
     one will be charged. It will also affect more complex conjugated systems.
     """
+    # sort atoms according to their NUE
     atoms = sorted([a for a in mol.GetAtoms() if a.GetAtomicNum() > 1],
                    reverse=True,
                    key=lambda a: _get_nb_unpaired_electrons(a)[0])
 
+    # charges that should be assigned to monatomic cations
+    # structure --> atomic number : formal charge
+    # anion charges are directly handled by the code using the typical valence
+    # of the atom
     MONATOMIC_CATION_CHARGES = {
         3: 1, 11: 1, 19: 1, 37: 1, 47: 1, 55: 1,
         12: 2, 20: 2, 29: 2, 30: 2, 38: 2, 56: 2,
@@ -757,19 +770,27 @@ def _run_reaction(reaction, reactant):
     product : rdkit.Chem.rdchem.Mol
         The final product of the reaction
     """
+    # repeat the reaction until all matching moeities have been transformed
+    # note: this loop is meant to be ended by a `break` statement
+    # but let's avoid using `while` loops just in case
     for n in range(reactant.GetNumAtoms()):
         reactant.UpdatePropertyCache(strict=False)
         Chem.Kekulize(reactant)
         products = reaction.RunReactants((reactant,))
-        # only keep the first product
         if products:
+            # structure: tuple[tuple[mol]]
+            # length of 1st tuple: number of matches in reactant
+            # length of 2nd tuple: number of products yielded by the reaction
+            # if there's no match in reactant, returns an empty tuple
+            # here we have at least one match, and the reaction used yield
+            # a single product hence `products[0][0]`
             product = products[0][0]
             # map back atom properties from the reactant to the product
             _reassign_index_after_reaction(reactant, product)
             # apply the next reaction to the product
             reactant = product
+        # exit the loop if there was nothing to transform
         else:
-            # exit the loop if there's no product
             break
     reactant.UpdatePropertyCache(strict=False)
     Chem.Kekulize(reactant)
@@ -805,26 +826,36 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
         The molecule to transform, modified inplace
     max_iter : int
         Maximum number of iterations performed by the function
+
+    Notes
+    -----
+    The molecule is modified inplace
     """
     mol.UpdatePropertyCache(strict=False)
     Chem.Kekulize(mol)
+    # pattern used to find problematic conjugated bonds
+    # there's usually an even number of matches for this
     pattern = Chem.MolFromSmarts("[*-{1-2}]-,=[*+0]=,#[*+0]")
+    # pattern used to finish fixing a series of conjugated bonds
     base_end_pattern = Chem.MolFromSmarts(
         "[*-{1-2}]-,=[*+0]=,#[*+0]-,=[*-{1-2}]")
+    # used when there's an odd number of matches for `pattern`
     odd_end_pattern = Chem.MolFromSmarts(
         "[*-]-[*+0]=[*+0]-[*-,$([#7;X3;v3]),$([#6+0,#7+1]=O),"
         "$([S;D4;v4]-[O-])]")
     # number of unique matches with the pattern
     n_matches = len(set([match[0]
                          for match in mol.GetSubstructMatches(pattern)]))
+    # nothing to standardize
     if n_matches == 0:
-        # nothing to standardize
         return
+    # single match (unusual)
     elif n_matches == 1:
         # as a last resort, the only way to standardize is to find a nitrogen
         # that can accept a double bond and a positive charge
         # or a carbonyl that will become an enolate
         end_pattern = odd_end_pattern
+    # at least 2 matches
     else:
         # give priority to base end pattern and then deal with the odd one if
         # necessary
@@ -886,23 +917,23 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
             mol.UpdatePropertyCache(strict=False)
             continue
 
-        # shorten the anion-anion pattern from n to n-1
+        # switch the position of the charge and the double bond
         matches = mol.GetSubstructMatches(pattern)
         if matches:
             # check if we haven't already transformed this triplet
             for match in matches:
-                # sort the indices for the comparison
+                # store order-independent atom indices
                 g = set(match)
+                # already transformed --> try the next one
                 if g in backtrack:
-                    # already transformed
                     continue
+                # add to backtracking and start the switch
                 else:
-                    # take the first one that hasn't been tried
                     anion, a1, a2 = match
                     backtrack.append(g)
                     break
+            # already performed all changes
             else:
-                # already performed all changes
                 if backtrack_cycles == 1:
                     # might be stuck because there were 2 "odd" end patterns
                     # misqualified as a single base one
@@ -917,12 +948,12 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
                 backtrack = [set(match)]
                 backtrack_cycles += 1
 
-            # charges
+            # switch charges
             a = mol.GetAtomWithIdx(anion)
             a.SetFormalCharge(a.GetFormalCharge() + 1)
             a = mol.GetAtomWithIdx(a2)
             a.SetFormalCharge(a.GetFormalCharge() - 1)
-            # bonds
+            # switch bond orders
             b = mol.GetBondBetweenAtoms(anion, a1)
             b.SetBondType(RDBONDORDER[b.GetBondTypeAsDouble() + 1])
             b = mol.GetBondBetweenAtoms(a1, a2)
