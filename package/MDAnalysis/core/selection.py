@@ -601,45 +601,6 @@ class _ProtoStringSelection(Selection):
         return group[np.in1d(nmidx, matches)].unique
 
 
-class StringSelection(_ProtoStringSelection):
-    level = 'ix'  # operates on atom level attribute, i.e. '.ix'
-
-
-class AtomNameSelection(StringSelection):
-    """Select atoms based on 'names' attribute"""
-    token = 'name'
-    field = 'names'
-
-
-class AtomICodeSelection(StringSelection):
-    """Select atoms based on icode attribute"""
-    token = 'icode'
-    field = 'icodes'
-
-
-class _ResidueStringSelection(_ProtoStringSelection):
-    level= 'resindices'
-
-
-class ResidueNameSelection(_ResidueStringSelection):
-    """Select atoms based on 'resnames' attribute"""
-    token = 'resname'
-    field = 'resnames'
-
-
-class MoleculeTypeSelection(_ResidueStringSelection):
-    """Select atoms based on 'moltypes' attribute"""
-    token = 'moltype'
-    field = 'moltypes'
-
-
-class SegmentNameSelection(_ProtoStringSelection):
-    """Select atoms based on 'segids' attribute"""
-    token = 'segid'
-    field = 'segids'
-    level = 'segindices'
-
-
 class AromaticSelection(Selection):
     """Select aromatic atoms.
 
