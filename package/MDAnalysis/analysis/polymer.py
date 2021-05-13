@@ -144,6 +144,9 @@ class PersistenceLength(AnalysisBase):
     results.lb : float
        the average bond length
 
+       .. deprecated:: 1.1.0
+          The structure of the ``results`` array will change in MDAnalysis 2.0.
+
        .. versionadded:: 2.0.0
 
     lb : float

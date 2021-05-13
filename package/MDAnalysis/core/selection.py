@@ -218,6 +218,18 @@ def return_empty_on_apply(func):
     return apply
 
 
+def return_empty_on_apply(func):
+    """
+    Decorator to return empty AtomGroups from the apply() function
+    without evaluating it
+    """
+    @functools.wraps(func)
+    def apply(self, group):
+        if len(group) == 0:
+            return group
+        return func(self, group)
+    return apply
+
 class _Selectionmeta(type):
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
@@ -600,6 +612,46 @@ class _ProtoStringSelection(Selection):
 
         return group[np.in1d(nmidx, matches)].unique
 
+
+class StringSelection(_ProtoStringSelection):
+    level = 'ix'  # operates on atom level attribute, i.e. '.ix'
+
+
+class AtomNameSelection(StringSelection):
+    """Select atoms based on 'names' attribute"""
+    token = 'name'
+    field = 'names'
+
+
+class AtomICodeSelection(StringSelection):
+    """Select atoms based on icode attribute"""
+    token = 'icode'
+    field = 'icodes'
+
+
+class _ResidueStringSelection(_ProtoStringSelection):
+    level= 'resindices'
+
+
+class ResidueNameSelection(_ResidueStringSelection):
+    """Select atoms based on 'resnames' attribute"""
+    token = 'resname'
+    field = 'resnames'
+
+
+class MoleculeTypeSelection(_ResidueStringSelection):
+    """Select atoms based on 'moltypes' attribute"""
+    token = 'moltype'
+    field = 'moltypes'
+
+
+class SegmentNameSelection(_ProtoStringSelection):
+    """Select atoms based on 'segids' attribute"""
+    token = 'segid'
+    field = 'segids'
+    level = 'segindices'
+
+
 class AromaticSelection(Selection):
     """Select aromatic atoms.
 
@@ -933,7 +985,7 @@ class ProteinSelection(Selection):
     :func:`MDAnalysis.lib.util.convert_aa_code`
 
 
-    .. versionchanged:: 2.0.0
+    .. versionchanged:: 1.0.1
        prot_res changed to set (from numpy array)
        performance improved by ~100x on larger systems
     """
@@ -990,7 +1042,8 @@ class NucleicSelection(Selection):
 
     .. versionchanged:: 0.8
        additional Gromacs selections
-    .. versionchanged:: 2.0.0
+
+    .. versionchanged:: 1.0.1
        nucl_res changed to set (from numpy array)
        performance improved by ~100x on larger systems
     """
@@ -1026,7 +1079,7 @@ class BackboneSelection(ProteinSelection):
     (which are included by, eg VMD's backbone selection).
 
 
-    .. versionchanged:: 2.0.0
+    .. versionchanged:: 1.0.1
        bb_atoms changed to set (from numpy array)
        performance improved by ~100x on larger systems
     """
@@ -1059,7 +1112,7 @@ class NucleicBackboneSelection(NucleicSelection):
     by the :class:`NucleicSelection`.
 
 
-    .. versionchanged:: 2.0.0
+    .. versionchanged:: 1.0.1
        bb_atoms changed to set (from numpy array)
        performance improved by ~100x on larger systems
     """
@@ -1094,7 +1147,7 @@ class BaseSelection(NucleicSelection):
      'O6','N2','N6', 'O2','N4','O4','C5M'
 
 
-    .. versionchanged:: 2.0.0
+    .. versionchanged:: 1.0.1
        base_atoms changed to set (from numpy array)
        performance improved by ~100x on larger systems
     """
@@ -1127,7 +1180,7 @@ class NucleicSugarSelection(NucleicSelection):
     """Contains all atoms with name C1', C2', C3', C4', O2', O4', O3'.
 
 
-    .. versionchanged:: 2.0.0
+    .. versionchanged:: 1.0.1
        sug_atoms changed to set (from numpy array)
        performance improved by ~100x on larger systems
     """

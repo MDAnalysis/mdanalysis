@@ -374,7 +374,6 @@ def do_mtop(data, fver, tpr_resid_from_one=False):
     resids = np.array(resids, dtype=np.int32)
     if tpr_resid_from_one:
         resids += 1
-
     resnames = np.array(resnames, dtype=object)
     (residx, new_resids,
      (new_resnames,

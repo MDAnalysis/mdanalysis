@@ -29,6 +29,7 @@ cartesian axes [xyz] of the simulation cell. Works only for orthorombic,
 fixed volume cells (thus for simulations in canonical NVT ensemble).
 """
 import os.path as path
+import warnings
 
 import numpy as np
 
@@ -66,6 +67,10 @@ class LinearDensity(AnalysisBase):
            standard deviation of the charge density in [xyz] direction
     results.x.slice_volume : float
            volume of bin in [xyz] direction
+
+          .. deprecated:: 1.1.0
+             The structure of the ``results`` dictionary will change in
+             MDAnalysis 2.0
 
     Example
     -------
@@ -111,10 +116,15 @@ class LinearDensity(AnalysisBase):
         # AtomGroup.wrap())
         self.grouping = grouping
 
-        # Initiate result instances
-        self.results["x"] = Results(dim=0)
-        self.results["y"] = Results(dim=1)
-        self.results["z"] = Results(dim=2)
+        # Dictionary containing results
+        self.results = {'x': {'dim': 0}, 'y': {'dim': 1}, 'z': {'dim': 2}}
+
+        warnings.warn(
+            "The structure of the `results` dictionary will change in "
+            "MDAnalysis version 2.0.",
+            category=DeprecationWarning
+        )
+
         # Box sides
         self.dimensions = self._universe.dimensions[:3]
         self.volume = np.prod(self.dimensions)

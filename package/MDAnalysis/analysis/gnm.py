@@ -231,6 +231,17 @@ class GNMAnalysis(AnalysisBase):
     results.eigenvectors : numpy.ndarray
             calculated eigenvectors
 
+
+
+    Attributes
+    ----------
+    results : list
+          eigenvalues and eigenvectors
+
+          .. deprecated:: 1.1.0
+             The structure of the ``results`` list will change in
+             MDAnalysis 2.0.
+
     See Also
     --------
     :class:`closeContactGNMAnalysis`
@@ -291,6 +302,12 @@ class GNMAnalysis(AnalysisBase):
 
         outputobject.eigenvalues.append(w[list_map[1]])
         outputobject.eigenvectors.append(v[list_map[1]])
+
+        warnings.warn(
+            "The structure of the `results` list will change in "
+            "MDAnalysis version 2.0.",
+            category=DeprecationWarning
+        )
 
     def generate_kirchoff(self):
         """Generate the Kirchhoff matrix of contacts.

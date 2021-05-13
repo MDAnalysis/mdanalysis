@@ -91,6 +91,7 @@ import re
 from tqdm.auto import tqdm
 
 from .. import version
+from .util import deprecate
 
 
 def start_logging(logfile="MDAnalysis.log", version=version.__version__):

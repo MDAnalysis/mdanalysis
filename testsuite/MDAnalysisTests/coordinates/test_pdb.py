@@ -1281,3 +1281,12 @@ def test_cryst_meaningless_select():
     u = mda.Universe(PDB_CRYOEM_BOX)
     cur_sele = u.select_atoms('around 0.1 (resid 4 and name CA and segid A)')
     assert cur_sele.n_atoms == 0
+
+
+def test_deprecated_chainid_from_segid(tmpdir):
+    u = mda.Universe(PDB)
+    err = ("Using the last letter of the segid for the chainID "
+           "is now deprecated and will be changed in 2.0. ")
+    with tmpdir.as_cwd():
+        with pytest.warns(DeprecationWarning, match=err):
+            u.atoms.write("test.pdb")

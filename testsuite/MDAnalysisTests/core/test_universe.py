@@ -46,6 +46,7 @@ from MDAnalysisTests.datafiles import (
     GRO, TRR,
     two_water_gro, two_water_gro_nonames,
     TRZ, TRZ_psf,
+    PDB, MMTF,
 )
 
 import MDAnalysis as mda
@@ -678,7 +679,7 @@ class TestAddTopologyAttr(object):
 
         assert hasattr(universe.atoms, attrname)
         assert getattr(universe.atoms, attrname)[0] == default
-    
+
     @pytest.mark.parametrize(
         'attr,values', (
             ('bonds', [(1, 0), (1, 2)]),
@@ -854,7 +855,7 @@ class TestAddTopologyObjects(object):
         with pytest.raises(ValueError) as excinfo:
             _add_func(to_add)
         assert err_msg in str(excinfo.value)
-    
+
     @pytest.mark.parametrize(
         'attr,values', small_atom_indices
     )
@@ -912,7 +913,7 @@ class TestAddTopologyObjects(object):
         'attr,values', large_atom_indices
     )
     def test_add_topologygroups_to_populated(self, universe, attr, values):
-        topologygroup = mda.core.topologyobjects.TopologyGroup(np.array(values), 
+        topologygroup = mda.core.topologyobjects.TopologyGroup(np.array(values),
                                                                universe)
         self._check_valid_added_to_populated(universe, attr, values, topologygroup)
 
@@ -920,15 +921,15 @@ class TestAddTopologyObjects(object):
         'attr,values', small_atom_indices
     )
     def test_add_topologygroup_wrong_universe_error(self, universe, empty, attr, values):
-        tg = mda.core.topologyobjects.TopologyGroup(np.array(values), 
+        tg = mda.core.topologyobjects.TopologyGroup(np.array(values),
                                                     universe)
         self._check_invalid_addition(empty, attr, tg, 'different Universes')
-    
+
     @pytest.mark.parametrize(
         'attr,values', small_atom_indices
     )
     def test_add_topologygroup_different_universe(self, universe, empty, attr, values):
-        tg = mda.core.topologyobjects.TopologyGroup(np.array(values), 
+        tg = mda.core.topologyobjects.TopologyGroup(np.array(values),
                                                                universe)
         self._check_valid_added_to_empty(empty, attr, values, tg.to_indices())
 
@@ -969,7 +970,7 @@ class TestAddTopologyObjects(object):
                   'tuples with {} atom indices').format(attr, n)
         idx = [(0, 1), (0, 1, 2), (8, 22, 1, 3), (5, 3, 4, 2)]
         self._check_invalid_addition(universe, attr, idx, errmsg)
-    
+
     def test_add_bonds_refresh_fragments(self, empty):
         with pytest.raises(NoDataError):
             getattr(empty.atoms, 'fragments')
@@ -993,7 +994,7 @@ class TestAddTopologyObjects(object):
         _delete_func(values)
         u_attr = getattr(empty, attr)
         assert len(u_attr) == 0
-    
+
 class TestDeleteTopologyObjects(object):
 
     TOP = {'bonds': [(0, 1), (2, 3), (3, 4), (4, 5), (7, 8)],
@@ -1039,7 +1040,7 @@ class TestDeleteTopologyObjects(object):
         assert len(u_attr) == original_length-len(values)
 
         not_deleted = [x for x in self.TOP[attr] if list(x) not in values]
-        assert all([x in u_attr.indices or x[::-1] in u_attr.indices 
+        assert all([x in u_attr.indices or x[::-1] in u_attr.indices
                    for x in not_deleted])
 
     def _check_invalid_deleted(self, u, attr, to_delete, err_msg):
@@ -1083,7 +1084,7 @@ class TestDeleteTopologyObjects(object):
     def test_delete_missing_atomgroup(self, universe, attr, values):
         ag = [universe.atoms[x] for x in values]
         self._check_invalid_deleted(universe, attr, ag, 'Cannot delete nonexistent')
-    
+
     @pytest.mark.parametrize(
         'attr,values', existing_atom_indices
     )
@@ -1129,7 +1130,7 @@ class TestDeleteTopologyObjects(object):
         arr = np.array(values)
         tg = mda.core.topologyobjects.TopologyGroup(arr, universe2)
         self._check_valid_deleted(universe, attr, values, tg.to_indices())
-    
+
     @pytest.mark.parametrize(
         'attr,n', (
             ('bonds', 2),
@@ -1142,8 +1143,8 @@ class TestDeleteTopologyObjects(object):
         idx = [(0, 1), (0, 1, 2), (8, 22, 1, 3), (5, 3, 4, 2)]
         errmsg = ('{} must be an iterable of '
                   'tuples with {} atom indices').format(attr, n)
-        self._check_invalid_deleted(universe, attr, idx, errmsg)  
-    
+        self._check_invalid_deleted(universe, attr, idx, errmsg)
+
     @pytest.mark.parametrize(
         'attr,values', existing_atom_indices
     )
@@ -1180,7 +1181,7 @@ class TestDeleteTopologyObjects(object):
 
         assert_array_equal(u_attr.indices, nu_attr.indices)
 
-    
+
 class TestAllCoordinatesKwarg(object):
     @pytest.fixture(scope='class')
     def u_GRO_TRR(self):
@@ -1291,3 +1292,20 @@ class TestEmpty(object):
         with pytest.raises(TypeError) as exc:
             u = mda.Universe()
         assert 'Universe.empty' in str(exc.value)
+
+
+def test_as_Universe_deprecation():
+    with pytest.deprecated_call():
+        _ = mda.core.universe.as_Universe(PSF, DCD)
+
+
+def test_deprecate_b_tempfactors():
+    u = mda.Universe(PDB)
+    with pytest.warns(DeprecationWarning, match="alias"):
+        u.add_TopologyAttr("bfactors")
+
+
+def test_deprecate_temp_bfactors():
+    u = mda.Universe(MMTF)
+    with pytest.warns(DeprecationWarning, match="alias"):
+        u.add_TopologyAttr("tempfactors")

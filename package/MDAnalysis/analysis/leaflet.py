@@ -118,8 +118,8 @@ class LeafletFinder(object):
     consecutively, starting at 0. To obtain the atoms in the input structure
     use :meth:`LeafletFinder.groups`::
 
-       u_PDB = mda.Universe(PDB)
-       L = LeafletFinder(u_PDB, 'name P*')
+       u = mda.Universe(PDB)
+       L = LeafletFinder(u, 'name P*')
        leaflet0 = L.groups(0)
        leaflet1 = L.groups(1)
 
@@ -135,6 +135,9 @@ class LeafletFinder(object):
 
     .. versionchanged:: 1.0.0
        Changed `selection` keyword to `select`
+    .. deprecated:: 1.0.1
+       The ability to pass a filename (str) in the `universe` argument
+       will be removed in 2.0.0.
     .. versionchanged:: 2.0.0
        The universe keyword no longer accepts non-Universe arguments. Please
        create a :class:`~MDAnalysis.core.universe.Universe` first.

@@ -99,6 +99,8 @@ from .topology import Topology
 from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr
 from .topologyobjects import TopologyObject
 
+from ..lib.util import deprecate
+
 logger = logging.getLogger("MDAnalysis.core.universe")
 
 
@@ -764,6 +766,14 @@ class Universe(object):
            Can now also add TopologyAttrs with a string of the name of the
            attribute to add (eg 'charges'), can also supply initial values
            using values keyword.
+
+        .. versionchanged:: 1.1.0 
+            Now warns when adding bfactors to a Universe with
+            existing tempfactors, or adding tempfactors to a
+            Universe with existing bfactors.
+            In version 2.0, MDAnalysis will stop treating
+            tempfactors and bfactors as separate attributes. Instead,
+            they will be aliases of the same attribute.
         """
         if isinstance(topologyattr, str):
             try:
@@ -784,6 +794,16 @@ class Universe(object):
                     n_residues=self._topology.n_residues,
                     n_segments=self._topology.n_segments,
                     values=values)
+        alias_pairs = [("bfactors", "tempfactors"),
+                       ("tempfactors", "bfactors")]
+        for a, b in alias_pairs:
+            if topologyattr.attrname == a and hasattr(self._topology, b):
+                err = ("You are adding {a} to a Universe that "
+                       "has {b}. From MDAnalysis version 2.0, {a} "
+                       "and {b} will no longer be separate "
+                       "TopologyAttrs. Instead, they will be aliases "
+                       "of the same attribute.").format(a=a, b=b)
+                warnings.warn(err, DeprecationWarning)
         self._topology.add_TopologyAttr(topologyattr)
         self._process_attr(topologyattr)
 
@@ -1318,24 +1338,18 @@ class Universe(object):
         ----------
         smiles : str
             SMILES string
-
         sanitize : bool (optional, default True)
             Toggle the sanitization of the molecule
-
         addHs : bool (optional, default True)
             Add all necessary hydrogens to the molecule
-
         generate_coordinates : bool (optional, default True)
             Generate 3D coordinates using RDKit's `AllChem.EmbedMultipleConfs`
             function. Requires adding hydrogens with the `addHs` parameter
-
         numConfs : int (optional, default 1)
             Number of frames to generate coordinates for. Ignored if
             `generate_coordinates=False`
-
         rdkit_kwargs : dict (optional)
             Other arguments passed to the RDKit `EmbedMultipleConfs` function
-
         kwargs : dict
             Parameters passed on Universe creation
 

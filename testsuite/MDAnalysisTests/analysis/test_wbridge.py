@@ -1,5 +1,6 @@
 from io import StringIO
 from collections import defaultdict
+from six.moves import reload_module
 
 from numpy.testing import (
     assert_equal, assert_array_equal,)
@@ -746,3 +747,9 @@ class TestWaterBridgeAnalysis(object):
                                  'resname LEU and name N H', order=4)
         wb.run()
         assert len(wb.timeseries[0]) == 2
+
+def test_import_warning():
+    wmsg = 'This module has been moved to'
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        reload_module(MDAnalysis.analysis.hbonds.wbridge_analysis)
+

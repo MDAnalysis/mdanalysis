@@ -31,6 +31,7 @@ from collections import UserDict
 import inspect
 import logging
 import itertools
+import warnings
 
 import numpy as np
 from MDAnalysis import coordinates
@@ -330,6 +331,10 @@ class AnalysisFromFunction(AnalysisBase):
     ValueError
         if ``function`` has the same ``kwargs`` as :class:`AnalysisBase`
 
+        .. deprecated:: 1.1.0
+           The structure of the ``results`` array will change in
+           MDAnalysis 2.0.
+
     Example
     -------
     .. code-block:: python
@@ -385,6 +390,11 @@ class AnalysisFromFunction(AnalysisBase):
         self.results.frames = self.frames
         self.results.times = self.times
         self.results.timeseries = np.asarray(self.results.timeseries)
+
+        warnings.warn(
+                "The structure of the `results` array will change in "
+                "MDAnalysis version 2.0.", category=DeprecationWarning
+                )
 
 
 def analysis_class(function):

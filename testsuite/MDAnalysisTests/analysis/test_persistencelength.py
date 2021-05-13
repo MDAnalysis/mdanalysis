@@ -61,6 +61,16 @@ class TestPersistenceLength(object):
         with pytest.raises(ValueError):
             polymer.PersistenceLength(ags)
 
+    def test_results_warning(self, u):
+        ags = [r.atoms.select_atoms('name C* N*')
+            for r in u.residues]
+        p = polymer.PersistenceLength(ags)
+
+        msg = ("The structure of the `results` array will change in "
+                "MDAnalysis version 2.0.")
+        with pytest.warns(DeprecationWarning, match=msg):
+            p.run()
+
     def test_run(self, p_run):
         assert len(p_run.results.bond_autocorrelation) == 280
 

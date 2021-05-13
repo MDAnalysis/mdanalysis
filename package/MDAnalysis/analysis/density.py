@@ -886,3 +886,55 @@ class Density(Grid):
         else:
             grid_type = 'histogram'
         return '<Density ' + grid_type + ' with ' + str(self.grid.shape) + ' bins>'
+
+
+def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
+    """Helper function to set the grid dimensions to user defined values
+
+    Parameters
+    ----------
+    gridcenter : numpy ndarray, float32
+            3 element ndarray containing the x, y and z coordinates of the grid
+            box center
+    xdim : float
+            Box edge length in the x dimension
+    ydim : float
+            Box edge length in the y dimension
+    zdim : float
+            Box edge length in the y dimension
+    smin : numpy ndarray, float32
+            Minimum x,y,z coordinates for the input selection
+    smax : numpy ndarray, float32
+            Maximum x,y,z coordinates for the input selection
+
+    Returns
+    -------
+    umin : numpy ndarray, float32
+            Minimum x,y,z coordinates of the user defined grid
+    umax : numpy ndarray, float32
+            Maximum x,y,z coordinates of the user defined grid
+    """
+    # Check user inputs
+    try:
+        gridcenter = np.asarray(gridcenter, dtype=np.float32)
+    except ValueError:
+        raise_from(ValueError("Non-number values assigned to gridcenter"), None)
+    if gridcenter.shape != (3,):
+        raise ValueError("gridcenter must be a 3D coordinate")
+    try:
+        xyzdim = np.array([xdim, ydim, zdim], dtype=np.float32)
+    except ValueError:
+        raise_from(ValueError("xdim, ydim, and zdim must be numbers"), None)
+
+    # Set min/max by shifting by half the edge length of each dimension
+    umin = gridcenter - xyzdim/2
+    umax = gridcenter + xyzdim/2
+
+    # Here we test if coords of selection fall outside of the defined grid
+    # if this happens, we warn users they may want to resize their grids
+    if any(smin < umin) or any(smax > umax):
+        msg = ("Atom selection does not fit grid --- "
+               "you may want to define a larger box")
+        warnings.warn(msg)
+        logger.warning(msg)
+    return umin, umax

@@ -1471,6 +1471,7 @@ def tpr():
                                 message="No coordinate reader found")
         return mda.Universe(TPR)
 
+
 class TestGetConnectionsAtoms(object):
     """Test Atom and AtomGroup.get_connections"""
 

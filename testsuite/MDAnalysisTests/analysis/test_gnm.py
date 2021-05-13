@@ -134,3 +134,11 @@ def test_closeContactGNMAnalysis_weights_None(universe):
        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -43.0, -3.0])
+
+
+def test_results_warning(universe):
+  msg = ("The structure of the `results` list will change in MDAnalysis "
+          "version 2.0.")
+  with pytest.warns(DeprecationWarning, match=msg):
+        mda.analysis.gnm.GNMAnalysis(universe).run()
+
