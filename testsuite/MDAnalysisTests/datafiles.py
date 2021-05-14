@@ -203,6 +203,9 @@ __all__ = [
     "SDF_molecule",  # MDL SDFile for rdkit
     "PDBX",  # PDBxfile
     "PDB_elements",  # PDB file with elements
+    "PDB_elements",  # PDB file with elements
+    "SURFACE_PDB",  # 111 FCC lattice topology for NSGrid bug #2345
+    "SURFACE_TRR",  # full precision coordinates for NSGrid bug #2345
 ]
 
 from pkg_resources import resource_filename
@@ -560,7 +563,12 @@ SDF_molecule = resource_filename(__name__, 'data/molecule.sdf')
 
 PDB_elements = resource_filename(__name__, 'data/elements.pdb')
 
+
 PDBX = resource_filename(__name__, "data/4x8u.pdbx")
+
+SURFACE_PDB = resource_filename(__name__, 'data/surface.pdb.bz2')
+SURFACE_TRR = resource_filename(__name__, 'data/surface.trr')
+
 
 # This should be the last line: clean up namespace
 del resource_filename

@@ -486,6 +486,7 @@ class TestHoleAnalysisLong(BaseTestHole):
 
         idx = np.argsort(op)
         arr = np.array(list(hole.results.profiles.values()), dtype=object)
+
         for op_prof, arr_prof in zip(profiles.values(), arr[idx]):
             assert op_prof is arr_prof
 
@@ -502,6 +503,7 @@ class TestHoleAnalysisLong(BaseTestHole):
 
         idx = np.argsort(op)
         arr = np.array(list(hole.results.profiles.values()), dtype=object)
+
         for op_prof, arr_prof in zip(profiles.values(), arr[idx]):
             assert op_prof is arr_prof
 
@@ -525,6 +527,7 @@ class TestHoleAnalysisLong(BaseTestHole):
 
         idx = np.argsort(op[:n_frames])
         values = list(hole.results.profiles.values())[:n_frames]
+
         arr = np.array(values, dtype=object)
         for op_prof, arr_prof in zip(profiles.values(), arr[idx]):
             assert op_prof is arr_prof
