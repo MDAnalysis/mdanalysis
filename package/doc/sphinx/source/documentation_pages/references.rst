@@ -205,31 +205,6 @@ please cite [Dima2004b]_.
    <https://doi.org/10.1021/jp037128y>`_
 
 
-If you calculate shape parameters using
-:meth:`~MDAnalysis.core.group.AtomGroup.shape_parameter`,
-:meth:`~MDAnalysis.core.group.ResidueGroup.shape_parameter`,
-:meth:`~MDAnalysis.core.group.SegmentGroup.shape_parameter`
-please cite [Dima2004a]_.
-
-.. [Dima2004a] Dima, R. I., & Thirumalai, D. (2004). Asymmetry
-   in the shapes of folded and denatured states of
-   proteins. *J Phys Chem B*, 108(21),
-   6564-6570. doi:`10.1021/jp037128y
-   <https://doi.org/10.1021/jp037128y>`_
-
-If you calculate asphericities using
-:meth:`~MDAnalysis.core.group.AtomGroup.asphericity`,
-:meth:`~MDAnalysis.core.group.ResidueGroup.asphericity`,
-:meth:`~MDAnalysis.core.group.SegmentGroup.asphericity`
-please cite [Dima2004b]_.
-
-.. [Dima2004b] Dima, R. I., & Thirumalai, D. (2004). Asymmetry
-   in the shapes of folded and denatured states of
-   proteins. *J Phys Chem B*, 108(21),
-   6564-6570. doi:`10.1021/jp037128y
-   <https://doi.org/10.1021/jp037128y>`_
-
-
 .. _citations-using-duecredit:
 
 

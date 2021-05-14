@@ -988,8 +988,7 @@ class GroupBase(_MutableBase):
 
         # Unwrap Atoms
         if unwrap:
-            coords = atoms.unwrap(compound=comp, reference=None,
-                                  inplace=False)[sort_indices]
+            coords = atoms.unwrap(compound=comp, reference=None, inplace=False)
         else:
             coords = atoms.positions
         if weights is None:

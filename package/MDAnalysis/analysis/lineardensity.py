@@ -29,7 +29,6 @@ cartesian axes [xyz] of the simulation cell. Works only for orthorombic,
 fixed volume cells (thus for simulations in canonical NVT ensemble).
 """
 import os.path as path
-import warnings
 
 import numpy as np
 
