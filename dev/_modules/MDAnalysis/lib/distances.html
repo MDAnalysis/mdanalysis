@@ -563,16 +563,19 @@
 <span class="sd">                coord2 = configuration[j]</span>
 <span class="sd">                distance = distances[k]</span>
 
-<span class="sd">    Note</span>
-<span class="sd">    -----</span>
-<span class="sd">    Currently supports brute force, grid-based, and periodic KDtree search</span>
-<span class="sd">    methods.</span>
-
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    distance_array</span>
 <span class="sd">    MDAnalysis.lib.pkdtree.PeriodicKDTree.search</span>
 <span class="sd">    MDAnalysis.lib.nsgrid.FastNS.search</span>
+
+
+<span class="sd">    .. versionchanged:: 1.0.1</span>
+<span class="sd">       nsgrid was temporarily removed and replaced with pkdtree due to issues</span>
+<span class="sd">       relating to its reliability and accuracy (Issues #2919, #2229, #2345,</span>
+<span class="sd">       #2670, #2930)</span>
+<span class="sd">    .. versionchanged:: 1.0.2</span>
+<span class="sd">       nsgrid enabled again</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
@@ -616,10 +619,19 @@
 <span class="sd">    -------</span>
 <span class="sd">    function : callable</span>
 <span class="sd">        The function implementing the guessed (or deliberatly chosen) method.</span>
+
+
+<span class="sd">    .. versionchanged:: 1.0.1</span>
+<span class="sd">       nsgrid was temporarily removed and replaced with pkdtree due to issues</span>
+<span class="sd">       relating to its reliability and accuracy (Issues #2919, #2229, #2345,</span>
+<span class="sd">       #2670, #2930)</span>
+<span class="sd">    .. versionchanged:: 1.1.0</span>
+<span class="sd">       enabled nsgrid again</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">methods</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bruteforce&#39;</span><span class="p">:</span> <span class="n">_bruteforce_capped</span><span class="p">,</span>
                <span class="s1">&#39;pkdtree&#39;</span><span class="p">:</span> <span class="n">_pkdtree_capped</span><span class="p">,</span>
-               <span class="s1">&#39;nsgrid&#39;</span><span class="p">:</span> <span class="n">_nsgrid_capped</span><span class="p">}</span>
+               <span class="s1">&#39;nsgrid&#39;</span><span class="p">:</span> <span class="n">_nsgrid_capped</span><span class="p">,</span>
+    <span class="p">}</span>
 
     <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
@@ -976,8 +988,15 @@
 <span class="sd">    MDAnalysis.lib.pkdtree.PeriodicKDTree.search</span>
 <span class="sd">    MDAnalysis.lib.nsgrid.FastNS.self_search</span>
 
+
 <span class="sd">    .. versionchanged:: 0.20.0</span>
 <span class="sd">       Added `return_distances` keyword.</span>
+<span class="sd">    .. versionchanged:: 1.0.1</span>
+<span class="sd">       nsgrid was temporarily removed and replaced with pkdtree due to issues</span>
+<span class="sd">       relating to its reliability and accuracy (Issues #2919, #2229, #2345,</span>
+<span class="sd">       #2670, #2930)</span>
+<span class="sd">    .. versionchanged:: 1.0.2</span>
+<span class="sd">       enabled nsgrid again</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
@@ -1019,10 +1038,19 @@
 <span class="sd">    -------</span>
 <span class="sd">    function : callable</span>
 <span class="sd">        The function implementing the guessed (or deliberatly chosen) method.</span>
+
+
+<span class="sd">    .. versionchanged:: 1.0.1</span>
+<span class="sd">       nsgrid was temporarily removed and replaced with pkdtree due to issues</span>
+<span class="sd">       relating to its reliability and accuracy (Issues #2919, #2229, #2345,</span>
+<span class="sd">       #2670, #2930)</span>
+<span class="sd">    .. versionchanged:: 1.0.2</span>
+<span class="sd">       enabled nsgrid again</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">methods</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bruteforce&#39;</span><span class="p">:</span> <span class="n">_bruteforce_capped_self</span><span class="p">,</span>
                <span class="s1">&#39;pkdtree&#39;</span><span class="p">:</span> <span class="n">_pkdtree_capped_self</span><span class="p">,</span>
-               <span class="s1">&#39;nsgrid&#39;</span><span class="p">:</span> <span class="n">_nsgrid_capped_self</span><span class="p">}</span>
+               <span class="s1">&#39;nsgrid&#39;</span><span class="p">:</span> <span class="n">_nsgrid_capped_self</span><span class="p">,</span>
+    <span class="p">}</span>
 
     <span class="k">if</span> <span class="n">method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">methods</span><span class="p">[</span><span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
@@ -1280,9 +1308,9 @@
             <span class="n">gridsearch</span> <span class="o">=</span> <span class="n">FastNS</span><span class="p">(</span><span class="n">max_cutoff</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
             <span class="n">results</span> <span class="o">=</span> <span class="n">gridsearch</span><span class="o">.</span><span class="n">self_search</span><span class="p">()</span>
 
-        <span class="n">pairs</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pairs</span><span class="p">()[::</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pairs</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">return_distances</span> <span class="ow">or</span> <span class="p">(</span><span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="n">distances</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pair_distances</span><span class="p">()[::</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">distances</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get_pair_distances</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">min_cutoff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">idx</span> <span class="o">=</span> <span class="n">distances</span> <span class="o">&gt;</span> <span class="n">min_cutoff</span>
                 <span class="n">pairs</span><span class="p">,</span> <span class="n">distances</span> <span class="o">=</span> <span class="n">pairs</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">distances</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
@@ -1716,7 +1744,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
   </div>

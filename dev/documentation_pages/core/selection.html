@@ -228,7 +228,7 @@ available through RDKit</p>
 <p>This excludes OT* on C-termini
 (which are included by, eg VMD’s backbone selection).</p>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span>bb_atoms changed to set (from numpy array)
+<p><span class="versionmodified">Changed in version 1.0.1: </span>bb_atoms changed to set (from numpy array)
 performance improved by ~100x on larger systems</p>
 </div>
 </dd></dl>
@@ -242,7 +242,7 @@ performance improved by ~100x on larger systems</p>
 <div>‘N9’, ‘N7’, ‘C8’, ‘C5’, ‘C4’, ‘N3’, ‘C2’, ‘N1’, ‘C6’,
 ‘O6’,’N2’,’N6’, ‘O2’,’N4’,’O4’,’C5M’</div></blockquote>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span>base_atoms changed to set (from numpy array)
+<p><span class="versionmodified">Changed in version 1.0.1: </span>base_atoms changed to set (from numpy array)
 performance improved by ~100x on larger systems</p>
 </div>
 </dd></dl>
@@ -324,7 +324,7 @@ Numbers such as 1.2, 1.2e-01, -1.2 are all parsed as Python floats.</p>
 <p>These atoms are only recognized if they are in a residue matched
 by the <a class="reference internal" href="#MDAnalysis.core.selection.NucleicSelection" title="MDAnalysis.core.selection.NucleicSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">NucleicSelection</span></code></a>.</p>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span>bb_atoms changed to set (from numpy array)
+<p><span class="versionmodified">Changed in version 1.0.1: </span>bb_atoms changed to set (from numpy array)
 performance improved by ~100x on larger systems</p>
 </div>
 </dd></dl>
@@ -347,7 +347,7 @@ performance improved by ~100x on larger systems</p>
 <p><span class="versionmodified">Changed in version 0.8: </span>additional Gromacs selections</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span>nucl_res changed to set (from numpy array)
+<p><span class="versionmodified">Changed in version 1.0.1: </span>nucl_res changed to set (from numpy array)
 performance improved by ~100x on larger systems</p>
 </div>
 </dd></dl>
@@ -357,7 +357,7 @@ performance improved by ~100x on larger systems</p>
 <em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">NucleicSugarSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#NucleicSugarSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.NucleicSugarSelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Contains all atoms with name C1’, C2’, C3’, C4’, O2’, O4’, O3’.</p>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span>sug_atoms changed to set (from numpy array)
+<p><span class="versionmodified">Changed in version 1.0.1: </span>sug_atoms changed to set (from numpy array)
 performance improved by ~100x on larger systems</p>
 </div>
 </dd></dl>
@@ -404,7 +404,7 @@ prop x&lt;5</p>
 <p class="last"><a class="reference internal" href="../lib/util.html#MDAnalysis.lib.util.convert_aa_code" title="MDAnalysis.lib.util.convert_aa_code"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.util.convert_aa_code()</span></code></a></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span>prot_res changed to set (from numpy array)
+<p><span class="versionmodified">Changed in version 1.0.1: </span>prot_res changed to set (from numpy array)
 performance improved by ~100x on larger systems</p>
 </div>
 </dd></dl>
@@ -684,7 +684,7 @@ without evaluating it</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
   </div>

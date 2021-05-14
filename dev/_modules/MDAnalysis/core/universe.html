@@ -283,6 +283,7 @@
 <span class="kn">from</span> <span class="nn">.topologyattrs</span> <span class="kn">import</span> <span class="n">AtomAttr</span><span class="p">,</span> <span class="n">ResidueAttr</span><span class="p">,</span> <span class="n">SegmentAttr</span>
 <span class="kn">from</span> <span class="nn">.topologyobjects</span> <span class="kn">import</span> <span class="n">TopologyObject</span>
 
+
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.core.universe&quot;</span><span class="p">)</span>
 
 
@@ -948,6 +949,14 @@
 <span class="sd">           Can now also add TopologyAttrs with a string of the name of the</span>
 <span class="sd">           attribute to add (eg &#39;charges&#39;), can also supply initial values</span>
 <span class="sd">           using values keyword.</span>
+
+<span class="sd">        .. versionchanged:: 1.1.0 </span>
+<span class="sd">            Now warns when adding bfactors to a Universe with</span>
+<span class="sd">            existing tempfactors, or adding tempfactors to a</span>
+<span class="sd">            Universe with existing bfactors.</span>
+<span class="sd">            In version 2.0, MDAnalysis will stop treating</span>
+<span class="sd">            tempfactors and bfactors as separate attributes. Instead,</span>
+<span class="sd">            they will be aliases of the same attribute.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
@@ -968,6 +977,16 @@
                     <span class="n">n_residues</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span>
                     <span class="n">n_segments</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_segments</span><span class="p">,</span>
                     <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">alias_pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;bfactors&quot;</span><span class="p">,</span> <span class="s2">&quot;tempfactors&quot;</span><span class="p">),</span>
+                       <span class="p">(</span><span class="s2">&quot;tempfactors&quot;</span><span class="p">,</span> <span class="s2">&quot;bfactors&quot;</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">alias_pairs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">topologyattr</span><span class="o">.</span><span class="n">attrname</span> <span class="o">==</span> <span class="n">a</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;You are adding </span><span class="si">{a}</span><span class="s2"> to a Universe that &quot;</span>
+                       <span class="s2">&quot;has </span><span class="si">{b}</span><span class="s2">. From MDAnalysis version 2.0, </span><span class="si">{a}</span><span class="s2"> &quot;</span>
+                       <span class="s2">&quot;and </span><span class="si">{b}</span><span class="s2"> will no longer be separate &quot;</span>
+                       <span class="s2">&quot;TopologyAttrs. Instead, they will be aliases &quot;</span>
+                       <span class="s2">&quot;of the same attribute.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_process_attr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span></div>
 
@@ -1502,24 +1521,18 @@
 <span class="sd">        ----------</span>
 <span class="sd">        smiles : str</span>
 <span class="sd">            SMILES string</span>
-
 <span class="sd">        sanitize : bool (optional, default True)</span>
 <span class="sd">            Toggle the sanitization of the molecule</span>
-
 <span class="sd">        addHs : bool (optional, default True)</span>
 <span class="sd">            Add all necessary hydrogens to the molecule</span>
-
 <span class="sd">        generate_coordinates : bool (optional, default True)</span>
 <span class="sd">            Generate 3D coordinates using RDKit&#39;s `AllChem.EmbedMultipleConfs`</span>
 <span class="sd">            function. Requires adding hydrogens with the `addHs` parameter</span>
-
 <span class="sd">        numConfs : int (optional, default 1)</span>
 <span class="sd">            Number of frames to generate coordinates for. Ignored if</span>
 <span class="sd">            `generate_coordinates=False`</span>
-
 <span class="sd">        rdkit_kwargs : dict (optional)</span>
 <span class="sd">            Other arguments passed to the RDKit `EmbedMultipleConfs` function</span>
-
 <span class="sd">        kwargs : dict</span>
 <span class="sd">            Parameters passed on Universe creation</span>
 
@@ -1774,7 +1787,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
+        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
 
     </p>
   </div>
