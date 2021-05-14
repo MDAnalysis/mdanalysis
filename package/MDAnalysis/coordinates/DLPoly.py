@@ -31,13 +31,11 @@ Read DL Poly_ format coordinate files
 import numpy as np
 
 from . import base
+from .base import Timestep
 from . import core
 from ..lib import util
 
 _DLPOLY_UNITS = {'length': 'Angstrom', 'velocity': 'Angstrom/ps', 'time': 'ps'}
-
-# legacy reasons
-Timestep = base.Timestep
 
 
 class ConfigReader(base.SingleFrameReaderBase):

@@ -200,10 +200,8 @@ class TestNCDFReader2(object):
         assert_almost_equal(ref, u.trajectory.ts.dt, self.prec)
 
     def test_box(self, u):
-        #ref = np.array([0., 0., 0., 0., 0., 0.], dtype=np.float32)
         for ts in u.trajectory:
             assert ts.dimensions is None
-            #assert_equal(ref, ts.dimensions)
 
 
 class TestNCDFReader3(object):
