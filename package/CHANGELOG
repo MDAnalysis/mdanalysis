@@ -16,16 +16,42 @@ The rules for this file:
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
-         hanatok, rmeli, aditya-kamath, tirkarthi
+         hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi, hejamu,
+         biogen98, orioncohen, z3y50n, hp115, ojeda-e, thadanipaarth, HenryKobin,
+         1ut, sulays, ahy3nz
 
   * 2.0.0
 
 Fixes
+  * New RDKitConverter cache system to fix issue #2958 (PR #2942)
+  * Fixed OpenMM converter documentation not showing up in the Converters
+    section (Issue #3262, PR #2882)
+  * WaterBridgeAnalysis double counts the water (Issue #3119, PR #3120)
+  * NCDFReader now defaults to a dt value of 1.0 ps when it cannot estimate
+    it from the first two frames of the file (Issue #3166)
+  * Get chi1_selection to match canonical gamma atoms (Issue #2044)
+  * ITPParser now accepts relative paths (Issue #3037, PR #3108)
+  * Fixed issue with unassigned 'GAP' variable in fasta2algin function when
+    resids are provided in input (Issue #3124)
+  * Improve diffusionmap coverage (Issue #3208)
+  * Removed deprecated parameters `n_jobs` and `precompute_distances` of
+    sklearn.cluster.KMeans (Issue #2986)
+  * Helix_analysis coverage raised to 100% and `from __future__ import`
+    removed (Issue #3209)
+  * Fixed 'sphzone', 'sphlayer', 'cyzone', and 'cylayer' to return empty if the
+   zone/layer is empty, consistent with 'around' (Issue #2915)
+  * A Universe created from an ROMol with no atoms returns now a Universe
+    with 0 atoms (Issue #3142)
+  * PDBParser will check for the presence of the chainID attribute of an
+    atom group and use these values instead of just using the end of segid.
+    If no chainID attribute is present, then a default value will be
+    provided. If the chainID for an atom is invalid (longer than one character,
+    not alpha-numeric, blank) it will be replaced with a default. (Issue #3144)
   * ValueError raised when empty atomgroup is given to DensityAnalysis
-    without a user defined grid. UserWarning displayed when user defined 
+    without a user defined grid. UserWarning displayed when user defined
     grid is provided. (Issue #3055)
   * Fixed import of several `__all__` lists (PR #3013)
-  * atommethods (_get_prev/next_residues_by_resid) returns empty residue group 
+  * atommethods (_get_prev/next_residues_by_resid) returns empty residue group
     when given empty residue group (Issue #3089)
   * MOL2 files without bonds can now be read and written (Issue #3057)
   * Write `CONECT` record only once in multi-model PDB files (Issue #3018)
@@ -84,6 +110,25 @@ Fixes
   * Fix syntax warning over comparison of literals using is (Issue #3066)
 
 Enhancements
+  * Added guessers for aromaticity and Gasteiger partial charges (Issue #2468,
+    PR #2926)
+  * Added `Results` class for storing analysis results (#3115, PR #3233)
+  * Added intra_bonds, intra_angles, intra_dihedrals etc. to return only
+    the connections involving atoms within the AtomGroup, instead of
+    including atoms outside the AtomGroup (Issue #1264, #2821, PR #3200)
+  * Added del_TopologyAttr function (PR #3069)
+  * Switch GNMAnalysis to AnalysisBase (Issue #3243)
+  * Adds python 3.9 support (Issue #2974, PR #3027, #3245)
+  * Added an MDAnalysis shields.io badge to the README (Issue #3227, PR #3229)
+  * Added sort method to the atomgroup (Issue #2976, PR #3188)
+  * ITPParser now reads [ atomtypes ] sections in ITP files, used for charges
+    and masses not defined in the [ atoms ] sections
+  * Add `set_dimensions` transformation class for setting constant
+    box dimensions for all timesteps in trajectory (Issue #2691)
+  * Added a ValueError raised when not given a gridcenter while
+    providing grid dimensions to DensityAnalysis, also added
+    check for NaN in the input (Issue #3148, PR #3154)
+  * Read TPR files from Gromacs 2021 (Issue #3180)
   * Adds preliminary support for the ppc64le platform with minimal
     dependencies (Issue #3127, PR #3149)
   * Caches can now undergo central validation at the Universe level, opening
@@ -97,7 +142,7 @@ Enhancements
     whitespace for ranges (Issue #3054, PR #2927)
   * Added `atol` and `rtol` keywords for float comparison (PR #2927)
   * Improved performance of the ParmEd converter (Issue #3028, PR #3029)
-  * Improved analysis class docstrings, and added missing classes to the 
+  * Improved analysis class docstrings, and added missing classes to the
     `__all__` list (PR #2998)
   * The PDB writer gives more control over how to write the atom ids
     (Issue #1072, PR #2886)
@@ -131,9 +176,60 @@ Enhancements
     'protein' selection (#2751 PR #2755)
   * Added an RDKit converter that works for any input with all hydrogens
     explicit in the topology (Issue #2468, PR #2775)
-  
+  * Added `TransformationBase`. Implemented threadlimit and add an attribute for
+    checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
+
 Changes
-  * TPRParser now loads TPR files with `tpr_resid_from_one=True` by default, 
+  * `analysis.rdf.InterRDF` and `analysis.rdf.InterRDF_s` now store
+    their result attributes using the `analysis.base.Results` class
+    (Issue #3276, #3261)
+  * Adds a `force` parameter to the RDKitConverter to allow conversion of
+    molecules with no hydrogen atom, and a `set_converter_cache_size` function
+    to change how many items are retained in the cache (PR #2942)
+  * `hydrogenbonds.WaterBridgeAnalysis.generate_table()` now returns the table; as previously, 
+    it also generates the `table` attribute but the attribute will be removed in 3.0.0.
+  * `hydrogenbonds.WaterBridgeAnalysis` now stores data using the
+    `hydrogenbonds.WaterBridgeAnalysis.results` attribute
+    (Issue #3261, Issue #3270)
+  * Introduces a new converter API with all converters in MDAnalysis.converters
+    (Issue #2790, PR #2882)
+  * The ParmEd classes were moved to the `converters` module (PR #2882)
+  * The `convert_to` method of the AtomGroup is now case-insensitive and
+    passes keyword arguments to the underlying converter. It can also be used
+    as `convert_to.lowercase_pkg_name()` for tab-completion (PR #2882)
+  * `analysis.polymer.PersistenceLength` class now stores `lb`,
+    `lp` and `fit` using the `analysis.base.Results` class 
+    (Issues #3289, #3291)
+  * `analysis.hole2.HoleAnalysis` now stores ``sphpdbs``, ``outfiles``
+    and ``profiles`` in the `analysis.base.Results` class (Issues #3261, #3269)
+  * `analysis.diffusionmap.DistanceMatrix` class now stores `dist_matrix`
+    using the `analysis.base.Results` class (Issues #3288, #3290)
+  * `helix_analysis.HELANAL` now uses the `analysis.base.Results` class to
+    store results attributes (Issue #3261, #3267)
+  * `analysis.align.AlignTraj` and `analysis.align.AverageStructure` now store
+    their result attributes using the `analysis.base.Results` class
+    (Issues #3278 and #3261)
+  * `analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalyis` now stores
+    `hbonds` data using the `analysis.base.Results class (Issues #3271, #3261)
+  * `analysis.rms.RMSD` and `analysis.rms.RMSF` classes now store `rmsd` and
+    `rmsf` data using the `analysis.base.Results` class (Issues #3274 #3261)
+  * `analysis.dihedrals` classes now store angle data using the
+    `results.angles` attribute (Issue #3261)
+  * `msd.EinsteinMSD` now uses the `analysis.base.Results` class to store
+    analysis results (Issue #3261)
+  * `bat.BAT` now uses the `analysis.base.Results` class to store the `bat`
+    results attribute (Issue #3261, #3272)
+  * `contacts.Contacts` now stores data using the `Contacts.results.timeseries`
+    attribute. `Contacts.timeseries` is now deprecated (Issue #3261)
+  * `DensityAnalysis` now uses the `results.density` attribute for storing
+    data. The `DensityAnalysis.density` attribute is now deprecated
+    (Issue #3261)
+  * Deprecated analysis.hbonds.hbond_analysis has been removed in favour of
+    analysis.hydrogenbonds.hbond_analysis (Issues #2739, #2746)
+  * `GNMAnalysis`, `LinearDensity`, `PersistenceLength` and
+    `AnalysisFromFunction` use the `results` attribute.
+  * Fixed inaccurate docstring inside the RMSD class (Issue #2796, PR #3134)
+  * TPRParser now loads TPR files with `tpr_resid_from_one=True` by default,
     which starts TPR resid indexing from 1 (instead of 0 as in 1.x) (Issue #2364, PR #3152)
   * Introduces encore specific C compiler arguments to allow for lowering of
     optimisations on non-x86 platforms (Issue #1389, PR #3149)
@@ -166,14 +262,73 @@ Changes
   * Sets the minimal RDKit version for CI to 2020.03.1 (Issue #2827, PR #2831)
   * Removes deprecated waterdynamics.HydrogenBondLifetimes (PR #2842)
   * Make NeighborSearch return empty atomgroup, residue, segments instead of list (Issue #2892, PR #2907)
-  * Updated Universe creation function signatures to named arguments (Issue #2921)  
+  * Updated Universe creation function signatures to named arguments (Issue #2921)
   * The transformation was changed from a function/closure to a class with
     `__call__` (Issue #2860, PR #2859)
   * deprecated ``analysis.helanal`` module has been removed in favour of
     ``analysis.helix_analysis`` (PR #2929)
   * Move water bridge analysis from hbonds to hydrogenbonds (Issue #2739 PR #2913)
+  * `threadpoolctl` is required for installation (Issue #2860)
+  * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
 
 Deprecations
+  * The `bins`, `edges`, `count`, `rdf` attributes for `analysis.rdf.InterRDF`
+    and `analysis.rdf.InterRDF_s`, and `cdf` attributes for
+    `analysis.rdf.InterRDF_s` are now deprecated in favour of `results.bins`,
+    `results.edges`, `results.count`, `results.rdf` and `results.cdf`
+    (Issue #3276, #3261)
+  * The `hydrogenbonds.WaterBridgeAnalysis.table` attribute is now deprecated and will
+    be removed in 3.0.0.
+  * The `hydrogenbonds.WaterBridgeAnalysis.network` attribute is now deprecated
+    in favour of `hydrogenbonds.WaterBridgeAnalysis.results.network`. It will be
+    removed in 3.0.0 (Issue #3261, Issue #3270)
+  * The `analysis.Contacts.timeseries` attribute is now deprecated in favour of 
+    `analysis.Contacts.results.timeseries`. It will be removed in 3.0.0
+    (Issue #3261)
+  * In 3.0.0 the ParmEd classes will only be accessible from the
+    `MDAnalysis.converters` module.
+  * The `analysis.polymer.PersistenceLength.lb`,
+    `analysis.polymer.PersistenceLength.lp` and 
+    `analysis.polymer.PersistenceLength.fit` attributes are now deprecated in
+    favour of `analysis.polymer.PersistenceLength.results.lb`,
+    `analysis.polymer.PersistenceLength.results.lp` and
+    `analysis.polymer.PersistenceLength.results.fit` respectively. They will
+    be removed in 3.0.0 (Issues #3289, #3291)
+  * The ``sphpdbs``, ``outfiles`` and ``profiles`` attributes of
+    `analysis.hole2.HoleAnalysis` are now deprecated in favour of
+    ``results.sphpdbs``, ``results.outfiles`` and
+    ``results.profiles`` (Issues #3261, #3269)
+  * The `analysis.diffusionmap.DistanceMatrix.dist_matrix` is now deprecated in
+    favour of `analysis.diffusionmap.DistanceMatrix.results.dist_matrix`.
+    It will be removed in 3.0.0 (Issues #3288, #3290)
+  * The `analysis.align.AlignTraj.rmsd` attribute is now deprecated in
+    favour of `analysis.align.AlignTraj.results.rmsd` (Issue #3278, #3261)
+  * The `universe`, `positions`, and `rmsd` attributes of
+    `analysis.align.AverageStructure` are now deprecated in favour of
+    `results.universe`, `results.positions`, and `results.rmsd`
+    (Issue #3278, #3261)
+  * The `hbonds` attribute of
+    `hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.hbonds` is now
+    deprecated in favour of `results.hbonds` (Issues #3271, #3261)
+  * The `analysis.rms.RMSD.rmsd` and `analysis.rms.RMSF.rmsf` attributes are
+    now deprecated in favour of `analysis.rms.RMSD.results.rmsd` and
+    `analysis.rms.RMSF.results.rmsf` respectively. They will be removed in
+    3.0.0 (Issues #3274, #3261)
+  * The `angles` attribute for the `dihedrals` classes (Dihedral,
+    Ramachandran, Janin) is now deprecated in favour of `results.angles`. It
+    will be removed in 3.0.0 (Issue #3261)
+  * The `analysis.Contacts.timeseries` attribute is now deprecated in favour of
+    `analysis.Contacts.results.timeseries`. It will be removed in 3.0.0
+    (Issue #3261)
+  * The `density` attribute of `analysis.density.DensityAnalysis` is now
+    deprecated in favour of `results.density`. It will be removed in 3.0.0
+    (Issue #3261)
+  * The analysis.hbonds.hbond_autocorrel code has been moved to
+    analysis.hydrogenbonds.hbond_autocorrel and will be removed
+    from analysis.hbonds in 3.0.0 (PR #3258)
+  * In 2.1.0 the TRZReader will default to a dt of 1.0 ps when failing to
+    read it from the input TRZ trajectory.
+
 
 06/09/20 richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,

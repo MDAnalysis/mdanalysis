@@ -732,7 +732,6 @@ from . import GRO
 from . import INPCRD
 from . import LAMMPS
 from . import MOL2
-from . import ParmEd
 from . import PDB
 from . import PDBQT
 from . import PQR
@@ -749,4 +748,3 @@ from . import GSD
 from . import null
 from . import NAMDBIN
 from . import FHIAIMS
-from . import RDKit

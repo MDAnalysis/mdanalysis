@@ -535,7 +535,7 @@ class AlignTraj(AnalysisBase):
 
     .. versionchanged:: 1.0.0
        ``save()`` has now been removed, as an alternative use ``np.savetxt()``
-       on :attr:`rmsd`.
+       on :attr:`results.rmsd`.
 
     """
 
@@ -589,9 +589,19 @@ class AlignTraj(AnalysisBase):
             Atoms of the reference structure to be aligned against
         mobile_atoms : AtomGroup
             Atoms inside each trajectory frame to be rmsd_aligned
-        rmsd : Array
+        results.rmsd : :class:`numpy.ndarray`
             Array of the rmsd values of the least rmsd between the mobile_atoms
             and reference_atoms after superposition and minimimization of rmsd
+
+            .. versionadded:: 2.0.0
+
+        rmsd : :class:`numpy.ndarray`
+            Alias to the :attr:`results.rmsd` attribute.
+
+            .. deprecated:: 2.0.0
+               Will be removed in MDAnalysis 3.0.0. Please use
+               :attr:`results.rmsd` instead.
+
         filename : str
             String reflecting the filename of the file where the aligned
             positions will be written to upon running RMSD alignment
@@ -626,6 +636,10 @@ class AlignTraj(AnalysisBase):
         .. versionchanged:: 1.0.0
            Support for the ``start``, ``stop``, and ``step`` keywords has been
            removed. These should instead be passed to :meth:`AlignTraj.run`.
+
+        .. versionchanged:: 2.0.0
+           :attr:`rmsd` results are now stored in a
+           :class:`MDAnalysis.analysis.base.Results` instance.
 
         """
         select = rms.process_selection(select)
@@ -677,17 +691,18 @@ class AlignTraj(AnalysisBase):
         self._ref_com = self.ref_atoms.center(self._weights)
         self._ref_coordinates = self.ref_atoms.positions - self._ref_com
         # allocate the array for selection atom coords
-        self.rmsd = np.zeros((self.n_frames,))
+        self.results.rmsd = np.zeros((self.n_frames,))
 
     def _single_frame(self):
         index = self._frame_index
         mobile_com = self.mobile_atoms.center(self._weights)
         mobile_coordinates = self.mobile_atoms.positions - mobile_com
-        mobile_atoms, self.rmsd[index] = _fit_to(mobile_coordinates,
-                                                 self._ref_coordinates,
-                                                 self.mobile,
-                                                 mobile_com,
-                                                 self._ref_com, self._weights)
+        mobile_atoms, self.results.rmsd[index] = _fit_to(
+                mobile_coordinates,
+                self._ref_coordinates,
+                self.mobile,
+                mobile_com,
+                self._ref_com, self._weights)
         # write whole aligned input trajectory system
         self._writer.write(mobile_atoms)
 
@@ -695,6 +710,14 @@ class AlignTraj(AnalysisBase):
         self._writer.close()
         if not self._verbose:
             logging.disable(logging.NOTSET)
+
+    @property
+    def rmsd(self):
+        wmsg = ("The `rmsd` attribute was deprecated in MDAnalysis 2.0.0 and "
+                "will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.rmsd` instead.")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.rmsd
 
 
 class AverageStructure(AnalysisBase):
@@ -722,7 +745,7 @@ class AverageStructure(AnalysisBase):
 
         # align to the third frame and average structure
         av = align.AverageStructure(u, ref_frame=3).run()
-        averaged_universe = av.universe
+        averaged_universe = av.results.universe
 
     """
 
@@ -775,12 +798,42 @@ class AverageStructure(AnalysisBase):
             Atoms of the reference structure to be aligned against
         mobile_atoms : AtomGroup
             Atoms inside each trajectory frame to be rmsd_aligned
-        universe : mda.Universe
+        results.universe : :class:`MDAnalysis.Universe`
             New Universe with average positions
-        positions : np.ndarray(dtype=float)
+
+            .. versionadded:: 2.0.0
+
+        universe : :class:`MDAnalysis.Universe`
+            Alias to the :attr:`results.universe` attribute.
+
+            .. deprecated:: 2.0.0
+               Will be removed in MDAnalysis 3.0.0. Please use
+               :attr:`results.universe` instead.
+
+        results.positions : np.ndarray(dtype=float)
             Average positions
-        rmsd : float
+
+            .. versionadded:: 2.0.0
+
+        positions : np.ndarray(dtype=float)
+            Alias to the :attr:`results.positions` attribute.
+
+            .. deprecated:: 2.0.0
+               Will be removed in MDAnalysis 3.0.0. Please use
+               :attr:`results.positions` instead.
+
+        results.rmsd : float
             Average RMSD per frame
+
+            .. versionadded:: 2.0.0
+
+        rmsd : float
+            Alias to the :attr:`results.rmsd` attribute.
+
+            .. deprecated:: 2.0.0
+               Will be removed in MDAnalysis 3.0.0. Please use
+               :attr:`results.rmsd` instead.
+
         filename : str
             String reflecting the filename of the file where the average
             structure is written
@@ -799,6 +852,9 @@ class AverageStructure(AnalysisBase):
 
 
         .. versionadded:: 1.0.0
+        .. versionchanged:: 2.0.0
+           :attr:`universe`, :attr:`positions`, and :attr:`rmsd` are now
+           stored in a :class:`MDAnalysis.analysis.base.Results` instance.
         """
         if in_memory or isinstance(mobile.trajectory, MemoryReader):
             mobile.transfer_to_memory()
@@ -832,9 +888,9 @@ class AverageStructure(AnalysisBase):
         self.ref_frame = ref_frame
 
         self.filename = filename
-        self.universe = mda.Merge(self.mobile_atoms)
+        self.results.universe = mda.Merge(self.mobile_atoms)
 
-        natoms = len(self.universe.atoms)
+        natoms = len(self.results.universe.atoms)
         self.ref_atoms, self.mobile_atoms = get_matching_atoms(
             self.ref_atoms, self.mobile_atoms, tol_mass=tol_mass,
             strict=strict, match_atoms=match_atoms)
@@ -863,27 +919,52 @@ class AverageStructure(AnalysisBase):
             self.reference.universe.trajectory[current_frame]
 
         # allocate the array for selection atom coords
-        self.positions = np.zeros((len(self.mobile_atoms), 3))
-        self.rmsd = 0
+        self.results.positions = np.zeros((len(self.mobile_atoms), 3))
+        self.results.rmsd = 0
 
     def _single_frame(self):
         mobile_com = self.mobile_atoms.center(self._weights)
         mobile_coordinates = self.mobile_atoms.positions - mobile_com
-        self.rmsd += _fit_to(mobile_coordinates,
-                             self._ref_coordinates,
-                             self.mobile,
-                             mobile_com,
-                             self._ref_com, self._weights)[1]
-        self.positions += self.mobile_atoms.positions
+        self.results.rmsd += _fit_to(mobile_coordinates,
+                                     self._ref_coordinates,
+                                     self.mobile,
+                                     mobile_com,
+                                     self._ref_com, self._weights)[1]
+        self.results.positions += self.mobile_atoms.positions
 
     def _conclude(self):
-        self.positions /= self.n_frames
-        self.rmsd /= self.n_frames
-        self.universe.load_new(self.positions.reshape((1, -1, 3)))
-        self._writer.write(self.universe.atoms)
+        self.results.positions /= self.n_frames
+        self.results.rmsd /= self.n_frames
+        self.results.universe.load_new(
+                self.results.positions.reshape((1, -1, 3)))
+        self._writer.write(self.results.universe.atoms)
         self._writer.close()
         if not self._verbose:
             logging.disable(logging.NOTSET)
+
+    @property
+    def universe(self):
+        wmsg = ("The `universe` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.universe` instead.")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.universe
+
+    @property
+    def positions(self):
+        wmsg = ("The `positions` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalyssi 3.0.0. Please use "
+                "`results.positions` instead.")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.positions
+
+    @property
+    def rmsd(self):
+        wmsg = ("The `rmsd` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.rmsd` instead.")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.rmsd
 
 
 def sequence_alignment(mobile, reference, match_score=2, mismatch_penalty=-1,
@@ -1073,12 +1154,12 @@ def fasta2select(fastafilename, is_aligned=False,
     # implict assertion that we only have two sequences in the alignment
     orig_resids = [ref_resids, target_resids]
     offsets = [ref_offset, target_offset]
+    GAP = "-"
     for iseq, a in enumerate(alignment):
         # need iseq index to change orig_resids
         if orig_resids[iseq] is None:
             # build default: assume consecutive numbering of all
             # residues in the alignment
-            GAP = "-"
             length = len(a.seq) - a.seq.count(GAP)
             orig_resids[iseq] = np.arange(1, length + 1)
         else:
