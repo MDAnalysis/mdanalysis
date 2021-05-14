@@ -397,7 +397,7 @@ class ChemfilesWriter(base.WriterBase):
         # if there is no cell information in this universe, still pass a valid
         # cell to chemfiles
         if ts.dimensions is None:
-            lengths, angles = np.zeros(3), np.zeros(3)
+            lengths, angles = np.zeros(3), np.array([90, 90, 90.0])
         else:
             lengths = ts.dimensions[:3]
             angles = ts.dimensions[3:]
