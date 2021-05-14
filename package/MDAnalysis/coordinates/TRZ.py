@@ -96,7 +96,7 @@ from .core import triclinic_box, triclinic_vectors
 
 
 # legacy reasons
-Timestep = base.Timestep
+from .base import Timestep
 
 
 class TRZReader(base.ReaderBase):
