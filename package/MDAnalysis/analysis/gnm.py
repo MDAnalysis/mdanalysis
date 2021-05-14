@@ -231,17 +231,6 @@ class GNMAnalysis(AnalysisBase):
     results.eigenvectors : numpy.ndarray
             calculated eigenvectors
 
-
-
-    Attributes
-    ----------
-    results : list
-          eigenvalues and eigenvectors
-
-          .. deprecated:: 1.1.0
-             The structure of the ``results`` list will change in
-             MDAnalysis 2.0.
-
     See Also
     --------
     :class:`closeContactGNMAnalysis`

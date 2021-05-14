@@ -68,10 +68,6 @@ class LinearDensity(AnalysisBase):
     results.x.slice_volume : float
            volume of bin in [xyz] direction
 
-          .. deprecated:: 1.1.0
-             The structure of the ``results`` dictionary will change in
-             MDAnalysis 2.0
-
     Example
     -------
     First create a ``LinearDensity`` object by supplying a selection,
