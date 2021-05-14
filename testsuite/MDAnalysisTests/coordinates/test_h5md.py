@@ -373,7 +373,7 @@ def test_changing_n_atoms1(h5md_file, ref, tmpdir):
                 f.copy(source='particles', dest=g)
                 f.copy(source='h5md', dest=g)
                 g['particles/trajectory/position/value'].resize((3, 10000, 3))
-        with pytest.raises(TypeError):
+        with pytest.raises(ValueError):
             u = mda.Universe(TPR_xvf, outfile, format='H5MD')
 
 
@@ -386,7 +386,7 @@ def test_changing_n_atoms2(h5md_file, ref, tmpdir):
                 f.copy(source='particles', dest=g)
                 f.copy(source='h5md', dest=g)
                 g['particles/trajectory/velocity/value'].resize((3, 10000, 3))
-        with pytest.raises(TypeError):
+        with pytest.raises(ValueError):
             u = mda.Universe(TPR_xvf, outfile, format='H5MD')
 
 
@@ -399,7 +399,7 @@ def test_changing_n_atoms3(h5md_file, ref, tmpdir):
                 f.copy(source='particles', dest=g)
                 f.copy(source='h5md', dest=g)
                 g['particles/trajectory/force/value'].resize((3, 10000, 3))
-        with pytest.raises(TypeError):
+        with pytest.raises(ValueError):
             u = mda.Universe(TPR_xvf, outfile, format='H5MD')
 
 
