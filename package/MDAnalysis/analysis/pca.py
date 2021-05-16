@@ -146,9 +146,6 @@ class PCA(AnalysisBase):
         of the components preceding it. If a subset of components is not chosen
         then all components are stored and the cumulated variance will converge
         to 1.
-    mean_atoms: MDAnalyis atomgroup
-        After running :meth:`PCA.run`, the mean position of all the atoms
-        used for the creation of the covariance matrix will exist here.
 
     Methods
     -------
@@ -160,6 +157,10 @@ class PCA(AnalysisBase):
     Notes
     -----
     Computation can be sped up by supplying a precalculated mean structure.
+
+    .. versionchanged:: 2.0.0
+       ``mean_atoms`` removed, as this did not reliably contain the mean 
+       positions.
 
     .. versionchanged:: 1.0.0
        ``n_components`` now limits the correct axis of ``p_components``.
@@ -223,7 +224,7 @@ class PCA(AnalysisBase):
             if self._n_atoms != len(self._mean): 
                 raise ValueError('Number of atoms in reference ({}) does '
                                  'not match number of atoms in the '
-                                 'seelction ({})'.format(self._n_atoms,
+                                 'selection ({})'.format(self._n_atoms,
                                                          len(self._mean)))
             self.mean = self._mean.positions.ravel()
             self._calc_mean = False
@@ -251,8 +252,6 @@ class PCA(AnalysisBase):
                 self.mean += self._atoms.positions.ravel()
             self.mean /= self.n_frames
 
-        self.mean_atoms = self._atoms
-        self.mean_atoms.positions = self._atoms.positions
 
     def _single_frame(self):
         if self.align:
