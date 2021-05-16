@@ -539,6 +539,9 @@ class PDBWriter(base.WriterBase):
     .. versionchanged:: 2.0.0
         Add the `redindex` argument. Setting this keyword to ``True``
         (the default) preserves the behavior in earlier versions of MDAnalysis.
+        The PDB writer checks for a valid chainID entry instead of using the
+        last character of segid. Should a chainID not be present, or not
+        conform to the PDB standard, the default value of  'X' is used.
 
     """
     fmt = {
