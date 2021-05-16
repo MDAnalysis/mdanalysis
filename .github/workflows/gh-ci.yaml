@@ -9,6 +9,13 @@ on:
       - develop
       - master
 
+concurrency:
+  # Probably overly cautious group naming.
+  # Commits to develop/master will cancel each other, but PRs will only cancel
+  # commits within the same PR
+  group: "${{ github.ref }}-${{ github.head_ref }}"
+  cancel-in-progress: true
+
 defaults:
   run:
     shell: bash -l {0}

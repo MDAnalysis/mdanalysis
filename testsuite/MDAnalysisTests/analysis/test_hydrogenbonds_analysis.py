@@ -206,7 +206,6 @@ class TestHydrogenBondAnalysisIdeal(object):
 
     def test_first_hbond(self, hydrogen_bonds):
         assert len(hydrogen_bonds.results.hbonds) == 2
-
         frame_no, donor_index, hydrogen_index, acceptor_index, da_dst, angle =\
             hydrogen_bonds.results.hbonds[0]
         assert_equal(donor_index, 0)
@@ -409,6 +408,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessAcceptors_GuessHydrogens_UseTopology_(T
         assert h._hydrogens.n_atoms == 0
         assert h._donors.n_atoms == 0
         assert h.results.hbonds.size == 0
+
 
 class TestHydrogenBondAnalysisTIP3P_GuessDonors_NoTopology(object):
     """Guess the donor atoms involved in hydrogen bonds using the partial charges of the atoms.
