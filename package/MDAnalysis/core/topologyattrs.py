@@ -327,7 +327,6 @@ class _TopologyAttrMeta(type):
             dtype = classdict.get("dtype")
             if dtype is not None:
                 per_obj = classdict.get("per_object", bases[0].per_object)
-
                 try:
                     selection.gen_selection_class(singular, attrname,
                                                   dtype, per_obj)
@@ -1112,7 +1111,6 @@ class Atomnames(_AtomStringAttr):
             different definitions. For example, the
             :class:`MDAnalysis.analysis.dihedrals.Janin` class does not incorporate
             amino acids where the gamma atom is not carbon, into its chi1 selections.
-
 
         Parameters
         ----------
