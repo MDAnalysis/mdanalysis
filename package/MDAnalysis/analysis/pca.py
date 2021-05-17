@@ -156,11 +156,12 @@ class PCA(AnalysisBase):
 
     Notes
     -----
-    Computation can be sped up by supplying a precalculated mean structure.
+    Computation can be sped up by supplying precalculated mean positions.
 
-    .. versionchanged:: 2.0.0
+    .. versionchanged:: 2.x
        ``mean_atoms`` removed, as this did not reliably contain the mean 
        positions.
+       ``mean`` input now accepts coordinate arrays instead of atomgroup.
 
     .. versionchanged:: 1.0.0
        ``n_components`` now limits the correct axis of ``p_components``.
@@ -189,8 +190,8 @@ class PCA(AnalysisBase):
         align : boolean, optional
             If True, the trajectory will be aligned to a reference
             structure.
-        mean : MDAnalysis atomgroup, optional
-            An optional reference structure to be used as the mean of the
+        mean : array_like, optional
+            Optional reference positions to be be used as the mean of the 
             covariance matrix.
         n_components : int, optional
             The number of principal components to be saved, default saves
@@ -218,15 +219,15 @@ class PCA(AnalysisBase):
         self._n_atoms = self._atoms.n_atoms
 
         if self._mean is None:
-            self.mean = np.zeros(self._n_atoms*3)
+            self.mean = np.zeros((self._n_atoms,3))
             self._calc_mean = True
         else:
-            if self._n_atoms != len(self._mean): 
+            self.mean = np.asarray(self._mean)
+            if self.mean.shape[0] != self._n_atoms: 
                 raise ValueError('Number of atoms in reference ({}) does '
                                  'not match number of atoms in the '
                                  'selection ({})'.format(self._n_atoms,
-                                                         len(self._mean)))
-            self.mean = self._mean.positions.ravel()
+                                                         self.mean.shape[0]))
             self._calc_mean = False
 
         if self.n_frames == 1:
@@ -249,9 +250,9 @@ class PCA(AnalysisBase):
                                                      mobile_com=mobile_cog,
                                                      ref_com=self._ref_cog)
 
-                self.mean += self._atoms.positions.ravel()
+                self.mean += self._atoms.positions
             self.mean /= self.n_frames
-
+        self._xmean = np.ravel(self.mean)
 
     def _single_frame(self):
         if self.align:
@@ -265,7 +266,7 @@ class PCA(AnalysisBase):
             x = mobile_atoms.positions.ravel()
         else:
             x = self._atoms.positions.ravel()
-        x -= self.mean
+        x -= self._xmean
         self.cov += np.dot(x[:, np.newaxis], x[:, np.newaxis].T)
 
     def _conclude(self):
@@ -348,7 +349,7 @@ class PCA(AnalysisBase):
         dot = np.zeros((n_frames, dim))
 
         for i, ts in enumerate(traj[start:stop:step]):
-            xyz = atomgroup.positions.ravel() - self.mean
+            xyz = atomgroup.positions.ravel() - self._xmean
             dot[i] = np.dot(xyz, self._p_components[:, :dim])
 
         return dot

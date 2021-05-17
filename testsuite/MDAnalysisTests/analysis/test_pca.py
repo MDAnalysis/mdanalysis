@@ -153,23 +153,20 @@ def test_cosine_content():
 
 def test_mean_shape(pca_aligned, u):
     atoms = u.select_atoms(SELECTION)
-    assert_equal(pca_aligned.mean.shape[0], atoms.n_atoms * 3)
+    assert_equal(pca_aligned.mean.shape[0], atoms.n_atoms)
+    assert_equal(pca_aligned.mean.shape[1], 3)
 
 
 def test_calculate_mean(pca_aligned, u, u_aligned):
     ag = u_aligned.select_atoms(SELECTION)
     coords = u_aligned.trajectory.coordinate_array[:, ag.ix]
     assert_almost_equal(pca_aligned.mean, coords.mean(
-        axis=0).ravel(), decimal=5)
+        axis=0), decimal=5)
 
 
 def test_given_mean(pca_aligned, u):
-    # create dummy atomgroup to populate with the mean values
-    num_atoms = len(u.select_atoms(SELECTION))
-    ag = mda.Universe.empty(num_atoms, trajectory=True).select_atoms('all')
-    ag.positions = pca_aligned.mean.reshape((num_atoms, 3))
     pca = PCA(u, select=SELECTION, align=True,
-              mean=ag).run()
+              mean=pca_aligned.mean).run()
     assert_almost_equal(pca_aligned.cov, pca.cov, decimal=5)
 
 
