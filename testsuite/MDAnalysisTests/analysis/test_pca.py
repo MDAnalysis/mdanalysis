@@ -164,16 +164,16 @@ def test_calculate_mean(pca_aligned, u, u_aligned):
         axis=0), decimal=5)
 
 
-def test_given_mean(pca_aligned, u):
-    pca = PCA(u, select=SELECTION, align=True,
-              mean=pca_aligned.mean).run()
-    assert_almost_equal(pca_aligned.cov, pca.cov, decimal=5)
+def test_given_mean(pca, u):
+    pca = PCA(u, select=SELECTION, align=False,
+              mean=pca.mean).run()
+    assert_almost_equal(pca.cov, pca.cov, decimal=5)
 
 
 def test_wrong_num_given_mean(u):
-    ag = u.select_atoms('backbone and name CA and resid 1')
+    wrong_mean = [[0,0,0],[1,1,1]]
     with pytest.raises(ValueError) as exc:
-         pca = PCA(u, select=SELECTION, mean=ag).run()
+         pca = PCA(u, select=SELECTION, mean=wrong_mean).run()
     assert 'Number of atoms in' in str(exc.value) 
 
 
