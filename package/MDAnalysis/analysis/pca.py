@@ -99,6 +99,9 @@ Classes and Functions
 ---------------------
 
 .. autoclass:: PCA
+   :members:
+   :inherited-members:
+
 .. autofunction:: cosine_content
 
 """
