@@ -199,11 +199,6 @@ class HistoryReader(base.ReaderBase):
                 ts._forces[i] = self._file.readline().split()
             i += 1
 
-        # if not self._imcon == 0:
-        #     ts._unitcell[0] = self._file.readline().split()
-        #     ts._unitcell[1] = self._file.readline().split()
-        #     ts._unitcell[2] = self._file.readline().split()
-
         while i < self.n_atoms:
             line = self._file.readline().strip()  # atom info line
             try:
