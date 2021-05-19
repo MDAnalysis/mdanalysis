@@ -178,6 +178,8 @@ Enhancements
     explicit in the topology (Issue #2468, PR #2775)
   * Added `TransformationBase`. Implemented threadlimit and add an attribute for
     checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
+  * Improved performance of H5MDReader by using h5py.Dataset.read_direct()
+    to transfer data from HDF5 file into timestep. (PR #3293)
 
 Changes
   * `analysis.rdf.InterRDF` and `analysis.rdf.InterRDF_s` now store
@@ -186,7 +188,7 @@ Changes
   * Adds a `force` parameter to the RDKitConverter to allow conversion of
     molecules with no hydrogen atom, and a `set_converter_cache_size` function
     to change how many items are retained in the cache (PR #2942)
-  * `hydrogenbonds.WaterBridgeAnalysis.generate_table()` now returns the table; as previously, 
+  * `hydrogenbonds.WaterBridgeAnalysis.generate_table()` now returns the table; as previously,
     it also generates the `table` attribute but the attribute will be removed in 3.0.0.
   * `hydrogenbonds.WaterBridgeAnalysis` now stores data using the
     `hydrogenbonds.WaterBridgeAnalysis.results` attribute
@@ -198,7 +200,7 @@ Changes
     passes keyword arguments to the underlying converter. It can also be used
     as `convert_to.lowercase_pkg_name()` for tab-completion (PR #2882)
   * `analysis.polymer.PersistenceLength` class now stores `lb`,
-    `lp` and `fit` using the `analysis.base.Results` class 
+    `lp` and `fit` using the `analysis.base.Results` class
     (Issues #3289, #3291)
   * `analysis.hole2.HoleAnalysis` now stores ``sphpdbs``, ``outfiles``
     and ``profiles`` in the `analysis.base.Results` class (Issues #3261, #3269)
@@ -282,13 +284,13 @@ Deprecations
   * The `hydrogenbonds.WaterBridgeAnalysis.network` attribute is now deprecated
     in favour of `hydrogenbonds.WaterBridgeAnalysis.results.network`. It will be
     removed in 3.0.0 (Issue #3261, Issue #3270)
-  * The `analysis.Contacts.timeseries` attribute is now deprecated in favour of 
+  * The `analysis.Contacts.timeseries` attribute is now deprecated in favour of
     `analysis.Contacts.results.timeseries`. It will be removed in 3.0.0
     (Issue #3261)
   * In 3.0.0 the ParmEd classes will only be accessible from the
     `MDAnalysis.converters` module.
   * The `analysis.polymer.PersistenceLength.lb`,
-    `analysis.polymer.PersistenceLength.lp` and 
+    `analysis.polymer.PersistenceLength.lp` and
     `analysis.polymer.PersistenceLength.fit` attributes are now deprecated in
     favour of `analysis.polymer.PersistenceLength.results.lb`,
     `analysis.polymer.PersistenceLength.results.lp` and
@@ -371,7 +373,7 @@ Deprecations
     replaced with hydrogenbonds.WaterBridgeAnalysis (#3111)
   * TPRParser indexing resids from 0 by default is deprecated.
     From 2.0 TPRParser will index resids from 1 by default.
-  
+
 
 Enhancements
   * Added `get_connections` method to get bonds, angles, dihedrals, etc.
@@ -379,7 +381,7 @@ Enhancements
   * Added `tpr_resid_from_one` keyword to select whether TPRParser
     indexes resids from 0 or 1 (Issue #2364, PR #3153)
 
-    
+
 01/17/21 richardjgowers, IAlibay, orbeckst, tylerjereddy, jbarnoud,
          yuxuanzhuang, lilyminium, VOD555, p-j-smith, bieniekmateusz,
          calcraven, ianmkenney, rcrehuet, manuel.nuno.melo, hanatok
@@ -465,7 +467,7 @@ Fixes
   * n_components correctly selects PCA components (Issue #2623)
   * Use internal residue indices instead of resids for similarity and connectivity
     selections (Issues #2669 and #2672, PR #2673)
-  * Checks for cryo-em 1 A^3 default CRYST1 record, 
+  * Checks for cryo-em 1 A^3 default CRYST1 record,
     disabling setting of box dimensions if found (Issue #2599)
   * mdamath.angles now returns np.pi instead of -np.pi in cases of
     lower bound roundoff errors. (Issue #2632, PR #2634)
@@ -527,7 +529,7 @@ Fixes
 Enhancements
   * Added support for FHI-AIMS input files (PR #2705)
   * vastly improved support for 32-bit Windows (PR #2696)
-  * Added methods to compute the root-mean-square-inner-product of subspaces 
+  * Added methods to compute the root-mean-square-inner-product of subspaces
     and the cumulative overlap of a vector in a subspace for PCA (PR #2613)
   * Added .frames and .times arrays to AnalysisBase (Issue #2661)
   * Added elements attribute to PDBParser (Issue #2553, #2647)
@@ -574,7 +576,7 @@ Enhancements
 
 Changes
   * Unused `MDAnalysis.lib.mdamath._angle` has been removed (Issue #2650)
-  * Refactored dihedral selections and Ramachandran.__init__ to speed up 
+  * Refactored dihedral selections and Ramachandran.__init__ to speed up
     dihedral selections for faster tests (Issue #2671, PR #2706)
   * Removes the deprecated `t0`, `tf`, and `dtmax` from
     :class:Waterdynamics.SurvivalProbability. Instead the `start`, `stop` and
