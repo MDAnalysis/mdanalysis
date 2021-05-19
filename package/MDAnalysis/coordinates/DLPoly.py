@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -169,16 +169,42 @@ class HistoryReader(base.ReaderBase):
         line = self._file.readline()  # timestep line
         if not line.startswith('timestep'):
             raise IOError
-        if not self._imcon == 0:
-            ts._unitcell[0] = self._file.readline().split()
-            ts._unitcell[1] = self._file.readline().split()
-            ts._unitcell[2] = self._file.readline().split()
 
         # If ids are given, put them in here
         # and later sort by them
         ids = []
+        i = 0
 
-        for i in range(self.n_atoms):
+        # Either atom info (5 records) line OR unit cell vectors (xyz)
+        line = self._file.readline().split()
+        if len(line) == 3:
+            ts._unitcell[0] = line
+            ts._unitcell[1] = self._file.readline().split()
+            ts._unitcell[2] = self._file.readline().split()
+
+        # Load first atom here, then loop
+        elif len(line) == 5:
+            try:
+                idx = int(line[1])
+            except IndexError:
+                pass
+            else:
+                ids.append(idx)
+
+            # Read in this order for now, then later reorder in place
+            ts._pos[i] = self._file.readline().split()
+            if self._has_vels:
+                ts._velocities[i] = self._file.readline().split()
+            if self._has_forces:
+                ts._forces[i] = self._file.readline().split()
+            i += 1
+
+        # if not self._imcon == 0:
+        #     ts._unitcell[0] = self._file.readline().split()
+        #     ts._unitcell[1] = self._file.readline().split()
+        #     ts._unitcell[2] = self._file.readline().split()
+
+        while i < self.n_atoms:
             line = self._file.readline().strip()  # atom info line
             try:
                 idx = int(line.split()[1])
@@ -193,11 +219,12 @@ class HistoryReader(base.ReaderBase):
                 ts._velocities[i] = self._file.readline().split()
             if self._has_forces:
                 ts._forces[i] = self._file.readline().split()
+            i += 1
 
         if ids:
             ids = np.array(ids)
             # if ids aren't strictly sequential
-            if not all(ids == (np.arange(self.n_atoms) + 1)):
+            if not np.all(ids == (np.arange(self.n_atoms) + 1)):
                 order = np.argsort(ids)
                 ts._pos[:] = ts._pos[order]
                 if self._has_vels:
