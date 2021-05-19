@@ -1087,7 +1087,7 @@ class H5MDWriter(base.WriterBase):
         creator_group.attrs['version'] = self.creator_version
 
         # initialize trajectory group
-        h5md_file.require_group('particles').require_group('trajectory')
+        self.h5md_file.require_group('particles').require_group('trajectory')
         trajectory = self.h5md_file['particles/trajectory']
 
         # intialize box group that contains unitcell information in box/edges
