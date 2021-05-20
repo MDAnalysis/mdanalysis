@@ -501,6 +501,7 @@ DLP_CONFIG_minimal = resource_filename(__name__, "data/dlpoly/CONFIG_minimal")
 DLP_HISTORY = resource_filename(__name__, "data/dlpoly/HISTORY")
 DLP_HISTORY_order = resource_filename(__name__, "data/dlpoly/HISTORY_order")
 DLP_HISTORY_minimal = resource_filename(__name__, "data/dlpoly/HISTORY_minimal")
+DLP_HISTORY_minimal_cell = resource_filename(__name__, "data/dlpoly/HISTORY_minimal_cell")
 
 waterPSF = resource_filename(__name__, 'data/watdyn.psf')
 waterDCD = resource_filename(__name__, 'data/watdyn.dcd')
