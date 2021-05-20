@@ -58,6 +58,7 @@ import numpy as np
 import logging
 import copy
 import warnings
+import contextlib
 import collections
 
 import MDAnalysis
@@ -83,7 +84,7 @@ else:
     os.fork = _os_dot_fork
     del _os_dot_fork
 
-from .. import _ANCHOR_UNIVERSES, _TOPOLOGY_ATTRS, _PARSERS
+from .. import _TOPOLOGY_ATTRS, _PARSERS
 from ..exceptions import NoDataError
 from ..lib import util
 from ..lib.log import ProgressBar
@@ -97,6 +98,7 @@ from .groups import (ComponentBase, GroupBase,
 from .topology import Topology
 from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr
 from .topologyobjects import TopologyObject
+
 
 logger = logging.getLogger("MDAnalysis.core.universe")
 
@@ -138,11 +140,8 @@ def _topology_from_file_like(topology_file, topology_format=None,
             "Error: {2}".format(topology_file, parser, err))
     return topology
 
-# py3 TODO
-#def _resolve_formats(*coordinates, format=None, topology_format=None):
-def _resolve_formats(*coordinates, **kwargs):
-    format = kwargs.get('format', None)
-    topology_format = kwargs.get('topology_format', None)
+
+def _resolve_formats(*coordinates, format=None, topology_format=None):
     if not coordinates:
         if format is None:
             format = topology_format
@@ -150,15 +149,9 @@ def _resolve_formats(*coordinates, **kwargs):
             topology_format = format
     return format, topology_format
 
-# py3 TODO
-#def _resolve_coordinates(filename, *coordinates, format=None,
-#                         all_coordinates=False):
-def _resolve_coordinates(*args, **kwargs):
-    filename = args[0]
-    coordinates = args[1:]
-    format = kwargs.get('format', None)
-    all_coordinates = kwargs.get('all_coordinates', False)
 
+def _resolve_coordinates(filename, *coordinates, format=None,
+                         all_coordinates=False):
     if all_coordinates or not coordinates and filename is not None:
         try:
             get_reader_for(filename, format=format)
@@ -273,17 +266,6 @@ class Universe(object):
     vdwradii: dict, ``None``, default ``None``
         For use with *guess_bonds*. Supply a dict giving a vdwradii for each
         atom type which are used in guessing bonds.
-    is_anchor: bool, default ``True``
-        When unpickling instances of
-        :class:`MDAnalysis.core.groups.AtomGroup` existing Universes are
-        searched for one where to anchor those atoms. Set to ``False`` to
-        prevent this Universe from being considered.
-    anchor_name: str, ``None``, default ``None``
-        Setting to other than ``None`` will cause
-        :class:`MDAnalysis.core.groups.AtomGroup` instances pickled from the
-        Universe to only unpickle if a compatible Universe with matching
-        *anchor_name* is found. Even if *anchor_name* is set *is_anchor* will
-        still be honored when unpickling.
     transformations: function or list, ``None``, default ``None``
         Provide a list of transformations that you wish to apply to the
         trajectory upon reading. Transformations can be found in
@@ -298,6 +280,7 @@ class Universe(object):
         :mod:`ChainReader<MDAnalysis.coordinates.chain>`, which contains the
         functionality to treat independent trajectory files as a single virtual
         trajectory.
+    **kwargs: extra arguments are passed to the topology parser.
 
     Attributes
     ----------
@@ -318,33 +301,16 @@ class Universe(object):
 
     .. versionchanged:: 2.0.0
         Universe now can be (un)pickled.
-        ``topology``, ``trajectory`` and ``anchor_name`` are reserved
+        ``topology`` and ``trajectory`` are reserved
         upon unpickle.
     """
-# Py3 TODO
-#    def __init__(self, topology=None, *coordinates, all_coordinates=False,
-#                 format=None, topology_format=None, transformations=None,
-#                 guess_bonds=False, vdwradii=None, anchor_name=None,
-#                 is_anchor=True, in_memory=False, in_memory_step=1,
-#                 **kwargs):
-    def __init__(self, *args, **kwargs):
-        topology = args[0] if args else None
-        coordinates = args[1:]
-        all_coordinates = kwargs.pop('all_coordinates', False)
-        format = kwargs.pop('format', None)
-        topology_format = kwargs.pop('topology_format', None)
-        transformations = kwargs.pop('transformations', None)
-        guess_bonds = kwargs.pop('guess_bonds', False)
-        vdwradii = kwargs.pop('vdwradii', None)
-        anchor_name = kwargs.pop('anchor_name', None)
-        is_anchor = kwargs.pop('is_anchor', True)
-        in_memory = kwargs.pop('in_memory', False)
-        in_memory_step = kwargs.pop('in_memory_step', 1)
+    def __init__(self, topology=None, *coordinates, all_coordinates=False,
+                 format=None, topology_format=None, transformations=None,
+                 guess_bonds=False, vdwradii=None, in_memory=False,
+                 in_memory_step=1, **kwargs):
 
         self._trajectory = None  # managed attribute holding Reader
-        self._cache = {}
-        self._anchor_name = anchor_name
-        self.is_anchor = is_anchor
+        self._cache = {'_valid': {}}
         self.atoms = None
         self.residues = None
         self.segments = None
@@ -354,8 +320,6 @@ class Universe(object):
             'transformations': transformations,
             'guess_bonds': guess_bonds,
             'vdwradii': vdwradii,
-            'anchor_name': anchor_name,
-            'is_anchor': is_anchor,
             'in_memory': in_memory,
             'in_memory_step': in_memory_step,
             'format': format,
@@ -696,45 +660,6 @@ class Universe(object):
         """Improper dihedral angles between atoms"""
         return self.atoms.impropers
 
-    @property
-    def anchor_name(self):
-        # hash used for anchoring.
-        # Try and use anchor_name, else use (and store) uuid
-        if self._anchor_name is not None:
-            return self._anchor_name
-        else:
-            try:
-                return self._anchor_uuid
-            except AttributeError:
-                # store this so we can later recall it if needed
-                self._anchor_uuid = str(uuid.uuid4())
-                return self._anchor_uuid
-
-    @anchor_name.setter
-    def anchor_name(self, name):
-        self.remove_anchor()  # clear any old anchor
-        self._anchor_name = str(name) if not name is None else name
-        self.make_anchor()  # add anchor again
-
-    @property
-    def is_anchor(self):
-        """Is this Universe an anchoring for unpickling AtomGroups"""
-        return self.anchor_name in _ANCHOR_UNIVERSES
-
-    @is_anchor.setter
-    def is_anchor(self, new):
-        if new:
-            self.make_anchor()
-        else:
-            self.remove_anchor()
-
-    def remove_anchor(self):
-        """Remove this Universe from the possible anchor list for unpickling"""
-        _ANCHOR_UNIVERSES.pop(self.anchor_name, None)
-
-    def make_anchor(self):
-        _ANCHOR_UNIVERSES[self.anchor_name] = self
-
     def __repr__(self):
         # return "<Universe with {n_atoms} atoms{bonds}>".format(
         #    n_atoms=len(self.atoms),
@@ -743,19 +668,21 @@ class Universe(object):
         return "<Universe with {n_atoms} atoms>".format(
             n_atoms=len(self.atoms))
 
-    def __getstate__(self):
-        # Universe's two "legs" of topology and traj both serialise themselves
-        # the only other state held in Universe is anchor name?
-        return self.anchor_name, self._topology, self._trajectory
+    @classmethod
+    def _unpickle_U(cls, top, traj):
+        """Special method used by __reduce__ to deserialise a Universe"""
+        #  top is a Topology obj at this point, but Universe can handle that.
+        u = cls(top)
+        u.trajectory = traj
 
-    def __setstate__(self, args):
-        self._anchor_name = args[0]
-        self.make_anchor()
+        return u
 
-        self._topology = args[1]
-        _generate_from_topology(self)
-
-        self._trajectory = args[2]
+    def __reduce__(self):
+        #  __setstate__/__getstate__ will raise an error when Universe has a
+        #  transformation (that has AtomGroup inside). Use __reduce__ instead.
+        #  Universe's two "legs" of top and traj both serialise themselves.
+        return (self._unpickle_U, (self._topology,
+                                   self._trajectory))
 
     # Properties
     @property
@@ -838,6 +765,14 @@ class Universe(object):
            Can now also add TopologyAttrs with a string of the name of the
            attribute to add (eg 'charges'), can also supply initial values
            using values keyword.
+
+        .. versionchanged:: 1.1.0 
+            Now warns when adding bfactors to a Universe with
+            existing tempfactors, or adding tempfactors to a
+            Universe with existing bfactors.
+            In version 2.0, MDAnalysis will stop treating
+            tempfactors and bfactors as separate attributes. Instead,
+            they will be aliases of the same attribute.
         """
         if isinstance(topologyattr, str):
             try:
@@ -858,8 +793,74 @@ class Universe(object):
                     n_residues=self._topology.n_residues,
                     n_segments=self._topology.n_segments,
                     values=values)
+        alias_pairs = [("bfactors", "tempfactors"),
+                       ("tempfactors", "bfactors")]
+        for a, b in alias_pairs:
+            if topologyattr.attrname == a and hasattr(self._topology, b):
+                err = ("You are adding {a} to a Universe that "
+                       "has {b}. From MDAnalysis version 2.0, {a} "
+                       "and {b} will no longer be separate "
+                       "TopologyAttrs. Instead, they will be aliases "
+                       "of the same attribute.").format(a=a, b=b)
+                warnings.warn(err, DeprecationWarning)
         self._topology.add_TopologyAttr(topologyattr)
         self._process_attr(topologyattr)
+
+    def del_TopologyAttr(self, topologyattr):
+        """Remove a topology attribute from the Universe
+
+        Removing a TopologyAttribute from the Universe makes it unavailable to
+        all AtomGroups etc throughout the Universe.
+
+        Parameters
+        ----------
+        topologyattr: TopologyAttr or string
+          Either a MDAnalysis TopologyAttr object or the name of a possible
+          topology attribute.
+
+        Example
+        -------
+        For example to remove bfactors to a Universe:
+
+        >>> u.del_TopologyAttr('bfactors')
+        >>> hasattr(u.atoms[:3], 'bfactors')
+        False
+
+
+        .. versionadded:: 2.0.0
+        """
+
+        if not isinstance(topologyattr, str):
+            try:
+                topologyattr = topologyattr.attrname
+            except AttributeError:
+                # either TopologyGroup or not valid
+                try:
+                    # this may not end well
+                    # e.g. matrix -> matrices
+                    topologyattr = topologyattr.btype + "s"
+                except AttributeError:
+                    raise ValueError("Topology attribute must be str or "
+                                     "TopologyAttr object or class. "
+                                     f"Given: {type(topologyattr)}") from None
+
+        try:
+            topologyattr = _TOPOLOGY_ATTRS[topologyattr].attrname
+        except KeyError:
+            attrs = ', '.join(sorted(_TOPOLOGY_ATTRS))
+            errmsg = (f"Unrecognised topology attribute: '{topologyattr}'."
+                      f"  Possible values: '{attrs}'\n"
+                      "To raise an issue go to: "
+                      "https://github.com/MDAnalysis/mdanalysis/issues")
+            raise ValueError(errmsg) from None
+
+        try:
+            topattr = getattr(self._topology, topologyattr)
+        except AttributeError:
+            raise ValueError(f"Topology attribute {topologyattr} "
+                             "not in Universe.") from None
+        self._topology.del_TopologyAttr(topattr)
+        self._unprocess_attr(topattr)
 
     def _process_attr(self, attr):
         """Squeeze a topologyattr for its information
@@ -894,6 +895,24 @@ class Universe(object):
         # Universe transplants
         for funcname, meth in attr.transplants['Universe']:
             setattr(self.__class__, funcname, meth)
+
+    def _unprocess_attr(self, attr):
+        """
+        Undo all the stuff in _process_attr.
+
+        If the topology attribute is not present, nothing happens
+        (silent fail).
+        """
+        for cls in attr.target_classes:
+            self._class_bases[cls]._del_prop(attr)
+
+        # Universe transplants
+        for funcname, _ in attr.transplants.pop("Universe", []):
+            delattr(self.__class__, funcname)
+        # Group transplants
+        for cls, transplants in attr.transplants.items():
+            for funcname, _ in transplants:
+                delattr(self._class_bases[cls], funcname)
 
     def add_Residue(self, segment=None, **attrs):
         """Add a new Residue to this Universe
@@ -1077,7 +1096,10 @@ class Universe(object):
         """
         self._add_topology_objects('bonds', values, types=types,
                                  guessed=guessed, order=order)
+        # Invalidate bond-related caches
         self._cache.pop('fragments', None)
+        self._cache['_valid'].pop('fragments', None)
+        self._cache['_valid'].pop('fragindices', None)
 
     def add_angles(self, values, types=None, guessed=False):
         """Add new Angles to this Universe.
@@ -1214,7 +1236,10 @@ class Universe(object):
         .. versionadded:: 1.0.0
         """
         self._delete_topology_objects('bonds', values)
+        # Invalidate bond-related caches
         self._cache.pop('fragments', None)
+        self._cache['_valid'].pop('fragments', None)
+        self._cache['_valid'].pop('fragindices', None)
 
     def delete_angles(self, values):
         """Delete Angles from this Universe.
@@ -1312,24 +1337,18 @@ class Universe(object):
         ----------
         smiles : str
             SMILES string
-
         sanitize : bool (optional, default True)
             Toggle the sanitization of the molecule
-
         addHs : bool (optional, default True)
             Add all necessary hydrogens to the molecule
-
         generate_coordinates : bool (optional, default True)
             Generate 3D coordinates using RDKit's `AllChem.EmbedMultipleConfs`
             function. Requires adding hydrogens with the `addHs` parameter
-
         numConfs : int (optional, default 1)
             Number of frames to generate coordinates for. Ignored if
             `generate_coordinates=False`
-
         rdkit_kwargs : dict (optional)
             Other arguments passed to the RDKit `EmbedMultipleConfs` function
-
         kwargs : dict
             Parameters passed on Universe creation
 
@@ -1382,32 +1401,6 @@ class Universe(object):
             AllChem.EmbedMultipleConfs(mol, numConfs, **rdkit_kwargs)
 
         return cls(mol, **kwargs)
-
-
-# TODO: what is the point of this function???
-def as_Universe(*args, **kwargs):
-    """Return a universe from the input arguments.
-
-    1. If the first argument is a universe, just return it::
-
-         as_Universe(universe) --> universe
-
-    2. Otherwise try to build a universe from the first or the first
-       and second argument::
-
-         as_Universe(PDB, **kwargs) --> Universe(PDB, **kwargs)
-         as_Universe(PSF, DCD, **kwargs) --> Universe(PSF, DCD, **kwargs)
-         as_Universe(*args, **kwargs) --> Universe(*args, **kwargs)
-
-    Returns
-    -------
-    :class:`~MDAnalysis.core.groups.Universe`
-    """
-    if len(args) == 0:
-        raise TypeError("as_Universe() takes at least one argument (%d given)" % len(args))
-    elif len(args) == 1 and isinstance(args[0], Universe):
-        return args[0]
-    return Universe(*args, **kwargs)
 
 
 def Merge(*args):

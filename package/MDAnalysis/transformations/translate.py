@@ -30,24 +30,27 @@ The vector can either be user defined, using the function :func:`translate`
 or defined by centering an AtomGroup in the unit cell using the function
 :func:`center_in_box`
 
-.. autofunction:: translate
+.. autoclass:: translate
 
-.. autofunction:: center_in_box
+.. autoclass:: center_in_box
 
 
 """
 import numpy as np
 from functools import partial
 
-from ..lib.mdamath import triclinic_vectors
+from .base import TransformationBase
 
-def translate(vector):
+
+class translate(TransformationBase):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance by a given vector.
 
     Example
     -------
+    .. code-block:: python
+
         ts = MDAnalysis.transformations.translate([1,2,3])(ts)
 
     Parameters
@@ -59,21 +62,32 @@ def translate(vector):
     -------
     :class:`~MDAnalysis.coordinates.base.Timestep` object
 
+
+    .. versionchanged:: 2.0.0
+       The transformation was changed from a function/closure to a class
+       with ``__call__``.
+    .. versionchanged:: 2.0.0
+       The transformation was changed to inherit from the base class for
+       limiting threads and checking if it can be used in parallel analysis.
     """
-    if len(vector)>2:
-        vector = np.float32(vector)
-    else:
-        raise ValueError("{} vector is too short".format(vector))
+    def __init__(self, vector,
+                 max_threads=None, parallelizable=True):
+        super().__init__(max_threads=max_threads,
+                         parallelizable=parallelizable)
 
-    def wrapped(ts):
-        ts.positions += vector
+        self.vector = vector
 
+        if len(self.vector) > 2:
+            self.vector = np.float32(self.vector)
+        else:
+            raise ValueError("{} vector is too short".format(self.vector))
+
+    def _transform(self, ts):
+        ts.positions += self.vector
         return ts
 
-    return wrapped
 
-
-def center_in_box(ag, center='geometry', point=None, wrap=False):
+class center_in_box(TransformationBase):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`
@@ -108,39 +122,55 @@ def center_in_box(ag, center='geometry', point=None, wrap=False):
     -------
     :class:`~MDAnalysis.coordinates.base.Timestep` object
 
+
+    .. versionchanged:: 2.0.0
+        The transformation was changed from a function/closure to a class
+        with ``__call__``.
+    .. versionchanged:: 2.0.0
+       The transformation was changed to inherit from the base class for
+       limiting threads and checking if it can be used in parallel analysis.
     """
+    def __init__(self, ag, center='geometry', point=None, wrap=False,
+                 max_threads=None, parallelizable=True):
+        super().__init__(max_threads=max_threads,
+                         parallelizable=parallelizable)
 
-    pbc_arg = wrap
-    if point:
-        point = np.asarray(point, np.float32)
-        if point.shape != (3, ) and point.shape != (1, 3):
-            raise ValueError('{} is not a valid point'.format(point))
-    try:
-        if center == 'geometry':
-            center_method = partial(ag.center_of_geometry, pbc=pbc_arg)
-        elif center == 'mass':
-            center_method = partial(ag.center_of_mass, pbc=pbc_arg)
-        else:
-            raise ValueError('{} is not a valid argument for center'.format(center))
-    except AttributeError:
-        if center == 'mass':
-            errmsg = f'{ag} is not an AtomGroup object with masses'
-            raise AttributeError(errmsg) from None
-        else:
-            raise ValueError(f'{ag} is not an AtomGroup object') from None
+        self.ag = ag
+        self.center = center
+        self.point = point
+        self.wrap = wrap
 
-    def wrapped(ts):
-        if point is None:
+        pbc_arg = self.wrap
+        if self.point:
+            self.point = np.asarray(self.point, np.float32)
+            if self.point.shape != (3, ) and self.point.shape != (1, 3):
+                raise ValueError('{} is not a valid point'.format(self.point))
+        try:
+            if self.center == 'geometry':
+                self.center_method = partial(self.ag.center_of_geometry,
+                                             pbc=pbc_arg)
+            elif self.center == 'mass':
+                self.center_method = partial(self.ag.center_of_mass,
+                                             pbc=pbc_arg)
+            else:
+                raise ValueError(f'{self.center} is valid for center')
+        except AttributeError:
+            if self.center == 'mass':
+                errmsg = f'{self.ag} is not an AtomGroup object with masses'
+                raise AttributeError(errmsg) from None
+            else:
+                raise ValueError(f'{self.ag} is not an AtomGroup object') \
+                                 from None
+
+    def _transform(self, ts):
+        if self.point is None:
             boxcenter = np.sum(ts.triclinic_dimensions, axis=0) / 2
         else:
-            boxcenter = point
+            boxcenter = self.point
 
-        ag_center = center_method()
+        ag_center = self.center_method()
 
         vector = boxcenter - ag_center
         ts.positions += vector
 
         return ts
-
-    return wrapped
-

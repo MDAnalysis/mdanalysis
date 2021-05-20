@@ -158,7 +158,7 @@ class MDAExtension(Extension, object):
     #  care of calling it when needed.
     def __init__(self, name, sources, *args, **kwargs):
         self._mda_include_dirs = []
-        sources = [abspath(s) for s in sources]
+        # don't abspath sources else packaging fails on Windows (issue #3129)
         super(MDAExtension, self).__init__(name, sources, *args, **kwargs)
 
     @property
@@ -253,16 +253,28 @@ def using_clang():
     compiler = new_compiler()
     customize_compiler(compiler)
     compiler_ver = getoutput("{0} -v".format(compiler.compiler[0]))
-    return 'clang' in compiler_ver
+    if 'Spack GCC' in compiler_ver:
+        # when gcc toolchain is built from source with spack
+        # using clang, the 'clang' string may be present in
+        # the compiler metadata, but it is not clang
+        is_clang = False
+    elif 'clang' in compiler_ver:
+        # by default, Apple will typically alias gcc to
+        # clang, with some mention of 'clang' in the
+        # metadata
+        is_clang = True
+    else:
+        is_clang = False
+    return is_clang
 
 
 def extensions(config):
-    # dev installs must build their own cythonized files.
-    use_cython = config.get('use_cython', default=not is_release)
+    # usually (except coming from release tarball) cython files must be generated
+    use_cython = config.get('use_cython', default=cython_found)
     use_openmp = config.get('use_openmp', default=True)
 
     extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops',
-                          '-fsigned-zeros']  # see #2722
+                          '-fsigned-zeros'] # see #2722
     define_macros = []
     if config.get('debug_cflags', default=False):
         extra_compile_args.extend(['-Wall', '-pedantic'])
@@ -273,6 +285,15 @@ def extensions(config):
     arch = config.get('march', default=False)
     if arch:
         extra_compile_args.append('-march={}'.format(arch))
+
+    # encore is sensitive to floating point accuracy, especially on non-x86
+    # to avoid reducing optimisations on everything, we make a set of compile
+    # args specific to encore see #2997 for an example of this.
+    encore_compile_args = [a for a in extra_compile_args if 'O3' not in a]
+    if platform.machine() == 'aarch64' or platform.machine() == 'ppc64le':
+        encore_compile_args.append('-O1')
+    else:
+        encore_compile_args.append('-O3')
 
     cpp_extra_compile_args = [a for a in extra_compile_args if 'std' not in a]
     cpp_extra_compile_args.append('-std=c++11')
@@ -394,24 +415,24 @@ def extensions(config):
                                 sources=['MDAnalysis/analysis/encore/cutils' + source_suffix],
                                 include_dirs=include_dirs,
                                 define_macros=define_macros,
-                                extra_compile_args=extra_compile_args)
+                                extra_compile_args=encore_compile_args)
     ap_clustering = MDAExtension('MDAnalysis.analysis.encore.clustering.affinityprop',
                                  sources=['MDAnalysis/analysis/encore/clustering/affinityprop' + source_suffix,
                                           'MDAnalysis/analysis/encore/clustering/src/ap.c'],
                                  include_dirs=include_dirs+['MDAnalysis/analysis/encore/clustering/include'],
                                  libraries=mathlib,
                                  define_macros=define_macros,
-                                 extra_compile_args=extra_compile_args)
+                                 extra_compile_args=encore_compile_args)
     spe_dimred = MDAExtension('MDAnalysis.analysis.encore.dimensionality_reduction.stochasticproxembed',
                               sources=['MDAnalysis/analysis/encore/dimensionality_reduction/stochasticproxembed' + source_suffix,
                                        'MDAnalysis/analysis/encore/dimensionality_reduction/src/spe.c'],
                               include_dirs=include_dirs+['MDAnalysis/analysis/encore/dimensionality_reduction/include'],
                               libraries=mathlib,
                               define_macros=define_macros,
-                              extra_compile_args=extra_compile_args)
+                              extra_compile_args=encore_compile_args)
     nsgrid = MDAExtension('MDAnalysis.lib.nsgrid',
                              ['MDAnalysis/lib/nsgrid' + cpp_source_suffix],
-                             include_dirs=include_dirs,
+                             include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                              language='c++',
                              define_macros=define_macros,
                              extra_compile_args=cpp_extra_compile_args,
@@ -556,6 +577,7 @@ if __name__ == '__main__':
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Programming Language :: C',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
@@ -575,7 +597,9 @@ if __name__ == '__main__':
           'scipy>=1.0.0',
           'matplotlib>=1.5.1',
           'tqdm>=4.43.0',
+          'threadpoolctl',
     ]
+
     if not os.name == 'nt':
         install_requires.append('gsd>=1.4.0')
     else:
@@ -587,15 +611,19 @@ if __name__ == '__main__':
                        'trajectories generated by CHARMM, Gromacs, NAMD, LAMMPS, or Amber.'),
           long_description=LONG_DESCRIPTION,
           long_description_content_type='text/x-rst',
-          author='Naveen Michaud-Agrawal',
-          author_email='naveen.michaudagrawal@gmail.com',
-          maintainer='Richard Gowers',
-          maintainer_email='mdnalysis-discussion@googlegroups.com',
+          author='MDAnalysis Development Team',
+          author_email='mdanalysis@numfocus.org',
+          maintainer='MDAnalysis Core Developers',
+          maintainer_email='mdanalysis@numfocus.org',
           url='https://www.mdanalysis.org',
           download_url='https://github.com/MDAnalysis/mdanalysis/releases',
-          project_urls={'Documentation': 'https://www.mdanalysis.org/docs/',
+          project_urls={'Documentation': 'https://docs.mdanalysis.org/',
+                        'User Guide': 'https://userguide.mdanalysis.org/',
                         'Issue Tracker': 'https://github.com/mdanalysis/mdanalysis/issues',
-                        'User Group': 'https://groups.google.com/forum/#!forum/mdnalysis-discussion',
+                        'User Group': 'https://groups.google.com/g/mdnalysis-discussion/',
+                        'Discord': 'https://discord.com/channels/807348386012987462/',
+                        'Blog': 'https://www.mdanalysis.org/blog/',
+                        'Twitter': 'https://twitter.com/mdanalysis',
                         'Source': 'https://github.com/mdanalysis/mdanalysis',
                         },
           license='GPL 2',
@@ -609,7 +637,8 @@ if __name__ == '__main__':
           ext_modules=exts,
           requires=['numpy (>=1.16.0)', 'biopython (>= 1.71)', 'mmtf (>=1.0.0)',
                     'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib',
-                    'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)', 'tqdm (>=4.43.0)'],
+                    'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)', 'tqdm (>=4.43.0)',
+                    ],
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[

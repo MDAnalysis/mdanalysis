@@ -179,7 +179,7 @@ def guess_atom_type(atomname):
 
 
 NUMBERS = re.compile(r'[0-9]') # match numbers
-SYMBOLS = re.compile(r'[\*\+\-]')  # match *, +, -
+SYMBOLS = re.compile(r'[*+-]')  # match *, +, -
 
 def guess_atom_element(atomname):
     """Guess the element of the atom from the name.
@@ -475,3 +475,50 @@ def guess_atom_charge(atomname):
     """
     # TODO: do something slightly smarter, at least use name/element
     return 0.0
+
+
+def guess_aromaticities(atomgroup):
+    """Guess aromaticity of atoms using RDKit
+
+    Parameters
+    ----------
+    atomgroup : mda.core.groups.AtomGroup
+        Atoms for which the aromaticity will be guessed
+
+    Returns
+    -------
+    aromaticities : numpy.ndarray
+        Array of boolean values for the aromaticity of each atom
+
+
+    .. versionadded:: 2.0.0
+    """
+    mol = atomgroup.convert_to("RDKIT")
+    atoms = sorted(mol.GetAtoms(),
+                   key=lambda a: a.GetIntProp("_MDAnalysis_index"))
+    return np.array([atom.GetIsAromatic() for atom in atoms])
+
+
+def guess_gasteiger_charges(atomgroup):
+    """Guess Gasteiger partial charges using RDKit
+
+    Parameters
+    ----------
+    atomgroup : mda.core.groups.AtomGroup
+        Atoms for which the charges will be guessed
+
+    Returns
+    -------
+    charges : numpy.ndarray
+        Array of float values representing the charge of each atom
+
+
+    .. versionadded:: 2.0.0
+    """
+    mol = atomgroup.convert_to("RDKIT")
+    from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
+    ComputeGasteigerCharges(mol, throwOnParamFailure=True)
+    atoms = sorted(mol.GetAtoms(),
+                   key=lambda a: a.GetIntProp("_MDAnalysis_index"))
+    return np.array([atom.GetDoubleProp("_GasteigerCharge") for atom in atoms],
+                    dtype=np.float32)

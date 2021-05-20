@@ -23,22 +23,48 @@ import numpy as np
 import pytest
 
 import MDAnalysis as mda
-from MDAnalysis.coordinates.chemfiles import (
-    ChemfilesReader, ChemfilesWriter, check_chemfiles_version,
-)
+from MDAnalysis.coordinates.chemfiles import ChemfilesReader, ChemfilesWriter
+from MDAnalysis.coordinates.chemfiles import check_chemfiles_version
 
 from MDAnalysisTests import datafiles
 from MDAnalysisTests.coordinates.base import (
-    MultiframeReaderTest, BaseWriterTest, BaseReference
+    MultiframeReaderTest,
+    BaseWriterTest,
+    BaseReference,
 )
 from MDAnalysisTests.coordinates.test_xyz import XYZReference
 
 
 # skip entire test module if no appropriate chemfiles
-chemfiles = pytest.importorskip('chemfiles')
-@pytest.mark.skipif(not check_chemfiles_version(),
-                    reason="Wrong version of chemfiles")
-class TestChemFileXYZ(MultiframeReaderTest):
+chemfiles = pytest.importorskip("chemfiles")
+
+
+class TestChemfileVersion(object):
+    def test_version_check(self):
+        # Make sure the version check works as intended
+        import chemfiles
+
+        actual_version = chemfiles.__version__
+        chemfiles.__version__ = "0.8.3"
+        assert not check_chemfiles_version()
+
+        with pytest.raises(RuntimeError, match="Please install Chemfiles > 0.9"):
+            ChemfilesReader("")
+
+        with pytest.raises(RuntimeError, match="Please install Chemfiles > 0.9"):
+            ChemfilesWriter("")
+
+        chemfiles.__version__ = "0.11.0"
+        assert not check_chemfiles_version()
+
+        chemfiles.__version__ = "1.1.0"
+        assert not check_chemfiles_version()
+
+        chemfiles.__version__ = actual_version
+
+
+@pytest.mark.skipif(not check_chemfiles_version(), reason="Wrong version of chemfiles")
+class TestChemfileXYZ(MultiframeReaderTest):
     @staticmethod
     @pytest.fixture
     def ref():
@@ -51,10 +77,21 @@ class TestChemFileXYZ(MultiframeReaderTest):
     @pytest.fixture
     def reader(self, ref):
         reader = ChemfilesReader(ref.trajectory)
-        reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
-        reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
+        reader.add_auxiliary(
+            "lowf",
+            ref.aux_lowf,
+            dt=ref.aux_lowf_dt,
+            initial_time=0,
+            time_selector=None,
+        )
+        reader.add_auxiliary(
+            "highf",
+            ref.aux_highf,
+            dt=ref.aux_highf_dt,
+            initial_time=0,
+            time_selector=None,
+        )
         return reader
-
 
 
 class ChemfilesXYZReference(BaseReference):
@@ -64,14 +101,13 @@ class ChemfilesXYZReference(BaseReference):
         self.topology = datafiles.COORDINATES_XYZ
         self.reader = ChemfilesReader
         self.writer = ChemfilesWriter
-        self.ext = 'xyz'
+        self.ext = "xyz"
         self.volume = 0
         self.dimensions = np.zeros(6)
         self.dimensions[3:] = 90.0
 
 
-@pytest.mark.skipif(not check_chemfiles_version(),
-                    reason="Wrong version of chemfiles")
+@pytest.mark.skipif(not check_chemfiles_version(), reason="Wrong version of chemfiles")
 class TestChemfilesReader(MultiframeReaderTest):
     @staticmethod
     @pytest.fixture()
@@ -79,8 +115,7 @@ class TestChemfilesReader(MultiframeReaderTest):
         return ChemfilesXYZReference()
 
 
-@pytest.mark.skipif(not check_chemfiles_version(),
-                    reason="Wrong version of chemfiles")
+@pytest.mark.skipif(not check_chemfiles_version(), reason="Wrong version of chemfiles")
 class TestChemfilesWriter(BaseWriterTest):
     @staticmethod
     @pytest.fixture()
@@ -94,18 +129,17 @@ class TestChemfilesWriter(BaseWriterTest):
 
     def test_no_extension_raises(self, ref):
         with pytest.raises(chemfiles.ChemfilesError):
-            ref.writer('foo')
+            ref.writer("foo")
 
 
-@pytest.mark.skipif(not check_chemfiles_version(),
-                    reason="Wrong version of chemfiles")
+@pytest.mark.skipif(not check_chemfiles_version(), reason="Wrong version of chemfiles")
 class TestChemfiles(object):
     def test_read_chemfiles_format(self):
         u = mda.Universe(
             datafiles.LAMMPSdata,
             format="chemfiles",
             topology_format="data",
-            chemfiles_format="LAMMPS Data"
+            chemfiles_format="LAMMPS Data",
         )
 
         for ts in u.trajectory:
@@ -128,19 +162,13 @@ class TestChemfiles(object):
 
     def check_topology(self, reference, file):
         u = mda.Universe(reference)
-        atoms = set([
-            (atom.name, atom.type, atom.record_type)
-            for atom in u.atoms
-        ])
-        bonds = set([
-            (bond.atoms[0].ix, bond.atoms[1].ix)
-            for bond in u.bonds
-        ])
+        atoms = set([(atom.name, atom.type, atom.record_type) for atom in u.atoms])
+        bonds = set([(bond.atoms[0].ix, bond.atoms[1].ix) for bond in u.bonds])
 
         check = mda.Universe(file)
         np.testing.assert_equal(
             u.trajectory.ts.positions,
-            check.trajectory.ts.positions
+            check.trajectory.ts.positions,
         )
 
         for atom in check.atoms:
@@ -172,9 +200,20 @@ class TestChemfiles(object):
 
             # self.check_topology(datafiles.CONECT, outfile)
 
+    def test_write_atom_group(self, tmpdir):
+        u = mda.Universe(datafiles.CONECT)
+        group = u.select_atoms("resname ARG")
+        with tmpdir.as_cwd():
+            outfile = "chemfiles-write-atom-group.pdb"
+            with ChemfilesWriter(outfile) as writer:
+                writer.write(group)
+
+            check = mda.Universe(outfile)
+            assert check.trajectory.ts.n_atoms == group.n_atoms
+
     def test_write_velocities(self, tmpdir):
         u = mda.Universe.empty(4, trajectory=True)
-        u.add_TopologyAttr('type', values=['H', 'H', 'H', 'H'])
+        u.add_TopologyAttr("type", values=["H", "H", "H", "H"])
 
         ts = u.trajectory.ts
         ts.dimensions = [20, 30, 41, 90, 90, 90]
@@ -193,7 +232,9 @@ class TestChemfiles(object):
 
         outfile = "chemfiles-write-velocities.lmp"
         with tmpdir.as_cwd():
-            with ChemfilesWriter(outfile, topology=u, chemfiles_format='LAMMPS Data') as writer:
+            with ChemfilesWriter(
+                outfile, topology=u, chemfiles_format="LAMMPS Data"
+            ) as writer:
                 writer.write(u)
 
             with open(outfile) as file:

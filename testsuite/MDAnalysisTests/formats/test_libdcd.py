@@ -20,9 +20,11 @@ import os
 import sys
 import string
 import struct
+import platform
 
 import hypothesis.strategies as strategies
 from hypothesis import example, given
+import hypothesis
 import numpy as np
 
 from numpy.testing import (assert_array_almost_equal, assert_equal,
@@ -83,23 +85,59 @@ def dcd():
         yield dcd
 
 
+def _assert_compare_readers(old_reader, new_reader):
+    #  same as next(old_reader)
+    frame = old_reader.read()
+    #  same as next(new_reader)
+    new_frame = new_reader.read()
+
+    assert old_reader.fname == new_reader.fname
+    assert old_reader.tell() == new_reader.tell()
+    assert_almost_equal(frame.xyz, new_frame.xyz)
+    assert_almost_equal(frame.unitcell, new_frame.unitcell)
+
+
 def test_pickle(dcd):
+    mid = len(dcd) // 2
+    dcd.seek(mid)
+    new_dcd = pickle.loads(pickle.dumps(dcd))
+    _assert_compare_readers(dcd, new_dcd)
+
+
+def test_pickle_last(dcd):
+    #  This is the file state when DCDReader is in its last frame.
+    #  (Issue #2878)
+
     dcd.seek(len(dcd) - 1)
-    dump = pickle.dumps(dcd)
-    new_dcd = pickle.loads(dump)
+    _ = dcd.read()
+    new_dcd = pickle.loads(pickle.dumps(dcd))
 
     assert dcd.fname == new_dcd.fname
     assert dcd.tell() == new_dcd.tell()
+    with pytest.raises(StopIteration):
+        new_dcd.read()
 
 
 def test_pickle_closed(dcd):
     dcd.seek(len(dcd) - 1)
     dcd.close()
-    dump = pickle.dumps(dcd)
-    new_dcd = pickle.loads(dump)
+    new_dcd = pickle.loads(pickle.dumps(dcd))
 
     assert dcd.fname == new_dcd.fname
     assert dcd.tell() != new_dcd.tell()
+
+
+def test_pickle_after_read(dcd):
+    _ = dcd.read()
+    new_dcd = pickle.loads(pickle.dumps(dcd))
+    _assert_compare_readers(dcd, new_dcd)
+
+
+def test_pickle_immediately(dcd):
+    new_dcd = pickle.loads(pickle.dumps(dcd))
+
+    assert dcd.fname == new_dcd.fname
+    assert dcd.tell() == new_dcd.tell()
 
 
 @pytest.mark.parametrize("new_frame", (10, 42, 21))
@@ -315,16 +353,22 @@ def write_dcd(in_name, out_name, remarks='testing', header=None):
             f_out.write(xyz=frame.xyz, box=frame.unitcell)
 
 
-@pytest.mark.xfail(os.name == 'nt' and sys.maxsize <= 2**32,
-                   reason="occasional fail on 32-bit windows")
+@pytest.mark.xfail((os.name == 'nt'
+                    and sys.maxsize <= 2**32) or
+                    platform.machine() == 'aarch64',
+                   reason="occasional fail on 32-bit windows and ARM")
+# occasionally fails due to unreliable test timings
+@hypothesis.settings(deadline=None)  # see Issue 3096
 @given(remarks=strategies.text(
     alphabet=string.printable, min_size=0,
     max_size=239))  # handle the printable ASCII strings
 @example(remarks='')
-def test_written_remarks_property(remarks, tmpdir, dcd):
+def test_written_remarks_property(remarks, tmpdir_factory):
     # property based testing for writing of a wide range of string
     # values to REMARKS field
-    testfile = str(tmpdir.join('test.dcd'))
+    dcd = DCDFile(DCD)
+    dirname = str(id(remarks)) + "_"
+    testfile = str(tmpdir_factory.mktemp(dirname).join('test.dcd'))
     header = dcd.header
     header['remarks'] = remarks
     write_dcd(DCD, testfile, header=header)

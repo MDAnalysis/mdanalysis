@@ -26,13 +26,13 @@
 
 # cython: cdivision=True
 # cython: boundscheck=False
+# cython: wraparound=False
 # cython: initializedcheck=False
 # cython: embedsignature=True
 
 """
 Neighbor search library --- :mod:`MDAnalysis.lib.nsgrid`
 ========================================================
-
 
 About the code
 --------------
@@ -69,249 +69,54 @@ not reflect in the results.
 .. [#] a pair correspond to two particles that are considered as neighbors .
 
 .. versionadded:: 0.19.0
+.. versionchanged:: 1.0.2
+   Rewrote module
+
 
 Classes
 -------
 """
-
-# Used to handle memory allocation
-from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
-from libc.math cimport sqrt
 import numpy as np
+
 from libcpp.vector cimport vector
-cimport numpy as np
+from libc cimport math
 
-# Preprocessor DEFs
-DEF DIM = 3
+DEF END = -1
+
 DEF XX = 0
-DEF YY = 1
-DEF ZZ = 2
-DEF EPSILON = 1e-5
+DEF XY = 3
+DEF YY = 4
+DEF XZ = 6
+DEF YZ = 7
+DEF ZZ = 8
 
-ctypedef np.int_t ns_int
-ctypedef np.float32_t real
-ctypedef np.float64_t dreal
-ctypedef real rvec[DIM]
-ctypedef dreal drvec[DIM]
-ctypedef ns_int ivec[DIM]
-ctypedef real matrix[DIM][DIM]
+ctypedef float coordinate[3];
 
-ctypedef vector[ns_int] intvec
-ctypedef vector[real] realvec
-ctypedef vector[dreal] drealvec
-
-# Useful Functions
-cdef real rvec_norm2(const rvec a) nogil:
-    return a[XX]*a[XX] + a[YY]*a[YY] + a[ZZ]*a[ZZ]
-
-cdef dreal drvec_norm2(const drvec a) nogil:
-    return a[XX]*a[XX] + a[YY]*a[YY] + a[ZZ]*a[ZZ]
-
-###############################
-# Utility class to handle PBC #
-###############################
-cdef struct cPBCBox_t:
-    matrix     box
-    rvec       fbox_diag
-    rvec       hbox_diag
-    rvec       mhbox_diag
-    dreal      max_cutoff2
+cdef extern from "calc_distances.h" nogil:
+    void _minimum_image_ortho_lazy(double* x, float* box, float* half_box)
+    void minimum_image_triclinic(double* dx, float* box)
+    void _ortho_pbc(coordinate* coords, int numcoords, float* box)
+    void _triclinic_pbc(coordinate* coords, int numcoords, float* box)
 
 
-# Class to handle PBC calculations
-cdef class _PBCBox(object):
-    """
-    Cython implementation of
-    `PBC-related <https://en.wikipedia.org/wiki/Periodic_boundary_conditions>`_
-    operations. This class is used by classes :class:`FastNS`
-    and :class:`_NSGrid` to put all particles inside a brick-shaped box
-    and to compute PBC-aware distance. The class can also handle
-    non-PBC aware distance evaluations through ``periodic`` argument.
+cdef inline float fmax(float a, float b):
+    if a > b:
+        return a
+    else:
+        return b
 
-    .. warning::
-        This class is not meant to be used by end users.
 
-    .. warning::
-        Even if MD triclinic boxes can be handled by this class,
-        internal optimization is made based on the assumption that
-        particles are inside a brick-shaped box. When this is not
-        the case, calculated distances are not
-        warranted to be exact.
-    """
+cdef inline float fmin(float a, float b):
+    if a < b:
+        return a
+    else:
+        return b
 
-    cdef cPBCBox_t c_pbcbox
-    cdef bint is_triclinic
-    cdef bint periodic
+cdef inline float degsin(float deg):
+    # sin in degrees
+    deg *= math.M_PI / 180.
+    return math.sin(deg)
 
-    def __init__(self, real[:, ::1] box, bint periodic):
-        """
-        Parameters
-        ----------
-        box : numpy.ndarray
-            box vectors of shape ``(3, 3)`` or
-            as returned by ``MDAnalysis.lib.mdamath.triclinic_vectors``
-            ``dtype`` must be ``numpy.float32``
-        periodic : boolean
-            ``True`` for PBC-aware calculations
-            ``False`` for non PBC aware calculations
-        """
-
-        self.periodic = periodic
-        self.update(box)
-
-    cdef void fast_update(self, real[:, ::1] box) nogil:
-        """
-        Updates the internal box parameters for
-        PBC-aware distance calculations. The internal
-        box parameters are used to define the brick-shaped
-        box which is eventually used for distance calculations.
-
-        """
-        cdef ns_int i, j
-        cdef dreal min_hv2, min_ss, tmp
-
-        # Update matrix
-        self.is_triclinic = False
-        for i in range(DIM):
-            for j in range(DIM):
-                self.c_pbcbox.box[i][j] = box[i, j]
-
-                if i != j:
-                    # mdamath.triclinic_vectors explicitly sets the off-diagonal
-                    # elements to zero if the box is orthogonal, so we can
-                    # safely check floating point values for equality here
-                    if box[i, j] != 0.0:
-                        self.is_triclinic = True
-
-        # Update diagonals
-        for i in range(DIM):
-            self.c_pbcbox.fbox_diag[i] = box[i, i]
-            self.c_pbcbox.hbox_diag[i] = self.c_pbcbox.fbox_diag[i] * 0.5
-            self.c_pbcbox.mhbox_diag[i] = - self.c_pbcbox.hbox_diag[i]
-
-        # Update maximum cutoff
-
-        # Physical limitation of the cut-off
-        # by half the length of the shortest box vector.
-        min_hv2 = min(0.25 * rvec_norm2(&box[XX, XX]), 0.25 * rvec_norm2(&box[YY, XX]))
-        min_hv2 = min(min_hv2, 0.25 * rvec_norm2(&box[ZZ, XX]))
-
-        # Limitation to the smallest diagonal element due to optimizations:
-        # checking only linear combinations of single box-vectors (2 in x)
-        # in the grid search and pbc_dx is a lot faster
-        # than checking all possible combinations.
-        tmp = box[YY, YY]
-        if box[ZZ, YY] < 0:
-            tmp -= box[ZZ, YY]
-        else:
-            tmp += box[ZZ, YY]
-
-        min_ss = min(box[XX, XX], min(tmp, box[ZZ, ZZ]))
-        self.c_pbcbox.max_cutoff2 = min(min_hv2, min_ss * min_ss)
-
-    def update(self, real[:, ::1] box):
-        """
-        Updates internal MD box representation and parameters used for calculations.
-
-        Parameters
-        ----------
-        box : numpy.ndarray
-            Describes the MD box vectors as returned by
-            :func:`MDAnalysis.lib.mdamath.triclinic_vectors`.
-            `dtype` must be :class:`numpy.float32`
-
-        Note
-        ----
-        Call to this method is only needed when the MD box is changed
-        as it always called when class is instantiated.
-
-        """
-
-        if box.shape[0] != DIM or box.shape[1] != DIM:
-            raise ValueError("Box must be a {} x {} matrix. Got: {} x {})".format(
-                DIM, DIM, box.shape[0], box.shape[1]))
-        if (box[XX, XX] == 0) or (box[YY, YY] == 0) or (box[ZZ, ZZ] == 0):
-            raise ValueError("Box does not correspond to PBC=xyz")
-        self.fast_update(box)
-
-    cdef void fast_pbc_dx(self, rvec ref, rvec other, drvec dx) nogil:
-        """Dislacement between two points for both
-        PBC and non-PBC conditions
-
-        Modifies the displacement vector between two points based
-        on the minimum image convention for PBC aware calculations.
-
-        For non-PBC aware distance evaluations, calculates the
-        displacement vector without any modifications
-        """
-
-        cdef ns_int i, j
-
-        for i in range(DIM):
-            dx[i] = other[i] - ref[i]
-
-        if self.periodic:
-            for i in range(DIM-1, -1, -1):
-                while dx[i] > self.c_pbcbox.hbox_diag[i]:
-                    for j in range(i, -1, -1):
-                        dx[j] -= self.c_pbcbox.box[i][j]
-
-                while dx[i] <= self.c_pbcbox.mhbox_diag[i]:
-                    for j in range(i, -1, -1):
-                        dx[j] += self.c_pbcbox.box[i][j]
-
-    cdef dreal fast_distance2(self, rvec a, rvec b) nogil:
-        """Distance calculation between two points
-        for both PBC and non-PBC aware calculations
-
-        Returns the distance obeying minimum
-        image convention if periodic is set to ``True`` while
-        instantiating the :class:`_PBCBox` object.
-        """
-
-        cdef drvec dx
-        self.fast_pbc_dx(a, b, dx)
-        return drvec_norm2(dx)
-
-    cdef real[:, ::1] fast_put_atoms_in_bbox(self, real[:, ::1] coords) nogil:
-        """Shifts all ``coords`` to an orthogonal brick shaped box
-
-        All the coordinates are brought into an orthogonal
-        box. The box vectors for the brick-shaped box
-        are defined in ``fast_update`` method.
-
-        """
-
-        cdef ns_int i, m, d, natoms
-        cdef real[:, ::1] bbox_coords
-
-        natoms = coords.shape[0]
-        with gil:
-            bbox_coords = coords.copy()
-
-        if self.periodic:
-            if self.is_triclinic:
-                for i in range(natoms):
-                    for m in range(DIM - 1, -1, -1):
-                        while bbox_coords[i, m] < 0:
-                            for d in range(m+1):
-                                bbox_coords[i, d] += self.c_pbcbox.box[m][d]
-                        while bbox_coords[i, m] >= self.c_pbcbox.box[m][m]:
-                            for d in range(m+1):
-                                bbox_coords[i, d] -= self.c_pbcbox.box[m][d]
-            else:
-                for i in range(natoms):
-                    for m in range(DIM):
-                        while bbox_coords[i, m] < 0:
-                            bbox_coords[i, m] += self.c_pbcbox.box[m][m]
-                        while bbox_coords[i, m] >= self.c_pbcbox.box[m][m]:
-                            bbox_coords[i, m] -= self.c_pbcbox.box[m][m]
-
-        return bbox_coords
-
-#########################
-# Neighbor Search Stuff #
-#########################
 
 cdef class NSResults(object):
     """Class to store the results
@@ -321,39 +126,10 @@ cdef class NSResults(object):
     be used to  generate the desired results on demand.
     """
 
-    cdef readonly real cutoff
-    cdef ns_int npairs
+    cdef vector[int] pairs
+    cdef vector[double] distances2
 
-    cdef real[:, ::1] coords  # shape: size, DIM
-    cdef real[:, ::1] searchcoords
-
-    cdef vector[intvec] indices_buffer
-    cdef vector[drealvec] distances_buffer
-    cdef vector[ns_int] pairs_buffer
-    cdef vector[dreal] pair_distances_buffer
-    cdef vector[dreal] pair_distances2_buffer
-
-    def __init__(self, dreal cutoff, real[:, ::1]coords, real[:, ::1]searchcoords):
-        """
-        Parameters
-        ----------
-        cutoff : float
-            Specified cutoff distance
-        coords : numpy.ndarray
-            Array with coordinates of atoms of shape ``(N, 3)`` for
-            ``N`` particles. ``dtype`` must be ``numpy.float32``
-        searchcoords : numpy.ndarray
-            Array with query coordinates. Shape must be ``(M, 3)``
-            for ``M`` queries. ``dtype`` must be ``numpy.float32``
-        """
-
-        self.cutoff = cutoff
-        self.coords = coords
-        self.searchcoords = searchcoords
-
-        self.npairs = 0
-
-    cdef void add_neighbors(self, ns_int beadid_i, ns_int beadid_j, dreal distance2) nogil:
+    cdef void add_neighbors(self, int beadid_i, int beadid_j, double distance2) nogil:
         """Internal function to add pairs and distances to buffers
 
         The buffers populated using this method are used by
@@ -363,10 +139,9 @@ cdef class NSResults(object):
         which are considered as neighbors.
         """
 
-        self.pairs_buffer.push_back(beadid_i)
-        self.pairs_buffer.push_back(beadid_j)
-        self.pair_distances2_buffer.push_back(distance2)
-        self.npairs += 1
+        self.pairs.push_back(beadid_i)
+        self.pairs.push_back(beadid_j)
+        self.distances2.push_back(distance2)
 
     def get_pairs(self):
         """Returns all the pairs within the desired cutoff distance
@@ -384,8 +159,7 @@ cdef class NSResults(object):
             pairs of atom indices of neighbors from query
             and initial atom coordinates of shape ``(N, 2)``
         """
-
-        return np.asarray(self.pairs_buffer, dtype=np.intp).reshape(self.npairs, 2)
+        return np.asarray(self.pairs, dtype=np.intp).reshape(-1, 2)
 
     def get_pair_distances(self):
         """Returns all the distances corresponding to each pair of neighbors
@@ -407,321 +181,44 @@ cdef class NSResults(object):
         :meth:`~NSResults.get_pairs`
 
         """
+        dist2 = np.asarray(self.distances2)
 
-        self.pair_distances_buffer = np.sqrt(self.pair_distances2_buffer)
-        return np.asarray(self.pair_distances_buffer)
-
-    cdef void create_buffers(self) nogil:
-        """
-        Creates buffers to get individual neighbour list and distances
-        of the query atoms.
-
-        """
-
-        cdef ns_int i, beadid_i, beadid_j
-        cdef ns_int idx, nsearch
-        cdef dreal dist2, dist
-
-        nsearch = self.searchcoords.shape[0]
-
-        self.indices_buffer = vector[intvec]()
-        self.distances_buffer = vector[drealvec]()
-
-        # initialize rows corresponding to search
-        for i in range(nsearch):
-            self.indices_buffer.push_back(intvec())
-            self.distances_buffer.push_back(drealvec())
-
-        for i in range(0, 2*self.npairs, 2):
-            beadid_i = self.pairs_buffer[i]
-            beadid_j = self.pairs_buffer[i + 1]
-
-            dist2 = self.pair_distances2_buffer[i//2]
-
-            self.indices_buffer[beadid_i].push_back(beadid_j)
-
-            dist = sqrt(dist2)
-
-            self.distances_buffer[beadid_i].push_back(dist)
-
-    def get_indices(self):
-        """Individual neighbours of query atom
-
-        For every queried atom ``i``, an array of all its neighbors
-        indices can be obtained from ``get_indices()[i]``
-
-        Returns
-        -------
-        indices : list
-            Indices of neighboring atoms.
-            Every element i.e. ``indices[i]`` will be a list of
-            size ``m`` where m is the number of neighbours of
-            query atom[i].
-
-            .. code-block:: python
-
-                results = NSResults()
-                indices = results.get_indices()
-
-            ``indices[i]`` will be a list of neighboring atoms of
-            ``atom[i]`` from query atoms ``atom``. ``indices[i][j]`` will give
-            the atom-id of initial coordinates such that
-            ``initial_atom[indices[i][j]]`` is a neighbor of ``atom[i]``.
-
-        """
-
-        if self.indices_buffer.empty():
-            self.create_buffers()
-        return list(self.indices_buffer)
-
-    def get_distances(self):
-        """Distance corresponding to individual neighbors of query atom
-
-        For every queried atom ``i``, a list of all the distances
-        from its neighboring atoms can be obtained from ``get_distances()[i]``.
-        Every ``distance[i][j]`` will correspond
-        to the distance between atoms ``atom[i]`` from the query
-        atoms and ``atom[indices[j]]`` from the initialized
-        set of coordinates, where ``indices`` can be obtained
-        by ``get_indices()``
-
-        Returns
-        -------
-        distances : list
-            Every element i.e. ``distances[i]`` will be an array of
-            shape ``m`` where m is the number of neighbours of
-            query atom[i].
-
-            .. code-block:: python
-
-                results = NSResults()
-                distances = results.get_distances()
-
-        See Also
-        --------
-        :meth:`~NSResults.get_indices`
-
-        """
-
-        if self.distances_buffer.empty():
-            self.create_buffers()
-        return list(self.distances_buffer)
-
-
-cdef class _NSGrid(object):
-    """Constructs a uniform cuboidal grid for a brick-shaped box
-
-    This class uses :class:`_PBCBox` to define the brick shaped box
-    It is essential to initialize the box with :class:`_PBCBox`
-    inorder to form the grid.
-
-    The domain is subdivided into number of cells based on the desired search
-    radius. Ideally cellsize should be equal to the search radius, but small
-    search radius leads to large cell-list data strucutres.
-    An optimization of cutoff is imposed to limit the size of data
-    structure such that the cellsize is always greater than or
-    equal to cutoff distance.
-
-    Note
-    ----
-    This class assumes that all the coordinates are already
-    inside the brick shaped box. Care must be taken to ensure
-    all the particles are within the brick shaped box as
-    defined by :class:`_PBCBox`. This can be ensured by using
-    :func:`~MDAnalysis.lib.nsgrid._PBCBox.fast_put_atoms_in_bbox`
-
-    .. warning::
-        This class is not meant to be used by end users.
-
-    """
-
-    cdef readonly dreal used_cutoff  # cutoff used for cell creation
-    cdef ns_int size  # total cells
-    cdef ns_int ncoords  # number of coordinates
-    cdef ns_int[DIM] ncells  # individual cells in every dimension
-    cdef ns_int[DIM] cell_offsets  # Cell Multipliers
-    # cellsize MUST be double precision, otherwise coord2cellid() may fail for
-    # coordinates very close to the upper box boundaries! See Issue #2132
-    cdef dreal[DIM] cellsize  # cell size in every dimension
-    cdef ns_int nbeads_per_cell  # maximum beads
-    cdef ns_int *nbeads  # size (Number of beads in every cell)
-    cdef ns_int *beadids  # size * nbeads_per_cell (Beadids in every cell)
-    cdef ns_int *cellids  # ncoords (Cell occupation id for every atom)
-    cdef bint force  # To negate the effects of optimized cutoff
-
-    def __init__(self, ncoords, cutoff, _PBCBox box, max_size, force=False):
-        """
-        Parameters
-        ----------
-        ncoords : int
-            Number of coordinates to fill inside the brick shaped box
-        cutoff : float
-            Desired cutoff radius
-        box : _PBCBox
-            Instance of :class:`_PBCBox`
-        max_size : int
-            Maximum total number of cells
-        force : boolean
-            Optimizes cutoff if set to ``False`` [False]
-        """
-
-        cdef ns_int i
-        cdef ns_int ncellx, ncelly, ncellz
-        cdef ns_int xi, yi, zi
-        cdef real bbox_vol
-        cdef dreal relative_cutoff_margin
-        cdef dreal original_cutoff
-
-        self.ncoords = ncoords
-
-        if not force:
-            # Calculate best cutoff, with 0.01A minimum
-            cutoff = max(cutoff, 0.01)
-            original_cutoff = cutoff
-            # First, we add a small margin to the cell size so that we can safely
-            # use the condition d <= cutoff (instead of d < cutoff) for neighbor
-            # search.
-            relative_cutoff_margin = 1.0e-8
-            while cutoff == original_cutoff:
-                cutoff = cutoff * (1.0 + relative_cutoff_margin)
-                relative_cutoff_margin *= 10.0
-            bbox_vol = box.c_pbcbox.box[XX][XX] * box.c_pbcbox.box[YY][YY] * box.c_pbcbox.box[YY][YY]
-            while bbox_vol / cutoff**3 > max_size:
-                cutoff *= 1.2
-
-        for i in range(DIM):
-            self.ncells[i] = <ns_int> (box.c_pbcbox.box[i][i] / cutoff)
-            self.cellsize[i] = box.c_pbcbox.box[i][i] / self.ncells[i]
-        self.size = self.ncells[XX] * self.ncells[YY] * self.ncells[ZZ]
-        self.used_cutoff = cutoff
-
-        self.cell_offsets[XX] = 0
-        self.cell_offsets[YY] = self.ncells[XX]
-        self.cell_offsets[ZZ] = self.ncells[XX] * self.ncells[YY]
-
-        # Allocate memory
-        # Number of beads in every cell
-        self.nbeads = <ns_int *> PyMem_Malloc(sizeof(ns_int) * self.size)
-        if not self.nbeads:
-            raise MemoryError("Could not allocate memory from _NSGrid.nbeads ({} bits requested)".format(sizeof(ns_int) * self.size))
-        self.beadids = NULL
-        # Cellindex of every bead
-        self.cellids = <ns_int *> PyMem_Malloc(sizeof(ns_int) * self.ncoords)
-        if not self.cellids:
-            raise MemoryError("Could not allocate memory from _NSGrid.cellids ({} bits requested)".format(sizeof(ns_int) * self.ncoords))
-        self.nbeads_per_cell = 0
-
-        for i in range(self.size):
-            self.nbeads[i] = 0
-
-    def __dealloc__(self):
-        PyMem_Free(self.nbeads)
-        PyMem_Free(self.beadids)
-        PyMem_Free(self.cellids)
-
-    cdef ns_int coord2cellid(self, rvec coord) nogil:
-        """Finds the cell-id for the given coordinate inside the brick shaped box
-
-        Note
-        ----
-        Assumes the coordinate is already inside the brick shaped box.
-        Return wrong cell-id if this is not the case
-        """
-        return <ns_int> (coord[ZZ] / self.cellsize[ZZ]) * (self.cell_offsets[ZZ]) +\
-               <ns_int> (coord[YY] / self.cellsize[YY]) * self.cell_offsets[YY] + \
-               <ns_int> (coord[XX] / self.cellsize[XX])
-
-    cdef bint cellid2cellxyz(self, ns_int cellid, ivec cellxyz) nogil:
-        """Finds actual cell position `(x, y, z)` from a cell-id
-        """
-
-        if cellid < 0:
-            return False
-        if cellid >= self.size:
-            return False
-
-        cellxyz[ZZ] = <ns_int> (cellid / self.cell_offsets[ZZ])
-        cellid -= cellxyz[ZZ] * self.cell_offsets[ZZ]
-
-        cellxyz[YY] = <ns_int> (cellid / self.cell_offsets[YY])
-        cellxyz[XX] = cellid - cellxyz[YY] * self.cell_offsets[YY]
-
-        return True
-
-    cdef fill_grid(self, real[:, ::1] coords):
-        """Sorts atoms into cells based on their position in the brick shaped box
-
-        Every atom inside the brick shaped box is assigned a
-        cell-id based on its position. Another list ``beadids``
-        sort the atom-ids in each cell.
-
-        Note
-        ----
-        The method fails if any coordinate is outside the brick shaped box.
-
-        """
-
-        cdef ns_int i, cellindex = -1
-        cdef ns_int ncoords = coords.shape[0]
-        cdef ns_int[:] beadcounts = np.empty(self.size, dtype=int)
-
-        with nogil:
-            # Initialize buffers
-            for i in range(self.size):
-                beadcounts[i] = 0
-
-            # First loop: find cellindex for each bead
-            for i in range(ncoords):
-                cellindex = self.coord2cellid(&coords[i, 0])
-
-                self.nbeads[cellindex] += 1
-                self.cellids[i] = cellindex
-
-                if self.nbeads[cellindex] > self.nbeads_per_cell:
-                    self.nbeads_per_cell = self.nbeads[cellindex]
-
-        # Allocate memory
-        self.beadids = <ns_int *> PyMem_Malloc(sizeof(ns_int) * self.size * self.nbeads_per_cell)  # np.empty((self.size, nbeads_max), dtype=np.int)
-        if not self.beadids:
-            raise MemoryError("Could not allocate memory for _NSGrid.beadids ({} bits requested)".format(sizeof(ns_int) * self.size * self.nbeads_per_cell))
-
-        with nogil:
-            # Second loop: fill grid
-            for i in range(ncoords):
-
-                # Add bead to grid cell
-                cellindex = self.cellids[i]
-                self.beadids[cellindex * self.nbeads_per_cell + beadcounts[cellindex]] = i
-                beadcounts[cellindex] += 1
+        return np.sqrt(dist2)
 
 
 cdef class FastNS(object):
-    """Grid based search between two group of atoms
-
-    Instantiates a class object which uses :class:`_PBCBox` and
-    :class:`_NSGrid` to construct a cuboidal
-    grid in an orthogonal brick shaped box.
+    """Grid based search between positions
 
     Minimum image convention is used for distance evaluations
     if pbc is set to ``True``.
+
+    .. versionchanged::  1.0.2
+       Rewrote to fix bugs with triclinic boxes
     """
-    cdef _PBCBox box
-    cdef real[:, ::1] coords
-    cdef real[:, ::1] coords_bbox
-    cdef readonly dreal cutoff
+    cdef readonly double cutoff
+    cdef float[:, ::1] coords_bbox
 
-    cdef _NSGrid grid
-    cdef ns_int max_gridsize
-    cdef bint periodic
+    cdef int[3] ncells  # individual cells in every dimension
+    cdef int[3] cell_offsets  # Cell Multipliers
+    # cellsize MUST be double precision, otherwise coord2cellid() may fail for
+    # coordinates very close to the upper box boundaries! See Issue #2132
+    # diagonal stores the cell width, off diagonal elements are the "tilt"
+    # i.e. cellsize[3] is the dxdy tilt (box[XY] / box[YY])
+    cdef double[9] cellsize
 
-    def __init__(self, cutoff, coords, box, max_gridsize=5000, pbc=True):
+    cdef int[::1] head_id  # first coord id for a given cell
+    cdef int[::1] next_id  # next coord id after a given cell
+    cdef bint triclinic
+    cdef float[6] dimensions
+    cdef float[3] half_dimensions
+    cdef float[3] inverse_dimensions
+    cdef float[9] triclinic_dimensions
+    # are we periodic in the X, Y and Z dimension?
+    cdef bint pbc  # periodic at all?
+    cdef bint periodic[3]
+
+    def __init__(self, cutoff, coords, box, pbc=True):
         """
-        Initialize the grid and sort the coordinates in respective
-        cells by shifting the coordinates in a brick shaped box.
-        The brick shaped box is defined by :class:`_PBCBox`
-        and cuboidal grid is initialize by :class:`_NSGrid`.
-        If box is supplied, periodic shifts along box vectors are used
-        to contain all the coordinates inside the brick shaped box.
         If box is not supplied, the range of coordinates i.e.
         ``[xmax, ymax, zmax] - [xmin, ymin, zmin]`` should be used
         to construct a pseudo box. Subsequently, the origin should also be
@@ -744,9 +241,6 @@ cdef class FastNS(object):
             ``[lx, ly, lz, alpha, beta, gamma]``. For non-PBC
             evaluations, provide an orthogonal bounding box
             (dtype = numpy.float32)
-        max_gridsize : int
-            maximum number of cells in the grid. This parameter
-            can be tuned for superior performance.
         pbc : boolean
             Handle to switch periodic boundary conditions on/off [True]
 
@@ -775,40 +269,226 @@ cdef class FastNS(object):
             gridsearch = FastNS(max_cutoff, shift, box=pseudobox, pbc=False)
 
         """
-
-        from MDAnalysis.lib.mdamath import triclinic_vectors
-
         if (coords.ndim != 2 or coords.shape[1] != 3):
             raise ValueError("coords must have a shape of (n, 3), got {}."
                              "".format(coords.shape))
-
-        if np.allclose(box[:3], 0.0):
+        if box.shape != (6,):
+            raise ValueError("Box must be a numpy array of [lx, ly, lz, alpha, beta, gamma], got {}"
+                             "".format(box))
+        if (box[:3] == 0.0).any():
             raise ValueError("Any of the box dimensions cannot be 0")
-
-        self.periodic = pbc
-        self.coords = coords.astype(np.float32, order='C', copy=True)
-
-        if box.shape != (3, 3):
-            box = triclinic_vectors(box)
-
-        self.box = _PBCBox(box, self.periodic)
-
         if cutoff < 0:
-            raise ValueError("Cutoff must be positive!")
-        if cutoff * cutoff > self.box.c_pbcbox.max_cutoff2:
-            raise ValueError("Cutoff greater than maximum cutoff ({:.3f}) given the PBC")
-
-        self.coords_bbox = self.box.fast_put_atoms_in_bbox(self.coords)
-
+            raise ValueError("Cutoff must be positive")
         self.cutoff = cutoff
-        self.max_gridsize = max_gridsize
-        # Note that self.cutoff might be different from self.grid.cutoff
-        # due to optimization
-        self.grid = _NSGrid(self.coords_bbox.shape[0], self.cutoff, self.box, self.max_gridsize)
+        max_cutoff = self._prepare_box(box, pbc)
+        if cutoff > max_cutoff:
+            raise ValueError("Cutoff {} too large for box (max {})".format(cutoff, max_cutoff))
+        self._pack_grid(coords)
 
-        self.grid.fill_grid(self.coords_bbox)
+    cdef float _prepare_box(self, box, bint pbc):
+        """
+        Parameters
+        ----------
+        box : numpy ndarray shape=(6,)
+            Box info, [lx, ly, lz, alpha, beta, gamma]
+        pbc : bool
+            is this NSGrid periodic at all?
 
-    def search(self, search_coords):
+        Returns
+        -------
+        max_cutoff : float
+           the maximum allowable cutoff given the box shape and size
+        """
+        cdef float cutoff, min_cellsize, max_cutoff, new_cellsize
+        cdef int i
+
+        from MDAnalysis.lib.mdamath import triclinic_vectors
+
+        for i in range(3):
+            self.dimensions[i] = box[i]
+            self.half_dimensions[i] = 0.5 * box[i];
+            self.inverse_dimensions[i] = 1.0 / box[i]
+        self.dimensions[3] = box[3]
+        self.dimensions[4] = box[4]
+        self.dimensions[5] = box[5]
+
+        self.triclinic_dimensions = triclinic_vectors(box).reshape((9,))
+        self.triclinic = (self.triclinic_dimensions[XY] != 0 or
+                          self.triclinic_dimensions[XZ] != 0 or
+                          self.triclinic_dimensions[YZ] != 0)
+        cutoff = max(self.cutoff, 1.0)  # TODO: Figure out max ncells and stick to that
+        # Find maximum allowable cutoff
+        # For orthogonal cell this is just half the shortest boxlength (sine values all 1.0)
+        # For triclinic the box tilt creates a shorter path across the box we must account for
+        # alpha
+        max_cutoff = self.triclinic_dimensions[YY] * degsin(self.dimensions[3])
+        max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[ZZ] * degsin(self.dimensions[3]))
+        # beta
+        max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[XX] * degsin(self.dimensions[4]))
+        max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[ZZ] * degsin(self.dimensions[4]))
+        # gamma
+        max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[XX] * degsin(self.dimensions[5]))
+        max_cutoff = fmin(max_cutoff, self.triclinic_dimensions[YY] * degsin(self.dimensions[5]))
+        max_cutoff /= 2
+
+        # for triclinic cells, we need to worry about the shortest path across the cells
+        min_cellsize = cutoff
+        if self.triclinic:
+            for i in range(3, 6):
+                # cutoff/sin(theta) to elongate the XX/YY/ZZ dimension to make smallest diagonal large enough
+                new_cellsize = cutoff / degsin(self.dimensions[i])
+                min_cellsize = fmax(new_cellsize, min_cellsize)
+
+        # add 0.001 here to avoid floating point errors
+        # will make cells slightly too large as a result, ah well
+        min_cellsize += 0.001
+        self.ncells[0] = <int> math.floor(self.triclinic_dimensions[XX] / min_cellsize)
+        self.ncells[1] = <int> math.floor(self.triclinic_dimensions[YY] / min_cellsize)
+        self.ncells[2] = <int> math.floor(self.triclinic_dimensions[ZZ] / min_cellsize)
+
+        self.pbc = pbc
+        # If there aren't enough cells in a given dimension it's equivalent to one
+        # this prevents double counting of results if a cell would have the same
+        # neighbour above and below
+        if pbc:
+            for i in range(3):
+                if self.ncells[i] <= 3:
+                    self.ncells[i] = 1
+                    self.periodic[i] = False
+                else:
+                    self.periodic[i] = True
+        else:
+            for i in range(3):
+                if self.ncells[i] <= 2:
+                    self.ncells[i] = 1
+                self.periodic[i] = False
+        # Off diagonal cellsizes are actually the tilt, i.e. dy/dz or similar
+        self.cellsize[XX] = self.triclinic_dimensions[XX] / <double> self.ncells[0]
+        # [YX] and [ZX] are 0
+        self.cellsize[XY] = self.triclinic_dimensions[XY] / self.triclinic_dimensions[YY]
+        self.cellsize[YY] = self.triclinic_dimensions[YY] / <double> self.ncells[1]
+        # [ZY] is zero
+        self.cellsize[XZ] = self.triclinic_dimensions[XZ] / self.triclinic_dimensions[ZZ]
+        self.cellsize[YZ] = self.triclinic_dimensions[YZ] / self.triclinic_dimensions[ZZ]
+        self.cellsize[ZZ] = self.triclinic_dimensions[ZZ] / <double> self.ncells[2]
+
+        self.cell_offsets[0] = 0
+        self.cell_offsets[1] = self.ncells[0]
+        self.cell_offsets[2] = self.ncells[0] * self.ncells[1]
+
+        return max_cutoff
+
+    cdef void _pack_grid(self, float[:, :] coords):
+        """Assigns coordinates into cells
+
+        Parameters
+        ----------
+        coords : np.ndarray float of shape (ncoords, 3)
+            Coordinates to populate the box
+        """
+        cdef int i, j
+
+        # Linked list for each cell
+        # Starting coordinate index for each cell (END if empty cell)
+        self.head_id = np.full(self.cell_offsets[2] * self.ncells[2], END, dtype=np.int32, order='C')
+        # Next coordinate index in cell for each coordinate (END if end of sequence)
+        self.next_id = np.full(coords.shape[0], END, dtype=np.int32, order='C')
+
+        self.coords_bbox = coords.copy()
+        with nogil:
+            if self.triclinic:
+                _triclinic_pbc(<coordinate*>&self.coords_bbox[0][0],
+                               self.coords_bbox.shape[0],
+                               &self.triclinic_dimensions[0])
+            else:
+                _ortho_pbc(<coordinate*>&self.coords_bbox[0][0],
+                           self.coords_bbox.shape[0],
+                           &self.dimensions[0])
+
+            for i in range(self.coords_bbox.shape[0]):
+                j = self.coord2cellid(&self.coords_bbox[i][0])
+                self.next_id[i] = self.head_id[j]
+                self.head_id[j] = i
+
+    cdef int coord2cellid(self, const float* coord) nogil:
+        """Finds the cell-id for the given coordinate
+
+        Note
+        ----
+        Assumes the coordinate is already inside the primary unit cell.
+        Return wrong cell-id if this is not the case
+        """
+        cdef int xyz[3]
+
+        self.coord2cellxyz(coord, xyz)
+
+        return xyz[0] + xyz[1] * self.cell_offsets[1] + xyz[2] * self.cell_offsets[2]
+
+    cdef void coord2cellxyz(self, const float* coord, int* xyz) nogil:
+        """Calculate cell coordinate for coord"""
+        # This assumes coordinate is inside the primary unit cell
+        xyz[2] = <int> (coord[2] / self.cellsize[ZZ])
+        xyz[1] = <int> ((coord[1] - coord[2] * self.cellsize[YZ]) / self.cellsize[YY])
+        xyz[0] = <int> ((coord[0] - coord[1] * self.cellsize[XY]
+                         - coord[2] * self.cellsize[XZ]) / self.cellsize[XX])
+        # Make sure cell coordinate indices are within the primary unit cell
+        # (better safe than sorry):
+        xyz[0] %= self.ncells[0]
+        xyz[1] %= self.ncells[1]
+        xyz[2] %= self.ncells[2]
+
+    cdef int cellxyz2cellid(self, int cx, int cy, int cz) nogil:
+        """Convert cell coordinate to cell id, END for out of bounds"""
+        if cx < 0:
+            if self.periodic[0]:
+                cx = self.ncells[0] - 1
+            else:
+                return END
+        elif cx == self.ncells[0]:
+            if self.periodic[0]:
+                cx = 0
+            else:
+                return END
+        if cy < 0:
+            if self.periodic[1]:
+                cy = self.ncells[1] - 1
+            else:
+                return END
+        elif cy == self.ncells[1]:
+            if self.periodic[1]:
+                cy = 0
+            else:
+                return END
+        if cz < 0:
+            if self.periodic[2]:
+                cz = self.ncells[2] - 1
+            else:
+                return END
+        elif cz == self.ncells[2]:
+            if self.periodic[2]:
+                cz = 0
+            else:
+                return END
+
+        return cx + cy * self.cell_offsets[1] + cz * self.cell_offsets[2]
+
+    cdef double calc_distsq(self, const float* a, const float* b) nogil:
+        cdef double dx[3]
+
+        dx[0] = a[0] - b[0]
+        dx[1] = a[1] - b[1]
+        dx[2] = a[2] - b[2]
+
+        if self.pbc:
+            if self.triclinic:
+                minimum_image_triclinic(dx, &self.triclinic_dimensions[0])
+            else:
+                _minimum_image_ortho_lazy(dx, &self.dimensions[0],
+                                          &self.half_dimensions[0])
+
+        return dx[0]*dx[0] + dx[1]*dx[1] + dx[2]*dx[2]
+
+    def search(self, float[:, :] search_coords):
         """Search a group of atoms against initialized coordinates
 
         Creates a new grid with the query atoms and searches
@@ -830,8 +510,7 @@ cdef class FastNS(object):
         -------
         results : NSResults
            An :class:`NSResults` object holding neighbor search results, which
-           can be accessed by its methods :meth:`~NSResults.get_indices`,
-           :meth:`~NSResults.get_distances`, :meth:`~NSResults.get_pairs`, and
+           can be accessed by its methods :meth:`~NSResults.get_pairs` and
            :meth:`~NSResults.get_pair_distances`.
 
         Note
@@ -840,82 +519,56 @@ cdef class FastNS(object):
         if any of the query coordinates lies outside the `box` supplied to
         :class:`~MDAnalysis.lib.nsgrid.FastNS`.
         """
+        cdef int i, j, size_search
+        cdef int cx, cy, cz
+        cdef int cellid
+        cdef int xi, yi, zi
+        cdef int cellcoord[3]
+        cdef float tmpcoord[3]
+        
+        cdef NSResults results = NSResults()
+        cdef double d2, cutoff2
 
-        cdef ns_int i, j, size_search
-        cdef ns_int d, m
-        cdef ns_int current_beadid, bid
-        cdef ns_int cellindex, cellindex_probe
-        cdef ns_int xi, yi, zi
-
-        cdef NSResults results
-
-        cdef dreal d2
-        cdef rvec probe
-
-        cdef real[:, ::1] searchcoords
-        cdef real[:, ::1] searchcoords_bbox
-        cdef _NSGrid searchgrid
-        cdef bint check
-
-        cdef dreal cutoff2 = self.cutoff * self.cutoff
-        cdef ns_int npairs = 0
+        cutoff2 = self.cutoff * self.cutoff
 
         if (search_coords.ndim != 2 or search_coords.shape[1] != 3):
             raise ValueError("search_coords must have a shape of (n, 3), got "
                              "{}.".format(search_coords.shape))
 
-        # Generate another grid to search
-        searchcoords = search_coords.astype(np.float32, order='C', copy=False)
-        searchcoords_bbox = self.box.fast_put_atoms_in_bbox(searchcoords)
-        searchgrid = _NSGrid(searchcoords_bbox.shape[0], self.grid.used_cutoff, self.box, self.max_gridsize, force=True)
-
-        size_search = searchcoords.shape[0]
-
-        results = NSResults(self.cutoff, self.coords, searchcoords)
-
         with nogil:
+            size_search = search_coords.shape[0]
             for i in range(size_search):
-                # Start with first search coordinate
-                current_beadid = i
-                # find the cellindex of the coordinate
-                cellindex = searchgrid.cellids[current_beadid]
-                for xi in range(DIM):
-                    for yi in range(DIM):
-                        for zi in range(DIM):
-                            check = True
-                            #Probe the search coordinates in a brick shaped box
-                            probe[XX] = searchcoords_bbox[current_beadid, XX] + (xi - 1) * searchgrid.cellsize[XX]
-                            probe[YY] = searchcoords_bbox[current_beadid, YY] + (yi - 1) * searchgrid.cellsize[YY]
-                            probe[ZZ] = searchcoords_bbox[current_beadid, ZZ] + (zi - 1) * searchgrid.cellsize[ZZ]
-                            # Make sure the probe coordinates is inside the brick-shaped box
-                            if self.periodic:
-                                for m in range(DIM - 1, -1, -1):
-                                    while probe[m] < 0:
-                                        for d in range(m+1):
-                                            probe[d] += self.box.c_pbcbox.box[m][d]
-                                    while probe[m] >= self.box.c_pbcbox.box[m][m]:
-                                        for d in range(m+1):
-                                            probe[d] -= self.box.c_pbcbox.box[m][d]
-                            else:
-                                for m in range(DIM -1, -1, -1):
-                                    if probe[m] < 0:
-                                        check = False
-                                        break
-                                    if probe[m] > self.box.c_pbcbox.box[m][m]:
-                                        check = False
-                                        break
-                            if not check:
+                tmpcoord[0] = search_coords[i][0]
+                tmpcoord[1] = search_coords[i][1]
+                tmpcoord[2] = search_coords[i][2]
+                if self.triclinic:
+                    _triclinic_pbc(<coordinate*>&tmpcoord[0], 1,
+                                   &self.triclinic_dimensions[0])
+                else:
+                    _ortho_pbc(<coordinate*>&tmpcoord[0], 1,
+                               &self.dimensions[0])
+                # which cell is atom *i* in
+                self.coord2cellxyz(&tmpcoord[0], cellcoord)
+                # loop over all 27 neighbouring cells
+                for xi in range(3):
+                    for yi in range(3):
+                        for zi in range(3):
+                            cx = cellcoord[0] - 1 + xi
+                            cy = cellcoord[1] - 1 + yi
+                            cz = cellcoord[2] - 1 + zi
+                            cellid = self.cellxyz2cellid(cx, cy, cz)
+
+                            if cellid == END:  # out of bounds
                                 continue
-                            # Get the cell index corresponding to the probe
-                            cellindex_probe = self.grid.coord2cellid(probe)
-                            # for this cellindex search in grid
-                            for j in range(self.grid.nbeads[cellindex_probe]):
-                                bid = self.grid.beadids[cellindex_probe * self.grid.nbeads_per_cell + j]
-                                # find distance between search coords[i] and coords[bid]
-                                d2 = self.box.fast_distance2(&searchcoords_bbox[current_beadid, XX], &self.coords_bbox[bid, XX])
+                            # for loop over atoms in searchcoord
+                            j = self.head_id[cellid]
+                            while (j != END):
+                                d2 = self.calc_distsq(&tmpcoord[0],
+                                                      &self.coords_bbox[j][0])
                                 if d2 <= cutoff2:
-                                    results.add_neighbors(current_beadid, bid, d2)
-                                    npairs += 1
+                                    # place search_coords then self.bbox_coords
+                                    results.add_neighbors(i, j, d2)
+                                j = self.next_id[j]
         return results
 
     def self_search(self):
@@ -930,74 +583,56 @@ cdef class FastNS(object):
         -------
         results : NSResults
            An :class:`NSResults` object holding neighbor search results, which
-           can be accessed by its methods :meth:`~NSResults.get_indices`,
-           :meth:`~NSResults.get_distances`, :meth:`~NSResults.get_pairs`, and
+           can be accessed by its methods :meth:`~NSResults.get_pairs` and
            :meth:`~NSResults.get_pair_distances`.
         """
+        cdef int cx, cy, cz, ox, oy, oz
+        cdef int ci, cj, i, j, nj
+        cdef int cellindex, cellindex_probe
+        cdef int xi, yi, zi
+        cdef NSResults results = NSResults()
+        cdef double d2
+        cdef double cutoff2 = self.cutoff * self.cutoff
+        # route over 13 neighbouring cells
+        cdef int[13][3] route = [[1, 0, 0], [1, 1, 0], [0, 1, 0], [-1, 1, 0],
+                                 [1, 0, -1], [1, 1, -1], [0, 1, -1], [-1, 1, -1],
+                                 [1, 0, 1], [1, 1, 1], [0, 1, 1], [-1, 1, 1], [0, 0, 1]]
 
-        cdef ns_int i, j, size_search
-        cdef ns_int d, m
-        cdef ns_int current_beadid, bid
-        cdef ns_int cellindex, cellindex_probe
-        cdef ns_int xi, yi, zi
+        for cx in range(self.ncells[0]):
+            for cy in range(self.ncells[1]):
+                for cz in range(self.ncells[2]):
+                    ci = self.cellxyz2cellid(cx, cy, cz)
 
-        cdef NSResults results
-        cdef dreal d2
-        cdef rvec probe
+                    i = self.head_id[ci]
+                    while (i != END):
+                        # pairwise within this cell
+                        j = self.next_id[i]
+                        while (j != END):
+                            d2 = self.calc_distsq(&self.coords_bbox[i][0],
+                                                  &self.coords_bbox[j][0])
+                            if d2 <= cutoff2:
+                                results.add_neighbors(i, j, d2)
+                            j = self.next_id[j]
 
-        cdef dreal cutoff2 = self.cutoff * self.cutoff
-        cdef ns_int npairs = 0
-        cdef bint check
+                        # loop over 13 neighbouring cells
+                        for nj in range(13):
+                            ox = cx + route[nj][0]
+                            oy = cy + route[nj][1]
+                            oz = cz + route[nj][2]
 
-        size_search = self.coords.shape[0]
-
-        results = NSResults(self.cutoff, self.coords, self.coords)
-
-        with nogil:
-            for i in range(size_search):
-                # Start with first search coordinate
-                current_beadid = i
-                # find the cellindex of the coordinate
-                cellindex = self.grid.cellids[current_beadid]
-                for xi in range(DIM):
-                    for yi in range(DIM):
-                        for zi in range(DIM):
-                            check = True
-                            # Calculate and/or reinitialize shifted coordinates
-                            # Probe the search coordinates in a brick shaped box
-                            probe[XX] = self.coords_bbox[current_beadid, XX] + (xi - 1) * self.grid.cellsize[XX]
-                            probe[YY] = self.coords_bbox[current_beadid, YY] + (yi - 1) * self.grid.cellsize[YY]
-                            probe[ZZ] = self.coords_bbox[current_beadid, ZZ] + (zi - 1) * self.grid.cellsize[ZZ]
-                            # Make sure the shifted coordinates is inside the brick-shaped box
-                            if self.periodic:
-                                for m in range(DIM - 1, -1, -1):
-                                    while probe[m] < 0:
-                                        for d in range(m+1):
-                                            probe[d] += self.box.c_pbcbox.box[m][d]
-                                    while probe[m] >= self.box.c_pbcbox.box[m][m]:
-                                        for d in range(m+1):
-                                            probe[d] -= self.box.c_pbcbox.box[m][d]
-                            else:
-                                for m in range(DIM -1, -1, -1):
-                                    if probe[m] < 0:
-                                        check = False
-                                        break
-                                    elif probe[m] > self.box.c_pbcbox.box[m][m]:
-                                        check = False
-                                        break
-                            if not check:
+                            cj = self.cellxyz2cellid(ox, oy, oz)
+                            if cj == END:
                                 continue
-                            # Get the cell index corresponding to the probe
-                            cellindex_probe = self.grid.coord2cellid(probe)
-                            # for this cellindex search in grid
-                            for j in range(self.grid.nbeads[cellindex_probe]):
-                                bid = self.grid.beadids[cellindex_probe * self.grid.nbeads_per_cell + j]
-                                if bid < current_beadid:
-                                    continue
-                                # find distance between search coords[i] and coords[bid]
-                                d2 = self.box.fast_distance2(&self.coords_bbox[current_beadid, XX], &self.coords_bbox[bid, XX])
-                                if d2 <= cutoff2 and d2 > EPSILON:
-                                    results.add_neighbors(current_beadid, bid, d2)
-                                    results.add_neighbors(bid, current_beadid, d2)
-                                    npairs += 2
+
+                            j = self.head_id[cj]
+                            while (j != END):
+                                d2 = self.calc_distsq(&self.coords_bbox[i][0],
+                                                      &self.coords_bbox[j][0])
+                                if d2 <= cutoff2:
+                                    results.add_neighbors(i, j, d2)
+                                j = self.next_id[j]
+
+                        # move to next position in cell *ci*
+                        i = self.next_id[i]
+
         return results

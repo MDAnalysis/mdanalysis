@@ -119,7 +119,7 @@ def shrinkage_covariance_estimator( coordinates,
     xmkt = np.average(x, axis=1)
 
     # Call maximum likelihood estimator (note the additional column)
-    sample = ml_covariance_estimator(np.hstack([x, xmkt[:, np.newaxis]]), 0) \
+    sample = ml_covariance_estimator(np.hstack([x, xmkt[:, np.newaxis]]), 0)\
         * (t-1)/float(t)
 
     # Split covariance matrix into components

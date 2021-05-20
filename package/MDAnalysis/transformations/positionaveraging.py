@@ -35,16 +35,17 @@ returned.
 import numpy as np
 import warnings
 
+from .base import TransformationBase
 
-class PositionAverager(object):  
+
+class PositionAverager(TransformationBase):
     """
-   
     Averages the coordinates of a given timestep so that the coordinates
     of the AtomGroup correspond to the average positions of the N previous
     frames. 
     For frames < N, the average of the frames iterated up to that point will
     be returned.  
-    
+
     Example
     -------
 
@@ -55,13 +56,13 @@ class PositionAverager(object):
     complete, or if the frames iterated are not sequential.
 
     .. code-block:: python
-        
+
         N=3
         transformation = PositionAverager(N, check_reset=True)
         u.trajectory.add_transformations(transformation)   
         for ts in u.trajectory:
             print(ts.positions)
-    
+
     In this case, ``ts.positions`` will return the average coordinates of the
     last N iterated frames.
 
@@ -133,55 +134,69 @@ class PositionAverager(object):
     Returns
     -------
     MDAnalysis.coordinates.base.Timestep
-    
-    
+
+
+    .. versionchanged:: 2.0.0
+       The transformation was changed to inherit from the base class for
+       limiting threads and checking if it can be used in parallel analysis.
     """
-    
-    def __init__(self, avg_frames, check_reset=True):
+
+    def __init__(self, avg_frames, check_reset=True,
+                 max_threads=None,
+                 parallelizable=False):
+        super().__init__(max_threads=max_threads,
+                         parallelizable=parallelizable)
         self.avg_frames = avg_frames
         self.check_reset = check_reset
         self.current_avg = 0
         self.resetarrays()
-    
+        self.current_frame = 0
+
     def resetarrays(self):
         self.idx_array = np.empty(self.avg_frames)
         self.idx_array[:] = np.nan
-    
-    def rollidx(self,ts):
-        self.idx_array = np.roll(self.idx_array, 1)  
+
+    def rollidx(self, ts):
+        self.idx_array = np.roll(self.idx_array, 1)
         self.idx_array[0] = ts.frame
-        
-    def rollposx(self,ts):        
+
+    def rollposx(self, ts):
         try:
             self.coord_array.size
         except AttributeError:
             size = (ts.positions.shape[0], ts.positions.shape[1],
                     self.avg_frames)
             self.coord_array = np.empty(size)
-         
+
         self.coord_array = np.roll(self.coord_array, 1, axis=2)
-        self.coord_array[...,0] = ts.positions.copy()
-        
-    
-    def __call__(self, ts):
+        self.coord_array[..., 0] = ts.positions.copy()
+
+    def _transform(self, ts):
+        #  calling the same timestep will not add new data to coord_array
+        #  This can prevent from getting different values when
+        #  call `u.trajectory[i]` multiple times.
+        if (ts.frame == self.current_frame
+                and hasattr(self, 'coord_array')
+                and not np.isnan(self.idx_array).all()):
+            test = ~np.isnan(self.idx_array)
+            ts.positions = np.mean(self.coord_array[..., test], axis=2)
+            return ts
+        else:
+            self.current_frame = ts.frame
+
         self.rollidx(ts)
         test = ~np.isnan(self.idx_array)
         self.current_avg = sum(test)
-        if self.current_avg == 1:
-            return ts
-          
         if self.check_reset:
             sign = np.sign(np.diff(self.idx_array[test]))
-            
-            if not (np.all(sign == 1) or np.all(sign==-1)):
+            if not (np.all(sign == 1) or np.all(sign == -1)):
                 warnings.warn('Cannot average position for non sequential'
                               'iterations. Averager will be reset.',
                               Warning)
                 self.resetarrays()
                 return self(ts)
-        
+
         self.rollposx(ts)
-        ts.positions = np.mean(self.coord_array[...,test], axis=2)
-            
+        ts.positions = np.mean(self.coord_array[..., test], axis=2)
+
         return ts
-    

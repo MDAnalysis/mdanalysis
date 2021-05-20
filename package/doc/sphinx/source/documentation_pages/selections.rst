@@ -12,7 +12,7 @@ syntax`_)::
   >>> kalp = universe.select_atoms("segid KALP")
 
 .. _`CHARMM's atom selection syntax`:
-   http://www.charmm.org/documentation/c37b1/select.html
+   https://www.charmm.org/charmm/documentation/by-version/c45b1/select.html
 
 The :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` method of a
 :class:`~MDAnalysis.core.groups.AtomGroup` or a
@@ -46,10 +46,46 @@ selection parser. The following applies to all selections:
   necessary).
 * Selections are parsed left to right and parentheses can be used for
   grouping.
+* You can use the singular name of any topology attribute as a selection
+  keyword. `Defined topology attributes`_ are listed in the User Guide.
+  Alternatively, you can define a 
+  :class:`~MDAnalysis.core.topologyattrs.TopologyAttr` yourself,
+  providing that the attribute ``dtype`` is one of ``int``, ``float``, 
+  ``str`` (or ``object``), or ``bool``.
+  However, the topology must contain this attribute information for
+  the selection to work.
+
+    * Selections of attributes that are integers or floats can use the
+      syntax "myTopologyAttr 0 - 2", "myTopologyAttr 0:2", or
+      "myTopologyAttr 0 to 2", to select a range with
+      both ends inclusive. Whitespace and negative numbers are allowed.
+    * "myTopologyAttr 0" can be used to select all atoms
+      matching the value; however, this can be tricky with floats because of
+      precision differences and we recommend using a range like above when
+      possible.
+    * Boolean selections default to True, so "myTopologyAttr" and
+      "myTopologyAttr True" both give all atoms with
+      ``myTopologyAttr == True``.
+
+.. seealso::
+
+    Regular expression patterns
+    :data:`~MDAnalysis.core.selection.FLOAT_PATTERN` for matching floats;
+    :data:`~MDAnalysis.core.selection.INT_PATTERN` for matching integers;
+    and :data:`~MDAnalysis.core.selection.RANGE_PATTERN` for matching
+    selection ranges.
+
+
+.. _`Defined topology attributes`: https://userguide.mdanalysis.org/2.0.0-dev0/topology_system.html#format-specific-attributes
 
 
 Simple selections
 -----------------
+
+This is a non-exhaustive list of the available selection keywords. As noted
+in the dot point above, keywords will be automatically generated for any
+suitable :class:`~MDAnalysis.core.topologyattrs.TopologyAttr`. A list of
+`Defined topology attributes`_ is available in the User Guide.
 
 protein, backbone, nucleic, nucleicbackbone
     selects all atoms that belong to a standard set of residues; a protein
@@ -89,15 +125,27 @@ atom *seg-name*  *residue-number*  *atom-name*
     e.g. ``DMPC 1 C2`` selects the C2 carbon of the first residue of the
     DMPC segment
 
-altloc *alternative-location*
+altLoc *alternative-location*
     a selection for atoms where alternative locations are available, which is
     often the case with high-resolution crystal structures
-    e.g. `resid 4 and resname ALA and altloc B` selects only the atoms of ALA-4
-    that have an altloc B record.
+    e.g. ``resid 4 and resname ALA and altLoc B`` selects only the atoms of ALA-4
+    that have an altLoc B record.
+
+chainID *chain-name*
+    a selection for atoms where chainIDs have been defined.
+
+element *element-name*
+    a selection for atoms where elements have been defined. e.g. ``element H C``
 
 moltype *molecule-type*
     select by molecule type, e.g. ``moltype Protein_A``. At the moment, only
     the TPR format defines the molecule type.
+
+smarts *SMARTS-query*
+    select atoms using Daylight's SMARTS queries, e.g. ``smarts [#7;R]`` to
+    find nitrogen atoms in rings. Requires RDKit. All matches (max 1000) are
+    combined as a unique match.
+
 
 Pattern matching
 ----------------
