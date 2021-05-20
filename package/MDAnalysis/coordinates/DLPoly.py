@@ -28,6 +28,7 @@ Read DL Poly_ format coordinate files
 
 .. _Poly: http://www.stfc.ac.uk/SCD/research/app/ccg/software/DL_POLY/44516.aspx
 """
+from re import L
 import numpy as np
 
 from . import base
@@ -152,9 +153,18 @@ class HistoryReader(base.ReaderBase):
         # "private" file handle
         self._file = util.anyopen(self.filename, 'r')
         self.title = self._file.readline().strip()
-        self._levcfg, self._imcon, self.n_atoms = np.int64(self._file.readline().split()[:3])
+        header = np.int64(self._file.readline().split())
+        self._levcfg, self._imcon, self.n_atoms, _, _ = header
         self._has_vels = True if self._levcfg > 0 else False
         self._has_forces = True if self._levcfg == 2 else False
+
+        rwnd = self._file.tell()
+        self._file.readline()
+        if (len(self._file.readline().split())) == 3:
+            self._has_cell = True
+        else:
+            self._has_cell = False
+        self._file.seek(rwnd)
 
         self.ts = self._Timestep(self.n_atoms,
                                  velocities=self._has_vels,
@@ -170,36 +180,16 @@ class HistoryReader(base.ReaderBase):
         if not line.startswith('timestep'):
             raise IOError
 
-        # If ids are given, put them in here
-        # and later sort by them
-        ids = []
-        i = 0
-
-        # Either atom info (5 records) line OR unit cell vectors (xyz)
-        line = self._file.readline().split()
-        if len(line) == 3:
-            ts._unitcell[0] = line
+        if self._has_cell:
+            ts._unitcell[0] = self._file.readline().split()
             ts._unitcell[1] = self._file.readline().split()
             ts._unitcell[2] = self._file.readline().split()
 
-        # Load first atom here, then loop
-        elif len(line) == 5:
-            try:
-                idx = int(line[1])
-            except IndexError:
-                pass
-            else:
-                ids.append(idx)
+        # If ids are given, put them in here
+        # and later sort by them
+        ids = []
 
-            # Read in this order for now, then later reorder in place
-            ts._pos[i] = self._file.readline().split()
-            if self._has_vels:
-                ts._velocities[i] = self._file.readline().split()
-            if self._has_forces:
-                ts._forces[i] = self._file.readline().split()
-            i += 1
-
-        while i < self.n_atoms:
+        for i in range(self.n_atoms):
             line = self._file.readline().strip()  # atom info line
             try:
                 idx = int(line.split()[1])
@@ -238,31 +228,17 @@ class HistoryReader(base.ReaderBase):
 
     @property
     def n_frames(self):
-        try:
-            return self._n_frames
-        except AttributeError:
-            self._n_frames = self._read_n_frames()
-            return self._n_frames
-
-    def _read_n_frames(self):
-        """Read the number of frames, and the offset for each frame
-
-        offset[i] - returns the offset in bytes to seek into the file to be
-                    just before the frame starts
-        """
-        offsets = self._offsets = []
+        # Second line is traj_key, imcom, n_atoms, n_frames, n_records
+        offsets = []
 
         with open(self.filename, 'r') as f:
-            n_frames = 0
-
             f.readline()
-            f.readline()
+            n_frames = int(f.readline().split()[3])
             position = f.tell()
             line = f.readline()
             while line.startswith('timestep'):
                 offsets.append(position)
-                n_frames += 1
-                if not self._imcon == 0:  # box info
+                if self._has_cell:
                     f.readline()
                     f.readline()
                     f.readline()
@@ -276,14 +252,15 @@ class HistoryReader(base.ReaderBase):
                 position = f.tell()
                 line = f.readline()
 
+        self._offsets = offsets
         return n_frames
 
     def _reopen(self):
         self.close()
-        self._file = open(self.filename, 'r')
-        self._file.readline()  # header is 2 lines
-        self._file.readline()
-        self.ts.frame = -1
+        self.ts.frame = 0
+        self._frame = -1
+        self._file.close()
+        self._file.open('r')
 
     def close(self):
         self._file.close()
