@@ -13,25 +13,18 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-20/05/21 fiszczyp
-
-  * 2.0.1
-
-Fixes
-  * DL_POLY HISTORY file may contain unit cell dimensions even if
-    there are no periodic boundary conditions (imcom=0) (PR #3312).
-
-
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
          hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi, hejamu,
          biogen98, orioncohen, z3y50n, hp115, ojeda-e, thadanipaarth, HenryKobin,
-         1ut, sulays, ahy3nz
+         1ut, sulays, ahy3nz, fiszczyp
 
   * 2.0.0
 
 Fixes
+  * DL_POLY HISTORY file may contain unit cell dimensions even if there are
+    no periodic boundary conditions (imcom=0) (Issue #3314, PR #3312).
   * New RDKitConverter cache system to fix issue #2958 (PR #2942)
   * Fixed OpenMM converter documentation not showing up in the Converters
     section (Issue #3262, PR #2882)
