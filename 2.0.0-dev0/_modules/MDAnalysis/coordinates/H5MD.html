@@ -808,11 +808,11 @@
         <span class="c1"># set the timestep positions, velocities, and forces with</span>
         <span class="c1"># current frame dataset</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">]:</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_frame_dataset</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_read_dataset_into_ts</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]:</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">velocities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_frame_dataset</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_read_dataset_into_ts</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">velocities</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">]:</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">forces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_frame_dataset</span><span class="p">(</span><span class="s1">&#39;force&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_read_dataset_into_ts</span><span class="p">(</span><span class="s1">&#39;force&#39;</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">forces</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_convert_units</span><span class="p">()</span>
@@ -835,20 +835,22 @@
                         <span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">]</span>
                     <span class="k">break</span>
 
-    <span class="k">def</span> <span class="nf">_get_frame_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;retrieves dataset array at current frame&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_read_dataset_into_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;reads position, velocity, or force dataset array at current frame</span>
+<span class="sd">        into corresponding ts attribute&quot;&quot;&quot;</span>
 
-        <span class="n">frame_dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span><span class="p">[</span>
-            <span class="n">dataset</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">,</span> <span class="p">:]</span>
-        <span class="n">n_atoms_now</span> <span class="o">=</span> <span class="n">frame_dataset</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">n_atoms_now</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s1">/value&#39;</span><span class="p">][</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">n_atoms_now</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Frame </span><span class="si">{}</span><span class="s2"> has </span><span class="si">{}</span><span class="s2"> atoms but the initial frame&quot;</span>
-                             <span class="s2">&quot; has </span><span class="si">{}</span><span class="s2"> atoms. MDAnalysis is unable to deal&quot;</span>
-                             <span class="s2">&quot; with variable topology!&quot;</span>
-                             <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">,</span>
-                                       <span class="n">n_atoms_now</span><span class="p">,</span>
-                                       <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">frame_dataset</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Frame </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="si">}</span><span class="s2"> of the </span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2"> dataset&quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot; has </span><span class="si">{</span><span class="n">n_atoms_now</span><span class="si">}</span><span class="s2"> atoms but the initial frame&quot;</span>
+                             <span class="s2">&quot; of either the postion, velocity, or force&quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot; dataset had </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="si">}</span><span class="s2"> atoms.&quot;</span>
+                             <span class="s2">&quot; MDAnalysis is unable to deal&quot;</span>
+                             <span class="s2">&quot; with variable topology!&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s1">/value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read_direct</span><span class="p">(</span>
+                             <span class="n">attribute</span><span class="p">,</span> <span class="n">source_sel</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">,</span> <span class="p">:])</span>
 
     <span class="k">def</span> <span class="nf">_convert_units</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;converts time, position, velocity, and force values if they</span>
