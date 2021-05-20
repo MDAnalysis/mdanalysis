@@ -90,6 +90,10 @@ The class can be set-up and run like a normal MDAnalysis analysis class::
 The VMD surface created by the class updates the pore for each frame of the trajectory.
 Use it as normal by loading your trajectory in VMD and sourcing the file in the Tk Console.
 
+You can access the actual profiles generated in the ``results`` attribute::
+
+    print(ha.results.profiles)
+
 Again, HOLE writes out files for each frame. If you would like to delete these files
 after the analysis, you can call :meth:`~HoleAnalysis.delete_temporary_files`::
 
@@ -195,12 +199,12 @@ def hole(pdbfile,
          dcd_iniskip=0,
          dcd_step=1,
          keep_files=True):
-    """Run :program:`hole` on a single frame or a DCD trajectory.
+    r"""Run :program:`hole` on a single frame or a DCD trajectory.
 
     :program:`hole` is part of the HOLE_ suite of programs. It is used to
     analyze channels and cavities in proteins, especially ion channels.
 
-    Only a subset of all `HOLE control parameters <http://www.holeprogram.org/doc/old/hole_d03.html>`_ 
+    Only a subset of all `HOLE control parameters <http://www.holeprogram.org/doc/old/hole_d03.html>`_
     is supported and can be set with keyword arguments.
 
     Parameters
@@ -238,7 +242,7 @@ def hole(pdbfile,
         path to the file specifying van der Waals radii for each atom. If
         set to ``None``, then a set of default radii,
         :data:`SIMPLE2_RAD`, is used (an extension of ``simple.rad`` from
-        the HOLE distribution). 
+        the HOLE distribution).
     executable: str, optional
         Path to the :program:`hole` executable.
         (e.g. ``~/hole2/exe/hole``). If
@@ -291,13 +295,13 @@ def hole(pdbfile,
         (1,0,0), Y axis (0,1,0) or Z axis (0,0,1). If the structure is not
         aligned on one of these axis the results will clearly be
         approximate. If a guess is used then results should be carefully
-        checked. 
+        checked.
     random_seed : int, optional
         integer number to start the random number generator.
         By default,
         :program:`hole` will use the time of the day.
         For reproducible runs (e.g., for testing) set ``random_seed``
-        to an integer. 
+        to an integer.
     ignore_residues : array_like, optional
         sequence of three-letter residues that are not taken into
         account during the calculation; wildcards are *not*
@@ -326,10 +330,10 @@ def hole(pdbfile,
         initially.
     dcd_step : int, optional
         step size for going through the trajectory (skips ``dcd_step-1``
-        frames). 
+        frames).
     keep_files : bool, optional
         Whether to keep the HOLE output files and possible temporary
-        symlinks after running the function. Default: ``True``
+        symlinks after running the function.
 
 
     Returns
@@ -407,14 +411,13 @@ def hole(pdbfile,
 
 
 class HoleAnalysis(AnalysisBase):
-
-    """
+    r"""
     Run :program:`hole` on a trajectory.
 
     :program:`hole` is part of the HOLE_ suite of programs. It is used to
     analyze channels and cavities in proteins, especially ion channels.
 
-    Only a subset of all `HOLE control parameters <http://www.holeprogram.org/doc/old/hole_d03.html>`_ 
+    Only a subset of all `HOLE control parameters <http://www.holeprogram.org/doc/old/hole_d03.html>`_
     is supported and can be set with keyword arguments.
 
     This class creates temporary PDB files for each frame and runs HOLE on
@@ -429,22 +432,22 @@ class HoleAnalysis(AnalysisBase):
     Parameters
     ----------
 
-    universe: Universe or AtomGroup
+    universe : Universe or AtomGroup
         The Universe or AtomGroup to apply the analysis to.
-    select: string, optional
+    select : string, optional
         The selection string to create an atom selection that the HOLE
         analysis is applied to.
-    vdwradii_file: str, optional
+    vdwradii_file : str, optional
         path to the file specifying van der Waals radii for each atom. If
         set to ``None``, then a set of default radii,
         :data:`SIMPLE2_RAD`, is used (an extension of ``simple.rad`` from
         the HOLE distribution).
-    executable: str, optional
+    executable : str, optional
         Path to the :program:`hole` executable.
         (e.g. ``~/hole2/exe/hole``). If
         :program:`hole` is found on the :envvar:`PATH`, then the bare
         executable name is sufficient.
-    tmpdir: str, optional
+    tmpdir : str, optional
         The temporary directory that files can be symlinked to, to shorten
         the path name. HOLE can only read filenames up to a certain length.
     cpoint : array_like, 'center_of_geometry' or None, optional
@@ -477,7 +480,7 @@ class HoleAnalysis(AnalysisBase):
         (1,0,0), Y axis (0,1,0) or Z axis (0,0,1). If the structure is not
         aligned on one of these axis the results will clearly be
         approximate. If a guess is used then results should be carefully
-        checked. 
+        checked.
     sample : float, optional
         distance of sample points in Å.
         Specifies the distance between the planes used in the HOLE
@@ -485,13 +488,13 @@ class HoleAnalysis(AnalysisBase):
         purposes. However, if you wish to visualize a very tight
         constriction then specify a smaller value.
         This value determines how many points in the pore profile are
-        calculated. 
+        calculated.
     end_radius : float, optional
         Radius in Å, which is considered to be the end of the pore. This
         keyword can be used to specify the radius above which the
         program regards a result as indicating that the end of the pore
         has been reached. This may need to be increased for large channels,
-        or reduced for small channels. 
+        or reduced for small channels.
     output_level : int, optional
         Determines the output of output in the ``outfile``.
         For automated processing, this must be < 3.
@@ -507,20 +510,58 @@ class HoleAnalysis(AnalysisBase):
         account during the calculation; wildcards are *not*
         supported. Note that all residues must have 3 letters. Pad
         with space on the right-hand side if necessary.
-    prefix: str, optional
-        Prefix for HOLE output files. 
-    write_input_files: bool, optional
+    prefix : str, optional
+        Prefix for HOLE output files.
+    write_input_files : bool, optional
         Whether to write out the input HOLE text as files.
-        Files are called `hole.inp`. 
+        Files are called `hole.inp`.
 
 
-    Returns
-    -------
-    dict
+    Attributes
+    ----------
+    results.sphpdbs: numpy.ndarray
+        Array of sphpdb filenames
+
+        .. versionadded:: 2.0.0
+
+    results.outfiles: numpy.ndarray
+        Arrau of output filenames
+
+        .. versionadded:: 2.0.0
+
+    results.profiles: dict
+        Profiles generated by HOLE2.
         A dictionary of :class:`numpy.recarray`\ s, indexed by frame.
 
+        .. versionadded:: 2.0.0
+
+    sphpdbs: numpy.ndarray
+        Alias of :attr:`results.sphpdbs`
+
+        .. deprecated:: 2.0.0
+            This will be removed in MDAnalysis 3.0.0. Please use
+            :attr:`results.sphpdbs` instead.
+
+    outfiles: numpy.ndarray
+        Alias of :attr:`results.outfiles`
+
+        .. deprecated:: 2.0.0
+            This will be removed in MDAnalysis 3.0.0. Please use
+            :attr:`results.outfiles` instead.
+
+    profiles: dict
+        Alias of :attr:`results.profiles`
+
+        .. deprecated:: 2.0.0
+            This will be removed in MDAnalysis 3.0.0. Please use
+            :attr:`results.profiles` instead.
 
     .. versionadded:: 1.0
+
+    .. versionchanged:: 2.0.0
+        :attr:`sphpdbs`, :attr:`outfiles` and :attr:`profiles `
+        are now stored in a :class:`MDAnalysis.analysis.base.Results` 
+        instance.
 
     """
 
@@ -552,11 +593,6 @@ class HoleAnalysis(AnalysisBase):
         """)
 
     _guess_cpoint = False
-
-    sphpdbs = None
-    outfiles = None
-    frames = None
-    profiles = None
 
     def __init__(self, universe,
                  select='protein',
@@ -675,19 +711,42 @@ class HoleAnalysis(AnalysisBase):
             By default,
             :program:`hole` will use the time of the day.
             For reproducible runs (e.g., for testing) set ``random_seed``
-            to an integer. Default: ``None``
+            to an integer.
         """
         self.random_seed = random_seed
         return super(HoleAnalysis, self).run(start=start, stop=stop,
                                              step=step, verbose=verbose)
 
+    @property
+    def sphpdbs(self):
+        wmsg = ("The `sphpdbs` attribute was deprecated in "
+                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+                "Please use `results.sphpdbs` instead.")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.sphpdbs
+
+    @property
+    def outfiles(self):
+        wmsg = ("The `outfiles` attribute was deprecated in "
+                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+                "Please use `results.outfiles` instead.")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.outfiles
+
+    @property
+    def profiles(self):
+        wmsg = ("The `profiles` attribute was deprecated in "
+                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+                "Please use `results.profiles` instead.")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.profiles
+
     def _prepare(self):
         """Set up containers and generate input file text"""
         # set up containers
-        self.sphpdbs = np.zeros(self.n_frames, dtype=object)
-        self.outfiles = np.zeros(self.n_frames, dtype=object)
-        self.frames = np.zeros(self.n_frames, dtype=int)
-        self.profiles = {}
+        self.results.sphpdbs = np.zeros(self.n_frames, dtype=object)
+        self.results.outfiles = np.zeros(self.n_frames, dtype=object)
+        self.results.profiles = {}
 
         # generate input file
         body = set_up_hole_input('',
@@ -734,7 +793,6 @@ class HoleAnalysis(AnalysisBase):
             self.tmp_files.append(sphpdb)
         else:
             self.tmp_files.append(sphpdb + '.old')
-        self.frames[i] = frame
 
         # temp pdb
         logger.info('HOLE analysis frame {}'.format(frame))
@@ -764,7 +822,7 @@ class HoleAnalysis(AnalysisBase):
 
         recarrays = collect_hole(outfile=outfile)
         try:
-            self.profiles[frame] = recarrays[0]
+            self.results.profiles[frame] = recarrays[0]
         except KeyError:
             msg = 'No profile found in HOLE output. Output level: {}'
             logger.info(msg.format(self.output_level))
@@ -783,7 +841,7 @@ class HoleAnalysis(AnalysisBase):
            source hole.vmd
 
         The level of detail is determined by ``dot_density``.
-        The surface will be colored by ``no_water_color``, ``one_water_color``, and 
+        The surface will be colored by ``no_water_color``, ``one_water_color``, and
         ``double_water_color``. You can change these in the
         Tk Console::
 
@@ -805,14 +863,14 @@ class HoleAnalysis(AnalysisBase):
             (few dots per sphere) and 35 (many dots per sphere).
 
         no_water_color: str, optional
-            Color of the surface where the pore radius is too tight for a 
+            Color of the surface where the pore radius is too tight for a
             water molecule.
 
         one_water_color: str, optional
             Color of the surface where the pore can fit one water molecule.
 
         double_water_color: str, optional
-            Color of the surface where the radius is at least double the 
+            Color of the surface where the radius is at least double the
             minimum radius for one water molecule.
 
 
@@ -822,11 +880,12 @@ class HoleAnalysis(AnalysisBase):
             ``filename`` with the pore surfaces.
 
         """
-        if self.sphpdbs is None or len(self.sphpdbs) == 0:
+        if not np.any(self.results.get("sphpdbs", [])):
             raise ValueError('No sphpdb files to read. Try calling run()')
 
         frames = []
-        for i, sphpdb in zip(self.frames, self.sphpdbs[self.frames]):
+        for i in self.frames:
+            sphpdb = self.results.sphpdbs[i]
             tmp_tri = create_vmd_surface(sphpdb=sphpdb,
                                          sph_process=self.exe['sph_process'],
                                          sos_triangle=self.exe['sos_triangle'],
@@ -859,7 +918,7 @@ class HoleAnalysis(AnalysisBase):
             frames.append('set triangles({i}) '.format(i=i) + tri)
 
         trinorms = '\n'.join(frames)
-        vmd_1 = vmd_script_array.format(no_water_color=no_water_color, 
+        vmd_1 = vmd_script_array.format(no_water_color=no_water_color,
                                         one_water_color=one_water_color,
                                         double_water_color=double_water_color)
         vmd_text = vmd_1 + trinorms + vmd_script_function
@@ -868,18 +927,13 @@ class HoleAnalysis(AnalysisBase):
             f.write(vmd_text)
 
         return filename
-    
-    def min_radius(self):
-        """Return the minimum radius over all profiles as a function of q"""
-        if not self.profiles:
-            raise ValueError('No profiles available. Try calling run()')
-        return np.array([[q, p.radius.min()] for q, p in self.profiles.items()])
 
     def min_radius(self):
         """Return the minimum radius over all profiles as a function of q"""
-        if not self.profiles:
+        profiles = self.results.get("profiles")
+        if not profiles:
             raise ValueError('No profiles available. Try calling run()')
-        return np.array([[q, p.radius.min()] for q, p in self.profiles.items()])
+        return np.array([[q, p.radius.min()] for q, p in profiles.items()])
 
     def delete_temporary_files(self):
         """Delete temporary files"""
@@ -889,8 +943,8 @@ class HoleAnalysis(AnalysisBase):
             except OSError:
                 pass
         self.tmp_files = []
-        self.outfiles = []
-        self.sphpdbs = []
+        self.results.outfiles = []
+        self.results.sphpdbs = []
 
     def __enter__(self):
         return self
@@ -906,18 +960,17 @@ class HoleAnalysis(AnalysisBase):
 
         Parameters
         ----------
-        frames: array-like, optional
+        frames : array-like, optional
             Frames to plot. If ``None``, plots all of them.
-            Default: ``None``
-        color: str or array-like, optional
+        color : str or array-like, optional
             Color or colors for the plot. If ``None``, colors are
-            drawn from ``cmap``. Default: ``None``
-        cmap: str, optional
+            drawn from ``cmap``.
+        cmap : str, optional
             color map to make colors for the plot if ``color`` is
             not given. Names should be from the ``matplotlib.pyplot.cm``
-            module. Default: 'viridis'
-        linestyle: str or array-like, optional
-            Line style for the plot. Default: '-'
+            module.
+        linestyle : str or array-like, optional
+            Line style for the plot.
 
 
         Returns
@@ -948,7 +1001,7 @@ class HoleAnalysis(AnalysisBase):
              linestyle='-', y_shift=0.0,
              label=True, ax=None,
              legend_loc='best', **kwargs):
-        """Plot HOLE profiles :math:`R(\zeta)` in a 1D graph.
+        r"""Plot HOLE profiles :math:`R(\zeta)` in a 1D graph.
 
         Lines are colored according to the specified ``color`` or
         drawn from the color map ``cmap``. One line is
@@ -958,27 +1011,26 @@ class HoleAnalysis(AnalysisBase):
         ----------
         frames: array-like, optional
             Frames to plot. If ``None``, plots all of them.
-            Default: ``None``
         color: str or array-like, optional
             Color or colors for the plot. If ``None``, colors are
-            drawn from ``cmap``. Default: ``None``
+            drawn from ``cmap``.
         cmap: str, optional
             color map to make colors for the plot if ``color`` is
             not given. Names should be from the ``matplotlib.pyplot.cm``
-            module. Default: 'viridis'
+            module.
         linestyle: str or array-like, optional
-            Line style for the plot. Default: '-'
+            Line style for the plot.
         y_shift : float, optional
             displace each :math:`R(\zeta)` profile by ``y_shift`` in the
-            :math:`y`-direction for clearer visualization. Default: 0.0
+            :math:`y`-direction for clearer visualization.
         label : bool or string, optional
             If ``False`` then no legend is
-            displayed. Default: ``True``
+            displayed.
         ax : :class:`matplotlib.axes.Axes`
             If no `ax` is supplied or set to ``None`` then the plot will
-            be added to the current active axes. Default: ``None``
+            be added to the current active axes.
         legend_loc : str, optional
-            Location of the legend. Default: 'best'
+            Location of the legend.
         kwargs :  `**kwargs`
             All other `kwargs` are passed to :func:`matplotlib.pyplot.plot`.
 
@@ -990,17 +1042,17 @@ class HoleAnalysis(AnalysisBase):
 
         """
 
-        if not self.profiles:
+        if not self.results.get("profiles"):
             raise ValueError('No profiles available. Try calling run()')
 
         if ax is None:
             fig, ax = plt.subplots()
 
-        fcl = self._process_plot_kwargs(frames=frames,
-                                        color=color, cmap=cmap, linestyle=linestyle)
+        fcl = self._process_plot_kwargs(frames=frames, color=color,
+                                        cmap=cmap, linestyle=linestyle)
 
         for i, (frame, c, ls) in enumerate(zip(*fcl)):
-            profile = self.profiles[frame]
+            profile = self.results.profiles[frame]
             dy = i*y_shift
             ax.plot(profile.rxn_coord, profile.radius+dy, color=c,
                     linestyle=ls, zorder=-frame, label=str(frame),
@@ -1016,7 +1068,7 @@ class HoleAnalysis(AnalysisBase):
                color=None, cmap='viridis',
                linestyle='-', ax=None, r_max=None,
                ylabel='Frames', **kwargs):
-        """Stacked 3D graph of profiles :math:`R(\zeta)`.
+        r"""Stacked 3D graph of profiles :math:`R(\zeta)`.
 
         Lines are colored according to the specified ``color`` or
         drawn from the color map ``cmap``. One line is
@@ -1024,26 +1076,25 @@ class HoleAnalysis(AnalysisBase):
 
         Parameters
         ----------
-        frames: array-like, optional
+        frames : array-like, optional
             Frames to plot. If ``None``, plots all of them.
-            Default: ``None``
-        color: str or array-like, optional
+        color : str or array-like, optional
             Color or colors for the plot. If ``None``, colors are
-            drawn from ``cmap``. Default: ``None``
-        cmap: str, optional
+            drawn from ``cmap``.
+        cmap : str, optional
             color map to make colors for the plot if ``color`` is
             not given. Names should be from the ``matplotlib.pyplot.cm``
-            module. Default: 'viridis'
-        linestyle: str or array-like, optional
-            Line style for the plot. Default: '-'
+            module.
+        linestyle : str or array-like, optional
+            Line style for the plot.
         r_max : float, optional
             only display radii up to ``r_max``. If ``None``, all radii are
-            plotted. Default: ``None``
+            plotted.
         ax : :class:`matplotlib.axes.Axes`
             If no `ax` is supplied or set to ``None`` then the plot will
-            be added to the current active axes. Default: ``None``
+            be added to the current active axes.
         ylabel : str, optional
-            Y-axis label. Default: 'Frames'
+            Y-axis label.
         **kwargs :
             All other `kwargs` are passed to :func:`matplotlib.pyplot.plot`.
 
@@ -1055,7 +1106,7 @@ class HoleAnalysis(AnalysisBase):
 
         """
 
-        if not self.profiles:
+        if not self.results.get("profiles"):
             raise ValueError('No profiles available. Try calling run()')
 
         from mpl_toolkits.mplot3d import Axes3D
@@ -1069,7 +1120,7 @@ class HoleAnalysis(AnalysisBase):
                                         linestyle=linestyle)
 
         for frame, c, ls in zip(*fcl):
-            profile = self.profiles[frame]
+            profile = self.results.profiles[frame]
             if r_max is None:
                 radius = profile.radius
                 rxn_coord = profile.rxn_coord
@@ -1095,13 +1146,12 @@ class HoleAnalysis(AnalysisBase):
 
         Parameters
         ----------
-        order_parameters: array-like or string
+        order_parameters : array-like or string
             Sequence or text file containing order parameters (float
             numbers) corresponding to the frames in the trajectory. Must
             be same length as trajectory.
-        frames: array-like, optional
+        frames : array-like, optional
             Selected frames to return. If ``None``, returns all of them.
-            Default: ``None``
 
         Returns
         -------
@@ -1109,7 +1159,7 @@ class HoleAnalysis(AnalysisBase):
             sorted dictionary of {order_parameter:profile}
 
         """
-        if not self.profiles:
+        if not self.results.get("profiles"):
             raise ValueError('No profiles available. Try calling run()')
         if isinstance(order_parameters, str):
             try:
@@ -1122,7 +1172,7 @@ class HoleAnalysis(AnalysisBase):
                        'or a filename with array data '
                        'that can be read by np.loadtxt')
                 raise ValueError(msg.format(order_parameters))
-            
+
 
         order_parameters = np.asarray(order_parameters)
 
@@ -1142,7 +1192,7 @@ class HoleAnalysis(AnalysisBase):
 
         profiles = OrderedDict()
         for frame in sorted_frames:
-            profiles[order_parameters[frame]] = self.profiles[frame]
+            profiles[order_parameters[frame]] = self.results.profiles[frame]
 
         return profiles
 
@@ -1160,27 +1210,26 @@ class HoleAnalysis(AnalysisBase):
 
         Parameters
         ----------
-        order_parameters: array-like or string
+        order_parameters : array-like or string
             Sequence or text file containing order parameters (float
             numbers) corresponding to the frames in the trajectory. Must
             be same length as trajectory.
-        aggregator: callable, optional
+        aggregator : callable, optional
             Function applied to the radius array of each profile to
-            reduce it to one representative value. Default: ``min``
-        frames: array-like, optional
+            reduce it to one representative value.
+        frames : array-like, optional
             Frames to plot. If ``None``, plots all of them.
-            Default: ``None``
-        color: str or array-like, optional
-            Color for the plot. Default: 'blue'
-        linestyle: str or array-like, optional
-            Line style for the plot. Default: '-'
+        color : str or array-like, optional
+            Color for the plot.
+        linestyle : str or array-like, optional
+            Line style for the plot.
         ax : :class:`matplotlib.axes.Axes`
             If no `ax` is supplied or set to ``None`` then the plot will
-            be added to the current active axes. Default: ``None``
+            be added to the current active axes.
         xlabel : str, optional
-            X-axis label. Default: 'Order parameter'
+            X-axis label.
         ylabel : str, optional
-            Y-axis label. Default: 'Minimum HOLE pore radius $r$ ($\AA$)'
+            Y-axis label.
         **kwargs :
             All other `kwargs` are passed to :func:`matplotlib.pyplot.plot`.
 
@@ -1211,14 +1260,12 @@ class HoleAnalysis(AnalysisBase):
 
         Parameters
         ----------
-        frames: int or iterable of ints, optional
+        frames : int or iterable of ints, optional
             Profiles to include by frame. If ``None``, includes
-            all frames. Default: ``None``
-
-        flat: bool, optional
+            all frames.
+        flat : bool, optional
             Whether to flatten the list of field arrays into a
-            single array. Default: ``False``
-
+            single array.
 
         Returns
         -------
@@ -1228,7 +1275,7 @@ class HoleAnalysis(AnalysisBase):
         if frames is None:
             frames = self.frames
         frames = util.asiterable(frames)
-        profiles = [self.profiles[k] for k in frames]
+        profiles = [self.results.profiles[k] for k in frames]
 
         rxncoords = [p.rxn_coord for p in profiles]
         radii = [p.radius for p in profiles]
@@ -1249,18 +1296,19 @@ class HoleAnalysis(AnalysisBase):
 
         Parameters
         ----------
-        frames: int or iterable of ints, optional
+        frames : int or iterable of ints, optional
             Profiles to include by frame. If ``None``, includes
-            all frames. Default: ``None``
-
-        bins: int or iterable of edges, optional
-            If bins is an int, it defines the number of equal-width bins in the given range. If bins is a sequence, it defines a monotonically increasing array of bin edges, including the rightmost edge, allowing for non-uniform bin widths. Default: 100
-
+            all frames.
+        bins : int or iterable of edges, optional
+            If bins is an int, it defines the number of equal-width bins in the given 
+            range. If bins is a sequence, it defines a monotonically increasing array of 
+            bin edges, including the rightmost edge, allowing for non-uniform bin widths.
         range : (float, float), optional
             The lower and upper range of the bins.
             If not provided, ``range`` is simply ``(a.min(), a.max())``,
             where ``a`` is the array of reaction coordinates.
-            Values outside the range are ignored. The first element of the range must be less than or equal to the second.
+            Values outside the range are ignored. The first element of the range must be 
+            less than or equal to the second.
 
 
         Returns
@@ -1298,27 +1346,27 @@ class HoleAnalysis(AnalysisBase):
     def histogram_radii(self, aggregator=np.mean, frames=None,
                         bins=100, range=None):
         """Histograms the pore radii into bins by reaction coordinate,
-        aggregate the radii with an `aggregator` function, and returns the 
+        aggregate the radii with an `aggregator` function, and returns the
         aggregated radii and bin edges.
 
         Parameters
         ----------
-        aggregator: callable, optional
-            this function must take an iterable of floats and return a 
-            single value. Default: np.mean
-
-        frames: int or iterable of ints, optional
+        aggregator : callable, optional
+            this function must take an iterable of floats and return a
+            single value.
+        frames : int or iterable of ints, optional
             Profiles to include by frame. If ``None``, includes
-            all frames. Default: ``None``
-
-        bins: int or iterable of edges, optional
-            If bins is an int, it defines the number of equal-width bins in the given range. If bins is a sequence, it defines a monotonically increasing array of bin edges, including the rightmost edge, allowing for non-uniform bin widths. Default: 100
-
+            all frames.
+        bins : int or iterable of edges, optional
+            If bins is an int, it defines the number of equal-width bins in the given 
+            range. If bins is a sequence, it defines a monotonically increasing array of 
+            bin edges, including the rightmost edge, allowing for non-uniform bin widths.
         range : (float, float), optional
             The lower and upper range of the bins.
             If not provided, ``range`` is simply ``(a.min(), a.max())``,
             where ``a`` is the array of reaction coordinates.
-            Values outside the range are ignored. The first element of the range must be less than or equal to the second.
+            Values outside the range are ignored. The first element of the range must be 
+            less than or equal to the second.
 
 
         Returns
@@ -1342,48 +1390,38 @@ class HoleAnalysis(AnalysisBase):
 
         Parameters
         ----------
-        frames: int or iterable of ints, optional
+        frames : int or iterable of ints, optional
             Profiles to include by frame. If ``None``, includes
-            all frames. Default: ``None``
-
-        bins: int or iterable of edges, optional
-            If bins is an int, it defines the number of equal-width bins in the given range. If bins is a sequence, it defines a monotonically increasing array of bin edges, including the rightmost edge, allowing for non-uniform bin widths. Default: 100
-
+            all frames.
+        bins : int or iterable of edges, optional
+            If bins is an int, it defines the number of equal-width bins in the given 
+            range. If bins is a sequence, it defines a monotonically increasing array of 
+            bin edges, including the rightmost edge, allowing for non-uniform bin widths.
         range : (float, float), optional
             The lower and upper range of the bins.
             If not provided, ``range`` is simply ``(a.min(), a.max())``,
             where ``a`` is the array of reaction coordinates.
-            Values outside the range are ignored. The first element of the range must be less than or equal to the second.
-
-        color: str or array-like, optional
-            Color for the plot. Default: 'blue'
-
-        linestyle: str or array-like, optional
-            Line style for the plot. Default: '-'
-
+            Values outside the range are ignored. The first element of the range must be 
+            less than or equal to the second.
+        color : str or array-like, optional
+            Color for the plot.
+        linestyle : str or array-like, optional
+            Line style for the plot.
         ax : :class:`matplotlib.axes.Axes`
             If no `ax` is supplied or set to ``None`` then the plot will
-            be added to the current active axes. Default: ``None``
-
+            be added to the current active axes.
         xlabel : str, optional
-            X-axis label. Default: 'Order parameter'
-
-        fill_alpha: float, optional
-            Opacity of filled standard deviation area Default: 0.3
-
-        n_std: int, optional
+            X-axis label.
+        fill_alpha : float, optional
+            Opacity of filled standard deviation area
+        n_std : int, optional
             Number of standard deviations from the mean to fill between.
-            Default: 1
-
-        legend: bool, optional
-            Whether to plot a legend. Default: True
-
-        legend_loc: str, optional
-            Location of legend. Default: 'best'
-
+        legend : bool, optional
+            Whether to plot a legend.
+        legend_loc : str, optional
+            Location of legend.
         **kwargs :
             All other `kwargs` are passed to :func:`matplotlib.pyplot.plot`.
-
 
         Returns
         -------
@@ -1418,7 +1456,7 @@ class HoleAnalysis(AnalysisBase):
                                 r_max=None,
                                 ylabel=r'Order parameter',
                                 **kwargs):
-        """Plot HOLE radii over order parameters as a 3D graph.
+        r"""Plot HOLE radii over order parameters as a 3D graph.
 
         Lines are colored according to the specified ``color`` or
         drawn from the color map ``cmap``. One line is
@@ -1426,31 +1464,30 @@ class HoleAnalysis(AnalysisBase):
 
         Parameters
         ----------
-        order_parameters: array-like or string
+        order_parameters : array-like or string
             Sequence or text file containing order parameters(float
             numbers) corresponding to the frames in the trajectory. Must
             be same length as trajectory.
-        frames: array-like, optional
+        frames : array-like, optional
             Frames to plot. If ``None``, plots all of them.
-            Default: ``None``
-        color: str or array-like, optional
+        color : str or array-like, optional
             Color or colors for the plot. If ``None``, colors are
-            drawn from ``cmap``. Default: ``None``
-        cmap: str, optional
+            drawn from ``cmap``.
+        cmap : str, optional
             color map to make colors for the plot if ``color`` is
             not given. Names should be from the ``matplotlib.pyplot.cm``
-            module. Default: 'viridis'
-        linestyle: str or array-like, optional
-            Line style for the plot. Default: '-'
-        ax: : class: `matplotlib.axes.Axes`
+            module.
+        linestyle : str or array-like, optional
+            Line style for the plot.
+        ax : : class: `matplotlib.axes.Axes`
             If no `ax` is supplied or set to ``None`` then the plot will
-            be added to the current active axes. Default: ``None``
-        r_max: float, optional
+            be added to the current active axes.
+        r_max : float, optional
             only display radii up to ``r_max``. If ``None``, all radii are
-            plotted. Default: ``None``
-        ylabel: str, optional
-            Y-axis label. Default: 'Order parameter'
-        **kwargs:
+            plotted.
+        ylabel : str, optional
+            Y-axis label.
+        **kwargs :
             All other `kwargs` are passed to: func: `matplotlib.pyplot.plot`.
 
         Returns

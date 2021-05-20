@@ -140,7 +140,7 @@ class TRZReader(base.ReaderBase):
        Extra data (Temperature, Energies, Pressures, etc) now read
        into ts.data dictionary.
        Now passes a weakref of self to ts (ts._reader).
-    .. versionchanged:: 2.0.0
+    .. versionchanged:: 1.0.1
        Now checks for the correct `n_atoms` on reading
        and can raise :exc:`ValueError`.
     """
@@ -330,6 +330,9 @@ class TRZReader(base.ReaderBase):
             t1 = self.ts.time
             dt = t1 - t0
         except StopIteration:
+            msg = ('dt information could not be obtained, defaulting to 0 ps. '
+                   'Note: in MDAnalysis 2.1.0 this default will change 1 ps.')
+            warnings.warn(msg)
             return 0
         else:
             return dt

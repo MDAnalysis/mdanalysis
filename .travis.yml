@@ -2,163 +2,59 @@ version: ~> 1.0
 language: generic
 group: travis_latest
 
-# Only build for develop and master (and PRs)
+# Only build for develop
 branches:
   only:
-    - master
     - develop
-
-os:
-  linux
-
-env:
-  global:
-    - secure: "VJ8cMKXuVe7e6vlBeUkd8j6wUbxYF0Yja6CHn0tmpzVGm3CCBXxoZcgvgtfyJTjf+2nqKIjsIy4FdYIkotXYaDwAX5XHHHWS/++7917pddJ2nZkBnBI069c2gLL6vU7E7jbGUzmKywsA73Of44pVsYgtGneK0F7/guLawpWBOOpLsui+pL2X4jYXZL4WHjTPGTphUN4uhQIkqKkuu9ZSR6uodzZDjzkH+q0FT5RLqmgVttnCD9ZmS2ppQsI9f0jZUd8V0M4NGaTHd439uj1UpMMriSJEzcq9DsKZEncjoJZGqfnXPUG9j5Z+jZ8TyxClma93HxeXbXa8A4B6V0wwNA2VG3ZCCeSQon2iNVl8YNZLPaMQleeoQ+uT6D4z26fHVGzk4knMeTROCfHoZo2T8as5EeFDvcbXGva82BnF+aCFxj/d9f1VC3too7bsY+gBBUu/oxVizDWDEby+2Iz2EzUGG3YltF0MjaLrFQ5ggox4vZVVgmlJo8KT6zonTNl8EdKwIzUDh1ZrpiNv3yMgt030heTFL6EJ30xRQJZkwwklJBPgDuARz2FxyKk+hO8IR7AuGLICwP1IpUASXaKeSD1K09qUnmB8W8RO5YhnLu7ABr6oghU9t63r1V0jLTCvYbO4SQIJ2muNsTay/rKo5QtzklPka/5Kud6KyIrsKb4="
-    - GH_DOC_BRANCH=develop
-    - GH_REPOSITORY=github.com/MDAnalysis/mdanalysis.git
-    - GIT_CI_USER=TravisCI
-    - GIT_CI_EMAIL=TravisCI@mdanalysis.org
-    - MDA_DOCDIR=${TRAVIS_BUILD_DIR}/package/doc/html/html
-    - MAINTAIN_DIR=${TRAVIS_BUILD_DIR}/maintainer
-    # Set default python version to avoid repetition later
-    - PYTHON_VERSION=3.6
-    - BUILD_DOCS=false
-    - CODECOV=false
-    - PYTEST_FLAGS="--disable-pytest-warnings --durations=50"
-    - PYTEST_LIST="testsuite/MDAnalysisTests"
-    - MAIN_CMD="pytest ${PYTEST_LIST}"
-    - SETUP_CMD="${PYTEST_FLAGS}"
-    - BUILD_CMD="pip install -e package/ && (cd testsuite/ && python setup.py build)"
-    - CONDA_MIN_DEPENDENCIES="mmtf-python biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
-    - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles tqdm>=4.43.0 tidynamics>=1.0.0 rdkit>=2020.03.1 h5py"
-    - CONDA_CHANNELS='biobuilds conda-forge'
-    - CONDA_CHANNEL_PRIORITY=True
-    - PIP_DEPENDENCIES="duecredit parmed"
-    - NUMPY_VERSION=stable
-    - INSTALL_HOLE="true"
-    - CYTHON_TRACE_NOGIL=1
-    - MPLBACKEND=agg
-
-  matrix:
-    # Run a coverage test for most versions
-    - CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    - PYTHON_VERSION=3.8 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    - PYTHON_VERSION=3.7 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    - NUMPY_VERSION=1.16.0
-    - NUMPY_VERSION=dev  EVENT_TYPE="cron"
 
 matrix:
   fast_finish: true
   include:
-    - env: NAME="Doc"
-           MAIN_CMD="cd package && python setup.py"
-           SETUP_CMD="build_sphinx"
-           PYTHON_VERSION=3.7
-           BUILD_DOCS=true
-           BUILD_CMD="cd ${TRAVIS_BUILD_DIR}/package && python setup.py build_ext --inplace"
-           INSTALL_HOLE="false"
-           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} sphinx==1.8.5 sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0"
+    - python: 3.8
+      name: "Power PC"
+      os: linux
+      arch: ppc64le
+      if: type = cron
+      before_install:
+        - wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-ppc64le.sh -O miniconda.sh
+        - mkdir $HOME/.conda
+        - bash miniconda.sh -b -p $HOME/miniconda
+        - $HOME/miniconda/bin/conda init bash
+        # for some reason the image does not like sourcing .bashrc
+        - . "/home/travis/miniconda/etc/profile.d/conda.sh"
+        - conda activate base
+        - conda update --yes conda
+        - conda install --yes pip pytest==6.1.2 mmtf-python biopython networkx cython matplotlib-base "scipy>=1.6" griddataformats hypothesis gsd codecov -c conda-forge -c biobuilds
+        - pip install pytest-xdist threadpoolctl
+        - conda info
+      install:
+        - (cd package/ && python setup.py develop) && (cd testsuite/ && python setup.py install)
+      script:
+        - pytest testsuite/MDAnalysisTests --disable-pytest-warnings -n 2
+      after_sucess:
+        - echo "Override this stage for now"
 
-    - env: NAME="Lint"
-           PYLINTRC="${TRAVIS_BUILD_DIR}/package/.pylintrc"
-           MAIN_CMD="pylint --py3k package/MDAnalysis && pylint --py3k testsuite/MDAnalysisTests"
-           SETUP_CMD=""
-           BUILD_CMD=""
-           CONDA_DEPENDENCIES=""
-           INSTALL_HOLE="false"
+    - os: linux
+      language: python
+      arch: arm64-graviton2
+      python: 3.8
+      name: "ARM64"
+      dist: focal
+      virt: vm
+      group: edge
+      if: type = cron
+      before_install:
+        - python -m pip install cython numpy scipy
+        - python -m pip install --no-build-isolation hypothesis matplotlib pytest pytest-cov pytest-xdist tqdm threadpoolctl
+      install:
+        - cd package
+        - python setup.py install
+        - cd ../testsuite
+        - python setup.py install
+        - cd ..
+      script:
+        - cd testsuite
+        - python -m pytest ./MDAnalysisTests --disable-pytest-warnings -n 8 -rsx --cov=MDAnalysis
+      after_success:
+        - echo "Override this stage for ARM64"
 
-    - env: NAME="asv check"
-           PYTHON_VERSION=3.6
-           CODECOV="false"
-           MAIN_CMD=""
-           SETUP_CMD=""
-           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
-           ASV_CHECK="true"
-
-    - env: NAME="pypi check"
-           PYTHON_VERSION=3.7
-           CODECOV="false"
-           MAIN_CMD="cd package && python setup.py"
-           SETUP_CMD="sdist"
-           BUILD_CMD=""
-           INSTALL_HOLE="false"
-           CONDA_DEPENDENCIES="setuptools cython twine"
-           PYPI_CHECK="true"
-
-    - os: osx
-      env: PYTHON_VERSION=3.6
-           NUMPY_VERSION=1.17.3
-
-    - env: NAME='minimal'
-           PIP_DEPENDENCIES=""
-           CONDA_DEPENDENCIES=${CONDA_MIN_DEPENDENCIES}
-           INSTALL_HOLE="false"
-           CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-
-  allow_failures:
-    - env: NUMPY_VERSION=dev EVENT_TYPE="cron"
-
-before_install:
-  # Workaround for Travis CI macOS bug (https://github.com/travis-ci/travis-ci/issues/6307)
-  # See https://github.com/searchivarius/nmslib/pull/259
-  - |
-     if [ "${TRAVIS_OS_NAME}" == "osx" ]; then
-        command curl -sSL https://rvm.io/mpapis.asc | gpg --import -;
-        rvm get head || true
-     fi
-
-install:
-  # download hole first to use system curl
-  # additional external tools (Issue #898) -- HOLE
-  - |
-    if [[ $INSTALL_HOLE == 'true' ]]; then \
-        bash ./maintainer/install_hole.sh $TRAVIS_OS_NAME "${HOME}"; \
-        HOLE_BINDIR="${HOME}/hole2/exe"; \
-        export PATH=${PATH}:${HOLE_BINDIR}; \
-    fi
-  - git clone git://github.com/astropy/ci-helpers.git
-  - source ci-helpers/travis/setup_conda.sh
-  - eval $BUILD_CMD
-
-script:
-  - cd ${TRAVIS_BUILD_DIR}
-  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then ulimit -S -n 2048; fi
-  - echo $MAIN_CMD $SETUP_CMD
-  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then pip install pytest; fi
-  - eval $MAIN_CMD $SETUP_CMD
-  # check benchmark suite for basic issues
-  - |
-    if [ "${ASV_CHECK}" == "true" ]; then
-      python -m pip install asv
-      cd testsuite
-      python setup.py install
-      cd ../benchmarks
-      time python -m asv check -E existing
-    fi
-  # check pypi package build
-  - |
-    if [[ "${PYPI_CHECK}" == "true" ]]; then
-       DISTRIBUTION=$(ls -t1 ${TRAVIS_BUILD_DIR}/package/dist/MDAnalysis-*.tar.gz | head -n 1)
-       test -n "${DISTRIBUTION}" || { echo "no distribution package/dist/MDAnalysis-*.tar.gz found"; exit 1; }
-       echo "twine check $DISTRIBUTION"
-       twine check $DISTRIBUTION
-    fi
-
-after_success:
-  - |
-    if [[ $CODECOV == 'true' ]]; then \
-      codecov; \
-    fi
-
-  # can't use test here since this leads to travis fails even though the build passes
-  # turn off blocking as it causes large writes to stdout to fail
-  # (see https://github.com/travis-ci/travis-ci/issues/4704)
-  - |
-    if [[ ${TRAVIS_PULL_REQUEST} == "false" ]] && [[ ${BUILD_DOCS} == "true" ]] ; then
-      python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
-      cd ${TRAVIS_BUILD_DIR}/package/MDAnalysis
-      export GH_DOC_BRANCH=${TRAVIS_BRANCH}
-      export VERSION=$(python -c "import version; print(version.__version__)")
-      cd -
-      bash ${TRAVIS_BUILD_DIR}/maintainer/deploy_docs_via_travis.sh;
-    fi

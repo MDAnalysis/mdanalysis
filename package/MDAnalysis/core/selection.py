@@ -42,6 +42,8 @@ import collections
 import re
 import fnmatch
 import functools
+import sys
+import types
 import warnings
 
 import numpy as np
@@ -49,8 +51,18 @@ import numpy as np
 
 from ..lib.util import unique_int_1d
 from ..lib import distances
-from ..exceptions import SelectionError, NoDataError
+from ..exceptions import SelectionError, NoDataError, SelectionWarning
 
+#: Regular expression for recognizing a floating point number in a selection.
+#: Numbers such as 1.2, 1.2e-01, -1.2 are all parsed as Python floats.
+FLOAT_PATTERN = r"-?\d*\.?\d*(?:e[-+]?\d+)?"
+
+#: Regular expression for recognizing un/signed integers in a selection.
+INT_PATTERN = r"-?\d+"
+
+#: Regular expression for recognising a range separator.
+#: Delimiters include ":", "-", "to" and can have arbitrary whitespace.
+RANGE_PATTERN = r"\s*(?:[:-]| to )\s*"
 
 def is_keyword(val):
     """Is val a selection keyword?
@@ -102,6 +114,43 @@ def grab_not_keywords(tokens):
         values.append(val)
     return values
 
+
+def join_separated_values(values):
+    """Join range values that are separated by whitespace
+
+    Parameters
+    ----------
+    values: list
+        list of value strings
+
+    Returns
+    -------
+    values: list of strings
+
+    Examples
+    --------
+    join_separated_values(['37', 'to', '22'])
+    >>> ['37 to 22']
+
+    .. versionadded:: 2.0.0
+    """
+    _values = []
+    DELIMITERS = ("to", ":", "-")
+    while values:
+        v = values.pop(0)
+
+        if v in DELIMITERS:
+            try:
+                _values[-1] = f"{_values[-1]} {v} {values.pop(0)}"
+            except IndexError:
+                given = f"{' '.join(_values)} {v} {' '.join(values)}"
+                raise SelectionError(f"Invalid expression given: {given}")
+        elif _values and (v[:2] in ('--', 'to') or v[0] == ":" or
+            any(_values[-1].endswith(x) for x in DELIMITERS)):
+            _values[-1] = f"{_values[-1]} {v}"
+        else:
+            _values.append(v)
+    return _values
 
 _SELECTIONDICT = {}
 _OPERATIONS = {}
@@ -168,11 +217,13 @@ def return_empty_on_apply(func):
         return func(self, group)
     return apply
 
+
 class _Selectionmeta(type):
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
         try:
             _SELECTIONDICT[classdict['token']] = cls
+            _SELECTIONDICT[classdict['token'].lower()] = cls
         except KeyError:
             pass
 
@@ -297,11 +348,13 @@ class SphericalLayerSelection(DistanceSelection):
         self.inRadius = float(tokens.popleft())
         self.exRadius = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
-    
+
     @return_empty_on_apply
     def apply(self, group):
         indices = []
         sel = self.sel.apply(group)
+        if len(sel) == 0:
+            return group[[]]
         box = self.validate_dimensions(group.dimensions)
         periodic = box is not None
         ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
@@ -328,6 +381,8 @@ class SphericalZoneSelection(DistanceSelection):
     def apply(self, group):
         indices = []
         sel = self.sel.apply(group)
+        if len(sel) == 0:
+            return group[[]]
         box = self.validate_dimensions(group.dimensions)
         periodic = box is not None
         ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
@@ -344,7 +399,8 @@ class CylindricalSelection(Selection):
     @return_empty_on_apply
     def apply(self, group):
         sel = self.sel.apply(group)
-
+        if len(sel) == 0:
+            return group[[]]
         # Calculate vectors between point of interest and our group
         vecs = group.positions - sel.center_of_geometry()
 
@@ -515,7 +571,7 @@ class SelgroupSelection(Selection):
         return group[mask]
 
 
-class StringSelection(Selection):
+class _ProtoStringSelection(Selection):
     """Selections based on text attributes
 
     .. versionchanged:: 1.0.0
@@ -530,65 +586,25 @@ class StringSelection(Selection):
 
     @return_empty_on_apply
     def apply(self, group):
-        mask = np.zeros(len(group), dtype=bool)
-        for val in self.values:
-            values = getattr(group, self.field)
-            mask |= [fnmatch.fnmatch(x, val) for x in values]
-        return group[mask].unique
+        # rather than work on group.names, cheat and look at the lookup table
+        nmattr = getattr(group.universe._topology, self.field)
 
+        matches = []  # list of passing indices
+        # iterate through set of known atom names, check which pass
+        for nm, ix in nmattr.namedict.items():
+            if any(fnmatch.fnmatchcase(nm, val) for val in self.values):
+                matches.append(ix)
 
-class AtomNameSelection(StringSelection):
-    """Select atoms based on 'names' attribute"""
-    token = 'name'
-    field = 'names'
+        # atomname indices for members of this group
+        nmidx = nmattr.nmidx[getattr(group, self.level)]
 
-
-class AtomTypeSelection(StringSelection):
-    """Select atoms based on 'types' attribute"""
-    token = 'type'
-    field = 'types'
-
-
-class RecordTypeSelection(StringSelection):
-    """Select atoms based on 'record_type' attribute"""
-    token = 'record_type'
-    field = 'record_types'
-
-
-class AtomICodeSelection(StringSelection):
-    """Select atoms based on icode attribute"""
-    token = 'icode'
-    field = 'icodes'
-
-
-class ResidueNameSelection(StringSelection):
-    """Select atoms based on 'resnames' attribute"""
-    token = 'resname'
-    field = 'resnames'
-
-
-class MoleculeTypeSelection(StringSelection):
-    """Select atoms based on 'moltypes' attribute"""
-    token = 'moltype'
-    field = 'moltypes'
-
-
-class SegmentNameSelection(StringSelection):
-    """Select atoms based on 'segids' attribute"""
-    token = 'segid'
-    field = 'segids'
-
-
-class AltlocSelection(StringSelection):
-    """Select atoms based on 'altLoc' attribute"""
-    token = 'altloc'
-    field = 'altLocs'
+        return group[np.in1d(nmidx, matches)].unique
 
 
 class AromaticSelection(Selection):
     """Select aromatic atoms.
-    
-    Aromaticity is available in the `aromaticities` attribute and is made 
+
+    Aromaticity is available in the `aromaticities` attribute and is made
     available through RDKit"""
     token = 'aromatic'
     field = 'aromaticities'
@@ -600,10 +616,64 @@ class AromaticSelection(Selection):
         return group[group.aromaticities].unique
 
 
+class SmartsSelection(Selection):
+    """Select atoms based on SMARTS queries.
+
+    Uses RDKit to run the query and converts the result to MDAnalysis.
+    Supports chirality.
+    """
+    token = 'smarts'
+
+    def __init__(self, parser, tokens):
+        # The parser will add spaces around parentheses and then split the
+        # selection based on spaces to create the tokens
+        # If the input SMARTS query contained parentheses, the query will be
+        # split because of that and we need to reconstruct it
+        # We also need to keep the parentheses that are not part of the smarts
+        # query intact
+        pattern = []
+        counter = {"(": 0, ")": 0}
+        # loop until keyword but ignore parentheses as a keyword
+        while tokens[0] in ["(", ")"] or not is_keyword(tokens[0]):
+            # keep track of the number of open and closed parentheses
+            if tokens[0] in ["(", ")"]:
+                counter[tokens[0]] += 1
+                # if the char is a closing ")" but there's no corresponding
+                # open "(" then we've reached then end of the smarts query and
+                # the current token ")" is part of a grouping parenthesis
+                if tokens[0] == ")" and counter["("] < (counter[")"]):
+                    break
+            # add the token to the pattern and remove it from the tokens
+            val = tokens.popleft()
+            pattern.append(val)
+        self.pattern = "".join(pattern)
+
+    def apply(self, group):
+        try:
+            from rdkit import Chem
+        except ImportError:
+            raise ImportError("RDKit is required for SMARTS-based atom "
+                              "selection but it's not installed. Try "
+                              "installing it with \n"
+                              "conda install -c conda-forge rdkit")
+        pattern = Chem.MolFromSmarts(self.pattern)
+        if not pattern:
+            raise ValueError(f"{self.pattern!r} is not a valid SMARTS query")
+        mol = group.convert_to("RDKIT")
+        matches = mol.GetSubstructMatches(pattern, useChirality=True)
+        # convert rdkit indices to mdanalysis'
+        indices = [
+            mol.GetAtomWithIdx(idx).GetIntProp("_MDAnalysis_index")
+            for match in matches for idx in match]
+        # create boolean mask for atoms based on index
+        mask = np.in1d(range(group.n_atoms), np.unique(indices))
+        return group[mask]
+
+
 class ResidSelection(Selection):
     """Select atoms based on numerical fields
 
-    Allows the use of ':' and '-' to specify a range of values
+    Allows the use of ':', '-' and 'to' to specify a range of values
     For example
 
       resid 1:10
@@ -615,12 +685,14 @@ class ResidSelection(Selection):
         if not values:
             raise ValueError("Unexpected token: '{0}'".format(tokens[0]))
 
+        values = join_separated_values(values)
+
         # each value in uppers and lowers is a tuple of (resid, icode)
         uppers = []
         lowers = []
 
         for val in values:
-            m1 = re.match("(\d+)(\w?)$", val)
+            m1 = re.match(f"({INT_PATTERN})" + r"(\w?)$", val)
             if not m1 is None:
                 res = m1.groups()
                 lower = int(res[0]), res[1]
@@ -628,7 +700,9 @@ class ResidSelection(Selection):
             else:
                 # check if in appropriate format 'lower:upper' or 'lower-upper'
                 # each val is one or more digits, maybe a letter
-                selrange = re.match("(\d+)(\w?)[:-](\d+)(\w?)", val)
+                pattern = f"({INT_PATTERN})(\\w?){RANGE_PATTERN}"
+                pattern += f"({INT_PATTERN})(\\w?)"
+                selrange = re.match(pattern, val)
                 if selrange is None:  # re.match returns None on failure
                     raise ValueError("Failed to parse value: {0}".format(val))
                 res = selrange.groups()
@@ -723,28 +797,66 @@ class ResidSelection(Selection):
         return mask
 
 
-class RangeSelection(Selection):
-    value_offset=0
+class BoolSelection(Selection):
+    """Selection for boolean values"""
 
     def __init__(self, parser, tokens):
         values = grab_not_keywords(tokens)
         if not values:
+            values = ["true"]
+
+        self.values = []
+        for val in values:
+            lower = val.lower()
+            if lower == "false":
+                bval = False
+            elif lower == "true":
+                bval = True
+            else:
+                raise ValueError(f"'{val}' is an invalid value "
+                                 "for boolean selection. "
+                                 "Use 'True' or 'False'")
+            self.values.append(bval)
+
+    def apply(self, group):
+        vals = getattr(group, self.field)
+        mask = np.zeros(len(vals), dtype=bool)
+        for val in self.values:
+            mask |= vals == val
+        return group[mask].unique
+
+
+class RangeSelection(Selection):
+    """Range selection for int values"""
+
+    value_offset = 0
+    pattern = f"({INT_PATTERN}){RANGE_PATTERN}({INT_PATTERN})"
+    dtype = int
+
+    def __init__(self, parser, tokens):
+        self.rtol = parser.rtol
+        self.atol = parser.atol
+
+        values = grab_not_keywords(tokens)
+        if not values:
             raise ValueError("Unexpected token: '{0}'".format(tokens[0]))
+
+        values = join_separated_values(values)
 
         uppers = []  # upper limit on any range
         lowers = []  # lower limit on any range
 
         for val in values:
             try:
-                lower = int(val)
+                lower = self.dtype(val)
                 upper = None
             except ValueError:
                 # check if in appropriate format 'lower:upper' or 'lower-upper'
-                selrange = re.match("(\d+)[:-](\d+)", val)
+                selrange = re.match(self.pattern, val)
                 if not selrange:
                     errmsg = f"Failed to parse number: {val}"
                     raise ValueError(errmsg) from None
-                lower, upper = np.int64(selrange.groups())
+                lower, upper = map(self.dtype, selrange.groups())
 
             lowers.append(lower)
             uppers.append(upper)
@@ -767,26 +879,44 @@ class RangeSelection(Selection):
         return group[mask].unique
 
 
-class ResnumSelection(RangeSelection):
-    token = 'resnum'
-    field = 'resnums'
+class FloatRangeSelection(RangeSelection):
+    """Range selection for float values"""
+
+    pattern = f"({FLOAT_PATTERN}){RANGE_PATTERN}({FLOAT_PATTERN})"
+    dtype = float
+
+    def apply(self, group):
+        mask = np.zeros(len(group), dtype=bool)
+        vals = getattr(group, self.field) + self.value_offset
+
+        for upper, lower in zip(self.uppers, self.lowers):
+            if upper is not None:
+                thismask = vals >= lower
+                thismask &= vals <= upper
+            else:
+                low, high = lower - 1, lower + 1
+                fp = "https://docs.python.org/3.8/tutorial/floatingpoint.html"
+                msg = ("Using float equality to select atoms is "
+                       "not recommended because of inherent "
+                       "limitations in representing numbers on "
+                       f"computers (see {fp} for more). "
+                       "Instead, we recommend using a range "
+                       f"to select, e.g. '{self.token} {low} to {high}'. "
+                       "If you still want to compare floats, use the "
+                       "`atol` and `rtol` keywords to modify the tolerance "
+                       "for `np.isclose`.")
+                warnings.warn(msg, category=SelectionWarning)
+                thismask = np.isclose(vals, lower, atol=self.atol,
+                                      rtol=self.rtol)
+
+            mask |= thismask
+        return group[mask].unique
 
 
 class ByNumSelection(RangeSelection):
     token = 'bynum'
     field = 'indices'
     value_offset = 1  # queries are in 1 based indices
-
-
-class IndexSelection(RangeSelection):
-    token = 'index'
-    field = 'indices'
-    value_offset = 0 # queries now 0 based indices
-
-
-class MolidSelection(RangeSelection):
-    token = 'molnum'
-    field = 'molnums'
 
 
 class ProteinSelection(Selection):
@@ -802,10 +932,15 @@ class ProteinSelection(Selection):
     See Also
     --------
     :func:`MDAnalysis.lib.util.convert_aa_code`
+
+
+    .. versionchanged:: 1.0.1
+       prot_res changed to set (from numpy array)
+       performance improved by ~100x on larger systems
     """
     token = 'protein'
 
-    prot_res = np.array([
+    prot_res = {
         # CHARMM top_all27_prot_lipid.rtf
         'ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HSD',
         'HSE', 'HSP', 'ILE', 'LEU', 'LYS', 'MET', 'PHE', 'PRO', 'SER', 'THR',
@@ -828,14 +963,20 @@ class ProteinSelection(Selection):
         'CLEU', 'CILE', 'CVAL', 'CASF', 'CASN', 'CGLN', 'CARG', 'CHID', 'CHIE',
         'CHIP', 'CTRP', 'CPHE', 'CTYR', 'CGLU', 'CASP', 'CLYS', 'CPRO', 'CCYS',
         'CCYX', 'CMET', 'CME', 'ASF',
-    ])
+    }
 
     def __init__(self, parser, tokens):
         pass
 
     def apply(self, group):
-        mask = np.in1d(group.resnames, self.prot_res)
-        return group[mask].unique
+        resname_attr = group.universe._topology.resnames
+        # which values in resname attr are in prot_res?
+        matches = [ix for (nm, ix) in resname_attr.namedict.items()
+                   if nm in self.prot_res]
+        # index of each atom's resname
+        nmidx = resname_attr.nmidx[group.resindices]
+        # intersect atom's resname index and matches to prot_res
+        return group[np.in1d(nmidx, matches)].unique
 
 
 class NucleicSelection(Selection):
@@ -850,23 +991,32 @@ class NucleicSelection(Selection):
 
     .. versionchanged:: 0.8
        additional Gromacs selections
+    .. versionchanged:: 1.0.1
+       nucl_res changed to set (from numpy array)
+       performance improved by ~100x on larger systems
     """
     token = 'nucleic'
 
-    nucl_res = np.array([
+    nucl_res = {
         'ADE', 'URA', 'CYT', 'GUA', 'THY', 'DA', 'DC', 'DG', 'DT', 'RA',
         'RU', 'RG', 'RC', 'A', 'T', 'U', 'C', 'G',
         'DA5', 'DC5', 'DG5', 'DT5',
         'DA3', 'DC3', 'DG3', 'DT3',
         'RA5', 'RU5', 'RG5', 'RC5',
         'RA3', 'RU3', 'RG3', 'RC3'
-    ])
+    }
 
     def __init__(self, parser, tokens):
         pass
 
     def apply(self, group):
-        mask = np.in1d(group.resnames, self.nucl_res)
+        resnames = group.universe._topology.resnames
+        nmidx = resnames.nmidx[group.resindices]
+
+        matches = [ix for (nm, ix) in resnames.namedict.items()
+                   if nm in self.nucl_res]
+        mask = np.in1d(nmidx, matches)
+
         return group[mask].unique
 
 
@@ -875,14 +1025,32 @@ class BackboneSelection(ProteinSelection):
 
     This excludes OT* on C-termini
     (which are included by, eg VMD's backbone selection).
+
+
+    .. versionchanged:: 1.0.1
+       bb_atoms changed to set (from numpy array)
+       performance improved by ~100x on larger systems
     """
     token = 'backbone'
-    bb_atoms = np.array(['N', 'CA', 'C', 'O'])
+    bb_atoms = {'N', 'CA', 'C', 'O'}
 
     def apply(self, group):
-        mask = np.in1d(group.names, self.bb_atoms)
-        mask &= np.in1d(group.resnames, self.prot_res)
-        return group[mask].unique
+        atomnames = group.universe._topology.names
+        resnames = group.universe._topology.resnames
+
+        # filter by atom names
+        name_matches = [ix for (nm, ix) in atomnames.namedict.items()
+                        if nm in self.bb_atoms]
+        nmidx = atomnames.nmidx[group.ix]
+        group = group[np.in1d(nmidx, name_matches)]
+
+        # filter by resnames
+        resname_matches = [ix for (nm, ix) in resnames.namedict.items()
+                           if nm in self.prot_res]
+        nmidx = resnames.nmidx[group.resindices]
+        group = group[np.in1d(nmidx, resname_matches)]
+
+        return group.unique
 
 
 class NucleicBackboneSelection(NucleicSelection):
@@ -890,14 +1058,32 @@ class NucleicBackboneSelection(NucleicSelection):
 
     These atoms are only recognized if they are in a residue matched
     by the :class:`NucleicSelection`.
+
+
+    .. versionchanged:: 1.0.1
+       bb_atoms changed to set (from numpy array)
+       performance improved by ~100x on larger systems
     """
     token = 'nucleicbackbone'
-    bb_atoms = np.array(["P", "C5'", "C3'", "O3'", "O5'"])
+    bb_atoms = {"P", "C5'", "C3'", "O3'", "O5'"}
 
     def apply(self, group):
-        mask = np.in1d(group.names, self.bb_atoms)
-        mask &= np.in1d(group.resnames, self.nucl_res)
-        return group[mask].unique
+        atomnames = group.universe._topology.names
+        resnames = group.universe._topology.resnames
+
+        # filter by atom names
+        name_matches = [ix for (nm, ix) in atomnames.namedict.items()
+                        if nm in self.bb_atoms]
+        nmidx = atomnames.nmidx[group.ix]
+        group = group[np.in1d(nmidx, name_matches)]
+
+        # filter by resnames
+        resname_matches = [ix for (nm, ix) in resnames.namedict.items()
+                           if nm in self.nucl_res]
+        nmidx = resnames.nmidx[group.resindices]
+        group = group[np.in1d(nmidx, resname_matches)]
+
+        return group.unique
 
 
 class BaseSelection(NucleicSelection):
@@ -907,34 +1093,75 @@ class BaseSelection(NucleicSelection):
 
      'N9', 'N7', 'C8', 'C5', 'C4', 'N3', 'C2', 'N1', 'C6',
      'O6','N2','N6', 'O2','N4','O4','C5M'
+
+
+    .. versionchanged:: 1.0.1
+       base_atoms changed to set (from numpy array)
+       performance improved by ~100x on larger systems
     """
     token = 'nucleicbase'
-    base_atoms = np.array([
+    base_atoms = {
         'N9', 'N7', 'C8', 'C5', 'C4', 'N3', 'C2', 'N1', 'C6',
         'O6', 'N2', 'N6',
-        'O2', 'N4', 'O4', 'C5M'])
+        'O2', 'N4', 'O4', 'C5M'}
 
     def apply(self, group):
-        mask = np.in1d(group.names, self.base_atoms)
-        mask &= np.in1d(group.resnames, self.nucl_res)
-        return group[mask].unique
+        atomnames = group.universe._topology.names
+        resnames = group.universe._topology.resnames
+
+        # filter by atom names
+        name_matches = [ix for (nm, ix) in atomnames.namedict.items()
+                        if nm in self.base_atoms]
+        nmidx = atomnames.nmidx[group.ix]
+        group = group[np.in1d(nmidx, name_matches)]
+
+        # filter by resnames
+        resname_matches = [ix for (nm, ix) in resnames.namedict.items()
+                           if nm in self.nucl_res]
+        nmidx = resnames.nmidx[group.resindices]
+        group = group[np.in1d(nmidx, resname_matches)]
+
+        return group.unique
 
 
 class NucleicSugarSelection(NucleicSelection):
     """Contains all atoms with name C1', C2', C3', C4', O2', O4', O3'.
+
+
+    .. versionchanged:: 1.0.1
+       sug_atoms changed to set (from numpy array)
+       performance improved by ~100x on larger systems
     """
     token = 'nucleicsugar'
-    sug_atoms = np.array(["C1'", "C2'", "C3'", "C4'", "O4'"])
+    sug_atoms = {"C1'", "C2'", "C3'", "C4'", "O4'"}
 
     def apply(self, group):
-        mask = np.in1d(group.names, self.sug_atoms)
-        mask &= np.in1d(group.resnames, self.nucl_res)
-        return group[mask].unique
+        atomnames = group.universe._topology.names
+        resnames = group.universe._topology.resnames
+
+        # filter by atom names
+        name_matches = [ix for (nm, ix) in atomnames.namedict.items()
+                        if nm in self.sug_atoms]
+        nmidx = atomnames.nmidx[group.ix]
+        group = group[np.in1d(nmidx, name_matches)]
+
+        # filter by resnames
+        resname_matches = [ix for (nm, ix) in resnames.namedict.items()
+                           if nm in self.nucl_res]
+        nmidx = resnames.nmidx[group.resindices]
+        group = group[np.in1d(nmidx, resname_matches)]
+
+        return group.unique
 
 
 class PropertySelection(Selection):
     """Some of the possible properties:
     x, y, z, radius, mass,
+
+    .. versionchanged:: 2.0.0
+        changed == operator to use np.isclose instead of np.equals.
+        Added ``atol`` and ``rtol`` keywords to control ``np.isclose``
+        tolerance.
     """
     token = 'prop'
     ops = dict([
@@ -942,7 +1169,7 @@ class PropertySelection(Selection):
         ('<', np.less),
         ('>=', np.greater_equal),
         ('<=', np.less_equal),
-        ('==', np.equal),
+        ('==', np.isclose),
         ('!=', np.not_equal),
     ])
     # order here is important, need to check <= before < so the
@@ -957,7 +1184,9 @@ class PropertySelection(Selection):
         '>': '<=', '<=': '>',
     }
 
-    props = {'mass', 'charge', 'x', 'y', 'z'}
+    props = {"x": "positions",
+             "y": "positions",
+             "z": "positions"}
 
     def __init__(self, parser, tokens):
         """
@@ -1016,21 +1245,30 @@ class PropertySelection(Selection):
             errmsg = (f"Invalid operator : '{oper}' Use one of : "
                       f"'{self.ops.keys()}'")
             raise ValueError(errmsg) from None
+        else:
+            if oper == "==":
+                self.operator = functools.partial(self.operator,
+                                                  atol=parser.atol,
+                                                  rtol=parser.rtol)
         self.value = float(value)
 
     def apply(self, group):
         try:
+            values = getattr(group, self.props[self.prop])
+        except KeyError:
+            errmsg = f"Expected one of {list(self.props.keys())}"
+            raise SelectionError(errmsg) from None
+        except NoDataError:
+            attr = self.props[self.prop]
+            errmsg = f"This Universe does not contain {attr} information"
+            raise SelectionError(errmsg) from None
+
+        try:
             col = {'x': 0, 'y': 1, 'z': 2}[self.prop]
         except KeyError:
-            if self.prop == 'mass':
-                values = group.masses
-            elif self.prop == 'charge':
-                values = group.charges
-            else:
-                errmsg = f"Expected one of {['x', 'y', 'z', 'mass', 'charge']}"
-                raise SelectionError(errmsg) from None
+            pass
         else:
-            values = group.positions[:, col]
+            values = values[:, col]
 
         if self.absolute:
             values = np.abs(values)
@@ -1044,7 +1282,7 @@ class SameSelection(Selection):
     Selects all atoms that have the same subkeyword value as any atom in selection
 
     .. versionchanged:: 1.0.0
-       Map :code:`"residue"` to :code:`"resindices"` and :code:`"segment"` to 
+       Map :code:`"residue"` to :code:`"resindices"` and :code:`"segment"` to
        :code:`"segindices"` (see #2669 and #2672)
     """
 
@@ -1152,7 +1390,8 @@ class SelectionParser(object):
                 "Unexpected token: '{0}' Expected: '{1}'"
                 "".format(self.tokens[0], token))
 
-    def parse(self, selectstr, selgroups, periodic=None):
+    def parse(self, selectstr, selgroups, periodic=None, atol=1e-08,
+              rtol=1e-05):
         """Create a Selection object from a string.
 
         Parameters
@@ -1164,6 +1403,13 @@ class SelectionParser(object):
         periodic : bool, optional
             for distance based selections, whether to consider
             periodic boundary conditions
+        atol : float, optional
+            The absolute tolerance parameter for float comparisons.
+            Passed to :func:`numpy.isclose`.
+        rtol : float, optional
+            The relative tolerance parameter for float comparisons.
+            Passed to :func:`numpy.isclose`.
+
 
         Returns
         -------
@@ -1174,8 +1420,14 @@ class SelectionParser(object):
         ------
         SelectionError
             If anything goes wrong in creating the Selection object.
+
+
+        .. versionchanged:: 2.0.0
+            Added `atol` and `rtol` keywords to select float values.
         """
         self.periodic = periodic
+        self.atol = atol
+        self.rtol = rtol
 
         self.selectstr = selectstr
         self.selgroups = selgroups
@@ -1218,3 +1470,100 @@ class SelectionParser(object):
 
 # The module level instance
 Parser = SelectionParser()
+
+# create a module container to avoid name clashes of autogenerated classes
+_selectors = types.ModuleType(f"{__name__}._selectors",
+                              doc="Automatically generated selectors")
+# stick it in sys.modules so pickle can find it
+sys.modules[_selectors.__name__] = _selectors
+
+
+def gen_selection_class(singular, attrname, dtype, per_object):
+    """Selection class factory for arbitrary TopologyAttrs.
+
+    Normally this should not be used except within the codebase
+    or by developers; it is called by the metaclass
+    :class:`MDAnalysis.core.topologyattrs._TopologyAttrMeta` to
+    auto-generate suitable selection classes by creating a token
+    with the topology attribute (singular) name. The function
+    uses the provided ``dtype`` to choose which Selection class
+    to subclass:
+
+    * :class:`BoolSelection` for booleans
+    * :class:`RangeSelection` for integers
+    * :class:`FloatRangeSelection` for floats
+    * :class:`_ProtoStringSelection` for strings
+
+    Other value types are not yet supported and will raise a
+    ValueError. The classes are created in the :mod:`_selectors`
+    module to avoid namespace clashes.
+
+    Parameters
+    ----------
+    singular: str
+        singular name of TopologyAttr
+    attrname: str
+        attribute name of TopologyAttr
+    dtype: type
+        type of TopologyAttr
+    per_object: str
+        level of TopologyAttr
+
+    Returns
+    -------
+    selection: subclass of Selection
+
+    Raises
+    ------
+    ValueError
+        If ``dtype`` is not one of the supported types
+
+
+    Example
+    -------
+
+    The function creates a class inside ``_selectors`` and returns it.
+    Normally it should not need to be manually called, as it is created
+    for each TopologyAttr::
+
+        >>> gen_selection_class("resname", "resnames", object, "residue")
+        <class 'MDAnalysis.core.selection._selectors.ResnameSelection'>
+    
+    Simply generating this selector is sufficient for the keyword to be
+    accessible by :meth:`~MDAnalysis.core.universe.Universe.select_atoms`,
+    as that is automatically handled by
+    :class:`~MDAnalysis.core.selections._Selectionmeta`.
+
+    See also
+    --------
+    :class:`MDAnalysis.core.topologyattrs._TopologyAttrMeta`
+
+    .. versionadded:: 2.0.0
+    """
+    basedct = {"token": singular, "field": attrname,
+               # manually make modules the _selectors wrapper
+               "__module__": _selectors.__name__}
+    name = f"{singular.capitalize()}Selection"
+
+    if issubclass(dtype, bool):
+        basecls = BoolSelection
+    elif np.issubdtype(dtype, np.integer):
+        basecls = RangeSelection
+    elif np.issubdtype(dtype, np.floating):
+        basecls = FloatRangeSelection
+    elif issubclass(dtype, str) or dtype == object:
+        basecls = _ProtoStringSelection
+        if per_object == "segment":
+            basedct["level"] = "segindices"
+        elif per_object == "residue":
+            basedct["level"] = "resindices"
+        else:
+            basedct["level"] = "ix"
+    else:
+        raise ValueError(f"No base class defined for dtype {dtype}. "
+                         "Define a Selection class manually by "
+                         "subclassing core.selection.Selection")
+
+    cls = type(name, (basecls,), basedct)
+    setattr(_selectors, name, cls)  # stick it in _selectors
+    return cls

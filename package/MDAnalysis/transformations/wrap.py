@@ -28,16 +28,18 @@ Wrap/unwrap the atoms of a given AtomGroup in the unit cell. :func:`wrap`
 translates the atoms back in the unit cell. :func:`unwrap` translates the
 atoms of each molecule so that bons don't split over images.
 
-.. autofunction:: wrap
+.. autoclass:: wrap
 
-.. autofunction:: unwrap
+.. autoclass:: unwrap
 
 """
 
 from ..lib._cutil import make_whole
 
+from .base import TransformationBase
 
-def wrap(ag, compound='atoms'):
+
+class wrap(TransformationBase):
     """
     Shift the contents of a given AtomGroup back into the unit cell. ::
     
@@ -79,18 +81,29 @@ def wrap(ag, compound='atoms'):
     Returns
     -------
     MDAnalysis.coordinates.base.Timestep
-    
+
+
+    .. versionchanged:: 2.0.0
+        The transformation was changed from a function/closure to a class
+        with ``__call__``.
+    .. versionchanged:: 2.0.0
+       The transformation was changed to inherit from the base class for
+       limiting threads and checking if it can be used in parallel analysis.
     """
-    
-    def wrapped(ts):
-        ag.wrap(compound=compound)
-        
+    def __init__(self, ag, compound='atoms',
+                 max_threads=None, parallelizable=True):
+        super().__init__(max_threads=max_threads,
+                         parallelizable=parallelizable)
+
+        self.ag = ag
+        self.compound = compound
+
+    def _transform(self, ts):
+        self.ag.wrap(compound=self.compound)
         return ts
-    
-    return wrapped
 
 
-def unwrap(ag):
+class unwrap(TransformationBase):
     """
     Move all atoms in an AtomGroup so that bonds don't split over images
 
@@ -129,19 +142,27 @@ def unwrap(ag):
     Returns
     -------
     MDAnalysis.coordinates.base.Timestep
-    
-    """
-    
-    try:
-        ag.fragments
-    except AttributeError:
-        raise AttributeError("{} has no fragments".format(ag))
-    
-    def wrapped(ts):
-        for frag in ag.fragments:
-            make_whole(frag)
-            
-        return ts
-    
-    return wrapped
 
+
+    .. versionchanged:: 2.0.0
+        The transformation was changed from a function/closure to a class
+        with ``__call__``.
+    .. versionchanged:: 2.0.0
+       The transformation was changed to inherit from the base class for
+       limiting threads and checking if it can be used in parallel analysis.
+    """
+    def __init__(self, ag, max_threads=None, parallelizable=True):
+        super().__init__(max_threads=max_threads,
+                         parallelizable=parallelizable)
+
+        self.ag = ag
+
+        try:
+            self.ag.fragments
+        except AttributeError:
+            raise AttributeError("{} has no fragments".format(self.ag))
+
+    def _transform(self, ts):
+        for frag in self.ag.fragments:
+            make_whole(frag)
+        return ts

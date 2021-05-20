@@ -55,7 +55,7 @@ trajectory, while writing each frame::
           W.write(calphas)
 
 It is important to *always close the trajectory* when done because only at this
-step is the final END_ record written, which is required by the `PDB 3.2
+step is the final END_ record written, which is required by the `PDB 3.3
 standard`_. Using the writer as a context manager ensures that this always
 happens.
 
@@ -65,7 +65,7 @@ Capabilities
 
 A pure-Python implementation for PDB files commonly encountered in MD
 simulations comes under the names :class:`PDBReader` and :class:`PDBWriter`. It
-only implements a subset of the `PDB 3.2 standard`_ and also allows some
+only implements a subset of the `PDB 3.3 standard`_ and also allows some
 typical enhancements such as 4-letter resids (introduced by CHARMM/NAMD).
 
 The :class:`PDBReader` can read multi-frame PDB files and represents
@@ -136,8 +136,8 @@ Classes
    :inherited-members:
 
 
-.. _`PDB 3.2 standard`:
-    http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
+.. _`PDB 3.3 standard`:
+    http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html
 
 """
 from io import StringIO, BytesIO
@@ -177,11 +177,11 @@ class PDBReader(base.ReaderBase):
     Reads multi-`MODEL`_ PDB files as trajectories.
 
     .. _PDB-formatted:
-       http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
+       http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html
     .. _PDB coordinate section:
-       http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html
+       http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html
     .. _MODEL:
-       http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
+       http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL
 
     =============  ============  ===========  =============================================
     COLUMNS        DATA  TYPE    FIELD        DEFINITION
@@ -459,7 +459,7 @@ class PDBReader(base.ReaderBase):
 
 
 class PDBWriter(base.WriterBase):
-    """PDB writer that implements a subset of the `PDB 3.2 standard`_ .
+    """PDB writer that implements a subset of the `PDB 3.3 standard`_ .
 
     PDB format as used by NAMD/CHARMM: 4-letter resnames and segID are allowed,
     altLoc is written.
@@ -470,12 +470,19 @@ class PDBWriter(base.WriterBase):
     PDB "movie" (multi frame mode, *multiframe* = ``True``), consisting of
     multiple models (using the MODEL_ and ENDMDL_ records).
 
-    .. _`PDB 3.2 standard`:
-       http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
-    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
-    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
-    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
-
+    .. _`PDB 3.3 standard`:
+       http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html
+    .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ATOM
+    .. _COMPND: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#COMPND
+    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format33/sect10.html#CONECT
+    .. _END: http://www.wwpdb.org/documentation/file-format-content/format33/sect11.html#END
+    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ENDMDL
+    .. _HEADER: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#HEADER
+    .. _HETATM: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#HETATM
+    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL
+    .. _NUMMDL: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#NUMMDL
+    .. _REMARKS: http://www.wwpdb.org/documentation/file-format-content/format33/remarks.html
+    .. _TITLE: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#TITLE
 
     Note
     ----
@@ -492,6 +499,14 @@ class PDBWriter(base.WriterBase):
     unitary values (cubic box with sides of 1 Å) if unit cell dimensions
     are not set (:code:`None` or :code:`np.zeros(6)`,
     see Issue #2698).
+
+    When the :attr:`record_types` attribute is present (e.g. Universe object
+    was created by loading a PDB file), ATOM_ and HETATM_ record type
+    keywords are written out accordingly. Otherwise, the ATOM_ record type
+    is the default output.
+
+    The CONECT_ record is written out, if required, when the output stream
+    is closed.
 
     See Also
     --------
@@ -521,10 +536,22 @@ class PDBWriter(base.WriterBase):
        ChainID now comes from the last character of segid, as stated in the documentation.
        An indexing issue meant it previously used the first charater (Issue #2224)
 
+    .. versionchanged:: 2.0.0
+        Add the `redindex` argument. Setting this keyword to ``True``
+        (the default) preserves the behavior in earlier versions of MDAnalysis.
+        The PDB writer checks for a valid chainID entry instead of using the
+        last character of segid. Should a chainID not be present, or not
+        conform to the PDB standard, the default value of  'X' is used.
+
     """
     fmt = {
         'ATOM': (
             "ATOM  {serial:5d} {name:<4s}{altLoc:<1s}{resName:<4s}"
+            "{chainID:1s}{resSeq:4d}{iCode:1s}"
+            "   {pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}"
+            "{tempFactor:6.2f}      {segID:<4s}{element:>2s}\n"),
+        'HETATM': (
+            "HETATM{serial:5d} {name:<4s}{altLoc:<1s}{resName:<4s}"
             "{chainID:1s}{resSeq:4d}{iCode:1s}"
             "   {pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}"
             "{tempFactor:6.2f}      {segID:<4s}{element:>2s}\n"),
@@ -579,7 +606,7 @@ class PDBWriter(base.WriterBase):
 
     def __init__(self, filename, bonds="conect", n_atoms=None, start=0, step=1,
                  remarks="Created by PDBWriter",
-                 convert_units=True, multiframe=None):
+                 convert_units=True, multiframe=None, reindex=True):
         """Create a new PDBWriter
 
         Parameters
@@ -607,10 +634,9 @@ class PDBWriter(base.WriterBase):
            ``False``: write a single frame to the file; ``True``: create a
            multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_
            records. If ``None``, then the class default is chosen.    [``None``]
-
-        .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
-        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
-        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
+        reindex: bool (optional)
+            If ``True`` (default), the atom serial is set to be consecutive
+            numbers starting at 1. Else, use the atom id.
 
         """
         # n_atoms = None : dummy keyword argument
@@ -624,6 +650,7 @@ class PDBWriter(base.WriterBase):
         self.convert_units = convert_units
         self._multiframe = self.multiframe if multiframe is None else multiframe
         self.bonds = bonds
+        self._reindex = reindex
 
         if start < 0:
             raise ValueError("'Start' must be a positive value")
@@ -637,9 +664,16 @@ class PDBWriter(base.WriterBase):
         self.first_frame_done = False
 
     def close(self):
-        """Close PDB file and write END record"""
+        """
+        Close PDB file and write CONECT and END record
+
+
+        .. versionchanged:: 2.0.0
+           CONECT_ record written just before END_ record
+        """
         if hasattr(self, 'pdbfile') and self.pdbfile is not None:
             if not self.has_END:
+                self._write_pdb_bonds()
                 self.END()
             else:
                 logger.warning("END record has already been written"
@@ -667,9 +701,6 @@ class PDBWriter(base.WriterBase):
         The CRYST1_ record specifies the unit cell. This record is set to
         unitary values (cubic box with sides of 1 Å) if unit cell dimensions
         are not set.
-
-        .. _COMPND: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#COMPND
-        .. _REMARKS: http://www.wwpdb.org/documentation/file-format-content/format33/remarks.html
 
         .. versionchanged: 1.0.0
            Fix writing of PDB file without unit cell dimensions (Issue #2679).
@@ -779,17 +810,40 @@ class PDBWriter(base.WriterBase):
         if self.bonds is None:
             return
 
-        if not self.obj or not hasattr(self.obj.universe, 'bonds'):
+        if (not hasattr(self, "obj") or
+                not self.obj or
+                not hasattr(self.obj.universe, 'bonds')):
             return
 
-        mapping = {index: i for i, index in enumerate(self.obj.atoms.indices)}
-
         bondset = set(itertools.chain(*(a.bonds for a in self.obj.atoms)))
+        if self._reindex:
+            index_attribute = 'index'
+            mapping = {
+                index: i
+                for i, index in enumerate(self.obj.atoms.indices, start=1)
+            }
+            atoms = np.sort(self.obj.atoms.indices)
+        else:
+            index_attribute = 'id'
+            mapping = {id_: id_ for id_ in self.obj.atoms.ids}
+            atoms = np.sort(self.obj.atoms.ids)
         if self.bonds == "conect":
             # Write out only the bonds that were defined in CONECT records
-            bonds = ((bond[0].index, bond[1].index) for bond in bondset if not bond.is_guessed)
+            bonds = (
+                (
+                    getattr(bond[0], index_attribute),
+                    getattr(bond[1], index_attribute),
+                )
+                for bond in bondset if not bond.is_guessed
+            )
         elif self.bonds == "all":
-            bonds = ((bond[0].index, bond[1].index) for bond in bondset)
+            bonds = (
+                (
+                    getattr(bond[0], index_attribute),
+                    getattr(bond[1], index_attribute),
+                )
+                for bond in bondset
+            )
         else:
             raise ValueError("bonds has to be either None, 'conect' or 'all'")
 
@@ -799,8 +853,6 @@ class PDBWriter(base.WriterBase):
                 continue
             con[a2].append(a1)
             con[a1].append(a2)
-
-        atoms = np.sort(self.obj.atoms.indices)
 
         conect = ([mapping[a]] + sorted([mapping[at] for at in con[a]])
                   for a in atoms if a in con)
@@ -861,8 +913,7 @@ class PDBWriter(base.WriterBase):
         # write_all_timesteps() to dump everything in one go, or do the
         # traditional loop over frames
         self._write_next_frame(self.ts, multiframe=self._multiframe)
-        self._write_pdb_bonds()
-        # END record is written when file is being close()d
+        # END and CONECT records are written when file is being close()d
 
     def write_all_timesteps(self, obj):
         """Write all timesteps associated with *obj* to the PDB file.
@@ -885,8 +936,12 @@ class PDBWriter(base.WriterBase):
 
         will be writing frames 12, 14, 16, ...
 
+
         .. versionchanged:: 0.11.0
            Frames now 0-based instead of 1-based
+
+        .. versionchanged:: 2.0.0
+           CONECT_ record moved to :meth:`close`
         """
 
         self._update_frame(obj)
@@ -905,7 +960,7 @@ class PDBWriter(base.WriterBase):
             traj[framenumber]
             self._write_next_frame(self.ts, multiframe=True)
 
-        self._write_pdb_bonds()
+        # CONECT record is written when the file is being close()d
         self.close()
 
         # Set the trajectory to the starting position
@@ -981,19 +1036,26 @@ class PDBWriter(base.WriterBase):
         :class:`PDBWriter` is in single frame mode and no MODEL_
         records are written.
 
-        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
-        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
-        .. _NUMMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#NUMMDL
-
         .. versionchanged:: 0.7.6
            The *multiframe* keyword was added, which completely determines if
-           MODEL records are written. (Previously, this was decided based on the
-           underlying trajectory and only if ``len(traj) > 1`` would MODEL records
-           have been written.)
+           MODEL_ records are written. (Previously, this was decided based on
+           the underlying trajectory and only if ``len(traj) > 1`` would
+           MODEL records have been written.)
 
         .. versionchanged:: 1.0.0
-           ChainID now comes from the last character of segid, as stated in the documentation.
-           An indexing issue meant it previously used the first charater (Issue #2224)
+           ChainID now comes from the last character of segid, as stated in
+           the documentation. An indexing issue meant it previously used the
+           first charater (Issue #2224)
+
+        .. versionchanged:: 2.0.0
+           When only :attr:`record_types` attribute is present, instead of
+           using ATOM_ for both ATOM_ and HETATM_, HETATM_ record
+           types are properly written out (Issue #1753).
+           Writing now only uses the contents of the elements attribute
+           instead of guessing by default. If the elements are missing,
+           empty records are written out (Issue #2423).
+           Atoms are now checked for a valid chainID instead of being
+           overwritten by the last letter of the `segid` (Issue #3144).
 
         """
         atoms = self.obj.atoms
@@ -1024,36 +1086,93 @@ class PDBWriter(base.WriterBase):
         resnames = get_attr('resnames', 'UNK')
         icodes = get_attr('icodes', ' ')
         segids = get_attr('segids', ' ')
+        chainids = get_attr('chainIDs', '')
         resids = get_attr('resids', 1)
         occupancies = get_attr('occupancies', 1.0)
         tempfactors = get_attr('tempfactors', 0.0)
         atomnames = get_attr('names', 'X')
+        elements = get_attr('elements', ' ')
+        record_types = get_attr('record_types', 'ATOM')
+
+        def validate_chainids(chainids, default):
+            """Validate each atom's chainID
+
+            chainids - np array of chainIDs
+            default - default value in case chainID is considered invalid
+            """
+            invalid_length_ids = False
+            invalid_char_ids = False
+            missing_ids = False
+
+            for (i, chainid) in enumerate(chainids):
+                if chainid == "":
+                    missing_ids = True
+                    chainids[i] = default
+                elif len(chainid) > 1:
+                    invalid_length_ids = True
+                    chainids[i] = default
+                elif not chainid.isalnum():
+                    invalid_char_ids = True
+                    chainids[i] = default
+
+            if invalid_length_ids:
+                warnings.warn("Found chainIDs with invalid length."
+                              " Corresponding atoms will use value of '{}'"
+                              "".format(default))
+            if invalid_char_ids:
+                warnings.warn("Found chainIDs using unnaccepted character."
+                              " Corresponding atoms will use value of '{}'"
+                              "".format(default))
+            if missing_ids:
+                warnings.warn("Found missing chainIDs."
+                              " Corresponding atoms will use value of '{}'"
+                              "".format(default))
+            return chainids
+
+        chainids = validate_chainids(chainids, "X")
+
+        # If reindex == False, we use the atom ids for the serial. We do not
+        # want to use a fallback here.
+        if not self._reindex:
+            try:
+                atom_ids = atoms.ids
+            except AttributeError:
+                raise NoDataError(
+                    'The "id" topology attribute is not set. '
+                    'Either set the attribute or use reindex=True.'
+                )
+        else:
+            atom_ids = np.arange(len(atoms)) + 1
 
         for i, atom in enumerate(atoms):
             vals = {}
-            vals['serial'] = util.ltruncate_int(i + 1, 5)  # check for overflow here?
+            vals['serial'] = util.ltruncate_int(atom_ids[i], 5)  # check for overflow here?
             vals['name'] = self._deduce_PDB_atom_name(atomnames[i], resnames[i])
             vals['altLoc'] = altlocs[i][:1]
             vals['resName'] = resnames[i][:4]
-            vals['chainID'] = segids[i][-1:]
             vals['resSeq'] = util.ltruncate_int(resids[i], 4)
             vals['iCode'] = icodes[i][:1]
             vals['pos'] = pos[i]  # don't take off atom so conversion works
             vals['occupancy'] = occupancies[i]
             vals['tempFactor'] = tempfactors[i]
             vals['segID'] = segids[i][:4]
-            vals['element'] = guess_atom_element(atomnames[i].strip())[:2]
+            vals['chainID'] = chainids[i]
+            vals['element'] = elements[i][:2].upper()
 
-            # .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ATOM
-            self.pdbfile.write(self.fmt['ATOM'].format(**vals))
+            # record_type attribute, if exists, can be ATOM or HETATM
+            try:
+                self.pdbfile.write(self.fmt[record_types[i]].format(**vals))
+            except KeyError:
+                errmsg = (f"Found {record_types[i]} for the record type, but "
+                          f"only allowed types are ATOM or HETATM")
+                raise ValueError(errmsg) from None
+
         if multiframe:
             self.ENDMDL()
         self.frames_written += 1
 
     def HEADER(self, trajectory):
         """Write HEADER_ record.
-
-        .. _HEADER: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#HEADER
 
         .. versionchanged:: 0.20.0
             Strip `trajectory.header` since it can be modified by the user and should be
@@ -1067,22 +1186,15 @@ class PDBWriter(base.WriterBase):
     def TITLE(self, *title):
         """Write TITLE_ record.
 
-        .. _TITLE: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html
-
         """
         line = " ".join(title)  # TODO: should do continuation automatically
         self.pdbfile.write(self.fmt['TITLE'].format(line))
 
     def REMARK(self, *remarks):
-        """Write generic REMARK_ record (without number).
+        """Write generic REMARKS_ record (without number).
 
-        Each string provided in *remarks* is written as a separate REMARK_
+        Each string provided in *remarks* is written as a separate REMARKS_
         record.
-
-        See also `REMARK (update)`_.
-
-        .. _REMARK: http://www.wwpdb.org/documentation/file-format-content/format32/remarks1.html
-        .. _REMARK (update): http://www.wwpdb.org/documentation/file-format-content/format32/remarks2.html
 
         """
         for remark in remarks:
@@ -1113,10 +1225,6 @@ class PDBWriter(base.WriterBase):
            standard (i.e., 4 digits). If frame numbers are larger than
            9999, they will wrap around, i.e., 9998, 9999, 0, 1, 2, ...
 
-
-        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
-
-
         .. versionchanged:: 0.19.0
            Maximum model number is enforced.
 
@@ -1131,8 +1239,6 @@ class PDBWriter(base.WriterBase):
         method right before closing the file it is recommended to *not* call
         :meth:`~PDBWriter.END` explicitly.
 
-        .. _END: http://www.wwpdb.org/documentation/file-format-content/format32/sect11.html#END
-
         """
         if not self.has_END:
             # only write a single END record
@@ -1142,18 +1248,14 @@ class PDBWriter(base.WriterBase):
     def ENDMDL(self):
         """Write the ENDMDL_ record.
 
-        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
-
         """
         self.pdbfile.write(self.fmt['ENDMDL'])
 
     def CONECT(self, conect):
         """Write CONECT_ record.
 
-        .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
-
         """
-        conect = ["{0:5d}".format(entry + 1) for entry in conect]
+        conect = ["{0:5d}".format(entry) for entry in conect]
         conect = "".join(conect)
         self.pdbfile.write(self.fmt['CONECT'].format(conect))
 
@@ -1161,7 +1263,7 @@ class PDBWriter(base.WriterBase):
 class ExtendedPDBReader(PDBReader):
     """PDBReader that reads a PDB-formatted file with five-digit residue numbers.
 
-    This reader does not conform to the `PDB 3.2 standard`_ because it allows
+    This reader does not conform to the `PDB 3.3 standard`_ because it allows
     five-digit residue numbers that may take up columns 23 to 27 (inclusive)
     instead of being confined to 23-26 (with column 27 being reserved for the
     insertion code in the PDB standard). PDB files in this format are written
@@ -1180,7 +1282,7 @@ class ExtendedPDBReader(PDBReader):
 
 
 class MultiPDBWriter(PDBWriter):
-    """PDB writer that implements a subset of the `PDB 3.2 standard`_ .
+    """PDB writer that implements a subset of the `PDB 3.3 standard`_ .
 
     PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc
     is written.
@@ -1190,9 +1292,9 @@ class MultiPDBWriter(PDBWriter):
     and ENDMDL_ records).
 
 
-    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
-    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
-    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
+    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL
+    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ENDMDL
+    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format33/sect10.html#CONECT
 
 
     See Also

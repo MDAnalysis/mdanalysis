@@ -10,6 +10,10 @@ MDAnalysis, such as the central data structures in
 the selection definitions and parsing in
 :mod:`MDAnalysis.core.selection`.
 
+.. toctree::
+   :maxdepth: 1
+
+   core/init
 
 Important objects for users
 ===========================
@@ -53,13 +57,3 @@ The selection system is primarily of interest to developers.
 
    core/selection
 
-Flag system
-============
-
-The flag system contains the global behavior of MDAnalysis. It is
-normally not necessary to change anything here.
-
-.. toctree::
-   :maxdepth: 1
-
-   core/init

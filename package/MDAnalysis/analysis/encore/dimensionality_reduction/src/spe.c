@@ -27,12 +27,10 @@
 #include <time.h>
 #include <sys/types.h>
 
-#ifdef __unix__
-    #include <unistd.h>
-#endif
-
 #ifdef _WIN32
     #include <io.h>
+#else /* unix-like __unix__ || __APPLE__ */
+    #include <unistd.h>
 #endif
 
 #define EPSILON 1e-8

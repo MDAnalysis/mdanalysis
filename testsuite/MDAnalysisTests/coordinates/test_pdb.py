@@ -20,12 +20,12 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import pytest
-from io import StringIO
 import os
+from io import StringIO
 
 import MDAnalysis as mda
 import numpy as np
+import pytest
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.coordinates.reference import (RefAdKSmall,
@@ -36,10 +36,23 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        INC_PDB, PDB_xlserial, ALIGN, ENT,
                                        PDB_cm, PDB_cm_gz, PDB_cm_bz2,
                                        PDB_mc, PDB_mc_gz, PDB_mc_bz2,
-                                       PDB_CRYOEM_BOX, MMTF_NOCRYST)
+                                       PDB_CRYOEM_BOX, MMTF_NOCRYST,
+                                       PDB_HOLE, mol2_molecule)
 from numpy.testing import (assert_equal,
                            assert_array_almost_equal,
                            assert_almost_equal)
+
+IGNORE_NO_INFORMATION_WARNING = 'ignore:Found no information for attr:UserWarning'
+
+
+@pytest.fixture
+def dummy_universe_without_elements():
+    n_atoms = 5
+    u = make_Universe(size=(n_atoms, 1, 1), trajectory=True)
+    u.add_TopologyAttr('resnames', ['RES'])
+    u.add_TopologyAttr('names', ['C1', 'O2', 'N3', 'S4', 'NA'])
+    u.dimensions = [42, 42, 42, 90, 90, 90]
+    return u
 
 
 class TestPDBReader(_SingleFrameReader):
@@ -188,6 +201,14 @@ class TestPDBWriter(object):
     def universe3(self):
         return mda.Universe(PDB)
 
+    @pytest.fixture
+    def universe4(self):
+        return mda.Universe(PDB_HOLE)
+
+    @pytest.fixture
+    def universe5(self):
+        return mda.Universe(mol2_molecule)
+
     @pytest.fixture(params=[
             [PDB_CRYOEM_BOX, np.zeros(6)],
             [MMTF_NOCRYST, None]
@@ -210,6 +231,22 @@ class TestPDBWriter(object):
         return str(tmpdir.mkdir("PDBWriter").join('primitive-pdb-writer' + self.ext))
 
     @pytest.fixture
+    def u_no_ids(self):
+        # The test universe does not have atom ids, but it has everything
+        # else the PDB writer expects to avoid issuing warnings.
+        universe = make_Universe(
+            [
+                'names', 'resids', 'resnames', 'altLocs',
+                'segids', 'occupancies', 'tempfactors',
+            ],
+            trajectory=True,
+        )
+        universe.add_TopologyAttr('icodes', [' '] * len(universe.residues))
+        universe.add_TopologyAttr('record_types', ['ATOM'] * len(universe.atoms))
+        universe.dimensions = [10, 10, 10, 90, 90, 90]
+        return universe
+
+    @pytest.fixture
     def u_no_resnames(self):
         return make_Universe(['names', 'resids'], trajectory=True)
 
@@ -220,7 +257,6 @@ class TestPDBWriter(object):
     @pytest.fixture
     def u_no_names(self):
         return make_Universe(['resids', 'resnames'], trajectory=True)
-
 
     def test_writer(self, universe, outfile):
         "Test writing from a single frame PDB file to a PDB file." ""
@@ -264,7 +300,7 @@ class TestPDBWriter(object):
     def test_writer_no_segids(self, u_no_names, outfile):
         u_no_names.atoms.write(outfile)
         u = mda.Universe(outfile)
-        expected = np.array(['SYSTEM'] * u_no_names.atoms.n_atoms)
+        expected = np.array(['X'] * u_no_names.atoms.n_atoms)
         assert_equal([atom.segid for atom in u.atoms], expected)
 
     def test_writer_no_occupancies(self, u_no_names, outfile):
@@ -419,13 +455,19 @@ class TestPDBWriter(object):
             # test number (only last 4 digits)
             assert int(line[10:14]) == model % 10000
 
-    def test_segid_chainid(self, universe2, outfile):
-        """check whether chainID comes from last character of segid (issue #2224)"""
-        ref_id = 'E'
-        u = universe2
+    @pytest.mark.parametrize("bad_chainid",
+                             ['@', '', 'AA'])
+    def test_chainid_validated(self, universe3, outfile, bad_chainid):
+        """
+        Check that an atom's chainID is set to 'X' if the chainID
+        does not confirm to standards (issue #2224)
+        """
+        default_id = 'X'
+        u = universe3
+        u.atoms.chainIDs = bad_chainid
         u.atoms.write(outfile)
         u_pdb = mda.Universe(outfile)
-        assert u_pdb.segments.chainIDs[0][0] == ref_id
+        assert_equal(u_pdb.segments.chainIDs[0][0], default_id)
 
     def test_stringio_outofrange(self, universe3):
         """
@@ -445,6 +487,114 @@ class TestPDBWriter(object):
         with pytest.raises(ValueError, match=errmsg):
             with mda.coordinates.PDB.PDBWriter(outstring) as writer:
                 writer.write(u.atoms)
+
+    def test_hetatm_written(self, universe4, tmpdir, outfile):
+        """
+        Checks that HETATM record types are written.
+        """
+
+        u = universe4
+        u_hetatms = u.select_atoms("resname ETA and record_type HETATM")
+        assert_equal(len(u_hetatms), 8)
+
+        u.atoms.write(outfile)
+        written = mda.Universe(outfile)
+        written_atoms = written.select_atoms("resname ETA and "
+                                             "record_type HETATM")
+
+        assert len(u_hetatms) == len(written_atoms), \
+            "mismatched HETATM number"
+        assert_almost_equal(u_hetatms.atoms.positions,
+                            written_atoms.atoms.positions)
+
+    def test_default_atom_record_type_written(self, universe5, tmpdir,
+                                              outfile):
+        """
+        Checks that ATOM record types are written when there is no
+        record_type attribute.
+        """
+
+        u = universe5
+
+        expected_msg = ("Found no information for attr: "
+                        "'record_types' Using default value of 'ATOM'")
+
+        with pytest.warns(UserWarning, match=expected_msg):
+            u.atoms.write(outfile)
+
+        written = mda.Universe(outfile)
+        assert len(u.atoms) == len(written.atoms), \
+            "mismatched number of atoms"
+
+        atms = written.select_atoms("record_type ATOM")
+        assert len(atms.atoms) == len(u.atoms), \
+            "mismatched ATOM number"
+
+        hetatms = written.select_atoms("record_type HETATM")
+        assert len(hetatms.atoms) == 0, "mismatched HETATM number"
+
+    def test_abnormal_record_type(self, universe5, tmpdir, outfile):
+        """
+        Checks whether KeyError is raised when record type is
+        neither ATOM or HETATM.
+        """
+        u = universe5
+        u.add_TopologyAttr('record_type', ['ABNORM']*len(u.atoms))
+
+        expected_msg = ("Found ABNORM for the record type, but only "
+                        "allowed types are ATOM or HETATM")
+
+        with pytest.raises(ValueError, match=expected_msg):
+            u.atoms.write(outfile)
+
+    @pytest.mark.filterwarnings(IGNORE_NO_INFORMATION_WARNING)
+    def test_no_reindex(self, universe, outfile):
+        """
+        When setting the `reindex` keyword to False, the atom are
+        not reindexed.
+        """
+        universe.atoms.ids = universe.atoms.ids + 23
+        universe.atoms.write(outfile, reindex=False)
+        read_universe = mda.Universe(outfile)
+        assert np.all(read_universe.atoms.ids == universe.atoms.ids)
+
+    @pytest.mark.filterwarnings(IGNORE_NO_INFORMATION_WARNING)
+    def test_no_reindex_bonds(self, universe, outfile):
+        """
+        When setting the `reindex` keyword to False, the connect
+        record match the non-reindexed atoms.
+        """
+        universe.atoms.ids = universe.atoms.ids + 23
+        universe.atoms.write(outfile, reindex=False, bonds='all')
+        with open(outfile) as infile:
+            for line in infile:
+                if line.startswith('CONECT'):
+                    assert line.strip() == "CONECT   23   24   25   26   27"
+                    break
+            else:
+                raise AssertError('No CONECT record fond in the output.')
+
+    @pytest.mark.filterwarnings(IGNORE_NO_INFORMATION_WARNING)
+    def test_reindex(self, universe, outfile):
+        """
+        When setting the `reindex` keyword to True, the atom are
+        reindexed.
+        """
+        universe.atoms.ids = universe.atoms.ids + 23
+        universe.atoms.write(outfile, reindex=True)
+        read_universe = mda.Universe(outfile)
+        # AG.ids is 1-based, while AG.indices is 0-based, hence the +1
+        assert np.all(read_universe.atoms.ids == universe.atoms.indices + 1)
+
+    def test_no_reindex_missing_ids(self, u_no_ids, outfile):
+        """
+        When setting `reindex` to False, if there is no AG.ids,
+        then an exception is raised.
+        """
+        # Making sure AG.ids is indeed missing
+        assert not hasattr(u_no_ids.atoms, 'ids')
+        with pytest.raises(mda.exceptions.NoDataError):
+            u_no_ids.atoms.write(outfile, reindex=False)
 
 
 class TestMultiPDBReader(object):
@@ -676,6 +826,41 @@ class TestMultiPDBWriter(object):
                              "AtomGroup contains %d frames, it should have %d" % (
                                  len(u.trajectory), desired_frames))
 
+        with open(outfile, "r") as f:
+            lines = f.read()
+            assert lines.count("CONECT") == 2  # Expected two CONECT records
+
+    def test_write_loop(self, multiverse, outfile):
+        """
+        Test write() in a loop with the multiframe writer (selected frames
+        for an atomselection)
+        """
+        u = multiverse
+        group = u.select_atoms('name CA', 'name C')
+        desired_group = 56
+        desired_frames = 6
+
+        with mda.Writer(outfile, multiframe=True) as W:
+            for ts in u.trajectory[12::2]:
+                W.write(group)
+
+        u2 = mda.Universe(outfile)
+        assert_equal(len(u2.atoms), desired_group,
+                     err_msg="MultiPDBWriter trajectory written for an "
+                             f"AtomGroup contains {len(u2.atoms)} atoms, "
+                             f"it should contain {desired_group}")
+
+        assert_equal(len(u2.trajectory), desired_frames,
+                     err_msg="MultiPDBWriter trajectory written for an "
+                             f"AtomGroup contains {len(u.trajectory)} "
+                             f"frames, it should have {desired_frames}")
+
+        with open(outfile, "r") as f:
+            lines = f.read()
+
+            # Expected only two CONECT records
+            assert lines.count("CONECT") == 2
+
     def test_write_atoms(self, universe2, outfile):
         u = universe2
         with mda.Writer(outfile, multiframe=True) as W:
@@ -893,8 +1078,8 @@ class TestWriterAlignments(object):
             assert_equal(written[:16], reference)
 
     def test_atomtype_alignment(self, writtenstuff):
-        result_line = ("ATOM      1  H5T GUA A   1       7.974   6.430   9.561"
-                       "  1.00  0.00      RNAA H\n")
+        result_line = ("ATOM      1  H5T GUA X   1       7.974   6.430   9.561"
+                       "  1.00  0.00      RNAA  \n")
         assert_equal(writtenstuff[9], result_line)
 
 
@@ -1025,6 +1210,63 @@ def test_partially_missing_cryst():
     assert len(u.atoms) == 3
     assert len(u.trajectory) == 2
     assert_array_almost_equal(u.dimensions, 0.0)
+
+
+@pytest.mark.filterwarnings(IGNORE_NO_INFORMATION_WARNING)
+def test_write_no_atoms_elements(dummy_universe_without_elements):
+    """
+    If no element symbols are provided, the PDB writer guesses.
+    """
+    destination = StringIO()
+    with mda.coordinates.PDB.PDBWriter(destination) as writer:
+        writer.write(dummy_universe_without_elements.atoms)
+        content = destination.getvalue()
+    element_symbols = [
+        line[76:78].strip()
+        for line in content.splitlines()
+        if line[:6] == 'ATOM  '
+    ]
+    expectation = ['', '', '', '', '']
+    assert element_symbols == expectation
+
+
+@pytest.mark.filterwarnings(IGNORE_NO_INFORMATION_WARNING)
+def test_write_atom_elements(dummy_universe_without_elements):
+    """
+    If element symbols are provided, they are used when writing the file.
+
+    See `Issue 2423 <https://github.com/MDAnalysis/mdanalysis/issues/2423>`_.
+    """
+    elems = ['S', 'O', '', 'C', 'Na']
+    expectation = ['S', 'O', '', 'C', 'NA']
+    dummy_universe_with_elements = dummy_universe_without_elements
+    dummy_universe_with_elements.add_TopologyAttr('elements', elems)
+    destination = StringIO()
+    with mda.coordinates.PDB.PDBWriter(destination) as writer:
+        writer.write(dummy_universe_without_elements.atoms)
+        content = destination.getvalue()
+    element_symbols = [
+        line[76:78].strip()
+        for line in content.splitlines()
+        if line[:6] == 'ATOM  '
+    ]
+    assert element_symbols == expectation
+
+
+def test_elements_roundtrip(tmpdir):
+    """
+    Roundtrip test for PDB elements reading/writing.
+    """
+    u = mda.Universe(CONECT)
+    elements = u.atoms.elements
+
+    outfile = os.path.join(str(tmpdir), 'elements.pdb')
+    with mda.coordinates.PDB.PDBWriter(outfile) as writer:
+        writer.write(u.atoms)
+
+    u_written = mda.Universe(outfile)
+
+    assert_equal(elements, u_written.atoms.elements)
 
 
 def test_cryst_meaningless_warning():

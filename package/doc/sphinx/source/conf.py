@@ -15,6 +15,7 @@ import sys
 import os
 import platform
 import datetime
+import MDAnalysis as mda
 import msmb_theme  # for little versions pop-up
 # https://sphinx-rtd-theme.readthedocs.io/en/stable/
 import sphinx_rtd_theme
@@ -68,7 +69,7 @@ master_doc = 'index'
 # (take the list from AUTHORS)
 # Ordering: (1) Naveen (2) Elizabeth, then all contributors in alphabetical order
 #           (last) Oliver
-author_list = __import__('MDAnalysis').__authors__
+author_list = mda.__authors__
 authors = u', '.join(author_list[:-1]) + u', and ' + author_list[-1]
 project = u'MDAnalysis'
 now = datetime.datetime.now()
@@ -346,4 +347,5 @@ intersphinx_mapping = {'https://docs.python.org/': None,
                        'https://gsd.readthedocs.io/en/stable/': None,
                        'https://parmed.github.io/ParmEd/html/': None,
                        'https://docs.h5py.org/en/stable': None,
+                       'https://www.rdkit.org/docs/': None,
                        }

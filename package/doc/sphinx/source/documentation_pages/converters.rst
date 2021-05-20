@@ -4,8 +4,9 @@
 Converter modules
 **************************
 
-Converters are the classes that MDAnalysis uses to convert MDAnalysis 
-structures to and from other Python packages. 
+The :mod:`MDAnalysis.converters` module contains the Converter classes that
+MDAnalysis uses to convert MDAnalysis  structures to and from other Python
+packages. 
 
 If you are converting *to* MDAnalysis, you can use the normal syntax for 
 creating a Universe from files. Typically MDAnalysis will recognise which 
@@ -26,11 +27,24 @@ you will have to specify a package name (case-insensitive). ::
 
     pgro2 = ugro.atoms.convert_to('PARMED')  # converts back to parmed structure
 
+Another syntax is also available for tab-completion support::
+
+    pgro2 = ugro.atoms.convert_to.parmed()
+
 
 .. rubric:: Available converters
 
 .. toctree::
    :maxdepth: 1
 
-   converters/ParmEdParser
+   converters/ParmEd
+   converters/RDKit
+   converters/OpenMM
+
+.. rubric:: Converter functionalities
+
+.. toctree::
+    :maxdepth: 1
+
+    core/accessors
 

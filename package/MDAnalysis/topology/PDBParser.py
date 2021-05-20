@@ -35,15 +35,13 @@ a different file format (e.g. the "extended" PDB, *XPDB* format, see
 :mod:`~MDAnalysis.topology.ExtendedPDBParser`) that can handle residue
 numbers up to 99,999.
 
-TODO:
-    Add attributes to guess elements for non-physical or missing elements
 
 
 .. Note::
 
    The parser processes atoms and their names. Masses are guessed and set to 0
    if unknown. Partial charges are not set. Elements are parsed if they are
-   valid.
+   valid. If partially missing or incorrect, empty records are assigned.
 
 See Also
 --------
@@ -183,7 +181,9 @@ class PDBParser(TopologyReaderBase):
     .. versionchanged:: 1.0.0
        Added parsing of valid Elements
     .. versionchanged:: 2.0.0
-       Bonds attribute is not added if no bonds are present in PDB file
+       Bonds attribute is not added if no bonds are present in PDB file.
+       If elements are invalid or partially missing, empty elements records
+       are now assigned (Issue #2422).
     """
     format = ['PDB', 'ENT']
 
@@ -220,7 +220,6 @@ class PDBParser(TopologyReaderBase):
         icodes = []
         tempfactors = []
         occupancies = []
-        atomtypes = []
 
         resids = []
         resnames = []
@@ -283,7 +282,6 @@ class PDBParser(TopologyReaderBase):
                 tempfactors.append(float_or_default(line[60:66], 1.0))  # AKA bfactor
 
                 segids.append(line[66:76].strip())
-                atomtypes.append(line[76:78].strip())
 
         # Warn about wrapped serials
         if self._wrapped_serials:
@@ -311,27 +309,32 @@ class PDBParser(TopologyReaderBase):
         # Guessed attributes
         # masses from types if they exist
         # OPT: We do this check twice, maybe could refactor to avoid this
-        if not any(atomtypes):
+        if not any(elements):
             atomtypes = guess_types(names)
             attrs.append(Atomtypes(atomtypes, guessed=True))
+            warnings.warn("Element information is missing, elements attribute "
+                          "will not be populated. If needed these can be "
+                          "guessed using MDAnalysis.topology.guessers.")
         else:
-            attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
+            # Feed atomtypes as raw element column, but validate elements
+            atomtypes = elements
+            attrs.append(Atomtypes(np.array(elements, dtype=object)))
+
+            validated_elements = []
+            for elem in elements:
+                if elem.capitalize() in SYMB2Z:
+                    validated_elements.append(elem.capitalize())
+                else:
+                    wmsg = (f"Unknown element {elem} found for some atoms. "
+                            f"These have been given an empty element record. "
+                            f"If needed they can be guessed using "
+                            f"MDAnalysis.topology.guessers.")
+                    warnings.warn(wmsg)
+                    validated_elements.append('')
+            attrs.append(Elements(np.array(validated_elements, dtype=object)))
 
         masses = guess_masses(atomtypes)
         attrs.append(Masses(masses, guessed=True))
-
-        # Getting element information from element column.
-        if all(elements):
-            element_set = set(i.capitalize() for i in set(elements))
-            if all(element in SYMB2Z for element in element_set):
-                element_list = [i.capitalize() for i in elements]
-                attrs.append(Elements(np.array(element_list, dtype=object)))
-            else:
-                warnings.warn("Invalid elements found in the PDB file, "
-                              "elements attributes will not be populated.")
-        else:
-            warnings.warn("Element information is absent or missing for a few "
-                          "atoms. Elements attributes will not be populated.")
 
         # Residue level stuff from here
         resids = np.array(resids, dtype=np.int32)

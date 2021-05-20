@@ -21,14 +21,15 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import numpy as np
-from numpy.testing import assert_almost_equal
+from numpy.testing import assert_almost_equal, assert_equal
 import matplotlib
 import pytest
 
 import MDAnalysis as mda
-from MDAnalysisTests.datafiles import (GRO, XTC, DihedralArray, DihedralsArray,
-                                       RamaArray, GLYRamaArray, JaninArray,
-                                       LYSJaninArray, PDB_rama, PDB_janin)
+from MDAnalysisTests.datafiles import (GRO, XTC, TPR, DihedralArray,
+                                       DihedralsArray, RamaArray, GLYRamaArray,
+                                       JaninArray, LYSJaninArray, PDB_rama,
+                                       PDB_janin)
 from MDAnalysis.analysis.dihedrals import Dihedral, Ramachandran, Janin
 
 
@@ -45,7 +46,7 @@ class TestDihedral(object):
         dihedral = Dihedral([atomgroup]).run()
         test_dihedral = np.load(DihedralArray)
 
-        assert_almost_equal(dihedral.angles, test_dihedral, 5,
+        assert_almost_equal(dihedral.results.angles, test_dihedral, 5,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
@@ -53,7 +54,7 @@ class TestDihedral(object):
         dihedral = Dihedral([atomgroup]).run(start=5, stop=6)
         test_dihedral = [np.load(DihedralArray)[5]]
 
-        assert_almost_equal(dihedral.angles, test_dihedral, 5,
+        assert_almost_equal(dihedral.results.angles, test_dihedral, 5,
                             err_msg="error: dihedral angles should "
                             "match test vales")
 
@@ -61,13 +62,21 @@ class TestDihedral(object):
         dihedral = Dihedral([atomgroup, atomgroup]).run()
         test_dihedral = np.load(DihedralsArray)
 
-        assert_almost_equal(dihedral.angles, test_dihedral, 5,
+        assert_almost_equal(dihedral.results.angles, test_dihedral, 5,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
     def test_enough_atoms(self, atomgroup):
         with pytest.raises(ValueError):
             dihedral = Dihedral([atomgroup[:2]]).run()
+
+    def test_dihedral_attr_warning(self, atomgroup):
+        dihedral = Dihedral([atomgroup]).run(stop=2)
+
+        wmsg = "The `angle` attribute was deprecated in MDAnalysis 2.0.0"
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            assert_equal(dihedral.angles, dihedral.results.angles)
+
 
 class TestRamachandran(object):
 
@@ -82,7 +91,7 @@ class TestRamachandran(object):
     def test_ramachandran(self, universe, rama_ref_array):
         rama = Ramachandran(universe.select_atoms("protein")).run()
 
-        assert_almost_equal(rama.angles, rama_ref_array, 5,
+        assert_almost_equal(rama.results.angles, rama_ref_array, 5,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
@@ -90,7 +99,7 @@ class TestRamachandran(object):
         rama = Ramachandran(universe.select_atoms("protein")).run(
             start=5, stop=6)
 
-        assert_almost_equal(rama.angles[0], rama_ref_array[5], 5,
+        assert_almost_equal(rama.results.angles[0], rama_ref_array[5], 5,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
@@ -98,7 +107,7 @@ class TestRamachandran(object):
         rama = Ramachandran(universe.select_atoms("resname GLY")).run()
         test_rama = np.load(GLYRamaArray)
 
-        assert_almost_equal(rama.angles, test_rama, 5,
+        assert_almost_equal(rama.results.angles, test_rama, 5,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
@@ -106,7 +115,7 @@ class TestRamachandran(object):
         with pytest.raises(ValueError):
             rama = Ramachandran(universe.select_atoms("resid 220"),
                                 check_protein=True).run()
-    
+
     def test_outside_protein_unchecked(self, universe):
         rama = Ramachandran(universe.select_atoms("resid 220"),
                             check_protein=False).run()
@@ -127,6 +136,14 @@ class TestRamachandran(object):
         assert isinstance(ax, matplotlib.axes.Axes), \
             "Ramachandran.plot() did not return and Axes instance"
 
+    def test_ramachandran_attr_warning(self, universe):
+        rama = Ramachandran(universe.select_atoms("protein")).run(stop=2)
+
+        wmsg = "The `angle` attribute was deprecated in MDAnalysis 2.0.0"
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            assert_equal(rama.angles, rama.results.angles)
+
+
 class TestJanin(object):
 
     @pytest.fixture()
@@ -134,21 +151,32 @@ class TestJanin(object):
         return mda.Universe(GRO, XTC)
 
     @pytest.fixture()
+    def universe_tpr(self):
+        return mda.Universe(TPR, XTC)
+
+    @pytest.fixture()
     def janin_ref_array(self):
         return np.load(JaninArray)
 
     def test_janin(self, universe, janin_ref_array):
-        janin = Janin(universe.select_atoms("protein")).run()
+        self._test_janin(universe, janin_ref_array)
+
+    def test_janin_tpr(self, universe_tpr, janin_ref_array):
+        """Test that CYSH are filtered (#2898)"""
+        self._test_janin(universe_tpr, janin_ref_array)
+
+    def _test_janin(self, u, ref_array):
+        janin = Janin(u.select_atoms("protein")).run()
 
         # Test precision lowered to account for platform differences with osx
-        assert_almost_equal(janin.angles, janin_ref_array, 3,
+        assert_almost_equal(janin.results.angles, ref_array, 3,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
     def test_janin_single_frame(self, universe, janin_ref_array):
         janin = Janin(universe.select_atoms("protein")).run(start=5, stop=6)
 
-        assert_almost_equal(janin.angles[0], janin_ref_array[5], 3,
+        assert_almost_equal(janin.results.angles[0], janin_ref_array[5], 3,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
@@ -156,7 +184,7 @@ class TestJanin(object):
         janin = Janin(universe.select_atoms("resname LYS")).run()
         test_janin = np.load(LYSJaninArray)
 
-        assert_almost_equal(janin.angles, test_janin, 3,
+        assert_almost_equal(janin.results.angles, test_janin, 3,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
@@ -178,3 +206,10 @@ class TestJanin(object):
         ax = Janin(universe.select_atoms("resid 5-10")).run().plot(ref=True)
         assert isinstance(ax, matplotlib.axes.Axes), \
             "Ramachandran.plot() did not return and Axes instance"
+
+    def test_janin_attr_warning(self, universe):
+        janin = Janin(universe.select_atoms("protein")).run(stop=2)
+
+        wmsg = "The `angle` attribute was deprecated in MDAnalysis 2.0.0"
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            assert_equal(janin.angles, janin.results.angles)

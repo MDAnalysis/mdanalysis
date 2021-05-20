@@ -29,7 +29,7 @@ HELANAL --- analysis of protein helices
 :Year: 2020
 :Copyright: GNU Public License v3
 
-.. versionadded:: 1.0.0
+.. versionadded:: 2.0.0
 
 This module contains code to analyse protein helices using the
 HELANAL_ algorithm
@@ -41,6 +41,15 @@ helical twist and rise, virtual torsion angle, local helix origins and
 bending angles between successive local helix axes.
 
 .. _HELANAL: https://pubmed.ncbi.nlm.nih.gov/10798526/
+
+.. [Sugeta1967] Sugeta, H. and Miyazawa, T. 1967. General method for
+   calculating helical parameters of polymer chains from bond lengths, bond
+   angles and internal rotation angles. *Biopolymers* 5 673 - 679
+
+.. [Bansal2000] Bansal M, Kumar S, Velavan R. 2000.
+   HELANAL - A program to characterise helix geometry in proteins.
+   *J Biomol Struct Dyn.*  17(5):811-819.
+
 
 Example use
 -----------
@@ -54,7 +63,9 @@ You can pass in a single selection::
     helanal = hel.HELANAL(u, select='name CA and resnum 161-187')
     helanal.run()
 
-    print(helanal.summary)
+All computed properties are available in ``.results``::
+
+    print(helanal.results.summary)
 
 Alternatively, you can analyse several helices at once by passing
 in multiple selection strings::
@@ -69,7 +80,6 @@ equivalent::
     hel_xyz = hel.helix_analysis(u.atoms.positions, ref_axis=[0, 0, 1])
 
 """
-from __future__ import division, absolute_import
 
 import warnings
 import numpy as np
@@ -85,7 +95,7 @@ def vector_of_best_fit(coordinates):
 
     Parameters
     ----------
-    coordinates: :class:`numpy.ndarray` of shape (N, 3)
+    coordinates : :class:`numpy.ndarray` of shape (N, 3)
 
     Returns
     -------
@@ -112,13 +122,13 @@ def local_screw_angles(global_axis, ref_axis, helix_directions):
 
     Parameters
     ----------
-    global_axis: :class:`numpy.ndarray` of shape (3,)
+    global_axis : :class:`numpy.ndarray` of shape (3,)
         Vector of best fit. Screw angles are calculated perpendicular to
         this axis.
-    ref_axis: :class:`numpy.ndarray` of shape (3,)
+    ref_axis : :class:`numpy.ndarray` of shape (3,)
         Reference length-wise axis. One of the reference vectors is
         orthogonal to this axis.
-    helix_directions: :class:`numpy.ndarray` of shape (N, 3)
+    helix_directions : :class:`numpy.ndarray` of shape (N, 3)
         array of vectors representing the local direction of each
         helix window.
 
@@ -169,34 +179,34 @@ def helix_analysis(positions, ref_axis=[0, 0, 1]):
 
     Parameters
     ----------
-    positions: :class:`numpy.ndarray` of shape (N, 3)
+    positions : :class:`numpy.ndarray` of shape (N, 3)
         Atomic coordinates.
-    ref_axis: array-like of length 3, optional
+    ref_axis : array-like of length 3, optional
         The reference axis used to calculate the tilt of the vector
         of best fit, and the local screw angles.
 
     Returns
     -------
     dict with the following keys:
-        local_twists: array, shape (N-3,)
+        local_twists : array, shape (N-3,)
             local twist angle from atom i+1 to i+2
-        local_nres_per_turn: array, shape (N-3,)
+        local_nres_per_turn : array, shape (N-3,)
             number of residues per turn, based on local_twist
-        local_axes:  array, shape (N-3, 3)
+        local_axes :  array, shape (N-3, 3)
             the length-wise helix axis of the local window
-        local_bends: array, shape (N-6,)
+        local_bends : array, shape (N-6,)
             the angles between local helix angles, 3 windows apart
-        local_heights: array, shape (N-3,)
+        local_heights : array, shape (N-3,)
             the rise of each local helix
-        local_helix_directions: array, shape (N-2, 3)
+        local_helix_directions : array, shape (N-2, 3)
             the unit vector from each local origin to atom i+1
-        local_origins: array, shape (N-2, 3)
+        local_origins : array, shape (N-2, 3)
             the projected origin for each helix
-        all_bends: array, shape (N-3, N-3)
+        all_bends : array, shape (N-3, N-3)
             angles between each local axis
-        global_axis: array, shape (3,)
+        global_axis : array, shape (3,)
             vector of best fit through origins, pointing at the first origin.
-        local_screw_angles: array, shape (N-2,)
+        local_screw_angles : array, shape (N-2,)
             cylindrical azimuth angle to plane of global_axis and ref_axis
     """
 
@@ -284,59 +294,59 @@ class HELANAL(AnalysisBase):
 
     Parameters
     ----------
-    universe: Universe or AtomGroup
+    universe : Universe or AtomGroup
         The Universe or AtomGroup to apply the analysis to.
-    select: str or iterable of str, optional
+    select : str or iterable of str, optional
         The selection string to create an atom selection that the HELANAL
         analysis is applied to. Note that HELANAL is designed to work on the
         alpha-carbon atoms of protein residues. If you pass in multiple
         selections, the selections will be analysed separately.
-    ref_axis: array-like of length 3, optional
+    ref_axis : array-like of length 3, optional
         The reference axis used to calculate the tilt of the vector
         of best fit, and the local screw angles.
-    flatten_single_helix: bool, optional
+    flatten_single_helix : bool, optional
         Whether to flatten results if only one selection is passed.
     verbose : bool, optional
         Turn on more logging and debugging.
 
     Attributes
     ----------
-    local_twists: array or list of arrays
+    results.local_twists : array or list of arrays
         The local twist angle from atom i+1 to i+2.
         Each array has shape (n_frames, n_residues-3)
-    local_nres_per_turn: array or list of arrays
+    results.local_nres_per_turn : array or list of arrays
         Number of residues per turn, based on local_twist.
         Each array has shape (n_frames, n_residues-3)
-    local_axes: array or list of arrays
+    results.local_axes : array or list of arrays
         The length-wise helix axis of the local window.
         Each array has shape (n_frames, n_residues-3, 3)
-    local_heights: array or list of arrays
+    results.local_heights : array or list of arrays
         The rise of each local helix.
         Each array has shape (n_frames, n_residues-3)
-    local_helix_directions: array or list of arrays
+    results.local_helix_directions : array or list of arrays
         The unit vector from each local origin to atom i+1.
         Each array has shape (n_frames, n_residues-2, 3)
-    local_origins: array or list of arrays
+    results.local_origins :array or list of arrays
         The projected origin for each helix.
         Each array has shape (n_frames, n_residues-2, 3)
-    local_screw_angles: array or list of arrays
+    results.local_screw_angles : array or list of arrays
         The local screw angle for each helix.
         Each array has shape (n_frames, n_residues-2)
-    local_bends: array or list of arrays
+    results.local_bends : array or list of arrays
         The angles between local helix axes, 3 windows apart.
         Each array has shape (n_frames, n_residues-6)
-    all_bends: array or list of arrays
+    results.all_bends : array or list of arrays
         The angles between local helix axes.
         Each array has shape (n_frames, n_residues-3, n_residues-3)
-    global_axis: array or list of arrays
+    results.global_axis : array or list of arrays
         The length-wise axis for the overall helix. This points at
         the first helix window in the helix, so it runs opposite to
         the direction of the residue numbers.
         Each array has shape (n_frames, 3)
-    global_tilts: array or list of arrays
+    results.global_tilts : array or list of arrays
         The angle between the global axis and the reference axis.
         Each array has shape (n_frames,)
-    summary: dict or list of dicts
+    results.summary : dict or list of dicts
         Summary of stats for each property: the mean, the sample
         standard deviation, and the mean absolute deviation.
     """
@@ -410,49 +420,49 @@ class HELANAL(AnalysisBase):
         for key, dims in self.attr_shapes.items():
             empty = [self._zeros_per_frame(
                 dims, n_positions=n) for n in n_res]
-            setattr(self, key, empty)
+            self.results[key] = empty
 
-        self.global_axis = [self._zeros_per_frame((3,)) for n in n_res]
-        self.all_bends = [self._zeros_per_frame((n-3, n-3)) for n in n_res]
+        self.results.global_axis = [self._zeros_per_frame((3,)) for n in n_res]
+        self.results.all_bends = [self._zeros_per_frame((n-3, n-3)) for n in n_res]
 
     def _single_frame(self):
         _f = self._frame_index
         for i, ag in enumerate(self.atomgroups):
             results = helix_analysis(ag.positions, ref_axis=self.ref_axis)
             for key, value in results.items():
-                attr = getattr(self, key)
+                attr = self.results[key]
                 attr[i][_f] = value
 
     def _conclude(self):
         # compute tilt of global axes
-        self.global_tilts = []
+        self.results.global_tilts = tilts = []
         norm_ref = (self.ref_axis**2).sum() ** 0.5
-        for axes in self.global_axis:
+        for axes in self.results.global_axis:
             cos = np.matmul(self.ref_axis, axes.T) / \
                 (mdamath.pnorm(axes)*norm_ref)
             cos = np.clip(cos, -1.0, 1.0)
-            self.global_tilts.append(np.rad2deg(np.arccos(cos)))
+            tilts.append(np.rad2deg(np.arccos(cos)))
 
         global_attrs = ['global_axis', 'global_tilts', 'all_bends']
         attrnames = list(self.attr_shapes.keys()) + global_attrs
         # summarise
-        self.summary = []
+        self.results.summary = []
         for i in range(len(self.atomgroups)):
             stats = {}
             for name in attrnames:
-                attr = getattr(self, name)
+                attr = self.results[name]
                 mean = attr[i].mean(axis=0)
                 dev = np.abs(attr[i]-mean)
                 stats[name] = {'mean': mean,
                                'sample_sd': attr[i].std(axis=0, ddof=1),
                                'abs_dev': dev.mean(axis=0)}
-            self.summary.append(stats)
+            self.results.summary.append(stats)
 
         # flatten?
         if len(self.atomgroups) == 1 and self._flatten:
             for name in attrnames + ['summary']:
-                attr = getattr(self, name)
-                setattr(self, name, attr[0])
+                attr = self.results[name]
+                self.results[name] = attr[0]
 
     def universe_from_origins(self):
         """
@@ -463,7 +473,7 @@ class HELANAL(AnalysisBase):
         Universe or list of Universes
         """
         try:
-            origins = self.local_origins
+            origins = self.results.local_origins
         except AttributeError:
             raise ValueError('Call run() before universe_from_origins')
 
@@ -477,6 +487,6 @@ class HELANAL(AnalysisBase):
                                    atom_resindex=np.arange(n_res),
                                    trajectory=True).load_new(xyz)
             universe.append(u)
-        if not isinstance(self.local_origins, list):
+        if not isinstance(self.results.local_origins, list):
             universe = universe[0]
         return universe

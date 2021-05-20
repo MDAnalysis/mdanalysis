@@ -20,7 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""
+r"""
 Helper functions --- :mod:`MDAnalysis.lib.util`
 ====================================================
 
@@ -202,6 +202,7 @@ import warnings
 import functools
 from functools import wraps
 import textwrap
+import weakref
 
 import mmtf
 import numpy as np
@@ -1057,7 +1058,8 @@ def asiterable(obj):
 #: ``(?P<repeat>\d?)(?P<format>[IFELAX])(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?``
 #:
 #: .. _FORTRAN edit descriptor: http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html
-FORTRAN_format_regex = "(?P<repeat>\d+?)(?P<format>[IFEAX])(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?"
+FORTRAN_format_regex = (r"(?P<repeat>\d+?)(?P<format>[IFEAX])"
+                        r"(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?")
 _FORTRAN_format_pattern = re.compile(FORTRAN_format_regex)
 
 
@@ -1424,7 +1426,7 @@ def convert_aa_code(x):
 
 #: Regular expression to match and parse a residue-atom selection; will match
 #: "LYS300:HZ1" or "K300:HZ1" or "K300" or "4GB300:H6O" or "4GB300" or "YaA300".
-RESIDUE = re.compile("""
+RESIDUE = re.compile(r"""
                  (?P<aa>([ACDEFGHIKLMNPQRSTVWY])   # 1-letter amino acid
                         |                          #   or
                         ([0-9A-Z][a-zA-Z][A-Z][A-Z]?)    # 3-letter or 4-letter residue name
@@ -1495,10 +1497,18 @@ def conv_float(s):
         return s
 
 
-def cached(key):
+# A dummy, empty, cheaply-hashable object class to use with weakref caching.
+# (class object doesn't allow weakrefs to its instances, but user-defined
+#  classes do)
+class _CacheKey:
+    pass
+
+
+def cached(key, universe_validation=False):
     """Cache a property within a class.
 
-    Requires the Class to have a cache dict called ``_cache``.
+    Requires the Class to have a cache dict :attr:`_cache` and, with
+    `universe_validation`, a :attr:`universe` with a cache dict :attr:`_cache`.
 
     Example
     -------
@@ -1512,23 +1522,54 @@ def cached(key):
            @property
            @cached('keyname')
            def size(self):
-               # This code gets ran only if the lookup of keyname fails
-               # After this code has been ran once, the result is stored in
+               # This code gets run only if the lookup of keyname fails
+               # After this code has been run once, the result is stored in
                # _cache with the key: 'keyname'
-               size = 10.0
+               return 10.0
+
+           @property
+           @cached('keyname', universe_validation=True)
+           def othersize(self):
+               # This code gets run only if the lookup
+               # id(self) is not in the validation set under
+               # self.universe._cache['_valid']['keyname']
+               # After this code has been run once, id(self) is added to that
+               # set. The validation set can be centrally invalidated at the
+               # universe level (say, if a topology change invalidates specific
+               # caches).
+               return 20.0
 
 
     .. versionadded:: 0.9.0
 
+    .. versionchanged::2.0.0
+        Added the `universe_validation` keyword.
     """
 
     def cached_lookup(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             try:
+                if universe_validation:  # Universe-level cache validation
+                    u_cache = self.universe._cache.setdefault('_valid', dict())
+                    # A WeakSet is used so that keys from out-of-scope/deleted
+                    # objects don't clutter it.
+                    valid_caches = u_cache.setdefault(key, weakref.WeakSet())
+                    try:
+                        if self._cache_key not in valid_caches:
+                            raise KeyError
+                    except AttributeError:  # No _cache_key yet
+                        # Must create a reference key for the validation set.
+                        # self could be used itself as a weakref but set()
+                        # requires hashing it, which can be slow for AGs. Using
+                        # id(self) fails because ints can't be weak-referenced.
+                        self._cache_key = _CacheKey()
+                        raise KeyError
                 return self._cache[key]
             except KeyError:
                 self._cache[key] = ret = func(self, *args, **kwargs)
+                if universe_validation:
+                    valid_caches.add(self._cache_key)
                 return ret
 
         return wrapper
@@ -2176,7 +2217,7 @@ class _Deprecate(object):
 
 
 def deprecate(*args, **kwargs):
-    """Issues a DeprecationWarning, adds warning to `old_name`'s
+    r"""Issues a DeprecationWarning, adds warning to `old_name`'s
     docstring, rebinds ``old_name.__name__`` and returns the new
     function object.
 
@@ -2310,7 +2351,7 @@ def check_box(box):
     box : array_like
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
 
     Returns
