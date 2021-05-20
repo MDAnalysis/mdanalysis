@@ -103,7 +103,11 @@ class Results(UserDict):
         self._validate_key(key)
         super().__setitem__(key, item)
 
-    __setattr__ = __setitem__
+    def __setattr__(self, attr, val):
+        if attr == 'data':
+            super().__setattr__(attr, val)
+        else:
+            self.__setitem__(attr, val)
 
     def __getattr__(self, attr):
         try:
@@ -118,6 +122,12 @@ class Results(UserDict):
         except KeyError as err:
             raise AttributeError("'Results' object has no "
                                  f"attribute '{attr}'") from err
+
+    def __getstate__(self):
+        return self.data
+
+    def __setstate__(self, state):
+        self.data = state
 
 
 class AnalysisBase(object):
