@@ -28,7 +28,6 @@ Read DL Poly_ format coordinate files
 
 .. _Poly: http://www.stfc.ac.uk/SCD/research/app/ccg/software/DL_POLY/44516.aspx
 """
-
 import numpy as np
 
 from . import base
