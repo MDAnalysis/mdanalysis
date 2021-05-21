@@ -186,6 +186,3 @@ def test_analysis_pickle():
     rmsd.run()
     rmsd_p = pickle.dumps(rmsd)
     rmsd_new = pickle.loads(rmsd_p)
-
-
-
