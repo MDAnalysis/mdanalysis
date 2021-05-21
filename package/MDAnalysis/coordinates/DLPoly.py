@@ -33,6 +33,7 @@ import numpy as np
 from . import base
 from . import core
 from ..lib import util
+from ..lib.util import cached
 
 _DLPOLY_UNITS = {'length': 'Angstrom', 'velocity': 'Angstrom/ps', 'time': 'ps'}
 
@@ -148,6 +149,7 @@ class HistoryReader(base.ReaderBase):
 
     def __init__(self, filename, **kwargs):
         super(HistoryReader, self).__init__(filename, **kwargs)
+        self._cache = {}
 
         # "private" file handle
         self._file = util.anyopen(self.filename, 'r')
@@ -226,13 +228,13 @@ class HistoryReader(base.ReaderBase):
         return self._read_next_timestep()
 
     @property
+    @cached('n_frames')
     def n_frames(self):
         # Second line is traj_key, imcom, n_atoms, n_frames, n_records
         offsets = []
 
         with open(self.filename, 'r') as f:
             f.readline()
-            n_frames = int(f.readline().split()[3])
             position = f.tell()
             line = f.readline()
             while line.startswith('timestep'):
@@ -252,7 +254,7 @@ class HistoryReader(base.ReaderBase):
                 line = f.readline()
 
         self._offsets = offsets
-        return n_frames
+        return len(self._offsets)
 
     def _reopen(self):
         self.close()
