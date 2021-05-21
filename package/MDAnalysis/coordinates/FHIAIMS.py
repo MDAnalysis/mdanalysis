@@ -120,8 +120,7 @@ from ..lib import util
 from ..lib import mdamath
 
 
-# legacy reasons
-Timestep = base.Timestep
+from .base import Timestep
 
 
 class FHIAIMSReader(base.SingleFrameReaderBase):
