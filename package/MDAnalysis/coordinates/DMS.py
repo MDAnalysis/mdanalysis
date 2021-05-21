@@ -38,8 +38,7 @@ import sqlite3
 from . import base
 from .core import triclinic_box
 
-# legacy
-Timestep = base.Timestep
+from .base import Timestep
 
 
 class DMSReader(base.SingleFrameReaderBase):
