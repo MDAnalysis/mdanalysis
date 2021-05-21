@@ -62,10 +62,6 @@ class Results(UserDict):
         If a key is not of type ``str`` and therefore is not able to be
         accessed by attribute.
 
-    Notes
-    -----
-    Pickling of ``Results`` is currently not supported.
-
     Examples
     --------
     >>> from MDAnalysis.analysis.base import Results

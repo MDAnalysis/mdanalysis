@@ -108,6 +108,7 @@ Fixes
   * Fix tests for analysis.bat that could fail when run in parallel and that
     would create a test artifact (Issue #2979, PR #2981)
   * Fix syntax warning over comparison of literals using is (Issue #3066)
+  * new `Results` class now can be pickled/unpickled. (PR #3309) 
 
 Enhancements
   * Added guessers for aromaticity and Gasteiger partial charges (Issue #2468,
