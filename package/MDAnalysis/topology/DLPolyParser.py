@@ -136,6 +136,8 @@ class HistoryParser(TopologyReaderBase):
             line = inf.readline()
             while not len(line.split()) == 5:
                 line = inf.readline()
+                if line == '':
+                    raise EOFError("End of file reached when reading HISTORY.")
 
             while line and not line.startswith('timestep'):
                 name = line[:8].strip()

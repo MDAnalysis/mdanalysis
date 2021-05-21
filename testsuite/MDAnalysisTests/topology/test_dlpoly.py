@@ -21,6 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from numpy.testing import assert_equal
+import pytest
 
 import MDAnalysis as mda
 
@@ -106,3 +107,8 @@ class TestDLPHistoryOrder(DLPBase):
     parser = mda.topology.DLPolyParser.HistoryParser
     ref_filename = DLP_HISTORY_order
     format = 'HISTORY'
+
+
+def test_HISTORY_EOFError():
+    with pytest.raises(EOFError):
+        mda.Universe(DLP_CONFIG, topology_format='HISTORY')
