@@ -235,6 +235,7 @@ class HistoryReader(base.ReaderBase):
 
         with open(self.filename, 'r') as f:
             f.readline()
+            f.readline()
             position = f.tell()
             line = f.readline()
             while line.startswith('timestep'):
