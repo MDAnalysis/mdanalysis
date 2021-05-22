@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -33,6 +33,7 @@ import numpy as np
 from . import base
 from . import core
 from ..lib import util
+from ..lib.util import cached
 
 _DLPOLY_UNITS = {'length': 'Angstrom', 'velocity': 'Angstrom/ps', 'time': 'ps'}
 
@@ -148,13 +149,23 @@ class HistoryReader(base.ReaderBase):
 
     def __init__(self, filename, **kwargs):
         super(HistoryReader, self).__init__(filename, **kwargs)
+        self._cache = {}
 
         # "private" file handle
         self._file = util.anyopen(self.filename, 'r')
         self.title = self._file.readline().strip()
-        self._levcfg, self._imcon, self.n_atoms = np.int64(self._file.readline().split()[:3])
+        header = np.int64(self._file.readline().split())
+        self._levcfg, self._imcon, self.n_atoms, _, _ = header
         self._has_vels = True if self._levcfg > 0 else False
         self._has_forces = True if self._levcfg == 2 else False
+
+        rwnd = self._file.tell()
+        self._file.readline()
+        if (len(self._file.readline().split())) == 3:
+            self._has_cell = True
+        else:
+            self._has_cell = False
+        self._file.seek(rwnd)
 
         self.ts = self._Timestep(self.n_atoms,
                                  velocities=self._has_vels,
@@ -169,7 +180,8 @@ class HistoryReader(base.ReaderBase):
         line = self._file.readline()  # timestep line
         if not line.startswith('timestep'):
             raise IOError
-        if not self._imcon == 0:
+
+        if self._has_cell:
             ts._unitcell[0] = self._file.readline().split()
             ts._unitcell[1] = self._file.readline().split()
             ts._unitcell[2] = self._file.readline().split()
@@ -193,11 +205,12 @@ class HistoryReader(base.ReaderBase):
                 ts._velocities[i] = self._file.readline().split()
             if self._has_forces:
                 ts._forces[i] = self._file.readline().split()
+            i += 1
 
         if ids:
             ids = np.array(ids)
             # if ids aren't strictly sequential
-            if not all(ids == (np.arange(self.n_atoms) + 1)):
+            if not np.all(ids == (np.arange(self.n_atoms) + 1)):
                 order = np.argsort(ids)
                 ts._pos[:] = ts._pos[order]
                 if self._has_vels:
@@ -215,32 +228,19 @@ class HistoryReader(base.ReaderBase):
         return self._read_next_timestep()
 
     @property
+    @cached('n_frames')
     def n_frames(self):
-        try:
-            return self._n_frames
-        except AttributeError:
-            self._n_frames = self._read_n_frames()
-            return self._n_frames
-
-    def _read_n_frames(self):
-        """Read the number of frames, and the offset for each frame
-
-        offset[i] - returns the offset in bytes to seek into the file to be
-                    just before the frame starts
-        """
-        offsets = self._offsets = []
+        # Second line is traj_key, imcom, n_atoms, n_frames, n_records
+        offsets = []
 
         with open(self.filename, 'r') as f:
-            n_frames = 0
-
             f.readline()
             f.readline()
             position = f.tell()
             line = f.readline()
             while line.startswith('timestep'):
                 offsets.append(position)
-                n_frames += 1
-                if not self._imcon == 0:  # box info
+                if self._has_cell:
                     f.readline()
                     f.readline()
                     f.readline()
@@ -254,7 +254,8 @@ class HistoryReader(base.ReaderBase):
                 position = f.tell()
                 line = f.readline()
 
-        return n_frames
+        self._offsets = offsets
+        return len(self._offsets)
 
     def _reopen(self):
         self.close()
