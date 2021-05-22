@@ -277,12 +277,12 @@ def make_whole(atomgroup, reference_atom=None, inplace=True):
             raise ValueError("Reference atom not in atomgroup")
         ref = ix_to_rel[reference_atom.ix]
 
+    if atomgroup.dimensions is None:
+        raise ValueError("No box information available. "
+                         "You can set dimensions using 'atomgroup.dimensions='")
     box = atomgroup.dimensions
     for i in range(3):
         half_box[i] = 0.5 * box[i]
-        if box[i] == 0.0:
-            raise ValueError("One or more dimensions was zero.  "
-                             "You can set dimensions using 'atomgroup.dimensions='")
 
     ortho = True
     for i in range(3, 6):

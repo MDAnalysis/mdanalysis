@@ -155,7 +155,8 @@ class TRRReader(XDRBaseReader):
         ts.dimensions = triclinic_box(*frame.box)
 
         if self.convert_units:
-            self.convert_pos_from_native(ts.dimensions[:3])
+            if ts.dimensions is not None:
+                self.convert_pos_from_native(ts.dimensions[:3])
 
         if ts.has_positions:
             if self._sub is not None:
