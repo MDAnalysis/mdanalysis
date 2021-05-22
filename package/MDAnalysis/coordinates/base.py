@@ -237,7 +237,7 @@ class Timestep(object):
        Timestep now can be (un)pickled. Weakref for Reader
        will be dropped.
     """
-    order = 'F'
+    order = 'C'
 
     def __init__(self, n_atoms, **kwargs):
         """Create a Timestep, representing a frame of a trajectory
