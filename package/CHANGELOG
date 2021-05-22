@@ -185,6 +185,8 @@ Enhancements
     to transfer data from HDF5 file into timestep. (PR #3293)
 
 Changes
+  * The RDKitParser now raises an error if only part of the atoms have metadata
+    on residues (Issue #3318, PR #3325)
   * `analysis.rdf.InterRDF` and `analysis.rdf.InterRDF_s` now store
     their result attributes using the `analysis.base.Results` class
     (Issue #3276, #3261)

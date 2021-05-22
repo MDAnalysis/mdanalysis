@@ -135,6 +135,11 @@ class RDKitParser(TopologyReaderBase):
     | atom.GetProp('_TriposAtomType')             | types                   |
     +---------------------------------------------+-------------------------+
 
+    Raises
+    ------
+    ValueError
+        If only part of the atoms have MonomerInfo available
+
 
     .. versionadded:: 2.0.0
     """
