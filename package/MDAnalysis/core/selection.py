@@ -647,6 +647,7 @@ class SmartsSelection(Selection):
             val = tokens.popleft()
             pattern.append(val)
         self.pattern = "".join(pattern)
+        self.rdkit_kwargs = parser.rdkit_kwargs
 
     def apply(self, group):
         try:
@@ -659,7 +660,7 @@ class SmartsSelection(Selection):
         pattern = Chem.MolFromSmarts(self.pattern)
         if not pattern:
             raise ValueError(f"{self.pattern!r} is not a valid SMARTS query")
-        mol = group.convert_to("RDKIT")
+        mol = group.convert_to("RDKIT", **self.rdkit_kwargs)
         matches = mol.GetSubstructMatches(pattern, useChirality=True)
         # convert rdkit indices to mdanalysis'
         indices = [
@@ -1391,7 +1392,7 @@ class SelectionParser(object):
                 "".format(self.tokens[0], token))
 
     def parse(self, selectstr, selgroups, periodic=None, atol=1e-08,
-              rtol=1e-05):
+              rtol=1e-05, rdkit_kwargs=None):
         """Create a Selection object from a string.
 
         Parameters
@@ -1409,6 +1410,9 @@ class SelectionParser(object):
         rtol : float, optional
             The relative tolerance parameter for float comparisons.
             Passed to :func:`numpy.isclose`.
+        rdkit_kwargs : dict, optional
+            Arguments passed to the RDKitConverter when using selection based
+            on SMARTS queries
 
 
         Returns
@@ -1423,11 +1427,13 @@ class SelectionParser(object):
 
 
         .. versionchanged:: 2.0.0
-            Added `atol` and `rtol` keywords to select float values.
+            Added `atol` and `rtol` keywords to select float values. Added
+            `rdkit_kwargs` to pass arguments to the RDKitConverter
         """
         self.periodic = periodic
         self.atol = atol
         self.rtol = rtol
+        self.rdkit_kwargs = rdkit_kwargs or {}
 
         self.selectstr = selectstr
         self.selgroups = selgroups
