@@ -23,6 +23,8 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * Added an `rdkit_kwargs` parameter to pass arguments to the RDKitConverter
+    from the `select_atoms` method (Issue #3319, PR #3324)
   * DL_POLY HISTORY file may contain unit cell dimensions even if there are
     no periodic boundary conditions (imcom=0) (Issue #3314, PR #3312).
   * New RDKitConverter cache system to fix issue #2958 (PR #2942)
