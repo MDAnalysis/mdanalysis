@@ -94,6 +94,7 @@ import functools
 import itertools
 import numbers
 import os
+import contextlib
 import warnings
 
 from .. import (_CONVERTERS,
@@ -103,6 +104,7 @@ from ..lib.util import cached, warn_if_not_unique, unique_int_1d
 from ..lib import distances
 from ..lib import transformations
 from ..lib import mdamath
+from .accessors import Accessor, ConverterWrapper
 from ..selections import get_writer as get_selection_writer_for
 from . import selection
 from ..exceptions import NoDataError
@@ -255,6 +257,22 @@ class _TopologyAttrContainer(object):
                     property(getter, setter, None, attr.singledoc))
             cls._SETATTR_WHITELIST.add(attr.singular)
 
+    @classmethod
+    def _del_prop(cls, attr):
+        """Remove `attr` from the namespace for this class.
+
+        Parameters
+        ----------
+        attr : A :class:`TopologyAttr` object
+        """
+        with contextlib.suppress(AttributeError):
+            delattr(cls, attr.attrname)
+        with contextlib.suppress(AttributeError):
+            delattr(cls, attr.singular)
+        
+        cls._SETATTR_WHITELIST.discard(attr.attrname)
+        cls._SETATTR_WHITELIST.discard(attr.singular)
+
     def __setattr__(self, attr, value):
         # `ag.this = 42` calls setattr(ag, 'this', 42)
         if not (attr.startswith('_') or  # 'private' allowed
@@ -364,6 +382,41 @@ class _MutableBase(object):
                 match = _TOPOLOGY_ATTRNAMES[clean]
                 err += 'Did you mean {match}?'.format(match=match)
             raise AttributeError(err)
+
+    def get_connections(self, typename, outside=True):
+        """
+        Get bonded connections between atoms as a
+        :class:`~MDAnalysis.core.topologyobjects.TopologyGroup`.
+
+        Parameters
+        ----------
+        typename : str
+            group name. One of {"bonds", "angles", "dihedrals",
+            "impropers", "ureybradleys", "cmaps"}
+        outside : bool (optional)
+            Whether to include connections involving atoms outside
+            this group.
+
+        Returns
+        -------
+        TopologyGroup
+            containing the bonded group of choice, i.e. bonds, angles,
+            dihedrals, impropers, ureybradleys or cmaps.
+
+        .. versionadded:: 1.1.0
+        """
+        # AtomGroup has handy error messages for missing attributes
+        ugroup = getattr(self.universe.atoms, typename)
+        if not ugroup:
+            return ugroup
+        func = np.any if outside else np.all
+        try:
+            indices = self.atoms.ix_array
+        except AttributeError:  # if self is an Atom
+            indices = self.ix_array
+        seen = [np.in1d(col, indices) for col in ugroup._bix.T]
+        mask = func(seen, axis=0)
+        return ugroup[mask]
 
 
 class _ImmutableBase(object):
@@ -3146,46 +3199,7 @@ class AtomGroup(GroupBase):
                 "cmap only makes sense for a group with exactly 5 atoms")
         return topologyobjects.CMap(self.ix, self.universe)
 
-    def convert_to(self, package):
-        """
-        Convert :class:`AtomGroup` to a structure from another Python package.
-
-        Example
-        -------
-
-        The code below converts a Universe to a :class:`parmed.structure.Structure`.
-
-        .. code-block:: python
-
-            >>> import MDAnalysis as mda
-            >>> from MDAnalysis.tests.datafiles import GRO
-            >>> u = mda.Universe(GRO)
-            >>> parmed_structure = u.atoms.convert_to('PARMED')
-            >>> parmed_structure
-            <Structure 47681 atoms; 11302 residues; 0 bonds; PBC (triclinic); NOT parametrized>
-
-
-        Parameters
-        ----------
-        package: str
-            The name of the package to convert to, e.g. ``"PARMED"``
-
-
-        Returns
-        -------
-        output:
-            An instance of the structure type from another package.
-
-        Raises
-        ------
-        TypeError:
-            No converter was found for the required package
-
-
-        .. versionadded:: 1.0.0
-        """
-        converter = get_converter_for(package)
-        return converter().convert(self.atoms)
+    convert_to = Accessor("convert_to", ConverterWrapper)
 
     def write(self, filename=None, file_format=None,
               filenamefmt="{trjname}_{frame}", frames=None, **kwargs):
@@ -3323,6 +3337,83 @@ class AtomGroup(GroupBase):
             return
 
         raise ValueError("No writer found for format: {}".format(filename))
+
+    def sort(self, key='ix', keyfunc=None):
+        """
+        Returns a sorted ``AtomGroup`` using a specified attribute as the key.
+
+        Parameters
+        ----------
+        key: str, optional
+            The name of the ``AtomGroup`` attribute to sort by (e.g. ``ids``,
+            ``ix``. default= ``ix`` ).
+        keyfunc: callable, optional
+            A function to convert multidimensional arrays to a single
+            dimension. This 1D array will be used as the sort key and
+            is required when sorting with an ``AtomGroup`` attribute
+            key which has multiple dimensions. Note: this argument
+            is ignored when the attribute is one dimensional.
+
+        Returns
+        ----------
+        :class:`AtomGroup`
+            Sorted ``AtomGroup``.
+
+        Example
+        ----------
+
+        .. code-block:: python
+
+            >>> import MDAnalysis as mda
+            >>> from MDAnalysisTests.datafiles import PDB_small
+            >>> u = mda.Universe(PDB_small)
+            >>> ag = u.atoms[[3, 2, 1, 0]]
+            >>> ag.ix
+            array([3 2 1 0])
+            >>> ag = ag.sort()
+            >>> ag.ix
+            array([0 1 2 3])
+            >>> ag.positions
+            array([[-11.921,  26.307,  10.41 ],
+                   [-11.447,  26.741,   9.595],
+                   [-12.44 ,  27.042,  10.926],
+                   [-12.632,  25.619,  10.046]], dtype=float32)
+            >>> ag = ag.sort("positions", lambda x: x[:, 1])
+            >>> ag.positions
+            array([[-12.632,  25.619,  10.046],
+                   [-11.921,  26.307,  10.41 ],
+                   [-11.447,  26.741,   9.595],
+                   [-12.44 ,  27.042,  10.926]], dtype=float32)
+
+        Note
+        ----------
+        This uses a stable sort as implemented by
+        `numpy.argsort(kind='stable')`.
+
+
+        .. versionadded:: 2.0.0
+        """
+        idx = getattr(self.atoms, key)
+        if len(idx) != len(self.atoms):
+            raise ValueError("The array returned by the attribute '{}' "
+                             "must have the same length as the number of "
+                             "atoms in the input AtomGroup".format(key))
+        if idx.ndim == 1:
+            order = np.argsort(idx, kind='stable')
+        elif idx.ndim > 1:
+            if keyfunc is None:
+                raise NameError("The {} attribute returns a multidimensional "
+                                "array. In order to sort it, a function "
+                                "returning a 1D array (to be used as the sort "
+                                "key) must be passed to the keyfunc argument"
+                                .format(key))
+            sortkeys = keyfunc(idx)
+            if sortkeys.ndim != 1:
+                raise ValueError("The function assigned to the argument "
+                                 "'keyfunc':{} doesn't return a 1D array."
+                                 .format(keyfunc))
+            order = np.argsort(sortkeys, kind='stable')
+        return self.atoms[order]
 
 
 class ResidueGroup(GroupBase):

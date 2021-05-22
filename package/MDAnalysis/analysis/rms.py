@@ -73,7 +73,7 @@ NMP domain.
 * calculate the backbone RMSD and RMSD for CORE, LID, NMP (backbone atoms)
 
 The trajectory is included with the test data files. The data in
-:attr:`RMSD.rmsd` is plotted with :func:`matplotlib.pyplot.plot`::
+:attr:`RMSD.results.rmsd` is plotted with :func:`matplotlib.pyplot.plot`::
 
    import MDAnalysis
    from MDAnalysis.tests.datafiles import PSF,DCD,CRD
@@ -91,7 +91,7 @@ The trajectory is included with the test data files. The data in
    R.run()
 
    import matplotlib.pyplot as plt
-   rmsd = R.rmsd.T   # transpose makes it easier for plotting
+   rmsd = R.results.rmsd.T   # transpose makes it easier for plotting
    time = rmsd[1]
    fig = plt.figure(figsize=(4,4))
    ax = fig.add_subplot(111)
@@ -117,19 +117,40 @@ Analysis classes
    :members:
    :inherited-members:
 
-   .. attribute:: rmsd
+   .. attribute:: results.rmsd
 
        Contains the time series of the RMSD as an N×3 :class:`numpy.ndarray`
        array with content ``[[frame, time (ps), RMSD (A)], [...], ...]``.
+
+       .. versionadded:: 2.0.0
+
+   .. attribute:: rmsd
+
+       Alias to the :attr:`results.rmsd` attribute.
+
+       .. deprecated:: 2.0.0
+          Will be removed in MDAnalysis 3.0.0. Please use :attr:`results.rmsd`
+          instead.
+
 
 .. autoclass:: RMSF
    :members:
    :inherited-members:
 
-   .. attribute:: rmsf
+   .. attribute:: results.rmsf
 
       Results are stored in this N-length :class:`numpy.ndarray` array,
       giving RMSFs for each of the given atoms.
+
+      .. versionadded:: 2.0.0
+
+   .. attribute:: rmsf
+
+      Alias to the :attr:`results.rmsf` attribute.
+
+      .. deprecated:: 2.0.0
+         Will be removed in MDAnalysis 3.0.0. Please use :attr:`results.rmsf`
+         instead.
 
 """
 import numpy as np
@@ -316,11 +337,15 @@ class RMSD(AnalysisBase):
 
 
     Run the analysis with :meth:`RMSD.run`, which stores the results
-    in the array :attr:`RMSD.rmsd`.
+    in the array :attr:`RMSD.results.rmsd`.
+
 
     .. versionchanged:: 1.0.0
        ``save()`` method was removed, use ``np.savetxt()`` on
-       :attr:`RMSD.rmsd` instead.
+       :attr:`RMSD.results.rmsd` instead.
+    .. versionchanged:: 2.0.0
+       :attr:`rmsd` results are now stored in a
+       :class:`MDAnalysis.analysis.base.Results` instance.
 
     """
     def __init__(self, atomgroup, reference=None, select='all',
@@ -380,7 +405,10 @@ class RMSD(AnalysisBase):
              corresponding atom in `select`, and assumes ``None`` for `groupselections`.
 
         weights_groupselections : False or list of {"mass", ``None`` or array_like} (optional)
-             1. ``False`` will apply imposed weights to `groupselections` from ``weights`` option.
+             1. ``False`` will apply imposed weights to `groupselections` from
+             ``weights`` option if ``weights`` is either ``"mass"`` or ``None``. 
+             Otherwise will assume a list of length equal to length of 
+             `groupselections` filled with ``None`` values.
 
              2. A list of {"mass", ``None`` or array_like} with the length of `groupselections`
              will apply the weights to `groupselections` correspondingly.
@@ -625,8 +653,8 @@ class RMSD(AnalysisBase):
         else:
             self._rot = None
 
-        self.rmsd = np.zeros((self.n_frames,
-                              3 + len(self._groupselections_atoms)))
+        self.results.rmsd = np.zeros((self.n_frames,
+                                      3 + len(self._groupselections_atoms)))
 
         self._mobile_coordinates64 = self.mobile_atoms.positions.copy().astype(np.float64)
 
@@ -635,7 +663,7 @@ class RMSD(AnalysisBase):
         self._mobile_coordinates64[:] = self.mobile_atoms.positions
         self._mobile_coordinates64 -= mobile_com
 
-        self.rmsd[self._frame_index, :2] = self._ts.frame, self._trajectory.time
+        self.results.rmsd[self._frame_index, :2] = self._ts.frame, self._trajectory.time
 
         if self._groupselections_atoms:
             # superimpose structures: MDAnalysis qcprot needs Nx3 coordinate
@@ -644,7 +672,7 @@ class RMSD(AnalysisBase):
             # left** so that we can easily use broadcasting and save one
             # expensive numpy transposition.
 
-            self.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
+            self.results.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
                 self._ref_coordinates64, self._mobile_coordinates64,
                 self._n_atoms, self._rot, self.weights_select)
 
@@ -663,16 +691,24 @@ class RMSD(AnalysisBase):
             for igroup, (refpos, atoms) in enumerate(
                     zip(self._groupselections_ref_coords64,
                         self._groupselections_atoms), 3):
-                self.rmsd[self._frame_index, igroup] = rmsd(
+                self.results.rmsd[self._frame_index, igroup] = rmsd(
                     refpos, atoms['mobile'].positions,
                     weights=self.weights_groupselections[igroup-3],
                     center=False, superposition=False)
         else:
             # only calculate RMSD by setting the Rmatrix to None (no need
             # to carry out the rotation as we already get the optimum RMSD)
-            self.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
+            self.results.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
                 self._ref_coordinates64, self._mobile_coordinates64,
                 self._n_atoms, None, self.weights_select)
+
+    @property
+    def rmsd(self):
+        wmsg = ("The `rmsd` attribute was deprecated in MDAnalysis 2.0.0 and "
+                "will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.rmsd` instead.")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.rmsd
 
 
 class RMSF(AnalysisBase):
@@ -688,7 +724,7 @@ class RMSF(AnalysisBase):
 
 
     Run the analysis with :meth:`RMSF.run`, which stores the results
-    in the array :attr:`RMSF.rmsf`.
+    in the array :attr:`RMSF.results.rmsf`.
 
     """
     def __init__(self, atomgroup, **kwargs):
@@ -778,7 +814,8 @@ class RMSF(AnalysisBase):
                                      in_memory=True).run()
 
         The trajectory is now fitted to the reference (the RMSD is stored as
-        `aligner.rmsd` for further inspection). Now we can calculate the RMSF::
+        `aligner.results.rmsd` for further inspection). Now we can calculate
+        the RMSF::
 
            from MDAnalysis.analysis.rms import RMSF
 
@@ -789,7 +826,7 @@ class RMSF(AnalysisBase):
 
            import matplotlib.pyplot as plt
 
-           plt.plot(calphas.resnums, rmsfer.rmsf)
+           plt.plot(calphas.resnums, rmsfer.results.rmsf)
 
 
 
@@ -826,8 +863,16 @@ class RMSF(AnalysisBase):
 
     def _conclude(self):
         k = self._frame_index
-        self.rmsf = np.sqrt(self.sumsquares.sum(axis=1) / (k + 1))
+        self.results.rmsf = np.sqrt(self.sumsquares.sum(axis=1) / (k + 1))
 
-        if not (self.rmsf >= 0).all():
+        if not (self.results.rmsf >= 0).all():
             raise ValueError("Some RMSF values negative; overflow " +
                              "or underflow occurred")
+
+    @property
+    def rmsf(self):
+        wmsg = ("The `rmsf` attribute was deprecated in MDAnalysis 2.0.0 and "
+                "will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.rmsd` instead.")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.rmsf

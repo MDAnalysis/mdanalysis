@@ -9,13 +9,20 @@ on:
       - develop
       - master
 
+concurrency:
+  # Probably overly cautious group naming.
+  # Commits to develop/master will cancel each other, but PRs will only cancel
+  # commits within the same PR
+  group: "${{ github.ref }}-${{ github.head_ref }}"
+  cancel-in-progress: true
+
 defaults:
   run:
     shell: bash -l {0}
 
 env:
-  MDA_CONDA_MIN_DEPS: "pip pytest==6.1.2 mmtf-python biopython networkx cython matplotlib-base scipy griddataformats hypothesis gsd codecov"
-  MDA_CONDA_EXTRA_DEPS: "seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles tqdm>=4.43.0 tidynamics>=1.0.0 rdkit>=2020.03.1 h5py==2.10.0"
+  MDA_CONDA_MIN_DEPS: "pip pytest mmtf-python biopython networkx cython matplotlib-base scipy griddataformats hypothesis gsd codecov threadpoolctl openmm"
+  MDA_CONDA_EXTRA_DEPS: "seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles>=0.9 tqdm>=4.43.0 tidynamics>=1.0.0 rdkit>=2020.03.1 h5py"
   MDA_PIP_MIN_DEPS: 'coveralls coverage<5 pytest-cov pytest-xdist'
   MDA_PIP_EXTRA_DEPS: 'duecredit parmed'
 
@@ -28,17 +35,23 @@ jobs:
         fail-fast: false
         matrix:
           os: [ubuntu-latest, ]
-          python-version: [3.6, 3.7, 3.8]
+          python-version: [3.6, 3.7, 3.8, 3.9]
           run_type: [FULL, ]
           install_hole: [true, ]
           codecov: [true, ]
           include:
-            - name: macOS
+            - name: macOS_py39
               os: macOS-latest
-              python-version: 3.7
+              python-version: 3.9
               run_type: FULL
               install_hole: true
               codecov: true
+            - name: macOS_py36_min
+              os: macOS-latest
+              python-version: 3.6
+              run_type: MIN
+              install_hole: false
+              codecov: false
             - name: minimal-ubuntu
               os: ubuntu-latest
               python-version: 3.6
@@ -80,6 +93,7 @@ jobs:
         echo "CXX=clang++" >> $GITHUB_ENV
         gfortran-9 -v
         echo "FC=gfortran-9" >> $GITHUB_ENV
+        echo "numprocs=3" >> $GITHUB_ENV
 
     - name: setup_linux
       if: startsWith(matrix.os, 'ubuntu')
@@ -92,6 +106,7 @@ jobs:
         echo "CXX=g++" >> $GITHUB_ENV
         gfortran -v
         echo "FC=gfortran" >> $GITHUB_ENV
+        echo "numprocs=2" >> $GITHUB_ENV
 
     - name: setup_miniconda
       uses: conda-incubator/setup-miniconda@v2
@@ -99,12 +114,15 @@ jobs:
         python-version: ${{ matrix.python-version }}
         auto-update-conda: true
         channel-priority: flexible
-        channels: biobuilds, conda-forge
+        # The order of these channel matters: both provide "fundamental"
+        # software (curl, ssh, ...), but the version in biobuilds are very
+        # outdated. This can lead to problem when loading shared libraries,
+        # see https://github.com/MDAnalysis/mdanalysis/pull/3126#issuecomment-813112080
+        channels: conda-forge, biobuilds
         add-pip-as-python-dependency: true
-        # TODO: mamba causes pip to segfault, switch when fixed
-        #mamba-version: "*"
+        mamba-version: "*"
         architecture: x64
-        
+
     - name: install_deps
       env:
         MDA_CONDA_FULL_DEPS: "${{ env.MDA_CONDA_MIN_DEPS }} ${{ env.MDA_CONDA_EXTRA_DEPS }}"
@@ -114,14 +132,14 @@ jobs:
         # NOTE: set matrix.numpy to pin to a specific numpy version
         conda_deps="${{ matrix.numpy }} ${MDA_CONDA_${{ matrix.run_type }}_DEPS}"
         pip_deps=${MDA_PIP_${{ matrix.run_type }}_DEPS}
-        conda install ${conda_deps}
+        mamba install ${conda_deps}
         pip install ${pip_deps}
 
         # also install asv if required
         if [ ${{ matrix.name }} = "asv_check" ]; then
           pip install asv
         fi
-    
+
     - name: check_setup
       run: |
         # Check OS and python setup
@@ -158,7 +176,7 @@ jobs:
           PYTEST_FLAGS="${PYTEST_FLAGS} --cov=MDAnalysis --cov-report=xml"
         fi
         echo $PYTEST_FLAGS
-        pytest -n 2 testsuite/MDAnalysisTests $PYTEST_FLAGS
+        pytest -n $numprocs testsuite/MDAnalysisTests $PYTEST_FLAGS
 
     - name: run_asv
       if: contains(matrix.name, 'asv_check')
@@ -191,15 +209,16 @@ jobs:
         python-version: 3.7
         auto-update-conda: true
         channel-priority: flexible
-        channels: biobuilds, conda-forge
+        channels: conda-forge, biobuilds
         add-pip-as-python-dependency: true
         architecture: x64
+        mamba-version: "*"
 
     - name: install_deps
       run: |
         conda_deps="${{ env.MDA_CONDA_MIN_DEPS }} ${{ env.MDA_CONDA_EXTRA_DEPS}}"
         pip_deps="${{ env.MDA_PIP_MIN_DEPS}} ${{ env.MDA_PIP_EXTRA_DEPS }} sphinx==1.8.5 sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0"
-        conda install ${conda_deps}
+        mamba install ${conda_deps}
         pip install ${pip_deps}
 
     - name: install_mda
@@ -280,7 +299,6 @@ jobs:
         channel-priority: flexible
         channels: conda-forge
         add-pip-as-python-dependency: true
-        mamba-version: "*"
         architecture: x64
 
     - name: install
@@ -311,7 +329,7 @@ jobs:
         channel-priority: flexible
         channels: conda-forge
         add-pip-as-python-dependency: true
-        mamba-version: "*"
+        # mamba not enabled as install longer than deps install
         architecture: x64
 
     - name: install_conda

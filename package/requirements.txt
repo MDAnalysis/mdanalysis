@@ -20,4 +20,5 @@ seaborn>=0.7.0,<=0.9
 sphinx==1.8.5
 sphinx_rtd_theme
 sphinx_sitemap
+threadpoolctl
 tqdm

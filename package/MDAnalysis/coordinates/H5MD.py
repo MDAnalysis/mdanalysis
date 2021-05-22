@@ -600,7 +600,7 @@ class H5MDReader(base.ReaderBase):
             else:
                 raise NoDataError("Provide at least a position, velocity"
                                   " or force group in the h5md file.")
-        except ValueError:
+        except (ValueError, IndexError):
             raise IOError from None
 
         self._frame = frame
@@ -624,11 +624,11 @@ class H5MDReader(base.ReaderBase):
         # set the timestep positions, velocities, and forces with
         # current frame dataset
         if self._has['position']:
-            ts.positions = self._get_frame_dataset('position')
+            self._read_dataset_into_ts('position', ts.positions)
         if self._has['velocity']:
-            ts.velocities = self._get_frame_dataset('velocity')
+            self._read_dataset_into_ts('velocity', ts.velocities)
         if self._has['force']:
-            ts.forces = self._get_frame_dataset('force')
+            self._read_dataset_into_ts('force', ts.forces)
 
         if self.convert_units:
             self._convert_units()
@@ -651,20 +651,22 @@ class H5MDReader(base.ReaderBase):
                         'time'][self._frame]
                     break
 
-    def _get_frame_dataset(self, dataset):
-        """retrieves dataset array at current frame"""
+    def _read_dataset_into_ts(self, dataset, attribute):
+        """reads position, velocity, or force dataset array at current frame
+        into corresponding ts attribute"""
 
-        frame_dataset = self._particle_group[
-            dataset]['value'][self._frame, :]
-        n_atoms_now = frame_dataset.shape[0]
+        n_atoms_now = self._particle_group[f'{dataset}/value'][
+                                           self._frame].shape[0]
         if n_atoms_now != self.n_atoms:
-            raise ValueError("Frame {} has {} atoms but the initial frame"
-                             " has {} atoms. MDAnalysis is unable to deal"
-                             " with variable topology!"
-                             "".format(self._frame,
-                                       n_atoms_now,
-                                       self.n_atoms))
-        return frame_dataset
+            raise ValueError(f"Frame {self._frame} of the {dataset} dataset"
+                             f" has {n_atoms_now} atoms but the initial frame"
+                             " of either the postion, velocity, or force"
+                             f" dataset had {self.n_atoms} atoms."
+                             " MDAnalysis is unable to deal"
+                             " with variable topology!")
+
+        self._particle_group[f'{dataset}/value'].read_direct(
+                             attribute, source_sel=np.s_[self._frame, :])
 
     def _convert_units(self):
         """converts time, position, velocity, and force values if they

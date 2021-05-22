@@ -454,6 +454,8 @@ class NCDFReader(base.ReaderBase):
     .. versionchanged:: 2.0.0
        Now use a picklable :class:`scipy.io.netcdf.netcdf_file`--
        :class:`NCDFPicklable`.
+       Reading of `dt` now defaults to 1.0 ps if `dt` cannot be extracted from
+       the first two frames of the trajectory.
 
     """
 
@@ -694,8 +696,15 @@ class NCDFReader(base.ReaderBase):
             raise IOError from None
 
     def _get_dt(self):
-        t1 = self.trjfile.variables['time'][1]
-        t0 = self.trjfile.variables['time'][0]
+        """Gets dt based on the time difference between the first and second
+        frame. If missing (i.e. an IndexError is triggered), raises an
+        AttributeError which triggers the default 1 ps return of dt().
+        """
+        try:
+            t1 = self.trjfile.variables['time'][1]
+            t0 = self.trjfile.variables['time'][0]
+        except IndexError:
+            raise AttributeError
         return t1 - t0
 
     def close(self):
@@ -814,6 +823,18 @@ class NCDFWriter(base.WriterBase):
     .. _`Issue #506`:
        https://github.com/MDAnalysis/mdanalysis/issues/506#issuecomment-225081416
 
+    Raises
+    ------
+    FutureWarning
+        When writing. The :class:`NCDFWriter` currently does not write any
+        `scale_factor` values for the data variables. Whilst not in breach
+        of the AMBER NetCDF standard, this behaviour differs from that of
+        most AMBER writers, especially for velocities which usually have a
+        `scale_factor` of 20.455. In MDAnalysis 2.0, the :class:`NCDFWriter`
+        will enforce `scale_factor` writing to either match user inputs (either
+        manually defined or via the :class:`NCDFReader`) or those as written by
+        AmberTools's :program:`sander` under default operation.
+
     See Also
     --------
     :class:`NCDFReader`
@@ -872,6 +893,13 @@ class NCDFWriter(base.WriterBase):
         self.has_velocities = kwargs.get('velocities', False)
         self.has_forces = kwargs.get('forces', False)
         self.curr_frame = 0
+
+        # warn users of upcoming changes
+        wmsg = ("In MDAnalysis v2.0, `scale_factor` writing will change ("
+                "currently these are not written), to better match the way "
+                "they are written by AMBER programs. See NCDFWriter docstring "
+                "for more details.")
+        warnings.warn(wmsg, FutureWarning)
 
     def _init_netcdf(self, periodic=True):
         """Initialize netcdf AMBER 1.0 trajectory.

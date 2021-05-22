@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""RDKit molecule I/O --- :mod:`MDAnalysis.coordinates.RDKit`
+"""RDKit molecule I/O --- :mod:`MDAnalysis.converters.RDKit`
 ================================================================
 
 Read coordinates data from an `RDKit <https://www.rdkit.org/docs/>`__ :class:`rdkit.Chem.rdchem.Mol` with
@@ -67,14 +67,15 @@ Classes
 import warnings
 import re
 import copy
+from functools import lru_cache
 
 import numpy as np
 
 from ..exceptions import NoDataError
 from ..topology.guessers import guess_atom_element
 from ..core.topologyattrs import _TOPOLOGY_ATTRS
-from . import memory
-from . import base
+from ..coordinates import memory
+from ..coordinates import base
 
 try:
     from rdkit import Chem
@@ -244,19 +245,13 @@ class RDKitConverter(base.ConverterBase):
     Since one of the main use case of the converter is converting trajectories
     and not just a topology, creating a new molecule from scratch for every
     frame would be too slow so the converter uses a caching system. The cache
-    only remembers the id of the last AtomGroup that was converted, as well
-    as the arguments that were passed to the converter. This means that using
-    ``u.select_atoms("protein").convert_to("RDKIT")`` will not benefit from the
-    cache since the selection is deleted from memory as soon as the conversion
-    is finished. Instead, users should do this in two steps by first saving the
-    selection in a variable and then converting the saved AtomGroup. It also
-    means that ``ag.convert_to("RDKIT")`` followed by
-    ``ag.convert_to("RDKIT", NoImplicit=False)`` will not use the cache.
-    Finally if you're modifying the AtomGroup in place between two conversions,
-    the id of the AtomGroup won't change and thus the converter will use the
-    cached molecule. For this reason, you can pass a ``cache=False`` argument
-    to the converter to bypass the caching system.
-    Note that the cached molecule doesn't contain the coordinates of the atoms.
+    only stores the 2 most recent AtomGroups that were converted, and is
+    sensitive to the arguments that were passed to the converter. The number of
+    objects cached can be changed with the function
+    :func:`set_converter_cache_size`. However, ``ag.convert_to("RDKIT")``
+    followed by ``ag.convert_to("RDKIT", NoImplicit=False)`` will not use the
+    cache since the arguments given are different. You can pass a
+    ``cache=False`` argument to the converter to bypass the caching system.
 
 
     .. versionadded:: 2.0.0
@@ -265,9 +260,9 @@ class RDKitConverter(base.ConverterBase):
 
     lib = 'RDKIT'
     units = {'time': None, 'length': 'Angstrom'}
-    _cache = dict()
 
-    def convert(self, obj, cache=True, NoImplicit=True, max_iter=200):
+    def convert(self, obj, cache=True, NoImplicit=True, max_iter=200,
+                force=False):
         """Write selection at current trajectory frame to
         :class:`~rdkit.Chem.rdchem.Mol`.
 
@@ -278,16 +273,17 @@ class RDKitConverter(base.ConverterBase):
         cache : bool
             Use a cached copy of the molecule's topology when available. To be
             used, the cached molecule and the new one have to be made from the
-            same AtomGroup object (same id) and with the same arguments passed
-            to the converter (with the exception of this `cache` argument)
+            same AtomGroup selection and with the same arguments passed
+            to the converter
         NoImplicit : bool
             Prevent adding hydrogens to the molecule
         max_iter : int
             Maximum number of iterations to standardize conjugated systems.
             See :func:`_rebuild_conjugated_bonds`
+        force : bool
+            Force the conversion when no hydrogens were detected but
+            ``NoImplicit=True``. Useful for inorganic molecules mostly.
         """
-        # parameters passed to atomgroup_to_mol and used by the cache
-        kwargs = dict(NoImplicit=NoImplicit, max_iter=max_iter)
 
         try:
             from rdkit import Chem
@@ -303,22 +299,13 @@ class RDKitConverter(base.ConverterBase):
                             "please use a valid AtomGroup or Universe".format(
                                 type(obj))) from None
 
+        # parameters passed to atomgroup_to_mol
+        kwargs = dict(NoImplicit=NoImplicit, max_iter=max_iter, force=force)
         if cache:
-            # key used to search the cache
-            key = f"<{id(ag):#x}>" + ",".join(f"{key}={value}"
-                                            for key, value in kwargs.items())
-            try:
-                mol = self._cache[key]
-            except KeyError:
-                # only keep the current molecule in cache
-                self._cache.clear()
-                # create the topology
-                self._cache[key] = mol = self.atomgroup_to_mol(ag, **kwargs)
-            # continue on copy of the cached molecule
+            mol = atomgroup_to_mol(ag, **kwargs)
             mol = copy.deepcopy(mol)
         else:
-            self._cache.clear()
-            mol = self.atomgroup_to_mol(ag, **kwargs)
+            mol = atomgroup_to_mol.__wrapped__(ag, **kwargs)
 
         # add a conformer for the current Timestep
         if hasattr(ag, "positions"):
@@ -339,108 +326,131 @@ class RDKitConverter(base.ConverterBase):
 
         return mol
 
-    def atomgroup_to_mol(self, ag, NoImplicit=True, max_iter=200):
-        """Converts an AtomGroup to an RDKit molecule.
 
-        Parameters
-        -----------
-        ag : MDAnalysis.core.groups.AtomGroup
-            The AtomGroup to convert
-        NoImplicit : bool
-            Prevent adding hydrogens to the molecule
-        max_iter : int
-            Maximum number of iterations to standardize conjugated systems.
-            See :func:`_rebuild_conjugated_bonds`
-        """
-        try:
-            elements = ag.elements
-        except NoDataError:
-            raise AttributeError(
-                "The `elements` attribute is required for the RDKitConverter "
-                "but is not present in this AtomGroup. Please refer to the "
-                "documentation to guess elements from other attributes or "
-                "type `help(mda.topology.guessers)`") from None
+@lru_cache(maxsize=2)
+def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
+    """Converts an AtomGroup to an RDKit molecule without coordinates.
 
-        if "H" not in ag.elements:
+    Parameters
+    -----------
+    ag : MDAnalysis.core.groups.AtomGroup
+        The AtomGroup to convert
+    NoImplicit : bool
+        Prevent adding hydrogens to the molecule and allow bond orders and
+        formal charges to be guessed from the valence of each atom.
+    max_iter : int
+        Maximum number of iterations to standardize conjugated systems.
+        See :func:`_rebuild_conjugated_bonds`
+    force : bool
+        Force the conversion when no hydrogens were detected but
+        ``NoImplicit=True``. Mostly useful for inorganic molecules.
+    """
+    try:
+        elements = ag.elements
+    except NoDataError:
+        raise AttributeError(
+            "The `elements` attribute is required for the RDKitConverter "
+            "but is not present in this AtomGroup. Please refer to the "
+            "documentation to guess elements from other attributes or "
+            "type `help(MDAnalysis.topology.guessers)`") from None
+
+    if "H" not in ag.elements:
+        if force:
             warnings.warn(
+                "No hydrogen atom found in the topology. "
+                "Forcing to continue the conversion."
+            )
+        elif NoImplicit:
+            raise AttributeError(
                 "No hydrogen atom could be found in the topology, but the "
-                "converter requires all hydrogens to be explicit. Please "
-                "check carefully the output molecule as the converter is "
-                "likely to add negative charges and assign incorrect bond "
-                "orders to structures with implicit hydrogens. Alternatively, "
-                "you can use the parameter `NoImplicit=False` when using the "
-                "converter to allow implicit hydrogens and disable inferring "
-                "bond orders and charges."
-            )
+                "converter requires all hydrogens to be explicit. You can use "
+                "the parameter ``NoImplicit=False`` when using the converter "
+                "to allow implicit hydrogens and disable inferring bond "
+                "orders and charges. You can also use ``force=True`` to "
+                "ignore this error.")
 
-        # attributes accepted in PDBResidueInfo object
-        pdb_attrs = {}
-        if hasattr(ag, "bfactors") and hasattr(ag, "tempfactors"):
-            raise AttributeError(
-                "Both `tempfactors` and `bfactors` attributes are present but "
-                "only one can be assigned to the RDKit molecule. Please "
-                "delete the unnecessary one and retry."
-            )
-        for attr in RDATTRIBUTES.keys():
-            if hasattr(ag, attr):
-                pdb_attrs[attr] = getattr(ag, attr)
+    # attributes accepted in PDBResidueInfo object
+    pdb_attrs = {}
+    if hasattr(ag, "bfactors") and hasattr(ag, "tempfactors"):
+        raise AttributeError(
+            "Both `tempfactors` and `bfactors` attributes are present but "
+            "only one can be assigned to the RDKit molecule. Please "
+            "delete the unnecessary one and retry."
+        )
+    for attr in RDATTRIBUTES.keys():
+        if hasattr(ag, attr):
+            pdb_attrs[attr] = getattr(ag, attr)
 
-        other_attrs = {}
-        for attr in ["charges", "segids", "types"]:
-            if hasattr(ag, attr):
-                other_attrs[attr] = getattr(ag, attr)
+    other_attrs = {}
+    for attr in ["charges", "segids", "types"]:
+        if hasattr(ag, attr):
+            other_attrs[attr] = getattr(ag, attr)
 
-        mol = Chem.RWMol()
-        # map index in universe to index in mol
-        atom_mapper = {}
+    mol = Chem.RWMol()
+    # map index in universe to index in mol
+    atom_mapper = {}
 
-        for i, (atom, element) in enumerate(zip(ag, elements)):
-            # create atom
-            rdatom = Chem.Atom(element.capitalize())
-            # enable/disable adding implicit H to the molecule
-            rdatom.SetNoImplicit(NoImplicit)
-            # add PDB-like properties
-            mi = Chem.AtomPDBResidueInfo()
-            for attr, values in pdb_attrs.items():
-                _add_mda_attr_to_rdkit(attr, values[i], mi)
-            rdatom.SetMonomerInfo(mi)
-            # other properties
-            for attr in other_attrs.keys():
-                value = other_attrs[attr][i]
-                attr = "_MDAnalysis_%s" % _TOPOLOGY_ATTRS[attr].singular
-                _set_atom_property(rdatom, attr, value)
-            _set_atom_property(rdatom, "_MDAnalysis_index", i)
-            # add atom
-            index = mol.AddAtom(rdatom)
-            atom_mapper[atom.ix] = index
+    for i, (atom, element) in enumerate(zip(ag, elements)):
+        # create atom
+        rdatom = Chem.Atom(element.capitalize())
+        # enable/disable adding implicit H to the molecule
+        rdatom.SetNoImplicit(NoImplicit)
+        # add PDB-like properties
+        mi = Chem.AtomPDBResidueInfo()
+        for attr, values in pdb_attrs.items():
+            _add_mda_attr_to_rdkit(attr, values[i], mi)
+        rdatom.SetMonomerInfo(mi)
+        # other properties
+        for attr in other_attrs.keys():
+            value = other_attrs[attr][i]
+            attr = "_MDAnalysis_%s" % _TOPOLOGY_ATTRS[attr].singular
+            _set_atom_property(rdatom, attr, value)
+        _set_atom_property(rdatom, "_MDAnalysis_index", i)
+        # add atom
+        index = mol.AddAtom(rdatom)
+        atom_mapper[atom.ix] = index
 
+    try:
+        ag.bonds
+    except NoDataError:
+        warnings.warn(
+            "No `bonds` attribute in this AtomGroup. Guessing bonds based "
+            "on atoms coordinates")
+        ag.guess_bonds()
+
+    for bond in ag.bonds:
         try:
-            ag.bonds
-        except NoDataError:
-            warnings.warn(
-                "No `bonds` attribute in this AtomGroup. Guessing bonds based "
-                "on atoms coordinates")
-            ag.guess_bonds()
+            bond_indices = [atom_mapper[i] for i in bond.indices]
+        except KeyError:
+            continue
+        bond_type = RDBONDORDER.get(bond.order, Chem.BondType.SINGLE)
+        mol.AddBond(*bond_indices, bond_type)
 
-        for bond in ag.bonds:
-            try:
-                bond_indices = [atom_mapper[i] for i in bond.indices]
-            except KeyError:
-                continue
-            bond_type = RDBONDORDER.get(bond.order, Chem.BondType.SINGLE)
-            mol.AddBond(*bond_indices, bond_type)
+    mol.UpdatePropertyCache(strict=False)
 
-        mol.UpdatePropertyCache(strict=False)
+    if NoImplicit:
+        # infer bond orders and formal charges from the connectivity
+        _infer_bo_and_charges(mol)
+        mol = _standardize_patterns(mol, max_iter)
 
-        if NoImplicit:
-            # infer bond orders and formal charges from the connectivity
-            _infer_bo_and_charges(mol)
-            mol = _standardize_patterns(mol, max_iter)
+    # sanitize
+    Chem.SanitizeMol(mol)
 
-        # sanitize
-        Chem.SanitizeMol(mol)
+    return mol
 
-        return mol
+
+def set_converter_cache_size(maxsize):
+    """Set the maximum cache size of the RDKit converter
+
+    Parameters
+    ----------
+    maxsize : int or None
+        If int, the cache will only keep the ``maxsize`` most recent
+        conversions in memory. Using ``maxsize=None`` will remove all limits
+        to the cache size, i.e. everything is cached.
+    """
+    global atomgroup_to_mol
+    atomgroup_to_mol = lru_cache(maxsize=maxsize)(atomgroup_to_mol.__wrapped__)
 
 
 def _add_mda_attr_to_rdkit(attr, value, mi):

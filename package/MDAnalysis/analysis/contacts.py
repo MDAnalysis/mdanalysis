@@ -82,11 +82,11 @@ in MDAnalysis. ::
     # iterate through trajectory and perform analysis of "native contacts" Q
     ca1.run()
     # print number of averave contacts
-    average_contacts = np.mean(ca1.timeseries[:, 1])
+    average_contacts = np.mean(ca1.results.timeseries[:, 1])
     print('average contacts = {}'.format(average_contacts))
     # plot time series q(t)
     fig, ax = plt.subplots()
-    ax.plot(ca1.timeseries[:, 0], ca1.timeseries[:, 1])
+    ax.plot(ca1.results.timeseries[:, 0], ca1.results.timeseries[:, 1])
     ax.set(xlabel='frame', ylabel='fraction of native contacts',
            title='Native Contacts, average = {:.2f}'.format(average_contacts))
     fig.show()
@@ -123,10 +123,13 @@ conformation and plot the trajectory projected on q1-q2 [Franklin2007]_ ::
     q1q2.run()
 
     f, ax = plt.subplots(1, 2, figsize=plt.figaspect(0.5))
-    ax[0].plot(q1q2.timeseries[:, 0], q1q2.timeseries[:, 1], label='q1')
-    ax[0].plot(q1q2.timeseries[:, 0], q1q2.timeseries[:, 2], label='q2')
+    ax[0].plot(q1q2.results.timeseries[:, 0], q1q2.results.timeseries[:, 1],
+               label='q1')
+    ax[0].plot(q1q2.results.timeseries[:, 0], q1q2.results.timeseries[:, 2],
+               label='q2')
     ax[0].legend(loc='best')
-    ax[1].plot(q1q2.timeseries[:, 1], q1q2.timeseries[:, 2], '.-')
+    ax[1].plot(q1q2.results.timeseries[:, 1],
+               q1q2.results.timeseries[:, 2], '.-')
     f.show()
 
 Compare the resulting pathway to the `MinActionPath result for AdK`_
@@ -173,8 +176,8 @@ Next we are creating an instance of the :class:`Contacts` class and use the
                            refgroup=(acidic, basic), kwargs={'dist': 2.5})
     nc.run()
 
-    bound = nc.timeseries[:, 1]
-    frames = nc.timeseries[:, 0]
+    bound = nc.results.timeseries[:, 1]
+    frames = nc.results.timeseries[:, 0]
 
     f, ax = plt.subplots()
 
@@ -330,7 +333,7 @@ def contact_matrix(d, radius, out=None):
         distance matrix
     radius : float
         distance below which a contact is formed.
-    out: array (optional)
+    out : array (optional)
         If `out` is supplied as a pre-allocated array of the correct
         shape then it is filled instead of allocating a new one in
         order to increase performance.
@@ -364,15 +367,25 @@ class Contacts(AnalysisBase):
 
     Attributes
     ----------
-    timeseries : list
-        list containing *Q* for all refgroup pairs and analyzed frames
+    results.timeseries : numpy.ndarray
+        2D array containing *Q* for all refgroup pairs and analyzed frames
+
+    timeseries : numpy.ndarray
+        Alias to the :attr:`results.timeseries` attribute.
+
+        .. deprecated:: 2.0.0
+           Will be removed in MDAnalysis 3.0.0. Please use
+           :attr:`results.timeseries` instead.
+
 
     .. versionchanged:: 1.0.0
        ``save()`` method has been removed. Use ``np.savetxt()`` on
-       :attr:`Contacts.timeseries` instead.
+       :attr:`Contacts.results.timeseries` instead.
     .. versionchanged:: 1.0.0
         added ``pbc`` attribute to calculate distances using PBC.
-
+    .. versionchanged:: 2.0.0
+       :attr:`timeseries` results are now stored in a
+       :class:`MDAnalysis.analysis.base.Results` instance.
     """
     def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
                  pbc=True, kwargs=None, **basekwargs):
@@ -451,10 +464,10 @@ class Contacts(AnalysisBase):
                 self.initial_contacts.append(contact_matrix(self.r0[-1], radius))
 
     def _prepare(self):
-        self.timeseries = np.empty((self.n_frames, len(self.r0)+1))
+        self.results.timeseries = np.empty((self.n_frames, len(self.r0)+1))
 
     def _single_frame(self):
-        self.timeseries[self._frame_index][0] = self._ts.frame
+        self.results.timeseries[self._frame_index][0] = self._ts.frame
         
         # compute distance array for a frame
         d = distance_array(self.grA.positions, self.grB.positions,
@@ -466,7 +479,15 @@ class Contacts(AnalysisBase):
             r = d[initial_contacts]
             r0 = r0[initial_contacts]
             q = self.fraction_contacts(r, r0, **self.fraction_kwargs)
-            self.timeseries[self._frame_index][i] = q
+            self.results.timeseries[self._frame_index][i] = q
+
+    @property
+    def timeseries(self):
+        wmsg = ("The `timeseries` attribute was deprecated in MDAnalysis "
+                "2.0.0 and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.timeseries` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.timeseries
 
 
 def _new_selections(u_orig, selections, frame):

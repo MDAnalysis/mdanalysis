@@ -66,7 +66,7 @@ the test data files::
    from MDAnalysis.analysis.dihedrals import Dihedral
    R = Dihedral(ags).run()
 
-The angles can then be accessed with :attr:`Dihedral.angles`.
+The angles can then be accessed with :attr:`Dihedral.results.angles`.
 
 Ramachandran analysis
 ~~~~~~~~~~~~~~~~~~~~~
@@ -103,7 +103,7 @@ as shown in the example :ref:`Ramachandran plot figure <figure-ramachandran>`.
    and the "marginally allowed" regions.
 
 To plot the data yourself, the angles can be accessed using
-:attr:`Ramachandran.angles`.
+:attr:`Ramachandran.results.angles`.
 
 .. Note::
 
@@ -124,7 +124,7 @@ only needing a list of residues; see the :ref:`Janin plot figure
 <figure-janin>` as an example.
 
 The data for the angles can be accessed in the attribute
-:attr:`Janin.angles`.
+:attr:`Janin.results.angles`.
 
 .. _figure-janin:
 
@@ -153,7 +153,8 @@ Reference plots
 ~~~~~~~~~~~~~~~
 
 Reference plots can be added to the axes for both the Ramachandran and Janin
-classes using the kwarg ``ref=True``. The Ramachandran reference data
+classes using the kwarg ``ref=True`` for the :meth:`Ramachandran.plot`
+and :meth:`Janin.plot` methods. The Ramachandran reference data
 (:data:`~MDAnalysis.analysis.data.filenames.Rama_ref`) and Janin reference data
 (:data:`~MDAnalysis.analysis.data.filenames.Janin_ref`) were made using data
 obtained from a large selection of 500 PDB files, and were analyzed using these
@@ -173,31 +174,64 @@ Analysis Classes
    :members:
    :inherited-members:
 
-   .. attribute:: angles
+   .. attribute:: results.angles
 
        Contains the time steps of the angles for each atomgroup in the list as
        an ``n_frames×len(atomgroups)`` :class:`numpy.ndarray` with content
        ``[[angle 1, angle 2, ...], [time step 2], ...]``.
 
+       .. versionadded:: 2.0.0
+
+   .. attribute:: angles
+
+       Alias to the :attr:`results.angles` attribute.
+
+       .. deprecated:: 2.0.0
+          Will be removed in MDAnalysis 3.0.0. Please use
+          :attr:`results.angles` instead.
+
+
 .. autoclass:: Ramachandran
    :members:
    :inherited-members:
 
-   .. attribute:: angles
+   .. attribute:: results.angles
 
        Contains the time steps of the :math:`\phi` and :math:`\psi` angles for
        each residue as an ``n_frames×n_residues×2`` :class:`numpy.ndarray` with
        content ``[[[phi, psi], [residue 2], ...], [time step 2], ...]``.
 
+       .. versionadded:: 2.0.0
+
+   .. attribute:: angles
+
+       Alias to the :attr:`results.angles` attribute.
+
+       .. deprecated:: 2.0.0
+          Will be removed in MDAnalysis 3.0.0. Please use
+          :attr:`results.angles` instead.
+
+
 .. autoclass:: Janin
    :members:
    :inherited-members:
 
-   .. attribute:: angles
+   .. attribute:: results.angles
 
        Contains the time steps of the :math:`\chi_1` and :math:`\chi_2` angles
        for each residue as an ``n_frames×n_residues×2`` :class:`numpy.ndarray`
        with content ``[[[chi1, chi2], [residue 2], ...], [time step 2], ...]``.
+
+       .. versionadded:: 2.0.0
+
+   .. attribute:: angles
+
+       Alias to the :attr:`results.angles` attribute.
+
+       .. deprecated:: 2.0.0
+          Will be removed in MDAnalysis 3.0.0. Please use
+          :attr:`results.angles` instead.
+
 
 References
 ----------
@@ -251,6 +285,11 @@ class Dihedral(AnalysisBase):
     selection of atomgroups. If there is only one atomgroup of interest, then
     it must be given as a list of one atomgroup.
 
+
+    .. versionchanged:: 2.0.0
+       :attr:`angles` results are now stored in a
+       :class:`MDAnalysis.analysis.base.Results` instance.
+
     """
 
     def __init__(self, atomgroups, **kwargs):
@@ -278,16 +317,25 @@ class Dihedral(AnalysisBase):
         self.ag4 = mda.AtomGroup([ag[3] for ag in atomgroups])
 
     def _prepare(self):
-        self.angles = []
+        self.results.angles = []
 
     def _single_frame(self):
         angle = calc_dihedrals(self.ag1.positions, self.ag2.positions,
                                self.ag3.positions, self.ag4.positions,
                                box=self.ag1.dimensions)
-        self.angles.append(angle)
+        self.results.angles.append(angle)
 
     def _conclude(self):
-        self.angles = np.rad2deg(np.array(self.angles))
+        self.results.angles = np.rad2deg(np.array(self.results.angles))
+
+    @property
+    def angles(self):
+        wmsg = ("The `angle` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.angles` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.angles
+
 
 class Ramachandran(AnalysisBase):
     r"""Calculate :math:`\phi` and :math:`\psi` dihedral angles of selected
@@ -309,7 +357,7 @@ class Ramachandran(AnalysisBase):
         name for the backbone N atom
     ca_name : str (optional)
         name for the alpha-carbon atom
-    check_protein: bool (optional)
+    check_protein : bool (optional)
         whether to raise an error if the provided atomgroup is not a
         subset of protein atoms
 
@@ -349,6 +397,9 @@ class Ramachandran(AnalysisBase):
 
     .. versionchanged:: 1.0.0
         added c_name, n_name, ca_name, and check_protein keyword arguments
+    .. versionchanged:: 2.0.0
+       :attr:`angles` results are now stored in a
+       :class:`MDAnalysis.analysis.base.Results` instance.
 
     """
 
@@ -405,7 +456,7 @@ class Ramachandran(AnalysisBase):
 
 
     def _prepare(self):
-        self.angles = []
+        self.results.angles = []
 
     def _single_frame(self):
         phi_angles = calc_dihedrals(self.ag1.positions, self.ag2.positions,
@@ -415,16 +466,16 @@ class Ramachandran(AnalysisBase):
                                     self.ag4.positions, self.ag5.positions,
                                     box=self.ag1.dimensions)
         phi_psi = [(phi, psi) for phi, psi in zip(phi_angles, psi_angles)]
-        self.angles.append(phi_psi)
+        self.results.angles.append(phi_psi)
 
     def _conclude(self):
-        self.angles = np.rad2deg(np.array(self.angles))
+        self.results.angles = np.rad2deg(np.array(self.results.angles))
 
     def plot(self, ax=None, ref=False, **kwargs):
         """Plots data into standard Ramachandran plot.
 
-        Each time step in :attr:`Ramachandran.angles` is plotted onto the same
-        graph.
+        Each time step in :attr:`Ramachandran.results.angles` is plotted onto
+        the same graph.
 
         Parameters
         ----------
@@ -463,9 +514,18 @@ class Ramachandran(AnalysisBase):
             levels = [1, 17, 15000]
             colors = ['#A1D4FF', '#35A1FF']
             ax.contourf(X, Y, np.load(Rama_ref), levels=levels, colors=colors)
-        a = self.angles.reshape(np.prod(self.angles.shape[:2]), 2)
+        a = self.results.angles.reshape(
+                np.prod(self.results.angles.shape[:2]), 2)
         ax.scatter(a[:, 0], a[:, 1], **kwargs)
         return ax
+
+    @property
+    def angles(self):
+        wmsg = ("The `angle` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.angles` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.angles
 
 
 class Janin(Ramachandran):
@@ -523,7 +583,9 @@ class Janin(Ramachandran):
 
 
         .. versionchanged:: 2.0.0
-           `select_remove` and `select_protein` keywords were added
+           `select_remove` and `select_protein` keywords were added.
+           :attr:`angles` results are now stored in a
+           :class:`MDAnalysis.analysis.base.Results` instance.
         """
         super(Ramachandran, self).__init__(
             atomgroup.universe.trajectory, **kwargs)
@@ -557,12 +619,13 @@ class Janin(Ramachandran):
                              "missing or duplicate atoms in topology.")
 
     def _conclude(self):
-        self.angles = (np.rad2deg(np.array(self.angles)) + 360) % 360
+        self.results.angles = (np.rad2deg(np.array(
+            self.results.angles)) + 360) % 360
 
     def plot(self, ax=None, ref=False, **kwargs):
         """Plots data into standard Janin plot.
 
-        Each time step in :attr:`Janin.angles` is plotted onto the
+        Each time step in :attr:`Janin.results.angles` is plotted onto the
         same graph.
 
         Parameters
@@ -601,6 +664,7 @@ class Janin(Ramachandran):
             levels = [1, 6, 600]
             colors = ['#A1D4FF', '#35A1FF']
             ax.contourf(X, Y, np.load(Janin_ref), levels=levels, colors=colors)
-        a = self.angles.reshape(np.prod(self.angles.shape[:2]), 2)
+        a = self.results.angles.reshape(np.prod(
+            self.results.angles.shape[:2]), 2)
         ax.scatter(a[:, 0], a[:, 1], **kwargs)
         return ax

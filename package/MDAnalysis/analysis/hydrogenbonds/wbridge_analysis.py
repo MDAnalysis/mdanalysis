@@ -21,10 +21,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-# Water Bridge Analysis
-r"""Water Bridge analysis ---
-mod:`MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis`
-===============================================================================
+r"""Water Bridge analysis --- :mod:`MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis`
+==========================================================================================
 
 :Author: Zhiyi Wu
 :Year: 2017-2018
@@ -89,10 +87,10 @@ Output as Network
 Since the waters connecting the two ends of the selections are by nature a
 network. We provide a network representation of the water network. Water bridge
 data are returned per frame, which is stored in
-:attr:`WaterBridgeAnalysis.network`. Each frame is represented as a dictionary,
-where the keys are the hydrogen bonds originating from selection 1 and the
-values are new dictionaries representing the hydrogen bonds coming out of the
-corresponding molecules making hydrogen bonds with selection 1.
+:attr:`WaterBridgeAnalysis.results.network`. Each frame is represented as a
+dictionary, where the keys are the hydrogen bonds originating from selection
+1 and the values are new dictionaries representing the hydrogen bonds coming
+out of the corresponding molecules making hydrogen bonds with selection 1.
 
 As for the hydrogen bonds which reach the selection 2, the values of the
 corresponding keys are None. One example where selection 1 and selection 2 are
@@ -124,14 +122,14 @@ Output as Timeseries
 --------------------
 
 For lower order water bridges, it might be desirable to represent the
-connections as :attr:`WaterBridgeAnalysis.timeseries`. The results are returned
-per frame and are a list of hydrogen bonds between the selection 1 or selection
-2 and the bridging waters. Due to the complexity of the higher order water
-bridge and the fact that one hydrogen bond between two waters can appear in
-both third and fourth order water bridge, the hydrogen bonds in the
-:attr:`WaterBridgeAnalysis.timeseries` attribute are generated in a depth-first
-search manner to avoid duplication. Example code of how
-:attr:`WaterBridgeAnalysis.timeseries` is generated::
+connections as :attr:`WaterBridgeAnalysis.results.timeseries`. The results
+are returned per frame and are a list of hydrogen bonds between the selection
+1 or selection 2 and the bridging waters. Due to the complexity of the higher
+order water bridge and the fact that one hydrogen bond between two waters can
+appear in both third and fourth order water bridge, the hydrogen bonds in the
+:attr:`WaterBridgeAnalysis.results.timeseries` attribute are generated in a
+depth-first search manner to avoid duplication. Example code of how
+:attr:`WaterBridgeAnalysis.results.timeseries` is generated::
 
     def network2timeseries(network, timeseries):
         '''Traverse the network in a depth-first fashion.
@@ -262,8 +260,18 @@ Then simply use the new class instead of the parent class and call it with
 ```forcefield` = "OtherFF"``. Please also consider contributing the list of
 heavy atom names to MDAnalysis.
 
-How to perform WaterBridgeAnalysis
-----------------------------------
+
+.. rubric:: References
+
+.. [Gregoret1991] L.M. Gregoret, S.D. Rader, R.J. Fletterick, and
+   F.E. Cohen. Hydrogen bonds involving sulfur atoms in proteins. Proteins,
+   9(2):99–107, 1991. `10.1002/prot.340090204`_.
+
+.. _`10.1002/prot.340090204`: http://dx.doi.org/10.1002/prot.340090204
+
+
+How to perform ``WaterBridgeAnalysis``
+--------------------------------------
 
 All water bridges between arginine and aspartic acid can be analysed with ::
 
@@ -272,14 +280,14 @@ All water bridges between arginine and aspartic acid can be analysed with ::
 
   u = MDAnalysis.Universe('topology', 'trajectory')
   w = MDAnalysis.analysis.hbonds.WaterBridgeAnalysis(u, 'resname ARG',
-  'resname ASP')
+                                                     'resname ASP')
   w.run()
 
 The maximum number of bridging waters detected can be changed using the order
 keyword. ::
 
   w = MDAnalysis.analysis.hbonds.WaterBridgeAnalysis(u, 'resname ARG',
-  'resname ASP', order=3)
+                                                     'resname ASP', order=3)
 
 Thus, a maximum of three bridging waters will be detected.
 
@@ -299,9 +307,9 @@ the carboxylic group (ASP3:OD2). ::
   #     3          2          SOL       HW2
   #     4          3          ASP       OD1
   #     5          3          ASP       OD2
-  print(w.timeseries)
+  print(w.results.timeseries)
 
-prints out. ::
+prints out ::
 
   [ # frame 1
     # A water bridge SOL2 links O from ARG1 to the carboxylic group OD1 of ASP3
@@ -319,8 +327,8 @@ prints out. ::
 
 .. _wb_count_by_type:
 
-Use count_by_type
------------------
+Use ``count_by_type``
+---------------------
 
 We can use the :meth:`~WaterBridgeAnalysis.count_by_type` to
 generate the frequence of all water bridges in the simulation. ::
@@ -561,8 +569,8 @@ Additional keywords can be supplied to the analysis function by passing through
 
 .. _wb_count_by_time:
 
-Use count_by_time
------------------
+Use ``count_by_time``
+---------------------
 
 :meth:`~WaterBridgeAnalysis.count_by_type` aggregates data across frames, which
 might be desirable in some cases but not the others.
@@ -667,9 +675,43 @@ Classes
    .. attribute:: timesteps
 
       List of the times of each timestep. This can be used together with
-      :attr:`~WaterBridgeAnalysis.timeseries` to find the specific time point
-      of a water bridge existence.
+      :attr:`~WaterBridgeAnalysis.results.timeseries` to find the specific
+      time point of a water bridge existence.
 
+   .. attribute:: results.network
+
+      Network representation of the water network.
+
+      .. versionadded:: 2.0.0
+
+   .. attribute:: network
+
+      Alias to the :attr:`results.network` attribute.
+
+      .. deprecated:: 2.0.0
+         Will be removed in MDAnalysis 3.0.0. Please use
+         :attr:`results.network` instead.
+
+   .. attribute:: table
+
+      .. deprecated:: 2.0.0
+         Will be removed in MDAnalysis 3.0.0. Please generate
+         the table with :meth:`generate_table` instead.
+
+   .. attribute:: results.timeseries
+
+      List of hydrogen bonds between the selection 1 or selection 2
+      and the bridging waters, for each frame.
+
+      .. versionadded:: 2.0.0
+
+   .. attribute:: timeseries
+
+      Alias to the :attr:`results.timeseries` attribute.
+
+      .. deprecated:: 2.0.0
+         Will be removed in MDAnalysis 3.0.0. Please use
+         :attr:`results.timeseries` instead.
 """
 from collections import defaultdict
 import logging
@@ -690,9 +732,8 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     The analysis of the trajectory is performed with the
     :meth:`WaterBridgeAnalysis.run` method. The result is stored in
-    :attr:`WaterBridgeAnalysis.timeseries`. See
+    :attr:`WaterBridgeAnalysis.results.timeseries`. See
     :meth:`~WaterBridgeAnalysis.run` for the format.
-
 
     .. versionadded:: 0.17.0
 
@@ -742,7 +783,7 @@ class WaterBridgeAnalysis(AnalysisBase):
         universe.
 
         The timeseries is accessible as the attribute
-        :attr:`WaterBridgeAnalysis.timeseries`.
+        :attr:`WaterBridgeAnalysis.results.timeseries`.
 
         If no hydrogen bonds are detected or if the initial check fails, look
         at the log output (enable with :func:`MDAnalysis.start_logging` and set
@@ -913,7 +954,9 @@ class WaterBridgeAnalysis(AnalysisBase):
                              'Invalid selection type {0!s}'.format(
                                 self.selection1_type))
 
-        self._network = []  # final result accessed as self.network
+        # final result accessed as self.results.network
+        self.results.network = []
+        self.results.timeseries = None
         self.timesteps = None  # time for each frame
 
         self._log_parameters()
@@ -1208,7 +1251,7 @@ class WaterBridgeAnalysis(AnalysisBase):
             if self.update_water_selection:
                 self._update_water_selection()
         else:
-            self._network.append(defaultdict(dict))
+            self.results.network.append(defaultdict(dict))
             return
 
         selection_1 = []
@@ -1341,7 +1384,8 @@ class WaterBridgeAnalysis(AnalysisBase):
             else:
                 if node in end:
                     # check if any duplication happens
-                    if len(route) == len(set(route)):
+                    heavy_atom = [line[3] or line[2] for line in route]
+                    if len(heavy_atom) == len(set(heavy_atom)):
                         add_route(result, route)
                 else:
                     for new_node in graph[node]:
@@ -1357,18 +1401,19 @@ class WaterBridgeAnalysis(AnalysisBase):
             traverse_water_network(water_pool, next_mol, selection_2, route[:],
                                    self.order, result)
 
-        self._network.append(result['start'])
+        self.results.network.append(result['start'])
 
     def _traverse_water_network(self, graph, current, analysis_func=None,
                                 output=None, link_func=None, **kwargs):
         '''
-        This function recursively traverses the water network self._network and
-         finds the hydrogen bonds which connect the current atom to the next
-         atom. The newly found hydrogen bond will be appended to the hydrogen
-         bonds connecting the selection 1 to the current atom via link_func.
-         When selection 2 is reached, the full list of hydrogen bonds
-         connecting the selection 1 to selection 2 will be fed into
-         analysis_func, which will then modify the output in place.
+        This function recursively traverses the water network
+        self.results.network and finds the hydrogen bonds which connect the
+        current atom to the next atom. The newly found hydrogen bond will be
+        appended to the hydrogen bonds connecting the selection 1 to the
+        current atom via link_func. When selection 2 is reached, the full list
+        of hydrogen bonds connecting the selection 1 to selection 2 will be
+        fed into analysis_func, which will then modify the output in place.
+
         :param graph: The connection network describes the connection between
         the atoms in the water network.
         :param current: The hydrogen bonds from selection 1 until now.
@@ -1475,16 +1520,6 @@ class WaterBridgeAnalysis(AnalysisBase):
         To find an acceptor atom in :attr:`Universe.atoms` by
         *index* one would use ``u.atoms[acceptor_index]``.
 
-        The :attr:`timeseries` is a managed attribute and it is generated
-        from the underlying data in :attr:`_network` every time the
-        attribute is accessed. It is therefore costly to call and if
-        :attr:`timeseries` is needed repeatedly it is recommended that you
-        assign to a variable::
-
-           w = WaterBridgeAnalysis(u)
-           w.run()
-           timeseries = w.timeseries
-
         .. versionchanged 0.20.0
            The :attr:`WaterBridgeAnalysis.timeseries` has been updated where
            the donor and acceptor string has been changed to tuple
@@ -1498,7 +1533,7 @@ class WaterBridgeAnalysis(AnalysisBase):
             output = current
 
         timeseries = []
-        for frame in self._network:
+        for frame in self.results.network:
             new_frame = []
             self._traverse_water_network(frame, new_frame,
                                          analysis_func=analysis,
@@ -1509,37 +1544,13 @@ class WaterBridgeAnalysis(AnalysisBase):
                 for entry in new_frame])
         return timeseries
 
-    timeseries = property(_generate_timeseries)
-
-    def _get_network(self):
-        r'''Network representation of the water network.
-
-        The output is generated per frame as is explained in
-        :ref:`wb_Analysis_Network`. Each hydrogen bond has a compact
-        representation of ::
-
-          [sele1_acceptor_idx, None, sele2_donor_idx, donor_heavy_idx,
-          distance, angle]
-
-        or ::
-
-          [sele1_donor_idx, donor_heavy_idx, sele1_acceptor_idx, None,
-          distance, angle]
-
-        The donor_heavy_idx is the heavy atom bonding to the proton and atoms
-        can be retrived from the universe::
-
-          atom = u.atoms[idx]
-
-        .. versionadded:: 0.20.0
-
-        '''
-        return self._network
 
     def set_network(self, network):
-        self._network = network
-
-    network = property(_get_network, set_network)
+        wmsg = ("The `set_network` method was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.network` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        self.results.network = network
 
     @classmethod
     def _full_link(self, output, node):
@@ -1613,10 +1624,10 @@ class WaterBridgeAnalysis(AnalysisBase):
             analysis_func = self._count_by_type_analysis
             output = 'combined'
 
-        if self._network:
-            length = len(self._network)
+        if self.results.network:
+            length = len(self.results.network)
             result_dict = defaultdict(int)
-            for frame in self._network:
+            for frame in self.results.network:
                 frame_dict = defaultdict(int)
                 self._traverse_water_network(frame, [],
                                              analysis_func=analysis_func,
@@ -1663,9 +1674,9 @@ class WaterBridgeAnalysis(AnalysisBase):
         """
         if analysis_func is None:
             analysis_func = self._count_by_time_analysis
-        if self._network:
+        if self.results.network:
             result = []
-            for time, frame in zip(self.timesteps, self._network):
+            for time, frame in zip(self.timesteps, self.results.network):
                 result_dict = defaultdict(int)
                 self._traverse_water_network(frame, [],
                                              analysis_func=analysis_func,
@@ -1693,7 +1704,7 @@ class WaterBridgeAnalysis(AnalysisBase):
         """Frames during which each water bridges existed, sorted by each water
         bridges.
 
-        Processes :attr:`WaterBridgeAnalysis._network` and returns a
+        Processes :attr:`WaterBridgeAnalysis.results.network` and returns a
         :class:`list` containing atom indices, residue names, residue
         numbers (from selection 1 and selection 2) and each timestep at which
         the water bridge was detected.
@@ -1712,13 +1723,13 @@ class WaterBridgeAnalysis(AnalysisBase):
             analysis_func = self._timesteps_by_type_analysis
             output = 'combined'
 
-        if self._network:
+        if self.results.network:
             result = defaultdict(list)
             if self.timesteps is None:
-                timesteps = range(len(self._network))
+                timesteps = range(len(self.results.network))
             else:
                 timesteps = self.timesteps
-            for time, frame in zip(timesteps, self._network):
+            for time, frame in zip(timesteps, self.results.network):
                 self._traverse_water_network(frame, [],
                                              analysis_func=analysis_func,
                                              output=result,
@@ -1741,20 +1752,40 @@ class WaterBridgeAnalysis(AnalysisBase):
     def generate_table(self, output_format=None):
         """Generate a normalised table of the results.
 
-        The table is stored as a :class:`numpy.recarray` in the
-        attribute :attr:`~WaterBridgeAnalysis.table`.
+        Parameters
+        ----------
+        output_format : {'sele1_sele2', 'donor_acceptor'}
+            The output format of the `table` can be changed a fashion similar
+            to :attr:`WaterBridgeAnalysis.results.timeseries` by changing the
+            labels of the columns of the participating atoms.
 
-        The output format of :attr:`~WaterBridgeAnalysis.table` can also be
-        changed using output_format in a fashion similar to
-        :attr:`WaterBridgeAnalysis.timeseries`
+        Returns
+        -------
+        table : numpy.recarray
+            A "tidy" table with one hydrogen bond per row, labeled according to
+            `output_format` and containing information of atom_1, atom_2,
+            distance, and angle.
+
+        .. versionchanged:: 2.0.0
+           Return the generated table (as well as storing it as :attr:`table`).
+
+        .. deprecated:: 2.0.0
+           In release 3.0.0, :meth:`generate_table()` will _only_ return the
+           table and no longer store it in :attr:`table`.
         """
         output_format = output_format or self.output_format
-        if self._network == []:
+        if self.results.network == []:
             msg = "No data computed, do run() first."
             warnings.warn(msg, category=MissingDataWarning)
             logger.warning(msg)
             return None
-        timeseries = self._generate_timeseries(output_format)
+
+        if self.results.timeseries is not None \
+          and output_format == self.output_format:
+            timeseries = self.results.timeseries
+        else:
+            # Recompute timeseries with correct output format
+            timeseries = self._generate_timeseries(output_format)
 
         num_records = np.sum([len(hframe) for hframe in timeseries])
         # build empty output table
@@ -1796,3 +1827,24 @@ class WaterBridgeAnalysis(AnalysisBase):
             "WBridge: Stored results as table with %(num_records)d entries.",
             vars())
         self.table = table
+
+        return table
+
+    def _conclude(self):
+        self.results.timeseries = self._generate_timeseries()
+
+    @property
+    def network(self):
+        wmsg = ("The `network` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.network` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.network
+
+    @property
+    def timeseries(self):
+        wmsg = ("The `timeseries` attribute was deprecated in MDAnalysis "
+                "2.0.0 and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.timeseries` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.timeseries

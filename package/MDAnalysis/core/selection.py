@@ -600,6 +600,7 @@ class _ProtoStringSelection(Selection):
 
         return group[np.in1d(nmidx, matches)].unique
 
+
 class AromaticSelection(Selection):
     """Select aromatic atoms.
 
@@ -933,7 +934,7 @@ class ProteinSelection(Selection):
     :func:`MDAnalysis.lib.util.convert_aa_code`
 
 
-    .. versionchanged:: 2.0.0
+    .. versionchanged:: 1.0.1
        prot_res changed to set (from numpy array)
        performance improved by ~100x on larger systems
     """
@@ -990,7 +991,7 @@ class NucleicSelection(Selection):
 
     .. versionchanged:: 0.8
        additional Gromacs selections
-    .. versionchanged:: 2.0.0
+    .. versionchanged:: 1.0.1
        nucl_res changed to set (from numpy array)
        performance improved by ~100x on larger systems
     """
@@ -1026,7 +1027,7 @@ class BackboneSelection(ProteinSelection):
     (which are included by, eg VMD's backbone selection).
 
 
-    .. versionchanged:: 2.0.0
+    .. versionchanged:: 1.0.1
        bb_atoms changed to set (from numpy array)
        performance improved by ~100x on larger systems
     """
@@ -1059,7 +1060,7 @@ class NucleicBackboneSelection(NucleicSelection):
     by the :class:`NucleicSelection`.
 
 
-    .. versionchanged:: 2.0.0
+    .. versionchanged:: 1.0.1
        bb_atoms changed to set (from numpy array)
        performance improved by ~100x on larger systems
     """
@@ -1094,7 +1095,7 @@ class BaseSelection(NucleicSelection):
      'O6','N2','N6', 'O2','N4','O4','C5M'
 
 
-    .. versionchanged:: 2.0.0
+    .. versionchanged:: 1.0.1
        base_atoms changed to set (from numpy array)
        performance improved by ~100x on larger systems
     """
@@ -1127,7 +1128,7 @@ class NucleicSugarSelection(NucleicSelection):
     """Contains all atoms with name C1', C2', C3', C4', O2', O4', O3'.
 
 
-    .. versionchanged:: 2.0.0
+    .. versionchanged:: 1.0.1
        sug_atoms changed to set (from numpy array)
        performance improved by ~100x on larger systems
     """
