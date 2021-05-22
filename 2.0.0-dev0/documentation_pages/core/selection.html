@@ -217,11 +217,6 @@ available through RDKit</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="MDAnalysis.core.selection.AroundSelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">AroundSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#AroundSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.AroundSelection" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="class">
 <dt id="MDAnalysis.core.selection.BackboneSelection">
 <em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">BackboneSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#BackboneSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.BackboneSelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>A BackboneSelection contains all atoms with name ‘N’, ‘CA’, ‘C’, ‘O’.</p>
@@ -265,31 +260,6 @@ performance improved by ~100x on larger systems</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.0.0: </span>Use <code class="code docutils literal notranslate"><span class="pre">&quot;resindices&quot;</span></code> instead of <code class="code docutils literal notranslate"><span class="pre">&quot;resids&quot;</span></code> (see #2669 and #2672)</p>
 </div>
-</dd></dl>
-
-<dl class="class">
-<dt id="MDAnalysis.core.selection.DistanceSelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">DistanceSelection</code><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#DistanceSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.DistanceSelection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class for distance search based selections</p>
-<dl class="method">
-<dt id="MDAnalysis.core.selection.DistanceSelection.validate_dimensions">
-<code class="descname">validate_dimensions</code><span class="sig-paren">(</span><em>dimensions</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#DistanceSelection.validate_dimensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.DistanceSelection.validate_dimensions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the system is periodic in all three-dimensions.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dimensions</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><em>numpy.ndarray</em></a>) – 6-item array denoting system size and angles</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Returns argument dimensions if system is periodic in all
-three-dimensions, otherwise returns None</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)">None</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="data">
@@ -361,11 +331,6 @@ performance improved by ~100x on larger systems</p>
 performance improved by ~100x on larger systems</p>
 </div>
 </dd></dl>
-
-<dl class="class">
-<dt id="MDAnalysis.core.selection.PointSelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">PointSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#PointSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.PointSelection" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="class">
 <dt id="MDAnalysis.core.selection.PropertySelection">
@@ -520,16 +485,6 @@ Passed to <a class="reference external" href="https://numpy.org/doc/stable/refer
 <p>Uses RDKit to run the query and converts the result to MDAnalysis.
 Supports chirality.</p>
 </dd></dl>
-
-<dl class="class">
-<dt id="MDAnalysis.core.selection.SphericalLayerSelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">SphericalLayerSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SphericalLayerSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.SphericalLayerSelection" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="class">
-<dt id="MDAnalysis.core.selection.SphericalZoneSelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">SphericalZoneSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SphericalZoneSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.SphericalZoneSelection" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.core.selection.gen_selection_class">

@@ -372,6 +372,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span><span class="p">,</span> <span class="n">core</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">Timestep</span>
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">h5py</span>
@@ -388,35 +389,6 @@
 
 <span class="k">else</span><span class="p">:</span>
     <span class="n">HAS_H5PY</span> <span class="o">=</span> <span class="kc">True</span>
-
-
-<div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;H5MD Timestep</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">order</span> <span class="o">=</span> <span class="s1">&#39;C&#39;</span>
-
-    <span class="k">def</span> <span class="nf">_init_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)</span>
-
-<span class="sd">        lengths *A*, *B*, *C* are in the MDAnalysis length unit (Å), and</span>
-<span class="sd">        angles are in degrees.</span>
-
-<span class="sd">        Setting dimensions will populate the underlying native format</span>
-<span class="sd">        description (triclinic box vectors). If `edges</span>
-<span class="sd">        &lt;https://nongnu.org/h5md/h5md.html#simulation-box&gt;`_ is a matrix,</span>
-<span class="sd">        the box is of triclinic shape with the edge vectors given by</span>
-<span class="sd">        the rows of the matrix.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">core</span><span class="o">.</span><span class="n">triclinic_box</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">)</span>
-
-    <span class="nd">@dimensions</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">triclinic_vectors</span><span class="p">(</span><span class="n">box</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="H5MDReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader">[docs]</a><span class="k">class</span> <span class="nc">H5MDReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
@@ -563,7 +535,6 @@
             <span class="s1">&#39;kcal mol-1 A-1&#39;</span><span class="p">:</span> <span class="s1">&#39;kcal/(mol*Angstrom)&#39;</span>
         <span class="p">}</span>
     <span class="p">}</span>
-    <span class="n">_Timestep</span> <span class="o">=</span> <span class="n">Timestep</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span>
                  <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -799,11 +770,10 @@
 
         <span class="c1"># Sets frame box dimensions</span>
         <span class="c1"># Note: H5MD files must contain &#39;box&#39; group in each &#39;particles&#39; group</span>
-        <span class="k">if</span> <span class="s1">&#39;edges&#39;</span> <span class="ow">in</span> <span class="n">particle_group</span><span class="p">[</span><span class="s1">&#39;box&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">particle_group</span><span class="p">[</span><span class="s1">&#39;box/edges/value&#39;</span><span class="p">][</span><span class="n">frame</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">if</span> <span class="s1">&#39;edges&#39;</span> <span class="ow">in</span> <span class="n">particle_group</span><span class="p">[</span><span class="s1">&#39;box&#39;</span><span class="p">]:</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">triclinic_box</span><span class="p">(</span><span class="o">*</span><span class="n">particle_group</span><span class="p">[</span><span class="s1">&#39;box/edges/value&#39;</span><span class="p">][</span><span class="n">frame</span><span class="p">,</span> <span class="p">:])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># sets ts.dimensions = None</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># set the timestep positions, velocities, and forces with</span>
         <span class="c1"># current frame dataset</span>
@@ -861,7 +831,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_time_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="s1">&#39;edges&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span><span class="p">[</span><span class="s1">&#39;box&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="s1">&#39;edges&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span><span class="p">[</span><span class="s1">&#39;box&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">]:</span>

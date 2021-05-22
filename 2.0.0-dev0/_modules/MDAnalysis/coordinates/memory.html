@@ -374,52 +374,51 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">Timestep</span>
 
 
-<div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Timestep for the :class:`MemoryReader`</span>
+<span class="c1"># These methods all pass in an existing *view* onto a larger array</span>
+<span class="k">def</span> <span class="nf">_replace_positions_array</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Replace the array of positions</span>
 
-<span class="sd">    Compared to the base :class:`base.Timestep`, this version</span>
-<span class="sd">    (:class:`memory.Timestep`) has an additional</span>
-<span class="sd">    :meth:`_replace_positions_array` method, which replaces the array of</span>
-<span class="sd">    positions while the :attr:`positions` property replaces the content of the</span>
-<span class="sd">    array.</span>
+<span class="sd">    Replaces the array of positions by another array.</span>
 
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    The behavior of :meth:`_replace_positions_array` is different from the</span>
+<span class="sd">    behavior of the :attr:`position` property that replaces the **content**</span>
+<span class="sd">    of the array. The :meth:`_replace_positions_array` method should only be</span>
+<span class="sd">    used to set the positions to a different frame in</span>
+<span class="sd">    :meth:`MemoryReader._read_next_timestep`; there, the memory reader sets</span>
+<span class="sd">    the positions to a view of the correct frame.  Modifying the positions</span>
+<span class="sd">    for a given frame should be done with the :attr:`positions` attribute</span>
+<span class="sd">    that does not break the link between the array of positions in the time</span>
+<span class="sd">    step and the :attr:`MemoryReader.coordinate_array`.</span>
+
+
+<span class="sd">    .. versionadded:: 0.19.0</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       This function, and the _repalace helper functions for velocities,</span>
+<span class="sd">       forces, and dimensions, have been moved out of the now removed</span>
+<span class="sd">       custom timestep object for :class:`MemoryReader`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">_replace_positions_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Replace the array of positions</span>
-
-<span class="sd">        Replaces the array of positions by another array.</span>
+    <span class="n">ts</span><span class="o">.</span><span class="n">has_positions</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">new</span>
 
 
-<span class="sd">        Note</span>
-<span class="sd">        ----</span>
-<span class="sd">        The behavior of :meth:`_replace_positions_array` is different from the</span>
-<span class="sd">        behavior of the :attr:`position` property that replaces the **content**</span>
-<span class="sd">        of the array. The :meth:`_replace_positions_array` method should only be</span>
-<span class="sd">        used to set the positions to a different frame in</span>
-<span class="sd">        :meth:`MemoryReader._read_next_timestep`; there, the memory reader sets</span>
-<span class="sd">        the positions to a view of the correct frame.  Modifying the positions</span>
-<span class="sd">        for a given frame should be done with the :attr:`positions` attribute</span>
-<span class="sd">        that does not break the link between the array of positions in the time</span>
-<span class="sd">        step and the :attr:`MemoryReader.coordinate_array`.</span>
+<span class="k">def</span> <span class="nf">_replace_velocities_array</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+    <span class="n">ts</span><span class="o">.</span><span class="n">has_velocities</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span> <span class="o">=</span> <span class="n">new</span>
 
 
-<span class="sd">        .. versionadded:: 0.19.0</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">has_positions</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">new</span>
+<span class="k">def</span> <span class="nf">_replace_forces_array</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+    <span class="n">ts</span><span class="o">.</span><span class="n">has_forces</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">ts</span><span class="o">.</span><span class="n">_forces</span> <span class="o">=</span> <span class="n">new</span>
 
-    <span class="k">def</span> <span class="nf">_replace_velocities_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_velocities</span> <span class="o">=</span> <span class="n">new</span>
 
-    <span class="k">def</span> <span class="nf">_replace_forces_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_forces</span> <span class="o">=</span> <span class="n">new</span>
-
-    <span class="k">def</span> <span class="nf">_replace_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="n">new</span></div>
+<span class="k">def</span> <span class="nf">_replace_dimensions</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+    <span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span> <span class="o">=</span> <span class="n">new</span>
 
 
 <div class="viewcode-block" id="MemoryReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader">[docs]</a><span class="k">class</span> <span class="nc">MemoryReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ProtoReader</span><span class="p">):</span>
@@ -437,7 +436,6 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;MEMORY&#39;</span>
-    <span class="n">_Timestep</span> <span class="o">=</span> <span class="n">Timestep</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinate_array</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">,</span>
                  <span class="n">dimensions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -559,8 +557,9 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span>
+
         <span class="k">if</span> <span class="n">dimensions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dimensions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dimensions_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">dimensions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
@@ -576,7 +575,8 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Provided dimensions array has shape </span><span class="si">{}</span><span class="s2">. &quot;</span>
                                  <span class="s2">&quot;This must be a array of shape (6,) or &quot;</span>
                                  <span class="s2">&quot;(n_frames, 6)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dimensions</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dimensions_array</span> <span class="o">=</span> <span class="n">dimensions</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dimensions_array</span> <span class="o">=</span> <span class="n">dimensions</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
@@ -743,12 +743,12 @@
         <span class="n">basic_slice</span> <span class="o">=</span> <span class="p">([</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)]</span><span class="o">*</span><span class="p">(</span><span class="n">f_index</span><span class="p">)</span> <span class="o">+</span>
                        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">]</span> <span class="o">+</span>
                        <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)]</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">-</span><span class="n">f_index</span><span class="p">))</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">_replace_positions_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coordinate_array</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">basic_slice</span><span class="p">)])</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">_replace_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions_array</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">])</span>
+        <span class="n">_replace_positions_array</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinate_array</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">basic_slice</span><span class="p">)])</span>
+        <span class="n">_replace_dimensions</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimensions_array</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">])</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity_array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">_replace_velocities_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">velocity_array</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">basic_slice</span><span class="p">)])</span>
+            <span class="n">_replace_velocities_array</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity_array</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">basic_slice</span><span class="p">)])</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_array</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">_replace_forces_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">force_array</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">basic_slice</span><span class="p">)])</span>
+            <span class="n">_replace_forces_array</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">force_array</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">basic_slice</span><span class="p">)])</span>
 
         <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
         <span class="k">return</span> <span class="n">ts</span>

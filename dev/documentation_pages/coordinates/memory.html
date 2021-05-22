@@ -376,13 +376,34 @@ on the sub-system.</p>
 <h2>6.25.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.memory.Timestep">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.memory.</code><code class="descname">Timestep</code><span class="sig-paren">(</span><em>n_atoms</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/memory.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep" title="Permalink to this definition">¶</a></dt>
-<dd><p>Timestep for the <a class="reference internal" href="#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryReader</span></code></a></p>
-<p>Compared to the base <code class="xref py py-class docutils literal notranslate"><span class="pre">base.Timestep</span></code>, this version
-(<code class="xref py py-class docutils literal notranslate"><span class="pre">memory.Timestep</span></code>) has an additional
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">_replace_positions_array()</span></code> method, which replaces the array of
-positions while the <a class="reference internal" href="#MDAnalysis.coordinates.memory.Timestep.positions" title="MDAnalysis.coordinates.memory.Timestep.positions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">positions</span></code></a> property replaces the content of the
-array.</p>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.memory.</code><code class="descname">Timestep</code><span class="sig-paren">(</span><em>n_atoms</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timestep data for one frame</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Methods:</th><td class="field-body"><p class="first"><code class="docutils literal notranslate"><span class="pre">ts</span> <span class="pre">=</span> <span class="pre">Timestep(n_atoms)</span></code></p>
+<blockquote class="last">
+<div><p>create a timestep object with space for n_atoms</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.11.0: </span>Added <a class="reference internal" href="#MDAnalysis.coordinates.memory.Timestep.from_timestep" title="MDAnalysis.coordinates.memory.Timestep.from_timestep"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_timestep()</span></code></a> and <a class="reference internal" href="#MDAnalysis.coordinates.memory.Timestep.from_coordinates" title="MDAnalysis.coordinates.memory.Timestep.from_coordinates"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_coordinates()</span></code></a> constructor
+methods.
+<a class="reference internal" href="#MDAnalysis.coordinates.memory.Timestep" title="MDAnalysis.coordinates.memory.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> init now only accepts integer creation.
+<a class="reference internal" href="#MDAnalysis.coordinates.memory.Timestep.n_atoms" title="MDAnalysis.coordinates.memory.Timestep.n_atoms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">n_atoms</span></code></a> now a read only property.
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">frame</span></code> now 0-based instead of 1-based.
+Attributes <cite>status</cite> and <cite>step</cite> removed.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Timestep now can be (un)pickled. Weakref for Reader
+will be dropped.
+Timestep now stores in to numpy array memory in ‘C’ order rather than
+‘F’ (Fortran).</p>
+</div>
 <p>Create a Timestep, representing a frame of a trajectory</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -458,11 +479,9 @@ copy official attributes of the Timestep.</p>
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.memory.Timestep.dimensions">
 <code class="descname">dimensions</code><a class="headerlink" href="#MDAnalysis.coordinates.memory.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
-<dd><p>unitcell dimensions (<em>A</em>, <em>B</em>, <em>C</em>, <em>alpha</em>, <em>beta</em>, <em>gamma</em>)</p>
+<dd><p>View of unitcell dimensions (<em>A</em>, <em>B</em>, <em>C</em>, <em>alpha</em>, <em>beta</em>, <em>gamma</em>)</p>
 <p>lengths <em>a</em>, <em>b</em>, <em>c</em> are in the MDAnalysis length unit (Å), and
 angles are in degrees.</p>
-<p>Setting dimensions will populate the underlying native format
-description of box dimensions</p>
 </dd></dl>
 
 <dl class="attribute">

@@ -291,12 +291,6 @@ the <code class="docutils literal notranslate"><span class="pre">has_*</span></c
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.coordinates.base.Timestep._init_unitcell">
-<code class="descname">_init_unitcell</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep._init_unitcell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep._init_unitcell" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create custom datastructure for <code class="xref py py-attr docutils literal notranslate"><span class="pre">_unitcell</span></code>.</p>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.base.Timestep.n_atoms">
 <code class="descname">n_atoms</code><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.n_atoms" title="Permalink to this definition">¶</a></dt>
@@ -493,11 +487,9 @@ is True</p>
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.base.Timestep.dimensions">
 <code class="descname">dimensions</code><a class="headerlink" href="#MDAnalysis.coordinates.base.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
-<dd><p>unitcell dimensions (<em>A</em>, <em>B</em>, <em>C</em>, <em>alpha</em>, <em>beta</em>, <em>gamma</em>)</p>
+<dd><p>View of unitcell dimensions (<em>A</em>, <em>B</em>, <em>C</em>, <em>alpha</em>, <em>beta</em>, <em>gamma</em>)</p>
 <p>lengths <em>a</em>, <em>b</em>, <em>c</em> are in the MDAnalysis length unit (Å), and
 angles are in degrees.</p>
-<p>Setting dimensions will populate the underlying native format
-description of box dimensions</p>
 </dd></dl>
 
 <dl class="attribute">

@@ -474,28 +474,7 @@
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span></div>
 
 
-<div class="viewcode-block" id="DistanceSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.DistanceSelection">[docs]</a><span class="k">class</span> <span class="nc">DistanceSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for distance search based selections&quot;&quot;&quot;</span>
-
-<div class="viewcode-block" id="DistanceSelection.validate_dimensions"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.DistanceSelection.validate_dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">validate_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if the system is periodic in all three-dimensions.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        dimensions : numpy.ndarray</span>
-<span class="sd">            6-item array denoting system size and angles</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None or numpy.ndarray</span>
-<span class="sd">            Returns argument dimensions if system is periodic in all</span>
-<span class="sd">            three-dimensions, otherwise returns None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">]):</span>
-            <span class="k">return</span> <span class="n">dimensions</span>
-        <span class="k">return</span> <span class="kc">None</span></div></div>
-
-<div class="viewcode-block" id="AroundSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.AroundSelection">[docs]</a><span class="k">class</span> <span class="nc">AroundSelection</span><span class="p">(</span><span class="n">DistanceSelection</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">AroundSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;around&#39;</span>
     <span class="n">precedence</span> <span class="o">=</span> <span class="mi">1</span>
 
@@ -514,16 +493,16 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">sel</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">sys</span><span class="p">[[]]</span>
 
-        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_dimensions</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">dimensions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="n">pairs</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">capped_distance</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
                                           <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
                                           <span class="n">return_distances</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">pairs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="n">sys</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span></div>
+        <span class="k">return</span> <span class="n">sys</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span>
 
-<div class="viewcode-block" id="SphericalLayerSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SphericalLayerSelection">[docs]</a><span class="k">class</span> <span class="nc">SphericalLayerSelection</span><span class="p">(</span><span class="n">DistanceSelection</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">SphericalLayerSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;sphlayer&#39;</span>
     <span class="n">precedence</span> <span class="o">=</span> <span class="mi">1</span>
 
@@ -539,8 +518,8 @@
         <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">group</span><span class="p">[[]]</span>
-        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_dimensions</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
-        <span class="n">periodic</span> <span class="o">=</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="n">box</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">dimensions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="n">ref</span> <span class="o">=</span> <span class="n">sel</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="n">pairs</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">capped_distance</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">group</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exRadius</span><span class="p">,</span>
                                           <span class="n">min_cutoff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inRadius</span><span class="p">,</span>
@@ -549,10 +528,10 @@
         <span class="k">if</span> <span class="n">pairs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span></div>
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span>
 
 
-<div class="viewcode-block" id="SphericalZoneSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SphericalZoneSelection">[docs]</a><span class="k">class</span> <span class="nc">SphericalZoneSelection</span><span class="p">(</span><span class="n">DistanceSelection</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">SphericalZoneSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;sphzone&#39;</span>
     <span class="n">precedence</span> <span class="o">=</span> <span class="mi">1</span>
 
@@ -567,8 +546,8 @@
         <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">group</span><span class="p">[[]]</span>
-        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_dimensions</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
-        <span class="n">periodic</span> <span class="o">=</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="n">box</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">dimensions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="n">ref</span> <span class="o">=</span> <span class="n">sel</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="n">pairs</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">capped_distance</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">group</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span>
                                           <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
@@ -576,7 +555,7 @@
         <span class="k">if</span> <span class="n">pairs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span></div>
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span>
 
 
 <span class="k">class</span> <span class="nc">CylindricalSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
@@ -588,7 +567,7 @@
         <span class="c1"># Calculate vectors between point of interest and our group</span>
         <span class="n">vecs</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">sel</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">group</span><span class="o">.</span><span class="n">dimensions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">box</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
             <span class="n">cyl_z_hheight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zmax</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">zmin</span>
 
@@ -664,7 +643,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="PointSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.PointSelection">[docs]</a><span class="k">class</span> <span class="nc">PointSelection</span><span class="p">(</span><span class="n">DistanceSelection</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">PointSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;point&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
@@ -678,14 +657,15 @@
     <span class="nd">@return_empty_on_apply</span>
     <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_dimensions</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+
+        <span class="n">box</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">dimensions</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="n">pairs</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">capped_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span> <span class="n">group</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span>
                                           <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
                                           <span class="n">return_distances</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">pairs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span></div>
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span>
 
 
 <span class="k">class</span> <span class="nc">AtomSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>

@@ -347,8 +347,34 @@ parallel hdf5/h5py/mpi4py please let everyone know on the
 <h2>6.9.4. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.H5MD.Timestep">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.H5MD.</code><code class="descname">Timestep</code><span class="sig-paren">(</span><em>n_atoms</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/H5MD.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.Timestep" title="Permalink to this definition">¶</a></dt>
-<dd><p>H5MD Timestep</p>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.H5MD.</code><code class="descname">Timestep</code><span class="sig-paren">(</span><em>n_atoms</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.Timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timestep data for one frame</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Methods:</th><td class="field-body"><p class="first"><code class="docutils literal notranslate"><span class="pre">ts</span> <span class="pre">=</span> <span class="pre">Timestep(n_atoms)</span></code></p>
+<blockquote class="last">
+<div><p>create a timestep object with space for n_atoms</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.11.0: </span>Added <a class="reference internal" href="#MDAnalysis.coordinates.H5MD.Timestep.from_timestep" title="MDAnalysis.coordinates.H5MD.Timestep.from_timestep"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_timestep()</span></code></a> and <a class="reference internal" href="#MDAnalysis.coordinates.H5MD.Timestep.from_coordinates" title="MDAnalysis.coordinates.H5MD.Timestep.from_coordinates"><code class="xref py py-meth docutils literal notranslate"><span class="pre">from_coordinates()</span></code></a> constructor
+methods.
+<a class="reference internal" href="#MDAnalysis.coordinates.H5MD.Timestep" title="MDAnalysis.coordinates.H5MD.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> init now only accepts integer creation.
+<a class="reference internal" href="#MDAnalysis.coordinates.H5MD.Timestep.n_atoms" title="MDAnalysis.coordinates.H5MD.Timestep.n_atoms"><code class="xref py py-attr docutils literal notranslate"><span class="pre">n_atoms</span></code></a> now a read only property.
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">frame</span></code> now 0-based instead of 1-based.
+Attributes <cite>status</cite> and <cite>step</cite> removed.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Timestep now can be (un)pickled. Weakref for Reader
+will be dropped.
+Timestep now stores in to numpy array memory in ‘C’ order rather than
+‘F’ (Fortran).</p>
+</div>
 <p>Create a Timestep, representing a frame of a trajectory</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -361,7 +387,7 @@ parallel hdf5/h5py/mpi4py please let everyone know on the
 <li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has force information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
 <li><strong>reader</strong> (<em>Reader</em><em> (</em><em>optional</em><em>)</em>) – A weak reference to the owning Reader.  Used for
 when attributes require trajectory manipulation (e.g. dt)</li>
-<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The time difference between frames (ps).  If <code class="xref py py-attr docutils literal notranslate"><span class="pre">time</span></code>
+<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The time difference between frames (ps).  If <a class="reference internal" href="#MDAnalysis.coordinates.H5MD.Timestep.time" title="MDAnalysis.coordinates.H5MD.Timestep.time"><code class="xref py py-attr docutils literal notranslate"><span class="pre">time</span></code></a>
 is set, then <cite>dt</cite> will be ignored.</li>
 <li><strong>time_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The starting time from which to calculate time (in ps)</li>
 </ul>
@@ -397,16 +423,267 @@ or if the <cite>velocities</cite> = <code class="docutils literal notranslate"><
 or if the <cite>forces</cite> = <code class="docutils literal notranslate"><span class="pre">True</span></code> keyword has been supplied.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="MDAnalysis.coordinates.H5MD.Timestep.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.Timestep.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an independent (“deep”) copy of the whole <a class="reference internal" href="#MDAnalysis.coordinates.H5MD.Timestep" title="MDAnalysis.coordinates.H5MD.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.H5MD.Timestep.copy_slice">
+<code class="descname">copy_slice</code><span class="sig-paren">(</span><em>sel</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.copy_slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.Timestep.copy_slice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a new <cite>Timestep</cite> containing a subset of the original <cite>Timestep</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sel</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.9)"><em>slice</em></a>) – The underlying position, velocity, and force arrays are sliced
+using a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a>, or any array-like.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A <cite>Timestep</cite> object of the same type containing all header
+information and all atom information relevant to the selection.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.coordinates.H5MD.Timestep" title="MDAnalysis.coordinates.H5MD.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The selection must be a 0 based <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> or array of the atom indices
+in this <a class="reference internal" href="#MDAnalysis.coordinates.H5MD.Timestep" title="MDAnalysis.coordinates.H5MD.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a></p>
+</div>
+<p class="rubric">Example</p>
+<p>Using a Python <a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">slice</span></code></a> object:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">new_ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">copy_slice</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Using a list of indices:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">new_ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">copy_slice</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">23</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.11.0: </span>Reworked to follow new Timestep API.  Now will strictly only
+copy official attributes of the Timestep.</p>
+</div>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.H5MD.Timestep.dimensions">
 <code class="descname">dimensions</code><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
-<dd><p>unitcell dimensions (<em>A</em>, <em>B</em>, <em>C</em>, <em>alpha</em>, <em>beta</em>, <em>gamma</em>)</p>
-<p>lengths <em>A</em>, <em>B</em>, <em>C</em> are in the MDAnalysis length unit (Å), and
+<dd><p>View of unitcell dimensions (<em>A</em>, <em>B</em>, <em>C</em>, <em>alpha</em>, <em>beta</em>, <em>gamma</em>)</p>
+<p>lengths <em>a</em>, <em>b</em>, <em>c</em> are in the MDAnalysis length unit (Å), and
 angles are in degrees.</p>
-<p>Setting dimensions will populate the underlying native format
-description (triclinic box vectors). If <a class="reference external" href="https://nongnu.org/h5md/h5md.html#simulation-box">edges</a> is a matrix,
-the box is of triclinic shape with the edge vectors given by
-the rows of the matrix.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.H5MD.Timestep.dt">
+<code class="descname">dt</code><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.Timestep.dt" title="Permalink to this definition">¶</a></dt>
+<dd><p>The time difference in ps between timesteps</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This defaults to 1.0 ps in the absence of time data</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">forces</code></dt>
+<dd><p>A record of the forces of all atoms in this Timestep</p>
+<p>Setting this attribute will add forces to the Timestep if they
+weren’t originally present.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>forces</strong> – force data of shape <code class="docutils literal notranslate"><span class="pre">(n_atoms,</span> <span class="pre">3)</span></code> for all atoms</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">numpy.ndarray with dtype numpy.float32</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">MDAnalysis.exceptions.NoDataError</span></code></a> – if the Timestep has no force data</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="MDAnalysis.coordinates.H5MD.Timestep.from_coordinates">
+<em class="property">classmethod </em><code class="descname">from_coordinates</code><span class="sig-paren">(</span><em>positions=None</em>, <em>velocities=None</em>, <em>forces=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.from_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.Timestep.from_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an instance of this Timestep, from coordinate data</p>
+<p>Can pass position, velocity and force data to form a Timestep.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="MDAnalysis.coordinates.H5MD.Timestep.from_timestep">
+<em class="property">classmethod </em><code class="descname">from_timestep</code><span class="sig-paren">(</span><em>other</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#Timestep.from_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.Timestep.from_timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a copy of another Timestep, in the format of this Timestep</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.H5MD.Timestep.has_forces">
+<code class="descname">has_forces</code><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.Timestep.has_forces" title="Permalink to this definition">¶</a></dt>
+<dd><p>A boolean of whether this Timestep has force data</p>
+<p>This can be changed to <code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code> to allocate space for
+or remove the data.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.H5MD.Timestep.has_positions">
+<code class="descname">has_positions</code><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.Timestep.has_positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>A boolean of whether this Timestep has position data</p>
+<p>This can be changed to <code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code> to allocate space for
+or remove the data.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.H5MD.Timestep.has_velocities">
+<code class="descname">has_velocities</code><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.Timestep.has_velocities" title="Permalink to this definition">¶</a></dt>
+<dd><p>A boolean of whether this Timestep has velocity data</p>
+<p>This can be changed to <code class="docutils literal notranslate"><span class="pre">True</span></code> or <code class="docutils literal notranslate"><span class="pre">False</span></code> to allocate space for
+or remove the data.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.H5MD.Timestep.n_atoms">
+<code class="descname">n_atoms</code><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.Timestep.n_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>A read only view of the number of atoms this Timestep has</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.11.0: </span>Changed to read only property</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">positions</code></dt>
+<dd><p>A record of the positions of all atoms in this Timestep</p>
+<p>Setting this attribute will add positions to the Timestep if they
+weren’t originally present.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>positions</strong> – position data of shape <code class="docutils literal notranslate"><span class="pre">(n_atoms,</span> <span class="pre">3)</span></code> for all atoms</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">numpy.ndarray with dtype numpy.float32</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">MDAnalysis.exceptions.NoDataError</span></code></a> – if the Timestep has no position data</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.11.0: </span>Now can raise <code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code> when no position data present</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.H5MD.Timestep.time">
+<code class="descname">time</code><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.Timestep.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>The time in ps of this timestep</p>
+<p>This is calculated as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">time</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;time_offset&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span>
+</pre></div>
+</div>
+<p>Or, if the trajectory doesn’t provide time information:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">time</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;time_offset&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">*</span> <span class="n">ts</span><span class="o">.</span><span class="n">dt</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.H5MD.Timestep.triclinic_dimensions">
+<code class="descname">triclinic_dimensions</code><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.Timestep.triclinic_dimensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>The unitcell dimensions represented as triclinic vectors</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A (3, 3) numpy.ndarray of unit cell vectors</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>The unitcell for a given system can be queried as either three
+vectors lengths followed by their respective angle, or as three
+triclinic vectors.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span>
+<span class="go">array([ 13.,  14.,  15.,  90.,  90.,  90.], dtype=float32)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">triclinic_dimensions</span>
+<span class="go">array([[ 13.,   0.,   0.],</span>
+<span class="go">       [  0.,  14.,   0.],</span>
+<span class="go">       [  0.,   0.,  15.]], dtype=float32)</span>
+</pre></div>
+</div>
+<p>Setting the attribute also works:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">triclinic_dimensions</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span>
+<span class="go">array([ 15.        ,  15.81138802,  16.58312416,  67.58049774,</span>
+<span class="go">        72.45159912,  71.56504822], dtype=float32)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../lib/mdamath.html#MDAnalysis.lib.mdamath.triclinic_vectors" title="MDAnalysis.lib.mdamath.triclinic_vectors"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath.triclinic_vectors()</span></code></a></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">velocities</code></dt>
+<dd><p>A record of the velocities of all atoms in this Timestep</p>
+<p>Setting this attribute will add velocities to the Timestep if they
+weren’t originally present.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>velocities</strong> – velocity data of shape <code class="docutils literal notranslate"><span class="pre">(n_atoms,</span> <span class="pre">3)</span></code> for all atoms</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">numpy.ndarray with dtype numpy.float32</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">MDAnalysis.exceptions.NoDataError</span></code></a> – if the Timestep has no velocity data</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.H5MD.Timestep.volume">
+<code class="descname">volume</code><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.Timestep.volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>volume of the unitcell</p>
 </dd></dl>
 
 </dd></dl>

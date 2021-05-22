@@ -295,52 +295,42 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">Timestep</span>
 <span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="n">triclinic_box</span><span class="p">,</span> <span class="n">triclinic_vectors</span>
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
 
 
-<div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/GRO.html#MDAnalysis.coordinates.GRO.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
-    <span class="n">_ts_order_x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
-    <span class="n">_ts_order_y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
-    <span class="n">_ts_order_z</span> <span class="o">=</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="sd">&quot;&quot;&quot;unitcell dimensions (A, B, C, alpha, beta, gamma)</span>
 
-    <span class="k">def</span> <span class="nf">_init_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="sd">GRO::</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;unitcell dimensions (A, B, C, alpha, beta, gamma)</span>
+<span class="sd">  8.00170   8.00170   5.65806   0.00000   0.00000   0.00000   0.00000   4.00085   4.00085</span>
 
-<span class="sd">        GRO::</span>
+<span class="sd">PDB::</span>
 
-<span class="sd">          8.00170   8.00170   5.65806   0.00000   0.00000   0.00000   0.00000   4.00085   4.00085</span>
+<span class="sd">  CRYST1   80.017   80.017   80.017  60.00  60.00  90.00 P 1           1</span>
 
-<span class="sd">        PDB::</span>
+<span class="sd">XTC: c.trajectory.ts._unitcell::</span>
 
-<span class="sd">          CRYST1   80.017   80.017   80.017  60.00  60.00  90.00 P 1           1</span>
+<span class="sd">  array([[ 80.00515747,   0.        ,   0.        ],</span>
+<span class="sd">         [  0.        ,  80.00515747,   0.        ],</span>
+<span class="sd">         [ 40.00257874,  40.00257874,  56.57218552]], dtype=float32)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># unit cell line (from http://manual.gromacs.org/current/online/gro.html)</span>
+<span class="c1"># v1(x) v2(y) v3(z) v1(y) v1(z) v2(x) v2(z) v3(x) v3(y)</span>
+<span class="c1"># 0     1     2      3     4     5     6    7     8</span>
+<span class="c1"># This information now stored as _ts_order_x/y/z to keep DRY</span>
+<span class="n">_TS_ORDER_X</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="n">_TS_ORDER_Y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+<span class="n">_TS_ORDER_Z</span> <span class="o">=</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
 
-<span class="sd">        XTC: c.trajectory.ts._unitcell::</span>
-
-<span class="sd">          array([[ 80.00515747,   0.        ,   0.        ],</span>
-<span class="sd">                 [  0.        ,  80.00515747,   0.        ],</span>
-<span class="sd">                 [ 40.00257874,  40.00257874,  56.57218552]], dtype=float32)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># unit cell line (from http://manual.gromacs.org/current/online/gro.html)</span>
-        <span class="c1"># v1(x) v2(y) v3(z) v1(y) v1(z) v2(x) v2(z) v3(x) v3(y)</span>
-        <span class="c1"># 0     1     2      3     4     5     6    7     8</span>
-        <span class="c1"># This information now stored as _ts_order_x/y/z to keep DRY</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_order_x</span><span class="p">]</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_order_y</span><span class="p">]</span>
-        <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_order_z</span><span class="p">]</span>  <span class="c1"># this ordering is correct! (checked it, OB)</span>
-        <span class="k">return</span> <span class="n">triclinic_box</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
-
-    <span class="nd">@dimensions</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">triclinic_vectors</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts_order_x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts_order_y</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts_order_z</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span></div>
+<span class="k">def</span> <span class="nf">_gmx_to_dimensions</span><span class="p">(</span><span class="n">box</span><span class="p">):</span>
+    <span class="c1"># convert gromacs ordered box to [lx, ly, lz, alpha, beta, gamma] form</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="n">_TS_ORDER_X</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="n">_TS_ORDER_Y</span><span class="p">]</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">box</span><span class="p">[</span><span class="n">_TS_ORDER_Z</span><span class="p">]</span>  <span class="c1"># this ordering is correct! (checked it, OB)</span>
+    <span class="k">return</span> <span class="n">triclinic_box</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="GROReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/GRO.html#MDAnalysis.coordinates.GRO.GROReader">[docs]</a><span class="k">class</span> <span class="nc">GROReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
@@ -379,6 +369,7 @@
                 <span class="c1"># Remember that we got this error</span>
                 <span class="n">missed_vel</span> <span class="o">=</span> <span class="kc">True</span>
 
+            <span class="c1"># TODO: Handle missing unitcell?</span>
             <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">grofile</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
                 <span class="c1"># 2 header lines, 1 box line at end</span>
                 <span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="n">n_atoms</span><span class="p">:</span>
@@ -406,16 +397,21 @@
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unitcell</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
             <span class="c1"># special case: a b c --&gt; (a 0 0) (b 0 0) (c 0 0)</span>
-            <span class="c1"># see Timestep.dimensions() above for format (!)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">unitcell</span>
+            <span class="c1"># see docstring above for format (!)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">unitcell</span><span class="p">,</span> <span class="p">[</span><span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">]]</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">unitcell</span><span class="p">)</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">unitcell</span>  <span class="c1"># fill all</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">_gmx_to_dimensions</span><span class="p">(</span><span class="n">unitcell</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># or maybe raise an error for wrong format??</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;GRO unitcell has neither 3 nor 9 entries --- might be wrong.&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">unitcell</span><span class="p">)]</span> <span class="o">=</span> <span class="n">unitcell</span>  <span class="c1"># fill linearly ... not sure about this</span>
+            <span class="c1"># fill linearly ... not sure about this</span>
+            <span class="n">unitcell2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
+            <span class="n">unitcell2</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">unitcell</span><span class="p">)]</span> <span class="o">=</span> <span class="n">unitcell</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">_gmx_to_dimensions</span><span class="p">(</span><span class="n">unitcell2</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span>  <span class="c1"># in-place !</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">)</span>  <span class="c1"># in-place ! (all are lengths)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>  <span class="c1"># in-place!</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">:</span>
                 <span class="c1"># converts nm/ps to A/ps units</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">convert_velocities_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">)</span>
@@ -640,20 +636,22 @@
                     <span class="p">))</span>
 
             <span class="c1"># Footer: box dimensions</span>
-            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">3</span><span class="p">:],</span> <span class="p">[</span><span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">]):</span>
-                <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span>
-                    <span class="n">ag</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">dimensions</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">3</span><span class="p">:],</span> <span class="p">[</span><span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">])):</span>
+                <span class="k">if</span> <span class="n">ag</span><span class="o">.</span><span class="n">dimensions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span>
+                        <span class="n">ag</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                 <span class="c1"># orthorhombic cell, only lengths along axes needed in gro</span>
                 <span class="n">output_gro</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;box_orthorhombic&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-
                 <span class="k">try</span><span class="p">:</span>  <span class="c1"># for AtomGroup/Universe</span>
                     <span class="n">tri_dims</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">triclinic_dimensions</span>
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>  <span class="c1"># for Timestep</span>
                     <span class="n">tri_dims</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">triclinic_dimensions</span>
-
                 <span class="c1"># full output</span>
                 <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">tri_dims</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                 <span class="n">output_gro</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;box_triclinic&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">))</span></div></div>
