@@ -28,9 +28,9 @@ from numpy.testing import (assert_equal, assert_allclose)
 
 from MDAnalysisTests.datafiles import (DLP_CONFIG, DLP_CONFIG_minimal,
                                        DLP_CONFIG_order, DLP_HISTORY,
-                                       DLP_HISTORY_minimal, DLP_HISTORY_order)
+                                       DLP_HISTORY_minimal, DLP_HISTORY_order,
+                                       DLP_HISTORY_minimal_cell)
 
-from unittest import TestCase
 
 class _DLPConfig(object):
     @pytest.fixture()
@@ -210,3 +210,15 @@ class TestDLPolyHistoryMinimal(_DLHistory):
 
     def test_unitcell(self):
         pass
+
+
+class TestDLPolyHistoryMinimalCell(_DLHistory):
+    f = DLP_HISTORY_minimal_cell
+
+    def test_velocity(self, u):
+        with pytest.raises(mda.NoDataError):
+            getattr(u.atoms[0], 'velocity')
+
+    def test_force(self, u):
+        with pytest.raises(mda.NoDataError):
+            getattr(u.atoms[0], 'force')
