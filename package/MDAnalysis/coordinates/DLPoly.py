@@ -42,7 +42,11 @@ _DLPOLY_UNITS = {'length': 'Angstrom', 'velocity': 'Angstrom/ps', 'time': 'ps'}
 class ConfigReader(base.SingleFrameReaderBase):
     """DLPoly Config file Reader
 
+
     .. versionadded:: 0.11.0
+    .. versionchanged:: 2.0.0
+       coordinates, velocities, and forces are no longer stored in 'F' memory
+       layout, instead now using the numpy default of 'C'.
     """
     format = 'CONFIG'
     units = _DLPOLY_UNITS

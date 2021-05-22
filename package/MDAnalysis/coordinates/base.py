@@ -236,6 +236,8 @@ class Timestep(object):
     .. versionchanged:: 2.0.0
        Timestep now can be (un)pickled. Weakref for Reader
        will be dropped.
+       Timestep now stores in to numpy array memory in 'C' order rather than
+       'F' (Fortran).
     """
     order = 'C'
 

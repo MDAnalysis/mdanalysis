@@ -111,6 +111,7 @@ import warnings
 import numpy as np
 
 from . import base
+from .base import Timestep
 from .core import triclinic_box, triclinic_vectors
 from ..exceptions import NoDataError
 from ..lib import util
@@ -146,9 +147,6 @@ def _gmx_to_dimensions(box):
     y = box[_TS_ORDER_Y]
     z = box[_TS_ORDER_Z]  # this ordering is correct! (checked it, OB)
     return triclinic_box(x, y, z)
-
-
-Timestep = base.Timestep
 
 
 class GROReader(base.SingleFrameReaderBase):

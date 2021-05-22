@@ -188,6 +188,7 @@ Classes
 import numpy as np
 import MDAnalysis as mda
 from . import base, core
+from .base import Timestep
 from ..exceptions import NoDataError
 try:
     import h5py
@@ -204,9 +205,6 @@ except ImportError:
 
 else:
     HAS_H5PY = True
-
-# legacy reasons
-Timestep = base.Timestep
 
 
 class H5MDReader(base.ReaderBase):

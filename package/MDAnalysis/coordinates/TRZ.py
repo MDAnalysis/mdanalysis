@@ -90,13 +90,10 @@ import os
 import errno
 
 from . import base
+from .base import Timestep
 from ..lib import util
 from ..lib.util import cached
 from .core import triclinic_box, triclinic_vectors
-
-
-# legacy reasons
-from .base import Timestep
 
 
 class TRZReader(base.ReaderBase):

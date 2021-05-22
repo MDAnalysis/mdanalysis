@@ -192,6 +192,7 @@ import warnings
 from . import base
 from .base import Timestep
 
+
 # These methods all pass in an existing *view* onto a larger array
 def _replace_positions_array(ts, new):
     """Replace the array of positions
@@ -213,17 +214,24 @@ def _replace_positions_array(ts, new):
 
 
     .. versionadded:: 0.19.0
+    .. versionchanged:: 2.0.0
+       This function, and the _repalace helper functions for velocities,
+       forces, and dimensions, have been moved out of the now removed
+       custom timestep object for :class:`MemoryReader`.
     """
     ts.has_positions = True
     ts._pos = new
+
 
 def _replace_velocities_array(ts, new):
     ts.has_velocities = True
     ts._velocities = new
 
+
 def _replace_forces_array(ts, new):
     ts.has_forces = True
     ts._forces = new
+
 
 def _replace_dimensions(ts, new):
     ts._unitcell = new
