@@ -47,7 +47,7 @@ class ConfigReader(base.SingleFrameReaderBase):
     units = _DLPOLY_UNITS
 
     def _read_first_frame(self):
-        unitcell = np.zeros((3, 3), dtype=np.float32, order='F')
+        unitcell = np.zeros((3, 3), dtype=np.float32)
 
         with open(self.filename, 'r') as inf:
             self.title = inf.readline().strip()
@@ -91,11 +91,11 @@ class ConfigReader(base.SingleFrameReaderBase):
 
                 line = inf.readline().strip()
 
-        coords = np.array(coords, dtype=np.float32, order='F')
+        coords = np.array(coords, dtype=np.float32)
         if has_vels:
-            velocities = np.array(velocities, dtype=np.float32, order='F')
+            velocities = np.array(velocities, dtype=np.float32)
         if has_forces:
-            forces = np.array(forces, dtype=np.float32, order='F')
+            forces = np.array(forces, dtype=np.float32)
         self.n_atoms = len(coords)
 
         if ids:
