@@ -2718,8 +2718,9 @@ class AtomGroup(GroupBase):
           trajectory is changed.  See section on **Dynamic selections** below.
           [``True``]
         rdkit_kwargs : dict (optional)
-          Arguments passed to the :class:`~MDAnalysis.converters.RDKitConverter`
-          when using selection based on SMARTS queries
+          Arguments passed to the
+          :class:`~MDAnalysis.converters.RDKit.RDKitConverter` when using
+          selection based on SMARTS queries
         **selgroups : keyword arguments of str: AtomGroup (optional)
           when using the "group" keyword in selections, groups are defined by
           passing them as keyword arguments.  See section on **preexisting
