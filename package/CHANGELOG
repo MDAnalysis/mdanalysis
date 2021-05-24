@@ -187,6 +187,8 @@ Enhancements
 Changes
   * The RDKitParser now raises an error if only part of the atoms have metadata
     on residues (Issue #3318, PR #3325)
+  * Timestep now stores information in 'C' memory layout instead of
+    the previous 'F' default (PR #1738)
   * `analysis.rdf.InterRDF` and `analysis.rdf.InterRDF_s` now store
     their result attributes using the `analysis.base.Results` class
     (Issue #3276, #3261)

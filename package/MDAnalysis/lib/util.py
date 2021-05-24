@@ -2386,6 +2386,8 @@ def check_box(box):
          in :mod:`~MDAnalysis.lib.c_distances`.
        * Removed obsolete box types ``tri_box`` and ``tri_vecs_bad``.
     """
+    if box is None:
+        raise ValueError("Box is None")
     from .mdamath import triclinic_vectors  # avoid circular import
     box = np.asarray(box, dtype=np.float32, order='C')
     if box.shape != (6,):
