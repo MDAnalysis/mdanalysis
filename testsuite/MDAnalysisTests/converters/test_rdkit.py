@@ -22,6 +22,7 @@
 #
 
 import copy
+from io import StringIO
 import pytest
 import MDAnalysis as mda
 from MDAnalysis.topology.guessers import guess_atom_element
@@ -662,3 +663,20 @@ class TestRDKitFunctions(object):
         mol = _standardize_patterns(mol)
         Chem.SanitizeMol(mol)
         assert mol.HasSubstructMatch(ref) and ref.HasSubstructMatch(mol)
+
+    @pytest.mark.parametrize("smi", [
+        "O=C([C@H](CC1=C[NH1+]=CN1)[NH3+])[O-]",
+        "O=S(C)(C)=NC",
+    ])
+    def test_reorder_atoms(self, smi):
+        mol = Chem.MolFromSmiles(smi)
+        mol = Chem.AddHs(mol)
+        # remove bond order and charges info
+        pdb = Chem.MolToPDBBlock(mol)
+        u = mda.Universe(StringIO(pdb), format="PDB")
+        # atoms are reordered during infering, and will be reordered back to
+        # their original order with Chem.RenumberAtoms
+        mu = u.atoms.convert_to.rdkit()
+        values = [a.GetSymbol() for a in mu.GetAtoms()]
+        expected = [a.GetSymbol() for a in mol.GetAtoms()]
+        assert values == expected
