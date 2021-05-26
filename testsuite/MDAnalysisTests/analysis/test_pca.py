@@ -256,7 +256,7 @@ def test_compare_wrong_class(u, pca, method):
 
 
 @pytest.mark.parametrize("attr", ("p_components", "variance",
-                                  "cumulated_variance", "mean_atoms"))
+                                  "cumulated_variance"))
 def test_pca_attr_warning(u, attr):
     pca = PCA(u, select=SELECTION).run(stop=2)
     wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
