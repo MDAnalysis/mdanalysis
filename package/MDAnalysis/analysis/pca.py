@@ -303,10 +303,10 @@ class PCA(AnalysisBase):
         Parameters
         ----------
         atomgroup : AtomGroup or Universe
-            The atomgroup or universe containing atoms to be PCA transformed.
+            The AtomGroup or Universe containing atoms to be PCA transformed.
         n_components : int, optional
-            The number of components to be projected onto, The default
-            ``None``maps onto all components.
+            The number of components to be projected onto. The default
+            ``None`` maps onto all components.
         start : int, optional
             The frame to start on for the PCA transform. The default
             ``None`` becomes 0, the first frame index.
@@ -316,7 +316,7 @@ class PCA(AnalysisBase):
             Iteration stops *before* this frame number, which means that the
             trajectory would be read until the end.
         step : int, optional
-            Number of frames to skip over for PCA transform. If set to ``None``
+            Include every `step` frames in the PCA transform. If set to ``None``
             (the default) then every frame is analyzed (i.e., same as
             ``step=1``).
 
