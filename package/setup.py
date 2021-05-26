@@ -158,7 +158,7 @@ class MDAExtension(Extension, object):
     #  care of calling it when needed.
     def __init__(self, name, sources, *args, **kwargs):
         self._mda_include_dirs = []
-        sources = [abspath(s) for s in sources]
+        # don't abspath sources else packaging fails on Windows (issue #3129)
         super(MDAExtension, self).__init__(name, sources, *args, **kwargs)
 
     @property
@@ -269,12 +269,12 @@ def using_clang():
 
 
 def extensions(config):
-    # dev installs must build their own cythonized files.
-    use_cython = config.get('use_cython', default=not is_release)
+    # usually (except coming from release tarball) cython files must be generated
+    use_cython = config.get('use_cython', default=cython_found)
     use_openmp = config.get('use_openmp', default=True)
 
     extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops',
-                          '-fsigned-zeros']  # see #2722
+                          '-fsigned-zeros'] # see #2722
     define_macros = []
     if config.get('debug_cflags', default=False):
         extra_compile_args.extend(['-Wall', '-pedantic'])
@@ -432,7 +432,7 @@ def extensions(config):
                               extra_compile_args=encore_compile_args)
     nsgrid = MDAExtension('MDAnalysis.lib.nsgrid',
                              ['MDAnalysis/lib/nsgrid' + cpp_source_suffix],
-                             include_dirs=include_dirs,
+                             include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                              language='c++',
                              define_macros=define_macros,
                              extra_compile_args=cpp_extra_compile_args,
@@ -599,6 +599,7 @@ if __name__ == '__main__':
           'tqdm>=4.43.0',
           'threadpoolctl',
     ]
+
     if not os.name == 'nt':
         install_requires.append('gsd>=1.4.0')
     else:

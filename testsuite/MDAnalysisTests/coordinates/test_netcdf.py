@@ -200,9 +200,8 @@ class TestNCDFReader2(object):
         assert_almost_equal(ref, u.trajectory.ts.dt, self.prec)
 
     def test_box(self, u):
-        ref = np.array([0., 0., 0., 0., 0., 0.], dtype=np.float32)
         for ts in u.trajectory:
-            assert_equal(ref, ts.dimensions)
+            assert ts.dimensions is None
 
 
 class TestNCDFReader3(object):
@@ -918,3 +917,11 @@ class TestNCDFWriterErrorsWarnings(object):
             u = make_Universe(trajectory=True)
             with pytest.raises(IOError):
                 w.write(u)
+
+    def test_scale_factor_future(self, outfile):
+        u = mda.Universe(GRO)
+        wmsg = "`scale_factor` writing will change"
+        with pytest.warns(FutureWarning, match=wmsg):
+            with NCDFWriter(outfile, u.trajectory.n_atoms) as w:
+                w.write(u.atoms)
+

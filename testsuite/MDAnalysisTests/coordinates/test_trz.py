@@ -31,7 +31,6 @@ from numpy.testing import (
 import numpy as np
 
 from MDAnalysisTests.coordinates.reference import RefTRZ
-from MDAnalysisTests.coordinates.base import BaseTimestepTest
 from MDAnalysisTests.datafiles import (TRZ_psf, TRZ, two_water_gro)
 
 
@@ -245,14 +244,3 @@ class TestWrite_Partial_Timestep(object):
                             u_ag.atoms.positions,
                             self.prec,
                             err_msg="Writing AtomGroup timestep failed.")
-
-
-class TestTRZTimestep(BaseTimestepTest):
-    Timestep = mda.coordinates.TRZ.Timestep
-    name = "TRZ"
-    has_box = True
-    set_box = True
-    unitcell = np.array([10., 0., 0.,
-                         0., 11., 0.,
-                         0., 0., 12.])
-    uni_args = (TRZ_psf, TRZ)

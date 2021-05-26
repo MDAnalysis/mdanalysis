@@ -208,6 +208,7 @@ from .coordinates.core import writer as Writer
 
 # After Universe import
 from .coordinates.MMTF import fetch_mmtf
+from . import converters
 
 from .due import due, Doi, BibTeX
 

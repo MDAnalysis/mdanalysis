@@ -333,7 +333,7 @@ def contact_matrix(d, radius, out=None):
         distance matrix
     radius : float
         distance below which a contact is formed.
-    out: array (optional)
+    out : array (optional)
         If `out` is supplied as a pre-allocated array of the correct
         shape then it is filled instead of allocating a new one in
         order to increase performance.

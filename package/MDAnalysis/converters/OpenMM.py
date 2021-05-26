@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""OpenMM structure I/O --- :mod:`MDAnalysis.coordinates.OpenMM`
+"""OpenMM structure I/O --- :mod:`MDAnalysis.converters.OpenMM`
 ================================================================
 
 
@@ -66,8 +66,7 @@ Classes
 
 import numpy as np
 
-from . import base
-from .. import units
+from ..coordinates import base
 
 
 class OpenMMSimulationReader(base.SingleFrameReaderBase):
@@ -165,10 +164,11 @@ class OpenMMAppReader(base.SingleFrameReaderBase):
 
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)
-            self.ts.triclinic_dimensions = self.convert_pos_from_native(
-                self.ts.triclinic_dimensions, inplace=False
-            )
-            self.ts.dimensions[3:] = _sanitize_box_angles(self.ts.dimensions[3:])
+            if self.ts.dimensions is not None:
+                self.ts.triclinic_dimensions = self.convert_pos_from_native(
+                    self.ts.triclinic_dimensions, inplace=False
+                )
+                self.ts.dimensions[3:] = _sanitize_box_angles(self.ts.dimensions[3:])
 
     def _mda_timestep_from_omm_app(self):
         """ Construct Timestep object from OpenMM Application object """
