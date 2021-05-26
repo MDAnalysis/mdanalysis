@@ -161,8 +161,8 @@ class PCA(AnalysisBase):
     -----
     Computation can be sped up by supplying precalculated mean positions.
 
-    .. versionchanged:: 2.x
-       ``mean_atoms`` removed, as this did not reliably contain the mean 
+    .. versionchanged:: 2.0.0
+       ``mean_atoms`` removed, as this did not reliably contain the mean
        positions.
        ``mean`` input now accepts coordinate arrays instead of atomgroup.
 
@@ -194,7 +194,7 @@ class PCA(AnalysisBase):
             If True, the trajectory will be aligned to a reference
             structure.
         mean : array_like, optional
-            Optional reference positions to be be used as the mean of the 
+            Optional reference positions to be be used as the mean of the
             covariance matrix.
         n_components : int, optional
             The number of principal components to be saved, default saves
@@ -226,7 +226,7 @@ class PCA(AnalysisBase):
             self._calc_mean = True
         else:
             self.mean = np.asarray(self._mean)
-            if self.mean.shape[0] != self._n_atoms: 
+            if self.mean.shape[0] != self._n_atoms:
                 raise ValueError('Number of atoms in reference ({}) does '
                                  'not match number of atoms in the '
                                  'selection ({})'.format(self._n_atoms,
@@ -316,8 +316,8 @@ class PCA(AnalysisBase):
             Iteration stops *before* this frame number, which means that the
             trajectory would be read until the end.
         step : int, optional
-            Include every `step` frames in the PCA transform. If set to ``None``
-            (the default) then every frame is analyzed (i.e., same as
+            Include every `step` frames in the PCA transform. If set to
+            ``None`` (the default) then every frame is analyzed (i.e., same as
             ``step=1``).
 
         Returns
