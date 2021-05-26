@@ -32,7 +32,6 @@ provide the format in the keyword argument *format* to
    coordinates/MMTF
    coordinates/MOL2
    coordinates/NAMDBIN
-   coordinates/OpenMM
    coordinates/PDB
    coordinates/PDBQT
    coordinates/PQR

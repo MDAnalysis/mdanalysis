@@ -104,6 +104,7 @@ from ..lib.util import cached, warn_if_not_unique, unique_int_1d
 from ..lib import distances
 from ..lib import transformations
 from ..lib import mdamath
+from .accessors import Accessor, ConverterWrapper
 from ..selections import get_writer as get_selection_writer_for
 from . import selection
 from ..exceptions import NoDataError
@@ -714,7 +715,11 @@ class GroupBase(_MutableBase):
     @property
     def dimensions(self):
         """Obtain a copy of the dimensions of the currently loaded Timestep"""
-        return self.universe.trajectory.ts.dimensions.copy()
+        dims = self.universe.trajectory.ts.dimensions
+        if dims is None:
+            return dims
+        else:
+            return dims.copy()
 
     @dimensions.setter
     def dimensions(self, dimensions):
@@ -1559,12 +1564,16 @@ class GroupBase(_MutableBase):
         # Try and auto detect box dimensions:
         if box is None:
             box = self.dimensions
+            if box is None:
+                raise ValueError("No dimensions information in Universe. "
+                                 " Either use the 'box' argument or"
+                                 " set the '.dimensions' attribute")
         else:
             box = np.asarray(box, dtype=np.float32)
-        if not np.all(box > 0.0) or box.shape != (6,):
-            raise ValueError("Invalid box: Box has invalid shape or not all "
-                             "box dimensions are positive. You can specify a "
-                             "valid box using the 'box' argument.")
+            if not np.all(box > 0.0) or box.shape != (6,):
+                raise ValueError("Invalid box: Box has invalid shape or not all "
+                                 "box dimensions are positive. You can specify a "
+                                 "valid box using the 'box' argument.")
 
         # no matter what kind of group we have, we need to work on its (unique)
         # atoms:
@@ -3076,9 +3085,8 @@ class AtomGroup(GroupBase):
                 return attr
 
         # indices of bonds
-        box = self.dimensions if self.dimensions.all() else None
         b = guess_bonds(self.atoms, self.atoms.positions,
-                        vdwradii=vdwradii, box=box)
+                        vdwradii=vdwradii, box=self.dimensions)
         bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
         bondattr._add_bonds(b, guessed=True)
 
@@ -3198,46 +3206,7 @@ class AtomGroup(GroupBase):
                 "cmap only makes sense for a group with exactly 5 atoms")
         return topologyobjects.CMap(self.ix, self.universe)
 
-    def convert_to(self, package):
-        """
-        Convert :class:`AtomGroup` to a structure from another Python package.
-
-        Example
-        -------
-
-        The code below converts a Universe to a :class:`parmed.structure.Structure`.
-
-        .. code-block:: python
-
-            >>> import MDAnalysis as mda
-            >>> from MDAnalysis.tests.datafiles import GRO
-            >>> u = mda.Universe(GRO)
-            >>> parmed_structure = u.atoms.convert_to('PARMED')
-            >>> parmed_structure
-            <Structure 47681 atoms; 11302 residues; 0 bonds; PBC (triclinic); NOT parametrized>
-
-
-        Parameters
-        ----------
-        package: str
-            The name of the package to convert to, e.g. ``"PARMED"``
-
-
-        Returns
-        -------
-        output:
-            An instance of the structure type from another package.
-
-        Raises
-        ------
-        TypeError:
-            No converter was found for the required package
-
-
-        .. versionadded:: 1.0.0
-        """
-        converter = get_converter_for(package)
-        return converter().convert(self.atoms)
+    convert_to = Accessor("convert_to", ConverterWrapper)
 
     def write(self, filename=None, file_format=None,
               filenamefmt="{trjname}_{frame}", frames=None, **kwargs):

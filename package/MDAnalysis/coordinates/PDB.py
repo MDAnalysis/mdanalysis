@@ -423,16 +423,15 @@ class PDBReader(base.ReaderBase):
                     warnings.warn("Failed to read CRYST1 record, "
                                   "possibly invalid PDB file, got:\n{}"
                                   "".format(line))
+                    self.ts.dimensions = None
                 else:
                     if np.allclose(cell_dims, np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0])):
-                        # FIXME: Dimensions set to zeros.
-                        # FIXME: This might change with Issue #2698
                         warnings.warn("1 A^3 CRYST1 record,"
                                       " this is usually a placeholder."
-                                      " Unit cell dimensions will be set"
-                                      " to zeros.")
+                                      " Unit cell dimensions will be set to None.")
+                        self.ts.dimensions = None
                     else:
-                        self.ts._unitcell[:] = cell_dims
+                        self.ts.dimensions = cell_dims
 
         # check if atom number changed
         if pos != self.n_atoms:
@@ -449,7 +448,8 @@ class PDBReader(base.ReaderBase):
         if self.convert_units:
             # both happen inplace
             self.convert_pos_from_native(self.ts._pos)
-            self.convert_pos_from_native(self.ts._unitcell[:3])
+            if not self.ts.dimensions is None:
+                self.convert_pos_from_native(self.ts.dimensions[:3])
         self.ts.frame = frame
         self.ts.data['occupancy'] = occupancy
         return self.ts
@@ -539,6 +539,9 @@ class PDBWriter(base.WriterBase):
     .. versionchanged:: 2.0.0
         Add the `redindex` argument. Setting this keyword to ``True``
         (the default) preserves the behavior in earlier versions of MDAnalysis.
+        The PDB writer checks for a valid chainID entry instead of using the
+        last character of segid. Should a chainID not be present, or not
+        conform to the PDB standard, the default value of  'X' is used.
 
     """
     fmt = {
@@ -726,9 +729,7 @@ class PDBWriter(base.WriterBase):
         except AttributeError:
             pass
 
-        # FIXME: Values for meaningless cell dimensions are not consistent.
-        # FIXME: See Issue #2698. Here we check for both None and zeros
-        if u.dimensions is None or np.allclose(u.dimensions, np.zeros(6)):
+        if u.trajectory.ts.dimensions is None:
             # Unitary unit cell by default. See PDB standard:
             # http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1
             self.CRYST1(np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0]))
@@ -745,7 +746,6 @@ class PDBWriter(base.WriterBase):
 
             warnings.warn("Unit cell dimensions not found. "
                           "CRYST1 record set to unitary values.")
-
         else:
             self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
 
