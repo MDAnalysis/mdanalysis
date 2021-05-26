@@ -171,7 +171,7 @@ def test_given_mean(pca, u):
 
 
 def test_wrong_num_given_mean(u):
-    wrong_mean = [[0,0,0],[1,1,1]]
+    wrong_mean = [[0,0,0], [1,1,1]]
     with pytest.raises(ValueError) as exc:
          pca = PCA(u, select=SELECTION, mean=wrong_mean).run()
     assert 'Number of atoms in' in str(exc.value) 

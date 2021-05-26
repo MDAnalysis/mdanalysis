@@ -222,7 +222,7 @@ class PCA(AnalysisBase):
         self._n_atoms = self._atoms.n_atoms
 
         if self._mean is None:
-            self.mean = np.zeros((self._n_atoms,3))
+            self.mean = np.zeros((self._n_atoms, 3))
             self._calc_mean = True
         else:
             self.mean = np.asarray(self._mean)
