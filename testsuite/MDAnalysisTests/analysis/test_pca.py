@@ -56,7 +56,9 @@ def pca(u):
 
 @pytest.fixture(scope='module')
 def pca_aligned(u):
-    return PCA(u, select=SELECTION, align=True).run()
+    # run on a copy so positions in u are unchanged
+    u_copy = u.copy()
+    return PCA(u_copy, select=SELECTION, align=True).run()
 
 
 def test_cov(pca, u):
@@ -151,20 +153,27 @@ def test_cosine_content():
 
 def test_mean_shape(pca_aligned, u):
     atoms = u.select_atoms(SELECTION)
-    assert_equal(pca_aligned.mean.shape[0], atoms.n_atoms * 3)
+    assert_equal(pca_aligned.mean.shape[0], atoms.n_atoms)
+    assert_equal(pca_aligned.mean.shape[1], 3)
 
 
 def test_calculate_mean(pca_aligned, u, u_aligned):
     ag = u_aligned.select_atoms(SELECTION)
     coords = u_aligned.trajectory.coordinate_array[:, ag.ix]
     assert_almost_equal(pca_aligned.mean, coords.mean(
-        axis=0).ravel(), decimal=5)
+        axis=0), decimal=5)
 
 
-def test_given_mean(pca_aligned, u):
+def test_given_mean(pca, u):
     pca = PCA(u, select=SELECTION, align=False,
-              mean=pca_aligned._mean).run()
-    assert_almost_equal(pca_aligned.cov, pca.cov, decimal=5)
+              mean=pca.mean).run()
+    assert_almost_equal(pca.cov, pca.cov, decimal=5)
+
+
+def test_wrong_num_given_mean(u):
+    wrong_mean = [[0, 0, 0], [1, 1, 1]]
+    with pytest.raises(ValueError, match='Number of atoms in'):
+        pca = PCA(u, select=SELECTION, mean=wrong_mean).run()
 
 
 def test_alignment(pca_aligned, u, u_aligned):

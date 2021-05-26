@@ -99,6 +99,9 @@ Classes and Functions
 ---------------------
 
 .. autoclass:: PCA
+   :members:
+   :inherited-members:
+
 .. autofunction:: cosine_content
 
 """
@@ -146,9 +149,6 @@ class PCA(AnalysisBase):
         of the components preceding it. If a subset of components is not chosen
         then all components are stored and the cumulated variance will converge
         to 1.
-    mean_atoms: MDAnalyis atomgroup
-        After running :meth:`PCA.run`, the mean position of all the atoms
-        used for the creation of the covariance matrix will exist here.
 
     Methods
     -------
@@ -159,7 +159,12 @@ class PCA(AnalysisBase):
 
     Notes
     -----
-    Computation can be sped up by supplying a precalculated mean structure.
+    Computation can be sped up by supplying precalculated mean positions.
+
+    .. versionchanged:: 2.0.0
+       ``mean_atoms`` removed, as this did not reliably contain the mean
+       positions.
+       ``mean`` input now accepts coordinate arrays instead of atomgroup.
 
     .. versionchanged:: 1.0.0
        ``n_components`` now limits the correct axis of ``p_components``.
@@ -188,8 +193,8 @@ class PCA(AnalysisBase):
         align : boolean, optional
             If True, the trajectory will be aligned to a reference
             structure.
-        mean : MDAnalysis atomgroup, optional
-            An optional reference structure to be used as the mean of the
+        mean : array_like, optional
+            Optional reference positions to be be used as the mean of the
             covariance matrix.
         n_components : int, optional
             The number of principal components to be saved, default saves
@@ -217,10 +222,15 @@ class PCA(AnalysisBase):
         self._n_atoms = self._atoms.n_atoms
 
         if self._mean is None:
-            self.mean = np.zeros(self._n_atoms*3)
+            self.mean = np.zeros((self._n_atoms, 3))
             self._calc_mean = True
         else:
-            self.mean = self._mean.positions
+            self.mean = np.asarray(self._mean)
+            if self.mean.shape[0] != self._n_atoms:
+                raise ValueError('Number of atoms in reference ({}) does '
+                                 'not match number of atoms in the '
+                                 'selection ({})'.format(self._n_atoms,
+                                                         self.mean.shape[0]))
             self._calc_mean = False
 
         if self.n_frames == 1:
@@ -243,11 +253,9 @@ class PCA(AnalysisBase):
                                                      mobile_com=mobile_cog,
                                                      ref_com=self._ref_cog)
 
-                self.mean += self._atoms.positions.ravel()
+                self.mean += self._atoms.positions
             self.mean /= self.n_frames
-
-        self.mean_atoms = self._atoms
-        self.mean_atoms.positions = self._atoms.positions
+        self._xmean = np.ravel(self.mean)
 
     def _single_frame(self):
         if self.align:
@@ -261,7 +269,7 @@ class PCA(AnalysisBase):
             x = mobile_atoms.positions.ravel()
         else:
             x = self._atoms.positions.ravel()
-        x -= self.mean
+        x -= self._xmean
         self.cov += np.dot(x[:, np.newaxis], x[:, np.newaxis].T)
 
     def _conclude(self):
@@ -294,11 +302,11 @@ class PCA(AnalysisBase):
 
         Parameters
         ----------
-        atomgroup : MDAnalysis atomgroup/ Universe
-            The atomgroup or universe containing atoms to be PCA transformed.
+        atomgroup : AtomGroup or Universe
+            The AtomGroup or Universe containing atoms to be PCA transformed.
         n_components : int, optional
-            The number of components to be projected onto, The default
-            ``None``maps onto all components.
+            The number of components to be projected onto. The default
+            ``None`` maps onto all components.
         start : int, optional
             The frame to start on for the PCA transform. The default
             ``None`` becomes 0, the first frame index.
@@ -308,13 +316,14 @@ class PCA(AnalysisBase):
             Iteration stops *before* this frame number, which means that the
             trajectory would be read until the end.
         step : int, optional
-            Number of frames to skip over for PCA transform. If set to ``None``
-            (the default) then every frame is analyzed (i.e., same as
+            Include every `step` frames in the PCA transform. If set to
+            ``None`` (the default) then every frame is analyzed (i.e., same as
             ``step=1``).
 
         Returns
         -------
         pca_space : array, shape (n_frames, n_components)
+
 
         .. versionchanged:: 0.19.0
            Transform now requires that :meth:`run` has been called before,
@@ -344,7 +353,7 @@ class PCA(AnalysisBase):
         dot = np.zeros((n_frames, dim))
 
         for i, ts in enumerate(traj[start:stop:step]):
-            xyz = atomgroup.positions.ravel() - self.mean
+            xyz = atomgroup.positions.ravel() - self._xmean
             dot[i] = np.dot(xyz, self._p_components[:, :dim])
 
         return dot
