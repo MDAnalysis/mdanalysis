@@ -283,6 +283,9 @@
 <span class="sd">---------------------</span>
 
 <span class="sd">.. autoclass:: PCA</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
 <span class="sd">.. autofunction:: cosine_content</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
@@ -330,9 +333,6 @@
 <span class="sd">        of the components preceding it. If a subset of components is not chosen</span>
 <span class="sd">        then all components are stored and the cumulated variance will converge</span>
 <span class="sd">        to 1.</span>
-<span class="sd">    mean_atoms: MDAnalyis atomgroup</span>
-<span class="sd">        After running :meth:`PCA.run`, the mean position of all the atoms</span>
-<span class="sd">        used for the creation of the covariance matrix will exist here.</span>
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
@@ -343,7 +343,12 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    Computation can be sped up by supplying a precalculated mean structure.</span>
+<span class="sd">    Computation can be sped up by supplying precalculated mean positions.</span>
+
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       ``mean_atoms`` removed, as this did not reliably contain the mean</span>
+<span class="sd">       positions.</span>
+<span class="sd">       ``mean`` input now accepts coordinate arrays instead of atomgroup.</span>
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       ``n_components`` now limits the correct axis of ``p_components``.</span>
@@ -372,8 +377,8 @@
 <span class="sd">        align : boolean, optional</span>
 <span class="sd">            If True, the trajectory will be aligned to a reference</span>
 <span class="sd">            structure.</span>
-<span class="sd">        mean : MDAnalysis atomgroup, optional</span>
-<span class="sd">            An optional reference structure to be used as the mean of the</span>
+<span class="sd">        mean : array_like, optional</span>
+<span class="sd">            Optional reference positions to be be used as the mean of the</span>
 <span class="sd">            covariance matrix.</span>
 <span class="sd">        n_components : int, optional</span>
 <span class="sd">            The number of principal components to be saved, default saves</span>
@@ -401,10 +406,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">n_atoms</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mean</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="o">*</span><span class="mi">3</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_calc_mean</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mean</span><span class="o">.</span><span class="n">positions</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mean</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Number of atoms in reference (</span><span class="si">{}</span><span class="s1">) does &#39;</span>
+                                 <span class="s1">&#39;not match number of atoms in the &#39;</span>
+                                 <span class="s1">&#39;selection (</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">,</span>
+                                                         <span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_calc_mean</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -427,11 +437,9 @@
                                                      <span class="n">mobile_com</span><span class="o">=</span><span class="n">mobile_cog</span><span class="p">,</span>
                                                      <span class="n">ref_com</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ref_cog</span><span class="p">)</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">positions</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mean</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">mean_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mean_atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">positions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xmean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mean</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">align</span><span class="p">:</span>
@@ -445,7 +453,7 @@
             <span class="n">x</span> <span class="o">=</span> <span class="n">mobile_atoms</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-        <span class="n">x</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span>
+        <span class="n">x</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmean</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cov</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="n">x</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -478,11 +486,11 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        atomgroup : MDAnalysis atomgroup/ Universe</span>
-<span class="sd">            The atomgroup or universe containing atoms to be PCA transformed.</span>
+<span class="sd">        atomgroup : AtomGroup or Universe</span>
+<span class="sd">            The AtomGroup or Universe containing atoms to be PCA transformed.</span>
 <span class="sd">        n_components : int, optional</span>
-<span class="sd">            The number of components to be projected onto, The default</span>
-<span class="sd">            ``None``maps onto all components.</span>
+<span class="sd">            The number of components to be projected onto. The default</span>
+<span class="sd">            ``None`` maps onto all components.</span>
 <span class="sd">        start : int, optional</span>
 <span class="sd">            The frame to start on for the PCA transform. The default</span>
 <span class="sd">            ``None`` becomes 0, the first frame index.</span>
@@ -492,13 +500,14 @@
 <span class="sd">            Iteration stops *before* this frame number, which means that the</span>
 <span class="sd">            trajectory would be read until the end.</span>
 <span class="sd">        step : int, optional</span>
-<span class="sd">            Number of frames to skip over for PCA transform. If set to ``None``</span>
-<span class="sd">            (the default) then every frame is analyzed (i.e., same as</span>
+<span class="sd">            Include every `step` frames in the PCA transform. If set to</span>
+<span class="sd">            ``None`` (the default) then every frame is analyzed (i.e., same as</span>
 <span class="sd">            ``step=1``).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        pca_space : array, shape (n_frames, n_components)</span>
+
 
 <span class="sd">        .. versionchanged:: 0.19.0</span>
 <span class="sd">           Transform now requires that :meth:`run` has been called before,</span>
@@ -528,12 +537,12 @@
         <span class="n">dot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">traj</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">]):</span>
-            <span class="n">xyz</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span>
+            <span class="n">xyz</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmean</span>
             <span class="n">dot</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p_components</span><span class="p">[:,</span> <span class="p">:</span><span class="n">dim</span><span class="p">])</span>
 
         <span class="k">return</span> <span class="n">dot</span></div>
 
-    <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
+<div class="viewcode-block" id="PCA.rmsip"><a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.rmsip">[docs]</a>    <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
         <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1002/(SICI)1097-0134(19990901)36:4&lt;419::AID-PROT5&gt;3.0.CO;2-U&#39;</span><span class="p">),</span>
         <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1529/biophysj.104.052449&#39;</span><span class="p">),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;RMSIP&quot;</span><span class="p">,</span>
@@ -583,9 +592,9 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;other must be another PCA class&#39;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">rmsip</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rmsip</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">)</span></div>
 
-    <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
+<div class="viewcode-block" id="PCA.cumulative_overlap"><a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.cumulative_overlap">[docs]</a>    <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
         <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1016/j.str.2007.12.011&#39;</span><span class="p">),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Cumulative overlap&quot;</span><span class="p">,</span>
         <span class="n">path</span><span class="o">=</span><span class="s1">&#39;MDAnalysis.analysis.pca&#39;</span><span class="p">,</span>
@@ -638,7 +647,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;other must be another PCA class&#39;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">cumulative_overlap</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">cumulative_overlap</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="cosine_content"><a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.cosine_content">[docs]</a><span class="k">def</span> <span class="nf">cosine_content</span><span class="p">(</span><span class="n">pca_space</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>

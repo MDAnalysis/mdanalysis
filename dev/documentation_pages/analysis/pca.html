@@ -347,31 +347,21 @@ to 1.</p>
 </table>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="MDAnalysis.analysis.pca.PCA.mean_atoms">
-<code class="descname">mean_atoms</code><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.mean_atoms" title="Permalink to this definition">¶</a></dt>
-<dd><p>After running <code class="xref py py-meth docutils literal notranslate"><span class="pre">PCA.run()</span></code>, the mean position of all the atoms
-used for the creation of the covariance matrix will exist here.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">MDAnalyis atomgroup</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="method">
 <dt id="MDAnalysis.analysis.pca.PCA.transform">
 <code class="descname">transform</code><span class="sig-paren">(</span><em>atomgroup</em>, <em>n_components=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA.transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Take an atomgroup or universe with the same number of atoms as was
-used for the calculation in <code class="xref py py-meth docutils literal notranslate"><span class="pre">PCA.run()</span></code>, and project it onto the
+used for the calculation in <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.run" title="MDAnalysis.analysis.pca.PCA.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PCA.run()</span></code></a>, and project it onto the
 principal components.</p>
 </dd></dl>
 
 <p class="rubric">Notes</p>
-<p>Computation can be sped up by supplying a precalculated mean structure.</p>
+<p>Computation can be sped up by supplying precalculated mean positions.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span><code class="docutils literal notranslate"><span class="pre">mean_atoms</span></code> removed, as this did not reliably contain the mean
+positions.
+<code class="docutils literal notranslate"><span class="pre">mean</span></code> input now accepts coordinate arrays instead of atomgroup.</p>
+</div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.0.0: </span><code class="docutils literal notranslate"><span class="pre">n_components</span></code> now limits the correct axis of <code class="docutils literal notranslate"><span class="pre">p_components</span></code>.
 <code class="docutils literal notranslate"><span class="pre">cumulated_variance</span></code> now accurately represents the contribution of
@@ -395,7 +385,7 @@ mean positions.  Previously the 0th frame was always used.</p>
 the atomgroup.</li>
 <li><strong>align</strong> (<em>boolean</em><em>, </em><em>optional</em>) – If True, the trajectory will be aligned to a reference
 structure.</li>
-<li><strong>mean</strong> (<em>MDAnalysis atomgroup</em><em>, </em><em>optional</em>) – An optional reference structure to be used as the mean of the
+<li><strong>mean</strong> (<em>array_like</em><em>, </em><em>optional</em>) – Optional reference positions to be be used as the mean of the
 covariance matrix.</li>
 <li><strong>n_components</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – The number of principal components to be saved, default saves
 all principal components</li>
@@ -405,6 +395,134 @@ all principal components</li>
 </tr>
 </tbody>
 </table>
+<dl class="method">
+<dt id="MDAnalysis.analysis.pca.PCA.cumulative_overlap">
+<code class="descname">cumulative_overlap</code><span class="sig-paren">(</span><em>other</em>, <em>i=0</em>, <em>n_components=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA.cumulative_overlap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.cumulative_overlap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the cumulative overlap of a vector in a subspace.</p>
+<p>This is not symmetric. The cumulative overlap measures the overlap of
+the chosen vector in this instance, in the <code class="docutils literal notranslate"><span class="pre">other</span></code> subspace.</p>
+<p>Please cite <a class="reference internal" href="../references.html#yang2008" id="id2">[Yang2008]</a> if you use this function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>other</strong> (<a class="reference internal" href="#MDAnalysis.analysis.pca.PCA" title="MDAnalysis.analysis.pca.PCA"><code class="xref py py-class docutils literal notranslate"><span class="pre">PCA</span></code></a>) – Another PCA class. This must have already been run.</li>
+<li><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – The index of eigenvector to be analysed.</li>
+<li><strong>n_components</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – number of components in <code class="docutils literal notranslate"><span class="pre">other</span></code> to compute for the cumulative overlap.
+<code class="docutils literal notranslate"><span class="pre">None</span></code> computes all of them.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Cumulative overlap of the chosen vector in this instance to
+the <code class="docutils literal notranslate"><span class="pre">other</span></code> subspace. 0 indicates that they are mutually
+orthogonal, whereas 1 indicates that they are identical.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.cumulative_overlap" title="MDAnalysis.analysis.pca.PCA.cumulative_overlap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cumulative_overlap()</span></code></a>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.pca.PCA.rmsip">
+<code class="descname">rmsip</code><span class="sig-paren">(</span><em>other</em>, <em>n_components=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA.rmsip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.rmsip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the root mean square inner product between subspaces.</p>
+<p>This is only symmetric if the number of components is the same for
+both instances. The RMSIP effectively measures how
+correlated the vectors of this instance are to those of <code class="docutils literal notranslate"><span class="pre">other</span></code>.</p>
+<p>Please cite <a class="reference internal" href="../references.html#amadei1999" id="id3">[Amadei1999]</a> and <a class="reference internal" href="../references.html#leo-macias2004" id="id4">[Leo-Macias2004]</a> if you use this function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>other</strong> (<a class="reference internal" href="#MDAnalysis.analysis.pca.PCA" title="MDAnalysis.analysis.pca.PCA"><code class="xref py py-class docutils literal notranslate"><span class="pre">PCA</span></code></a>) – Another PCA class. This must have already been run.</li>
+<li><strong>n_components</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>tuple of ints</em><em>, </em><em>optional</em>) – number of components to compute for the inner products.
+<code class="docutils literal notranslate"><span class="pre">None</span></code> computes all of them.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Root mean square inner product of the selected subspaces.
+0 indicates that they are mutually orthogonal, whereas 1 indicates
+that they are identical.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.rmsip" title="MDAnalysis.analysis.pca.PCA.rmsip"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rmsip()</span></code></a>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.pca.PCA.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>verbose=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the calculation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</li>
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</li>
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">transform</code><span class="sig-paren">(</span><em>atomgroup</em>, <em>n_components=None</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA.transform"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Apply the dimensionality reduction on a trajectory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – The AtomGroup or Universe containing atoms to be PCA transformed.</li>
+<li><strong>n_components</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – The number of components to be projected onto. The default
+<code class="docutils literal notranslate"><span class="pre">None</span></code> maps onto all components.</li>
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – The frame to start on for the PCA transform. The default
+<code class="docutils literal notranslate"><span class="pre">None</span></code> becomes 0, the first frame index.</li>
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Frame index to stop PCA transform. The default <code class="docutils literal notranslate"><span class="pre">None</span></code> becomes
+the total number of frames in the trajectory.
+Iteration stops <em>before</em> this frame number, which means that the
+trajectory would be read until the end.</li>
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Include every <cite>step</cite> frames in the PCA transform. If set to
+<code class="docutils literal notranslate"><span class="pre">None</span></code> (the default) then every frame is analyzed (i.e., same as
+<code class="docutils literal notranslate"><span class="pre">step=1</span></code>).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>pca_space</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array, shape (n_frames, n_components)</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span>Transform now requires that <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.run" title="MDAnalysis.analysis.pca.PCA.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> has been called before,
+otherwise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="function">
@@ -414,7 +532,7 @@ all principal components</li>
 <p>The cosine content of pca projections can be used as an indicator if a
 simulation is converged. Values close to 1 are an indicator that the
 simulation isn’t converged. For values below 0.7 no statement can be made.
-If you use this function please cite <a class="reference internal" href="#berkhess1" id="id2">[BerkHess1]</a>.</p>
+If you use this function please cite <a class="reference internal" href="#berkhess1" id="id5">[BerkHess1]</a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -439,7 +557,7 @@ If you use this function please cite <a class="reference internal" href="#berkhe
 <table class="docutils citation" frame="void" id="berkhess1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[BerkHess1]</a></td><td>Berk Hess. Convergence of sampling in protein simulations.
+<tr><td class="label"><a class="fn-backref" href="#id5">[BerkHess1]</a></td><td>Berk Hess. Convergence of sampling in protein simulations.
 Phys. Rev. E 65, 031910 (2002).</td></tr>
 </tbody>
 </table>
