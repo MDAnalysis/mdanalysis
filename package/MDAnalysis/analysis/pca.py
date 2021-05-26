@@ -302,7 +302,7 @@ class PCA(AnalysisBase):
 
         Parameters
         ----------
-        atomgroup : MDAnalysis atomgroup/ Universe
+        atomgroup : AtomGroup or Universe
             The atomgroup or universe containing atoms to be PCA transformed.
         n_components : int, optional
             The number of components to be projected onto, The default
@@ -323,6 +323,7 @@ class PCA(AnalysisBase):
         Returns
         -------
         pca_space : array, shape (n_frames, n_components)
+
 
         .. versionchanged:: 0.19.0
            Transform now requires that :meth:`run` has been called before,
