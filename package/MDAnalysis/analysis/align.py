@@ -301,7 +301,7 @@ def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,
         Atoms to be translated
     mobile_com: ndarray
         array of xyz coordinate of mobile center of mass
-    ref_com: ndarray
+    ref_com : ndarray
         array of xyz coordinate of reference center of mass
     weights : array_like (optional)
        choose weights. With ``None`` weigh each atom equally. If a float array

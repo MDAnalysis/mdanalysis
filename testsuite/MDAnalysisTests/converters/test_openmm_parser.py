@@ -90,6 +90,7 @@ class OpenMMTopologyBase(ParserBase):
 
     def test_segids(self, top):
         assert len(top.segids.values) == self.expected_n_segments
+        assert all(isinstance(segid, str) for segid in top.segids.values)
         if self.expected_n_segments:
             assert isinstance(top.segids.values, np.ndarray)
         else:

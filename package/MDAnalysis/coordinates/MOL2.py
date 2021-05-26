@@ -210,7 +210,6 @@ class MOL2Reader(base.ReaderBase):
         return self._read_frame(frame)
 
     def _read_frame(self, frame):
-        unitcell = np.zeros(6, dtype=np.float32)
         try:
             block = self.frames[frame]
         except IndexError:
@@ -227,11 +226,10 @@ class MOL2Reader(base.ReaderBase):
                 pass
 
         self.ts.positions = np.array(coords, dtype=np.float32)
-        self.ts.unitcell = unitcell
+
         if self.convert_units:
             # in-place !
             self.convert_pos_from_native(self.ts._pos)
-            self.convert_pos_from_native(self.ts._unitcell[:3])
         self.ts.frame = frame
 
         return self.ts

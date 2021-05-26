@@ -396,9 +396,7 @@ Attributes
       Boolean of whether force data is available
   ``dimensions``
       system box dimensions (`x, y, z, alpha, beta, gamma`)
-      (typically implemented as a property because it needs to translate whatever is in the
-      underlying :class:`~MDAnalysis.coordinates.base.Timestep._unitcell` attribute. Also
-      comes with a setter that takes a MDAnalysis box so that one can do ::
+      Also comes with a setter that takes a MDAnalysis box so that one can do ::
 
           Timestep.dimensions = [A, B, C, alpha, beta, gamma]
 
