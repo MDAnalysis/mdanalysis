@@ -227,12 +227,13 @@
 <span class="sd">components are the eigenvectors of this matrix.</span>
 
 <span class="sd">For each eigenvector, its eigenvalue is the variance that the eigenvector</span>
-<span class="sd">explains. Stored in :attr:`PCA.cumulated_variance`, a ratio for each number of</span>
-<span class="sd">eigenvectors up to index :math:`i` is provided to quickly find out how many</span>
-<span class="sd">principal components are needed to explain the amount of variance reflected by</span>
-<span class="sd">those :math:`i` eigenvectors. For most data, :attr:`PCA.cumulated_variance`</span>
+<span class="sd">explains. Stored in :attr:`PCA.results.cumulated_variance`, a ratio for each</span>
+<span class="sd">number of eigenvectors up to index :math:`i` is provided to quickly find out</span>
+<span class="sd">how many principal components are needed to explain the amount of variance</span>
+<span class="sd">reflected by those :math:`i` eigenvectors. For most data,</span>
+<span class="sd">:attr:`PCA.results.cumulated_variance`</span>
 <span class="sd">will be approximately equal to one for some :math:`n` that is significantly</span>
-<span class="sd">smaller than the total number of components, these are the components of</span>
+<span class="sd">smaller than the total number of components. These are the components of</span>
 <span class="sd">interest given by Principal Component Analysis.</span>
 
 <span class="sd">From here, we can project a trajectory onto these principal components and</span>
@@ -251,30 +252,34 @@
 <span class="sd">:data:`~MDAnalysis.tests.datafiles.DCD`). This tutorial shows how to use the</span>
 <span class="sd">PCA class.</span>
 
-<span class="sd">First load all modules and test data</span>
+<span class="sd">First load all modules and test data::</span>
 
-<span class="sd">    &gt;&gt;&gt; import MDAnalysis as mda</span>
-<span class="sd">    &gt;&gt;&gt; import MDAnalysis.analysis.pca as pca</span>
-<span class="sd">    &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">    import MDAnalysis as mda</span>
+<span class="sd">    import MDAnalysis.analysis.pca as pca</span>
+<span class="sd">    from MDAnalysis.tests.datafiles import PSF, DCD</span>
+
 
 <span class="sd">Given a universe containing trajectory data we can perform Principal Component</span>
 <span class="sd">Analyis by using the class :class:`PCA` and retrieving the principal</span>
-<span class="sd">components.</span>
+<span class="sd">components.::</span>
 
-<span class="sd">    &gt;&gt;&gt; u = mda.Universe(PSF, DCD)</span>
-<span class="sd">    &gt;&gt;&gt; PSF_pca = pca.PCA(u, select=&#39;backbone&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; PSF_pca.run()</span>
+<span class="sd">    u = mda.Universe(PSF, DCD)</span>
+<span class="sd">    PSF_pca = pca.PCA(u, select=&#39;backbone&#39;)</span>
+<span class="sd">    PSF_pca.run()</span>
+
 
 <span class="sd">Inspect the components to determine the principal components you would like</span>
 <span class="sd">to retain. The choice is arbitrary, but I will stop when 95 percent of the</span>
 <span class="sd">variance is explained by the components. This cumulated variance by the</span>
 <span class="sd">components is conveniently stored in the one-dimensional array attribute</span>
-<span class="sd">``cumulated_variance``. The value at the ith index of `cumulated_variance`</span>
-<span class="sd">is the sum of the variances from 0 to i.</span>
+<span class="sd">:attr:`PCA.results.cumulated_variance`. The value at the ith index of</span>
+<span class="sd">:attr:`PCA.results.cumulated_variance` is the sum of the variances from 0 to</span>
+<span class="sd">i.::</span>
 
-<span class="sd">    &gt;&gt;&gt; n_pcs = np.where(PSF_pca.cumulated_variance &gt; 0.95)[0][0]</span>
-<span class="sd">    &gt;&gt;&gt; atomgroup = u.select_atoms(&#39;backbone&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; pca_space = PSF_pca.transform(atomgroup, n_components=n_pcs)</span>
+<span class="sd">    n_pcs = np.where(PSF_pca.results.cumulated_variance &gt; 0.95)[0][0]</span>
+<span class="sd">    atomgroup = u.select_atoms(&#39;backbone&#39;)</span>
+<span class="sd">    pca_space = PSF_pca.transform(atomgroup, n_components=n_pcs)</span>
+
 
 <span class="sd">From here, inspection of the ``pca_space`` and conclusions to be drawn from the</span>
 <span class="sd">data are left to the user.</span>
@@ -287,6 +292,10 @@
 <span class="sd">   :inherited-members:</span>
 
 <span class="sd">.. autofunction:: cosine_content</span>
+
+<span class="sd">.. autofunction:: rmsip</span>
+
+<span class="sd">.. autofunction:: cumulative_overlap</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
@@ -308,31 +317,81 @@
 
 <span class="sd">    After initializing and calling method with a universe or an atom group,</span>
 <span class="sd">    principal components ordering the atom coordinate data by decreasing</span>
-<span class="sd">    variance will be available for analysis. As an example:</span>
+<span class="sd">    variance will be available for analysis. As an example:::</span>
 
-<span class="sd">        &gt;&gt;&gt; pca = PCA(universe, select=&#39;backbone&#39;).run()</span>
-<span class="sd">        &gt;&gt;&gt; pca_space =  pca.transform(universe.select_atoms(&#39;backbone&#39;), 3)</span>
+<span class="sd">        pca = PCA(universe, select=&#39;backbone&#39;).run()</span>
+<span class="sd">        pca_space = pca.transform(universe.select_atoms(&#39;backbone&#39;), 3)</span>
+
 
 <span class="sd">    generates the principal components of the backbone of the atomgroup and</span>
 <span class="sd">    then transforms those atomgroup coordinates by the direction of those</span>
 <span class="sd">    variances. Please refer to the :ref:`PCA-tutorial` for more detailed</span>
 <span class="sd">    instructions.</span>
 
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    universe : Universe</span>
+<span class="sd">        Universe</span>
+<span class="sd">    select : string, optional</span>
+<span class="sd">        A valid selection statement for choosing a subset of atoms from</span>
+<span class="sd">        the atomgroup.</span>
+<span class="sd">    align : boolean, optional</span>
+<span class="sd">        If True, the trajectory will be aligned to a reference</span>
+<span class="sd">        structure.</span>
+<span class="sd">    mean : array_like, optional</span>
+<span class="sd">        Optional reference positions to be be used as the mean of the</span>
+<span class="sd">        covariance matrix.</span>
+<span class="sd">    n_components : int, optional</span>
+<span class="sd">        The number of principal components to be saved, default saves</span>
+<span class="sd">        all principal components</span>
+<span class="sd">    verbose : bool (optional)</span>
+<span class="sd">            Show detailed progress of the calculation if set to ``True``.</span>
+
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    p_components: array, (n_atoms * 3, n_components)</span>
-<span class="sd">        The principal components of the feature space,</span>
+<span class="sd">    results.p_components: array, (n_atoms * 3, n_components)</span>
+<span class="sd">        Principal components of the feature space,</span>
 <span class="sd">        representing the directions of maximum variance in the data.</span>
 <span class="sd">        The column vector p_components[:, i] is the eigenvector</span>
 <span class="sd">        corresponding to the variance[i].</span>
-<span class="sd">    variance : array (n_components, )</span>
-<span class="sd">        The raw variance explained by each eigenvector of the covariance</span>
+
+<span class="sd">        .. versionadded:: 2.0.0</span>
+
+<span class="sd">    p_components: array, (n_atoms * 3, n_components)</span>
+<span class="sd">        Alias to the :attr:`results.p_components`.</span>
+
+<span class="sd">        .. deprecated:: 2.0.0</span>
+<span class="sd">                Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">                :attr:`results.p_components` instead.</span>
+
+<span class="sd">    results.variance : array (n_components, )</span>
+<span class="sd">        Raw variance explained by each eigenvector of the covariance</span>
 <span class="sd">        matrix.</span>
-<span class="sd">    cumulated_variance : array, (n_components, )</span>
+
+<span class="sd">        .. versionadded:: 2.0.0</span>
+
+<span class="sd">    variance : array (n_components, )</span>
+<span class="sd">        Alias to the :attr:`results.variance`.</span>
+
+<span class="sd">        .. deprecated:: 2.0.0</span>
+<span class="sd">                Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">                :attr:`results.variance` instead.</span>
+
+<span class="sd">    results.cumulated_variance : array, (n_components, )</span>
 <span class="sd">        Percentage of variance explained by the selected components and the sum</span>
 <span class="sd">        of the components preceding it. If a subset of components is not chosen</span>
 <span class="sd">        then all components are stored and the cumulated variance will converge</span>
 <span class="sd">        to 1.</span>
+
+<span class="sd">        .. versionadded:: 2.0.0</span>
+
+<span class="sd">    cumulated_variance : array, (n_components, )</span>
+<span class="sd">        Alias to the :attr:`results.cumulated_variance`.</span>
+
+<span class="sd">        .. deprecated:: 2.0.0</span>
+<span class="sd">                Will be removed in MDAnalysis 3.0.0. Please use</span>
+<span class="sd">                :attr:`results.cumulated_variance` instead.</span>
+
 
 <span class="sd">    Methods</span>
 <span class="sd">    -------</span>
@@ -345,11 +404,10 @@
 <span class="sd">    -----</span>
 <span class="sd">    Computation can be sped up by supplying precalculated mean positions.</span>
 
-<span class="sd">    .. versionchanged:: 2.0.0</span>
-<span class="sd">       ``mean_atoms`` removed, as this did not reliably contain the mean</span>
-<span class="sd">       positions.</span>
-<span class="sd">       ``mean`` input now accepts coordinate arrays instead of atomgroup.</span>
 
+<span class="sd">    .. versionchanged:: 0.19.0</span>
+<span class="sd">       The start frame is used when performing selections and calculating</span>
+<span class="sd">       mean positions.  Previously the 0th frame was always used.</span>
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       ``n_components`` now limits the correct axis of ``p_components``.</span>
 <span class="sd">       ``cumulated_variance`` now accurately represents the contribution of</span>
@@ -358,34 +416,16 @@
 <span class="sd">       ``p_components``, ``cumulated_variance`` will not sum to 1.</span>
 <span class="sd">       ``align=True`` now correctly aligns the trajectory and computes the</span>
 <span class="sd">       correct means and covariance matrix.</span>
-
-<span class="sd">    .. versionchanged:: 0.19.0</span>
-<span class="sd">       The start frame is used when performing selections and calculating</span>
-<span class="sd">       mean positions.  Previously the 0th frame was always used.</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       ``mean_atoms`` removed, as this did not reliably contain the mean</span>
+<span class="sd">       positions.</span>
+<span class="sd">       ``mean`` input now accepts coordinate arrays instead of atomgroup.</span>
+<span class="sd">       :attr:`p_components`, :attr:`variance` and :attr:`cumulated_variance`</span>
+<span class="sd">       are now stored in a :class:`MDAnalysis.analysis.base.Results` instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        universe : Universe</span>
-<span class="sd">            Universe</span>
-<span class="sd">        select : string, optional</span>
-<span class="sd">            A valid selection statement for choosing a subset of atoms from</span>
-<span class="sd">            the atomgroup.</span>
-<span class="sd">        align : boolean, optional</span>
-<span class="sd">            If True, the trajectory will be aligned to a reference</span>
-<span class="sd">            structure.</span>
-<span class="sd">        mean : array_like, optional</span>
-<span class="sd">            Optional reference positions to be be used as the mean of the</span>
-<span class="sd">            covariance matrix.</span>
-<span class="sd">        n_components : int, optional</span>
-<span class="sd">            The number of principal components to be saved, default saves</span>
-<span class="sd">            all principal components</span>
-<span class="sd">        verbose : bool (optional)</span>
-<span class="sd">             Show detailed progress of the calculation if set to ``True``.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">PCA</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_u</span> <span class="o">=</span> <span class="n">universe</span>
 
@@ -466,6 +506,30 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">n_components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_components</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">p_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `p_components` attribute was deprecated in &quot;</span>
+                <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
+                <span class="s2">&quot;Please use `results.p_components` instead.&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">variance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `variance` attribute was deprecated in &quot;</span>
+                <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
+                <span class="s2">&quot;Please use `results.variance` instead.&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">variance</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cumulated_variance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The `cumulated_variance` attribute was deprecated in &quot;</span>
+                <span class="s2">&quot;MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. &quot;</span>
+                <span class="s2">&quot;Please use `results.cumulated_variance` instead.&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">cumulated_variance</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">n_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_components</span>
 
@@ -474,10 +538,10 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculated</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variance</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">variance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variance</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cumulated_variance</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variance</span><span class="p">)</span> <span class="o">/</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">variance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variance</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">cumulated_variance</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variance</span><span class="p">)</span> <span class="o">/</span>
                                        <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variance</span><span class="p">))[:</span><span class="n">n</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">p_components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p_components</span><span class="p">[:,</span> <span class="p">:</span><span class="n">n</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p_components</span><span class="p">[:,</span> <span class="p">:</span><span class="n">n</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_components</span> <span class="o">=</span> <span class="n">n</span>
 
 <div class="viewcode-block" id="PCA.transform"><a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -532,7 +596,7 @@
         <span class="n">n_frames</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">))</span>
 
         <span class="n">dim</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_components</span> <span class="k">if</span> <span class="n">n_components</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span>
-               <span class="bp">self</span><span class="o">.</span><span class="n">p_components</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+               <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
         <span class="n">dot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span>
 
@@ -574,12 +638,13 @@
 
 <span class="sd">        See also</span>
 <span class="sd">        --------</span>
-<span class="sd">        rmsip</span>
+<span class="sd">        :func:`~MDAnalysis.analysis.pca.rmsip`</span>
+
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_components</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Call run() on the PCA before using rmsip&#39;</span><span class="p">)</span>
 
@@ -626,14 +691,14 @@
 
 <span class="sd">        See also</span>
 <span class="sd">        --------</span>
-<span class="sd">        cumulative_overlap</span>
+<span class="sd">        :func:`~MDAnalysis.analysis.pca.cumulative_overlap`</span>
+
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_components</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">p_components</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s1">&#39;Call run() on the PCA before using cumulative_overlap&#39;</span><span class="p">)</span>
@@ -685,7 +750,7 @@
             <span class="n">scipy</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="n">simps</span><span class="p">(</span><span class="n">pca_space</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span></div>
 
 
-<span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
+<div class="viewcode-block" id="rmsip"><a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.rmsip">[docs]</a><span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
     <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1002/(SICI)1097-0134(19990901)36:4&lt;419::AID-PROT5&gt;3.0.CO;2-U&#39;</span><span class="p">),</span>
     <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1529/biophysj.104.052449&#39;</span><span class="p">),</span>
     <span class="n">description</span><span class="o">=</span><span class="s2">&quot;RMSIP&quot;</span><span class="p">,</span>
@@ -717,6 +782,7 @@
 <span class="sd">        0 indicates that they are mutually orthogonal, whereas 1 indicates</span>
 <span class="sd">        that they are identical.</span>
 
+
 <span class="sd">    .. versionadded:: 1.0.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">n_components</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">asiterable</span><span class="p">(</span><span class="n">n_components</span><span class="p">)</span>
@@ -734,10 +800,10 @@
 
     <span class="n">sip</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">a</span><span class="p">[:</span><span class="n">n_a</span><span class="p">],</span> <span class="n">b</span><span class="p">[:</span><span class="n">n_b</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
     <span class="n">msip</span> <span class="o">=</span> <span class="n">sip</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">n_a</span>
-    <span class="k">return</span> <span class="n">msip</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="k">return</span> <span class="n">msip</span><span class="o">**</span><span class="mf">0.5</span></div>
 
 
-<span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
+<div class="viewcode-block" id="cumulative_overlap"><a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.cumulative_overlap">[docs]</a><span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
     <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1016/j.str.2007.12.011&#39;</span><span class="p">),</span>
     <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Cumulative overlap&quot;</span><span class="p">,</span>
     <span class="n">path</span><span class="o">=</span><span class="s1">&#39;MDAnalysis.analysis.pca&#39;</span><span class="p">,</span>
@@ -770,6 +836,7 @@
 <span class="sd">        0 indicates that they are mutually orthogonal, whereas 1 indicates</span>
 <span class="sd">        that they are identical.</span>
 
+
 <span class="sd">    .. versionadded:: 1.0.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -786,7 +853,7 @@
     <span class="n">b_norms</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
 
     <span class="n">o</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">b_norms</span><span class="o">*</span><span class="n">vec_norm</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">o</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">o</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span></div>
 </pre></div>
 
            </div>

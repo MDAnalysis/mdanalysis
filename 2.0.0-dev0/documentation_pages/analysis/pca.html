@@ -236,12 +236,13 @@ matrix, a <span class="math notranslate nohighlight">\(3N \times 3N\)</span> mat
 covariance between coordinates <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span>. The principal
 components are the eigenvectors of this matrix.</p>
 <p>For each eigenvector, its eigenvalue is the variance that the eigenvector
-explains. Stored in <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.cumulated_variance" title="MDAnalysis.analysis.pca.PCA.cumulated_variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PCA.cumulated_variance</span></code></a>, a ratio for each number of
-eigenvectors up to index <span class="math notranslate nohighlight">\(i\)</span> is provided to quickly find out how many
-principal components are needed to explain the amount of variance reflected by
-those <span class="math notranslate nohighlight">\(i\)</span> eigenvectors. For most data, <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.cumulated_variance" title="MDAnalysis.analysis.pca.PCA.cumulated_variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PCA.cumulated_variance</span></code></a>
+explains. Stored in <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.results.cumulated_variance" title="MDAnalysis.analysis.pca.PCA.results.cumulated_variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PCA.results.cumulated_variance</span></code></a>, a ratio for each
+number of eigenvectors up to index <span class="math notranslate nohighlight">\(i\)</span> is provided to quickly find out
+how many principal components are needed to explain the amount of variance
+reflected by those <span class="math notranslate nohighlight">\(i\)</span> eigenvectors. For most data,
+<a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.results.cumulated_variance" title="MDAnalysis.analysis.pca.PCA.results.cumulated_variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PCA.results.cumulated_variance</span></code></a>
 will be approximately equal to one for some <span class="math notranslate nohighlight">\(n\)</span> that is significantly
-smaller than the total number of components, these are the components of
+smaller than the total number of components. These are the components of
 interest given by Principal Component Analysis.</p>
 <p>From here, we can project a trajectory onto these principal components and
 attempt to retrieve some structure from our high dimensional data.</p>
@@ -253,29 +254,30 @@ to perform Principal Component Analysis.</p>
 (in the variables <code class="xref py py-data docutils literal notranslate"><span class="pre">PSF</span></code> and
 <code class="xref py py-data docutils literal notranslate"><span class="pre">DCD</span></code>). This tutorial shows how to use the
 PCA class.</p>
-<p>First load all modules and test data</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">MDAnalysis.analysis.pca</span> <span class="k">as</span> <span class="nn">pca</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
+<p>First load all modules and test data:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis.analysis.pca</span> <span class="k">as</span> <span class="nn">pca</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
 </pre></div>
 </div>
 <p>Given a universe containing trajectory data we can perform Principal Component
 Analyis by using the class <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA" title="MDAnalysis.analysis.pca.PCA"><code class="xref py py-class docutils literal notranslate"><span class="pre">PCA</span></code></a> and retrieving the principal
-components.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">PSF_pca</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">PCA</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;backbone&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">PSF_pca</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+components.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<span class="n">PSF_pca</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">PCA</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;backbone&#39;</span><span class="p">)</span>
+<span class="n">PSF_pca</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Inspect the components to determine the principal components you would like
 to retain. The choice is arbitrary, but I will stop when 95 percent of the
 variance is explained by the components. This cumulated variance by the
 components is conveniently stored in the one-dimensional array attribute
-<code class="docutils literal notranslate"><span class="pre">cumulated_variance</span></code>. The value at the ith index of <cite>cumulated_variance</cite>
-is the sum of the variances from 0 to i.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">n_pcs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">PSF_pca</span><span class="o">.</span><span class="n">cumulated_variance</span> <span class="o">&gt;</span> <span class="mf">0.95</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">atomgroup</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;backbone&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pca_space</span> <span class="o">=</span> <span class="n">PSF_pca</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">n_pcs</span><span class="p">)</span>
+<a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.results.cumulated_variance" title="MDAnalysis.analysis.pca.PCA.results.cumulated_variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PCA.results.cumulated_variance</span></code></a>. The value at the ith index of
+<a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.results.cumulated_variance" title="MDAnalysis.analysis.pca.PCA.results.cumulated_variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PCA.results.cumulated_variance</span></code></a> is the sum of the variances from 0 to
+i.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">n_pcs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">PSF_pca</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">cumulated_variance</span> <span class="o">&gt;</span> <span class="mf">0.95</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">atomgroup</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;backbone&#39;</span><span class="p">)</span>
+<span class="n">pca_space</span> <span class="o">=</span> <span class="n">PSF_pca</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">n_pcs</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>From here, inspection of the <code class="docutils literal notranslate"><span class="pre">pca_space</span></code> and conclusions to be drawn from the
@@ -289,22 +291,45 @@ data are left to the user.</p>
 <dd><p>Principal component analysis on an MD trajectory.</p>
 <p>After initializing and calling method with a universe or an atom group,
 principal components ordering the atom coordinate data by decreasing
-variance will be available for analysis. As an example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;backbone&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pca_space</span> <span class="o">=</span>  <span class="n">pca</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;backbone&#39;</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+variance will be available for analysis. As an example::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;backbone&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">pca_space</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;backbone&#39;</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>generates the principal components of the backbone of the atomgroup and
 then transforms those atomgroup coordinates by the direction of those
 variances. Please refer to the <a class="reference internal" href="#pca-tutorial"><span class="std std-ref">PCA Tutorial</span></a> for more detailed
 instructions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe</li>
+<li><strong>select</strong> (<em>string</em><em>, </em><em>optional</em>) – A valid selection statement for choosing a subset of atoms from
+the atomgroup.</li>
+<li><strong>align</strong> (<em>boolean</em><em>, </em><em>optional</em>) – If True, the trajectory will be aligned to a reference
+structure.</li>
+<li><strong>mean</strong> (<em>array_like</em><em>, </em><em>optional</em>) – Optional reference positions to be be used as the mean of the
+covariance matrix.</li>
+<li><strong>n_components</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – The number of principal components to be saved, default saves
+all principal components</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
-<dt id="MDAnalysis.analysis.pca.PCA.p_components">
-<code class="descname">p_components</code><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.p_components" title="Permalink to this definition">¶</a></dt>
-<dd><p>The principal components of the feature space,
+<dt id="MDAnalysis.analysis.pca.PCA.results.p_components">
+<code class="descclassname">results.</code><code class="descname">p_components</code><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.results.p_components" title="Permalink to this definition">¶</a></dt>
+<dd><p>Principal components of the feature space,
 representing the directions of maximum variance in the data.
 The column vector p_components[:, i] is the eigenvector
 corresponding to the variance[i].</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -316,10 +341,31 @@ corresponding to the variance[i].</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.analysis.pca.PCA.variance">
-<code class="descname">variance</code><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.variance" title="Permalink to this definition">¶</a></dt>
-<dd><p>The raw variance explained by each eigenvector of the covariance
+<dt id="MDAnalysis.analysis.pca.PCA.p_components">
+<code class="descname">p_components</code><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.p_components" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.results.p_components" title="MDAnalysis.analysis.pca.PCA.results.p_components"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.p_components</span></code></a>.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.results.p_components" title="MDAnalysis.analysis.pca.PCA.results.p_components"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.p_components</span></code></a> instead.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">array, (n_atoms * 3, n_components)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.pca.PCA.results.variance">
+<code class="descclassname">results.</code><code class="descname">variance</code><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.results.variance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raw variance explained by each eigenvector of the covariance
 matrix.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -331,12 +377,51 @@ matrix.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.analysis.pca.PCA.cumulated_variance">
-<code class="descname">cumulated_variance</code><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.cumulated_variance" title="Permalink to this definition">¶</a></dt>
+<dt id="MDAnalysis.analysis.pca.PCA.variance">
+<code class="descname">variance</code><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.variance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.results.variance" title="MDAnalysis.analysis.pca.PCA.results.variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.variance</span></code></a>.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.results.variance" title="MDAnalysis.analysis.pca.PCA.results.variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.variance</span></code></a> instead.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">array (n_components, )</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.pca.PCA.results.cumulated_variance">
+<code class="descclassname">results.</code><code class="descname">cumulated_variance</code><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.results.cumulated_variance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Percentage of variance explained by the selected components and the sum
 of the components preceding it. If a subset of components is not chosen
 then all components are stored and the cumulated variance will converge
 to 1.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">array, (n_components, )</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.pca.PCA.cumulated_variance">
+<code class="descname">cumulated_variance</code><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.cumulated_variance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to the <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.results.cumulated_variance" title="MDAnalysis.analysis.pca.PCA.results.cumulated_variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.cumulated_variance</span></code></a>.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 2.0.0: </span>Will be removed in MDAnalysis 3.0.0. Please use
+<a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.results.cumulated_variance" title="MDAnalysis.analysis.pca.PCA.results.cumulated_variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results.cumulated_variance</span></code></a> instead.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -358,9 +443,8 @@ principal components.</p>
 <p class="rubric">Notes</p>
 <p>Computation can be sped up by supplying precalculated mean positions.</p>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span><code class="docutils literal notranslate"><span class="pre">mean_atoms</span></code> removed, as this did not reliably contain the mean
-positions.
-<code class="docutils literal notranslate"><span class="pre">mean</span></code> input now accepts coordinate arrays instead of atomgroup.</p>
+<p><span class="versionmodified">Changed in version 0.19.0: </span>The start frame is used when performing selections and calculating
+mean positions.  Previously the 0th frame was always used.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.0.0: </span><code class="docutils literal notranslate"><span class="pre">n_components</span></code> now limits the correct axis of <code class="docutils literal notranslate"><span class="pre">p_components</span></code>.
@@ -372,29 +456,12 @@ given. If <code class="docutils literal notranslate"><span class="pre">n_compone
 correct means and covariance matrix.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.19.0: </span>The start frame is used when performing selections and calculating
-mean positions.  Previously the 0th frame was always used.</p>
+<p><span class="versionmodified">Changed in version 2.0.0: </span><code class="docutils literal notranslate"><span class="pre">mean_atoms</span></code> removed, as this did not reliably contain the mean
+positions.
+<code class="docutils literal notranslate"><span class="pre">mean</span></code> input now accepts coordinate arrays instead of atomgroup.
+<a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.p_components" title="MDAnalysis.analysis.pca.PCA.p_components"><code class="xref py py-attr docutils literal notranslate"><span class="pre">p_components</span></code></a>, <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.variance" title="MDAnalysis.analysis.pca.PCA.variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">variance</span></code></a> and <a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.cumulated_variance" title="MDAnalysis.analysis.pca.PCA.cumulated_variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cumulated_variance</span></code></a>
+are now stored in a <a class="reference internal" href="base.html#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.Results</span></code></a> instance.</p>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe</li>
-<li><strong>select</strong> (<em>string</em><em>, </em><em>optional</em>) – A valid selection statement for choosing a subset of atoms from
-the atomgroup.</li>
-<li><strong>align</strong> (<em>boolean</em><em>, </em><em>optional</em>) – If True, the trajectory will be aligned to a reference
-structure.</li>
-<li><strong>mean</strong> (<em>array_like</em><em>, </em><em>optional</em>) – Optional reference positions to be be used as the mean of the
-covariance matrix.</li>
-<li><strong>n_components</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – The number of principal components to be saved, default saves
-all principal components</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
 <dl class="method">
 <dt id="MDAnalysis.analysis.pca.PCA.cumulative_overlap">
 <code class="descname">cumulative_overlap</code><span class="sig-paren">(</span><em>other</em>, <em>i=0</em>, <em>n_components=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#PCA.cumulative_overlap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.PCA.cumulative_overlap" title="Permalink to this definition">¶</a></dt>
@@ -426,7 +493,10 @@ orthogonal, whereas 1 indicates that they are identical.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.cumulative_overlap" title="MDAnalysis.analysis.pca.PCA.cumulative_overlap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cumulative_overlap()</span></code></a>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">()</span></code></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.analysis.pca.cumulative_overlap" title="MDAnalysis.analysis.pca.cumulative_overlap"><code class="xref py py-func docutils literal notranslate"><span class="pre">cumulative_overlap()</span></code></a></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.0.</span></p>
 </div>
 </dd></dl>
 
@@ -461,7 +531,10 @@ that they are identical.</p>
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.analysis.pca.PCA.rmsip" title="MDAnalysis.analysis.pca.PCA.rmsip"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rmsip()</span></code></a>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">()</span></code></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.analysis.pca.rmsip" title="MDAnalysis.analysis.pca.rmsip"><code class="xref py py-func docutils literal notranslate"><span class="pre">rmsip()</span></code></a></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.0.</span></p>
 </div>
 </dd></dl>
 
@@ -561,6 +634,77 @@ If you use this function please cite <a class="reference internal" href="#berkhe
 Phys. Rev. E 65, 031910 (2002).</td></tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.analysis.pca.rmsip">
+<code class="descclassname">MDAnalysis.analysis.pca.</code><code class="descname">rmsip</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>n_components=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#rmsip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.rmsip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the root mean square inner product between subspaces.</p>
+<p>This is only symmetric if the number of components is the same for
+<code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code>. The RMSIP effectively measures how
+correlated the vectors of <code class="docutils literal notranslate"><span class="pre">a</span></code> are to those of <code class="docutils literal notranslate"><span class="pre">b</span></code>.</p>
+<p>Please cite <a class="reference internal" href="../references.html#amadei1999" id="id6">[Amadei1999]</a> and <a class="reference internal" href="../references.html#leo-macias2004" id="id7">[Leo-Macias2004]</a> if you use this function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>a</strong> (<em>array</em><em>, </em><em>shape</em><em> (</em><em>n_components</em><em>, </em><em>n_features</em><em>)</em>) – The first subspace. Must have the same number of features as <code class="docutils literal notranslate"><span class="pre">b</span></code>.</li>
+<li><strong>b</strong> (<em>array</em><em>, </em><em>shape</em><em> (</em><em>n_components</em><em>, </em><em>n_features</em><em>)</em>) – The second subspace. Must have the same number of features as <code class="docutils literal notranslate"><span class="pre">a</span></code>.</li>
+<li><strong>n_components</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> or </em><em>tuple of ints</em><em>, </em><em>optional</em>) – number of components to compute for the inner products.
+<code class="docutils literal notranslate"><span class="pre">None</span></code> computes all of them.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Root mean square inner product of the selected subspaces.
+0 indicates that they are mutually orthogonal, whereas 1 indicates
+that they are identical.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.0.</span></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.analysis.pca.cumulative_overlap">
+<code class="descclassname">MDAnalysis.analysis.pca.</code><code class="descname">cumulative_overlap</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>i=0</em>, <em>n_components=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/pca.html#cumulative_overlap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.pca.cumulative_overlap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the cumulative overlap of a vector in a subspace.</p>
+<p>This is not symmetric. The cumulative overlap measures the overlap of
+the chosen vector in <code class="docutils literal notranslate"><span class="pre">a</span></code>, in the <code class="docutils literal notranslate"><span class="pre">b</span></code> subspace.</p>
+<p>Please cite <a class="reference internal" href="../references.html#yang2008" id="id8">[Yang2008]</a> if you use this function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>a</strong> (<em>array</em><em>, </em><em>shape</em><em> (</em><em>n_components</em><em>, </em><em>n_features</em><em>) or </em><em>vector</em><em>, </em><em>length n_features</em>) – The first subspace containing the vector of interest. Alternatively,
+the actual vector. Must have the same number of features as <code class="docutils literal notranslate"><span class="pre">b</span></code>.</li>
+<li><strong>b</strong> (<em>array</em><em>, </em><em>shape</em><em> (</em><em>n_components</em><em>, </em><em>n_features</em><em>)</em>) – The second subspace. Must have the same number of features as <code class="docutils literal notranslate"><span class="pre">a</span></code>.</li>
+<li><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – The index of eigenvector to be analysed.</li>
+<li><strong>n_components</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – number of components in <code class="docutils literal notranslate"><span class="pre">b</span></code> to compute for the cumulative overlap.
+<code class="docutils literal notranslate"><span class="pre">None</span></code> computes all of them.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Cumulative overlap of the chosen vector in <code class="docutils literal notranslate"><span class="pre">a</span></code> to the <code class="docutils literal notranslate"><span class="pre">b</span></code> subspace.
+0 indicates that they are mutually orthogonal, whereas 1 indicates
+that they are identical.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)">float</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.0.</span></p>
+</div>
 </dd></dl>
 
 </div>
