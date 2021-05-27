@@ -450,7 +450,7 @@ class PCA(AnalysisBase):
 
         See also
         --------
-        :func:`rmsip`
+        :func:`~MDAnalysis.analysis.pca.rmsip`
 
 
         .. versionadded:: 1.0.0
@@ -503,7 +503,7 @@ class PCA(AnalysisBase):
 
         See also
         --------
-        :func:`cumulative_overlap`
+        :func:`~MDAnalysis.analysis.pca.cumulative_overlap`
 
 
         .. versionadded:: 1.0.0
