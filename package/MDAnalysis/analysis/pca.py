@@ -46,7 +46,8 @@ For each eigenvector, its eigenvalue is the variance that the eigenvector
 explains. Stored in :attr:`PCA.cumulated_variance`, a ratio for each number of
 eigenvectors up to index :math:`i` is provided to quickly find out how many
 principal components are needed to explain the amount of variance reflected by
-those :math:`i` eigenvectors. For most data, :attr:`PCA.cumulated_variance`
+those :math:`i` eigenvectors. For most data, 
+:attr:`PCA.results.cumulated_variance`
 will be approximately equal to one for some :math:`n` that is significantly
 smaller than the total number of components, these are the components of
 interest given by Principal Component Analysis.
@@ -67,9 +68,7 @@ The example uses files provided as part of the MDAnalysis test suite
 :data:`~MDAnalysis.tests.datafiles.DCD`). This tutorial shows how to use the
 PCA class.
 
-First load all modules and test data
-
-.. code-block:: python
+First load all modules and test data::
 
     import MDAnalysis as mda
     import MDAnalysis.analysis.pca as pca
@@ -78,9 +77,7 @@ First load all modules and test data
 
 Given a universe containing trajectory data we can perform Principal Component
 Analyis by using the class :class:`PCA` and retrieving the principal
-components.
-
-.. code-block:: python
+components.::
 
     u = mda.Universe(PSF, DCD)
     PSF_pca = pca.PCA(u, select='backbone')
@@ -91,10 +88,9 @@ Inspect the components to determine the principal components you would like
 to retain. The choice is arbitrary, but I will stop when 95 percent of the
 variance is explained by the components. This cumulated variance by the
 components is conveniently stored in the one-dimensional array attribute
-``results.cumulated_variance``. The value at the ith index of
-``results.cumulated_variance`` is the sum of the variances from 0 to i.
-
-.. code-block:: python
+:attr:`PCA.results.cumulated_variance`. The value at the ith index of
+:attr:`PCA.results.cumulated_variance` is the sum of the variances from 0 to 
+i.::
 
     n_pcs = np.where(PSF_pca.results.cumulated_variance > 0.95)[0][0]
     atomgroup = u.select_atoms('backbone')
@@ -133,9 +129,7 @@ class PCA(AnalysisBase):
 
     After initializing and calling method with a universe or an atom group,
     principal components ordering the atom coordinate data by decreasing
-    variance will be available for analysis. As an example:
-
-    .. code-block:: python
+    variance will be available for analysis. As an example:::
 
         pca = PCA(universe, select='backbone').run()
         pca_space = pca.transform(universe.select_atoms('backbone'), 3)
@@ -158,7 +152,7 @@ class PCA(AnalysisBase):
         structure.
     mean : array_like, optional
         Optional reference positions to be be used as the mean of the
-        covariance matrix.        
+        covariance matrix.
     n_components : int, optional
         The number of principal components to be saved, default saves
         all principal components
@@ -237,7 +231,7 @@ class PCA(AnalysisBase):
     .. versionchanged:: 2.0.0
        ``mean_atoms`` removed, as this did not reliably contain the mean
        positions.
-       ``mean`` input now accepts coordinate arrays instead of atomgroup.    
+       ``mean`` input now accepts coordinate arrays instead of atomgroup.
        :attr:`p_components`, :attr:`variance` and :attr:`cumulated_variance`
        are now stored in a :class:`MDAnalysis.analysis.base.Results` instance.
     """
@@ -456,7 +450,8 @@ class PCA(AnalysisBase):
 
         See also
         --------
-        rmsip
+        :func:`rmsip`
+
 
         .. versionadded:: 1.0.0
         """
@@ -508,10 +503,10 @@ class PCA(AnalysisBase):
 
         See also
         --------
-        cumulative_overlap
+        :func:`cumulative_overlap`
+
 
         .. versionadded:: 1.0.0
-
         """
 
         try:
