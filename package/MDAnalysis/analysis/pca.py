@@ -109,6 +109,10 @@ Classes and Functions
 
 .. autofunction:: cosine_content
 
+.. autofunction:: rmsip
+
+.. autofunction:: cumulative_overlap
+
 """
 import warnings
 
@@ -450,7 +454,7 @@ class PCA(AnalysisBase):
 
         See also
         --------
-        :meth:`cumulative_overlap`
+        :func:`~MDAnalysis.analysis.pca.rmsip`
 
 
         .. versionadded:: 1.0.0
@@ -503,7 +507,7 @@ class PCA(AnalysisBase):
 
         See also
         --------
-        :meth:`rmsip`
+        :func:`~MDAnalysis.analysis.pca.cumulative_overlap`
 
 
         .. versionadded:: 1.0.0
@@ -594,6 +598,7 @@ def rmsip(a, b, n_components=None):
         0 indicates that they are mutually orthogonal, whereas 1 indicates
         that they are identical.
 
+
     .. versionadded:: 1.0.0
     """
     n_components = util.asiterable(n_components)
@@ -646,6 +651,7 @@ def cumulative_overlap(a, b, i=0, n_components=None):
         Cumulative overlap of the chosen vector in ``a`` to the ``b`` subspace.
         0 indicates that they are mutually orthogonal, whereas 1 indicates
         that they are identical.
+
 
     .. versionadded:: 1.0.0
     """
