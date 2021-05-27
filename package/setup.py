@@ -635,9 +635,11 @@ if __name__ == '__main__':
                         ],
           },
           ext_modules=exts,
+          python_requires='>=3.6',
           requires=['numpy (>=1.16.0)', 'biopython (>= 1.71)', 'mmtf (>=1.0.0)',
                     'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib',
                     'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)', 'tqdm (>=4.43.0)',
+                    'threadpoolctl',
                     ],
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
