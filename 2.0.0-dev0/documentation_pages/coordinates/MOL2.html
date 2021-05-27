@@ -335,6 +335,14 @@ See page 7 for list of SYBYL atomtypes
 
 </dd></dl>
 
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>The MDAnalysis <a class="reference internal" href="#MDAnalysis.coordinates.MOL2.MOL2Reader" title="MDAnalysis.coordinates.MOL2.MOL2Reader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MOL2Reader</span></code></a> and <a class="reference internal" href="#MDAnalysis.coordinates.MOL2.MOL2Writer" title="MDAnalysis.coordinates.MOL2.MOL2Writer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MOL2Writer</span></code></a> only handle the
+MOLECULE, SUBSTRUCTURE, ATOM, and BOND record types. Other records are not
+currently read or preserved on writing.</li>
+<li>As the CRYSIN record type is not parsed / written, MOL2 systems always have
+dimensions set to <code class="docutils literal notranslate"><span class="pre">None</span></code> and dimensionless MOL2 files are written.</li>
+</ul>
 </div>
 <div class="section" id="mol2-format-notes">
 <h2>6.13.3. MOL2 format notes<a class="headerlink" href="#mol2-format-notes" title="Permalink to this headline">¶</a></h2>
