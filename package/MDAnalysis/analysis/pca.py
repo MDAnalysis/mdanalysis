@@ -43,10 +43,10 @@ covariance between coordinates :math:`i` and :math:`j`. The principal
 components are the eigenvectors of this matrix.
 
 For each eigenvector, its eigenvalue is the variance that the eigenvector
-explains. Stored in :attr:`PCA.results.cumulated_variance`, a ratio for each 
-number of eigenvectors up to index :math:`i` is provided to quickly find out 
-how many principal components are needed to explain the amount of variance 
-reflected by those :math:`i` eigenvectors. For most data, 
+explains. Stored in :attr:`PCA.results.cumulated_variance`, a ratio for each
+number of eigenvectors up to index :math:`i` is provided to quickly find out
+how many principal components are needed to explain the amount of variance
+reflected by those :math:`i` eigenvectors. For most data,
 :attr:`PCA.results.cumulated_variance`
 will be approximately equal to one for some :math:`n` that is significantly
 smaller than the total number of components. These are the components of
@@ -89,7 +89,7 @@ to retain. The choice is arbitrary, but I will stop when 95 percent of the
 variance is explained by the components. This cumulated variance by the
 components is conveniently stored in the one-dimensional array attribute
 :attr:`PCA.results.cumulated_variance`. The value at the ith index of
-:attr:`PCA.results.cumulated_variance` is the sum of the variances from 0 to 
+:attr:`PCA.results.cumulated_variance` is the sum of the variances from 0 to
 i.::
 
     n_pcs = np.where(PSF_pca.results.cumulated_variance > 0.95)[0][0]
