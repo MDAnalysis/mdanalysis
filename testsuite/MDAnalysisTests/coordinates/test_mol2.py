@@ -214,7 +214,5 @@ def test_mol2_universe_write(tmpdir):
         u2 = mda.Universe(outfile)
 
         assert_almost_equal(u.atoms.positions, u2.atoms.positions)
-        if u.dimensions is None:
-            assert u2.dimensions is None
-        else:
-            assert_almost_equal(u.dimensions, u2.dimensions)
+        # MDA does not current implement @<TRIPOS>CRYSIN reading
+        assert u2.dimensions is None
