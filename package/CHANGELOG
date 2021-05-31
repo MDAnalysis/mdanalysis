@@ -23,6 +23,8 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * Fixed `ChainReader.__repr__` with `MemoryReader` sub-readers (Issue #3349,
+    PR #3344)
   * Fixed inconsistency where `ChainReader` transformations were applied before
     the reader's `Timestep` was set to the current one (Issue #3343, PR #3344)
   * Fixed missing array flatten preventing PCA from running when mean positions  

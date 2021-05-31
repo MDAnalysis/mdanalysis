@@ -73,7 +73,7 @@ def get_reader_for(filename, format=None):
     passed to the :class:`~MDAnalysis.coordinates.chain.ChainReader`.
 
     .. versionchanged:: 1.0.0
-       Added format_hint functionalityx
+       Added format_hint functionality
     """
     # check if format is actually a Reader
     if inspect.isclass(format):

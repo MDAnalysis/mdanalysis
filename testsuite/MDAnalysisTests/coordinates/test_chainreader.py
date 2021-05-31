@@ -47,14 +47,37 @@ class TestChainReader(object):
         return mda.Universe(PSF,
                             [DCD, CRD, DCD, CRD, DCD, CRD, CRD],
                             transformations=[translate([10,10,10])])
-                            
+
+    @pytest.fixture()
+    def memory(self):
+        rg = np.random.RandomState(31012008)
+        # 10 extra random frames
+        cdx = rg.rand(3341*3*10).reshape(-1, 3341, 3).astype(np.float32) * 10
+        return mda.Universe(PSF, [cdx, DCD, CRD])
+
+    @pytest.fixture()
+    def memory_transformed(self):
+        rg = np.random.RandomState(31012008)
+        # 10 extra random frames
+        cdx = rg.rand(3341*3*10).reshape(-1, 3341, 3).astype(np.float32) * 10
+        return mda.Universe(PSF, [cdx, DCD, CRD],
+                            transformations=[translate([10,10,10])])
+
     def test_regular_repr(self):
         u = mda.Universe(PSF, [DCD, CRD, DCD])
-        assert_equal("<ChainReader containing adk_dims.dcd, adk_open.crd, adk_dims.dcd with 197 frames of 3341 atoms>", u.trajectory.__repr__())
+        assert_equal(u.trajectory.__repr__(),
+                     "<ChainReader containing adk_dims.dcd, adk_open.crd, "
+                     "adk_dims.dcd with 197 frames of 3341 atoms>")
         
-                                
     def test_truncated_repr(self, universe):
-        assert_equal("<ChainReader containing adk_dims.dcd and 6 more with 298 frames of 3341 atoms>", universe.trajectory.__repr__())
+        assert_equal(universe.trajectory.__repr__(),
+                     "<ChainReader containing adk_dims.dcd and 6 more "
+                     "with 298 frames of 3341 atoms>")
+
+    def test_memory_repr(self, memory):
+        assert_equal(memory.trajectory.__repr__(),
+                     "<ChainReader containing MemoryReader, adk_dims.dcd, "
+                     "adk_open.crd with 109 frames of 3341 atoms>")
 
     def test_next_trajectory(self, universe):
         universe.trajectory.rewind()
@@ -132,48 +155,70 @@ class TestChainReader(object):
                 err_msg="Coordinates disagree at frame {0:d}".format(
                     ts_orig.frame))       
     
-    def test_transform_iteration(self, universe, transformed):
+    @pytest.mark.parametrize('ref_u, transformed_u',
+                             [('universe', 'transformed'),
+                              ('memory', 'memory_transformed')])
+    def test_transform_iteration(self, request, ref_u, transformed_u):
+        ref_u = request.getfixturevalue(ref_u)
+        transformed_u = request.getfixturevalue(transformed_u)
         vector = np.float32([10,10,10])
-        # # Are the transformations applied and
+        # Are the transformations applied and
         # are the coordinates "overtransformed"?
         # iterate once:
-        for ts in transformed.trajectory:
-            frame = ts.frame
-            ref = universe.trajectory[frame].positions + vector
-            assert_almost_equal(ts.positions, ref, decimal = 6)
+        for ts, ref_ts in zip(transformed_u.trajectory, ref_u.trajectory):
+            assert_almost_equal(ts.positions, ref_ts.positions + vector,
+                                decimal = 6)
         # iterate again:
-        for ts in transformed.trajectory:
-            frame = ts.frame
-            ref = universe.trajectory[frame].positions + vector
-            assert_almost_equal(ts.positions, ref, decimal = 6)
+        for ts, ref_ts in zip(transformed_u.trajectory, ref_u.trajectory):
+            assert_almost_equal(ts.positions, ref_ts.positions + vector,
+                                decimal = 6)
     
-    def test_transform_slice(self, universe, transformed):
+    @pytest.mark.parametrize('ref_u, transformed_u',
+                             [('universe', 'transformed'),
+                              ('memory', 'memory_transformed')])
+    def test_transform_slice(self, request, ref_u, transformed_u):
+        ref_u = request.getfixturevalue(ref_u)
+        transformed_u = request.getfixturevalue(transformed_u)
         vector = np.float32([10,10,10])
         # what happens when we slice the trajectory?
-        for ts in transformed.trajectory[5:17:3]:
+        for ts in transformed_u.trajectory[5:17:3]:
             frame = ts.frame
-            ref = universe.trajectory[frame].positions + vector
+            ref = ref_u.trajectory[frame].positions + vector
             assert_almost_equal(ts.positions, ref, decimal = 6)
     
-    def test_transform_switch(self, universe, transformed):
+    @pytest.mark.parametrize('ref_u, transformed_u',
+                             [('universe', 'transformed'),
+                              ('memory', 'memory_transformed')])
+    def test_transform_switch(self, request, ref_u, transformed_u):
+        ref_u = request.getfixturevalue(ref_u)
+        transformed_u = request.getfixturevalue(transformed_u)
         vector = np.float32([10,10,10])
         # grab a frame:
-        ref = universe.trajectory[2].positions + vector
-        assert_almost_equal(transformed.trajectory[2].positions, ref, decimal = 6)
+        ref = ref_u.trajectory[2].positions + vector
+        assert_almost_equal(transformed_u.trajectory[2].positions, ref,
+                            decimal = 6)
         # now switch to another frame
-        newref = universe.trajectory[10].positions + vector
-        assert_almost_equal(transformed.trajectory[10].positions, newref, decimal = 6)
+        newref = ref_u.trajectory[10].positions + vector
+        assert_almost_equal(transformed_u.trajectory[10].positions, newref,
+                            decimal = 6)
         # what happens when we comeback to the previous frame?
-        assert_almost_equal(transformed.trajectory[2].positions, ref, decimal = 6)
+        assert_almost_equal(transformed_u.trajectory[2].positions, ref,
+                            decimal = 6)
     
-    def test_transfrom_rewind(self, universe, transformed):
+    @pytest.mark.parametrize('ref_u, transformed_u',
+                             [('universe', 'transformed'),
+                              ('memory', 'memory_transformed')])
+    def test_transfrom_rewind(self, request, ref_u, transformed_u):
+        ref_u = request.getfixturevalue(ref_u)
+        transformed_u = request.getfixturevalue(transformed_u)
         vector = np.float32([10,10,10])
-        ref = universe.trajectory[0].positions + vector
-        transformed.trajectory.rewind()
-        assert_almost_equal(transformed.trajectory.ts.positions, ref, decimal = 6)
+        ref = ref_u.trajectory[0].positions + vector
+        transformed_u.trajectory.rewind()
+        assert_almost_equal(transformed_u.trajectory.ts.positions, ref,
+                            decimal = 6)
 
     def test_transform_ts_consistency(self, universe):
-        """Check that Reader.ts holds the ts being transformed (Isue 3343)"""
+        """Check that Reader.ts holds the ts being transformed (Issue 3343)"""
 
         class SomeTransformation(TransformationBase):
             def __init__(self, u):

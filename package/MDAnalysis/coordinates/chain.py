@@ -50,7 +50,7 @@ import numpy as np
 
 from ..lib import util
 from ..lib.util import asiterable
-from . import base
+from . import base, memory
 from . import core
 
 
@@ -267,8 +267,10 @@ class ChainReader(base.ProtoReader):
             kwargs['dt'] = dt
         self.readers = [core.reader(filename, **kwargs)
                         for filename in filenames]
-        self.filenames = np.array([fn[0] if isinstance(fn, tuple) else fn
-                                                        for fn in filenames])
+        # We get the fnames from the readers rather than from the passed
+        # filenames arg, because we may get passed entire structures for
+        # fnames, such as ndarrays for MemoryReaders
+        self.filenames = np.array([reader.filename for reader in self.readers])
         # pointer to "active" trajectory index into self.readers
         self.__active_reader_index = 0
 
@@ -364,6 +366,7 @@ class ChainReader(base.ProtoReader):
             self.n_frames = n_frames
             self._sf = sf
 
+        self._transformed_frames = set()
         # make sure that iteration always yields frame 0
         # rewind() also sets self.ts and self.__current_frame
         self.ts = None
@@ -577,11 +580,10 @@ class ChainReader(base.ProtoReader):
         i, f = self._get_local_frame(frame)
         # seek to (1) reader i and (2) frame f in trajectory i
         self.__activate_reader(i)
-        if isinstance(self.active_reader, base.SingleFrameReaderBase):
-            # Undoes any transformations
-            self.active_reader.rewind()
+
         # We rely on reader to implement __getitem__().
         self.ts = self.active_reader[f]
+
         self.__current_frame = self.ts.frame = frame
         return self.ts
 
@@ -607,18 +609,47 @@ class ChainReader(base.ProtoReader):
         return self
 
     def __repr__(self):
-        if len(self.filenames) > 3:
-            fnames = "{fname} and {nfanmes} more".format(
-                    fname=os.path.basename(self.filenames[0]),
-                    nfanmes=len(self.filenames) - 1)
+        nfnames = 3  # Abbreviate above this many filenames
+        fnames = []
+        for fname, rdr in zip(self.filenames[:nfnames],
+                              self.readers[:nfnames]):
+            if fname:
+                fnames.append(os.path.basename(fname))
+            else:  # MemoryReaders don't have fnames
+                fnames.append(rdr.__class__.__name__)
+
+        if len(self.filenames) > nfnames:
+            fnames = f'{fnames[0]} and {len(self.filenames) - 1} more'
         else:
-            fnames = ", ".join([os.path.basename(fn) for fn in self.filenames])
-        return ("<{clsname} containing {fname} with {nframes} frames of {natoms} atoms>"
-                "".format(
-                    clsname=self.__class__.__name__,
-                    fname=fnames,
-                    nframes=self.n_frames,
-                    natoms=self.n_atoms))
+            fnames = ", ".join(fnames)
+
+        return ("<{clsname} containing {fname} with {nframes} frames of "
+                "{natoms} atoms>".format(clsname=self.__class__.__name__,
+                                         fname=fnames,
+                                         nframes=self.n_frames,
+                                         natoms=self.n_atoms))
+
+    def _apply_transformations(self, ts):
+        """ Applies the transformations to the timestep
+
+        Takes care not to over-transform readers that remember modifications to
+        their timesteps (:class:`~MDAnalysis.coordinates.memory.MemoryReader`
+        and :class:`single-frame
+        readers<~MDAnalysis.coordinates.base.SingleFrameReaderBase>`)"""
+
+        # We check for previous transformations on Readers that have memory.
+        # Only mark as transformed if there really are transforms registered.
+        if self.transformations and isinstance(self.active_reader,
+                                               (base.SingleFrameReaderBase,
+                                                memory.MemoryReader)):
+            if ts.frame in self._transformed_frames:
+                return ts
+            self._transformed_frames.add(ts.frame)
+
+        for transform in self.transformations:
+            ts = transform(ts)
+
+        return ts
 
     def __next__(self):
         if self.__current_frame < self.n_frames - 1:
