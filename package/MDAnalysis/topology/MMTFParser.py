@@ -79,7 +79,7 @@ from ..core.topologyattrs import (
     Atomids,
     Atomnames,
     Atomtypes,
-    Bfactors,
+    Tempfactors,
     Bonds,
     Charges,
     ICodes,
@@ -199,9 +199,9 @@ class MMTFParser(base.TopologyReaderBase):
         else:
             attrs.append(AltLocs(['']*natoms))
         if len(mtop.b_factor_list):
-            attrs.append(Bfactors(mtop.b_factor_list))
+            attrs.append(Tempfactors(mtop.b_factor_list))
         else:
-            attrs.append(Bfactors([0]*natoms))
+            attrs.append(Tempfactors([0]*natoms))
         if len(mtop.occupancy_list):
             attrs.append(Occupancies(mtop.occupancy_list))
         else:

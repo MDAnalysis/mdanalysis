@@ -282,17 +282,6 @@ class TestRDKitConverter(object):
         rdvalue = getattr(mi, "Get%s" % RDATTRIBUTES[attr])()
         assert rdvalue == expected
 
-    def test_bfactors_tempfactors_raises_error(self):
-        u = mda.Universe.from_smiles("C")
-        bfactors = np.array(u.atoms.n_atoms*[1.0], dtype=np.float32)
-        u.add_TopologyAttr('bfactors', bfactors)
-        u.add_TopologyAttr('tempfactors', bfactors)
-        with pytest.raises(
-            AttributeError,
-            match="Both `tempfactors` and `bfactors` attributes are present"
-        ):
-            u.atoms.convert_to("RDKIT")
-
     @pytest.mark.parametrize("idx", [0, 10, 42])
     def test_other_attributes(self, mol2, idx):
         mol = mol2.atoms.convert_to("RDKIT")

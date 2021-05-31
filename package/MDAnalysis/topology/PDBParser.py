@@ -158,7 +158,7 @@ class PDBParser(TopologyReaderBase):
     Creates the following Attributes:
      - names
      - chainids
-     - bfactors
+     - tempfactors
      - occupancies
      - record_types (ATOM/HETATM)
      - resids

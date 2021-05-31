@@ -1292,15 +1292,3 @@ class TestEmpty(object):
         with pytest.raises(TypeError) as exc:
             u = mda.Universe()
         assert 'Universe.empty' in str(exc.value)
-
-
-def test_deprecate_b_tempfactors():
-    u = mda.Universe(PDB)
-    with pytest.warns(DeprecationWarning, match="alias"):
-        u.add_TopologyAttr("bfactors")
-
-
-def test_deprecate_temp_bfactors():
-    u = mda.Universe(MMTF)
-    with pytest.warns(DeprecationWarning, match="alias"):
-        u.add_TopologyAttr("tempfactors")

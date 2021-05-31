@@ -305,6 +305,15 @@ class _TopologyAttrMeta(type):
                     _TOPOLOGY_TRANSPLANTS[name] = [attrname, method, clstype]
                     clean = name.lower().replace('_', '')
                     _TOPOLOGY_ATTRNAMES[clean] = name
+        
+        aliases = classdict.get("aliases")
+        if aliases:
+            for alias in aliases:
+                al_attrname = alias.get("attrname")
+                al_singular = alias.get("singular", al_attrname)
+                if al_singular:
+                    _TOPOLOGY_ATTRS[al_singular] = _TOPOLOGY_ATTRS[al_attrname] = cls
+
 
         for attr in ['singular', 'attrname']:
             try:
@@ -1253,10 +1262,64 @@ class Tempfactors(AtomAttr):
     singular = 'tempfactor'
     per_object = 'atom'
     dtype = float
+    transplants = defaultdict(list)
+    aliases = [{"attrname": "bfactors", "singular": "bfactor"}]
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
         return np.zeros(na)
+
+    def bfactor(self):
+        """Tempfactor alias property for atom
+
+        .. versionadded:: 2.0.0
+        """
+        return self.universe.atoms[self.ix].tempfactor
+    
+    def bfactor_setter(self, value):
+        """Tempfactor alias property for atom
+
+        .. versionadded:: 2.0.0
+        """
+        self.universe.atoms[self.ix].tempfactor = value
+    
+    def bfactors(self):
+        """Tempfactor alias property for groups of atoms
+
+        .. versionadded:: 2.0.0
+        """
+        return self.universe.atoms[self.atoms.ix].tempfactors
+    
+    def bfactors_setter(self, value):
+        """Tempfactor alias property for atom
+
+        .. versionadded:: 2.0.0
+        """
+        self.universe.atoms[self.atoms.ix].tempfactors = value
+    
+    transplants[Atom].append(
+        ('bfactor', property(bfactor, bfactor_setter, None,
+                             bfactor.__doc__)))
+
+    transplants[AtomGroup].append(
+        ('bfactors', property(bfactors, bfactors_setter, None,
+                              bfactors.__doc__)))
+    
+    transplants[Residue].append(
+        ('bfactors', property(bfactors, bfactors_setter, None,
+                              bfactors.__doc__)))
+    
+    transplants[ResidueGroup].append(
+        ('bfactors', property(bfactors, bfactors_setter, None,
+                              bfactors.__doc__)))
+    
+    transplants[Segment].append(
+        ('bfactors', property(bfactors, bfactors_setter, None,
+                              bfactors.__doc__)))
+    
+    transplants[SegmentGroup].append(
+        ('bfactors', property(bfactors, bfactors_setter, None,
+                              bfactors.__doc__)))
 
 
 class Masses(AtomAttr):
@@ -1744,19 +1807,6 @@ class Charges(AtomAttr):
 
     transplants[GroupBase].append(
         ('total_charge', total_charge))
-
-
-# TODO: update docs to property doc
-class Bfactors(AtomAttr):
-    """Crystallographic B-factors in A**2 for each atom"""
-    attrname = 'bfactors'
-    singular = 'bfactor'
-    per_object = 'atom'
-    dtype = float
-
-    @staticmethod
-    def _gen_initial_values(na, nr, ns):
-        return np.zeros(na)
 
 
 # TODO: update docs to property doc
