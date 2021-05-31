@@ -167,7 +167,7 @@ class ChainReader(base.ProtoReader):
     typically do not need to use the :class:`ChainReader` explicitly.
 
     Chainreader can also handle a continuous trajectory split over several
-    files. To use this pass the ``continuous == True`` keyword argument.
+    files. To use this pass the ``continuous=True`` keyword argument.
     Setting ``continuous=True`` will make the reader choose frames from the set
     of trajectories in such a way that the trajectory appears to be as
     continuous in time as possible, i.e. that time is strictly monotonically
@@ -214,6 +214,9 @@ class ChainReader(base.ProtoReader):
     .. versionchanged:: 2.0.0
        Now ChainReader can be (un)pickled. Upon unpickling,
        current timestep is retained.
+    .. versionchanged:: 2.0.0
+       Transformations are now applied at the ChainReader's level, instead of
+       being deferred to each individual sub-reader.
 
     """
     format = 'CHAIN'
@@ -224,11 +227,11 @@ class ChainReader(base.ProtoReader):
         Parameters
         ----------
         filenames : str or list or sequence
-            file name or list of file names; the reader will open all file names
-            and provide frames in the order of trajectories from the list. Each
-            trajectory must contain the same number of atoms in the same order
-            (i.e. they all must belong to the same topology). The trajectory
-            format is deduced from the extension of each file name.
+            file name or list of file names; the reader will open all file
+            names and provide frames in the order of trajectories from the
+            list. Each trajectory must contain the same number of atoms in the
+            same order (i.e. they all must belong to the same topology). The
+            trajectory format is deduced from the extension of each file name.
 
             Extension: `filenames` are either a single file name or list of file
             names in either plain file names format or ``(filename, format)``
@@ -239,11 +242,11 @@ class ChainReader(base.ProtoReader):
             must be same for all trajectories
         dt : float (optional)
             Passed to individual trajectory readers to enforce a common time
-            difference between frames, in MDAnalysis time units. If not set, each
-            reader's `dt` will be used (either inferred from the trajectory
-            files, or set to the reader's default) when reporting frame times;
-            note that this might lead an inconsistent time difference between
-            frames.
+            difference between frames, in MDAnalysis time units. If not set,
+            each reader's `dt` will be used (either inferred from the
+            trajectory files, or set to the reader's default) when reporting
+            frame times; note that this might lead an inconsistent time
+            difference between frames.
         continuous : bool (optional)
             treat all trajectories as one single long trajectory. Adds several
             checks; all trajectories have the same dt, they contain at least 2
@@ -362,7 +365,7 @@ class ChainReader(base.ProtoReader):
             self._sf = sf
 
         # make sure that iteration always yields frame 0
-        # rewind() also sets self.ts
+        # rewind() also sets self.ts and self.__current_frame
         self.ts = None
         self.rewind()
 
@@ -495,7 +498,7 @@ class ChainReader(base.ProtoReader):
     @property
     def frame(self):
         """Cumulative frame number of the current time step."""
-        return self.ts.frame
+        return self.__current_frame
 
     @property
     def time(self):
@@ -574,26 +577,22 @@ class ChainReader(base.ProtoReader):
         i, f = self._get_local_frame(frame)
         # seek to (1) reader i and (2) frame f in trajectory i
         self.__activate_reader(i)
-        self.active_reader[f]  # rely on reader to implement __getitem__()
-        # update Timestep
-        self.ts = self.active_reader.ts
-        self.ts.frame = frame  # continuous frames, 0-based
-        self.__current_frame = frame
+        if isinstance(self.active_reader, base.SingleFrameReaderBase):
+            # Undoes any transformations
+            self.active_reader.rewind()
+        # We rely on reader to implement __getitem__().
+        self.ts = self.active_reader[f]
+        self.__current_frame = self.ts.frame = frame
         return self.ts
 
-
     def _read_next_timestep(self, ts=None):
-        if ts is None:
-            ts = self.ts
-        ts = self.__next__()
-        return ts
+        return next(self)
 
     def rewind(self):
-        """Set current frame to the beginning."""
-        self._rewind()
+        """Set current frame to the beginning.
 
-    def _rewind(self):
-        """Internal method: Rewind trajectories themselves and trj pointer."""
+        Rewinds trajectories themselves and the trj pointer.
+        """
         self.__current_frame = -1
         self._apply('rewind')
         self.__next__()
@@ -621,56 +620,7 @@ class ChainReader(base.ProtoReader):
                     nframes=self.n_frames,
                     natoms=self.n_atoms))
 
-    def add_transformations(self, *transformations):
-        """ Add all transformations to be applied to the trajectory.
-
-        This function take as list of transformations as an argument. These
-        transformations are functions that will be called by the Reader and given
-        a :class:`Timestep` object as argument, which will be transformed and returned
-        to the Reader.
-        The transformations can be part of the :mod:`~MDAnalysis.transformations`
-        module, or created by the user, and are stored as a list `transformations`.
-        This list can only be modified once, and further calls of this function will
-        raise an exception.
-
-        .. code-block:: python
-
-          u = MDAnalysis.Universe(topology, coordinates)
-          workflow = [some_transform, another_transform, this_transform]
-          u.trajectory.add_transformations(*workflow)
-
-        Parameters
-        ----------
-        transform_list : list
-            list of all the transformations that will be applied to the coordinates
-
-        See Also
-        --------
-        :mod:`MDAnalysis.transformations`
-        """
-        #Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
-        #to avoid unintended behaviour where the coordinates of each frame are transformed
-        #multiple times when iterating over the trajectory.
-        #In this method, the trajectory is modified all at once and once only.
-
-        super(ChainReader, self).add_transformations(*transformations)
-        for r in self.readers:
-            r.add_transformations(*transformations)
-
-    def _apply_transformations(self, ts):
-        """ Applies the transformations to the timestep."""
-        # Overrides :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_transformations`
-        # to avoid applying the same transformations multiple times on each frame
-
-        return ts
-
     def __next__(self):
         if self.__current_frame < self.n_frames - 1:
-            j, f = self._get_local_frame(self.__current_frame + 1)
-            self.__activate_reader(j)
-            self.ts = self.active_reader[f]
-            self.ts.frame = self.__current_frame + 1
-            self.__current_frame += 1
-            return self.ts
-        else:
-            raise StopIteration()
+            return self._read_frame_with_aux(self.__current_frame + 1)
+        raise StopIteration()

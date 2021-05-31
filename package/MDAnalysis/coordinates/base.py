@@ -2066,8 +2066,8 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         Parameters
         ----------
         transform_list : list
-            list of all the transformations that will be applied to the coordinates
-            in the order given in the list
+            list of all the transformations that will be applied to the
+            coordinates in the order given in the list
 
         See Also
         --------
@@ -2083,10 +2083,6 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             raise ValueError(errmsg) from None
         else:
             self.ts = self._apply_transformations(self.ts)
-
-
-        # call reader here to apply the newly added transformation on the
-        # current loaded frame?
 
     def _apply_transformations(self, ts):
         """Applies all the transformations given by the user """

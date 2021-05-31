@@ -23,10 +23,12 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * Fixed inconsistency where `ChainReader` transformations were applied before
+    the reader's `Timestep` was set to the current one (Issue #3343, PR #3344)
   * Fixed missing array flatten preventing PCA from running when mean positions  
     provided and bugs causing tests to incorrectly pass (Issue #2728, PR #3296)
   * DL_POLY HISTORY file may contain unit cell dimensions even if there are
-    no periodic boundary conditions (imcom=0) (Issue #3314, PR #3312).
+    no periodic boundary conditions (imcom=0) (Issue #3314, PR #3312)
   * New RDKitConverter cache system to fix issue #2958 (PR #2942)
   * Fixed OpenMM converter documentation not showing up in the Converters
     section (Issue #3262, PR #2882)
@@ -187,6 +189,8 @@ Enhancements
     to transfer data from HDF5 file into timestep. (PR #3293)
 
 Changes
+  * The `ChainReader` now applies transformations at its level, instead of
+    deferring to each sub-reader (Issue #3343, PR #3344)
   * The RDKitParser now raises an error if only part of the atoms have metadata
     on residues (Issue #3318, PR #3325)
   * `analysis.pca.PCA` class now stores `p_components`, `variance`, 

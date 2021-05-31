@@ -28,7 +28,7 @@ import pytest
 from numpy.testing import (assert_equal, assert_almost_equal)
 
 import MDAnalysis as mda
-from MDAnalysis.transformations import translate
+from MDAnalysis.transformations import TransformationBase, translate
 from MDAnalysisTests.datafiles import (PDB, PSF, CRD, DCD,
                                        GRO, XTC, TRR, PDB_small, PDB_closed)
 from MDAnalysisTests.util import no_warning
@@ -171,6 +171,23 @@ class TestChainReader(object):
         ref = universe.trajectory[0].positions + vector
         transformed.trajectory.rewind()
         assert_almost_equal(transformed.trajectory.ts.positions, ref, decimal = 6)
+
+    def test_transform_ts_consistency(self, universe):
+        """Check that Reader.ts holds the ts being transformed (Isue 3343)"""
+
+        class SomeTransformation(TransformationBase):
+            def __init__(self, u):
+                super().__init__()
+                self.u = u
+
+            def _transform(self, ts):
+                assert self.u.universe.trajectory.ts is ts
+                return ts
+
+        universe.trajectory.add_transformations(
+            SomeTransformation(universe.atoms))
+        for ts in universe.trajectory:
+            pass
 
 class TestChainReaderCommonDt(object):
     common_dt = 100.0
