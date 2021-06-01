@@ -1302,9 +1302,9 @@ class Tempfactors(AtomAttr):
                              bfactor.__doc__)))
     
     for group in (AtomGroup, Residue, ResidueGroup, Segment, SegmentGroup):
-        transplants[group].append("bfactors",
-                                  property(bfactors, bfactors_setter, None,
-                                           bfactors.__doc__))
+        transplants[group].append(
+            ("bfactors", property(bfactors, bfactors_setter, None,
+                                  bfactors.__doc__)))
 
 
 class Masses(AtomAttr):
