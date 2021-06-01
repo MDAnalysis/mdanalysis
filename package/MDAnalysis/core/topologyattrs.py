@@ -305,15 +305,15 @@ class _TopologyAttrMeta(type):
                     _TOPOLOGY_TRANSPLANTS[name] = [attrname, method, clstype]
                     clean = name.lower().replace('_', '')
                     _TOPOLOGY_ATTRNAMES[clean] = name
-        
+
         aliases = classdict.get("aliases")
         if aliases:
             for alias in aliases:
                 al_attrname = alias.get("attrname")
                 al_singular = alias.get("singular", al_attrname)
                 if al_singular:
-                    _TOPOLOGY_ATTRS[al_singular] = _TOPOLOGY_ATTRS[al_attrname] = cls
-
+                    _TOPOLOGY_ATTRS[al_singular] = cls
+                    _TOPOLOGY_ATTRS[al_attrname] = cls
 
         for attr in ['singular', 'attrname']:
             try:
@@ -1275,28 +1275,28 @@ class Tempfactors(AtomAttr):
         .. versionadded:: 2.0.0
         """
         return self.universe.atoms[self.ix].tempfactor
-    
+
     def bfactor_setter(self, value):
         """Tempfactor alias property for atom
 
         .. versionadded:: 2.0.0
         """
         self.universe.atoms[self.ix].tempfactor = value
-    
+
     def bfactors(self):
         """Tempfactor alias property for groups of atoms
 
         .. versionadded:: 2.0.0
         """
         return self.universe.atoms[self.atoms.ix].tempfactors
-    
+
     def bfactors_setter(self, value):
         """Tempfactor alias property for atom
 
         .. versionadded:: 2.0.0
         """
         self.universe.atoms[self.atoms.ix].tempfactors = value
-    
+
     transplants[Atom].append(
         ('bfactor', property(bfactor, bfactor_setter, None,
                              bfactor.__doc__)))
@@ -1304,19 +1304,19 @@ class Tempfactors(AtomAttr):
     transplants[AtomGroup].append(
         ('bfactors', property(bfactors, bfactors_setter, None,
                               bfactors.__doc__)))
-    
+
     transplants[Residue].append(
         ('bfactors', property(bfactors, bfactors_setter, None,
                               bfactors.__doc__)))
-    
+
     transplants[ResidueGroup].append(
         ('bfactors', property(bfactors, bfactors_setter, None,
                               bfactors.__doc__)))
-    
+
     transplants[Segment].append(
         ('bfactors', property(bfactors, bfactors_setter, None,
                               bfactors.__doc__)))
-    
+
     transplants[SegmentGroup].append(
         ('bfactors', property(bfactors, bfactors_setter, None,
                               bfactors.__doc__)))
