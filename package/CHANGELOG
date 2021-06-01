@@ -189,6 +189,7 @@ Enhancements
     to transfer data from HDF5 file into timestep. (PR #3293)
 
 Changes
+  * Aliased bfactors to tempfactors (Issue #1901, PR#3345)
   * The RDKitParser now raises an error if only part of the atoms have metadata
     on residues (Issue #3318, PR #3325)
   * `analysis.pca.PCA` class now stores `p_components`, `variance`, 
