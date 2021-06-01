@@ -186,8 +186,6 @@ class RDKitConverter(base.ConverterBase):
     +-----------------------+-------------------------------------------+
     | tempfactors           | atom.GetMonomerInfo().GetTempFactor()     |
     +-----------------------+-------------------------------------------+
-    | tempfactors           | atom.GetMonomerInfo().GetTempFactor()     |
-    +-----------------------+-------------------------------------------+
     | charges               | atom.GetDoubleProp("_MDAnalysis_charge")  |
     +-----------------------+-------------------------------------------+
     | indices               | atom.GetIntProp("_MDAnalysis_index")      |

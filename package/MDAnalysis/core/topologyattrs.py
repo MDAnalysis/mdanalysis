@@ -265,6 +265,25 @@ def _attach_transplant_stubs(attribute_name, topology_attribute_class):
                 setattr(dest_class, method_name, stub)
 
 
+# TODO: remove bfactors in 3.0
+BFACTOR_WARNING = ("The bfactor topology attribute is only "
+                   "provided as an alias to the tempfactor "
+                   "attribute. It will be removed in "
+                   "3.0. Please use the tempfactor attribute "
+                   "instead.")
+
+
+def deprecate_bfactor_warning(func):
+
+    def wrapper(*args, **kwargs):
+        """
+        Bfactor alias with warning
+        """
+        warnings.warn(BFACTOR_WARNING, DeprecationWarning)
+        return func(*args, **kwargs)
+    return wrapper
+
+
 class _TopologyAttrMeta(type):
     r"""Register TopologyAttrs on class creation
 
@@ -306,15 +325,6 @@ class _TopologyAttrMeta(type):
                     clean = name.lower().replace('_', '')
                     _TOPOLOGY_ATTRNAMES[clean] = name
 
-        aliases = classdict.get("aliases")
-        if aliases:
-            for alias in aliases:
-                al_attrname = alias.get("attrname")
-                al_singular = alias.get("singular", al_attrname)
-                if al_singular:
-                    _TOPOLOGY_ATTRS[al_singular] = cls
-                    _TOPOLOGY_ATTRS[al_attrname] = cls
-
         for attr in ['singular', 'attrname']:
             try:
                 attrname = classdict[attr]
@@ -346,6 +356,14 @@ class _TopologyAttrMeta(type):
                            "selection keyword, define it manually "
                            "by subclassing core.selection.Selection")
                     warnings.warn(msg)
+
+        # TODO: remove in 3.0
+        if attrname == "tempfactors":
+            _TOPOLOGY_ATTRS["bfactor"] = _TOPOLOGY_ATTRS["bfactors"] = cls
+            selcls = selection.gen_selection_class("bfactor", "bfactors",
+                                                   classdict.get("dtype"),
+                                                   per_object="atom")
+            selcls.apply = deprecate_bfactor_warning(selcls.apply)
 
 
 class TopologyAttr(object, metaclass=_TopologyAttrMeta):
@@ -1263,12 +1281,13 @@ class Tempfactors(AtomAttr):
     per_object = 'atom'
     dtype = float
     transplants = defaultdict(list)
-    aliases = [{"attrname": "bfactors", "singular": "bfactor"}]
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
         return np.zeros(na)
 
+    # TODO: remove bfactors in 3.0
+    @deprecate_bfactor_warning
     def bfactor(self):
         """Tempfactor alias property for atom
 
@@ -1276,6 +1295,7 @@ class Tempfactors(AtomAttr):
         """
         return self.universe.atoms[self.ix].tempfactor
 
+    @deprecate_bfactor_warning
     def bfactor_setter(self, value):
         """Tempfactor alias property for atom
 
@@ -1283,6 +1303,7 @@ class Tempfactors(AtomAttr):
         """
         self.universe.atoms[self.ix].tempfactor = value
 
+    @deprecate_bfactor_warning
     def bfactors(self):
         """Tempfactor alias property for groups of atoms
 
@@ -1290,8 +1311,9 @@ class Tempfactors(AtomAttr):
         """
         return self.universe.atoms[self.atoms.ix].tempfactors
 
+    @deprecate_bfactor_warning
     def bfactors_setter(self, value):
-        """Tempfactor alias property for atom
+        """Tempfactor alias property for groups of atoms
 
         .. versionadded:: 2.0.0
         """
@@ -1300,7 +1322,7 @@ class Tempfactors(AtomAttr):
     transplants[Atom].append(
         ('bfactor', property(bfactor, bfactor_setter, None,
                              bfactor.__doc__)))
-    
+
     for group in (AtomGroup, Residue, ResidueGroup, Segment, SegmentGroup):
         transplants[group].append(
             ("bfactors", property(bfactors, bfactors_setter, None,

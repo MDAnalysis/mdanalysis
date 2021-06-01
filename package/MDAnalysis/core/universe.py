@@ -96,7 +96,7 @@ from .groups import (ComponentBase, GroupBase,
                      Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup)
 from .topology import Topology
-from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr
+from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr, BFACTOR_WARNING
 from .topologyobjects import TopologyObject
 
 
@@ -774,6 +774,8 @@ class Universe(object):
             they will be aliases of the same attribute.
         """
         if isinstance(topologyattr, str):
+            if topologyattr in ("bfactor", "bfactors"):
+                warnings.warn(BFACTOR_WARNING, DeprecationWarning)
             try:
                 tcls = _TOPOLOGY_ATTRS[topologyattr]
             except KeyError:
