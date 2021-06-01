@@ -274,7 +274,6 @@ class TestRDKitConverter(object):
         ("resids", 123, 123),
         ("segindices", 1, 1),
         ("tempfactors", 0.8, 0.8),
-        ("bfactors", 0.8, 0.8),
     ])
     def test_add_mda_attr_to_rdkit(self, attr, value, expected):
         mi = Chem.AtomPDBResidueInfo()
