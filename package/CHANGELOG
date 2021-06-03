@@ -290,6 +290,9 @@ Changes
   * Writing a TRZ file with no box information now raises a warning (Issue #3307)
 
 Deprecations
+  * Deprecated the `bfactors` topology attribute in favour of `tempfactors`.
+    In 2.0 `bfactors` is simply an alias of `tempfactors`; in 3.0 `bfactors`
+    will be removed. (Issue #1901, PR #3345)
   * The attributes `p_components`, `variance`, `cumulated_variance` and 
     `mean_atoms` in `analysis.pca.PCA` are now deprecated in favour of 
     `results.p_components`, `results.variance`, `results.cumulated_variance` 

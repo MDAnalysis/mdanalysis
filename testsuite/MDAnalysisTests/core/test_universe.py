@@ -1296,5 +1296,7 @@ class TestEmpty(object):
 
 def test_deprecate_b_tempfactors():
     u = mda.Universe(PDB)
+    values = np.arange(len(u.atoms))
     with pytest.warns(DeprecationWarning, match="use the tempfactor"):
-        u.add_TopologyAttr("bfactors")
+        u.add_TopologyAttr("bfactors", values)
+    assert_array_equal(u.atoms.tempfactors, values)

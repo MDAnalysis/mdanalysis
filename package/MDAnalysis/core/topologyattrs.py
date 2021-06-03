@@ -1289,7 +1289,13 @@ class Tempfactors(AtomAttr):
     # TODO: remove bfactors in 3.0
     @deprecate_bfactor_warning
     def bfactor(self):
-        """Tempfactor alias property for atom
+        """Alias for tempfactor
+
+        The bfactor topology attribute is only 
+        provided as an alias to the tempfactor 
+        attribute. It will be removed in 
+        3.0. Please use the tempfactor attribute 
+        instead.
 
         .. versionadded:: 2.0.0
         """
@@ -1305,7 +1311,13 @@ class Tempfactors(AtomAttr):
 
     @deprecate_bfactor_warning
     def bfactors(self):
-        """Tempfactor alias property for groups of atoms
+        """Alias for tempfactors
+        
+        The bfactor topology attribute is only 
+        provided as an alias to the tempfactor 
+        attribute. It will be removed in 
+        3.0. Please use the tempfactor attribute 
+        instead.
 
         .. versionadded:: 2.0.0
         """
