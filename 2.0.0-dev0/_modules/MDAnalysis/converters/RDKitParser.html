@@ -319,6 +319,11 @@
 <span class="sd">    | atom.GetProp(&#39;_TriposAtomType&#39;)             | types                   |</span>
 <span class="sd">    +---------------------------------------------+-------------------------+</span>
 
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If only part of the atoms have MonomerInfo available</span>
+
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -420,6 +425,14 @@
         <span class="c1"># make Topology attributes</span>
         <span class="n">attrs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">resnums</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">resnums</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n_atoms</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;ResidueInfo is only partially available in the molecule. &quot;</span>
+                <span class="s2">&quot;If you have added hydrogens to the input RDKit molecule with &quot;</span>
+                <span class="s2">&quot;`Chem.AddHs(mol)`, consider using &quot;</span>
+                <span class="s2">&quot;`Chem.AddHs(mol, addResidueInfo=True)` instead&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># * Attributes always present *</span>
 
