@@ -187,6 +187,8 @@ Enhancements
     to transfer data from HDF5 file into timestep. (PR #3293)
 
 Changes
+  * The RDKitParser now raises an error if only part of the atoms have metadata
+    on residues (Issue #3318, PR #3325)
   * `analysis.pca.PCA` class now stores `p_components`, `variance`, 
     `cumulated_variance` and `mean_atoms` using the 
     `analysis.base.Results` class (Issues #3275 #3285)
