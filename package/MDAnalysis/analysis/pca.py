@@ -43,12 +43,13 @@ covariance between coordinates :math:`i` and :math:`j`. The principal
 components are the eigenvectors of this matrix.
 
 For each eigenvector, its eigenvalue is the variance that the eigenvector
-explains. Stored in :attr:`PCA.cumulated_variance`, a ratio for each number of
-eigenvectors up to index :math:`i` is provided to quickly find out how many
-principal components are needed to explain the amount of variance reflected by
-those :math:`i` eigenvectors. For most data, :attr:`PCA.cumulated_variance`
+explains. Stored in :attr:`PCA.results.cumulated_variance`, a ratio for each
+number of eigenvectors up to index :math:`i` is provided to quickly find out
+how many principal components are needed to explain the amount of variance
+reflected by those :math:`i` eigenvectors. For most data,
+:attr:`PCA.results.cumulated_variance`
 will be approximately equal to one for some :math:`n` that is significantly
-smaller than the total number of components, these are the components of
+smaller than the total number of components. These are the components of
 interest given by Principal Component Analysis.
 
 From here, we can project a trajectory onto these principal components and
@@ -67,30 +68,34 @@ The example uses files provided as part of the MDAnalysis test suite
 :data:`~MDAnalysis.tests.datafiles.DCD`). This tutorial shows how to use the
 PCA class.
 
-First load all modules and test data
+First load all modules and test data::
 
-    >>> import MDAnalysis as mda
-    >>> import MDAnalysis.analysis.pca as pca
-    >>> from MDAnalysis.tests.datafiles import PSF, DCD
+    import MDAnalysis as mda
+    import MDAnalysis.analysis.pca as pca
+    from MDAnalysis.tests.datafiles import PSF, DCD
+
 
 Given a universe containing trajectory data we can perform Principal Component
 Analyis by using the class :class:`PCA` and retrieving the principal
-components.
+components.::
 
-    >>> u = mda.Universe(PSF, DCD)
-    >>> PSF_pca = pca.PCA(u, select='backbone')
-    >>> PSF_pca.run()
+    u = mda.Universe(PSF, DCD)
+    PSF_pca = pca.PCA(u, select='backbone')
+    PSF_pca.run()
+
 
 Inspect the components to determine the principal components you would like
 to retain. The choice is arbitrary, but I will stop when 95 percent of the
 variance is explained by the components. This cumulated variance by the
 components is conveniently stored in the one-dimensional array attribute
-``cumulated_variance``. The value at the ith index of `cumulated_variance`
-is the sum of the variances from 0 to i.
+:attr:`PCA.results.cumulated_variance`. The value at the ith index of
+:attr:`PCA.results.cumulated_variance` is the sum of the variances from 0 to
+i.::
 
-    >>> n_pcs = np.where(PSF_pca.cumulated_variance > 0.95)[0][0]
-    >>> atomgroup = u.select_atoms('backbone')
-    >>> pca_space = PSF_pca.transform(atomgroup, n_components=n_pcs)
+    n_pcs = np.where(PSF_pca.results.cumulated_variance > 0.95)[0][0]
+    atomgroup = u.select_atoms('backbone')
+    pca_space = PSF_pca.transform(atomgroup, n_components=n_pcs)
+
 
 From here, inspection of the ``pca_space`` and conclusions to be drawn from the
 data are left to the user.
@@ -99,7 +104,14 @@ Classes and Functions
 ---------------------
 
 .. autoclass:: PCA
+   :members:
+   :inherited-members:
+
 .. autofunction:: cosine_content
+
+.. autofunction:: rmsip
+
+.. autofunction:: cumulative_overlap
 
 """
 import warnings
@@ -121,34 +133,81 @@ class PCA(AnalysisBase):
 
     After initializing and calling method with a universe or an atom group,
     principal components ordering the atom coordinate data by decreasing
-    variance will be available for analysis. As an example:
+    variance will be available for analysis. As an example:::
 
-        >>> pca = PCA(universe, select='backbone').run()
-        >>> pca_space =  pca.transform(universe.select_atoms('backbone'), 3)
+        pca = PCA(universe, select='backbone').run()
+        pca_space = pca.transform(universe.select_atoms('backbone'), 3)
+
 
     generates the principal components of the backbone of the atomgroup and
     then transforms those atomgroup coordinates by the direction of those
     variances. Please refer to the :ref:`PCA-tutorial` for more detailed
     instructions.
 
+    Parameters
+    ----------
+    universe : Universe
+        Universe
+    select : string, optional
+        A valid selection statement for choosing a subset of atoms from
+        the atomgroup.
+    align : boolean, optional
+        If True, the trajectory will be aligned to a reference
+        structure.
+    mean : array_like, optional
+        Optional reference positions to be be used as the mean of the
+        covariance matrix.
+    n_components : int, optional
+        The number of principal components to be saved, default saves
+        all principal components
+    verbose : bool (optional)
+            Show detailed progress of the calculation if set to ``True``.
+
     Attributes
     ----------
-    p_components: array, (n_atoms * 3, n_components)
-        The principal components of the feature space,
+    results.p_components: array, (n_atoms * 3, n_components)
+        Principal components of the feature space,
         representing the directions of maximum variance in the data.
         The column vector p_components[:, i] is the eigenvector
         corresponding to the variance[i].
-    variance : array (n_components, )
-        The raw variance explained by each eigenvector of the covariance
+
+        .. versionadded:: 2.0.0
+
+    p_components: array, (n_atoms * 3, n_components)
+        Alias to the :attr:`results.p_components`.
+
+        .. deprecated:: 2.0.0
+                Will be removed in MDAnalysis 3.0.0. Please use
+                :attr:`results.p_components` instead.
+
+    results.variance : array (n_components, )
+        Raw variance explained by each eigenvector of the covariance
         matrix.
-    cumulated_variance : array, (n_components, )
+
+        .. versionadded:: 2.0.0
+
+    variance : array (n_components, )
+        Alias to the :attr:`results.variance`.
+
+        .. deprecated:: 2.0.0
+                Will be removed in MDAnalysis 3.0.0. Please use
+                :attr:`results.variance` instead.
+
+    results.cumulated_variance : array, (n_components, )
         Percentage of variance explained by the selected components and the sum
         of the components preceding it. If a subset of components is not chosen
         then all components are stored and the cumulated variance will converge
         to 1.
-    mean_atoms: MDAnalyis atomgroup
-        After running :meth:`PCA.run`, the mean position of all the atoms
-        used for the creation of the covariance matrix will exist here.
+
+        .. versionadded:: 2.0.0
+
+    cumulated_variance : array, (n_components, )
+        Alias to the :attr:`results.cumulated_variance`.
+
+        .. deprecated:: 2.0.0
+                Will be removed in MDAnalysis 3.0.0. Please use
+                :attr:`results.cumulated_variance` instead.
+
 
     Methods
     -------
@@ -159,8 +218,12 @@ class PCA(AnalysisBase):
 
     Notes
     -----
-    Computation can be sped up by supplying a precalculated mean structure.
+    Computation can be sped up by supplying precalculated mean positions.
 
+
+    .. versionchanged:: 0.19.0
+       The start frame is used when performing selections and calculating
+       mean positions.  Previously the 0th frame was always used.
     .. versionchanged:: 1.0.0
        ``n_components`` now limits the correct axis of ``p_components``.
        ``cumulated_variance`` now accurately represents the contribution of
@@ -169,34 +232,16 @@ class PCA(AnalysisBase):
        ``p_components``, ``cumulated_variance`` will not sum to 1.
        ``align=True`` now correctly aligns the trajectory and computes the
        correct means and covariance matrix.
-
-    .. versionchanged:: 0.19.0
-       The start frame is used when performing selections and calculating
-       mean positions.  Previously the 0th frame was always used.
+    .. versionchanged:: 2.0.0
+       ``mean_atoms`` removed, as this did not reliably contain the mean
+       positions.
+       ``mean`` input now accepts coordinate arrays instead of atomgroup.
+       :attr:`p_components`, :attr:`variance` and :attr:`cumulated_variance`
+       are now stored in a :class:`MDAnalysis.analysis.base.Results` instance.
     """
 
     def __init__(self, universe, select='all', align=False, mean=None,
                  n_components=None, **kwargs):
-        """
-        Parameters
-        ----------
-        universe : Universe
-            Universe
-        select : string, optional
-            A valid selection statement for choosing a subset of atoms from
-            the atomgroup.
-        align : boolean, optional
-            If True, the trajectory will be aligned to a reference
-            structure.
-        mean : MDAnalysis atomgroup, optional
-            An optional reference structure to be used as the mean of the
-            covariance matrix.
-        n_components : int, optional
-            The number of principal components to be saved, default saves
-            all principal components
-        verbose : bool (optional)
-             Show detailed progress of the calculation if set to ``True``.
-        """
         super(PCA, self).__init__(universe.trajectory, **kwargs)
         self._u = universe
 
@@ -217,10 +262,15 @@ class PCA(AnalysisBase):
         self._n_atoms = self._atoms.n_atoms
 
         if self._mean is None:
-            self.mean = np.zeros(self._n_atoms*3)
+            self.mean = np.zeros((self._n_atoms, 3))
             self._calc_mean = True
         else:
-            self.mean = self._mean.positions
+            self.mean = np.asarray(self._mean)
+            if self.mean.shape[0] != self._n_atoms:
+                raise ValueError('Number of atoms in reference ({}) does '
+                                 'not match number of atoms in the '
+                                 'selection ({})'.format(self._n_atoms,
+                                                         self.mean.shape[0]))
             self._calc_mean = False
 
         if self.n_frames == 1:
@@ -243,11 +293,9 @@ class PCA(AnalysisBase):
                                                      mobile_com=mobile_cog,
                                                      ref_com=self._ref_cog)
 
-                self.mean += self._atoms.positions.ravel()
+                self.mean += self._atoms.positions
             self.mean /= self.n_frames
-
-        self.mean_atoms = self._atoms
-        self.mean_atoms.positions = self._atoms.positions
+        self._xmean = np.ravel(self.mean)
 
     def _single_frame(self):
         if self.align:
@@ -261,7 +309,7 @@ class PCA(AnalysisBase):
             x = mobile_atoms.positions.ravel()
         else:
             x = self._atoms.positions.ravel()
-        x -= self.mean
+        x -= self._xmean
         self.cov += np.dot(x[:, np.newaxis], x[:, np.newaxis].T)
 
     def _conclude(self):
@@ -274,6 +322,30 @@ class PCA(AnalysisBase):
         self.n_components = self._n_components
 
     @property
+    def p_components(self):
+        wmsg = ("The `p_components` attribute was deprecated in "
+                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+                "Please use `results.p_components` instead.")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.p_components
+
+    @property
+    def variance(self):
+        wmsg = ("The `variance` attribute was deprecated in "
+                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+                "Please use `results.variance` instead.")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.variance
+
+    @property
+    def cumulated_variance(self):
+        wmsg = ("The `cumulated_variance` attribute was deprecated in "
+                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+                "Please use `results.cumulated_variance` instead.")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.cumulated_variance
+
+    @property
     def n_components(self):
         return self._n_components
 
@@ -282,10 +354,10 @@ class PCA(AnalysisBase):
         if self._calculated:
             if n is None:
                 n = len(self._variance)
-            self.variance = self._variance[:n]
-            self.cumulated_variance = (np.cumsum(self._variance) /
+            self.results.variance = self._variance[:n]
+            self.results.cumulated_variance = (np.cumsum(self._variance) /
                                        np.sum(self._variance))[:n]
-            self.p_components = self._p_components[:, :n]
+            self.results.p_components = self._p_components[:, :n]
         self._n_components = n
 
     def transform(self, atomgroup, n_components=None, start=None, stop=None,
@@ -294,11 +366,11 @@ class PCA(AnalysisBase):
 
         Parameters
         ----------
-        atomgroup : MDAnalysis atomgroup/ Universe
-            The atomgroup or universe containing atoms to be PCA transformed.
+        atomgroup : AtomGroup or Universe
+            The AtomGroup or Universe containing atoms to be PCA transformed.
         n_components : int, optional
-            The number of components to be projected onto, The default
-            ``None``maps onto all components.
+            The number of components to be projected onto. The default
+            ``None`` maps onto all components.
         start : int, optional
             The frame to start on for the PCA transform. The default
             ``None`` becomes 0, the first frame index.
@@ -308,13 +380,14 @@ class PCA(AnalysisBase):
             Iteration stops *before* this frame number, which means that the
             trajectory would be read until the end.
         step : int, optional
-            Number of frames to skip over for PCA transform. If set to ``None``
-            (the default) then every frame is analyzed (i.e., same as
+            Include every `step` frames in the PCA transform. If set to
+            ``None`` (the default) then every frame is analyzed (i.e., same as
             ``step=1``).
 
         Returns
         -------
         pca_space : array, shape (n_frames, n_components)
+
 
         .. versionchanged:: 0.19.0
            Transform now requires that :meth:`run` has been called before,
@@ -339,12 +412,12 @@ class PCA(AnalysisBase):
         n_frames = len(range(start, stop, step))
 
         dim = (n_components if n_components is not None else
-               self.p_components.shape[1])
+               self.results.p_components.shape[1])
 
         dot = np.zeros((n_frames, dim))
 
         for i, ts in enumerate(traj[start:stop:step]):
-            xyz = atomgroup.positions.ravel() - self.mean
+            xyz = atomgroup.positions.ravel() - self._xmean
             dot[i] = np.dot(xyz, self._p_components[:, :dim])
 
         return dot
@@ -381,12 +454,13 @@ class PCA(AnalysisBase):
 
         See also
         --------
-        rmsip
+        :func:`~MDAnalysis.analysis.pca.rmsip`
+
 
         .. versionadded:: 1.0.0
         """
         try:
-            a = self.p_components
+            a = self.results.p_components
         except AttributeError:
             raise ValueError('Call run() on the PCA before using rmsip')
 
@@ -433,14 +507,14 @@ class PCA(AnalysisBase):
 
         See also
         --------
-        cumulative_overlap
+        :func:`~MDAnalysis.analysis.pca.cumulative_overlap`
+
 
         .. versionadded:: 1.0.0
-
         """
 
         try:
-            a = self.p_components
+            a = self.results.p_components
         except AttributeError:
             raise ValueError(
                 'Call run() on the PCA before using cumulative_overlap')
@@ -524,6 +598,7 @@ def rmsip(a, b, n_components=None):
         0 indicates that they are mutually orthogonal, whereas 1 indicates
         that they are identical.
 
+
     .. versionadded:: 1.0.0
     """
     n_components = util.asiterable(n_components)
@@ -576,6 +651,7 @@ def cumulative_overlap(a, b, i=0, n_components=None):
         Cumulative overlap of the chosen vector in ``a`` to the ``b`` subspace.
         0 indicates that they are mutually orthogonal, whereas 1 indicates
         that they are identical.
+
 
     .. versionadded:: 1.0.0
     """

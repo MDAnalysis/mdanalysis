@@ -18,11 +18,13 @@ The rules for this file:
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
          hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi, hejamu,
          biogen98, orioncohen, z3y50n, hp115, ojeda-e, thadanipaarth, HenryKobin,
-         1ut, sulays, ahy3nz, fiszczyp
+         1ut, sulays, ahy3nz, fiszczyp, fiona-naughton
 
   * 2.0.0
 
 Fixes
+  * Fixed missing array flatten preventing PCA from running when mean positions  
+    provided and bugs causing tests to incorrectly pass (Issue #2728, PR #3296)
   * DL_POLY HISTORY file may contain unit cell dimensions even if there are
     no periodic boundary conditions (imcom=0) (Issue #3314, PR #3312).
   * New RDKitConverter cache system to fix issue #2958 (PR #2942)
@@ -187,6 +189,9 @@ Enhancements
 Changes
   * The RDKitParser now raises an error if only part of the atoms have metadata
     on residues (Issue #3318, PR #3325)
+  * `analysis.pca.PCA` class now stores `p_components`, `variance`, 
+    `cumulated_variance` and `mean_atoms` using the 
+    `analysis.base.Results` class (Issues #3275 #3285)
   * Timestep now stores information in 'C' memory layout instead of
     the previous 'F' default (PR #1738)
   * `analysis.rdf.InterRDF` and `analysis.rdf.InterRDF_s` now store
@@ -281,6 +286,11 @@ Changes
   * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
 
 Deprecations
+  * The attributes `p_components`, `variance`, `cumulated_variance` and 
+    `mean_atoms` in `analysis.pca.PCA` are now deprecated in favour of 
+    `results.p_components`, `results.variance`, `results.cumulated_variance` 
+    and `results.mean_atoms`. They will be removed in 3.0.0 
+    (Issues #3275 #3285)
   * The `bins`, `edges`, `count`, `rdf` attributes for `analysis.rdf.InterRDF`
     and `analysis.rdf.InterRDF_s`, and `cdf` attributes for
     `analysis.rdf.InterRDF_s` are now deprecated in favour of `results.bins`,
