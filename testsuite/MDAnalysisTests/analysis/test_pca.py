@@ -56,7 +56,9 @@ def pca(u):
 
 @pytest.fixture(scope='module')
 def pca_aligned(u):
-    return PCA(u, select=SELECTION, align=True).run()
+    # run on a copy so positions in u are unchanged
+    u_copy = u.copy()
+    return PCA(u_copy, select=SELECTION, align=True).run()
 
 
 def test_cov(pca, u):
@@ -69,23 +71,25 @@ def test_cov(pca, u):
 
 
 def test_cum_var(pca):
-    assert_almost_equal(pca.cumulated_variance[-1], 1)
-    l = pca.cumulated_variance
-    l = np.sort(l)
-    assert_almost_equal(pca.cumulated_variance, l, 5)
+    assert_almost_equal(pca.results.cumulated_variance[-1], 1)
+    cum_var = pca.results.cumulated_variance
+    cum_var = np.sort(cum_var)
+    assert_almost_equal(pca.results.cumulated_variance, cum_var, 5)
 
 
 def test_pcs(pca):
-    assert_equal(pca.p_components.shape, (pca._n_atoms * 3, pca._n_atoms * 3))
+    assert_equal(pca.results.p_components.shape, (pca._n_atoms * 3,
+                                                  pca._n_atoms * 3))
 
 
 def test_pcs_n_components(u):
     pca = PCA(u, select=SELECTION).run()
     assert_equal(pca.n_components, pca._n_atoms*3)
-    assert_equal(pca.p_components.shape, (pca._n_atoms * 3, pca._n_atoms * 3))
+    assert_equal(pca.results.p_components.shape, (pca._n_atoms * 3,
+                                                  pca._n_atoms * 3))
     pca.n_components = 10
     assert_equal(pca.n_components, 10)
-    assert_equal(pca.p_components.shape, (pca._n_atoms * 3, 10))
+    assert_equal(pca.results.p_components.shape, (pca._n_atoms * 3, 10))
 
 
 def test_different_steps(pca, u):
@@ -151,20 +155,27 @@ def test_cosine_content():
 
 def test_mean_shape(pca_aligned, u):
     atoms = u.select_atoms(SELECTION)
-    assert_equal(pca_aligned.mean.shape[0], atoms.n_atoms * 3)
+    assert_equal(pca_aligned.mean.shape[0], atoms.n_atoms)
+    assert_equal(pca_aligned.mean.shape[1], 3)
 
 
 def test_calculate_mean(pca_aligned, u, u_aligned):
     ag = u_aligned.select_atoms(SELECTION)
     coords = u_aligned.trajectory.coordinate_array[:, ag.ix]
     assert_almost_equal(pca_aligned.mean, coords.mean(
-        axis=0).ravel(), decimal=5)
+        axis=0), decimal=5)
 
 
-def test_given_mean(pca_aligned, u):
+def test_given_mean(pca, u):
     pca = PCA(u, select=SELECTION, align=False,
-              mean=pca_aligned._mean).run()
-    assert_almost_equal(pca_aligned.cov, pca.cov, decimal=5)
+              mean=pca.mean).run()
+    assert_almost_equal(pca.cov, pca.cov, decimal=5)
+
+
+def test_wrong_num_given_mean(u):
+    wrong_mean = [[0, 0, 0], [1, 1, 1]]
+    with pytest.raises(ValueError, match='Number of atoms in'):
+        pca = PCA(u, select=SELECTION, mean=wrong_mean).run()
 
 
 def test_alignment(pca_aligned, u, u_aligned):
@@ -182,8 +193,8 @@ def test_pca_rmsip_self(pca):
 
 
 def test_rmsip_ortho(pca):
-    value = rmsip(pca.p_components[:, :10].T,
-                  pca.p_components[:, 10:20].T)
+    value = rmsip(pca.results.p_components[:, :10].T,
+                  pca.results.p_components[:, 10:20].T)
     assert_almost_equal(value, 0.0)
 
 
@@ -207,7 +218,7 @@ def test_pca_cumulative_overlap_self(pca):
 
 
 def test_cumulative_overlap_ortho(pca):
-    pcs = pca.p_components
+    pcs = pca.results.p_components
     value = cumulative_overlap(pcs[:, 11].T, pcs.T, n_components=10)
     assert_almost_equal(value, 0.0)
 
@@ -242,3 +253,12 @@ def test_compare_wrong_class(u, pca, method):
     with pytest.raises(ValueError) as exc:
         func(3)
     assert 'must be another PCA class' in str(exc.value)
+
+
+@pytest.mark.parametrize("attr", ("p_components", "variance",
+                                  "cumulated_variance"))
+def test_pca_attr_warning(u, attr):
+    pca = PCA(u, select=SELECTION).run(stop=2)
+    wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        getattr(pca, attr) is pca.results[attr]

@@ -715,7 +715,11 @@ class GroupBase(_MutableBase):
     @property
     def dimensions(self):
         """Obtain a copy of the dimensions of the currently loaded Timestep"""
-        return self.universe.trajectory.ts.dimensions.copy()
+        dims = self.universe.trajectory.ts.dimensions
+        if dims is None:
+            return dims
+        else:
+            return dims.copy()
 
     @dimensions.setter
     def dimensions(self, dimensions):
@@ -1560,12 +1564,16 @@ class GroupBase(_MutableBase):
         # Try and auto detect box dimensions:
         if box is None:
             box = self.dimensions
+            if box is None:
+                raise ValueError("No dimensions information in Universe. "
+                                 " Either use the 'box' argument or"
+                                 " set the '.dimensions' attribute")
         else:
             box = np.asarray(box, dtype=np.float32)
-        if not np.all(box > 0.0) or box.shape != (6,):
-            raise ValueError("Invalid box: Box has invalid shape or not all "
-                             "box dimensions are positive. You can specify a "
-                             "valid box using the 'box' argument.")
+            if not np.all(box > 0.0) or box.shape != (6,):
+                raise ValueError("Invalid box: Box has invalid shape or not all "
+                                 "box dimensions are positive. You can specify a "
+                                 "valid box using the 'box' argument.")
 
         # no matter what kind of group we have, we need to work on its (unique)
         # atoms:
@@ -3077,9 +3085,8 @@ class AtomGroup(GroupBase):
                 return attr
 
         # indices of bonds
-        box = self.dimensions if self.dimensions.all() else None
         b = guess_bonds(self.atoms, self.atoms.positions,
-                        vdwradii=vdwradii, box=box)
+                        vdwradii=vdwradii, box=self.dimensions)
         bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
         bondattr._add_bonds(b, guessed=True)
 

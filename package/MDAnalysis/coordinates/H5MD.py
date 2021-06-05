@@ -191,6 +191,7 @@ Classes
 import numpy as np
 import MDAnalysis as mda
 from . import base, core
+from .base import Timestep
 from ..exceptions import NoDataError
 import h5py
 try:
@@ -208,35 +209,6 @@ except ImportError:
 
 else:
     HAS_H5PY = True
-
-
-class Timestep(base.Timestep):
-    """H5MD Timestep
-    """
-    order = 'C'
-
-    def _init_unitcell(self):
-        return np.zeros((3, 3), dtype=np.float32)
-
-    @property
-    def dimensions(self):
-        """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
-
-        lengths *A*, *B*, *C* are in the MDAnalysis length unit (Å), and
-        angles are in degrees.
-
-        Setting dimensions will populate the underlying native format
-        description (triclinic box vectors). If `edges
-        <https://nongnu.org/h5md/h5md.html#simulation-box>`_ is a matrix,
-        the box is of triclinic shape with the edge vectors given by
-        the rows of the matrix.
-        """
-        if self._unitcell is not None:
-            return core.triclinic_box(*self._unitcell)
-
-    @dimensions.setter
-    def dimensions(self, box):
-        self._unitcell[:] = core.triclinic_vectors(box)
 
 
 class H5MDReader(base.ReaderBase):
@@ -383,7 +355,6 @@ class H5MDReader(base.ReaderBase):
             'kcal mol-1 A-1': 'kcal/(mol*Angstrom)'
         }
     }
-    _Timestep = Timestep
 
     def __init__(self, filename,
                  convert_units=True,
@@ -619,20 +590,19 @@ class H5MDReader(base.ReaderBase):
 
         # Sets frame box dimensions
         # Note: H5MD files must contain 'box' group in each 'particles' group
-        if 'edges' in particle_group['box'] and ts._unitcell is not None:
-            ts._unitcell[:] = particle_group['box/edges/value'][frame, :]
+        if 'edges' in particle_group['box']:
+            ts.dimensions = core.triclinic_box(*particle_group['box/edges/value'][frame, :])
         else:
-            # sets ts.dimensions = None
-            ts._unitcell = None
+            ts.dimensions = None
 
         # set the timestep positions, velocities, and forces with
         # current frame dataset
         if self._has['position']:
-            ts.positions = self._get_frame_dataset('position')
+            self._read_dataset_into_ts('position', ts.positions)
         if self._has['velocity']:
-            ts.velocities = self._get_frame_dataset('velocity')
+            self._read_dataset_into_ts('velocity', ts.velocities)
         if self._has['force']:
-            ts.forces = self._get_frame_dataset('force')
+            self._read_dataset_into_ts('force', ts.forces)
 
         if self.convert_units:
             self._convert_units()
@@ -661,20 +631,22 @@ class H5MDReader(base.ReaderBase):
                         'step'][self._frame]
                     break
 
-    def _get_frame_dataset(self, dataset):
-        """retrieves dataset array at current frame"""
+    def _read_dataset_into_ts(self, dataset, attribute):
+        """reads position, velocity, or force dataset array at current frame
+        into corresponding ts attribute"""
 
-        frame_dataset = self._particle_group[
-            dataset]['value'][self._frame, :]
-        n_atoms_now = frame_dataset.shape[0]
+        n_atoms_now = self._particle_group[f'{dataset}/value'][
+                                           self._frame].shape[0]
         if n_atoms_now != self.n_atoms:
-            raise ValueError("Frame {} has {} atoms but the initial frame"
-                             " has {} atoms. MDAnalysis is unable to deal"
-                             " with variable topology!"
-                             "".format(self._frame,
-                                       n_atoms_now,
-                                       self.n_atoms))
-        return frame_dataset
+            raise ValueError(f"Frame {self._frame} of the {dataset} dataset"
+                             f" has {n_atoms_now} atoms but the initial frame"
+                             " of either the postion, velocity, or force"
+                             f" dataset had {self.n_atoms} atoms."
+                             " MDAnalysis is unable to deal"
+                             " with variable topology!")
+
+        self._particle_group[f'{dataset}/value'].read_direct(
+                             attribute, source_sel=np.s_[self._frame, :])
 
     def _convert_units(self):
         """converts time, position, velocity, and force values if they
@@ -685,7 +657,7 @@ class H5MDReader(base.ReaderBase):
 
         self.ts.time = self.convert_time_from_native(self.ts.time)
 
-        if 'edges' in self._particle_group['box']:
+        if 'edges' in self._particle_group['box'] and self.ts.dimensions is not None:
             self.convert_pos_from_native(self.ts.dimensions[:3])
 
         if self._has['position']:

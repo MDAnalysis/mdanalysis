@@ -450,14 +450,13 @@ class Universe(object):
 
         if trajectory:
             coords = np.zeros((1, n_atoms, 3), dtype=np.float32)
-            dims = np.zeros(6, dtype=np.float32)
             vels = np.zeros_like(coords) if velocities else None
             forces = np.zeros_like(coords) if forces else None
 
             # grab and attach a MemoryReader
             u.trajectory = get_reader_for(coords)(
                 coords, order='fac', n_atoms=n_atoms,
-                dimensions=dims, velocities=vels, forces=forces)
+                velocities=vels, forces=forces)
 
         return u
 

@@ -372,7 +372,7 @@ class BAT(AnalysisBase):
         # The rotation axis is a normalized vector pointing from atom 0 to 1
         # It is described in two degrees of freedom
         # by the polar angle and azimuth
-        if (self._root.dimensions[:3] == 0).any():
+        if self._root.dimensions is None:
             (p0, p1, p2) = self._root.positions
         else:
             (p0, p1, p2) = make_whole(self._root, inplace=False)
