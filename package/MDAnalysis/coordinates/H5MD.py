@@ -697,6 +697,16 @@ class H5MDReader(base.ReaderBase):
         self.close()
         self.open_trajectory()
 
+    def Writer(self, filename, n_atoms=None, **kwargs):
+        """Return writer for trajectory format"""
+        if n_atoms is None:
+            n_atoms = self.n_atoms
+        return H5MDWriter(
+            filename,
+            n_atoms=n_atoms,
+            convert_units=self.convert_units,
+            **kwargs)
+
     @property
     def has_positions(self):
         """``True`` if 'position' group is in trajectory."""
@@ -969,7 +979,7 @@ class H5MDWriter(base.WriterBase):
                                                    maxshape=(None,),
                                                    dtype=np.float32)
             if self.units is not None:
-                self._set_attr_unit(self.traj['box/edges'], 'length')
+                self._set_attr_unit(self.traj['box/edges/value'], 'length')
                 self._set_attr_unit(self._time, 'time')
         else:
             trajectory['box'].attrs['boundary'] = 3*[None]
@@ -1087,9 +1097,9 @@ class H5MDWriter(base.WriterBase):
         """
 
         self._step.resize(self._step.shape[0]+1, axis=0)
-        self._time.resize(self._time.shape[0]+1, axis=0)
         self._step[-1] = ts.data['step']
-        self._step[-1] = ts.data['time']
+        self._time.resize(self._time.shape[0]+1, axis=0)
+        self._time[-1] = ts.data['time']
 
         if 'edges' in self.traj['box']:
             self.traj['box/edges/value'].resize(
