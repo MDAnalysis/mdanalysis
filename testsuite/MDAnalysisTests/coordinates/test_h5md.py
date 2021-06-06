@@ -1,5 +1,5 @@
 import pytest
-from numpy.testing import assert_almost_equal, assert_array_equal
+from numpy.testing import assert_almost_equal, assert_array_equal, assert_equal
 import numpy as np
 import MDAnalysis as mda
 from MDAnalysis.coordinates.H5MD import HAS_H5PY
@@ -60,20 +60,20 @@ class TestH5MDReader(MultiframeReaderTest):
     def ref():
         return H5MDReference()
 
-    @pytest.mark.xfail(reason='H5MD writer not implemented yet')
+    #@pytest.mark.xfail(reason='H5MD writer not implemented yet')
     def test_get_writer_1(self, ref, reader, tmpdir):
         with tmpdir.as_cwd():
             outfile = 'test-writer.' + ref.ext
             with reader.Writer(outfile) as W:
-                assert_equal(isinstance(W, ref.writer), True)
+                assert_equal(isinstance(W, mda.coordinates.H5MD.H5MDWriter), True)
                 assert_equal(W.n_atoms, reader.n_atoms)
 
-    @pytest.mark.xfail(reason='H5MD writer not implemented yet')
+    #@pytest.mark.xfail(reason='H5MD writer not implemented yet')
     def test_get_writer_2(self, ref, reader, tmpdir):
         with tmpdir.as_cwd():
             outfile = 'test-writer.' + ref.ext
             with reader.Writer(outfile, n_atoms=100) as W:
-                assert_equal(isinstance(W, ref.writer), True)
+                assert_equal(isinstance(W, mda.coordinates.H5MD.H5MDWriter), True)
                 assert_equal(W.n_atoms, 100)
 
 
@@ -95,35 +95,35 @@ def test_h5md_positions(h5md_universe):
     h5md_universe.trajectory[0]
     assert_almost_equal(h5md_universe.atoms.positions[0],
                         [32.309906, 13.77798, 14.372463],
-                        decimal=6)
+                        decimal=5)
     assert_almost_equal(h5md_universe.atoms.positions[42],
                         [28.116928, 19.405945, 19.647358],
-                        decimal=6)
+                        decimal=5)
     assert_almost_equal(h5md_universe.atoms.positions[10000],
                         [44.117805, 50.442093, 23.299038],
-                        decimal=6)
+                        decimal=5)
     # second timestep tests
     h5md_universe.trajectory[1]
     assert_almost_equal(h5md_universe.atoms.positions[0],
                         [30.891968, 13.678971, 13.6000595],
-                        decimal=6)
+                        decimal=5)
     assert_almost_equal(h5md_universe.atoms.positions[42],
                         [27.163246, 19.846561, 19.3582],
-                        decimal=6)
+                        decimal=5)
     assert_almost_equal(h5md_universe.atoms.positions[10000],
                         [45.869278, 5.0342298, 25.460655],
-                        decimal=6)
+                        decimal=5)
     # third timestep tests
     h5md_universe.trajectory[2]
     assert_almost_equal(h5md_universe.atoms.positions[0],
                         [31.276512, 13.89617, 15.015897],
-                        decimal=6)
+                        decimal=5)
     assert_almost_equal(h5md_universe.atoms.positions[42],
                         [28.567991, 20.56532, 19.40814],
-                        decimal=6)
+                        decimal=5)
     assert_almost_equal(h5md_universe.atoms.positions[10000],
                         [39.713223,  6.127234, 18.284992],
-                        decimal=6)
+                        decimal=5)
 
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
@@ -164,17 +164,17 @@ def test_h5md_dimensions(h5md_universe):
     h5md_universe.trajectory[0]
     assert_almost_equal(h5md_universe.trajectory.ts.dimensions,
                         [52.763, 52.763, 52.763, 90., 90., 90.],
-                        decimal=6)
+                        decimal=5)
     # second timestep
     h5md_universe.trajectory[1]
     assert_almost_equal(h5md_universe.trajectory.ts.dimensions,
                         [52.807877, 52.807877, 52.807877, 90., 90., 90.],
-                        decimal=6)
+                        decimal=5)
     # third timestep
     h5md_universe.trajectory[2]
     assert_almost_equal(h5md_universe.trajectory.ts.dimensions,
                         [52.839806, 52.839806, 52.839806, 90., 90., 90.],
-                        decimal=6)
+                        decimal=5)
 
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
@@ -313,7 +313,7 @@ def test_length_unit_from_box(h5md_file, ref, tmpdir):
                 f.copy(source='h5md', dest=g)
                 del g['particles/trajectory/position']
         u = mda.Universe(TPR_xvf, outfile, format='H5MD')
-        assert u.trajectory.units['length'] == 'Angstrom'
+        assert u.trajectory.units['length'] == 'nm'
 
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
