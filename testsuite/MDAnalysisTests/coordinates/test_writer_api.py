@@ -79,6 +79,8 @@ def test_write_with_atomgroup(writer, tmpdir):
         pytest.skip("MOL2 only writes MOL2 back out")
     elif writer == mda.coordinates.LAMMPS.DATAWriter:
         pytest.skip("DATAWriter requires integer atom types")
+    elif writer == mda.coordinates.H5MD.H5MDWriter:
+        pytest.skip("temporarily skipping to see codecov")
     else:
         fn = str(tmpdir.join('out.traj'))
 
@@ -99,6 +101,8 @@ def test_write_with_universe(writer, tmpdir):
         pytest.skip("MOL2 only writes MOL2 back out")
     elif writer == mda.coordinates.LAMMPS.DATAWriter:
         pytest.skip("DATAWriter requires integer atom types")
+    elif writer == mda.coordinates.H5MD.H5MDWriter:
+        pytest.skip("temporarily skipping to see codecov")
     else:
         fn = str(tmpdir.join('out.traj'))
 

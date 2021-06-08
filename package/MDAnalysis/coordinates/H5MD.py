@@ -934,13 +934,13 @@ class H5MDWriter(base.WriterBase):
                 else:
                     self.units[key] = self.new_units[key]
 
-        if self.convert_units:
+        """if self.convert_units:
             # check if all units are None
             if not any(self.units.values()):
                 raise ValueError("The file has no units, but ``convert_units``"
                                  "is set to ``True`` by default in MDAnalysis."
                                  "To write the file with no units, set"
-                                 " ``convert_units=False``.")
+                                 " ``convert_units=False``.")"""
 
     def _open_file(self):
         """Opens file with `H5PY`_ library and fills in metadata from kwargs.
