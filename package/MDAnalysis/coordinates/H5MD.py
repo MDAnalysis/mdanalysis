@@ -1,4 +1,4 @@
--1# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
@@ -757,10 +757,6 @@ class H5MDWriter(base.WriterBase):
     #: dictionary to the observables group in the H5MD file
     data_blacklist = ['step', 'time', 'dt']
 
-    units = {'time': 'ps',
-             'length': 'Angstrom',
-             'velocity': 'Angstrom/ps',
-             'force': 'kJ/(mol*Angstrom)'}
     # This dictionary is used to translate MDAnalysis units to H5MD units.
     # (https://nongnu.org/h5md/modules/units.html)
     _unit_translation_dict = {
@@ -810,7 +806,7 @@ class H5MDWriter(base.WriterBase):
                  driver=None,
                  comm=None,
                  convert_units=True,
-                 chunks=None,
+                 chunks=False,
                  compression=None,
                  compression_opts=None,
                  **kwargs):
@@ -828,18 +824,18 @@ class H5MDWriter(base.WriterBase):
             Must be passed with `'mpio'` file driver
         convert_units : bool (optional)
             convert units from MDAnalysis to desired units
-        chunks : tuple
+        chunks : tuple (optional)
             custom chunk layout to be applied to the position,
             velocity, and force datasets. By default, these datasets
             are chunked in (1, n_atoms, 3) blocks
-        compression : str or int
+        compression : str or int (optional)
             HDF5 dataset compression setting to be applied
             to position, velocity, and force datasets. Allowed
             settings are 'gzip', 'szip', 'lzf'. If an integer
             in range(10), this indicates gzip compression level.
             Otherwise, an integer indicates the number of a
             dynamically loaded compression filter.
-        compression_opts :
+        compression_opts : int or tup (optional)
             Compression settings.  This is an integer for gzip, 2-tuple for
             szip, etc. If specifying a dynamically loaded compression filter
             number, this must be a tuple of values.
@@ -856,14 +852,14 @@ class H5MDWriter(base.WriterBase):
         self._driver = driver
         self._comm = comm
         self.n_atoms = n_atoms
-        self.chunks = (1, n_atoms, 3) if chunks is None else chunks
+        self.chunks = (1, n_atoms, 3) if chunks is False else chunks
         self.compression = compression
         self.compression_opts = compression_opts
         self.convert_units = convert_units
         self.h5md_file = None
 
         # check which datasets are to be written
-        self.has_positions = kwargs.get('positions', False)
+        self.has_positions = kwargs.get('positions', True)
         self.has_velocities = kwargs.get('velocities', False)
         self.has_forces = kwargs.get('forces', False)
 
@@ -929,22 +925,22 @@ class H5MDWriter(base.WriterBase):
         # set user-inputted new native units
         for key, value in self.new_units.items():
             if value is not None:
-                try:
-                    self.units[key[:-4]] = self.new_units[key]
-                except KeyError:
-                    raise RuntimeError(f"{key} is not a unit recognizable by"
+                if value not in self._unit_translation_dict[key]:
+                    raise RuntimeError(f"{value} is not a unit recognizable by"
                                         " MDAnalyis. Allowed units are:"
                                        f" {self._unit_translation_dict.keys()}"
                                         " For more information on units, see"
                                         " `MDAnalyis units`_.")
+                else:
+                    self.units[key] = self.new_units[key]
 
-        """if self.convert_units:
+        if self.convert_units:
             # check if all units are None
             if not any(self.units.values()):
                 raise ValueError("The file has no units, but ``convert_units``"
                                  "is set to ``True`` by default in MDAnalysis."
                                  "To write the file with no units, set"
-                                 " ``convert_units=False``.")"""
+                                 " ``convert_units=False``.")
 
     def _open_file(self):
         """Opens file with `H5PY`_ library and fills in metadata from kwargs.
@@ -957,16 +953,16 @@ class H5MDWriter(base.WriterBase):
             # can only pass comm argument to h5py.File if driver='mpio'
             assert self._driver == 'mpio'
             self.h5md_file = h5py.File(name=self.filename,
-                                       mode='w-',
+                                       mode='w',
                                        driver=self._driver,
                                        comm=self._comm)
         elif self._driver is not None:
             self.h5md_file = h5py.File(name=self.filename,
-                                       mode='w-',
+                                       mode='w',
                                        driver=self._driver)
         else:
             self.h5md_file = h5py.File(name=self.filename,
-                                       mode='w-')
+                                       mode='w')
 
         # fill in H5MD metadata from kwargs
         self.h5md_file.require_group('h5md')
@@ -1015,6 +1011,7 @@ class H5MDWriter(base.WriterBase):
         else:
             self.traj['box'].attrs['boundary'] = 3*['none']
             self._create_step_and_time_datasets()
+
 
         if self.has_positions:
             self._create_trajectory_dataset('position')
@@ -1131,7 +1128,11 @@ class H5MDWriter(base.WriterBase):
         """
 
         self._step.resize(self._step.shape[0]+1, axis=0)
-        self._step[-1] = ts.data['step']
+        try:
+            self._step[-1] = ts.data['step']
+        # step must exist in h5md file
+        except(KeyError):
+            self._step[-1] = ts.frame
         self._time.resize(self._time.shape[0]+1, axis=0)
         if self.convert_units:
             self._time[-1] = self.convert_time_to_native(ts.time)

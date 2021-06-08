@@ -44,10 +44,7 @@ plain text using Gromacs utilities.
 test.h5md
 ---------
 ## Creation
-Converted test.trr to test.h5md with MDAnalysis and pyh5md
-using the 'create_h5md_data.py' script.
-See https://github.com/pdebuyl/pyh5md for pyh5md repository.
+Written with MDAnalysis using the 'create_h5md_data.py' script
 
 ## Validation
-Manually examined contents of test.trr with MDAnalysis and test.h5md
-with h5py and checked that the contents were the same.
+Manually examined contents of test.h5md with MDAnalysis.
