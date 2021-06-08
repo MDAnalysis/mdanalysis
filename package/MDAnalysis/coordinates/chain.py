@@ -38,6 +38,7 @@ interest to developers.
    .. automethod:: _get
    .. automethod:: _get_same
    .. automethod:: _read_frame
+   .. automethod:: _apply_transformations
 
 """
 import warnings
