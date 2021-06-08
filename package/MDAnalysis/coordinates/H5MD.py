@@ -1030,7 +1030,7 @@ class H5MDWriter(base.WriterBase):
                 self._create_observables_dataset(key, ts.data[key])
 
     def _create_step_and_time_datasets(self):
-        """ helper function to initialize a dataset for step and time
+        """helper function to initialize a dataset for step and time
 
         Hunts down first available location to create the step and time
         datasets. This should only be called if the trajectory has no
