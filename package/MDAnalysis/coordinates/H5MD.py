@@ -757,6 +757,11 @@ class H5MDWriter(base.WriterBase):
     #: dictionary to the observables group in the H5MD file
     data_blacklist = ['step', 'time', 'dt']
 
+    units = {'time': 'ps',
+             'length': 'Angstrom',
+             'velocity': 'Angstrom/ps',
+             'force': 'kJ/(mol*Angstrom)'}
+
     # This dictionary is used to translate MDAnalysis units to H5MD units.
     # (https://nongnu.org/h5md/modules/units.html)
     _unit_translation_dict = {
@@ -851,6 +856,9 @@ class H5MDWriter(base.WriterBase):
             raise ValueError("H5MDWriter: no atoms in output trajectory")
         self._driver = driver
         self._comm = comm
+        if self._comm is not None:
+            raise ValueError("H5MDWriter: parallel writing with MPI I/O "
+                             "is not currently supported.")
         self.n_atoms = n_atoms
         self.chunks = (1, n_atoms, 3) if chunks is False else chunks
         self.compression = compression
@@ -907,13 +915,16 @@ class H5MDWriter(base.WriterBase):
             self._initialize_hdf5_datasets(ts)
 
         # skips _write_next_timestep() so you can write an empty Universe
-        if 'edges' not in self.traj['box'] and not any([group in self.traj for group in ('position', 'velocity', 'force')]):
-            return
+        #if 'edges' not in self.traj['box'] and not any([group in self.traj for group in ('position', 'velocity', 'force')]):
+            #return
         return self._write_next_timestep(ts)
 
     def _determine_units(self, ag):
         """sets native units to the units of the parent file unless
         'unit' keyword arguments are provided for custom units"""
+
+        if not self.convert_units:
+            return
 
         # use units of parent file as native units
         try:
@@ -951,8 +962,8 @@ class H5MDWriter(base.WriterBase):
 
         if self._comm is not None:
             # can only pass comm argument to h5py.File if driver='mpio'
-            assert self._driver == 'mpio'
-            self.h5md_file = h5py.File(name=self.filename,
+            assert self._driver == 'mpio'  # pragma: no cover
+            self.h5md_file = h5py.File(name=self.filename,  # pragma: no cover
                                        mode='w',
                                        driver=self._driver,
                                        comm=self._comm)
@@ -1005,13 +1016,11 @@ class H5MDWriter(base.WriterBase):
                                                    shape=(0,),
                                                    maxshape=(None,),
                                                    dtype=np.float32)
-            if self.units is not None:
-                self._set_attr_unit(self._edges, 'length')
-                self._set_attr_unit(self._time, 'time')
+            self._set_attr_unit(self._edges, 'length')
+            self._set_attr_unit(self._time, 'time')
         else:
             self.traj['box'].attrs['boundary'] = 3*['none']
             self._create_step_and_time_datasets()
-
 
         if self.has_positions:
             self._create_trajectory_dataset('position')
@@ -1088,8 +1097,10 @@ class H5MDWriter(base.WriterBase):
                                   chunks=self.chunks,
                                   compression=self.compression,
                                   compression_opts=self.compression_opts)
-        self.traj[f'{group}/step'] = self._step
-        self.traj[f'{group}/time'] = self._time
+        if 'step' not in self.traj[group]:
+            self.traj[f'{group}/step'] = self._step
+        if 'time' not in self.traj[group]:
+            self.traj[f'{group}/time'] = self._time
         self._set_attr_unit(self.traj[f'{group}/value'], group)
 
     def _create_observables_dataset(self, group, data):
@@ -1102,8 +1113,10 @@ class H5MDWriter(base.WriterBase):
                                   shape=(0,) + data.shape,
                                   maxshape=(None,) + data.shape,
                                   dtype=data.dtype)
-        self.obsv[f'{group}/step'] = self._step
-        self.obsv[f'{group}/time'] = self._time
+        if 'step' not in self.obsv[group]:
+            self.obsv[f'{group}/step'] = self._step
+        if 'time' not in self.obsv[group]:
+            self.obsv[f'{group}/time'] = self._time
 
     def _set_attr_unit(self, dset, unit):
         """helper function to set a 'unit' attribute for an HDF5 dataset"""
@@ -1134,44 +1147,48 @@ class H5MDWriter(base.WriterBase):
         except(KeyError):
             self._step[-1] = ts.frame
         self._time.resize(self._time.shape[0]+1, axis=0)
-        if self.convert_units:
-            self._time[-1] = self.convert_time_to_native(ts.time)
-        else:
-            self._time[-1] = ts.time
+        self._time[-1] = ts.time
 
         if 'edges' in self.traj['box']:
             self._edges.resize(self._edges.shape[0]+1, axis=0)
-            if self.convert_units:
-                self._edges[-1] = self.convert_pos_to_native(ts.triclinic_dimensions[:3])
-            else:
-                self._edges[-1] = ts.triclinic_dimensions
+            self._edges[-1] = ts.triclinic_dimensions
 
         if self.has_positions:
             self._pos.resize(self._pos.shape[0]+1, axis=0)
-            if self.convert_units:
-                self._pos[-1] = self.convert_pos_to_native(ts.positions)
-            else:
-                self._pos[-1] = ts.positions
+            self._pos[-1] = ts.positions
 
         if self.has_velocities:
             self._vel.resize(self._vel.shape[0]+1, axis=0)
-            if self.convert_units:
-                self._vel[-1] = self.convert_velocities_to_native(ts.velocities)
-            else:
-                self._vel[-1] = ts.velocities
+            self._vel[-1] = ts.velocities
 
         if self.has_forces:
             self._force.resize(self._force.shape[0]+1, axis=0)
-            if self.convert_units:
-                self._force[-1] = self.convert_forces_to_native(ts.forces)
-            else:
-                self._force[-1] = ts.forces
+            self._force[-1] = ts.forces
 
         if self.data_keys:
             for key in self.data_keys:
                 self.obsv[f'{key}/value'].resize(
                     self.obsv[f'{key}/value'].shape[0]+1, axis=0)
                 self.obsv[f'{key}/value'][-1] = ts.data[key]
+
+        if self.convert_units:
+            self._convert_units()
+
+    def _convert_units(self):
+        """convert units"""
+        if self.units['time'] is not None:
+            self._time[-1] = self.convert_time_to_native(self._time[-1])
+        if self.units['length'] is not None:
+            if self.has_positions:
+                self._pos[-1] = self.convert_pos_to_native(self._pos[-1])
+            if 'edges' in self.traj['box']:
+                self._edges[-1] = self.convert_pos_to_native(self._edges[-1])
+        if self.has_velocities:
+            if self.units['velocity'] is not None:
+                self._vel[-1] = self.convert_velocities_to_native(self._vel[-1])
+        if self.has_forces:
+            if self.units['force'] is not None:
+                self._force[-1] = self.convert_forces_to_native(self._force[-1])
 
 
 class H5PYPicklable(h5py.File):
