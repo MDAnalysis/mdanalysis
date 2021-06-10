@@ -1187,18 +1187,18 @@ class H5MDWriter(base.WriterBase):
     def _convert_units(self):
         """convert units"""
         if self.units['time'] is not None:
-            self.convert_time_to_native(self._time[-1])
+            self._time[-1] = self.convert_time_to_native(self._time[-1])
         if self.units['length'] is not None:
             if self.has_positions:
-                self.convert_pos_to_native(self._pos[-1])
+                self._pos[-1] = self.convert_pos_to_native(self._pos[-1])
             if 'edges' in self.traj['box']:
-                self.convert_pos_to_native(self._edges[-1])
+                self._edges[-1] = self.convert_pos_to_native(self._edges[-1])
         if self.has_velocities:
             if self.units['velocity'] is not None:
-                self.convert_velocities_to_native(self._vel[-1])
+                self._vel[-1] = self.convert_velocities_to_native(self._vel[-1])
         if self.has_forces:
             if self.units['force'] is not None:
-                self.convert_forces_to_native(self._force[-1])
+                self._force[-1] = self.convert_forces_to_native(self._force[-1])
 
 
 class H5PYPicklable(h5py.File):
