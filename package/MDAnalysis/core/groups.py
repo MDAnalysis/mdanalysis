@@ -847,6 +847,11 @@ class GroupBase(_MutableBase):
         # essentially a non-split?
 
         compound_indices = self._get_compound_indices(compound)
+        compound_sizes = np.bincount(compound_indices)
+        size_per_atom = compound_sizes[compound_indices]
+        compound_sizes = compound_sizes[compound_sizes != 0]
+        unique_compound_sizes = unique_int_1d(compound_sizes)
+
         # Are we already sorted? argsorting and fancy-indexing can be expensive
         # so we do a quick pre-check.
         needs_sorting = np.any(np.diff(compound_indices) < 0)
@@ -858,11 +863,8 @@ class GroupBase(_MutableBase):
             else:
                 # Quicksort
                 sort_indices = np.argsort(compound_indices)
-
-        compound_sizes = np.bincount(compound_indices)
-        size_per_atom = compound_sizes[compound_indices]
-        compound_sizes = compound_sizes[compound_sizes != 0]
-        unique_compound_sizes = unique_int_1d(compound_sizes)
+            # We must sort size_per_atom accordingly (Issue #3352).
+            size_per_atom = size_per_atom[sort_indices]
 
         compound_masks = []
         atom_masks = []
