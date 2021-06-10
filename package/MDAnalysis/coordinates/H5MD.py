@@ -673,6 +673,16 @@ class H5MDReader(base.ReaderBase):
         """read next frame in trajectory"""
         return self._read_frame(self._frame + 1)
 
+    @staticmethod
+    def parse_n_atoms(filename, **kwargs):
+        with h5py.File(filename, 'r') as f:
+            for group in ('position', 'velocity', 'force'):
+                if group in f['particles/trajectory']:
+                    n_atoms = f[
+                        f'particles/trajectory/{group}/value'].shape[1]
+                    break
+        return n_atoms
+
     def close(self):
         """close reader"""
         self._file.close()
@@ -1177,18 +1187,18 @@ class H5MDWriter(base.WriterBase):
     def _convert_units(self):
         """convert units"""
         if self.units['time'] is not None:
-            self._time[-1] = self.convert_time_to_native(self._time[-1])
+            self.convert_time_to_native(self._time[-1])
         if self.units['length'] is not None:
             if self.has_positions:
-                self._pos[-1] = self.convert_pos_to_native(self._pos[-1])
+                self.convert_pos_to_native(self._pos[-1])
             if 'edges' in self.traj['box']:
-                self._edges[-1] = self.convert_pos_to_native(self._edges[-1])
+                self.convert_pos_to_native(self._edges[-1])
         if self.has_velocities:
             if self.units['velocity'] is not None:
-                self._vel[-1] = self.convert_velocities_to_native(self._vel[-1])
+                self.convert_velocities_to_native(self._vel[-1])
         if self.has_forces:
             if self.units['force'] is not None:
-                self._force[-1] = self.convert_forces_to_native(self._force[-1])
+                self.convert_forces_to_native(self._force[-1])
 
 
 class H5PYPicklable(h5py.File):
