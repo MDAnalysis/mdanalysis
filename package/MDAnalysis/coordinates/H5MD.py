@@ -1247,7 +1247,8 @@ class H5MDWriter(base.WriterBase):
 
         if 'edges' in self._traj['box']:
             self._edges.resize(self._edges.shape[0]+1, axis=0)
-            self._edges[i] = ts.triclinic_dimensions
+            self._edges.write_direct(ts.triclinic_dimensions,
+                                     dest_sel=np.s_[i, :])
 
         # TypeError catches chunks=False and n_frames is not None
         # (trying to resize wrong type of dataset)
@@ -1255,23 +1256,17 @@ class H5MDWriter(base.WriterBase):
         # (trying to resize a chunked dataset beyond its defined shape)
         # differnt versions of h5py raise different error
         if self._has['position']:
-            try:
+            if self.n_frames is None:
                 self._pos.resize(self._pos.shape[0]+1, axis=0)
-                self._pos[i] = ts.positions
-            except(TypeError, ValueError, RuntimeError):
-                self._pos[i] = ts.positions
+            self._pos.write_direct(ts.positions, dest_sel=np.s_[i, :])
         if self._has['velocity']:
-            try:
+            if self.n_frames is None:
                 self._vel.resize(self._vel.shape[0]+1, axis=0)
-                self._vel[i] = ts.velocities
-            except(TypeError, ValueError, RuntimeError):
-                self._vel[i] = ts.velocities
+            self._vel.write_direct(ts.velocities, dest_sel=np.s_[i, :])
         if self._has['force']:
-            try:
+            if self.n_frames is None:
                 self._force.resize(self._force.shape[0]+1, axis=0)
-                self._force[i] = ts.forces
-            except(TypeError, ValueError, RuntimeError):
-                self._force[i] = ts.forces
+            self._force.write_direct(ts.forces, dest_sel=np.s_[i, :])
 
         if self.data_keys:
             for key in self.data_keys:
