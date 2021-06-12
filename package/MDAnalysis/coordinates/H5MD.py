@@ -916,7 +916,7 @@ class H5MDWriter(base.WriterBase):
         if self.chunks is False and self.n_frames is None:
             raise ValueError("H5MDWriter must know how many frames will be "
                              "written if ``chunks=False``.")
-        self.contiguous = True if (self.chunks == False) and (self.n_frames is not None) else False
+        self.contiguous = True if (self.chunks is False) and (self.n_frames is not None) else False
         self.compression = compression
         self.compression_opts = compression_opts
         self.convert_units = convert_units
@@ -936,9 +936,9 @@ class H5MDWriter(base.WriterBase):
                              "forces must be set to ``True``.")
 
         self._new_units = {'time': kwargs.pop('timeunit', None),
-                          'length': kwargs.pop('lengthunit', None),
-                          'velocity': kwargs.pop('velocityunit', None),
-                          'force': kwargs.pop('forceunit', None)}
+                           'length': kwargs.pop('lengthunit', None),
+                           'velocity': kwargs.pop('velocityunit', None),
+                           'force': kwargs.pop('forceunit', None)}
 
         # Pull out various keywords to store metadata in 'h5md' group
         self.author = kwargs.pop('author', 'N/A')
@@ -1073,7 +1073,7 @@ class H5MDWriter(base.WriterBase):
 
         # ask the parent file if it has postions, velocities, and forces
         # if prompted by the writer with the self._write_* attributes
-        self._has = {group : getattr(ts, f'has_{attr}')
+        self._has = {group: getattr(ts, f'has_{attr}')
                      if getattr(self, f'_write_{attr}')
                      else False for group, attr in zip(
                      ('position', 'velocity', 'force'),
@@ -1156,13 +1156,13 @@ class H5MDWriter(base.WriterBase):
         for group, value in self._has.items():
             if value:
                 self._step = self._traj.require_dataset(f'{group}/step',
-                                                       shape=(0,),
-                                                       maxshape=(None,),
-                                                       dtype=np.int32)
+                                                        shape=(0,),
+                                                        maxshape=(None,),
+                                                        dtype=np.int32)
                 self._time = self._traj.require_dataset(f'{group}/time',
-                                                       shape=(0,),
-                                                       maxshape=(None,),
-                                                       dtype=np.float32)
+                                                        shape=(0,),
+                                                        maxshape=(None,),
+                                                        dtype=np.float32)
                 self._set_attr_unit(self._time, 'time')
                 break
 
@@ -1202,9 +1202,9 @@ class H5MDWriter(base.WriterBase):
         # guarantee ints and floats have a shape ()
         data = np.asarray(data)
         self._obsv.require_dataset(f'{group}/value',
-                                  shape=(0,) + data.shape,
-                                  maxshape=(None,) + data.shape,
-                                  dtype=data.dtype)
+                                   shape=(0,) + data.shape,
+                                   maxshape=(None,) + data.shape,
+                                   dtype=data.dtype)
         if 'step' not in self._obsv[group]:
             self._obsv[f'{group}/step'] = self._step
         if 'time' not in self._obsv[group]:

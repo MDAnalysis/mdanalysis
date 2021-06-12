@@ -52,6 +52,9 @@ def test_ts_error(writer, tmpdir):
         fn = str(tmpdir.join('out.xtc'))
     elif writer == mda.coordinates.LAMMPS.DATAWriter:
         pytest.skip("DATAWriter requires integer atom types")
+    elif writer == mda.coordinates.H5MD.H5MDWriter:
+        pytest.skip("H5MDWriter requires h5py to be installed, "
+                    "fails MIN dependency test")
     else:
         fn = str(tmpdir.join('out.traj'))
 

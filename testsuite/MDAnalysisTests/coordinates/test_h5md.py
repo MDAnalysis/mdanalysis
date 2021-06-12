@@ -83,7 +83,7 @@ class TestH5MDWriterBaseAPI(BaseWriterTest):
     def ref():
         return H5MDReference()
 
-    def test_write_trajectory_atomgroup(self, ref,reader, universe, tmpdir):
+    def test_write_trajectory_atomgroup(self, ref, reader, universe, tmpdir):
         outfile = 'write-atoms-test.' + ref.ext
         with tmpdir.as_cwd():
             with ref.writer(outfile, universe.atoms.n_atoms,
@@ -199,9 +199,8 @@ class TestH5MDReaderWithRealTrajectory(object):
                             decimal=self.prec)
 
     def test_h5md_data_step(self, universe):
-        for ts, step in zip(universe.trajectory,
-                           (0, 25000, 50000)):
-            assert ts.data['step'] == step
+        for ts, step in zip(universe.trajectory, (0, 25000, 50000)):
+            assert_equal(ts.data['step'], step)
 
     def test_rewind(self, universe):
         universe.trajectory[1]
@@ -435,7 +434,7 @@ class TestH5MDWriterWithRealTrajectory(object):
     def test_step_not_monotonic(self, universe, Writer, outfile):
         with pytest.raises(ValueError):
             with Writer(outfile, universe.atoms.n_atoms) as W:
-                for ts in universe.trajectory[[0,1,2,1]]:
+                for ts in universe.trajectory[[0, 1, 2, 1]]:
                     W.write(universe)
 
         with pytest.raises(ValueError):
@@ -521,7 +520,7 @@ class TestH5MDWriterWithRealTrajectory(object):
                                 self.prec)
 
     @pytest.mark.parametrize('frames, n_frames', ((None, 1),
-                                                 ('all', 3)))
+                                                  ('all', 3)))
     def test_ag_write(self, universe, outfile, outtop,
                       Writer, frames, n_frames):
         """test to write with ag.write()"""
@@ -562,7 +561,7 @@ class TestH5MDWriterWithRealTrajectory(object):
                 W.write(universe)
 
         u = mda.Universe(TPR_xvf, outfile)
-        for u_unit, custom_unit in zip (u.trajectory.units.values(),
+        for u_unit, custom_unit in zip(u.trajectory.units.values(),
                                        (timeunit, lengthunit,
                                        velocityunit, forceunit)):
             assert_equal(u_unit, custom_unit)
@@ -605,8 +604,8 @@ class TestH5MDWriterWithRealTrajectory(object):
             assert_equal(u1, u2)
 
     @pytest.mark.parametrize('chunks', ((3, 1000, 1),
-                                       (1, 1000, 3),
-                                       (100, 100, 3)))
+                                        (1, 1000, 3),
+                                        (100, 100, 3)))
     def test_write_chunks(self, universe, outfile, Writer, chunks):
         with Writer(outfile,
                     universe.atoms.n_atoms,
