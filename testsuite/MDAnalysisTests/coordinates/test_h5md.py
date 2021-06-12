@@ -402,16 +402,6 @@ class TestH5MDWriterWithRealTrajectory(object):
             with Writer(outfile, n_atoms) as W:
                 W.write(universe)
 
-    def test_no_data_error(self, universe, Writer, outfile):
-        n_atoms = universe.atoms.n_atoms
-        with pytest.raises(NoDataError):
-            with Writer(outfile, n_atoms) as W:
-                for ts in universe.trajectory:
-                    ts.has_positions = False
-                    ts.has_velocites = False
-                    ts.has_forces = False
-                    W.write(universe)
-
     def test_chunk_error(self, universe, Writer, outfile):
         n_atoms = universe.atoms.n_atoms
         with pytest.raises(ValueError):
@@ -443,6 +433,26 @@ class TestH5MDWriterWithRealTrajectory(object):
                     if ts.frame == 2:
                         ts.data['step'] = 0
                     W.write(universe)
+
+    def test_step_from_frame(self, universe, Writer, outfile):
+        with Writer(outfile, universe.atoms.n_atoms) as W:
+            for ts in universe.trajectory:
+                del ts.data['step']
+                W.write(universe)
+
+        uw = mda.Universe(TPR_xvf, outfile)
+        steps = [ts.data['step'] for ts in uw.trajectory]
+        frames = [ts.frame for ts in universe.trajectory]
+        for step, frame in zip (steps, frames):
+            assert_equal(step, frame)
+
+    def test_has_setter(self, universe, Writer, outfile):
+        with Writer(outfile, universe.atoms.n_atoms) as W:
+            W.write(universe)
+            assert_equal(W.has_positions, W._has['position'])
+            assert_equal(W.has_velocities, W._has['velocity'])
+            assert_equal(W.has_forces, W._has['force'])
+
 
     @pytest.mark.parametrize('pos, vel, force', (
             (True, False, False),
@@ -570,20 +580,29 @@ class TestH5MDWriterWithRealTrajectory(object):
         ('imaginary time', None, None, None),
         (None, None, 'c', None),
         (None, None, None, 'HUGE FORCE',),
-        (None, 'lightyear', None, None)))
+        (None, 'lightyear', None, None),))
     def test_write_bad_units(self, universe, outfile, Writer,
                              timeunit, lengthunit,
                              velocityunit, forceunit):
         with pytest.raises(ValueError):
             with Writer(outfile,
                         universe.atoms.n_atoms,
-                        velocities=True,
-                        forces=True,
                         lengthunit=lengthunit,
                         velocityunit=velocityunit,
                         forceunit=forceunit,
                         timeunit=timeunit) as W:
                 for ts in universe.trajectory:
+                    W.write(universe)
+
+    def test_no_units_but_convert_true(self, universe, outfile, Writer):
+        with pytest.raises(ValueError):
+            with Writer(outfile,
+                        universe.atoms.n_atoms) as W:
+                for ts in universe.trajectory:
+                    universe.trajectory.units['time'] = None
+                    universe.trajectory.units['length'] = None
+                    universe.trajectory.units['velocity'] = None
+                    universe.trajectory.units['force'] = None
                     W.write(universe)
 
     @pytest.mark.parametrize('convert_units', (True, False))
@@ -618,6 +637,31 @@ class TestH5MDWriterWithRealTrajectory(object):
                      uw.trajectory._particle_group['velocity/value'],
                      uw.trajectory._particle_group['force/value']):
             assert_equal(dset.chunks, chunks)
+
+        for ts1, ts2 in zip(universe.trajectory, uw.trajectory):
+            assert_equal(ts1.positions, ts2.positions)
+            assert_equal(ts1.velocities, ts2.velocities)
+            assert_equal(ts1.forces, ts2.forces)
+
+    def test_write_chunks_with_nframes(self, universe, outfile, Writer):
+        n_atoms = universe.atoms.n_atoms
+        n_frames = universe.trajectory.n_frames
+        with Writer(outfile,
+                    n_atoms=n_atoms,
+                    n_frames=n_frames) as W:
+            for ts in universe.trajectory:
+                W.write(universe)
+
+    #    uw = mda.Universe(TPR_xvf, outfile)
+    #    for dset in (uw.trajectory._particle_group['position/value'],
+    #                 uw.trajectory._particle_group['velocity/value'],
+    #                 uw.trajectory._particle_group['force/value']):
+    #        assert_equal(dset.chunks, chunks)
+
+    #    for ts1, ts2 in zip(universe.trajectory, uw.trajectory):
+    #        assert_equal(ts1.positions, ts2.positions)
+    #        assert_equal(ts1.velocities, ts2.velocities)
+    #        assert_equal(ts1.forces, ts2.forces)
 
     def test_write_contiguous1(self, universe, Writer, outfile):
         n_atoms = universe.atoms.n_atoms

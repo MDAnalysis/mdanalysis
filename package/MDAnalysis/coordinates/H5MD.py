@@ -1078,10 +1078,6 @@ class H5MDWriter(base.WriterBase):
                      else False for group, attr in zip(
                      ('position', 'velocity', 'force'),
                      ('positions', 'velocities', 'forces'))}
-        if not any(self._has.values()):
-            raise NoDataError("No positions, velocities, or forces detected in"
-                              " input trajectory. H5MDWriter requires at least"
-                              "one of these.")
 
         # initialize trajectory group
         self.h5md_file.require_group('particles').require_group('trajectory')
@@ -1170,12 +1166,9 @@ class H5MDWriter(base.WriterBase):
         """helper function to initialize a dataset for
         position, velocity, and force"""
 
-        if self.contiguous:
+        if self.contiguous or self.n_frames is not None:
             shape = (self.n_frames, self.n_atoms, 3)
             maxshape = None
-        elif self.n_frames is not None:
-            shape = (self.n_frames, self.n_atoms, 3)
-            maxshape = (None, self.n_atoms, 3)
         else:
             shape = (0, self.n_atoms, 3)
             maxshape = (None, self.n_atoms, 3)
@@ -1259,26 +1252,34 @@ class H5MDWriter(base.WriterBase):
             self._edges.resize(self._edges.shape[0]+1, axis=0)
             self._edges[i] = ts.triclinic_dimensions
 
+        # TypeError catches chunks=False and n_frames is not None
+        # (trying to resize wrong type of dataset)
+        # ValueError catches n_frames is not None
+        # (trying to resize a chunked dataset beyond its defined shape)
         if self._has['position']:
-            if not self.contiguous:
+            try:
                 self._pos.resize(self._pos.shape[0]+1, axis=0)
-            self._pos[i] = ts.positions
-
+                self._pos[i] = ts.positions
+            except(TypeError, ValueError):
+                self._pos[i] = ts.positions
         if self._has['velocity']:
-            if not self.contiguous:
+            try:
                 self._vel.resize(self._vel.shape[0]+1, axis=0)
-            self._vel[i] = ts.velocities
-
+                self._vel[i] = ts.velocities
+            except(TypeError, ValueError):
+                self._vel[i] = ts.velocities
         if self._has['force']:
-            if not self.contiguous:
+            try:
                 self._force.resize(self._force.shape[0]+1, axis=0)
-            self._force[i] = ts.forces
+                self._force[i] = ts.forces
+            except(TypeError, ValueError):
+                self._force[i] = ts.forces
 
         if self.data_keys:
             for key in self.data_keys:
-                self._obsv[f'{key}/value'].resize(
-                    self._obsv[f'{key}/value'].shape[0]+1, axis=0)
-                self._obsv[f'{key}/value'][i] = ts.data[key]
+                obs = self._obsv[f'{key}/value']
+                obs.resize(obs.shape[0]+1, axis=0)
+                obs[i] = ts.data[key]
 
         if self.convert_units:
             self._convert_units(i)
