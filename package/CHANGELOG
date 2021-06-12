@@ -23,7 +23,7 @@ The rules for this file:
   * 2.0.0
 
 Fixes
-  * Fixed missing array flatten preventing PCA from running when mean positions  
+  * Fixed missing array flatten preventing PCA from running when mean positions
     provided and bugs causing tests to incorrectly pass (Issue #2728, PR #3296)
   * DL_POLY HISTORY file may contain unit cell dimensions even if there are
     no periodic boundary conditions (imcom=0) (Issue #3314, PR #3312).
@@ -112,7 +112,7 @@ Fixes
   * Fix tests for analysis.bat that could fail when run in parallel and that
     would create a test artifact (Issue #2979, PR #2981)
   * Fix syntax warning over comparison of literals using is (Issue #3066)
-  * new `Results` class now can be pickled/unpickled. (PR #3309) 
+  * new `Results` class now can be pickled/unpickled. (PR #3309)
 
 Enhancements
   * Added guessers for aromaticity and Gasteiger partial charges (Issue #2468,
@@ -185,12 +185,13 @@ Enhancements
     checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
   * Improved performance of H5MDReader by using h5py.Dataset.read_direct()
     to transfer data from HDF5 file into timestep. (PR #3293)
+  * Added `H5MDWriter` to coordinate writers (Issue #2866, PR #3189)
 
 Changes
   * The RDKitParser now raises an error if only part of the atoms have metadata
     on residues (Issue #3318, PR #3325)
-  * `analysis.pca.PCA` class now stores `p_components`, `variance`, 
-    `cumulated_variance` and `mean_atoms` using the 
+  * `analysis.pca.PCA` class now stores `p_components`, `variance`,
+    `cumulated_variance` and `mean_atoms` using the
     `analysis.base.Results` class (Issues #3275 #3285)
   * Timestep now stores information in 'C' memory layout instead of
     the previous 'F' default (PR #1738)
@@ -286,10 +287,10 @@ Changes
   * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
 
 Deprecations
-  * The attributes `p_components`, `variance`, `cumulated_variance` and 
-    `mean_atoms` in `analysis.pca.PCA` are now deprecated in favour of 
-    `results.p_components`, `results.variance`, `results.cumulated_variance` 
-    and `results.mean_atoms`. They will be removed in 3.0.0 
+  * The attributes `p_components`, `variance`, `cumulated_variance` and
+    `mean_atoms` in `analysis.pca.PCA` are now deprecated in favour of
+    `results.p_components`, `results.variance`, `results.cumulated_variance`
+    and `results.mean_atoms`. They will be removed in 3.0.0
     (Issues #3275 #3285)
   * The `bins`, `edges`, `count`, `rdf` attributes for `analysis.rdf.InterRDF`
     and `analysis.rdf.InterRDF_s`, and `cdf` attributes for

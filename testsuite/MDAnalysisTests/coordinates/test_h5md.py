@@ -443,7 +443,7 @@ class TestH5MDWriterWithRealTrajectory(object):
         uw = mda.Universe(TPR_xvf, outfile)
         steps = [ts.data['step'] for ts in uw.trajectory]
         frames = [ts.frame for ts in universe.trajectory]
-        for step, frame in zip (steps, frames):
+        for step, frame in zip(steps, frames):
             assert_equal(step, frame)
 
     def test_has_setter(self, universe, Writer, outfile):

@@ -858,16 +858,14 @@ class H5MDWriter(base.WriterBase):
             'second': 's',
             'sec': 's',
             's': 's',
-            'AKMA': 'AKMA'
-            },
+            'AKMA': 'AKMA'},
         'length': {
             'Angstrom': 'Angstrom',
             'angstrom': 'Angstrom',
             'A': 'Angstrom',
             'nm': 'nm',
             'pm': 'pm',
-            'fm': 'fm'
-            },
+            'fm': 'fm'},
         'velocity': {
             'Angstrom/ps': 'Angstrom ps-1',
             'A/ps': 'Angstrom ps-1',
@@ -878,8 +876,7 @@ class H5MDWriter(base.WriterBase):
             'nm/ps': 'nm ps-1',
             'nm/ns': 'nm ns-1',
             'pm/ps': 'pm ps-1',
-            'm/s': 'm s-1'
-            },
+            'm/s': 'm s-1'},
         'force':  {
             'kJ/(mol*Angstrom)': 'kJ mol-1 Angstrom-1',
             'kJ/(mol*nm)': 'kJ mol-1 nm-1',
@@ -1006,10 +1003,10 @@ class H5MDWriter(base.WriterBase):
             if value is not None:
                 if value not in self._unit_translation_dict[key]:
                     raise ValueError(f"{value} is not a unit recognizable by"
-                                      " MDAnalyis. Allowed units are:"
+                                     " MDAnalyis. Allowed units are:"
                                      f" {self._unit_translation_dict.keys()}"
-                                      " For more information on units, see"
-                                      " `MDAnalyis units`_.")
+                                     " For more information on units, see"
+                                     " `MDAnalyis units`_.")
                 else:
                     self.units[key] = self._new_units[key]
 
@@ -1166,12 +1163,12 @@ class H5MDWriter(base.WriterBase):
         """helper function to initialize a dataset for
         position, velocity, and force"""
 
-        if self.contiguous or self.n_frames is not None:
-            shape = (self.n_frames, self.n_atoms, 3)
-            maxshape = None
-        else:
+        if self.n_frames is None:
             shape = (0, self.n_atoms, 3)
             maxshape = (None, self.n_atoms, 3)
+        else:
+            shape = (self.n_frames, self.n_atoms, 3)
+            maxshape = None
 
         chunks = None if self.contiguous else self.chunks
 
@@ -1254,25 +1251,26 @@ class H5MDWriter(base.WriterBase):
 
         # TypeError catches chunks=False and n_frames is not None
         # (trying to resize wrong type of dataset)
-        # ValueError catches n_frames is not None
+        # ValueError and RuntimeError catche n_frames is not None
         # (trying to resize a chunked dataset beyond its defined shape)
+        # differnt versions of h5py raise different error
         if self._has['position']:
             try:
                 self._pos.resize(self._pos.shape[0]+1, axis=0)
                 self._pos[i] = ts.positions
-            except(TypeError, ValueError):
+            except(TypeError, ValueError, RuntimeError):
                 self._pos[i] = ts.positions
         if self._has['velocity']:
             try:
                 self._vel.resize(self._vel.shape[0]+1, axis=0)
                 self._vel[i] = ts.velocities
-            except(TypeError, ValueError):
+            except(TypeError, ValueError, RuntimeError):
                 self._vel[i] = ts.velocities
         if self._has['force']:
             try:
                 self._force.resize(self._force.shape[0]+1, axis=0)
                 self._force[i] = ts.forces
-            except(TypeError, ValueError):
+            except(TypeError, ValueError, RuntimeError):
                 self._force[i] = ts.forces
 
         if self.data_keys:
