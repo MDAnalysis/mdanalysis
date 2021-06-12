@@ -652,16 +652,16 @@ class TestH5MDWriterWithRealTrajectory(object):
             for ts in universe.trajectory:
                 W.write(universe)
 
-    #    uw = mda.Universe(TPR_xvf, outfile)
-    #    for dset in (uw.trajectory._particle_group['position/value'],
-    #                 uw.trajectory._particle_group['velocity/value'],
-    #                 uw.trajectory._particle_group['force/value']):
-    #        assert_equal(dset.chunks, chunks)
+        uw = mda.Universe(TPR_xvf, outfile)
+        for dset in (uw.trajectory._particle_group['position/value'],
+                     uw.trajectory._particle_group['velocity/value'],
+                     uw.trajectory._particle_group['force/value']):
+            assert_equal(dset.chunks, (1, n_atoms, 3))
 
-    #    for ts1, ts2 in zip(universe.trajectory, uw.trajectory):
-    #        assert_equal(ts1.positions, ts2.positions)
-    #        assert_equal(ts1.velocities, ts2.velocities)
-    #        assert_equal(ts1.forces, ts2.forces)
+        for ts1, ts2 in zip(universe.trajectory, uw.trajectory):
+            assert_equal(ts1.positions, ts2.positions)
+            assert_equal(ts1.velocities, ts2.velocities)
+            assert_equal(ts1.forces, ts2.forces)
 
     def test_write_contiguous1(self, universe, Writer, outfile):
         n_atoms = universe.atoms.n_atoms

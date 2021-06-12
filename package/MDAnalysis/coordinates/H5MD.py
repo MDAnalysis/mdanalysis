@@ -1249,12 +1249,6 @@ class H5MDWriter(base.WriterBase):
             self._edges.resize(self._edges.shape[0]+1, axis=0)
             self._edges.write_direct(ts.triclinic_dimensions,
                                      dest_sel=np.s_[i, :])
-
-        # TypeError catches chunks=False and n_frames is not None
-        # (trying to resize wrong type of dataset)
-        # ValueError and RuntimeError catche n_frames is not None
-        # (trying to resize a chunked dataset beyond its defined shape)
-        # differnt versions of h5py raise different error
         if self._has['position']:
             if self.n_frames is None:
                 self._pos.resize(self._pos.shape[0]+1, axis=0)
