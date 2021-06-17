@@ -84,38 +84,37 @@ class Results(UserDict):
 
     .. versionadded:: 2.0.0
     """
+
     def _validate_key(self, key):
-        if key in dir(UserDict) or (key == "data" and self._dict_frozen):
+        if key in dir(self):
             raise AttributeError(f"'{key}' is a protected dictionary "
                                  "attribute")
         elif isinstance(key, str) and not key.isidentifier():
             raise ValueError(f"'{key}' is not a valid attribute")
 
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
+        kwargs = dict(*args, **kwargs)
         if "data" in kwargs.keys():
             raise AttributeError(f"'data' is a protected dictionary attribute")
-
-        self._dict_frozen = False
-        for key in kwargs:
-            self._validate_key(key)
-        super().__init__(**kwargs)
-        self._dict_frozen = True
+        self.__dict__["data"] = {}
+        self.update(kwargs)
 
     def __setitem__(self, key, item):
         self._validate_key(key)
         super().__setitem__(key, item)
 
-    def __setattr__(self, attr, value):
-        self._validate_key(attr)
-        super().__setattr__(attr, value)
-
-        # attribute available as key
-        if self._dict_frozen and attr != "_dict_frozen":
-            super().__setitem__(attr, value)
+    __setattr__ = __setitem__
 
     def __getattr__(self, attr):
         try:
-            return self.data[attr]
+            return self[attr]
+        except KeyError as err:
+            raise AttributeError("'Results' object has no "
+                                 f"attribute '{attr}'") from err
+
+    def __delattr__(self, attr):
+        try:
+            del self[attr]
         except KeyError as err:
             raise AttributeError("'Results' object has no "
                                  f"attribute '{attr}'") from err

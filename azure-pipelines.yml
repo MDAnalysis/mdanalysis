@@ -52,7 +52,7 @@ jobs:
       hypothesis
       matplotlib
       numpy
-      pytest==6.1.2
+      pytest
       pytest-cov
       pytest-xdist
       scikit-learn
@@ -65,7 +65,7 @@ jobs:
   - script: >-
       python -m pip install
       biopython
-      chemfiles
+      chemfiles>=0.9
       duecredit
       gsd==1.9.3
       joblib
