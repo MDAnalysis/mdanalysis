@@ -52,6 +52,12 @@ contain units and ``convert_units=True``, MDAnalysis will raise a
 :exc:`ValueError`. To load a universe from an H5MD file with no units defined,
 set ``convert_units=False``.
 
+:class:`H5MDWriter` detects the native units of the parent trajectory and
+writes the trajectory with those units, unless one of ``timeunit``,
+``lengthunit``, ``velocityunit``, ``forceunit`` arugments are supplied. In
+this case, the writer will write the corresponding dataset with the selected
+unit only if it is recognizable by `MDAnalysis units`_.
+
 
 Example: Loading an H5MD simulation
 -----------------------------------
@@ -70,8 +76,28 @@ into the reader::
     with h5py.File("trajectory.h5md", 'r') as f:
          u = mda.Universe("topology.tpr", f)
 
+
 .. Note:: Directly using a `h5py.File` does not work yet.
    See issue `#2884 <https://github.com/MDAnalysis/mdanalysis/issues/2884>`_.
+
+
+Example: Writing an H5MD file
+-----------------------------
+
+To write to an H5MD file from a trajectory loaded with MDAnalysis, do
+
+    import MDAnalysis as mda
+    u = mda.Universe("topology.tpr", "trajectory.*")
+
+    with mda.Writer("output.h5md", n_atoms=u.trajectory.n_atoms) as W:
+        for ts in u.trajectory:
+            W.write(u)
+
+The writer also supports writing directly from an :class:`AtomGroup`:
+
+    ag = u.select_atoms("protein and name CA")
+    ag.write("alpha_carbons.h5md", frames='all')
+
 
 Example: Opening an H5MD file in parallel
 -----------------------------------------
@@ -86,6 +112,7 @@ parallel HDF5, pass `driver` and `comm` arguments to
     from mpi4py import MPI
     u = mda.Universe("topology.tpr", "trajectory.h5md",
                      driver="mpio", comm=MPI.COMM_WORLD)
+
 
 .. Note::
    :mod:`h5py` must be built with parallel features enabled on top of a parallel
@@ -751,7 +778,53 @@ class H5MDReader(base.ReaderBase):
 
 
 class H5MDWriter(base.WriterBase):
-    """Writer for the H5MD format.
+    """Writer for `H5MD`_ format (version 1.1).
+
+    By default, the writer will write all available data (positions,
+    velocities, and forces) if detected in the input :class:`Timestep`. To
+    write a file without any one of these datsets, set ``positions=False``,
+    ``velocities=Fase``, etc.
+
+    The H5MD format is very flexible with regards to units, as there is no
+    standard defined unit for the format. For this reason, both
+    :class:`H5MDWriter` does not enforce any units. Instead, the native units
+    are detected from the input trajectory and the writer converts to those
+    units by default. However, users can input custom units as ``timeunit``,
+    ``lengthunit``, ``velocityunit``, and ``forceunit`` arguments. These units
+    must be in `MDAnalysis units`_.
+
+    HDF5 natively supports various compression modes. To write the trajectory
+    with compressed datasets, set ``compression=gzip``, ``compression=lzf``,
+    etc. An additional argument, ``compression_opts``, can be used to fine
+    tune the level of compression. For example, for GZIP compression,
+    ``compression_opts`` can be set to 1 for minimum compression and 9 for
+    maximum compression. For more information on the supported modes of
+    compression, see `H5PY compression options`_
+
+    HDF5 datasets can be *chunked*, meaning the dataset can be split into equal
+    sized pieces and stored in different, noncontiguous places on disk.
+    If HDF5 tries to read an element from a chunked dataset, the *entire*
+    dataset must be read, therefore an ill-thought-out chunking scheme can
+    drastically effect file I/O performance. In the case of all MDAnalysis
+    writers, in general, the number of frames being written is not known
+    apriori by the writer, therefore the HDF5 must be extendable. However, the
+    allocation of diskspace is defined when the dataset is created, therefore
+    extendable HDF5 datasets *must* be chunked so as to allow dynamic storage
+    on disk of any incoming data to the writer. In such cases where chunking
+    isn't explicity defined by the user, H5PY automatically selects a chunk
+    shape via an algorithm that attempts to make mostly square chunks between
+    1 KiB - 1 MiB, however this can lead to suboptimal I/O performance.
+    :class:`H5MDWriter` automatically sets the ``chunks=(1, n_atoms, 3)`` so
+    as to mimic the typical access pattern of a trajectory by MDAnalysis. In
+    our tests, this chunk shape led to a speedup on the order of 10x versus
+    H5PY's auto-chunked shape. Users can set a custom chunk shape with the
+    ``chunks`` argument. Additionaly, the datasets in a file can be written
+    with a contiguous layout by setting ``chunks=False``, however this must be
+    accompanied by setting ``n_frames`` equal to the number of frames being
+    written, as HDF5 must know how much space to allocate on disk when creating
+    the dataset.
+
+    .. _`H5PY compression options`: https://docs.h5py.org/en/stable/high/dataset.html#filter-pipeline
 
 
     Parameters
@@ -760,6 +833,8 @@ class H5MDWriter(base.WriterBase):
         trajectory filename or open h5py file
     n_atoms : int
         number of atoms in trajectory
+    n_frames : int (optional)
+        number of frames to be written in trajectory
     driver : str (optional)
         H5PY file driver used to open H5MD file
     comm : :class:`MPI.Comm` (optional)
@@ -784,14 +859,11 @@ class H5MDWriter(base.WriterBase):
         number, this must be a tuple of values. For gzip, 1 indicates
         the lowest level of compression and 9 indicates maximum compression.
     positions : bool (optional)
-        whether the writer will write coordinates from ``Timestep``
-        [``True``]
+        Write positions into the trajectory [``True``]
     velocities : bool (optional)
-        whether the writer will write velocities from ``Timestep``
-        [``True``]
+        Write velocities into the trajectory [``True``]
     forces : bool (optional)
-        whether the writer will write forces from ``Timestep``
-        [``True``]
+        Write forces into the trajectory [``True``]
     timeunit : str (optional)
         option to convert values in the 'time' dataset to a custom unit,
         must be recognizable by MDAnalysis
@@ -814,6 +886,13 @@ class H5MDWriter(base.WriterBase):
         version of software that wrote the file
         [:attr:`MDAnalysis.__version__`]
 
+
+    Note
+    ----
+    Parellel writing with the use of a MPI communicator and the ``'mpio'``
+    HDF5 driver is currently not supported.
+
+
     Raises
     ------
     RuntimeError
@@ -823,6 +902,11 @@ class H5MDWriter(base.WriterBase):
     ValueError
         when the file is opened with ``driver=='mpio'`` or
         with an MPI communicator
+    ValueError
+        when ``chunks=False`` but the user did not specify ``n_frames``
+    ValueError
+        when ``positions``, ``velocities``, and ``forces`` are all
+        set to ``False``
     TypeError
         when the input object is not a :class:`Universe` or
         :class:`AtomGroup`
@@ -834,6 +918,7 @@ class H5MDWriter(base.WriterBase):
         when any of the optional ``timeunit``, ``lengthunit``,
         ``velocityunit``, or ``forceunit`` keyword arguments are
         unrecognizable by MDAnalysis
+
 
     .. versionadded:: 2.0.0
 
@@ -1062,6 +1147,7 @@ class H5MDWriter(base.WriterBase):
         case, :class:`H5MDReader` cannot currently read files without at least
         one of these three groups. A future change to both the reader and
         writer will allow this case.
+
 
         """
 
