@@ -185,7 +185,6 @@ if __name__ == '__main__':
               'MDAnalysis=={0!s}'.format(RELEASE),  # same as this release!
               'pytest>=3.3.0', # Raised to 3.3.0 due to Issue 2329
               'hypothesis',
-              'psutil>=4.0.2',
           ],
           # had 'KeyError' as zipped egg (2MB savings are not worth the
           # trouble)
