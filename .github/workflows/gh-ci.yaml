@@ -47,7 +47,7 @@ jobs:
               install_hole: true
               codecov: true
             - name: macOS_catalina_py36
-              os: macOS-10.5
+              os: macOS-10.15
               python-version: 3.6
               run_type: FULL
               install_hole: true
