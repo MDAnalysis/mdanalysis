@@ -50,7 +50,7 @@ jobs:
               os: macOS-10.5
               python-version: 3.6
               run_type: FULL
-              install_hole: false
+              install_hole: true
               codecov: false
             - name: minimal-ubuntu
               os: ubuntu-latest
