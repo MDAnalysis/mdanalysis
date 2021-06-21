@@ -40,17 +40,17 @@ jobs:
           install_hole: [true, ]
           codecov: [true, ]
           include:
-            - name: macOS_py39
-              os: macOS-latest
+            - name: macOS_bigsur_py39
+              os: macOS-11
               python-version: 3.9
               run_type: FULL
               install_hole: true
               codecov: true
-            - name: macOS_py36_min
-              os: macOS-latest
+            - name: macOS_catalina_py36
+              os: macOS-10.15
               python-version: 3.6
-              run_type: MIN
-              install_hole: false
+              run_type: FULL
+              install_hole: true
               codecov: false
             - name: minimal-ubuntu
               os: ubuntu-latest

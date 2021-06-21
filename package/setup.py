@@ -303,7 +303,7 @@ def extensions(config):
         cpp_extra_compile_args.append('-stdlib=libc++')
         cpp_extra_compile_args.append('-mmacosx-version-min=10.9')
         cpp_extra_link_args.append('-stdlib=libc++')
-        cpp_extra_link_args.append('-mmacosx-version-min=10.7')
+        cpp_extra_link_args.append('-mmacosx-version-min=10.9')
 
     # Needed for large-file seeking under 32bit systems (for xtc/trr indexing
     # and access).

@@ -32,7 +32,6 @@ requirements:
     - mock
     - seaborn
     - six
-    - psutil
     - netcdf4
     - mmtf-python
     - scikit-learn
