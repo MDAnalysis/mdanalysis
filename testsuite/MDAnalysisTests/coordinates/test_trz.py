@@ -187,6 +187,15 @@ class TestTRZWriter(RefTRZ):
         with pytest.raises(ValueError):
             self.writer(outfile, self.ref_n_atoms, title=title)
 
+    def test_no_box_warning(self, outfile):
+        u = mda.Universe.empty(10, trajectory=True)
+        u.dimensions = None
+
+        with pytest.warns(UserWarning,
+                          match="box will be written as all zero values"):
+            with mda.Writer(outfile, n_atoms=10) as w:
+                w.write(u.atoms)
+
 
 class TestTRZWriter2(object):
     @pytest.fixture()
