@@ -132,6 +132,19 @@ class TestTRZReader(RefTRZ):
         with pytest.raises(ValueError, match=r"Supplied n_atoms"):
             mda.Universe(TRZ, n_atoms=8080)
 
+    def test_read_zero_box(self, tmpdir):
+        outfile = str(tmpdir.join('/test-trz-writer.trz'))
+
+        u = mda.Universe.empty(10, trajectory=True)
+        u.dimensions = None
+
+        with mda.Writer(outfile, n_atoms=10) as w:
+            w.write(u)
+
+        u2 = mda.Universe(outfile, n_atoms=10)
+
+        assert u2.dimensions is None
+
 
 class TestTRZWriter(RefTRZ):
     prec = 3
