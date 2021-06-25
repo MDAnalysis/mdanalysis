@@ -293,8 +293,9 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">._globals</span> <span class="kn">import</span> <span class="n">ModuleDeprecationWarning</span><span class="p">,</span> <span class="n">VisibleDeprecationWarning</span>
-<span class="kn">from</span> <span class="nn">._globals</span> <span class="kn">import</span> <span class="n">_NoValue</span>
+<span class="kn">from</span> <span class="nn">._globals</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ModuleDeprecationWarning</span><span class="p">,</span> <span class="n">VisibleDeprecationWarning</span><span class="p">,</span> <span class="n">_NoValue</span>
+<span class="p">)</span>
 
 <span class="c1"># We first need to detect if we&#39;re being called as part of the numpy setup</span>
 <span class="c1"># procedure itself in a reliable manner.</span>
@@ -314,11 +315,15 @@
 <span class="s2">        your python interpreter from there.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
 
-    <span class="kn">from</span> <span class="nn">.version</span> <span class="kn">import</span> <span class="n">git_revision</span> <span class="k">as</span> <span class="n">__git_revision__</span>
-    <span class="kn">from</span> <span class="nn">.version</span> <span class="kn">import</span> <span class="n">version</span> <span class="k">as</span> <span class="n">__version__</span>
-
     <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ModuleDeprecationWarning&#39;</span><span class="p">,</span>
                <span class="s1">&#39;VisibleDeprecationWarning&#39;</span><span class="p">]</span>
+
+    <span class="c1"># get the version using versioneer</span>
+    <span class="kn">from</span> <span class="nn">._version</span> <span class="kn">import</span> <span class="n">get_versions</span>
+    <span class="n">vinfo</span> <span class="o">=</span> <span class="n">get_versions</span><span class="p">()</span>
+    <span class="n">__version__</span> <span class="o">=</span> <span class="n">vinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;closest-tag&quot;</span><span class="p">,</span> <span class="n">vinfo</span><span class="p">[</span><span class="s2">&quot;version&quot;</span><span class="p">])</span>
+    <span class="n">__git_version__</span> <span class="o">=</span> <span class="n">vinfo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;full-revisionid&quot;</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">get_versions</span><span class="p">,</span> <span class="n">vinfo</span>
 
     <span class="c1"># mapping of {name: (value, deprecation_msg)}</span>
     <span class="n">__deprecated_attrs__</span> <span class="o">=</span> <span class="p">{}</span>
@@ -374,6 +379,11 @@
         <span class="n">n</span><span class="p">:</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">_builtins</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">_msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">extended_msg</span><span class="o">=</span><span class="n">extended_msg</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">extended_msg</span> <span class="ow">in</span> <span class="n">_type_info</span>
     <span class="p">})</span>
+    <span class="c1"># Numpy 1.20.0, 2020-10-19</span>
+    <span class="n">__deprecated_attrs__</span><span class="p">[</span><span class="s2">&quot;typeDict&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">core</span><span class="o">.</span><span class="n">numerictypes</span><span class="o">.</span><span class="n">typeDict</span><span class="p">,</span>
+        <span class="s2">&quot;`np.typeDict` is a deprecated alias for `np.sctypeDict`.&quot;</span>
+    <span class="p">)</span>
 
     <span class="n">_msg</span> <span class="o">=</span> <span class="p">(</span>
         <span class="s2">&quot;`np.</span><span class="si">{n}</span><span class="s2">` is a deprecated alias for `np.compat.</span><span class="si">{n}</span><span class="s2">`. &quot;</span>
@@ -592,6 +602,15 @@
 
     <span class="c1"># Note that this will currently only make a difference on Linux</span>
     <span class="n">core</span><span class="o">.</span><span class="n">multiarray</span><span class="o">.</span><span class="n">_set_madvise_hugepage</span><span class="p">(</span><span class="n">use_hugepage</span><span class="p">)</span>
+
+    <span class="c1"># Give a warning if NumPy is reloaded or imported on a sub-interpreter</span>
+    <span class="c1"># We do this from python, since the C-module may not be reloaded and</span>
+    <span class="c1"># it is tidier organized.</span>
+    <span class="n">core</span><span class="o">.</span><span class="n">multiarray</span><span class="o">.</span><span class="n">_multiarray_umath</span><span class="o">.</span><span class="n">_reload_guard</span><span class="p">()</span>
+
+<span class="kn">from</span> <span class="nn">._version</span> <span class="kn">import</span> <span class="n">get_versions</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="n">get_versions</span><span class="p">()[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
+<span class="k">del</span> <span class="n">get_versions</span>
 </pre></div>
 
            </div>

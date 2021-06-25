@@ -282,13 +282,13 @@ the <code class="docutils literal notranslate"><span class="pre">has_*</span></c
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRJ.Timestep._pos">
 <code class="descname">_pos</code><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._pos" title="Permalink to this definition">¶</a></dt>
-<dd><p>coordinates of the atoms as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <cite>(n_atoms, 3)</cite></p>
+<dd><p>coordinates of the atoms as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <cite>(n_atoms, 3)</cite></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRJ.Timestep._velocities">
 <code class="descname">_velocities</code><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._velocities" title="Permalink to this definition">¶</a></dt>
-<dd><p>velocities of the atoms as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <cite>(n_atoms, 3)</cite>;
+<dd><p>velocities of the atoms as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <cite>(n_atoms, 3)</cite>;
 only available if the trajectory contains velocities or if the
 <em>velocities</em> = <code class="docutils literal notranslate"><span class="pre">True</span></code> keyword has been supplied.</p>
 </dd></dl>
@@ -296,7 +296,7 @@ only available if the trajectory contains velocities or if the
 <dl class="attribute">
 <dt id="MDAnalysis.coordinates.TRJ.Timestep._forces">
 <code class="descname">_forces</code><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._forces" title="Permalink to this definition">¶</a></dt>
-<dd><p>forces of the atoms as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <cite>(n_atoms, 3)</cite>;
+<dd><p>forces of the atoms as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <cite>(n_atoms, 3)</cite>;
 only available if the trajectory contains forces or if the
 <em>forces</em> = <code class="docutils literal notranslate"><span class="pre">True</span></code> keyword has been supplied.</p>
 </dd></dl>
@@ -343,7 +343,7 @@ be installed. It supports the <em>mmap</em> keyword argument (when reading):
 to memory (using the <a class="reference external" href="https://docs.python.org/3/library/mmap.html#mmap.mmap" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mmap</span></code></a>); <code class="docutils literal notranslate"><span class="pre">mmap=False</span></code> may consume large
 amounts of memory because it loads the whole trajectory into memory but it
 might be faster. The default is <code class="docutils literal notranslate"><span class="pre">mmap=None</span></code> and then default behavior of
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.io.netcdf_file.html#scipy.io.netcdf_file" title="(in SciPy v1.7.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf.netcdf_file</span></code></a> prevails, i.e. <code class="docutils literal notranslate"><span class="pre">True</span></code> when
+<code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf.netcdf_file</span></code> prevails, i.e. <code class="docutils literal notranslate"><span class="pre">True</span></code> when
 <em>filename</em> is a file name, <code class="docutils literal notranslate"><span class="pre">False</span></code> when <em>filename</em> is a file-like object.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
@@ -372,7 +372,7 @@ time units instead (Issue #2323).</p>
 removed (Issue #2327)</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span>Now use a picklable <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.io.netcdf_file.html#scipy.io.netcdf_file" title="(in SciPy v1.7.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf.netcdf_file</span></code></a>–
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Now use a picklable <code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf.netcdf_file</span></code>–
 <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFPicklable" title="MDAnalysis.coordinates.TRJ.NCDFPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFPicklable</span></code></a>.
 Reading of <cite>dt</cite> now defaults to 1.0 ps if <cite>dt</cite> cannot be extracted from
 the first two frames of the trajectory.</p>
@@ -566,7 +566,7 @@ be written to trajectory file</td>
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.TRJ.</code><code class="descname">NCDFPicklable</code><span class="sig-paren">(</span><em>filename</em>, <em>mode='r'</em>, <em>mmap=None</em>, <em>version=1</em>, <em>maskandscale=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFPicklable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFPicklable" title="Permalink to this definition">¶</a></dt>
 <dd><p>NetCDF file object (read-only) that can be pickled.</p>
 <p>This class provides a file-like object (as returned by
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.io.netcdf_file.html#scipy.io.netcdf_file" title="(in SciPy v1.7.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf.netcdf_file</span></code></a>) that,
+<code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf.netcdf_file</span></code>) that,
 unlike standard Python file objects,
 can be pickled. Only read mode is supported.</p>
 <p>When the file is pickled, filename and mmap of the open file handle in
