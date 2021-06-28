@@ -40,7 +40,7 @@ Reads the following topology attributes:
 Atoms:
  - altLoc
  - atom ID
- - bfactor
+ - tempfactor
  - bonds
  - charge
  - masses (guessed)
