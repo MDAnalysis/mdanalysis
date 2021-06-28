@@ -1031,6 +1031,11 @@
         <span class="c1"># essentially a non-split?</span>
 
         <span class="n">compound_indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_compound_indices</span><span class="p">(</span><span class="n">compound</span><span class="p">)</span>
+        <span class="n">compound_sizes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">compound_indices</span><span class="p">)</span>
+        <span class="n">size_per_atom</span> <span class="o">=</span> <span class="n">compound_sizes</span><span class="p">[</span><span class="n">compound_indices</span><span class="p">]</span>
+        <span class="n">compound_sizes</span> <span class="o">=</span> <span class="n">compound_sizes</span><span class="p">[</span><span class="n">compound_sizes</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">unique_compound_sizes</span> <span class="o">=</span> <span class="n">unique_int_1d</span><span class="p">(</span><span class="n">compound_sizes</span><span class="p">)</span>
+
         <span class="c1"># Are we already sorted? argsorting and fancy-indexing can be expensive</span>
         <span class="c1"># so we do a quick pre-check.</span>
         <span class="n">needs_sorting</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">compound_indices</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
@@ -1042,11 +1047,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Quicksort</span>
                 <span class="n">sort_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">compound_indices</span><span class="p">)</span>
-
-        <span class="n">compound_sizes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">compound_indices</span><span class="p">)</span>
-        <span class="n">size_per_atom</span> <span class="o">=</span> <span class="n">compound_sizes</span><span class="p">[</span><span class="n">compound_indices</span><span class="p">]</span>
-        <span class="n">compound_sizes</span> <span class="o">=</span> <span class="n">compound_sizes</span><span class="p">[</span><span class="n">compound_sizes</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>
-        <span class="n">unique_compound_sizes</span> <span class="o">=</span> <span class="n">unique_int_1d</span><span class="p">(</span><span class="n">compound_sizes</span><span class="p">)</span>
+            <span class="c1"># We must sort size_per_atom accordingly (Issue #3352).</span>
+            <span class="n">size_per_atom</span> <span class="o">=</span> <span class="n">size_per_atom</span><span class="p">[</span><span class="n">sort_indices</span><span class="p">]</span>
 
         <span class="n">compound_masks</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">atom_masks</span> <span class="o">=</span> <span class="p">[]</span>
