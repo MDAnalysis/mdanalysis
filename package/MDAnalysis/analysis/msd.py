@@ -64,7 +64,7 @@ the normal MDAnalysis citations.
 
 .. warning::
     To correctly compute the MSD using this analysis module, you must supply
-    coordinates in the **unwrapped** convention. That is, when they pass
+    coordinates in the **unwrapped** convention. That is, when atoms pass
     the periodic boundary, they must not be **wrapped** back into the primary
     simulation cell. Various simulation packages provide utilities to convert
     coordinates to this convention. In GROMACS for example, this can be
