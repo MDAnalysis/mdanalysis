@@ -117,6 +117,8 @@ Fixes
   * new `Results` class now can be pickled/unpickled. (PR #3309) 
 
 Enhancements
+  * Added warning for the use of wrapped coordinates in the MSD module (Issue
+    #3074 PR #3357)
   * Added guessers for aromaticity and Gasteiger partial charges (Issue #2468,
     PR #2926)
   * Added `Results` class for storing analysis results (#3115, PR #3233)
