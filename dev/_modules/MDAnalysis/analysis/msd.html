@@ -246,6 +246,17 @@
 <span class="sd">Please cite [Calandri2011]_ [Buyl2018]_ if you use this module in addition to</span>
 <span class="sd">the normal MDAnalysis citations.</span>
 
+<span class="sd">.. warning::</span>
+<span class="sd">    To correctly compute the MSD using this analysis module, you must supply</span>
+<span class="sd">    coordinates in the **unwrapped** convention. That is, when atoms pass</span>
+<span class="sd">    the periodic boundary, they must not be **wrapped** back into the primary</span>
+<span class="sd">    simulation cell. MDAnalysis does not currently offer this functionality in</span>
+<span class="sd">    the ``MDAnalysis.transformations`` API despite having functions with</span>
+<span class="sd">    similar names. We plan to implement the appropriate transformations in the</span>
+<span class="sd">    future. In the meantime, various simulation packages provide utilities to</span>
+<span class="sd">    convert coordinates to the unwrapped convention. In GROMACS for example,</span>
+<span class="sd">    this can be done using ``gmx trjconv`` with the ``-pbc nojump`` flag.</span>
+
 <span class="sd">Computing an MSD</span>
 <span class="sd">----------------</span>
 <span class="sd">This example computes a 3D MSD for the movement of 100 particles undergoing a</span>

@@ -249,6 +249,18 @@ Transform is known and can be accessed by setting <code class="docutils literal 
 installed; otherwise the code will raise an <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ImportError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ImportError</span></code></a>.</p>
 <p>Please cite <a class="reference internal" href="../references.html#calandri2011" id="id4">[Calandri2011]</a> <a class="reference internal" href="../references.html#buyl2018" id="id5">[Buyl2018]</a> if you use this module in addition to
 the normal MDAnalysis citations.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">To correctly compute the MSD using this analysis module, you must supply
+coordinates in the <strong>unwrapped</strong> convention. That is, when atoms pass
+the periodic boundary, they must not be <strong>wrapped</strong> back into the primary
+simulation cell. MDAnalysis does not currently offer this functionality in
+the <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations</span></code> API despite having functions with
+similar names. We plan to implement the appropriate transformations in the
+future. In the meantime, various simulation packages provide utilities to
+convert coordinates to the unwrapped convention. In GROMACS for example,
+this can be done using <code class="docutils literal notranslate"><span class="pre">gmx</span> <span class="pre">trjconv</span></code> with the <code class="docutils literal notranslate"><span class="pre">-pbc</span> <span class="pre">nojump</span></code> flag.</p>
+</div>
 <div class="section" id="computing-an-msd">
 <h2>4.7.2.2.1. Computing an MSD<a class="headerlink" href="#computing-an-msd" title="Permalink to this headline">¶</a></h2>
 <p>This example computes a 3D MSD for the movement of 100 particles undergoing a
