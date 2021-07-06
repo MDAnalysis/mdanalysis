@@ -435,7 +435,7 @@ class TestLammpsDumpReader(object):
                     fout.write(data)
 
         yield mda.Universe(f, format='LAMMPSDUMP',
-                           coordinate_convention='guess')
+                           lammps_coordinate_convention='guess')
 
     @pytest.fixture()
     def reference_positions(self):
