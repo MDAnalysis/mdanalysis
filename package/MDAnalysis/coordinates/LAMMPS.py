@@ -450,10 +450,14 @@ class DATAWriter(base.WriterBase):
 class DumpReader(base.ReaderBase):
     """Reads the default `LAMMPS dump format`_
 
-    Supports coordinates in the "unscaled" (x,y,z), "scaled" (xs,ys,zs),
-    "unwrapped" (xu,yu,zu) and "scaled unwrapped" (xsu,ysu,zsu) coordinate
-    conventions. If coordinates are given in the scaled coordinate convention
-    (xs,ys,zs), they will automatically be converted from their
+    Supports coordinates in the LAMMPS "unscaled" (x,y,z), "scaled" (xs,ys,zs),
+    "unwrapped" (xu,yu,zu) and "scaled_unwrapped" (xsu,ysu,zsu) coordinate
+    conventions. If no coordinate convention is provided, or if "guess" is
+    selected, one will be guessed. Guessing proceeds in the order "unscaled", 
+    "scaled", "unwrapped", "scaled_unwrapped" and whichever set of coordinates 
+    is detected first will be used. If coordinates are given in the scaled
+    coordinate convention (xs,ys,zs) or scaled unwrapped coordinate convention
+    (xsu,ysu,zsu) they will automatically be converted from their 
     scaled/fractional representation to their real values.
 
     .. versionadded:: 0.19.0
@@ -462,12 +466,12 @@ class DumpReader(base.ReaderBase):
     _conventions = ["guess", "unscaled", "scaled", "unwrapped",
                     "scaled_unwrapped"]
 
-    def __init__(self, filename, coordinate_convention="guess", **kwargs):
+    def __init__(self, filename, lammps_coordinate_convention="guess", **kwargs):
         super(DumpReader, self).__init__(filename, **kwargs)
 
         root, ext = os.path.splitext(self.filename)
-        if coordinate_convention in self._conventions:
-            self.coordinate_convention = coordinate_convention
+        if lammps_coordinate_convention in self._conventions:
+            self.lammps_coordinate_convention = lammps_coordinate_convention
         else:
             raise ValueError("coordinate convention incorrectly specified")
 
@@ -572,33 +576,35 @@ class DumpReader(base.ReaderBase):
         # keys = convention values = col_ids or False if not present
         coord_dict = {"unscaled": False, "scaled": False, "unwrapped": False,
                       "scaled_unwrapped":False}
-        if "x" and "y" and "z" in col_ids.keys():  # unscaled
+        keys = col_ids.keys()
+        if ("x" in keys)  and ("y" in keys) and ("z" in keys):  # unscaled
             coord_dict["unscaled"] = [col_ids["x"], col_ids["y"],
                                       col_ids["z"]]
-        if "xs" and "ys" and "zs" in col_ids.keys():  # scaled
+        if ("xs" in keys) and ("ys" in keys) and ("zs" in keys):  # scaled
             coord_dict["scaled"] = [col_ids["xs"], col_ids["ys"],
                                     col_ids["zs"]]
-        if "xu" and "yu" and "zu" in col_ids.keys():  # unwrapped
+        if ("xu" in keys) and ("yu" in keys) and ("zu" in keys):  # unwrapped
             coord_dict["unwrapped"] = [col_ids["xu"], col_ids["yu"],
                                        col_ids["zu"]]
-        if "xsu" and "ysu" and "zsu" in col_ids.keys():  # scaled unwrapped
+        if ("xsu" in keys) and ("ysu" in keys) and ("zsu" in keys):  # scaled unwrapped
             coord_dict["scaled_unwrapped"] = [col_ids["xsu"], col_ids["ysu"],
                                               col_ids["zsu"]]
 
         # this should only trigger on first read of "ATOM" card, after which it
-        # is fixed to the guessed value.
-        if self.coordinate_convention == "guess":
+        # is fixed to the guessed value. Guessing proceeds unscaled -> scaled
+        # -> unwrapped -> scaled_unwrapped
+        if self.lammps_coordinate_convention == "guess":
             for convention in self._conventions[1:]:
                 if convention in coord_dict.keys() and coord_dict[convention]:
                     coord_cols = coord_dict[convention]
-                    self.coordinate_convention = convention
+                    self.lammps_coordinate_convention = convention
 
-        if not coord_dict[self.coordinate_convention]:
+        if not coord_dict[self.lammps_coordinate_convention]:
             raise ValueError(f"no coordinate information of type"
-                             f"{self.coordinate_convention} in frame")
+                             f"{self.lammps_coordinate_convention} in frame")
 
         else:
-            coord_cols = coord_dict[self.coordinate_convention]
+            coord_cols = coord_dict[self.lammps_coordinate_convention]
 
         for i in range(self.n_atoms):
             fields = f.readline().split()
@@ -609,7 +615,7 @@ class DumpReader(base.ReaderBase):
 
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
-        if self.coordinate_convention == "scaled":
+        if (self.lammps_coordinate_convention == "scaled") or (self.lammps_coordinate_convention == "scaled_unwrapped"):
             # if coordinates are given in scaled format, undo that
             ts.positions = distances.transform_StoR(ts.positions,
                                                     ts.dimensions)
