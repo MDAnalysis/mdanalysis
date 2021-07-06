@@ -555,17 +555,42 @@ class DumpReader(base.ReaderBase):
         indices = np.zeros(self.n_atoms, dtype=int)
 
         atomline = f.readline()  # ITEM ATOMS etc
-        attrs = atomline.split() # attributes on coordinate line
+        attrs = atomline.split()[2:] # attributes on coordinate line
         col_ids = {}  # column index of each attribute
         for i, attr in enumerate(attrs):
             col_ids[attr] = i
+        print(col_ids)
+        
+        # check for ids and what type of coordinate convention
+        ids = "id" in col_ids.keys()
+        coord_dict = {"unscaled":False, "scaled":False, "unwrapped":False, "scaled_unwrapped":False}
+        if "x" and "y" and "z" in col_ids.keys(): # unscaled
+            coord_dict["unscaled"] = [col_ids["x"], col_ids["y"], col_ids["z"]]
+        if "xs" and "ys" and "zs" in col_ids.keys(): # scaled
+            coord_dict["scaled"] = [col_ids["xs"], col_ids["ys"], col_ids["zs"]]
+        if "xu" and "yu" and "zu" in col_ids.keys(): # unwrapped
+            coord_dict["unwrapped"] = [col_ids["xu"], col_ids["yu"], col_ids["zu"]]
+        if "xsu" and "ysu" and "zsu" in col_ids.keys(): # scaled unwrapped
+            coord_dict["scaled_unwrapped"] = [col_ids["xsu"], col_ids["ysu"], col_ids["zsu"]]
+        
+        present_coords = [x for x in coord_dict.values() if x]
+
+        # if there is only one coordinate type present use that one
+        if len(present_coords) == 0:
+            raise ValueError("No coordinates detected in LAMMPS DUMP file")
+        elif len(present_coords) == 1:
+            coord_cols = present_coords[0]
+            print(coord_cols)
+        else:
+            raise ValueError("more than one coordinate convention detected")
 
         for i in range(self.n_atoms):
             fields = f.readline().split()
+            if ids:
+                indices[i] = fields[col_ids["id"]]
 
-            indices[i] = fields[0]
-            xs, ys, zs = fields[-3:]
-            ts.positions[i] = xs, ys, zs
+            x, y, z = [fields[i] for i in coord_cols]
+            ts.positions[i] = x, y, z
 
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
