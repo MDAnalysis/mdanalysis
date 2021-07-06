@@ -123,7 +123,6 @@ Classes
 """
 import os
 import numpy as np
-import warnings
 
 from ..core.groups import requires
 from ..lib import util, mdamath, distances
