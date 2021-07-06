@@ -123,6 +123,7 @@ Classes
 """
 import os
 import numpy as np
+import warnings
 
 from ..core.groups import requires
 from ..lib import util, mdamath, distances
@@ -450,9 +451,7 @@ class DumpReader(base.ReaderBase):
     """Reads the default `LAMMPS dump format`_
 
     Expects trajectories produced by the default 'atom' style dump.
-    The id of the atom must be the first field, and the coordinates 
-    must be the last 3 fields.
-
+    If coordinates are given in the scaled coordinate convention (xs, ys, zs), 
     Will automatically convert positions from their scaled/fractional
     representation to their real values.
 
@@ -565,10 +564,10 @@ class DumpReader(base.ReaderBase):
         col_ids = {}  # column index of each attribute
         for i, attr in enumerate(attrs):
             col_ids[attr] = i
-        print(col_ids)
         
         # check for ids and what type of coordinate convention
         ids = "id" in col_ids.keys()
+        # keys = convention values = col_ids or False if not present
         coord_dict = {"unscaled":False, "scaled":False, "unwrapped":False, "scaled_unwrapped":False}
         if "x" and "y" and "z" in col_ids.keys(): # unscaled
             coord_dict["unscaled"] = [col_ids["x"], col_ids["y"], col_ids["z"]]
@@ -579,11 +578,18 @@ class DumpReader(base.ReaderBase):
         if "xsu" and "ysu" and "zsu" in col_ids.keys(): # scaled unwrapped
             coord_dict["scaled_unwrapped"] = [col_ids["xsu"], col_ids["ysu"], col_ids["zsu"]]
         
+        # this should only trigger on first read of "ATOM" card, after which it is fixed to the guessed value.
         if self.coordinate_convention == "guess":
             for convention in self._conventions[1:]:
                 if convention in coord_dict.keys() and coord_dict[convention]:
                     coord_cols = coord_dict[convention]
                     self.coordinate_convention = convention
+        
+        coord_data = True
+        if not coord_dict[self.coordinate_convention]:
+            coord_data = False
+            #  we let this pass onto the next timestep with a warning?
+            warnings.warn(f"no coordinate information of type {self.coordinate_convention} in frame")
 
         else:
             coord_cols = coord_dict[self.coordinate_convention]
@@ -592,9 +598,9 @@ class DumpReader(base.ReaderBase):
             fields = f.readline().split()
             if ids:
                 indices[i] = fields[col_ids["id"]]
-
-            x, y, z = [fields[i] for i in coord_cols]
-            ts.positions[i] = x, y, z
+            if coord_data: 
+                x, y, z = [fields[i] for i in coord_cols]
+                ts.positions[i] = x, y, z
 
         order = np.argsort(indices)
         ts.positions = ts.positions[order]

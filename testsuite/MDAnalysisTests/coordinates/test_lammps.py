@@ -434,7 +434,7 @@ class TestLammpsDumpReader(object):
                 with gzip.GzipFile(f, 'wb') as fout:
                     fout.write(data)
 
-        yield mda.Universe(f, format='LAMMPSDUMP')
+        yield mda.Universe(f, format='LAMMPSDUMP', coordinate_convention='guess')
 
     @pytest.fixture()
     def reference_positions(self):
