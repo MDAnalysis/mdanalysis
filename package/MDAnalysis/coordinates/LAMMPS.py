@@ -552,7 +552,12 @@ class DumpReader(base.ReaderBase):
 
         indices = np.zeros(self.n_atoms, dtype=int)
 
-        f.readline()  # ITEM ATOMS etc
+        atomline = f.readline()  # ITEM ATOMS etc
+        attrs = atomline.split() # attributes on coordinate line
+        col_ids = {}  # column index of each attribute
+        for i, attr in enumerate(attrs):
+            col_ids[attr] = i
+
         for i in range(self.n_atoms):
             idx, _, xs, ys, zs = f.readline().split()
 
