@@ -592,9 +592,7 @@ class DumpReader(base.ReaderBase):
                     coord_cols = coord_dict[convention]
                     self.coordinate_convention = convention
         
-        coord_data = True
         if not coord_dict[self.coordinate_convention]:
-            coord_data = False
             raise ValueError(f"no coordinate information of type"
             f"{self.coordinate_convention} in frame")
 
@@ -605,9 +603,8 @@ class DumpReader(base.ReaderBase):
             fields = f.readline().split()
             if ids:
                 indices[i] = fields[col_ids["id"]]
-            if coord_data: 
-                x, y, z = [fields[i] for i in coord_cols]
-                ts.positions[i] = x, y, z
+            x, y, z = [fields[i] for i in coord_cols]
+            ts.positions[i] = x, y, z
 
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
