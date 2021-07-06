@@ -450,6 +450,8 @@ class DumpReader(base.ReaderBase):
     """Reads the default `LAMMPS dump format`_
 
     Expects trajectories produced by the default 'atom' style dump.
+    The id of the atom must be the first field, and the coordinates 
+    must be the last 3 fields.
 
     Will automatically convert positions from their scaled/fractional
     representation to their real values.
@@ -559,9 +561,10 @@ class DumpReader(base.ReaderBase):
             col_ids[attr] = i
 
         for i in range(self.n_atoms):
-            idx, _, xs, ys, zs = f.readline().split()
+            fields = f.readline().split()
 
-            indices[i] = idx
+            indices[i] = fields[0]
+            xs, ys, zs = fields[-3:]
             ts.positions[i] = xs, ys, zs
 
         order = np.argsort(indices)

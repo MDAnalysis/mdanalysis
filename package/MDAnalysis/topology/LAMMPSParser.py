@@ -584,9 +584,12 @@ class DATAParser(TopologyReaderBase):
 
 
 class LammpsDumpParser(TopologyReaderBase):
-    """Parses Lammps ascii dump files in 'atom' format
+    """Parses Lammps ascii dump files in 'atom' format.
+    
+    The id of the atom must be the first field, and the atom types 
+    must be the second field.
 
-    Only reads atom ids.  Sets all masses to 1.0.
+    Sets all masses to 1.0.
 
     .. versionadded:: 0.19.0
     """
@@ -610,10 +613,10 @@ class LammpsDumpParser(TopologyReaderBase):
             
             fin.readline()  # ITEM ATOMS
             for i in range(natoms):
-                idx, atype, _, _, _ = fin.readline().split()
+                fields = fin.readline().split()
 
-                indices[i] = idx
-                types[i] = atype
+                indices[i] = fields[0]
+                types[i] = fields[1]
 
         order = np.argsort(indices)
         indices = indices[order]
