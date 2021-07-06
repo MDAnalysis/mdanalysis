@@ -450,10 +450,11 @@ class DATAWriter(base.WriterBase):
 class DumpReader(base.ReaderBase):
     """Reads the default `LAMMPS dump format`_
 
-    Expects trajectories produced by the default 'atom' style dump.
-    If coordinates are given in the scaled coordinate convention (xs, ys, zs), 
-    Will automatically convert positions from their scaled/fractional
-    representation to their real values.
+    Supports coordinates in the "unscaled" (x,y,z), "scaled" (xs,ys,zs),
+    "unwrapped" (xu,yu,zu) and "scaled unwrapped" (xsu,ysu,zsu) coordinate
+    conventions. If coordinates are given in the scaled coordinate convention
+    (xs,ys,zs), they will automatically be converted from their
+    scaled/fractional representation to their real values.
 
     .. versionadded:: 0.19.0
     """
@@ -568,17 +569,23 @@ class DumpReader(base.ReaderBase):
         # check for ids and what type of coordinate convention
         ids = "id" in col_ids.keys()
         # keys = convention values = col_ids or False if not present
-        coord_dict = {"unscaled":False, "scaled":False, "unwrapped":False, "scaled_unwrapped":False}
+        coord_dict = {"unscaled":False, "scaled":False, "unwrapped":False,
+        "scaled_unwrapped":False}
         if "x" and "y" and "z" in col_ids.keys(): # unscaled
-            coord_dict["unscaled"] = [col_ids["x"], col_ids["y"], col_ids["z"]]
+            coord_dict["unscaled"] = [col_ids["x"], col_ids["y"],
+            col_ids["z"]]
         if "xs" and "ys" and "zs" in col_ids.keys(): # scaled
-            coord_dict["scaled"] = [col_ids["xs"], col_ids["ys"], col_ids["zs"]]
+            coord_dict["scaled"] = [col_ids["xs"], col_ids["ys"],
+            col_ids["zs"]]
         if "xu" and "yu" and "zu" in col_ids.keys(): # unwrapped
-            coord_dict["unwrapped"] = [col_ids["xu"], col_ids["yu"], col_ids["zu"]]
+            coord_dict["unwrapped"] = [col_ids["xu"], col_ids["yu"],
+            col_ids["zu"]]
         if "xsu" and "ysu" and "zsu" in col_ids.keys(): # scaled unwrapped
-            coord_dict["scaled_unwrapped"] = [col_ids["xsu"], col_ids["ysu"], col_ids["zsu"]]
+            coord_dict["scaled_unwrapped"] = [col_ids["xsu"], col_ids["ysu"],
+            col_ids["zsu"]]
         
-        # this should only trigger on first read of "ATOM" card, after which it is fixed to the guessed value.
+        # this should only trigger on first read of "ATOM" card, after which it
+        # is fixed to the guessed value.
         if self.coordinate_convention == "guess":
             for convention in self._conventions[1:]:
                 if convention in coord_dict.keys() and coord_dict[convention]:
@@ -588,8 +595,9 @@ class DumpReader(base.ReaderBase):
         coord_data = True
         if not coord_dict[self.coordinate_convention]:
             coord_data = False
-            #  we let this pass onto the next timestep with a warning?
-            warnings.warn(f"no coordinate information of type {self.coordinate_convention} in frame")
+            #  or do we let this pass onto the next timestep with a warning?
+            raise ValueError(f"no coordinate information of type"
+            f"{self.coordinate_convention} in frame")
 
         else:
             coord_cols = coord_dict[self.coordinate_convention]
@@ -606,6 +614,7 @@ class DumpReader(base.ReaderBase):
         ts.positions = ts.positions[order]
         if self.coordinate_convention == "scaled":
             # if coordinates are given in scaled format, undo that
-            ts.positions = distances.transform_StoR(ts.positions, ts.dimensions)
+            ts.positions = distances.transform_StoR(ts.positions,
+            ts.dimensions)
 
         return ts
