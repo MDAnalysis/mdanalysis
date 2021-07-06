@@ -459,7 +459,8 @@ class DumpReader(base.ReaderBase):
     .. versionadded:: 0.19.0
     """
     format = 'LAMMPSDUMP'
-    _conventions = ["guess", "unscaled", "scaled", "unwrapped", "scaled_unwrapped"]
+    _conventions = ["guess", "unscaled", "scaled", "unwrapped",
+    "scaled_unwrapped"]
 
     def __init__(self, filename, coordinate_convention="guess", **kwargs):
         super(DumpReader, self).__init__(filename, **kwargs)
@@ -561,28 +562,28 @@ class DumpReader(base.ReaderBase):
         indices = np.zeros(self.n_atoms, dtype=int)
 
         atomline = f.readline()  # ITEM ATOMS etc
-        attrs = atomline.split()[2:] # attributes on coordinate line
+        attrs = atomline.split()[2:]  # attributes on coordinate line
         col_ids = {}  # column index of each attribute
         for i, attr in enumerate(attrs):
             col_ids[attr] = i
-        
+
         # check for ids and what type of coordinate convention
         ids = "id" in col_ids.keys()
         # keys = convention values = col_ids or False if not present
-        coord_dict = {"unscaled":False, "scaled":False, "unwrapped":False,
-        "scaled_unwrapped":False}
-        if "x" and "y" and "z" in col_ids.keys(): # unscaled
+        coord_dict = {"unscaled": False, "scaled": False, "unwrapped": False,
+            "scaled_unwrapped":False}
+        if "x" and "y" and "z" in col_ids.keys():  # unscaled
             coord_dict["unscaled"] = [col_ids["x"], col_ids["y"],
-            col_ids["z"]]
-        if "xs" and "ys" and "zs" in col_ids.keys(): # scaled
+                col_ids["z"]]
+        if "xs" and "ys" and "zs" in col_ids.keys():  # scaled
             coord_dict["scaled"] = [col_ids["xs"], col_ids["ys"],
-            col_ids["zs"]]
-        if "xu" and "yu" and "zu" in col_ids.keys(): # unwrapped
+                col_ids["zs"]]
+        if "xu" and "yu" and "zu" in col_ids.keys():  # unwrapped
             coord_dict["unwrapped"] = [col_ids["xu"], col_ids["yu"],
-            col_ids["zu"]]
-        if "xsu" and "ysu" and "zsu" in col_ids.keys(): # scaled unwrapped
+                col_ids["zu"]]
+        if "xsu" and "ysu" and "zsu" in col_ids.keys():  # scaled unwrapped
             coord_dict["scaled_unwrapped"] = [col_ids["xsu"], col_ids["ysu"],
-            col_ids["zsu"]]
+                col_ids["zsu"]]
         
         # this should only trigger on first read of "ATOM" card, after which it
         # is fixed to the guessed value.
@@ -611,6 +612,6 @@ class DumpReader(base.ReaderBase):
         if self.coordinate_convention == "scaled":
             # if coordinates are given in scaled format, undo that
             ts.positions = distances.transform_StoR(ts.positions,
-            ts.dimensions)
+                ts.dimensions)
 
         return ts
