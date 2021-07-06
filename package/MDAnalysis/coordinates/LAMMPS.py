@@ -595,7 +595,6 @@ class DumpReader(base.ReaderBase):
         coord_data = True
         if not coord_dict[self.coordinate_convention]:
             coord_data = False
-            #  or do we let this pass onto the next timestep with a warning?
             raise ValueError(f"no coordinate information of type"
             f"{self.coordinate_convention} in frame")
 
