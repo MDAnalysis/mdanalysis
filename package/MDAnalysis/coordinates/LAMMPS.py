@@ -459,11 +459,17 @@ class DumpReader(base.ReaderBase):
     .. versionadded:: 0.19.0
     """
     format = 'LAMMPSDUMP'
+    _conventions = ["guess", "unscaled", "scaled", "unwrapped", "scaled_unwrapped"]
 
-    def __init__(self, filename, **kwargs):
+    def __init__(self, filename, coordinate_convention="guess", **kwargs):
         super(DumpReader, self).__init__(filename, **kwargs)
 
         root, ext = os.path.splitext(self.filename)
+        if coordinate_convention in self._conventions:
+            self.coordinate_convention = coordinate_convention
+        else:
+            raise ValueError("coordinate convention incorrectly specified")
+
         self._cache = {}
 
         self._reopen()
@@ -573,16 +579,14 @@ class DumpReader(base.ReaderBase):
         if "xsu" and "ysu" and "zsu" in col_ids.keys(): # scaled unwrapped
             coord_dict["scaled_unwrapped"] = [col_ids["xsu"], col_ids["ysu"], col_ids["zsu"]]
         
-        present_coords = [x for x in coord_dict.values() if x]
+        if self.coordinate_convention == "guess":
+            for convention in self._conventions[1:]:
+                if convention in coord_dict.keys() and coord_dict[convention]:
+                    coord_cols = coord_dict[convention]
+                    self.coordinate_convention = convention
 
-        # if there is only one coordinate type present use that one
-        if len(present_coords) == 0:
-            raise ValueError("No coordinates detected in LAMMPS DUMP file")
-        elif len(present_coords) == 1:
-            coord_cols = present_coords[0]
-            print(coord_cols)
         else:
-            raise ValueError("more than one coordinate convention detected")
+            coord_cols = coord_dict[self.coordinate_convention]
 
         for i in range(self.n_atoms):
             fields = f.readline().split()
@@ -594,7 +598,8 @@ class DumpReader(base.ReaderBase):
 
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
-        # by default coordinates are given in scaled format, undo that
-        ts.positions = distances.transform_StoR(ts.positions, ts.dimensions)
+        if self.coordinate_convention == "scaled":
+            # if coordinates are given in scaled format, undo that
+            ts.positions = distances.transform_StoR(ts.positions, ts.dimensions)
 
         return ts
