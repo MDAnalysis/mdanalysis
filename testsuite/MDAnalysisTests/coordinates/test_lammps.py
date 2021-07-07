@@ -510,7 +510,7 @@ class TestLammpsDumpReader(object):
             assert_almost_equal(atom1.position, atom1_pos, decimal=5)
             assert_almost_equal(atom13.position, atom13_pos, decimal=5)
 
-# the d
+
 @pytest.mark.parametrize("convention",["unscaled","unwrapped","scaled_unwrapped"])
 def test_open_absent_convention_fails(convention):
     with pytest.raises(ValueError, match="no coordinate information of type"):
@@ -528,3 +528,24 @@ def test_open_incorrect_convention_fails():
 def test_open_all_convention(convention):
     mda.Universe(LAMMPSDUMP_allcoords, format='LAMMPSDUMP',
                        lammps_coordinate_convention=convention)
+
+class TestCoordinateMatches(object):
+    @pytest.fixture()
+    def universes(self):
+        coordinate_conventions = ["unscaled", "scaled", "unwrapped",
+                    "scaled_unwrapped"]
+        universes = {i: mda.Universe(LAMMPSDUMP_allcoords, format='LAMMPSDUMP',
+                       lammps_coordinate_convention=i) for i in coordinate_conventions}
+        return universes
+    
+    def test_scaled_unscaled_match(self, universes):
+        assert(len(universes["unscaled"].trajectory)== len(universes["scaled"].trajectory))
+        for ts_u,ts_s in zip(universes["unscaled"].trajectory, universes["scaled"].trajectory):
+            assert_almost_equal(ts_u.positions, ts_s.positions,decimal=1)
+            # NOTE this seems a bit inaccurate?
+
+    def test_unwrapped_scaled_unwrapped_match(self, universes):
+        assert(len(universes["unwrapped"].trajectory)== len(universes["scaled_unwrapped"].trajectory))
+        for ts_u,ts_s in zip(universes["unwrapped"].trajectory, universes["scaled_unwrapped"].trajectory):
+            assert_almost_equal(ts_u.positions, ts_s.positions,decimal=1)
+            # NOTE this seems a bit inaccurate?
