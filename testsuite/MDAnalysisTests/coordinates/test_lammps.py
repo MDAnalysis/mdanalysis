@@ -538,6 +538,49 @@ class TestCoordinateMatches(object):
                        lammps_coordinate_convention=i) for i in coordinate_conventions}
         return universes
     
+    @pytest.fixture()
+    def reference_unscaled_positions(self):
+        # copied from trajectory file
+        # atom 340 is the first one in the trajectory so we use that
+        atom340_pos1_unscaled = [4.48355, 0.331422, 1.59231]
+        atom340_pos2_unscaled = [4.41947, 35.4403, 2.25115]
+        atom340_pos3_unscaled = [4.48989, 0.360633, 2.63623]
+        return np.asarray([atom340_pos1_unscaled, atom340_pos2_unscaled,atom340_pos3_unscaled])
+    
+    def test_unscaled_reference(self, universes, reference_unscaled_positions):
+        atom_340 = universes["unscaled"].atoms[339]
+        for i,ts_u in enumerate(universes["unscaled"].trajectory[0:3]):
+            assert_almost_equal(atom_340.position, reference_unscaled_positions[i,:], decimal=5)
+    
+    def test_scaled_reference(self, universes, reference_unscaled_positions):
+        # NOTE use of unscaled positions here due to S->R transform
+        atom_340 = universes["scaled"].atoms[339]
+        for i,ts_u in enumerate(universes["scaled"].trajectory[0:3]):
+            assert_almost_equal(atom_340.position, reference_unscaled_positions[i,:], decimal=1)
+            # NOTE this seems a bit inaccurate?
+
+    @pytest.fixture()
+    def reference_unwrapped_positions(self):
+        # copied from trajectory file
+        # atom 340 is the first one in the trajectory so we use that
+        atom340_pos1_unwrapped = [4.48355, 35.8378, 1.59231]
+        atom340_pos2_unwrapped = [4.41947, 35.4403, 2.25115]
+        atom340_pos3_unwrapped = [4.48989, 35.867, 2.63623]
+        return np.asarray([atom340_pos1_unwrapped, atom340_pos2_unwrapped, atom340_pos3_unwrapped])
+
+    def test_unwrapped_scaled_reference(self, universes, reference_unwrapped_positions):
+        atom_340 = universes["unwrapped"].atoms[339]
+        for i,ts_u in enumerate(universes["unwrapped"].trajectory[0:3]):
+            assert_almost_equal(atom_340.position, reference_unwrapped_positions[i,:], decimal=5)
+            # NOTE this seems a bit inaccurate?
+
+    def test_unwrapped_scaled_reference(self, universes, reference_unwrapped_positions):
+        # NOTE use of unscaled positions here due to S->R transform
+        atom_340 = universes["scaled_unwrapped"].atoms[339]
+        for i,ts_u in enumerate(universes["scaled_unwrapped"].trajectory[0:3]):
+            assert_almost_equal(atom_340.position, reference_unwrapped_positions[i,:], decimal=1)
+            # NOTE this seems a bit inaccurate?
+    
     def test_scaled_unscaled_match(self, universes):
         assert(len(universes["unscaled"].trajectory)== len(universes["scaled"].trajectory))
         for ts_u,ts_s in zip(universes["unscaled"].trajectory, universes["scaled"].trajectory):
