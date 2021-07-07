@@ -568,7 +568,6 @@ class DumpReader(base.ReaderBase):
         indices = np.zeros(self.n_atoms, dtype=int)
 
         atomline = f.readline()  # ITEM ATOMS etc
-        print(atomline)
         attrs = atomline.split()[2:]  # attributes on coordinate line
         col_ids = {attr: i for i, attr in enumerate(attrs)} # column ids
 
@@ -590,7 +589,6 @@ class DumpReader(base.ReaderBase):
         if ("xsu" in keys) and ("ysu" in keys) and ("zsu" in keys):  # scaled unwrapped
             coord_dict["scaled_unwrapped"] = [col_ids["xsu"], col_ids["ysu"],
                                               col_ids["zsu"]]
-        print(coord_dict)
         # this should only trigger on first read of "ATOM" card, after which it
         # is fixed to the guessed value. Auto proceeds unscaled -> scaled
         # -> unwrapped -> scaled_unwrapped
@@ -602,13 +600,11 @@ class DumpReader(base.ReaderBase):
                     self.lammps_coordinate_convention = convention
                     print(f"set coordinate convention to {convention} ")
 
-        try:
-            coord_dict[self.lammps_coordinate_convention]
-        except:
-            ValueError(f"no coordinate information of type"
+        if not coord_dict[self.lammps_coordinate_convention]:
+            raise ValueError(f"no coordinate information of type "
                              f"{self.lammps_coordinate_convention} in frame")
-
-        coord_cols = coord_dict[self.lammps_coordinate_convention]
+        else:
+            coord_cols = coord_dict[self.lammps_coordinate_convention]
 
         for i in range(self.n_atoms):
             fields = f.readline().split()

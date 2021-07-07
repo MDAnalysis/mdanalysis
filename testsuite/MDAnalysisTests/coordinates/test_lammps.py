@@ -436,7 +436,7 @@ class TestLammpsDumpReader(object):
                     fout.write(data)
 
         yield mda.Universe(f, format='LAMMPSDUMP',
-                           lammps_coordinate_convention='scaled')
+                           lammps_coordinate_convention="auto")
 
     @pytest.fixture()
     def reference_positions(self):
@@ -509,3 +509,22 @@ class TestLammpsDumpReader(object):
                                              reference_positions['atom13_pos']):
             assert_almost_equal(atom1.position, atom1_pos, decimal=5)
             assert_almost_equal(atom13.position, atom13_pos, decimal=5)
+
+# the d
+@pytest.mark.parametrize("convention",["unscaled","unwrapped","scaled_unwrapped"])
+def test_open_absent_convention_fails(convention):
+    with pytest.raises(ValueError, match="no coordinate information of type"):
+        mda.Universe(LAMMPSDUMP, format='LAMMPSDUMP',
+                       lammps_coordinate_convention=convention)
+
+def test_open_incorrect_convention_fails():
+    with pytest.raises(ValueError, match="coordinate convention incorrectly specified"):
+        mda.Universe(LAMMPSDUMP, format='LAMMPSDUMP',
+                       lammps_coordinate_convention="42")
+
+
+@pytest.mark.parametrize("convention",["auto", "unscaled", "scaled",
+                         "unwrapped","scaled_unwrapped"])
+def test_open_all_convention(convention):
+    mda.Universe(LAMMPSDUMP_allcoords, format='LAMMPSDUMP',
+                       lammps_coordinate_convention=convention)
