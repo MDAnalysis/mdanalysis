@@ -468,7 +468,7 @@ class DumpReader(base.ReaderBase):
     _conventions = ["auto", "unscaled", "scaled", "unwrapped",
                     "scaled_unwrapped"]
 
-    def __init__(self, filename, lammps_coordinate_convention="guess", **kwargs):
+    def __init__(self, filename, lammps_coordinate_convention="auto", **kwargs):
         super(DumpReader, self).__init__(filename, **kwargs)
 
         root, ext = os.path.splitext(self.filename)
