@@ -36,7 +36,8 @@ from MDAnalysisTests.coordinates.reference import (
     RefLAMMPSData, RefLAMMPSDataMini, RefLAMMPSDataDCD,
 )
 from MDAnalysisTests.datafiles import (
-    LAMMPScnt, LAMMPShyd, LAMMPSdata, LAMMPSdata_mini, LAMMPSDUMP
+    LAMMPScnt, LAMMPShyd, LAMMPSdata, LAMMPSdata_mini, LAMMPSDUMP,
+    LAMMPSDUMP_allcoords
 )
 
 
@@ -435,7 +436,7 @@ class TestLammpsDumpReader(object):
                     fout.write(data)
 
         yield mda.Universe(f, format='LAMMPSDUMP',
-                           lammps_coordinate_convention='guess')
+                           lammps_coordinate_convention='scaled')
 
     @pytest.fixture()
     def reference_positions(self):
