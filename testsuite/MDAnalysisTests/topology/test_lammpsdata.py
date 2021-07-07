@@ -35,7 +35,7 @@ from MDAnalysis.tests.datafiles import (
     LAMMPShyd2,
     LAMMPSdata_deletedatoms,
     LAMMPSDUMP,
-    LAMMPSDUMP_long,
+    LAMMPSDUMP_allcoords,
 )
 
 
@@ -272,4 +272,4 @@ class TestDumpParser(ParserBase):
     
 class TestDumpParserLong(TestDumpParser):
     
-    ref_filename = LAMMPSDUMP_long
+    ref_filename = LAMMPSDUMP_allcoords
