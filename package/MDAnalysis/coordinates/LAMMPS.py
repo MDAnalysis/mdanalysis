@@ -123,7 +123,6 @@ Classes
 """
 import os
 import numpy as np
-import warnings
 
 from ..core.groups import requires
 from ..lib import util, mdamath, distances
@@ -599,7 +598,6 @@ class DumpReader(base.ReaderBase):
                 if convention in coord_dict.keys() and coord_dict[convention]:
                     coord_cols = coord_dict[convention]
                     self.lammps_coordinate_convention = convention
-                    warnings.warn(f"coordinates in {convention} convention used")
                     break
 
         if not coord_dict[self.lammps_coordinate_convention]:
