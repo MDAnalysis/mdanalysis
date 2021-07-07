@@ -541,7 +541,7 @@ class DumpReader(base.ReaderBase):
         n_atoms = int(f.readline())
         if n_atoms != self.n_atoms:
             raise ValueError("Number of atoms in trajectory changed "
-                             "this is not suported in MDAnalysis")
+                             "this is not supported in MDAnalysis")
 
         triclinic = len(f.readline().split()) == 9  # ITEM BOX BOUNDS
         if triclinic:
@@ -568,8 +568,9 @@ class DumpReader(base.ReaderBase):
         indices = np.zeros(self.n_atoms, dtype=int)
 
         atomline = f.readline()  # ITEM ATOMS etc
+        print(atomline)
         attrs = atomline.split()[2:]  # attributes on coordinate line
-        col_ids = {i: attr for i, attr in enumerate(attrs)} # column ids
+        col_ids = {attr: i for i, attr in enumerate(attrs)} # column ids
 
         # check for ids and what type of coordinate convention
         ids = "id" in col_ids.keys()
@@ -589,22 +590,25 @@ class DumpReader(base.ReaderBase):
         if ("xsu" in keys) and ("ysu" in keys) and ("zsu" in keys):  # scaled unwrapped
             coord_dict["scaled_unwrapped"] = [col_ids["xsu"], col_ids["ysu"],
                                               col_ids["zsu"]]
-
+        print(coord_dict)
         # this should only trigger on first read of "ATOM" card, after which it
-        # is fixed to the guessed value. Guessing proceeds unscaled -> scaled
+        # is fixed to the guessed value. Auto proceeds unscaled -> scaled
         # -> unwrapped -> scaled_unwrapped
         if self.lammps_coordinate_convention == "auto":
             for convention in self._conventions[1:]:
+                print(convention)
                 if convention in coord_dict.keys() and coord_dict[convention]:
                     coord_cols = coord_dict[convention]
                     self.lammps_coordinate_convention = convention
+                    print(f"set coordinate convention to {convention} ")
 
-        if not coord_dict[self.lammps_coordinate_convention]:
-            raise ValueError(f"no coordinate information of type"
+        try:
+            coord_dict[self.lammps_coordinate_convention]
+        except:
+            ValueError(f"no coordinate information of type"
                              f"{self.lammps_coordinate_convention} in frame")
 
-        else:
-            coord_cols = coord_dict[self.lammps_coordinate_convention]
+        coord_cols = coord_dict[self.lammps_coordinate_convention]
 
         for i in range(self.n_atoms):
             fields = f.readline().split()
