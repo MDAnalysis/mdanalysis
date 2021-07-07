@@ -451,18 +451,21 @@ class DumpReader(base.ReaderBase):
 
     Supports coordinates in the LAMMPS "unscaled" (x,y,z), "scaled" (xs,ys,zs),
     "unwrapped" (xu,yu,zu) and "scaled_unwrapped" (xsu,ysu,zsu) coordinate
-    conventions. If no coordinate convention is provided, or if "guess" is
-    selected, one will be guessed. Guessing proceeds in the order "unscaled", 
+    conventions (see https://docs.lammps.org/dump.html for more details).
+    If no coordinate convention is provided, or if "auto" is selected, 
+    one will be guessed. Auto proceeds in the order "unscaled", 
     "scaled", "unwrapped", "scaled_unwrapped" and whichever set of coordinates 
     is detected first will be used. If coordinates are given in the scaled
     coordinate convention (xs,ys,zs) or scaled unwrapped coordinate convention
     (xsu,ysu,zsu) they will automatically be converted from their 
     scaled/fractional representation to their real values.
-
+    
+    .. versionchanged:: 2.0.0
+    Now parses coordinates in multiple lammps conventions (x,xs,xu,xsu)
     .. versionadded:: 0.19.0
     """
     format = 'LAMMPSDUMP'
-    _conventions = ["guess", "unscaled", "scaled", "unwrapped",
+    _conventions = ["auto", "unscaled", "scaled", "unwrapped",
                     "scaled_unwrapped"]
 
     def __init__(self, filename, lammps_coordinate_convention="guess", **kwargs):
@@ -566,9 +569,7 @@ class DumpReader(base.ReaderBase):
 
         atomline = f.readline()  # ITEM ATOMS etc
         attrs = atomline.split()[2:]  # attributes on coordinate line
-        col_ids = {}  # column index of each attribute
-        for i, attr in enumerate(attrs):
-            col_ids[attr] = i
+        col_ids = {i: attr for i, attr in enumerate(attrs)} # column ids
 
         # check for ids and what type of coordinate convention
         ids = "id" in col_ids.keys()
@@ -592,7 +593,7 @@ class DumpReader(base.ReaderBase):
         # this should only trigger on first read of "ATOM" card, after which it
         # is fixed to the guessed value. Guessing proceeds unscaled -> scaled
         # -> unwrapped -> scaled_unwrapped
-        if self.lammps_coordinate_convention == "guess":
+        if self.lammps_coordinate_convention == "auto":
             for convention in self._conventions[1:]:
                 if convention in coord_dict.keys() and coord_dict[convention]:
                     coord_cols = coord_dict[convention]
