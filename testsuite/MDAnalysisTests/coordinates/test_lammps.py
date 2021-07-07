@@ -532,7 +532,7 @@ def test_open_all_convention(convention):
 class TestCoordinateMatches(object):
     @pytest.fixture()
     def universes(self):
-        coordinate_conventions = ["unscaled", "scaled", "unwrapped",
+        coordinate_conventions = ["auto","unscaled", "scaled", "unwrapped",
                     "scaled_unwrapped"]
         universes = {i: mda.Universe(LAMMPSDUMP_allcoords, format='LAMMPSDUMP',
                        lammps_coordinate_convention=i) for i in coordinate_conventions}
@@ -572,7 +572,6 @@ class TestCoordinateMatches(object):
         atom_340 = universes["unwrapped"].atoms[339]
         for i,ts_u in enumerate(universes["unwrapped"].trajectory[0:3]):
             assert_almost_equal(atom_340.position, reference_unwrapped_positions[i,:], decimal=5)
-            # NOTE this seems a bit inaccurate?
 
     def test_unwrapped_scaled_reference(self, universes, reference_unwrapped_positions):
         # NOTE use of unscaled positions here due to S->R transform
@@ -592,3 +591,8 @@ class TestCoordinateMatches(object):
         for ts_u,ts_s in zip(universes["unwrapped"].trajectory, universes["scaled_unwrapped"].trajectory):
             assert_almost_equal(ts_u.positions, ts_s.positions,decimal=1)
             # NOTE this seems a bit inaccurate?
+    
+    def test_auto_is_unscaled_match(self, universes):
+        assert(len(universes["auto"].trajectory)== len(universes["unscaled"].trajectory))
+        for ts_u,ts_s in zip(universes["auto"].trajectory, universes["unscaled"].trajectory):
+            assert_almost_equal(ts_u.positions, ts_s.positions,decimal=5)
