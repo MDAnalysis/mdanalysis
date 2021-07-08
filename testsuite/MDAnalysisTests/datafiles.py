@@ -137,6 +137,7 @@ __all__ = [
     "LAMMPShyd", "LAMMPShyd2",
     "LAMMPSdata_deletedatoms",  # with deleted atoms
     "LAMMPSDUMP",
+    "LAMMPSDUMP_long",  # lammpsdump file with a few zeros sprinkled in the first column first frame
     "LAMMPSDUMP_allcoords",  # lammpsdump file with all coordinate conventions (x,xs,xu,xsu) present, from LAMMPS rdf example
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
@@ -485,6 +486,7 @@ LAMMPShyd = resource_filename(__name__, "data/lammps/hydrogen-class1.data")
 LAMMPShyd2 = resource_filename(__name__, "data/lammps/hydrogen-class1.data2")
 LAMMPSdata_deletedatoms = resource_filename(__name__, 'data/lammps/deletedatoms.data')
 LAMMPSDUMP = resource_filename(__name__, "data/lammps/wat.lammpstrj.bz2")
+LAMMPSDUMP_long = resource_filename(__name__, "data/lammps/wat.lammpstrj_long.bz2")
 LAMMPSDUMP_allcoords = resource_filename(__name__, "data/lammps/spce_all_coords.lammpstrj.bz2")
 
 unordered_res = resource_filename(__name__, "data/unordered_res.pdb")
