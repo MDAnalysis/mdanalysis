@@ -459,7 +459,7 @@ class DumpReader(base.ReaderBase):
     coordinate convention (xs,ys,zs) or scaled unwrapped coordinate convention
     (xsu,ysu,zsu) they will automatically be converted from their 
     scaled/fractional representation to their real values.
-    
+
     .. versionchanged:: 2.0.0
     Now parses coordinates in multiple lammps conventions (x,xs,xu,xsu)
     .. versionadded:: 0.19.0
@@ -533,11 +533,11 @@ class DumpReader(base.ReaderBase):
         if ts.frame >= len(self):
             raise EOFError
 
-        f.readline() # ITEM TIMESTEP
+        f.readline()  # ITEM TIMESTEP
         step_num = int(f.readline())
         ts.data['step'] = step_num
 
-        f.readline() # ITEM NUMBER OF ATOMS
+        f.readline()  # ITEM NUMBER OF ATOMS
         n_atoms = int(f.readline())
         if n_atoms != self.n_atoms:
             raise ValueError("Number of atoms in trajectory changed "
@@ -569,15 +569,15 @@ class DumpReader(base.ReaderBase):
 
         atomline = f.readline()  # ITEM ATOMS etc
         attrs = atomline.split()[2:]  # attributes on coordinate line
-        col_ids = {attr: i for i, attr in enumerate(attrs)} # column ids
+        col_ids = {attr: i for i, attr in enumerate(attrs)}  # column ids
 
         # check for ids and what type of coordinate convention
         ids = "id" in col_ids.keys()
         # keys = convention values = col_ids or False if not present
         coord_dict = {"unscaled": False, "scaled": False, "unwrapped": False,
-                      "scaled_unwrapped":False}
+                      "scaled_unwrapped": False}
         keys = col_ids.keys()
-        if ("x" in keys)  and ("y" in keys) and ("z" in keys):  # unscaled
+        if ("x" in keys) and ("y" in keys) and ("z" in keys):  # unscaled
             coord_dict["unscaled"] = [col_ids["x"], col_ids["y"],
                                       col_ids["z"]]
         if ("xs" in keys) and ("ys" in keys) and ("zs" in keys):  # scaled
