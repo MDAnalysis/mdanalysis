@@ -594,7 +594,6 @@ class DumpReader(base.ReaderBase):
         # -> unwrapped -> scaled_unwrapped
         if self.lammps_coordinate_convention == "auto":
             for convention in self._conventions[1:]:
-                print(convention)
                 if convention in coord_dict.keys() and coord_dict[convention]:
                     coord_cols = coord_dict[convention]
                     self.lammps_coordinate_convention = convention
