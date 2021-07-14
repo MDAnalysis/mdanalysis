@@ -571,6 +571,8 @@ class TRZWriter(base.WriterBase):
         if ts.dimensions is not None:
             unitcell = triclinic_vectors(ts.dimensions).reshape(9)
         else:
+            warnings.warn("Timestep didn't have dimensions information, "
+                          "box will be written as all zero values")
             unitcell = np.zeros(9, dtype=np.float32)
 
         try:

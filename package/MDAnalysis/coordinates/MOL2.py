@@ -61,6 +61,16 @@ Classes
    :members:
 
 
+Notes
+-----
+
+* The MDAnalysis :class:`MOL2Reader` and :class:`MOL2Writer` only handle the
+  MOLECULE, SUBSTRUCTURE, ATOM, and BOND record types. Other records are not
+  currently read or preserved on writing.
+* As the CRYSIN record type is not parsed / written, MOL2 systems always have
+  dimensions set to ``None`` and dimensionless MOL2 files are written.
+
+
 MOL2 format notes
 -----------------
 
