@@ -455,12 +455,12 @@ class DumpReader(base.ReaderBase):
     Supports coordinates in the LAMMPS "unscaled" (x,y,z), "scaled" (xs,ys,zs),
     "unwrapped" (xu,yu,zu) and "scaled_unwrapped" (xsu,ysu,zsu) coordinate
     conventions (see https://docs.lammps.org/dump.html for more details).
-    If no coordinate convention is provided, or if "auto" is selected, 
-    one will be guessed. Auto proceeds in the order "unscaled", 
-    "scaled", "unwrapped", "scaled_unwrapped" and whichever set of coordinates 
+    If no coordinate convention is provided, or if "auto" is selected,
+    one will be guessed. Auto proceeds in the order "unscaled",
+    "scaled", "unwrapped", "scaled_unwrapped" and whichever set of coordinates
     is detected first will be used. If coordinates are given in the scaled
     coordinate convention (xs,ys,zs) or scaled unwrapped coordinate convention
-    (xsu,ysu,zsu) they will automatically be converted from their 
+    (xsu,ysu,zsu) they will automatically be converted from their
     scaled/fractional representation to their real values.
 
     .. versionchanged:: 2.0.0
@@ -471,7 +471,8 @@ class DumpReader(base.ReaderBase):
     _conventions = ["auto", "unscaled", "scaled", "unwrapped",
                     "scaled_unwrapped"]
 
-    def __init__(self, filename, lammps_coordinate_convention="auto", **kwargs):
+    def __init__(self, filename, lammps_coordinate_convention="auto",
+                 **kwargs):
         super(DumpReader, self).__init__(filename, **kwargs)
 
         root, ext = os.path.splitext(self.filename)
@@ -616,7 +617,8 @@ class DumpReader(base.ReaderBase):
 
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
-        if (self.lammps_coordinate_convention == "scaled") or (self.lammps_coordinate_convention == "scaled_unwrapped"):
+        if (self.lammps_coordinate_convention == "scaled" or
+            self.lammps_coordinate_convention == "scaled_unwrapped"):
             # if coordinates are given in scaled format, undo that
             ts.positions = distances.transform_StoR(ts.positions,
                                                     ts.dimensions)

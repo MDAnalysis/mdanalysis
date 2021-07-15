@@ -269,7 +269,8 @@ class TestDumpParser(ParserBase):
         u = mda.Universe(self.ref_filename, format='LAMMPSDUMP')
         # the 4th in file has id==13, but should have been sorted
         assert u.atoms[3].id == 4
-    
+
+
 class TestDumpParserLong(TestDumpParser):
-    
+
     ref_filename = LAMMPSDUMP_long
