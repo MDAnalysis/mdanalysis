@@ -461,7 +461,7 @@ class DumpReader(base.ReaderBase):
     scaled/fractional representation to their real values.
 
     .. versionchanged:: 2.0.0
-    Now parses coordinates in multiple lammps conventions (x,xs,xu,xsu)
+       Now parses coordinates in multiple lammps conventions (x,xs,xu,xsu)
     .. versionadded:: 0.19.0
     """
     format = 'LAMMPSDUMP'
