@@ -524,11 +524,12 @@ def test_open_incorrect_convention_fails():
                      lammps_coordinate_convention="42")
 
 
-@pytest.mark.parametrize("convention", ["auto", "unscaled", "scaled",
-                                        "unwrapped", "scaled_unwrapped"])
-def test_open_all_convention(convention):
-    mda.Universe(LAMMPSDUMP_allcoords, format='LAMMPSDUMP',
-                 lammps_coordinate_convention=convention)
+@pytest.mark.parametrize("convention,result", [("auto", "unscaled"), ("unscaled", "unscaled"), ("scaled", "scaled"),
+                                               ("unwrapped", "unwrapped"), ("scaled_unwrapped", "scaled_unwrapped")])
+def test_open_all_convention(convention, result):
+    u = mda.Universe(LAMMPSDUMP_allcoords, format='LAMMPSDUMP',
+                     lammps_coordinate_convention=convention)
+    assert(u.trajectory.lammps_coordinate_convention == result)
 
 
 class TestCoordinateMatches(object):
