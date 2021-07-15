@@ -491,10 +491,10 @@ class DumpReader(base.ReaderBase):
         self._file = util.anyopen(self.filename)
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         self.ts.frame = -1
-    
+
     def _get_column(self, ids, col_ids):
-            if all(id in col_ids.keys() for id in ids):
-                return [col_ids[i] for i in ids]
+        if all(id in col_ids.keys() for id in ids):
+            return [col_ids[i] for i in ids]
 
     @property
     @cached('n_atoms')
@@ -582,11 +582,15 @@ class DumpReader(base.ReaderBase):
         ids = "id" in keys
         # keys = convention values = col_ids or False if not present
         coord_dict = {conv: False for conv in self._conventions[1:]}
-        coord_dict['unscaled'] = self._get_column(["x", "y", "z"], col_ids) # unscaled
-        coord_dict['scaled'] = self._get_column(["xs", "ys", "zs"], col_ids) # scaled
-        coord_dict["unwrapped"] = self._get_column(["xu", "yu", "zu"], col_ids) # unwrapped
-        coord_dict["scaled_unwrapped"] = self._get_column(["xsu", "ysu", "zsu"], col_ids)  # scaled unwrapped
-        
+        coord_dict['unscaled'] = self._get_column(
+            ["x", "y", "z"], col_ids)  # unscaled
+        coord_dict['scaled'] = self._get_column(
+            ["xs", "ys", "zs"], col_ids)  # scaled
+        coord_dict["unwrapped"] = self._get_column(
+            ["xu", "yu", "zu"], col_ids)  # unwrapped
+        coord_dict["scaled_unwrapped"] = self._get_column(
+            ["xsu", "ysu", "zsu"], col_ids)  # scaled unwrapped
+
         # this should only trigger on first read of "ATOM" card, after which it
         # is fixed to the guessed value. Auto proceeds unscaled -> scaled
         # -> unwrapped -> scaled_unwrapped
@@ -598,7 +602,9 @@ class DumpReader(base.ReaderBase):
                 raise ValueError("no coordinate information detected")
 
         if not coord_dict[self.lammps_coordinate_convention]:
-            raise ValueError(f"no coordinate information of type {self.lammps_coordinate_convention} present in timestep")
+            raise ValueError(
+                f"no coordinate information of type"
+                f"{self.lammps_coordinate_convention} present in timestep")
         else:
             coord_cols = coord_dict[self.lammps_coordinate_convention]
 
