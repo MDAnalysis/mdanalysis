@@ -491,6 +491,11 @@ class DumpReader(base.ReaderBase):
         self._file = util.anyopen(self.filename)
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         self.ts.frame = -1
+    
+    def _get_coords(self, ids, col_ids):
+            if all(id in col_ids.keys() for id in ids):
+                return [col_ids[i] for i in ids]
+
 
     @property
     @cached('n_atoms')
@@ -579,19 +584,11 @@ class DumpReader(base.ReaderBase):
         # keys = convention values = col_ids or False if not present
         coord_dict = {"unscaled": False, "scaled": False, "unwrapped": False,
                       "scaled_unwrapped": False}
+        coord_dict['unscaled'] = self._get_coords(["x", "y", "z"], col_ids) # unscaled
+        coord_dict['scaled'] = self._get_coords(["xs", "ys", "zs"], col_ids) # scaled
+        coord_dict["unwrapped"] = self._get_coords(["xu", "yu", "zu"], col_ids) # unwrapped
+        coord_dict["scaled_unwrapped"] = self._get_coords(["xsu", "ysu", "zsu"], col_ids)  # scaled unwrapped
 
-        if ("x" in keys) and ("y" in keys) and ("z" in keys):  # unscaled
-            coord_dict["unscaled"] = [col_ids["x"], col_ids["y"],
-                                      col_ids["z"]]
-        if ("xs" in keys) and ("ys" in keys) and ("zs" in keys):  # scaled
-            coord_dict["scaled"] = [col_ids["xs"], col_ids["ys"],
-                                    col_ids["zs"]]
-        if ("xu" in keys) and ("yu" in keys) and ("zu" in keys):  # unwrapped
-            coord_dict["unwrapped"] = [col_ids["xu"], col_ids["yu"],
-                                       col_ids["zu"]]
-        if ("xsu" in keys) and ("ysu" in keys) and ("zsu" in keys):  # scaled unwrapped
-            coord_dict["scaled_unwrapped"] = [col_ids["xsu"], col_ids["ysu"],
-                                              col_ids["zsu"]]
         # this should only trigger on first read of "ATOM" card, after which it
         # is fixed to the guessed value. Auto proceeds unscaled -> scaled
         # -> unwrapped -> scaled_unwrapped
