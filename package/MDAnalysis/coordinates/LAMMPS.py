@@ -618,7 +618,7 @@ class DumpReader(base.ReaderBase):
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
         if (self.lammps_coordinate_convention == "scaled" or
-            self.lammps_coordinate_convention == "scaled_unwrapped"):
+                self.lammps_coordinate_convention == "scaled_unwrapped"):
             # if coordinates are given in scaled format, undo that
             ts.positions = distances.transform_StoR(ts.positions,
                                                     ts.dimensions)

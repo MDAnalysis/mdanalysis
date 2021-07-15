@@ -542,7 +542,8 @@ class TestCoordinateMatches(object):
         coordinate_conventions = ["auto", "unscaled", "scaled", "unwrapped",
                                   "scaled_unwrapped"]
         universes = {i: mda.Universe(LAMMPSDUMP_allcoords, format='LAMMPSDUMP',
-                     lammps_coordinate_convention=i) for i in coordinate_conventions}
+                     lammps_coordinate_convention=i)
+                     for i in coordinate_conventions}
         return universes
 
     @pytest.fixture()

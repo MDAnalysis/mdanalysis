@@ -609,8 +609,8 @@ class LammpsDumpParser(TopologyReaderBase):
             
             atomline = fin.readline()  # ITEM ATOMS
             attrs = atomline.split()[2:]  # attributes on coordinate line
-            col_ids = {attr: i for i, attr in enumerate(attrs)} # column ids
-            
+            col_ids = {attr: i for i, attr in enumerate(attrs)}  # column ids
+
             for i in range(natoms):
                 fields = fin.readline().split()
 
