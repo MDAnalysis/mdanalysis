@@ -119,6 +119,9 @@ Classes
 .. autoclass:: DATAWriter
    :members:
    :inherited-members:
+.. autoclass:: DumpReader
+   :members:
+   :inherited-members:
 
 """
 import os
