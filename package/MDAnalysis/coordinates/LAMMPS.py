@@ -573,13 +573,13 @@ class DumpReader(base.ReaderBase):
         atomline = f.readline()  # ITEM ATOMS etc
         attrs = atomline.split()[2:]  # attributes on coordinate line
         col_ids = {attr: i for i, attr in enumerate(attrs)}  # column ids
-
+        keys = col_ids.keys()
         # check for ids and what type of coordinate convention
-        ids = "id" in col_ids.keys()
+        ids = "id" in keys
         # keys = convention values = col_ids or False if not present
         coord_dict = {"unscaled": False, "scaled": False, "unwrapped": False,
                       "scaled_unwrapped": False}
-        keys = col_ids.keys()
+
         if ("x" in keys) and ("y" in keys) and ("z" in keys):  # unscaled
             coord_dict["unscaled"] = [col_ids["x"], col_ids["y"],
                                       col_ids["z"]]
