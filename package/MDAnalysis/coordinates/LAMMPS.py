@@ -493,9 +493,6 @@ class DumpReader(base.ReaderBase):
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         self.ts.frame = -1
 
-    def _get_column(self, ids, col_ids):
-        if all(id in col_ids.keys() for id in ids):
-            return [col_ids[i] for i in ids]
 
     @property
     @cached('n_atoms')
@@ -573,6 +570,10 @@ class DumpReader(base.ReaderBase):
             alpha = beta = gamma = 90.
         ts.dimensions = xlen, ylen, zlen, alpha, beta, gamma
 
+        _get_column = lambda ids, col_ids : [col_ids[i] for i in ids if
+                                             all(id in col_ids.keys() for
+                                             id in ids)]
+                                             
         indices = np.zeros(self.n_atoms, dtype=int)
 
         atomline = f.readline()  # ITEM ATOMS etc
@@ -583,13 +584,13 @@ class DumpReader(base.ReaderBase):
         ids = "id" in keys
         # keys = convention values = col_ids or False if not present
         coord_dict = {conv: False for conv in self._conventions[1:]}
-        coord_dict['unscaled'] = self._get_column(
+        coord_dict['unscaled'] = _get_column(
             ["x", "y", "z"], col_ids)  # unscaled
-        coord_dict['scaled'] = self._get_column(
+        coord_dict['scaled'] = _get_column(
             ["xs", "ys", "zs"], col_ids)  # scaled
-        coord_dict["unwrapped"] = self._get_column(
+        coord_dict["unwrapped"] = _get_column(
             ["xu", "yu", "zu"], col_ids)  # unwrapped
-        coord_dict["scaled_unwrapped"] = self._get_column(
+        coord_dict["scaled_unwrapped"] = _get_column(
             ["xsu", "ysu", "zsu"], col_ids)  # scaled unwrapped
 
         # this should only trigger on first read of "ATOM" card, after which it
@@ -597,9 +598,9 @@ class DumpReader(base.ReaderBase):
         # -> unwrapped -> scaled_unwrapped
         if self.lammps_coordinate_convention == "auto":
             match = [var for var in self._conventions[1:] if coord_dict[var]]
-            if match:
+            try :
                 self.lammps_coordinate_convention = match[0]
-            else:
+            except:
                 raise ValueError("no coordinate information detected")
 
         if not coord_dict[self.lammps_coordinate_convention]:
@@ -617,8 +618,7 @@ class DumpReader(base.ReaderBase):
 
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
-        if (self.lammps_coordinate_convention == "scaled" or
-                self.lammps_coordinate_convention == "scaled_unwrapped"):
+        if (self.lammps_coordinate_convention.startswith("scaled")):
             # if coordinates are given in scaled format, undo that
             ts.positions = distances.transform_StoR(ts.positions,
                                                     ts.dimensions)
