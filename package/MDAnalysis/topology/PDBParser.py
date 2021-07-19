@@ -184,6 +184,8 @@ class PDBParser(TopologyReaderBase):
        Bonds attribute is not added if no bonds are present in PDB file.
        If elements are invalid or partially missing, empty elements records
        are now assigned (Issue #2422).
+       Aliased ``bfactors`` topologyattribute to ``tempfactors``.
+       ``tempfactors`` is deprecated and will be removed in 3.0 (Issue #1901)
     """
     format = ['PDB', 'ENT']
 

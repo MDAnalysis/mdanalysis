@@ -35,6 +35,10 @@ attribute on Universe.
 .. versionchanged:: 0.20.0
    Can now read files with optional fields missing/empty
 
+.. versionchanged:: 2.0.0
+   Aliased ``bfactors`` topologyattribute to ``tempfactors``.
+   ``tempfactors`` is deprecated and will be removed in 3.0 (Issue #1901)
+
 Reads the following topology attributes:
 
 Atoms:
