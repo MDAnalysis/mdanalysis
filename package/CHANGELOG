@@ -23,9 +23,6 @@ The rules for this file:
   * 2.0.0
 
 Fixes
-  * LAMMPSDumpReader can now read coordinates in all the different LAMMPS
-    coordinate conventions. Both LAMMPSDumpReader and LAMMPSDumpParser are no
-    longer hardcoded to a set column layout (Issue #3358, PR #3360).
   * Fixed sometimes wrong sorting of atoms into fragments when unwrapping
     (Issue #3352, PR #3353)
   * Fixed missing array flatten preventing PCA from running when mean positions  
@@ -120,6 +117,9 @@ Fixes
   * new `Results` class now can be pickled/unpickled. (PR #3309) 
 
 Enhancements
+  * LAMMPSDumpReader can now read coordinates in all the different LAMMPS
+    coordinate conventions. Both LAMMPSDumpReader and LAMMPSDumpParser are no
+    longer hardcoded to a set column layout (Issue #3358, PR #3360).
   * Added guessers for aromaticity and Gasteiger partial charges (Issue #2468,
     PR #2926)
   * Added `Results` class for storing analysis results (#3115, PR #3233)
