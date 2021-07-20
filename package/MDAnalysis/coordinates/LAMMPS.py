@@ -463,6 +463,7 @@ class DumpReader(base.ReaderBase):
     (xsu,ysu,zsu) they will automatically be converted from their
     scaled/fractional representation to their real values.
 
+
     .. versionchanged:: 2.0.0
        Now parses coordinates in multiple lammps conventions (x,xs,xu,xsu)
     .. versionadded:: 0.19.0
