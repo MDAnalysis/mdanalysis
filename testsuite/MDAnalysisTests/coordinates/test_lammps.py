@@ -539,7 +539,6 @@ def test_no_coordinate_info():
     with pytest.raises(ValueError,match="no coordinate information detected"):
         u = mda.Universe(LAMMPSDUMP_nocoords, format='LAMMPSDUMP',
                      lammps_coordinate_convention="auto")
-    
 
 class TestCoordinateMatches(object):
     @pytest.fixture()
