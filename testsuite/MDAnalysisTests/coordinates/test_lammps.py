@@ -598,8 +598,8 @@ class TestCoordinateMatches(object):
         # NOTE use of unscaled positions here due to S->R transform
         atom_340 = universes["scaled_unwrapped"].atoms[339]
         for i, ts_u in enumerate(
-            universes["scaled_unwrapped"].trajectory[0:3]):
-                assert_almost_equal(atom_340.position,
+                universes["scaled_unwrapped"].trajectory[0:3]):
+            assert_almost_equal(atom_340.position,
                                 reference_unwrapped_positions[i, :], decimal=1)
             # NOTE this seems a bit inaccurate?
 
