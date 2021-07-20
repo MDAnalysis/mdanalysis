@@ -255,7 +255,7 @@ class TestLAMMPSDCDReader(RefLAMMPSDataDCD):
         assert_almost_equal(u.trajectory[iframe].time, iframe * dt,
                             err_msg="setting time step dt={0} failed: "
                                     "actually used dt={1}".format(
-            dt, u.trajectory._ts_kwargs['dt']))
+                                dt, u.trajectory._ts_kwargs['dt']))
 
     def test_wrong_time_unit(self):
         def wrong_load(unit="nm"):
