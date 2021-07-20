@@ -585,7 +585,7 @@ class DumpReader(base.ReaderBase):
         keys = col_ids.keys()
         # check for ids and what type of coordinate convention
         ids = "id" in keys
-        # coord_dict keys = convention keys = column data or False 
+        # coord_dict keys = convention keys = column data or False
         coord_dict = {conv: False for conv in self._conventions[1:]}
         coord_dict['unscaled'] = self._get_column(
             ["x", "y", "z"], col_ids)  # unscaled
@@ -603,7 +603,7 @@ class DumpReader(base.ReaderBase):
             match = [var for var in self._conventions[1:] if coord_dict[var]]
             try:
                 self.lammps_coordinate_convention = match[0]
-            except:
+            except IndexError:
                 raise ValueError("no coordinate information detected")
 
         if not coord_dict[self.lammps_coordinate_convention]:
