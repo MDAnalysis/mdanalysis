@@ -472,11 +472,12 @@ class DumpReader(base.ReaderBase):
     _conventions = ["auto", "unscaled", "scaled", "unwrapped",
                     "scaled_unwrapped"]
     _coordtype_column_names = {
-	"unscaled": ["x", "y", "z"],
-	"scaled": ["xs", "ys", "zs"],
-    "unwrapped": ["xu", "yu", "zu"],
-    "scaled_unwrapped": ["xsu", "ysu", "zsu"]
+        "unscaled": ["x", "y", "z"],
+        "scaled": ["xs", "ys", "zs"],
+        "unwrapped": ["xu", "yu", "zu"],
+        "scaled_unwrapped": ["xsu", "ysu", "zsu"]
     }
+
     def __init__(self, filename, lammps_coordinate_convention="auto",
                  **kwargs):
         super(DumpReader, self).__init__(filename, **kwargs)
@@ -487,9 +488,9 @@ class DumpReader(base.ReaderBase):
         else:
             option_string = "'" + "', '".join(self._conventions) + "'"
             raise ValueError("lammps_coordinate_convention="
-							 f"'{lammps_coordinate_convention}'"
+                             f"'{lammps_coordinate_convention}'"
                              " is not a valid option. "
-							 f"Please choose one of {option_string}")
+                             f"Please choose one of {option_string}")
 
         self._cache = {}
 
@@ -590,8 +591,8 @@ class DumpReader(base.ReaderBase):
         # coord_dict keys = convention keys = column data or False
         coord_dict = {conv: False for conv in self._conventions[1:]}
         for coordtype, col_names in self._coordtype_column_names.items():
-	        if all(axis in col_ids for axis in col_names):
-		        coord_dict[coordtype] = [col_ids[axis] for axis in col_names]
+            if all(axis in col_ids for axis in col_names):
+                coord_dict[coordtype] = [col_ids[axis] for axis in col_names]
 
         # this should only trigger on first read of "ATOM" card, after which it
         # is fixed to the guessed value. Auto proceeds unscaled -> scaled
