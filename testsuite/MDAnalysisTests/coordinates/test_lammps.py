@@ -521,7 +521,7 @@ def test_open_absent_convention_fails(convention):
 
 def test_open_incorrect_convention_fails():
     with pytest.raises(ValueError,
-                       match="incorrectly specified"):
+                       match="is not a valid option"):
         mda.Universe(LAMMPSDUMP, format='LAMMPSDUMP',
                      lammps_coordinate_convention="42")
 

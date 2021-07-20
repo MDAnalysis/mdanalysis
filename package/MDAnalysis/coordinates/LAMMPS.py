@@ -471,7 +471,12 @@ class DumpReader(base.ReaderBase):
     format = 'LAMMPSDUMP'
     _conventions = ["auto", "unscaled", "scaled", "unwrapped",
                     "scaled_unwrapped"]
-
+    _coordtype_column_names = {
+	"unscaled": ["x", "y", "z"],
+	"scaled": ["xs", "ys", "zs"],
+    "unwrapped": ["xu", "yu", "zu"],
+    "scaled_unwrapped": ["xsu", "ysu", "zsu"]
+    }
     def __init__(self, filename, lammps_coordinate_convention="auto",
                  **kwargs):
         super(DumpReader, self).__init__(filename, **kwargs)
@@ -480,10 +485,11 @@ class DumpReader(base.ReaderBase):
         if lammps_coordinate_convention in self._conventions:
             self.lammps_coordinate_convention = lammps_coordinate_convention
         else:
-            raise ValueError("coordinate convention"
-                             f"{lammps_coordinate_convention} incorrectly "
-                             "specified, please specify one of auto, unscaled"
-                             "scaled, unwrapped or scaled_unwrapped")
+            option_string = "'" + "', '".join(self._conventions) + "'"
+            raise ValueError("lammps_coordinate_convention="
+							 f"'{lammps_coordinate_convention}'"
+                             " is not a valid option. "
+							 f"Please choose one of {option_string}")
 
         self._cache = {}
 
@@ -534,10 +540,6 @@ class DumpReader(base.ReaderBase):
 
         return self._read_next_timestep()
 
-    @staticmethod
-    def _get_column(ids, col_ids):
-        return [col_ids[i] for i in ids if all(id in col_ids for id in ids)]
-
     def _read_next_timestep(self):
         f = self._file
         ts = self.ts
@@ -587,14 +589,9 @@ class DumpReader(base.ReaderBase):
         ids = "id" in keys
         # coord_dict keys = convention keys = column data or False
         coord_dict = {conv: False for conv in self._conventions[1:]}
-        coord_dict['unscaled'] = self._get_column(
-            ["x", "y", "z"], col_ids)  # unscaled
-        coord_dict['scaled'] = self._get_column(
-            ["xs", "ys", "zs"], col_ids)  # scaled
-        coord_dict["unwrapped"] = self._get_column(
-            ["xu", "yu", "zu"], col_ids)  # unwrapped
-        coord_dict["scaled_unwrapped"] = self._get_column(
-            ["xsu", "ysu", "zsu"], col_ids)  # scaled unwrapped
+        for coordtype, col_names in self._coordtype_column_names.items():
+	        if all(axis in col_ids for axis in col_names):
+		        coord_dict[coordtype] = [col_ids[axis] for axis in col_names]
 
         # this should only trigger on first read of "ATOM" card, after which it
         # is fixed to the guessed value. Auto proceeds unscaled -> scaled
