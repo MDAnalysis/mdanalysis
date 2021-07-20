@@ -536,7 +536,7 @@ def test_open_all_convention(convention, result):
     assert(u.trajectory.lammps_coordinate_convention == result)
 
 def test_no_coordinate_info():
-    with pytest.raises(ValueError,match="no coordinate information detected"):
+    with pytest.raises(ValueError, match="no coordinate information detected"):
         u = mda.Universe(LAMMPSDUMP_nocoords, format='LAMMPSDUMP',
                          lammps_coordinate_convention="auto")
 
