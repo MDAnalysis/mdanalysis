@@ -479,7 +479,10 @@ class DumpReader(base.ReaderBase):
         if lammps_coordinate_convention in self._conventions:
             self.lammps_coordinate_convention = lammps_coordinate_convention
         else:
-            raise ValueError("coordinate convention incorrectly specified")
+            raise ValueError("coordinate convention"
+                             f"{lammps_coordinate_convention} incorrectly "
+                             "specified, please specify one of auto, unscaled"
+                             "scaled, unwrapped or scaled_unwrapped")
 
         self._cache = {}
 
@@ -492,7 +495,6 @@ class DumpReader(base.ReaderBase):
         self._file = util.anyopen(self.filename)
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         self.ts.frame = -1
-
 
     @property
     @cached('n_atoms')
@@ -530,6 +532,10 @@ class DumpReader(base.ReaderBase):
         self.ts.frame = frame - 1  # gets +1'd in next
 
         return self._read_next_timestep()
+
+    @staticmethod
+    def _get_column(ids, col_ids):
+        return [col_ids[i] for i in ids if all(id in col_ids for id in ids)]
 
     def _read_next_timestep(self):
         f = self._file
@@ -570,27 +576,23 @@ class DumpReader(base.ReaderBase):
             alpha = beta = gamma = 90.
         ts.dimensions = xlen, ylen, zlen, alpha, beta, gamma
 
-        _get_column = lambda ids, col_ids : [col_ids[i] for i in ids if
-                                             all(id in col_ids.keys() for
-                                             id in ids)]
-                                             
         indices = np.zeros(self.n_atoms, dtype=int)
 
         atomline = f.readline()  # ITEM ATOMS etc
         attrs = atomline.split()[2:]  # attributes on coordinate line
-        col_ids = {attr: i for i, attr in enumerate(attrs)}  # column ids
+        col_ids = {attr: i for i, attr in enumerate(attrs)}  # column numbers
         keys = col_ids.keys()
         # check for ids and what type of coordinate convention
         ids = "id" in keys
-        # keys = convention values = col_ids or False if not present
+        # coord_dict keys = convention keys = column data or False 
         coord_dict = {conv: False for conv in self._conventions[1:]}
-        coord_dict['unscaled'] = _get_column(
+        coord_dict['unscaled'] = self._get_column(
             ["x", "y", "z"], col_ids)  # unscaled
-        coord_dict['scaled'] = _get_column(
+        coord_dict['scaled'] = self._get_column(
             ["xs", "ys", "zs"], col_ids)  # scaled
-        coord_dict["unwrapped"] = _get_column(
+        coord_dict["unwrapped"] = self._get_column(
             ["xu", "yu", "zu"], col_ids)  # unwrapped
-        coord_dict["scaled_unwrapped"] = _get_column(
+        coord_dict["scaled_unwrapped"] = self._get_column(
             ["xsu", "ysu", "zsu"], col_ids)  # scaled unwrapped
 
         # this should only trigger on first read of "ATOM" card, after which it
@@ -598,7 +600,7 @@ class DumpReader(base.ReaderBase):
         # -> unwrapped -> scaled_unwrapped
         if self.lammps_coordinate_convention == "auto":
             match = [var for var in self._conventions[1:] if coord_dict[var]]
-            try :
+            try:
                 self.lammps_coordinate_convention = match[0]
             except:
                 raise ValueError("no coordinate information detected")

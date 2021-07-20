@@ -586,6 +586,8 @@ class DATAParser(TopologyReaderBase):
 class LammpsDumpParser(TopologyReaderBase):
     """Parses Lammps ascii dump files in 'atom' format.
     Sets all masses to 1.0.
+
+    
     .. versionchanged:: 2.0.0
     .. versionadded:: 0.19.0
     """

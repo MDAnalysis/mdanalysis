@@ -521,7 +521,7 @@ def test_open_absent_convention_fails(convention):
 
 def test_open_incorrect_convention_fails():
     with pytest.raises(ValueError,
-                       match="coordinate convention incorrectly specified"):
+                       match="incorrectly specified"):
         mda.Universe(LAMMPSDUMP, format='LAMMPSDUMP',
                      lammps_coordinate_convention="42")
 
