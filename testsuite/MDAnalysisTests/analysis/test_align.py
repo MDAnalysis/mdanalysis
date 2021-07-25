@@ -31,7 +31,7 @@ import pytest
 from MDAnalysis import SelectionError, SelectionWarning
 from MDAnalysisTests import executable_not_found
 from MDAnalysisTests.datafiles import (PSF, DCD, CRD, FASTA, ALIGN_BOUND,
-                                       ALIGN_UNBOUND)
+                                       ALIGN_UNBOUND, PDB_helix)
 from numpy.testing import (
     assert_almost_equal,
     assert_equal,
@@ -556,3 +556,12 @@ def test_sequence_alignment():
         format="string") in seqB, "mobile sequence mismatch"
     assert_almost_equal(score, 54.6)
     assert_array_equal([begin, end], [0, reference.n_residues])
+
+
+def test_alignto_reorder_atomgroups():
+    # Issue 2977
+    u = mda.Universe(PDB_helix)
+    mobile = u.atoms[:4]
+    ref = u.atoms[[3, 2, 1, 0]]
+    align.alignto(mobile, ref, select='bynum 1-4')
+    
