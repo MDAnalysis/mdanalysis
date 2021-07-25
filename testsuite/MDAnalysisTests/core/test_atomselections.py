@@ -1363,3 +1363,13 @@ def test_error_selection_for_strange_dtype():
     with pytest.raises(ValueError, match="No base class defined for dtype"):
         MDAnalysis.core.selection.gen_selection_class("star", "stars",
                                                       dict, "atom")
+
+@pytest.mark.parametrize("sel, ix", [
+    ("name N", [5, 335, 451]),
+    ("resname GLU", [5, 6, 7, 8, 335, 451]),
+])
+def test_default_selection_on_ordered_unique_group(u_pdb_icodes, sel, ix):
+    # ordered ag => unordered again
+    base_ag = u_pdb_icodes.atoms[[335, 5, 451, 8, 7, 6]]
+    ag = base_ag.select_atoms(sel)
+    assert_equal(ag.ix, ix)
