@@ -106,11 +106,19 @@ class TestGroupProperties(object):
             _ = group._cache['isunique']
         with pytest.raises(KeyError):
             _ = group._cache['unique']
-        # assert that group.unique of the unique group references itself:
-        assert group.unique is group
+        unique_group = group.unique
+        # assert that group.unique of the unique group does not references
+        assert group.unique is not group
         # check if caches have been set:
+        assert group._cache['unique'] is unique_group
+        assert group.unique is unique_group
+        # getting a new unique group does not update original
+        # isunique, but does for the new group
+        assert 'isunique' not in group._cache
+        assert group.unique._cache['isunique'] is True
+        # assert isunique adds to cache
+        assert group.isunique is True
         assert group._cache['isunique'] is True
-        assert group._cache['unique'] is group
         # add duplicate element to group:
         group += group[0]
         assert len(group) == 3
@@ -119,11 +127,12 @@ class TestGroupProperties(object):
             _ = group._cache['isunique']
         with pytest.raises(KeyError):
             _ = group._cache['unique']
-        # assert that group.unique of the non-unique group doesn't reference
-        # itself:
-        assert group.unique is not group
+        # now not unique
+        assert group.isunique is False
+        # assert that group.unique of the non-unique group is not the old one
+        assert group.unique is not unique_group
+        assert group.unique == unique_group
         # check if caches have been set correctly:
-        assert group._cache['isunique'] is False
         assert group._cache['unique'] is group.unique
         # check length and type:
         assert len(group.unique) == 2
@@ -134,6 +143,45 @@ class TestGroupProperties(object):
         # assert that repeated access yields the same object (not a copy):
         unique_group = group.unique
         assert unique_group is group.unique
+
+    @pytest.mark.parametrize('ugroup', [uni.atoms, uni.residues, uni.segments])
+    @pytest.mark.parametrize('ix, unique_ix', [
+        ([0, 1], [0, 1]),
+        ([4, 3, 3, 1], [1, 3, 4])
+    ])
+    def test_group_unique_returns_sorted_copy(self, ugroup, ix, unique_ix):
+        # is copy
+        group = ugroup[ix]
+        assert group.unique is not group
+        # sorted
+        assert_equal(group.unique.ix, unique_ix)
+
+    @pytest.mark.parametrize('ugroup', [uni.atoms, uni.residues, uni.segments])
+    @pytest.mark.parametrize('ix, value', [
+        ([4, 3, 3, 1], False),
+        ([1, 3, 4], True),
+        ([2, 2, 2, 4], True),
+    ])
+    def test_group_issorted(self, ugroup, ix, value):
+        assert ugroup[ix].issorted == value
+
+    @pytest.mark.parametrize('ugroup', [uni.atoms, uni.residues, uni.segments])
+    @pytest.mark.parametrize('ix, sort, unique_ix, is_same', [
+        ([1, 3, 4], True, [1, 3, 4], True),
+        ([1, 3, 4], False, [1, 3, 4], True),
+        ([4, 3, 1], True, [1, 3, 4], False),
+        ([4, 3, 1], False, [4, 3, 1], True),
+        ([1, 3, 3, 4], True, [1, 3, 4], False),
+        ([1, 3, 3, 4], False, [1, 3, 4], False),
+        ([4, 3, 3, 1], True, [1, 3, 4], False),
+        ([4, 3, 3, 1], False, [4, 3, 1], False),
+    ])
+    def test_group_asunique(self, ugroup, ix, sort, unique_ix, is_same):
+        group = ugroup[ix]
+        unique_group = group.asunique(sorted=sort)
+        assert_equal(unique_group.ix, unique_ix)
+        if is_same:
+            assert unique_group is group
 
 
 class TestGroupSlicing(object):

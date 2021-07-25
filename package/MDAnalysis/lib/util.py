@@ -221,6 +221,11 @@ except ImportError:
                       "have not been built.")
 
 
+def unique_int_1d_unsorted(array):
+    values, indices = np.unique(array, return_index=True)
+    return array[np.sort(indices)]
+
+
 def filename(name, ext=None, keep=False):
     """Return a new name that has suffix attached; replaces other extensions.
 
