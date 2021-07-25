@@ -178,7 +178,6 @@ class LogicOperation(object, metaclass=_Operationmeta):
         self.parser = parser
 
     def apply(self, *args, **kwargs):
-        print(self.parser.sort, "sorting")
         return self._apply(*args, **kwargs).asunique(sorted=self.parser.sort)
 
 
