@@ -237,15 +237,13 @@ class Selection(object, metaclass=_Selectionmeta):
 
     def __init__(self, parser, tokens):
         self.parser = parser
-    
+
     def apply(self, *args, **kwargs):
         return self._apply(*args, **kwargs).asunique(sorted=self.parser.sort)
 
 
 class AllSelection(Selection):
     token = 'all'
-
-    
 
     def _apply(self, group):
         # Check whether group is identical to the one stored

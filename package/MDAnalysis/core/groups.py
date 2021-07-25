@@ -100,7 +100,8 @@ import warnings
 from .. import (_CONVERTERS,
                 _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES)
 from ..lib import util
-from ..lib.util import cached, warn_if_not_unique, unique_int_1d, unique_int_1d_unsorted
+from ..lib.util import (cached, warn_if_not_unique,
+                        unique_int_1d, unique_int_1d_unsorted)
 from ..lib import distances
 from ..lib import transformations
 from ..lib import mdamath
@@ -2586,7 +2587,7 @@ class AtomGroup(GroupBase):
         _unique = self.universe.atoms[unique_ix]
         self._unique_restore_mask = restore_mask
         return self._create_unique_group(_unique)
-    
+
     def asunique(self, sorted=False):
         """Return a :class:`AtomGroup` containing unique
         :class:`Atoms<Atom>` only, with optional sorting.
@@ -2619,7 +2620,7 @@ class AtomGroup(GroupBase):
             return self.unique
         _unique = self.universe.atoms[unique_int_1d_unsorted(self.ix)]
         return _unique
-        
+
 
     @property
     def positions(self):
@@ -3826,7 +3827,7 @@ class SegmentGroup(GroupBase):
             return self.unique
         _unique = self.universe.segments[unique_int_1d_unsorted(self.ix)]
         return _unique
-        
+
 
 @functools.total_ordering
 class ComponentBase(_MutableBase):
