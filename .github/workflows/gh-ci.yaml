@@ -217,7 +217,7 @@ jobs:
     - name: install_deps
       run: |
         conda_deps="${{ env.MDA_CONDA_MIN_DEPS }} ${{ env.MDA_CONDA_EXTRA_DEPS}}"
-        pip_deps="${{ env.MDA_PIP_MIN_DEPS}} ${{ env.MDA_PIP_EXTRA_DEPS }} sphinx==1.8.5 sphinx-sitemap==2.2.0 sphinx_rtd_theme==0.5.2 msmb_theme==1.2.0"
+        pip_deps="${{ env.MDA_PIP_MIN_DEPS}} ${{ env.MDA_PIP_EXTRA_DEPS }} sphinx==1.8.5 sphinx-sitemap==2.2.0 sphinx_rtd_theme msmb_theme==1.2.0"
         conda install ${conda_deps}
         pip install ${pip_deps}
 
