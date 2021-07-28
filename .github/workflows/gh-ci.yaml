@@ -212,7 +212,7 @@ jobs:
         channels: conda-forge, biobuilds
         add-pip-as-python-dependency: true
         architecture: x64
-        mamba-version: "*"
+        # mamba-version: "*"
 
     - name: install_deps
       run: |
