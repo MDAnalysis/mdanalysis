@@ -23,8 +23,8 @@ defaults:
 env:
   MDA_CONDA_MIN_DEPS: "pip pytest mmtf-python biopython networkx cython matplotlib-base scipy griddataformats hypothesis gsd codecov threadpoolctl"
   MDA_CONDA_EXTRA_DEPS: "seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles-python>=0.9,<=0.10.0 chemfiles-lib>=0.9,<=0.10.0 tqdm>=4.43.0 tidynamics>=1.0.0 rdkit>=2020.03.1 h5py openmm"
-  MDA_PIP_MIN_DEPS: 'coveralls coverage<5 pytest-cov pytest-xdist'
-  MDA_PIP_EXTRA_DEPS: 'duecredit parmed'
+  MDA_PIP_MIN_DEPS: 'coveralls==3.1.0 coverage<5 pytest-cov==2.10.1 pytest-xdist==2.3.0'
+  MDA_PIP_EXTRA_DEPS: 'duecredit==0.9.1 parmed==3.2.0'
 
 
 jobs:
@@ -217,7 +217,7 @@ jobs:
     - name: install_deps
       run: |
         conda_deps="${{ env.MDA_CONDA_MIN_DEPS }} ${{ env.MDA_CONDA_EXTRA_DEPS}}"
-        pip_deps="${{ env.MDA_PIP_MIN_DEPS}} ${{ env.MDA_PIP_EXTRA_DEPS }} sphinx==1.8.5 sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0"
+        pip_deps="${{ env.MDA_PIP_MIN_DEPS}} ${{ env.MDA_PIP_EXTRA_DEPS }} sphinx==1.8.5 sphinx-sitemap==2.2.0 sphinx_rtd_theme==0.5.2 msmb_theme==1.2.0"
         conda install ${conda_deps}
         pip install ${pip_deps}
 
