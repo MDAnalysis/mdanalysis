@@ -23,7 +23,13 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+<<<<<<< HEAD
   * Fixed missing array flatten preventing PCA from running when mean positions
+=======
+  * Fixed sometimes wrong sorting of atoms into fragments when unwrapping
+    (Issue #3352, PR #3353)
+  * Fixed missing array flatten preventing PCA from running when mean positions  
+>>>>>>> 65319046c49f4bce5e49949b7ab451039adcbd67
     provided and bugs causing tests to incorrectly pass (Issue #2728, PR #3296)
   * DL_POLY HISTORY file may contain unit cell dimensions even if there are
     no periodic boundary conditions (imcom=0) (Issue #3314, PR #3312).
@@ -285,6 +291,7 @@ Changes
   * Move water bridge analysis from hbonds to hydrogenbonds (Issue #2739 PR #2913)
   * `threadpoolctl` is required for installation (Issue #2860)
   * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
+  * Writing a TRZ file with no box information now raises a warning (Issue #3307)
 
 Deprecations
   * The attributes `p_components`, `variance`, `cumulated_variance` and
