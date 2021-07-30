@@ -251,10 +251,12 @@ class H5MDReader(base.ReaderBase):
     `convert_units` is set to ``True``.
 
     Additional data in the *observables* group of the H5MD file are
-    loaded into the :attr:`Timestep.data` dictionary.
+    loaded into the :attr:`Timestep.data
+    <MDAnalysis.coordinates.base.Timestep.data>` dictionary.
 
     Only 3D-periodic boxes or no periodicity are supported; for no
-    periodicity, :attr:`Timestep.dimensions` will return ``None``.
+    periodicity, :attr:`Timestep.dimensions
+    <MDAnalysis.coordinates.base.Timestep.dimensions>` will return ``None``.
 
     Although H5MD can store varying numbers of particles per time step
     as produced by, e.g., GCMC simulations, MDAnalysis can currently
