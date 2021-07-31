@@ -204,7 +204,9 @@ please cite [Dima2004b]_.
    6564-6570. doi:`10.1021/jp037128y
    <https://doi.org/10.1021/jp037128y>`_
 
-If you use H5MD files , please cite [Buyl2013]_ and [Jakupovic2021]_.
+If you use H5MD files using
+:mod:`MDAnalysis.coordinates.H5MD.py`, please cite [Buyl2013]_ and
+[Jakupovic2021]_.
 
 .. [Buyl2013] P. Buyl, P. Colberg, and Felix Höfling (2013).
    H5MD: A structured, efficient, and portable file format for molecular data.

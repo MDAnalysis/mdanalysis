@@ -183,27 +183,6 @@ parallel hdf5/h5py/mpi4py please let everyone know on the
 Classes
 -------
 
-.. autoclass:: Timestep
-   :members:
-
-   .. attribute:: positions
-
-      coordinates of the atoms as a :class:`numpy.ndarray` of shape
-      `(n_atoms, 3)`
-
-   .. attribute:: velocities
-
-      velocities of the atoms as a :class:`numpy.ndarray` of shape
-      `(n_atoms, 3)`; only available if the trajectory contains velocities
-      or if the `velocities` = ``True`` keyword has been supplied.
-
-   .. attribute:: forces
-
-      forces of the atoms as a :class:`numpy.ndarray` of shape
-      `(n_atoms, 3)`; only available if the trajectory contains forces
-      or if the `forces` = ``True`` keyword has been supplied.
-
-
 .. autoclass:: H5MDReader
    :members:
    :inherited-members:
