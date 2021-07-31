@@ -33,7 +33,8 @@ from MDAnalysisTests.datafiles import (DCD, PSF, DCD_empty, PRMncdf, NCDF,
                                        COORDINATES_TOPOLOGY, COORDINATES_DCD,
                                        PSF_TRICLINIC, DCD_TRICLINIC,
                                        PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC,
-                                       PSF_NAMD_GBIS, DCD_NAMD_GBIS)
+                                       PSF_NAMD_GBIS, DCD_NAMD_GBIS,
+                                       PDB_closed)
 from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
                                               BaseReference,
                                               BaseWriterTest)
@@ -132,6 +133,16 @@ def test_write_random_unitcell(tmpdir):
                                   random_unitcells[index],
                                   decimal=5)
 
+
+def test_empty_dimension_warning(tmpdir):
+
+    u = mda.Universe(PDB_closed)
+    testname = str(tmpdir.join('test.dcd'))
+
+    with mda.Writer(testname, n_atoms=u.atoms.n_atoms) as w:
+        msg = "zeroed unitcell will be written"
+        with pytest.warns(UserWarning, match=msg):
+            w.write(u.atoms)
 
 
 ################
