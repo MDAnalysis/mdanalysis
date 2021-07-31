@@ -287,6 +287,9 @@ option are guaranteed to conform to the above format:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pdb2pqr</span> <span class="o">--</span><span class="n">ff</span><span class="o">=</span><span class="n">charmm</span> <span class="o">--</span><span class="n">whitespace</span> <span class="mi">4</span><span class="n">ake</span><span class="o">.</span><span class="n">pdb</span> <span class="mi">4</span><span class="n">ake</span><span class="o">.</span><span class="n">pqr</span>
 </pre></div>
 </div>
+<p class="rubric">Notes</p>
+<p>The PQR format does not provide a means by which to provide box information.
+In all cases the <cite>dimensions</cite> attribute will be set to <cite>None</cite>.</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PQR.PQRReader">
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.PQR.</code><code class="descname">PQRReader</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=True</em>, <em>n_atoms=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PQR.html#PQRReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PQR.PQRReader" title="Permalink to this definition">¶</a></dt>
