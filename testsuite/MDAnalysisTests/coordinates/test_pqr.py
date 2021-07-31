@@ -69,7 +69,7 @@ class TestPQRReader(_SingleFrameReader):
 
     def test_dimensions(self):
         # Issue #3327 - dimensions should always be set to None
-        assert self.universe.dimensions == None
+        assert self.universe.dimensions is None
 
 
 class TestPQRWriter(RefAdKSmall):
