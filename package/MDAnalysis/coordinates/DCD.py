@@ -321,12 +321,11 @@ class DCDWriter(base.WriterBase):
     and writes positions in Å and time in AKMA time units.
 
 
-    Notes
-    -----
-    When writing out timesteps without ``dimensions`` (i.e. set ``None``) the
-    :class:`DCDWriter` will write out a zeroed unitcell (i.e.
-    ``[0, 0, 0, 0, 0, 0]``). As this behaviour is poorly defined, it may not
-    match the expectations of other software.
+    .. note::
+        When writing out timesteps without ``dimensions`` (i.e. set ``None``)
+        the :class:`DCDWriter` will write out a zeroed unitcell (i.e.
+        ``[0, 0, 0, 0, 0, 0]``). As this behaviour is poorly defined, it may
+        not match the expectations of other software.
 
     """
     format = 'DCD'
