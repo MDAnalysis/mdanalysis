@@ -273,11 +273,14 @@ class GROWriter(base.WriterBase):
      - resnames (defaults to 'UNK')
      - resids (defaults to '1')
 
-    Notes
-    -----
-    * The precision is hard coded to three decimal places.
-    * When dimensions are missing (i.e. set to `None`), a zero width
-      unit cell box will be written (i.e. [0.0, 0.0, 0.0]).
+
+    .. note::
+        The precision is hard coded to three decimal places.
+
+
+    .. note::
+        When dimensions are missing (i.e. set to `None`), a zero width
+        unit cell box will be written (i.e. [0.0, 0.0, 0.0]).
 
 
     .. versionchanged:: 0.11.0

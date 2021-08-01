@@ -23,6 +23,8 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * GRO files with unit cells with neither 3 of 9 entries are no longer
+    supported (Issue #3305)
   * Ensures that reading and writing of GRO files with missing unit cell
     information is consistently treated (Issue #3305)
   * Fixed sometimes wrong sorting of atoms into fragments when unwrapping
