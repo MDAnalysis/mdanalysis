@@ -164,7 +164,7 @@ class GROReader(base.SingleFrameReaderBase):
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
     .. versionchanged:: 2.0.0
-       Reader now raises error if unitcell has neither 3 or 9 entries.
+       Reader now only parses boxes defined with 3 or 9 fields.
        Reader now reads a 3 entry zero unit cell (i.e. ``[0, 0, 0]``) as a
        being without dimension information (i.e. will the timestep dimension
        to ``None``).
