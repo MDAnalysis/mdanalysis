@@ -220,6 +220,13 @@ except ImportError:
                       "This can happen if your C extensions "
                       "have not been built.")
 
+def int_array_is_sorted(array):
+    mask = array[:-1] <= array[1:]
+    try:
+        return mask[0] and mask.argmin() == 0
+    except IndexError:
+        # Empty arrays are sorted, I guess...
+        return True
 
 def unique_int_1d_unsorted(array):
     values, indices = np.unique(array, return_index=True)

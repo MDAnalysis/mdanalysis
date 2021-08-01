@@ -101,7 +101,9 @@ from .. import (_CONVERTERS,
                 _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES)
 from ..lib import util
 from ..lib.util import (cached, warn_if_not_unique,
-                        unique_int_1d, unique_int_1d_unsorted)
+                        unique_int_1d, unique_int_1d_unsorted,
+                        int_array_is_sorted
+                        )
 from ..lib import distances
 from ..lib import transformations
 from ..lib import mdamath
@@ -726,19 +728,24 @@ class GroupBase(_MutableBase):
     def dimensions(self, dimensions):
         self.universe.trajectory.ts.dimensions = dimensions
 
-    @staticmethod
-    def _create_unique_group(_unique):
-        # Since we know that _unique is a unique AtomGroup, we set its
-        # uniqueness caches from here:
-        _unique._cache['isunique'] = True
-        _unique._cache['unique'] = _unique
-        return _unique
+    def cache_properties(self, **kwargs):
+        for k, v in kwargs.items():
+            self._cache[k] = v
+    
+    @property
+    @cached('sorted_unique')
+    def sorted_unique(self):
+        return self.asunique(sorted=True)
+
+    @property
+    @cached('unsorted_unique')
+    def unsorted_unique(self):
+        return self.asunique(sorted=False)
 
     @property
     @cached('issorted')
     def issorted(self):
-        s_ix = np.sort(self.ix)
-        return np.all(s_ix == self.ix)
+        return int_array_is_sorted(self.ix)
 
     @property
     @cached('isunique')
@@ -769,7 +776,64 @@ class GroupBase(_MutableBase):
         """
         if len(self) <= 1:
             return True
-        return not np.count_nonzero(np.bincount(self._ix) > 1)
+        return unique_int_1d(self._ix).shape[0] == self._ix.shape[0]
+    
+    def _asunique(self, group, sorted=False, set_mask=False):
+        try:
+            name = 'sorted_unique' if sorted else 'unsorted_unique'
+            return self._cache[name]
+        except KeyError:
+            pass
+
+        if self.isunique:
+            if not sorted:
+                self._cache['unsorted_unique'] = self
+                return self
+            if self.issorted:
+                self._cache['unsorted_unique'] = self
+                self._cache['sorted_unique'] = self
+                return self
+
+        if sorted:
+            if 'unsorted_unique' in self._cache and self.unsorted_unique.issorted:
+                self._cache['sorted_unique'] = self.unsorted_unique
+                return self.unsorted_unique
+        
+            if set_mask:
+                unique_ix, restore_mask = np.unique(self.ix, return_inverse=True)
+                self._unique_restore_mask = restore_mask
+            else:
+                unique_ix = unique_int_1d(self.ix)
+
+            _unique = group[unique_ix]
+            _unique.cache_properties(isunique=True, issorted=True,
+                                     sorted_unique=_unique,
+                                     unsorted_unique=_unique)
+            self._cache['sorted_unique'] = _unique
+            return _unique
+        
+
+        indices = unique_int_1d_unsorted(self.ix)
+        if set_mask:
+            mask = np.zeros_like(self.ix)
+            for i, x in enumerate(indices):
+                values = np.where(self.ix == x)[0]
+                mask[values] = i
+            self._unique_restore_mask = mask
+
+        issorted = int_array_is_sorted(indices)
+        if issorted and 'sorted_unique' in self._cache:
+            self._cache['unsorted_unique'] = self.sorted_unique
+            return self.sorted_unique
+
+        _unique = group[indices]
+        _unique.cache_properties(isunique=True, issorted=issorted,
+                                 unsorted_unique=_unique)
+        self._cache['unsorted_unique'] = _unique
+        if issorted:
+            self._cache['sorted_unique'] = _unique
+            _unique._cache['sorted_unique'] = _unique
+        return _unique
 
     def _get_compound_indices(self, compound):
         if compound == 'residues':
@@ -1248,7 +1312,7 @@ class GroupBase(_MutableBase):
         .. versionadded:: 0.7.3
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
-        atomgroup = self.atoms.unique
+        atomgroup = self.atoms.unsorted_unique
 
         if pbc:
             x = atomgroup.pack_into_box(inplace=False)
@@ -1324,7 +1388,7 @@ class GroupBase(_MutableBase):
             \mathbf{x}' = \mathbf{x} + \mathbf{t}
 
         """
-        atomgroup = self.atoms.unique
+        atomgroup = self.atoms.unsorted_unique
         vector = np.asarray(t)
         # changes the coordinates in place
         atomgroup.universe.trajectory.ts.positions[atomgroup.indices] += vector
@@ -1368,7 +1432,7 @@ class GroupBase(_MutableBase):
         point = np.asarray(point)
 
         # changes the coordinates (in place)
-        atomgroup = self.atoms.unique
+        atomgroup = self.atoms.unsorted_unique
         require_translation = bool(np.count_nonzero(point))
         if require_translation:
             atomgroup.translate(-point)
@@ -1591,7 +1655,7 @@ class GroupBase(_MutableBase):
         # atoms:
         atoms = self.atoms
         if not self.isunique:
-            _atoms = atoms.unique
+            _atoms = atoms.sorted_unique
             restore_mask = atoms._unique_restore_mask
             atoms = _atoms
 
@@ -1731,7 +1795,7 @@ class GroupBase(_MutableBase):
         if not hasattr(atoms, 'bonds'):
             raise NoDataError("{}.unwrap() not available; this requires Bonds"
                               "".format(self.__class__.__name__))
-        unique_atoms = atoms.unique
+        unique_atoms = atoms.unsorted_unique
 
         # Parameter sanity checking
         if reference is not None:
@@ -1819,14 +1883,25 @@ class GroupBase(_MutableBase):
         .. versionadded:: 0.19.0
         """
         group = self[:]
-        # Try to fill the copied group's uniqueness caches:
-        try:
-            group._cache['isunique'] = self._cache['isunique']
-            if group._cache['isunique']:
-                group._cache['unique'] = group
-        except KeyError:
-            pass
+        group._set_unique_caches_from(self)
         return group
+
+    def _set_unique_caches_from(self, other):
+        # Try to fill the copied group's uniqueness caches:
+        x = 0
+        # lazy maths: add 1 if issorted=True, add 2 if isunique=True
+        for i, prop in enumerate(['issorted', 'isunique'], 1):
+            try:
+                self._cache[prop] = value = other._cache[prop]
+            except KeyError:
+                pass
+            else:
+                x += (i * value)
+        if x >= 2:  # isunique=True
+            self._cache['unsorted_unique'] = self
+        if x == 3:  # isunique=True and issorted=True
+            self._cache['sorted_unique'] = self
+
 
     def groupby(self, topattrs):
         """Group together items in this group according to values of *topattr*
@@ -2461,8 +2536,8 @@ class AtomGroup(GroupBase):
         :class:`Residues<Residue>` present in the :class:`AtomGroup`.
         """
         rg = self.universe.residues[unique_int_1d(self.resindices)]
-        rg._cache['isunique'] = True
-        rg._cache['unique'] = rg
+        rg.cache_properties(isunique=True, issorted=True,
+                            sorted_unique=rg, unsorted_unique=rg)
         return rg
 
     @residues.setter
@@ -2508,8 +2583,8 @@ class AtomGroup(GroupBase):
         :class:`AtomGroup`.
         """
         sg = self.universe.segments[unique_int_1d(self.segindices)]
-        sg._cache['isunique'] = True
-        sg._cache['unique'] = sg
+        sg.cache_properties(isunique=True, issorted=True,
+                            sorted_unique=sg, unsorted_unique=sg)
         return sg
 
     @segments.setter
@@ -2550,7 +2625,6 @@ class AtomGroup(GroupBase):
         self._cache['unique_restore_mask'] = mask
 
     @property
-    @cached('unique')
     def unique(self):
         """An :class:`AtomGroup` containing sorted and unique
         :class:`Atoms<Atom>` only.
@@ -2583,10 +2657,10 @@ class AtomGroup(GroupBase):
         .. versionchanged:: 2.0.0
             This function now always returns a copy.
         """
-        unique_ix, restore_mask = np.unique(self.ix, return_inverse=True)
-        _unique = self.universe.atoms[unique_ix]
-        self._unique_restore_mask = restore_mask
-        return self._create_unique_group(_unique)
+        group = self.sorted_unique[:]
+        group.cache_properties(isunique=True, issorted=True,
+                               sorted_unique=group, unsorted_unique=group)
+        return group
 
     def asunique(self, sorted=False):
         """Return a :class:`AtomGroup` containing unique
@@ -2613,13 +2687,7 @@ class AtomGroup(GroupBase):
 
         .. versionadded:: 2.0.0
         """
-        if self.isunique:
-            if not sorted or self.issorted:
-                return self
-        if sorted:
-            return self.unique
-        _unique = self.universe.atoms[unique_int_1d_unsorted(self.ix)]
-        return _unique
+        return self._asunique(sorted=sorted, group=self.universe.atoms, set_mask=True)
 
 
     @property
@@ -3502,12 +3570,7 @@ class ResidueGroup(GroupBase):
         # atoms therein, since atoms can only belong to one residue at a time.
         # On the contrary, if the ResidueGroup is not unique, this does not
         # imply non-unique atoms, since residues might be empty.
-        try:
-            if self._cache['isunique']:
-                ag._cache['isunique'] = True
-                ag._cache['unique'] = ag
-        except KeyError:
-            pass
+        ag._set_unique_caches_from(self)
         return ag
 
     @property
@@ -3550,8 +3613,8 @@ class ResidueGroup(GroupBase):
         the :class:`ResidueGroup`.
         """
         sg = self.universe.segments[unique_int_1d(self.segindices)]
-        sg._cache['isunique'] = True
-        sg._cache['unique'] = sg
+        sg.cache_properties(isunique=True, issorted=True,
+                            sorted_unique=sg, unsorted_unique=sg)
         return sg
 
     @segments.setter
@@ -3590,7 +3653,6 @@ class ResidueGroup(GroupBase):
         return len(self.segments)
 
     @property
-    @cached('unique')
     def unique(self):
         """Return a :class:`ResidueGroup` containing sorted and unique
         :class:`Residues<Residue>` only.
@@ -3619,8 +3681,11 @@ class ResidueGroup(GroupBase):
         .. versionchanged:: 2.0.0
             This function now always returns a copy.
         """
-        _unique = self.universe.residues[unique_int_1d(self.ix)]
-        return self._create_unique_group(_unique)
+        group = self.sorted_unique[:]
+        group.cache_properties(isunique=True, issorted=True,
+                               sorted_unique=group, unsorted_unique=group)
+        return group
+
 
     def asunique(self, sorted=False):
         """Return a :class:`ResidueGroup` containing unique
@@ -3647,14 +3712,7 @@ class ResidueGroup(GroupBase):
 
         .. versionadded:: 2.0.0
         """
-        if self.isunique:
-            if not sorted or self.issorted:
-                return self
-        if sorted:
-            return self.unique
-        _unique = self.universe.residues[unique_int_1d_unsorted(self.ix)]
-        return _unique
-
+        return self._asunique(sorted=sorted, group=self.universe.residues)
 
 class SegmentGroup(GroupBase):
     """:class:`SegmentGroup` base class.
@@ -3689,12 +3747,7 @@ class SegmentGroup(GroupBase):
         # residues therein, and thus, also for the atoms in those residues.
         # On the contrary, if the SegmentGroup is not unique, this does not
         # imply non-unique atoms, since segments or residues might be empty.
-        try:
-            if self._cache['isunique']:
-                ag._cache['isunique'] = True
-                ag._cache['unique'] = ag
-        except KeyError:
-            pass
+        ag._set_unique_caches_from(self)
         return ag
 
     @property
@@ -3720,12 +3773,7 @@ class SegmentGroup(GroupBase):
         # residues therein. On the contrary, if the SegmentGroup is not unique,
         # this does not imply non-unique residues, since segments might be
         # empty.
-        try:
-            if self._cache['isunique']:
-                rg._cache['isunique'] = True
-                rg._cache['unique'] = rg
-        except KeyError:
-            pass
+        rg._set_unique_caches_from(self)
         return rg
 
     @property
@@ -3763,7 +3811,6 @@ class SegmentGroup(GroupBase):
         return len(self)
 
     @property
-    @cached('unique')
     def unique(self):
         """Return a :class:`SegmentGroup` containing sorted and unique
         :class:`Segments<Segment>` only.
@@ -3792,8 +3839,11 @@ class SegmentGroup(GroupBase):
         .. versionchanged:: 2.0.0
             This function now always returns a copy.
         """
-        _unique = self.universe.segments[unique_int_1d(self.ix)]
-        return self._create_unique_group(_unique)
+        group = self.sorted_unique[:]
+        group.cache_properties(isunique=True, issorted=True,
+                               sorted_unique=group, unsorted_unique=group)
+        return group
+
 
     def asunique(self, sorted=False):
         """Return a :class:`ResidueGroup` containing unique
@@ -3820,13 +3870,7 @@ class SegmentGroup(GroupBase):
 
         .. versionadded:: 2.0.0
         """
-        if self.isunique:
-            if not sorted or self.issorted:
-                return self
-        if sorted:
-            return self.unique
-        _unique = self.universe.segments[unique_int_1d_unsorted(self.ix)]
-        return _unique
+        return self._asunique(sorted=sorted, group=self.universe.segments)
 
 
 @functools.total_ordering
@@ -4096,8 +4140,8 @@ class Residue(ComponentBase):
         :class:`Residue`.
         """
         ag = self.universe.atoms[self.universe._topology.indices[self][0]]
-        ag._cache['isunique'] = True
-        ag._cache['unique'] = ag
+        ag.cache_properties(isunique=True, issorted=True,
+                            sorted_unique=ag, unsorted_unique=ag)
         return ag
 
     @property
@@ -4144,8 +4188,8 @@ class Segment(ComponentBase):
         :class:`Segment`.
         """
         ag = self.universe.atoms[self.universe._topology.indices[self][0]]
-        ag._cache['isunique'] = True
-        ag._cache['unique'] = ag
+        ag.cache_properties(isunique=True, issorted=True,
+                            sorted_unique=ag, unsorted_unique=ag)
         return ag
 
     @property
@@ -4154,8 +4198,8 @@ class Segment(ComponentBase):
         :class:`Segment`.
         """
         rg = self.universe.residues[self.universe._topology.resindices[self][0]]
-        rg._cache['isunique'] = True
-        rg._cache['unique'] = rg
+        rg.cache_properties(isunique=True, issorted=True,
+                            sorted_unique=rg, unsorted_unique=rg)
         return rg
 
 

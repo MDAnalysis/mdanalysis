@@ -98,51 +98,57 @@ class TestGroupProperties(object):
 
     @pytest.mark.parametrize('group', (uni.atoms[:2], uni.residues[:2],
                                        uni.segments[:2]))
-    def test_group_unique(self, group):
+    def test_group_unique_nocache(self, group):
         # check unique group:
         assert len(group) == 2
         # assert caches are empty:
-        with pytest.raises(KeyError):
-            _ = group._cache['isunique']
-        with pytest.raises(KeyError):
-            _ = group._cache['unique']
-        unique_group = group.unique
-        # assert that group.unique of the unique group does not references
-        assert group.unique is not group
-        # check if caches have been set:
-        assert group._cache['unique'] is unique_group
-        assert group.unique is unique_group
-        # getting a new unique group does not update original
-        # isunique, but does for the new group
-        assert 'isunique' not in group._cache
-        assert group.unique._cache['isunique'] is True
-        # assert isunique adds to cache
-        assert group.isunique is True
+        for attr in ('isunique', 'sorted_unique', 'unsorted_unique'):
+            assert attr not in group._cache
+
+    @pytest.mark.parametrize('group', (uni.atoms[:2], uni.residues[:2],
+                                       uni.segments[:2]))
+    def test_create_unique_group_from_unique(self, group):
+        unique_group = group.asunique(sorted=True)
+        # assert identity and caches
+        assert unique_group is group
+        assert group._cache['sorted_unique'] is unique_group
+        assert group._cache['unsorted_unique'] is unique_group
         assert group._cache['isunique'] is True
+        assert group._cache['issorted']  # numpy.bool != bool
+
+        # assert .unique copies
+        assert group.unique is not group
+        assert group.unique == group
+
         # add duplicate element to group:
         group += group[0]
         assert len(group) == 3
+
         # assert caches are cleared since the group changed:
-        with pytest.raises(KeyError):
-            _ = group._cache['isunique']
-        with pytest.raises(KeyError):
-            _ = group._cache['unique']
+        for attr in ('isunique', 'sorted_unique', 'unsorted_unique'):
+            assert attr not in group._cache
+        
         # now not unique
         assert group.isunique is False
+        assert not group.issorted
         # assert that group.unique of the non-unique group is not the old one
-        assert group.unique is not unique_group
-        assert group.unique == unique_group
+        assert group.asunique() is not unique_group
+        assert group.asunique() == unique_group
         # check if caches have been set correctly:
-        assert group._cache['unique'] is group.unique
+        assert group._cache['unsorted_unique'] is group.asunique()
+        assert group._cache['sorted_unique'] is group.asunique()
+        assert group.unique is not group.asunique()
+        
         # check length and type:
         assert len(group.unique) == 2
         assert type(group.unique) is type(group)
-        # check if caches of group.unique have been set correctly:
-        assert group.unique._cache['isunique'] is True
-        assert group.unique._cache['unique'] is group.unique
+
+        # check if caches of group.sorted_unique have been set correctly:
+        assert group.sorted_unique._cache['isunique'] is True
+        assert group.sorted_unique._cache['sorted_unique'] is group.sorted_unique
         # assert that repeated access yields the same object (not a copy):
-        unique_group = group.unique
-        assert unique_group is group.unique
+        unique_group = group.sorted_unique
+        assert unique_group is group.sorted_unique
 
     @pytest.mark.parametrize('ugroup', [uni.atoms, uni.residues, uni.segments])
     @pytest.mark.parametrize('ix, unique_ix', [
@@ -482,7 +488,7 @@ class TestGroupLevelTransition(object):
         assert res == u.residues
         assert res is not u.residues
         assert res._cache['isunique'] is True
-        assert res._cache['unique'] is res
+        assert res._cache['sorted_unique'] is res
 
     def test_atomgroup_to_segmentgroup(self, u):
         seg = u.atoms.segments
@@ -491,7 +497,7 @@ class TestGroupLevelTransition(object):
         assert seg == u.segments
         assert seg is not u.segments
         assert seg._cache['isunique'] is True
-        assert seg._cache['unique'] is seg
+        assert seg._cache['sorted_unique'] is seg
 
     def test_residuegroup_to_atomgroup(self, u):
         res = u.residues
@@ -501,8 +507,8 @@ class TestGroupLevelTransition(object):
         assert atm == u.atoms
         assert atm is not u.atoms
         # clear res' uniqueness caches:
-        if 'unique' in res._cache.keys():
-            del res._cache['unique']
+        if 'sorted_unique' in res._cache.keys():
+            del res._cache['sorted_unique']
         if 'isunique' in res._cache.keys():
             del res._cache['isunique']
         atm = res.atoms
@@ -510,13 +516,13 @@ class TestGroupLevelTransition(object):
         with pytest.raises(KeyError):
             _ = atm._cache['isunique']
         with pytest.raises(KeyError):
-            _ = atm._cache['unique']
+            _ = atm._cache['sorted_unique']
         # populate uniqueness cache of res:
         assert res.isunique
         atm = res.atoms
         # assert uniqueness caches of atm are set:
         assert atm._cache['isunique'] is True
-        assert atm._cache['unique'] is atm
+        assert atm._cache['unsorted_unique'] is atm
 
     def test_residuegroup_to_residuegroup(self, u):
         res = u.residues.residues
@@ -531,7 +537,7 @@ class TestGroupLevelTransition(object):
         assert seg == u.segments
         assert seg is not u.segments
         assert seg._cache['isunique'] is True
-        assert seg._cache['unique'] is seg
+        assert seg._cache['sorted_unique'] is seg
 
     def test_segmentgroup_to_atomgroup(self, u):
         seg = u.segments
@@ -541,8 +547,8 @@ class TestGroupLevelTransition(object):
         assert atm == u.atoms
         assert atm is not u.atoms
         # clear seg's uniqueness caches:
-        if 'unique' in seg._cache.keys():
-            del seg._cache['unique']
+        if 'sorted_unique' in seg._cache.keys():
+            del seg._cache['sorted_unique']
         if 'isunique' in seg._cache.keys():
             del seg._cache['isunique']
         atm = seg.atoms
@@ -550,13 +556,13 @@ class TestGroupLevelTransition(object):
         with pytest.raises(KeyError):
             _ = atm._cache['isunique']
         with pytest.raises(KeyError):
-            _ = atm._cache['unique']
+            _ = atm._cache['sorted_unique']
         # populate uniqueness cache of seg:
         assert seg.isunique
         atm = seg.atoms
         # assert uniqueness caches of atm are set:
         assert atm._cache['isunique'] is True
-        assert atm._cache['unique'] is atm
+        assert atm._cache['unsorted_unique'] is atm
 
     def test_segmentgroup_to_residuegroup(self, u):
         seg = u.segments
@@ -566,8 +572,8 @@ class TestGroupLevelTransition(object):
         assert res == u.residues
         assert res is not u.residues
         # clear seg's uniqueness caches:
-        if 'unique' in seg._cache.keys():
-            del seg._cache['unique']
+        if 'sorted_unique' in seg._cache.keys():
+            del seg._cache['sorted_unique']
         if 'isunique' in seg._cache.keys():
             del seg._cache['isunique']
         res = seg.residues
@@ -575,13 +581,13 @@ class TestGroupLevelTransition(object):
         with pytest.raises(KeyError):
             _ = res._cache['isunique']
         with pytest.raises(KeyError):
-            _ = res._cache['unique']
+            _ = res._cache['sorted_unique']
         # populate uniqueness cache of seg:
         assert seg.isunique
         res = seg.residues
         # assert uniqueness caches of res are set:
         assert res._cache['isunique'] is True
-        assert res._cache['unique'] is res
+        assert res._cache['unsorted_unique'] is res
 
     def test_segmentgroup_to_segmentgroup(self, u):
         seg = u.segments.segments
@@ -602,8 +608,8 @@ class TestGroupLevelTransition(object):
         assert isinstance(ag, groups.AtomGroup)
         assert len(ag) == 5
         assert ag._cache['isunique'] is True
-        assert ag._cache['unique'] is ag
-        del ag._cache['unique']
+        assert ag._cache['sorted_unique'] is ag
+        del ag._cache['sorted_unique']
         del ag._cache['isunique']
         assert ag.isunique
 
@@ -616,8 +622,8 @@ class TestGroupLevelTransition(object):
         assert isinstance(ag, groups.AtomGroup)
         assert len(ag) == 25
         assert ag._cache['isunique'] is True
-        assert ag._cache['unique'] is ag
-        del ag._cache['unique']
+        assert ag._cache['sorted_unique'] is ag
+        del ag._cache['sorted_unique']
         del ag._cache['isunique']
         assert ag.isunique
 
@@ -626,8 +632,8 @@ class TestGroupLevelTransition(object):
         assert isinstance(rg, groups.ResidueGroup)
         assert len(rg) == 5
         assert rg._cache['isunique'] is True
-        assert rg._cache['unique'] is rg
-        del rg._cache['unique']
+        assert rg._cache['sorted_unique'] is rg
+        del rg._cache['sorted_unique']
         del rg._cache['isunique']
         assert rg.isunique
 
@@ -636,21 +642,21 @@ class TestGroupLevelTransition(object):
         rg = ag.residues
         assert len(rg) == 2
         assert rg._cache['isunique'] is True
-        assert rg._cache['unique'] is rg
+        assert rg._cache['sorted_unique'] is rg
 
     def test_atomgroup_to_segmentgroup_unique(self, u):
         ag = u.atoms[0] + u.atoms[-1] + u.atoms[0]
         sg = ag.segments
         assert len(sg) == 2
         assert sg._cache['isunique'] is True
-        assert sg._cache['unique'] is sg
+        assert sg._cache['sorted_unique'] is sg
 
     def test_residuegroup_to_segmentgroup_unique(self, u):
         rg = u.residues[0] + u.residues[6] + u.residues[1]
         sg = rg.segments
         assert len(sg) == 2
         assert sg._cache['isunique'] is True
-        assert sg._cache['unique'] is sg
+        assert sg._cache['sorted_unique'] is sg
 
     def test_residuegroup_to_atomgroup_listcomp(self, u):
         rg = u.residues[0] + u.residues[0] + u.residues[4]
@@ -660,15 +666,14 @@ class TestGroupLevelTransition(object):
         with pytest.raises(KeyError):
             _ = ag._cache['isunique']
         with pytest.raises(KeyError):
-            _ = ag._cache['unique']
+            _ = ag._cache['sorted_unique']
         # populate uniqueness cache of rg:
         assert not rg.isunique
         ag = rg.atoms
-        # assert uniqueness caches of ag are still empty:
+        # ag uniqueness caches are now from residue
+        assert not ag._cache['isunique']
         with pytest.raises(KeyError):
-            _ = ag._cache['isunique']
-        with pytest.raises(KeyError):
-            _ = ag._cache['unique']
+            _ = ag._cache['sorted_unique']
 
     def test_segmentgroup_to_residuegroup_listcomp(self, u):
         sg = u.segments[0] + u.segments[0] + u.segments[1]
@@ -678,15 +683,14 @@ class TestGroupLevelTransition(object):
         with pytest.raises(KeyError):
             _ = rg._cache['isunique']
         with pytest.raises(KeyError):
-            _ = rg._cache['unique']
+            _ = rg._cache['sorted_unique']
         # populate uniqueness cache of sg:
         assert not sg.isunique
         rg = sg.residues
-        # assert uniqueness caches of rg are still empty:
+        # assert uniqueness caches of rg are now populated
+        assert not rg._cache['isunique']
         with pytest.raises(KeyError):
-            _ = rg._cache['isunique']
-        with pytest.raises(KeyError):
-            _ = rg._cache['unique']
+            _ = rg._cache['sorted_unique']
 
     def test_segmentgroup_to_atomgroup_listcomp(self, u):
         sg = u.segments[0] + u.segments[0] + u.segments[1]
@@ -696,15 +700,14 @@ class TestGroupLevelTransition(object):
         with pytest.raises(KeyError):
             _ = ag._cache['isunique']
         with pytest.raises(KeyError):
-            _ = ag._cache['unique']
+            _ = ag._cache['sorted_unique']
         # populate uniqueness cache of sg:
         assert not sg.isunique
         ag = sg.atoms
-        # assert uniqueness caches of ag are still empty:
+        # ag uniqueness caches are now from segment
+        assert not ag._cache['isunique']
         with pytest.raises(KeyError):
-            _ = ag._cache['isunique']
-        with pytest.raises(KeyError):
-            _ = ag._cache['unique']
+            _ = ag._cache['sorted_unique']
 
 
 class TestComponentComparisons(object):
@@ -1027,7 +1030,7 @@ class TestGroupBaseOperators(object):
         with pytest.raises(KeyError):
             _ = group._cache['isunique']
         with pytest.raises(KeyError):
-            _ = group._cache['unique']
+            _ = group._cache['sorted_unique']
         # make a copy:
         cgroup = group.copy()
         # check if cgroup is an identical copy of group:
@@ -1038,14 +1041,15 @@ class TestGroupBaseOperators(object):
         with pytest.raises(KeyError):
             _ = cgroup._cache['isunique']
         with pytest.raises(KeyError):
-            _ = cgroup._cache['unique']
+            _ = cgroup._cache['sorted_unique']
         # populate group's uniqueness caches:
         assert group.isunique
         # make a copy:
         cgroup = group.copy()
         # check if the copied group's uniqueness caches are set correctly:
         assert cgroup._cache['isunique'] is True
-        assert cgroup._cache['unique'] is cgroup
+        # assert sorted_unique still doesn't exist
+        assert 'sorted_unique' not in cgroup._cache
         # add duplicate element to group:
         group += group[0]
         # populate group's uniqueness caches:
@@ -1055,7 +1059,7 @@ class TestGroupBaseOperators(object):
         # check if the copied group's uniqueness caches are set correctly:
         assert cgroup._cache['isunique'] is False
         with pytest.raises(KeyError):
-            _ = cgroup._cache['unique']
+            _ = cgroup._cache['sorted_unique']
         # assert that duplicates are preserved:
         assert cgroup == group
 
