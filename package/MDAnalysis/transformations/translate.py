@@ -39,14 +39,18 @@ or defined by centering an AtomGroup in the unit cell using the function
 import numpy as np
 from functools import partial
 
+from .base import TransformationBase
 
-class translate(object):
+
+class translate(TransformationBase):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance by a given vector.
 
     Example
     -------
+    .. code-block:: python
+
         ts = MDAnalysis.transformations.translate([1,2,3])(ts)
 
     Parameters
@@ -58,8 +62,19 @@ class translate(object):
     -------
     :class:`~MDAnalysis.coordinates.base.Timestep` object
 
+
+    .. versionchanged:: 2.0.0
+       The transformation was changed from a function/closure to a class
+       with ``__call__``.
+    .. versionchanged:: 2.0.0
+       The transformation was changed to inherit from the base class for
+       limiting threads and checking if it can be used in parallel analysis.
     """
-    def __init__(self, vector):
+    def __init__(self, vector,
+                 max_threads=None, parallelizable=True):
+        super().__init__(max_threads=max_threads,
+                         parallelizable=parallelizable)
+
         self.vector = vector
 
         if len(self.vector) > 2:
@@ -67,12 +82,12 @@ class translate(object):
         else:
             raise ValueError("{} vector is too short".format(self.vector))
 
-    def __call__(self, ts):
+    def _transform(self, ts):
         ts.positions += self.vector
         return ts
 
 
-class center_in_box(object):
+class center_in_box(TransformationBase):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`
@@ -111,8 +126,15 @@ class center_in_box(object):
     .. versionchanged:: 2.0.0
         The transformation was changed from a function/closure to a class
         with ``__call__``.
+    .. versionchanged:: 2.0.0
+       The transformation was changed to inherit from the base class for
+       limiting threads and checking if it can be used in parallel analysis.
     """
-    def __init__(self, ag, center='geometry', point=None, wrap=False):
+    def __init__(self, ag, center='geometry', point=None, wrap=False,
+                 max_threads=None, parallelizable=True):
+        super().__init__(max_threads=max_threads,
+                         parallelizable=parallelizable)
+
         self.ag = ag
         self.center = center
         self.point = point
@@ -140,8 +162,10 @@ class center_in_box(object):
                 raise ValueError(f'{self.ag} is not an AtomGroup object') \
                                  from None
 
-    def __call__(self, ts):
+    def _transform(self, ts):
         if self.point is None:
+            if ts.dimensions is None:
+                raise ValueError("Box is None")
             boxcenter = np.sum(ts.triclinic_dimensions, axis=0) / 2
         else:
             boxcenter = self.point

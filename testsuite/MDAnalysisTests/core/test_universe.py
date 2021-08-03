@@ -24,7 +24,8 @@ import pickle
 
 import os
 import subprocess
-
+import errno
+from collections import defaultdict
 from io import StringIO
 
 import numpy as np
@@ -45,6 +46,7 @@ from MDAnalysisTests.datafiles import (
     GRO, TRR,
     two_water_gro, two_water_gro_nonames,
     TRZ, TRZ_psf,
+    PDB, MMTF,
 )
 
 import MDAnalysis as mda
@@ -53,6 +55,7 @@ from MDAnalysis.topology.base import TopologyReaderBase
 from MDAnalysis.transformations import translate
 from MDAnalysisTests import assert_nowarns
 from MDAnalysis.exceptions import NoDataError
+from MDAnalysis.core.topologyattrs import _AtomStringAttr
 
 
 class IOErrorParser(TopologyReaderBase):
@@ -161,12 +164,10 @@ class TestUniverseCreation(object):
                                 shell=True)
             else:
                 os.chmod(temp_file, 0o200)
-            try:
+
+            # Issue #3221 match by PermissionError and error number instead
+            with pytest.raises(PermissionError, match=f"Errno {errno.EACCES}"):
                 mda.Universe('permission.denied.tpr')
-            except IOError as e:
-                assert 'Permission denied' in str(e.strerror)
-            else:
-                raise AssertionError
 
     def test_load_new_VE(self):
         u = mda.Universe.empty(0)
@@ -209,6 +210,12 @@ class TestUniverseCreation(object):
         assert isinstance(u2.trajectory, type(u.trajectory))
         assert_equal(u.trajectory.n_frames, u2.trajectory.n_frames)
         assert u2._topology is u._topology
+
+    def test_universe_empty_ROMol(self):
+        Chem = pytest.importorskip("rdkit.Chem")
+        mol = Chem.Mol()
+        u = mda.Universe(mol, format="RDKIT")
+        assert len(u.atoms) == 0
 
 
 class TestUniverseFromSmiles(object):
@@ -672,7 +679,7 @@ class TestAddTopologyAttr(object):
 
         assert hasattr(universe.atoms, attrname)
         assert getattr(universe.atoms, attrname)[0] == default
-    
+
     @pytest.mark.parametrize(
         'attr,values', (
             ('bonds', [(1, 0), (1, 2)]),
@@ -707,7 +714,90 @@ class TestAddTopologyAttr(object):
     def add_connection_error(self, universe, attr, values):
         with pytest.raises(ValueError):
             universe.add_TopologyAttr(attr, values)
-    
+
+
+class TestDelTopologyAttr(object):
+    @pytest.fixture()
+    def universe(self):
+        u = make_Universe(("masses", "charges", "resnames"))
+        u.add_TopologyAttr("bonds", [(0, 1)])
+        return u
+
+    def test_del_TA_fail(self, universe):
+        with pytest.raises(ValueError, match="Unrecognised"):
+            universe.del_TopologyAttr('silly')
+
+    def test_absent_fail(self, universe):
+        with pytest.raises(ValueError, match="not in Universe"):
+            universe.del_TopologyAttr("angles")
+
+    def test_wrongtype_fail(self, universe):
+        with pytest.raises(ValueError, match="must be str or TopologyAttr"):
+            universe.del_TopologyAttr(list)
+
+    @pytest.mark.parametrize(
+        'todel,attrname', [
+            ("charge", "charges"),
+            ("charges", "charges"),
+            ("bonds", "bonds"),
+        ]
+    )
+    def test_del_str(self, universe, todel, attrname):
+        assert hasattr(universe.atoms, attrname)
+        universe.del_TopologyAttr(todel)
+        assert not hasattr(universe.atoms, attrname)
+
+    def test_del_attr(self, universe):
+        assert hasattr(universe.atoms, "resnames")
+        assert hasattr(universe.residues, "resnames")
+        assert hasattr(universe.segments, "resnames")
+        assert hasattr(universe.atoms[0], "resname")
+        assert hasattr(universe.residues[0], "resname")
+        universe.del_TopologyAttr(universe._topology.resnames)
+        assert not hasattr(universe.atoms, "resnames")
+        assert not hasattr(universe.residues, "resnames")
+        assert not hasattr(universe.segments, "resnames")
+        assert not hasattr(universe.atoms[0], "resname")
+        assert not hasattr(universe.residues[0], "resname")
+
+    def test_del_transplants(self, universe):
+        atom = universe.atoms[0]
+        assert hasattr(atom, "fragindex")
+        universe.del_TopologyAttr(universe.bonds)
+        assert not hasattr(atom, "fragindex")
+        assert not hasattr(universe.atoms, "fragindices")
+
+    def test_del_attr_error(self, universe):
+        assert not hasattr(universe._topology, "elements")
+        with pytest.raises(AttributeError):
+            universe._topology.del_TopologyAttr("elements")
+
+    def test_del_attr_from_ag(self, universe):
+        ag = universe.atoms[[0]]
+        ag.residues.resnames = "xyz"
+        universe.del_TopologyAttr("resnames")
+        with pytest.raises(NoDataError):
+            ag.resnames
+
+    def test_del_func_from_universe(self, universe):
+        class RootVegetable(_AtomStringAttr):
+            attrname = "tubers"
+            singular = "tuber"
+            transplants = defaultdict(list)
+
+            def potatoes(self):
+                """🥔
+                """
+                return "potoooooooo"
+
+            transplants["Universe"].append(("potatoes", potatoes))
+        
+        universe.add_TopologyAttr("tubers")
+        assert universe.potatoes() == "potoooooooo"
+        universe.del_TopologyAttr("tubers")
+        with pytest.raises(AttributeError):
+            universe.potatoes()
+
 
 def _a_or_reversed_in_b(a, b):
     """
@@ -765,7 +855,7 @@ class TestAddTopologyObjects(object):
         with pytest.raises(ValueError) as excinfo:
             _add_func(to_add)
         assert err_msg in str(excinfo.value)
-    
+
     @pytest.mark.parametrize(
         'attr,values', small_atom_indices
     )
@@ -823,7 +913,7 @@ class TestAddTopologyObjects(object):
         'attr,values', large_atom_indices
     )
     def test_add_topologygroups_to_populated(self, universe, attr, values):
-        topologygroup = mda.core.topologyobjects.TopologyGroup(np.array(values), 
+        topologygroup = mda.core.topologyobjects.TopologyGroup(np.array(values),
                                                                universe)
         self._check_valid_added_to_populated(universe, attr, values, topologygroup)
 
@@ -831,15 +921,15 @@ class TestAddTopologyObjects(object):
         'attr,values', small_atom_indices
     )
     def test_add_topologygroup_wrong_universe_error(self, universe, empty, attr, values):
-        tg = mda.core.topologyobjects.TopologyGroup(np.array(values), 
+        tg = mda.core.topologyobjects.TopologyGroup(np.array(values),
                                                     universe)
         self._check_invalid_addition(empty, attr, tg, 'different Universes')
-    
+
     @pytest.mark.parametrize(
         'attr,values', small_atom_indices
     )
     def test_add_topologygroup_different_universe(self, universe, empty, attr, values):
-        tg = mda.core.topologyobjects.TopologyGroup(np.array(values), 
+        tg = mda.core.topologyobjects.TopologyGroup(np.array(values),
                                                                universe)
         self._check_valid_added_to_empty(empty, attr, values, tg.to_indices())
 
@@ -880,7 +970,7 @@ class TestAddTopologyObjects(object):
                   'tuples with {} atom indices').format(attr, n)
         idx = [(0, 1), (0, 1, 2), (8, 22, 1, 3), (5, 3, 4, 2)]
         self._check_invalid_addition(universe, attr, idx, errmsg)
-    
+
     def test_add_bonds_refresh_fragments(self, empty):
         with pytest.raises(NoDataError):
             getattr(empty.atoms, 'fragments')
@@ -904,7 +994,7 @@ class TestAddTopologyObjects(object):
         _delete_func(values)
         u_attr = getattr(empty, attr)
         assert len(u_attr) == 0
-    
+
 class TestDeleteTopologyObjects(object):
 
     TOP = {'bonds': [(0, 1), (2, 3), (3, 4), (4, 5), (7, 8)],
@@ -950,7 +1040,7 @@ class TestDeleteTopologyObjects(object):
         assert len(u_attr) == original_length-len(values)
 
         not_deleted = [x for x in self.TOP[attr] if list(x) not in values]
-        assert all([x in u_attr.indices or x[::-1] in u_attr.indices 
+        assert all([x in u_attr.indices or x[::-1] in u_attr.indices
                    for x in not_deleted])
 
     def _check_invalid_deleted(self, u, attr, to_delete, err_msg):
@@ -994,7 +1084,7 @@ class TestDeleteTopologyObjects(object):
     def test_delete_missing_atomgroup(self, universe, attr, values):
         ag = [universe.atoms[x] for x in values]
         self._check_invalid_deleted(universe, attr, ag, 'Cannot delete nonexistent')
-    
+
     @pytest.mark.parametrize(
         'attr,values', existing_atom_indices
     )
@@ -1040,7 +1130,7 @@ class TestDeleteTopologyObjects(object):
         arr = np.array(values)
         tg = mda.core.topologyobjects.TopologyGroup(arr, universe2)
         self._check_valid_deleted(universe, attr, values, tg.to_indices())
-    
+
     @pytest.mark.parametrize(
         'attr,n', (
             ('bonds', 2),
@@ -1053,8 +1143,8 @@ class TestDeleteTopologyObjects(object):
         idx = [(0, 1), (0, 1, 2), (8, 22, 1, 3), (5, 3, 4, 2)]
         errmsg = ('{} must be an iterable of '
                   'tuples with {} atom indices').format(attr, n)
-        self._check_invalid_deleted(universe, attr, idx, errmsg)  
-    
+        self._check_invalid_deleted(universe, attr, idx, errmsg)
+
     @pytest.mark.parametrize(
         'attr,values', existing_atom_indices
     )
@@ -1091,7 +1181,7 @@ class TestDeleteTopologyObjects(object):
 
         assert_array_equal(u_attr.indices, nu_attr.indices)
 
-    
+
 class TestAllCoordinatesKwarg(object):
     @pytest.fixture(scope='class')
     def u_GRO_TRR(self):
@@ -1202,3 +1292,15 @@ class TestEmpty(object):
         with pytest.raises(TypeError) as exc:
             u = mda.Universe()
         assert 'Universe.empty' in str(exc.value)
+
+
+def test_deprecate_b_tempfactors():
+    u = mda.Universe(PDB)
+    with pytest.warns(DeprecationWarning, match="alias"):
+        u.add_TopologyAttr("bfactors")
+
+
+def test_deprecate_temp_bfactors():
+    u = mda.Universe(MMTF)
+    with pytest.warns(DeprecationWarning, match="alias"):
+        u.add_TopologyAttr("tempfactors")

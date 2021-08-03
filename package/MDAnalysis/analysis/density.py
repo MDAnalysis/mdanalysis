@@ -74,8 +74,8 @@ is suitably superimposed to provide a fixed reference frame) [#testraj]_ ::
   ow = u.select_atoms("name OW")
   D = DensityAnalysis(ow, delta=1.0)
   D.run()
-  D.density.convert_density('TIP4P')
-  D.density.export("water.dx", type="double")
+  D.results.density.convert_density('TIP4P')
+  D.results.density.export("water.dx", type="double")
 
 The positions of all water oxygens (the :class:`AtomGroup` `ow`) are
 histogrammed on a grid with spacing *delta* = 1 Å. Initially the density is
@@ -87,9 +87,9 @@ details). Finally, the density is written as an OpenDX_ compatible file that
 can be read in VMD_, Chimera_, or PyMOL_.
 
 The :class:`Density` object is accessible as the
-:attr:`DensityAnalysis.density` attribute.  In particular, the data for the
-density is stored as a NumPy array in :attr:`Density.grid`, which can be
-processed in any manner.
+:attr:`DensityAnalysis.results.density` attribute.  In particular, the data
+for the density is stored as a NumPy array in :attr:`Density.grid`, which can
+be processed in any manner.
 
 
 Creating densities
@@ -102,10 +102,12 @@ atomgroup.
    :members:
    :inherited-members: run
 
-   .. attribute:: density
+   .. attribute:: results.density
 
-      After the analysis (see the :meth:`~DensityAnalysis.run` method), the resulting density is
-      stored in the :attr:`density` attribute as a :class:`Density` instance.
+      After the analysis (see the :meth:`~DensityAnalysis.run` method), the
+      resulting density is stored in the :attr:`results.density` attribute as
+      a :class:`Density` instance. Note: this replaces the now deprecated
+      :attr:`density` attribute.
 
    .. automethod:: _set_user_grid
 
@@ -166,7 +168,8 @@ from gridData import Grid
 
 import MDAnalysis
 from MDAnalysis.core import groups
-from MDAnalysis.lib.util import fixedwidth_bins, iterable, asiterable
+from MDAnalysis.lib.util import (fixedwidth_bins, iterable, asiterable,
+                                 deprecate,)
 from MDAnalysis.lib import NeighborSearch as NS
 from MDAnalysis import NoDataError, MissingDataWarning
 from .. import units
@@ -202,20 +205,33 @@ class DensityAnalysis(AnalysisBase):
             3 element numpy array detailing the x, y and z coordinates of the
             center of a user defined grid box in ångström.
     xdim : float (optional)
-            User defined x dimension box edge in ångström; ignored if
-            gridcenter is "None".
+            User defined x dimension box edge in ångström.
     ydim : float (optional)
-            User defined y dimension box edge in ångström; ignored if
-            gridcenter is "None".
+            User defined y dimension box edge in ångström.
     zdim : float (optional)
-            User defined z dimension box edge in ångström; ignored if
-            gridcenter is "None".
+            User defined z dimension box edge in ångström.
 
-    Returns
-    -------
-    :class:`Density`
+    Attributes
+    ----------
+    results.density : :class:`Density`
             A :class:`Density` instance containing a physical density of units
             :math:`Angstrom^{-3}`.
+
+    density : :class:`Density`
+            Alias to the :attr:`results.density`.
+
+            .. deprecated:: 2.0.0
+               Will be removed in MDAnalysis 3.0.0. Please use
+               :attr:`results.density` instead.
+
+    Raises
+    ------
+    ValueError
+        if AtomGroup is empty and no user defined grid is provided, or
+        if the user defined grid is not or incorrectly provided
+    UserWarning
+        if AtomGroup is empty and a user defined grid is provided
+
 
     See Also
     --------
@@ -223,12 +239,22 @@ class DensityAnalysis(AnalysisBase):
 
     Notes
     -----
+    If the `gridcenter` and `x/y/zdim` arguments are not provided,
+    :class:`DensityAnalysis` will attempt to automatically generate
+    a gridbox from the atoms in 'atomgroup' (See Examples).
+
     Normal :class:`AtomGroup` instances represent a static selection of
     atoms. If you want *dynamically changing selections* (such as "name OW and
     around 4.0 (protein and not name H*)", i.e., the water oxygen atoms that
     are within 4 Å of the protein heavy atoms) then create an
     :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` (see Examples).
 
+    :class:`DensityAnalysis` will fail when the :class:`AtomGroup` instance
+    does not contain any selection of atoms, even when `updating` is set to
+    ``True``. In such a situation, user defined box limits can be provided to
+    generate a `Density`. Although, it remains the user's responsibility
+    to ensure that the provided grid limits encompass atoms to be selected
+    on all trajectory frames.
 
     Examples
     --------
@@ -266,11 +292,11 @@ class DensityAnalysis(AnalysisBase):
         ow = u.select_atoms("name OW")
         D = density.DensityAnalysis(ow, delta=1.0)
         D.run()
-        D.density.convert_density('TIP4P')
+        D.results.density.convert_density('TIP4P')
 
     The positions of all water oxygens are histogrammed on a grid with spacing
     *delta* = 1 Å and stored as a :class:`Density` object in the attribute
-    :attr:`DensityAnalysis.density`.
+    :attr:`DensityAnalysis.results.density`.
 
     .. rubric:: Working with a density
 
@@ -288,7 +314,7 @@ class DensityAnalysis(AnalysisBase):
     density in units of Å\ :sup:`-3`. If you are interested in recovering the
     underlying **probability density**, simply divide by the sum::
 
-      probability_density = D.density.grid / D.density.grid.sum()
+      probability_density = D.results.density.grid / D.results.density.grid.sum()
 
     Similarly, if you would like to recover a grid containing a **histogram of
     atom counts**, simply multiply by the volume `dV` of each bin (or voxel);
@@ -298,10 +324,10 @@ class DensityAnalysis(AnalysisBase):
       import numpy as np
 
       # ensure that the density is A^{-3}
-      D.density.convert_density("A^{-3}")
+      D.results.density.convert_density("A^{-3}")
 
-      dV = np.prod(D.density.delta)
-      atom_count_histogram = D.density.grid * dV
+      dV = np.prod(D.results.density.delta)
+      atom_count_histogram = D.results.density.grid * dV
 
 
     .. rubric:: Writing the density to a file
@@ -314,7 +340,7 @@ class DensityAnalysis(AnalysisBase):
     <https://www.mdanalysis.org/GridDataFormats/gridData/basic.html#writing-out-data>`_
     ``water.dx`` that can be read with VMD, PyMOL, or Chimera::
 
-      D.density.export("water.dx", type="double")
+      D.results.density.export("water.dx", type="double")
 
 
     .. rubric:: Example: Water density in the whole simulation
@@ -368,7 +394,10 @@ class DensityAnalysis(AnalysisBase):
     .. versionadded:: 1.0.0
     .. versionchanged:: 2.0.0
        :func:`_set_user_grid` is now a method of :class:`DensityAnalysis`.
+       :class:`Density` results are now stored in a
+       :class:`MDAnalysis.analysis.base.Results` instance.
     """
+
     def __init__(self, atomgroup, delta=1.0,
                  metadata=None, padding=2.0,
                  gridcenter=None,
@@ -385,7 +414,8 @@ class DensityAnalysis(AnalysisBase):
 
     def _prepare(self):
         coord = self._atomgroup.positions
-        if self._gridcenter is not None:
+        if (self._gridcenter is not None or
+                any([self._xdim, self._ydim, self._zdim])):
             # Issue 2372: padding is ignored, defaults to 2.0 therefore warn
             if self._padding > 0:
                 msg = (f"Box padding (currently set at {self._padding}) "
@@ -394,8 +424,18 @@ class DensityAnalysis(AnalysisBase):
                 logger.warning(msg)
             # Generate a copy of smin/smax from coords to later check if the
             # defined box might be too small for the selection
-            smin = np.min(coord, axis=0)
-            smax = np.max(coord, axis=0)
+            try:
+                smin = np.min(coord, axis=0)
+                smax = np.max(coord, axis=0)
+            except ValueError as err:
+                msg = ("No atoms in AtomGroup at input time frame. "
+                       "This may be intended; please ensure that "
+                       "your grid selection covers the atomic "
+                       "positions you wish to capture.")
+                warnings.warn(msg)
+                logger.warning(msg)
+                smin = self._gridcenter     #assigns limits to be later -
+                smax = self._gridcenter     #overwritten by _set_user_grid
             # Overwrite smin/smax with user defined values
             smin, smax = self._set_user_grid(self._gridcenter, self._xdim,
                                              self._ydim, self._zdim, smin,
@@ -408,8 +448,16 @@ class DensityAnalysis(AnalysisBase):
             # ideal solution would use images: implement 'looking across the
             # periodic boundaries' but that gets complicated when the box
             # rotates due to RMS fitting.
-            smin = np.min(coord, axis=0) - self._padding
-            smax = np.max(coord, axis=0) + self._padding
+            try:
+                smin = np.min(coord, axis=0) - self._padding
+                smax = np.max(coord, axis=0) + self._padding
+            except ValueError as err:
+                errmsg = ("No atoms in AtomGroup at input time frame. "
+                          "Grid for density could not be automatically"
+                          " generated. If this is expected, a user"
+                          " defined grid will need to be "
+                          "provided instead.")
+                raise ValueError(errmsg) from err
         BINS = fixedwidth_bins(self._delta, smin, smax)
         arange = np.transpose(np.vstack((BINS['min'], BINS['max'])))
         bins = BINS['Nbins']
@@ -421,7 +469,6 @@ class DensityAnalysis(AnalysisBase):
         self._edges = edges
         self._arange = arange
         self._bins = bins
-        self.density = None
 
     def _single_frame(self):
         h, _ = np.histogramdd(self._atomgroup.positions,
@@ -440,7 +487,15 @@ class DensityAnalysis(AnalysisBase):
                           units={'length': "Angstrom"},
                           parameters={'isDensity': False})
         density.make_density()
-        self.density = density
+        self.results.density = density
+
+    @property
+    def density(self):
+        wmsg = ("The `density` attribute was deprecated in MDAnalysis 2.0.0 "
+                "and will be removed in MDAnalysis 3.0.0. Please use "
+                "`results.density` instead")
+        warnings.warn(wmsg, DeprecationWarning)
+        return self.results.density
 
     @staticmethod
     def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
@@ -474,17 +529,20 @@ class DensityAnalysis(AnalysisBase):
            Now a staticmethod of :class:`DensityAnalysis`.
         """
         # Check user inputs
+        if any(x is None for x in [gridcenter, xdim, ydim, zdim]):
+            errmsg = ("Gridcenter or grid dimensions are not provided")
+            raise ValueError(errmsg)
         try:
-            gridcenter = np.asarray(gridcenter, dtype=np.float32)
+            gridcenter = np.asarray(gridcenter, dtype=np.float32).reshape(3,)
         except ValueError as err:
-            errmsg = "Non-number values assigned to gridcenter"
-            raise ValueError(errmsg) from err
-        if gridcenter.shape != (3,):
-            raise ValueError("gridcenter must be a 3D coordinate")
+            raise ValueError("Gridcenter must be a 3D coordinate") from err
         try:
             xyzdim = np.array([xdim, ydim, zdim], dtype=np.float32)
         except ValueError as err:
             raise ValueError("xdim, ydim, and zdim must be numbers") from err
+        if any(np.isnan(gridcenter)) or any(np.isnan(xyzdim)):
+            raise ValueError("Gridcenter or grid dimensions have NaN element")
+
 
         # Set min/max by shifting by half the edge length of each dimension
         umin = gridcenter - xyzdim/2

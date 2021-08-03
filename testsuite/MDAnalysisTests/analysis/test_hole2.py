@@ -200,13 +200,10 @@ class TestHole(object):
 
     def test_output_level(self, tmpdir):
         with tmpdir.as_cwd():
-            with pytest.warns(UserWarning) as rec:
+            with pytest.warns(UserWarning, match="needs to be < 3"):
                 profiles = hole2.hole(self.filename,
                                       random_seed=self.random_seed,
                                       output_level=100)
-            assert len(rec) == 1
-            assert 'needs to be < 3' in rec[0].message.args[0]
-            # no profiles
             assert len(profiles) == 0
 
     def test_keep_files(self, tmpdir):
@@ -255,18 +252,26 @@ class BaseTestHole(object):
 
     @pytest.fixture()
     def profiles(self, hole, frames):
-        return [hole.profiles[f] for f in frames]
+        return [hole.results.profiles[f] for f in frames]
 
+    @pytest.mark.parametrize("attrname", ["sphpdbs", "outfiles", "profiles"])
+    def test_deprecated_warning(self, hole, attrname):
+        wmsg = (f"The `{attrname}` attribute was deprecated in "
+                "MDAnalysis 2.0.0 and will be removed in MDAnalysis 3.0.0. "
+                f"Please use `results.{attrname}` instead.")
+        with pytest.warns(DeprecationWarning, match=wmsg):
+            value = getattr(hole, attrname)
+            assert value is hole.results[attrname]
 
 class TestHoleAnalysis(BaseTestHole):
 
     def test_correct_profile_values(self, hole, frames):
-        assert_equal(sorted(hole.profiles.keys()), frames,
-                     err_msg="hole.profiles.keys() should contain the frame numbers")
+        assert_equal(sorted(hole.results.profiles.keys()), frames,
+                     err_msg="hole.results.profiles.keys() should contain the frame numbers")
         assert_equal(list(hole.frames), frames,
                      err_msg="hole.frames should contain the frame numbers")
         data = np.transpose([(len(p), p.rxn_coord.mean(), p.radius.min())
-                             for p in hole.profiles.values()])
+                             for p in hole.results.profiles.values()])
         assert_equal(data[0], [401, 399], err_msg="incorrect profile lengths")
         assert_almost_equal(data[1], [1.98767,  0.0878],
                             err_msg="wrong mean HOLE rxn_coord")
@@ -308,7 +313,7 @@ class TestHoleAnalysis(BaseTestHole):
                       stop=self.stop, random_seed=self.random_seed)
 
             # no profiles
-            assert len(h.profiles) == 0
+            assert len(h.results.profiles) == 0
 
     def test_cpoint_geometry(self, tmpdir, universe):
         protein = universe.select_atoms('protein')
@@ -449,7 +454,7 @@ class TestHoleAnalysisLong(BaseTestHole):
 
     def test_gather(self, hole):
         gd = hole.gather(flat=False)
-        for i, p in enumerate(hole.profiles.values()):
+        for i, p in enumerate(hole.results.profiles.values()):
             assert_almost_equal(p.rxn_coord, gd['rxn_coord'][i])
             assert_almost_equal(p.radius, gd['radius'][i])
             assert_almost_equal(p.cen_line_D, gd['cen_line_D'][i])
@@ -457,7 +462,7 @@ class TestHoleAnalysisLong(BaseTestHole):
     def test_gather_flat(self, hole):
         gd = hole.gather(flat=True)
         i = 0
-        for p in hole.profiles.values():
+        for p in hole.results.profiles.values():
             j = i+len(p.rxn_coord)
             assert_almost_equal(p.rxn_coord, gd['rxn_coord'][i:j])
             assert_almost_equal(p.radius, gd['radius'][i:j])
@@ -467,7 +472,7 @@ class TestHoleAnalysisLong(BaseTestHole):
 
     def test_min_radius(self, hole):
         rad = hole.min_radius()
-        for (f1, p), (f2, r) in zip(hole.profiles.items(), rad):
+        for (f1, p), (f2, r) in zip(hole.results.profiles.items(), rad):
             assert_equal(f1, f2)
             assert_almost_equal(min(p.radius), r)
 
@@ -480,7 +485,8 @@ class TestHoleAnalysisLong(BaseTestHole):
             assert key == rmsd
 
         idx = np.argsort(op)
-        arr = np.array(list(hole.profiles.values()), dtype=object)
+        arr = np.array(list(hole.results.profiles.values()), dtype=object)
+
         for op_prof, arr_prof in zip(profiles.values(), arr[idx]):
             assert op_prof is arr_prof
 
@@ -496,7 +502,8 @@ class TestHoleAnalysisLong(BaseTestHole):
             assert key == rmsd
 
         idx = np.argsort(op)
-        arr = np.array(list(hole.profiles.values()), dtype=object)
+        arr = np.array(list(hole.results.profiles.values()), dtype=object)
+
         for op_prof, arr_prof in zip(profiles.values(), arr[idx]):
             assert op_prof is arr_prof
 
@@ -519,7 +526,8 @@ class TestHoleAnalysisLong(BaseTestHole):
             assert key == rmsd
 
         idx = np.argsort(op[:n_frames])
-        values = list(hole.profiles.values())[:n_frames]
+        values = list(hole.results.profiles.values())[:n_frames]
+
         arr = np.array(values, dtype=object)
         for op_prof, arr_prof in zip(profiles.values(), arr[idx]):
             assert op_prof is arr_prof
@@ -535,7 +543,7 @@ class TestHoleAnalysisLong(BaseTestHole):
         assert len(radii) == (len(bins)-1)
 
         # check first frame profile
-        first = hole.profiles[0]
+        first = hole.results.profiles[0]
         for row in first:
             coord = row.rxn_coord
             rad = row.radius
@@ -561,7 +569,7 @@ class TestHoleAnalysisLong(BaseTestHole):
         assert len(radii) == (len(bins)-1)
 
         # check first frame profile
-        first = hole.profiles[0]
+        first = hole.results.profiles[0]
         for row in first:
             coord = row.rxn_coord
             rad = row.radius

@@ -3,12 +3,12 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - chemfiles
+  - chemfiles>=0.9
   - codecov
   - cython
   - griddataformats
   - gsd
-  - h5py==2.10.0
+  - h5py
   - hypothesis
   - joblib>=0.12
   - matplotlib==3.2.2
@@ -16,8 +16,8 @@ dependencies:
   - mock
   - networkx
   - numpy>=1.17.3
-  - psutil
   - pytest
+  - python==3.7
   - scikit-learn
   - scipy
   - pip
@@ -31,5 +31,3 @@ dependencies:
       - parmed
       - msmb_theme==1.2.0
       - sphinx-sitemap==1.0.2
-      - git+https://github.com/MDAnalysis/mdanalysis@develop#egg=mdanalysis&subdirectory=package
-      - git+https://github.com/MDAnalysis/mdanalysis@develop#egg=MDAnalysisTests&subdirectory=testsuite

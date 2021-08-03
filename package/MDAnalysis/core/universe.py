@@ -58,6 +58,7 @@ import numpy as np
 import logging
 import copy
 import warnings
+import contextlib
 import collections
 
 import MDAnalysis
@@ -97,6 +98,7 @@ from .groups import (ComponentBase, GroupBase,
 from .topology import Topology
 from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr
 from .topologyobjects import TopologyObject
+
 
 logger = logging.getLogger("MDAnalysis.core.universe")
 
@@ -308,7 +310,7 @@ class Universe(object):
                  in_memory_step=1, **kwargs):
 
         self._trajectory = None  # managed attribute holding Reader
-        self._cache = {}
+        self._cache = {'_valid': {}}
         self.atoms = None
         self.residues = None
         self.segments = None
@@ -448,14 +450,13 @@ class Universe(object):
 
         if trajectory:
             coords = np.zeros((1, n_atoms, 3), dtype=np.float32)
-            dims = np.zeros(6, dtype=np.float32)
             vels = np.zeros_like(coords) if velocities else None
             forces = np.zeros_like(coords) if forces else None
 
             # grab and attach a MemoryReader
             u.trajectory = get_reader_for(coords)(
                 coords, order='fac', n_atoms=n_atoms,
-                dimensions=dims, velocities=vels, forces=forces)
+                velocities=vels, forces=forces)
 
         return u
 
@@ -763,6 +764,14 @@ class Universe(object):
            Can now also add TopologyAttrs with a string of the name of the
            attribute to add (eg 'charges'), can also supply initial values
            using values keyword.
+
+        .. versionchanged:: 1.1.0 
+            Now warns when adding bfactors to a Universe with
+            existing tempfactors, or adding tempfactors to a
+            Universe with existing bfactors.
+            In version 2.0, MDAnalysis will stop treating
+            tempfactors and bfactors as separate attributes. Instead,
+            they will be aliases of the same attribute.
         """
         if isinstance(topologyattr, str):
             try:
@@ -783,8 +792,74 @@ class Universe(object):
                     n_residues=self._topology.n_residues,
                     n_segments=self._topology.n_segments,
                     values=values)
+        alias_pairs = [("bfactors", "tempfactors"),
+                       ("tempfactors", "bfactors")]
+        for a, b in alias_pairs:
+            if topologyattr.attrname == a and hasattr(self._topology, b):
+                err = ("You are adding {a} to a Universe that "
+                       "has {b}. From MDAnalysis version 2.0, {a} "
+                       "and {b} will no longer be separate "
+                       "TopologyAttrs. Instead, they will be aliases "
+                       "of the same attribute.").format(a=a, b=b)
+                warnings.warn(err, DeprecationWarning)
         self._topology.add_TopologyAttr(topologyattr)
         self._process_attr(topologyattr)
+
+    def del_TopologyAttr(self, topologyattr):
+        """Remove a topology attribute from the Universe
+
+        Removing a TopologyAttribute from the Universe makes it unavailable to
+        all AtomGroups etc throughout the Universe.
+
+        Parameters
+        ----------
+        topologyattr: TopologyAttr or string
+          Either a MDAnalysis TopologyAttr object or the name of a possible
+          topology attribute.
+
+        Example
+        -------
+        For example to remove bfactors to a Universe:
+
+        >>> u.del_TopologyAttr('bfactors')
+        >>> hasattr(u.atoms[:3], 'bfactors')
+        False
+
+
+        .. versionadded:: 2.0.0
+        """
+
+        if not isinstance(topologyattr, str):
+            try:
+                topologyattr = topologyattr.attrname
+            except AttributeError:
+                # either TopologyGroup or not valid
+                try:
+                    # this may not end well
+                    # e.g. matrix -> matrices
+                    topologyattr = topologyattr.btype + "s"
+                except AttributeError:
+                    raise ValueError("Topology attribute must be str or "
+                                     "TopologyAttr object or class. "
+                                     f"Given: {type(topologyattr)}") from None
+
+        try:
+            topologyattr = _TOPOLOGY_ATTRS[topologyattr].attrname
+        except KeyError:
+            attrs = ', '.join(sorted(_TOPOLOGY_ATTRS))
+            errmsg = (f"Unrecognised topology attribute: '{topologyattr}'."
+                      f"  Possible values: '{attrs}'\n"
+                      "To raise an issue go to: "
+                      "https://github.com/MDAnalysis/mdanalysis/issues")
+            raise ValueError(errmsg) from None
+
+        try:
+            topattr = getattr(self._topology, topologyattr)
+        except AttributeError:
+            raise ValueError(f"Topology attribute {topologyattr} "
+                             "not in Universe.") from None
+        self._topology.del_TopologyAttr(topattr)
+        self._unprocess_attr(topattr)
 
     def _process_attr(self, attr):
         """Squeeze a topologyattr for its information
@@ -819,6 +894,24 @@ class Universe(object):
         # Universe transplants
         for funcname, meth in attr.transplants['Universe']:
             setattr(self.__class__, funcname, meth)
+
+    def _unprocess_attr(self, attr):
+        """
+        Undo all the stuff in _process_attr.
+
+        If the topology attribute is not present, nothing happens
+        (silent fail).
+        """
+        for cls in attr.target_classes:
+            self._class_bases[cls]._del_prop(attr)
+
+        # Universe transplants
+        for funcname, _ in attr.transplants.pop("Universe", []):
+            delattr(self.__class__, funcname)
+        # Group transplants
+        for cls, transplants in attr.transplants.items():
+            for funcname, _ in transplants:
+                delattr(self._class_bases[cls], funcname)
 
     def add_Residue(self, segment=None, **attrs):
         """Add a new Residue to this Universe
@@ -1002,7 +1095,10 @@ class Universe(object):
         """
         self._add_topology_objects('bonds', values, types=types,
                                  guessed=guessed, order=order)
+        # Invalidate bond-related caches
         self._cache.pop('fragments', None)
+        self._cache['_valid'].pop('fragments', None)
+        self._cache['_valid'].pop('fragindices', None)
 
     def add_angles(self, values, types=None, guessed=False):
         """Add new Angles to this Universe.
@@ -1139,7 +1235,10 @@ class Universe(object):
         .. versionadded:: 1.0.0
         """
         self._delete_topology_objects('bonds', values)
+        # Invalidate bond-related caches
         self._cache.pop('fragments', None)
+        self._cache['_valid'].pop('fragments', None)
+        self._cache['_valid'].pop('fragindices', None)
 
     def delete_angles(self, values):
         """Delete Angles from this Universe.
@@ -1237,24 +1336,18 @@ class Universe(object):
         ----------
         smiles : str
             SMILES string
-
         sanitize : bool (optional, default True)
             Toggle the sanitization of the molecule
-
         addHs : bool (optional, default True)
             Add all necessary hydrogens to the molecule
-
         generate_coordinates : bool (optional, default True)
             Generate 3D coordinates using RDKit's `AllChem.EmbedMultipleConfs`
             function. Requires adding hydrogens with the `addHs` parameter
-
         numConfs : int (optional, default 1)
             Number of frames to generate coordinates for. Ignored if
             `generate_coordinates=False`
-
         rdkit_kwargs : dict (optional)
             Other arguments passed to the RDKit `EmbedMultipleConfs` function
-
         kwargs : dict
             Parameters passed on Universe creation
 

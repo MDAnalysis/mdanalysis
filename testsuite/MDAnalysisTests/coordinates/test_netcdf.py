@@ -200,9 +200,8 @@ class TestNCDFReader2(object):
         assert_almost_equal(ref, u.trajectory.ts.dt, self.prec)
 
     def test_box(self, u):
-        ref = np.array([0., 0., 0., 0., 0., 0.], dtype=np.float32)
         for ts in u.trajectory:
-            assert_equal(ref, ts.dimensions)
+            assert ts.dimensions is None
 
 
 class TestNCDFReader3(object):
@@ -594,6 +593,19 @@ class TestNCDFReaderExceptionsWarnings(_NCDFGenerator):
                     "attributes are missing")
             assert str(record[0].message.args[0]) == wmsg
 
+    def test_no_dt_warning(self, tmpdir):
+        """Issue 3166 - not being able to call dt should throw a warning.
+        Also at the same time checks that single frame chain reading works"""
+        u = mda.Universe(PFncdf_Top, PFncdf_Trj)
+        with tmpdir.as_cwd():
+            with NCDFWriter('single_frame.nc', u.atoms.n_atoms) as W:
+                W.write(u)
+
+            # Using the ChainReader implicitly calls dt() and thus _get_dt()
+            wmsg = "Reader has no dt information, set to 1.0 ps"
+            with pytest.warns(UserWarning, match=wmsg):
+                u2 = mda.Universe(PFncdf_Top, [PFncdf_Trj, 'single_frame.nc'])
+
 
 class _NCDFWriterTest(object):
     prec = 5
@@ -891,21 +903,25 @@ class TestNCDFWriterUnits(object):
             assert_equal(unit, expected)
 
 
-class TestNCDFWriterErrors(object):
+class TestNCDFWriterErrorsWarnings(object):
     @pytest.fixture()
     def outfile(self, tmpdir):
         return str(tmpdir) + 'out.ncdf'
 
     def test_zero_atoms_VE(self, outfile):
-        from MDAnalysis.coordinates.TRJ import NCDFWriter
-
         with pytest.raises(ValueError):
             NCDFWriter(outfile, 0)
 
     def test_wrong_n_atoms(self, outfile):
-        from MDAnalysis.coordinates.TRJ import NCDFWriter
-
         with NCDFWriter(outfile, 100) as w:
             u = make_Universe(trajectory=True)
             with pytest.raises(IOError):
                 w.write(u)
+
+    def test_scale_factor_future(self, outfile):
+        u = mda.Universe(GRO)
+        wmsg = "`scale_factor` writing will change"
+        with pytest.warns(FutureWarning, match=wmsg):
+            with NCDFWriter(outfile, u.trajectory.n_atoms) as w:
+                w.write(u.atoms)
+

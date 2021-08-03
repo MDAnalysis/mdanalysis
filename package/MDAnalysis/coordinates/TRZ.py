@@ -90,34 +90,10 @@ import os
 import errno
 
 from . import base
+from .base import Timestep
 from ..lib import util
 from ..lib.util import cached
 from .core import triclinic_box, triclinic_vectors
-
-
-class Timestep(base.Timestep):
-    """ TRZ custom Timestep"""
-    def _init_unitcell(self):
-        return np.zeros(9)
-
-    @property
-    def dimensions(self):
-        """
-        Unit cell dimensions ``[A,B,C,alpha,beta,gamma]``.
-        """
-        x = self._unitcell[0:3]
-        y = self._unitcell[3:6]
-        z = self._unitcell[6:9]
-        return triclinic_box(x, y, z)
-
-    @dimensions.setter
-    def dimensions(self, box):
-        """Set the Timestep dimensions with MDAnalysis format cell
-        (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
-
-        .. versionadded:: 0.9.0
-        """
-        self._unitcell[:] = triclinic_vectors(box).reshape(9)
 
 
 class TRZReader(base.ReaderBase):
@@ -140,7 +116,7 @@ class TRZReader(base.ReaderBase):
        Extra data (Temperature, Energies, Pressures, etc) now read
        into ts.data dictionary.
        Now passes a weakref of self to ts (ts._reader).
-    .. versionchanged:: 2.0.0
+    .. versionchanged:: 1.0.1
        Now checks for the correct `n_atoms` on reading
        and can raise :exc:`ValueError`.
     """
@@ -259,7 +235,7 @@ class TRZReader(base.ReaderBase):
             ts.frame = data['nframe'][0] - 1  # 0 based for MDA
             ts._frame = data['ntrj'][0]
             ts.time = data['treal'][0]
-            ts._unitcell[:] = data['box']
+            ts.dimensions = triclinic_box(*(data['box'].reshape(3, 3)))
             ts.data['pressure'] = data['pressure']
             ts.data['pressure_tensor'] = data['ptensor']
             ts.data['total_energy'] = data['etot']
@@ -282,7 +258,8 @@ class TRZReader(base.ReaderBase):
             # Convert things read into MDAnalysis' native formats (nm -> angstroms)
             if self.convert_units:
                 self.convert_pos_from_native(self.ts._pos)
-                self.convert_pos_from_native(self.ts._unitcell)
+                if self.ts.dimensions is not None:
+                    self.convert_pos_from_native(self.ts.dimensions[:3])
                 self.convert_velocities_from_native(self.ts._velocities)
 
             return ts
@@ -330,6 +307,9 @@ class TRZReader(base.ReaderBase):
             t1 = self.ts.time
             dt = t1 - t0
         except StopIteration:
+            msg = ('dt information could not be obtained, defaulting to 0 ps. '
+                   'Note: in MDAnalysis 2.1.0 this default will change 1 ps.')
+            warnings.warn(msg)
             return 0
         else:
             return dt
@@ -588,7 +568,13 @@ class TRZWriter(base.WriterBase):
                           "".format(", ".join(faked_attrs)))
 
         # Convert other stuff into our format
-        unitcell = triclinic_vectors(ts.dimensions).reshape(9)
+        if ts.dimensions is not None:
+            unitcell = triclinic_vectors(ts.dimensions).reshape(9)
+        else:
+            warnings.warn("Timestep didn't have dimensions information, "
+                          "box will be written as all zero values")
+            unitcell = np.zeros(9, dtype=np.float32)
+
         try:
             vels = ts._velocities
         except AttributeError:

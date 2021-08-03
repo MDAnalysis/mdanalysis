@@ -29,6 +29,7 @@ from numpy.testing import assert_equal
 
 import MDAnalysis as mda
 from MDAnalysis.coordinates.core import get_reader_for
+from MDAnalysis.analysis.rms import RMSD
 
 from MDAnalysisTests.datafiles import (
     CRD,
@@ -177,3 +178,11 @@ def test_readers_pickle(ref_reader):
         # single frame files
         pass
     assert_equal(reanimated.ts, ref_reader.ts)
+
+
+def test_analysis_pickle():
+    u = mda.Universe(PSF, DCD)
+    rmsd = RMSD(u.atoms, u.atoms)
+    rmsd.run()
+    rmsd_p = pickle.dumps(rmsd)
+    rmsd_new = pickle.loads(rmsd_p)

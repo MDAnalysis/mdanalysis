@@ -260,6 +260,10 @@ also recognized when they are compressed with :program:`gzip` or
    | H5MD          | h5md      |  r    | H5MD_ file format for coordinates                    |
    |               |           |       | :mod:`MDAnalysis.coordinates.H5MD`                   |
    +---------------+-----------+-------+------------------------------------------------------+
+   | `chemfiles`_  | CHEMFILES |  r/w  | interface to `chemfiles`_, see the `list of chemfiles|
+   | library       |           |       | file formats`_ and                                   |
+   |               |           |       | :mod:`MDAnalysis.coordinates.chemfiles`              |
+   +---------------+-----------+-------+------------------------------------------------------+   
 
 .. [#a] This format can also be used to provide basic *topology*
    information (i.e. the list of atoms); it is possible to create a
@@ -268,6 +272,8 @@ also recognized when they are compressed with :program:`gzip` or
 
 .. _`netcdf4-python`: https://github.com/Unidata/netcdf4-python
 .. _`H5MD`: https://nongnu.org/h5md/index.html
+.. _`chemfiles`: https://chemfiles.org/
+.. _`list of chemfiles file formats`: https://chemfiles.org/chemfiles/latest/formats.html
 
 .. _Trajectory API:
 
@@ -390,9 +396,7 @@ Attributes
       Boolean of whether force data is available
   ``dimensions``
       system box dimensions (`x, y, z, alpha, beta, gamma`)
-      (typically implemented as a property because it needs to translate whatever is in the
-      underlying :class:`~MDAnalysis.coordinates.base.Timestep._unitcell` attribute. Also
-      comes with a setter that takes a MDAnalysis box so that one can do ::
+      Also comes with a setter that takes a MDAnalysis box so that one can do ::
 
           Timestep.dimensions = [A, B, C, alpha, beta, gamma]
 
@@ -726,7 +730,6 @@ from . import GRO
 from . import INPCRD
 from . import LAMMPS
 from . import MOL2
-from . import ParmEd
 from . import PDB
 from . import PDBQT
 from . import PQR
@@ -743,4 +746,3 @@ from . import GSD
 from . import null
 from . import NAMDBIN
 from . import FHIAIMS
-from . import RDKit

@@ -118,8 +118,8 @@ class LeafletFinder(object):
     consecutively, starting at 0. To obtain the atoms in the input structure
     use :meth:`LeafletFinder.groups`::
 
-       u_PDB = mda.Universe(PDB)
-       L = LeafletFinder(u_PDB, 'name P*')
+       u = mda.Universe(PDB)
+       L = LeafletFinder(u, 'name P*')
        leaflet0 = L.groups(0)
        leaflet1 = L.groups(1)
 

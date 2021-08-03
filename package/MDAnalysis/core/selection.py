@@ -217,6 +217,7 @@ def return_empty_on_apply(func):
         return func(self, group)
     return apply
 
+
 class _Selectionmeta(type):
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
@@ -289,28 +290,7 @@ class ByResSelection(UnarySelection):
         return group[mask].unique
 
 
-class DistanceSelection(Selection):
-    """Base class for distance search based selections"""
-
-    def validate_dimensions(self, dimensions):
-        r"""Check if the system is periodic in all three-dimensions.
-
-        Parameters
-        ----------
-        dimensions : numpy.ndarray
-            6-item array denoting system size and angles
-
-        Returns
-        -------
-        None or numpy.ndarray
-            Returns argument dimensions if system is periodic in all
-            three-dimensions, otherwise returns None
-        """
-        if self.periodic and all(dimensions[:3]):
-            return dimensions
-        return None
-
-class AroundSelection(DistanceSelection):
+class AroundSelection(Selection):
     token = 'around'
     precedence = 1
 
@@ -329,7 +309,7 @@ class AroundSelection(DistanceSelection):
         if not sys or not sel:
             return sys[[]]
 
-        box = self.validate_dimensions(group.dimensions)
+        box = group.dimensions if self.periodic else None
         pairs = distances.capped_distance(sel.positions, sys.positions,
                                           self.cutoff, box=box,
                                           return_distances=False)
@@ -338,7 +318,7 @@ class AroundSelection(DistanceSelection):
 
         return sys[np.asarray(indices, dtype=np.int64)].unique
 
-class SphericalLayerSelection(DistanceSelection):
+class SphericalLayerSelection(Selection):
     token = 'sphlayer'
     precedence = 1
 
@@ -352,8 +332,10 @@ class SphericalLayerSelection(DistanceSelection):
     def apply(self, group):
         indices = []
         sel = self.sel.apply(group)
-        box = self.validate_dimensions(group.dimensions)
-        periodic = box is not None
+        if len(sel) == 0:
+            return group[[]]
+
+        box = group.dimensions if self.periodic else None
         ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
         pairs = distances.capped_distance(ref, group.positions, self.exRadius,
                                           min_cutoff=self.inRadius,
@@ -365,7 +347,7 @@ class SphericalLayerSelection(DistanceSelection):
         return group[np.asarray(indices, dtype=np.int64)].unique
 
 
-class SphericalZoneSelection(DistanceSelection):
+class SphericalZoneSelection(Selection):
     token = 'sphzone'
     precedence = 1
 
@@ -378,8 +360,10 @@ class SphericalZoneSelection(DistanceSelection):
     def apply(self, group):
         indices = []
         sel = self.sel.apply(group)
-        box = self.validate_dimensions(group.dimensions)
-        periodic = box is not None
+        if len(sel) == 0:
+            return group[[]]
+
+        box = group.dimensions if self.periodic else None
         ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
         pairs = distances.capped_distance(ref, group.positions, self.cutoff,
                                           box=box,
@@ -394,11 +378,12 @@ class CylindricalSelection(Selection):
     @return_empty_on_apply
     def apply(self, group):
         sel = self.sel.apply(group)
-
+        if len(sel) == 0:
+            return group[[]]
         # Calculate vectors between point of interest and our group
         vecs = group.positions - sel.center_of_geometry()
 
-        if self.periodic and not np.any(group.dimensions[:3] == 0):
+        if self.periodic and not group.dimensions is None:
             box = group.dimensions[:3]
             cyl_z_hheight = self.zmax - self.zmin
 
@@ -474,7 +459,7 @@ class CylindricalLayerSelection(CylindricalSelection):
         self.sel = parser.parse_expression(self.precedence)
 
 
-class PointSelection(DistanceSelection):
+class PointSelection(Selection):
     token = 'point'
 
     def __init__(self, parser, tokens):
@@ -488,7 +473,8 @@ class PointSelection(DistanceSelection):
     @return_empty_on_apply
     def apply(self, group):
         indices = []
-        box = self.validate_dimensions(group.dimensions)
+
+        box = group.dimensions if self.periodic else None
         pairs = distances.capped_distance(self.ref[None, :], group.positions, self.cutoff,
                                           box=box,
                                           return_distances=False)
@@ -593,6 +579,7 @@ class _ProtoStringSelection(Selection):
         nmidx = nmattr.nmidx[getattr(group, self.level)]
 
         return group[np.in1d(nmidx, matches)].unique
+
 
 class AromaticSelection(Selection):
     """Select aromatic atoms.
@@ -927,7 +914,7 @@ class ProteinSelection(Selection):
     :func:`MDAnalysis.lib.util.convert_aa_code`
 
 
-    .. versionchanged:: 2.0.0
+    .. versionchanged:: 1.0.1
        prot_res changed to set (from numpy array)
        performance improved by ~100x on larger systems
     """
@@ -984,7 +971,7 @@ class NucleicSelection(Selection):
 
     .. versionchanged:: 0.8
        additional Gromacs selections
-    .. versionchanged:: 2.0.0
+    .. versionchanged:: 1.0.1
        nucl_res changed to set (from numpy array)
        performance improved by ~100x on larger systems
     """
@@ -1020,7 +1007,7 @@ class BackboneSelection(ProteinSelection):
     (which are included by, eg VMD's backbone selection).
 
 
-    .. versionchanged:: 2.0.0
+    .. versionchanged:: 1.0.1
        bb_atoms changed to set (from numpy array)
        performance improved by ~100x on larger systems
     """
@@ -1053,7 +1040,7 @@ class NucleicBackboneSelection(NucleicSelection):
     by the :class:`NucleicSelection`.
 
 
-    .. versionchanged:: 2.0.0
+    .. versionchanged:: 1.0.1
        bb_atoms changed to set (from numpy array)
        performance improved by ~100x on larger systems
     """
@@ -1088,7 +1075,7 @@ class BaseSelection(NucleicSelection):
      'O6','N2','N6', 'O2','N4','O4','C5M'
 
 
-    .. versionchanged:: 2.0.0
+    .. versionchanged:: 1.0.1
        base_atoms changed to set (from numpy array)
        performance improved by ~100x on larger systems
     """
@@ -1121,7 +1108,7 @@ class NucleicSugarSelection(NucleicSelection):
     """Contains all atoms with name C1', C2', C3', C4', O2', O4', O3'.
 
 
-    .. versionchanged:: 2.0.0
+    .. versionchanged:: 1.0.1
        sug_atoms changed to set (from numpy array)
        performance improved by ~100x on larger systems
     """

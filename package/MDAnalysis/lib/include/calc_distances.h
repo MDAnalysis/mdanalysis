@@ -31,7 +31,7 @@ typedef float coordinate[3];
   #define USED_OPENMP 0
 #endif
 
-static void minimum_image(double* x, float* box, float* inverse_box)
+void minimum_image(double* x, float* box, float* inverse_box)
 {
   int i;
   double s;
@@ -43,7 +43,28 @@ static void minimum_image(double* x, float* box, float* inverse_box)
   }
 }
 
-static void minimum_image_triclinic(double* dx, float* box)
+inline void _minimum_image_ortho_lazy(double* x, float* box, float* half_box)
+{
+   /*
+    * Lazy minimum image convention for orthorhombic boxes.
+    *
+    * Assumes that the maximum separation is less than 1.5 times the box length.
+    */
+    for (int i = 0; i < 3; ++i) {
+        if (x[i] > half_box[i]) {
+            x[i] -= box[i];
+        }
+        else
+        {
+            if (x[i] <= -half_box[i])
+            {
+                x[i] += box[i];
+            }
+        }
+    }
+}
+
+void minimum_image_triclinic(double* dx, float* box)
 {
    /*
     * Minimum image convention for triclinic systems, modelled after domain.cpp
