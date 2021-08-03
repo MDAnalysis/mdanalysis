@@ -135,6 +135,11 @@ class RDKitParser(TopologyReaderBase):
     | atom.GetProp('_TriposAtomType')             | types                   |
     +---------------------------------------------+-------------------------+
 
+    Raises
+    ------
+    ValueError
+        If only part of the atoms have MonomerInfo available
+
 
     .. versionadded:: 2.0.0
     """
@@ -236,6 +241,14 @@ class RDKitParser(TopologyReaderBase):
         # make Topology attributes
         attrs = []
         n_atoms = len(ids)
+
+        if resnums and (len(resnums) != n_atoms):
+            raise ValueError(
+                "ResidueInfo is only partially available in the molecule. "
+                "If you have added hydrogens to the input RDKit molecule with "
+                "`Chem.AddHs(mol)`, consider using "
+                "`Chem.AddHs(mol, addResidueInfo=True)` instead"
+            )
 
         # * Attributes always present *
 

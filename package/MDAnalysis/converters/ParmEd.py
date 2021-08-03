@@ -117,11 +117,8 @@ class ParmEdReader(base.SingleFrameReaderBase):
         if self.filename.coordinates is not None:
             ts._pos = self.filename.coordinates
 
-        if self.filename.box is not None:
-            # optional field
-            ts.dimensions = self.filename.box
-        else:
-            ts._unitcell = None
+        # optional field
+        ts.dimensions = self.filename.box
 
         ts.frame = 0
         return ts

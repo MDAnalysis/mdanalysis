@@ -177,7 +177,7 @@ class DistanceMatrix(AnalysisBase):
         scales at O(N^3) where N is the number of frames.
         Cost can be reduced by increasing step interval or specifying a
         start and stop value when calling :meth:`DistanceMatrix.run`.
-    select: str, optional
+    select : str, optional
         Any valid selection string for
         :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms`
         This selection of atoms is used to calculate the RMSD between

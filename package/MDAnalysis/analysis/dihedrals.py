@@ -357,7 +357,7 @@ class Ramachandran(AnalysisBase):
         name for the backbone N atom
     ca_name : str (optional)
         name for the alpha-carbon atom
-    check_protein: bool (optional)
+    check_protein : bool (optional)
         whether to raise an error if the provided atomgroup is not a
         subset of protein atoms
 

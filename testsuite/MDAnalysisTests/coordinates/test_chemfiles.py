@@ -70,7 +70,7 @@ class TestChemfileXYZ(MultiframeReaderTest):
     def ref():
         base = XYZReference()
         base.writer = ChemfilesWriter
-        base.dimensions = np.array([0, 0, 0, 90, 90, 90], dtype=np.float32)
+        base.dimensions = None
 
         return base
 
@@ -103,8 +103,7 @@ class ChemfilesXYZReference(BaseReference):
         self.writer = ChemfilesWriter
         self.ext = "xyz"
         self.volume = 0
-        self.dimensions = np.zeros(6)
-        self.dimensions[3:] = 90.0
+        self.dimensions = None
 
 
 @pytest.mark.skipif(not check_chemfiles_version(), reason="Wrong version of chemfiles")

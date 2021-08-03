@@ -115,7 +115,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
         resnames = [r.name for r in omm_topology.residues()]
         resids = [r.index + 1 for r in omm_topology.residues()]
         resnums = resids.copy()
-        segids = [c.index for c in omm_topology.chains()]
+        segids = [str(c.index) for c in omm_topology.chains()]
         bonds = [(b.atom1.index, b.atom2.index) for b in omm_topology.bonds()]
         bond_orders = [b.order for b in omm_topology.bonds()]
         bond_types = [b.type for b in omm_topology.bonds()]

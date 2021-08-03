@@ -153,8 +153,6 @@ class DCDReader(base.ReaderBase):
         self.ts = self._frame_to_ts(frame, self.ts)
         # these should only be initialized once
         self.ts.dt = dt
-        if self.convert_units:
-            self.convert_pos_from_native(self.ts.dimensions[:3])
 
     @staticmethod
     def parse_n_atoms(filename, **kwargs):
@@ -246,7 +244,8 @@ class DCDReader(base.ReaderBase):
         ts.positions = frame.xyz
 
         if self.convert_units:
-            self.convert_pos_from_native(ts.dimensions[:3])
+            if ts.dimensions is not None:
+                self.convert_pos_from_native(ts.dimensions[:3])
             self.convert_pos_from_native(ts.positions)
 
         return ts
@@ -416,7 +415,10 @@ class DCDWriter(base.WriterBase):
                 errmsg = "Input obj is neither an AtomGroup or Universe"
                 raise TypeError(errmsg) from None
         xyz = ts.positions.copy()
-        dimensions = ts.dimensions.copy()
+        try:
+            dimensions = ts.dimensions.copy()
+        except AttributeError:
+            dimensions = np.zeros(6)
 
         if self._convert_units:
             xyz = self.convert_pos_to_native(xyz, inplace=True)
