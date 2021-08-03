@@ -231,7 +231,7 @@ class TestRDKitConverter(object):
         u = mda.Universe(mol2_molecule)
         
         # Delete topology attribute (PR #3069)
-        # universe.del_TopologyAttr('elements')
+        u.del_TopologyAttr('elements')
         
         with pytest.raises(
             AttributeError,
