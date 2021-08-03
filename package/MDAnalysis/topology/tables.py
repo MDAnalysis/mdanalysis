@@ -401,7 +401,7 @@ SYBYL2SYMB = {
     "N.3": "N", "N.2": "N", "N.1": "N", "N.ar": "N",
     "N.am": "N", "N.pl3": "N", "N.4": "N",
     "O.3": "O", "O.2": "O", "O.co2": "O", "O.spc": "O", "O.t3p": "O",
-    "S.3": "S", "S.2": "S", "S.o": "S", "S.o2": "S", # S.o and S.o2 or S.O and S.O2?
+    "S.3": "S", "S.2": "S", "S.o": "S", "S.o2": "S",
     "P.3": "P",
     "F": "F",
     "Li": "Li",

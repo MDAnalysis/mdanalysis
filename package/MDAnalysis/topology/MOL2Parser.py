@@ -61,7 +61,7 @@ from ..core.topologyattrs import (
     Segids,
 )
 from ..core.topology import Topology
-from .tables import SYMB2Z
+from .tables import SYBYL2SYMB
 
 import warnings
 
@@ -146,7 +146,7 @@ class MOL2Parser(TopologyReaderBase):
         resids = []
         resnames = []
         charges = []
-        elements = []
+        #elements = []
 
         for a in atom_lines:
             aid, name, x, y, z, atom_type, resid, resname, charge = a.split()[:9]
@@ -157,17 +157,17 @@ class MOL2Parser(TopologyReaderBase):
             resids.append(resid)
             resnames.append(resname)
             charges.append(charge)
-            elements.append(atom_type.split(".")[0])
+            #elements.append(atom_type.split(".")[0])
 
         n_atoms = len(ids)
 
         validated_elements = []
         invalid_elements = set()
-        for elem in elements:
-            if elem in SYMB2Z:
-                validated_elements.append(elem)
-            else:
-                invalid_elements.add(elem)
+        for at in types:
+            try:
+                validated_elements.append(SYBYL2SYMB[at])
+            except KeyError:
+                invalid_elements.add(at)
                 validated_elements.append('')
 
         # Print single warning for all unknown elements, if any
