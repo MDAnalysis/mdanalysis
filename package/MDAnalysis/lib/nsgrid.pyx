@@ -824,7 +824,6 @@ cdef class FastNS(object):
         cdef cset[int] visit
 
         results = _NearestNContainer(n_hits)
-        cubeiter = ConcentricCubeIterator()
         
         size_search = search_coords.shape[0]
 
@@ -842,33 +841,31 @@ cdef class FastNS(object):
             visit.clear()
             visit.insert(END)  # let's act like we've seen the invalid cell
             
-            cubeiter.reset()
-            useful_cube = False
+            cubeiter = ConcentricCubeIterator()
             while True:
-                while cubeiter:
-                    # check we've not visited this cube before (can wrap around)
+                useful_cube = False
+                while cubeiter:  # loop over cubes in a concentric shell
                     ox = cubeiter.x + cellcoord[0]
                     oy = cubeiter.y + cellcoord[1]
                     oz = cubeiter.z + cellcoord[2]
                     cj = self.cellxyz2cellid(ox, oy, oz)
 
                     # check we've not already visited this cube
-                    if not visit.insert(cj).second:  # insert returns if item was new, so if true we can continue
-                        continue
+                    if visit.insert(cj).second:  # insert returns if item was new, so if true we can continue
+                        # TODO: Maybe this check needs to be first to get the exit condition right?
+                        # check distance is useful
+                        if min_possible_dist(cubeiter.x, cubeiter.y, cubeiter.z, &self.triclinic_dimensions[0]) > results.get_current_max():
+                            continue
+                        useful_cube = True
 
-                    # check distance is useful
-                    if min_possible_dist(cubeiter.x, cubeiter.y, cubeiter.z, &self.triclinic_dimensions[0]) > results.get_current_max():
-                        continue
-                    useful_cube = True
+                        j = self.head_id[cj]  # loop over atoms in cell *cj*
+                        while (j != END):
+                            dist = self.calc_distsq(&tmpcoord[0], &self.coords_bbox[j][0])
+                            dist = math.sqrt(dist)
+                            # TODO: Check i & j are the right way round here
+                            results.add_hit(i, j, dist)
 
-                    j = self.head_id[cj]
-                    while (j != END):
-                        dist = self.calc_distsq(&tmpcoord[0], &self.coords_bbox[j][0])
-                        dist = math.sqrt(dist)
-                        # TODO: Check i & j are the right way round here
-                        results.add_hit(i, j, dist)
-                        
-                        j = self.next_id[j]
+                            j = self.next_id[j]
                         
                     cubeiter.next()
                 # break when no useful (defined by a cube possible containing a better result) cube seen
