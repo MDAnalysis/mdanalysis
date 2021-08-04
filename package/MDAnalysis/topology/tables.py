@@ -402,6 +402,7 @@ SYBYL2SYMB = {
     "N.am": "N", "N.pl3": "N", "N.4": "N",
     "O.3": "O", "O.2": "O", "O.co2": "O", "O.spc": "O", "O.t3p": "O",
     "S.3": "S", "S.2": "S", "S.O": "S", "S.O2": "S",
+    "S.o": "S", "S.o2": "S",  # Non-standard but often found in the wild...
     "P.3": "P",
     "F": "F",
     "Li": "Li",
