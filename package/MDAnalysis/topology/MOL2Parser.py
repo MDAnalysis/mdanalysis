@@ -146,7 +146,6 @@ class MOL2Parser(TopologyReaderBase):
         resids = []
         resnames = []
         charges = []
-        #elements = []
 
         for a in atom_lines:
             aid, name, x, y, z, atom_type, resid, resname, charge = a.split()[:9]
@@ -157,7 +156,6 @@ class MOL2Parser(TopologyReaderBase):
             resids.append(resid)
             resnames.append(resname)
             charges.append(charge)
-            #elements.append(atom_type.split(".")[0])
 
         n_atoms = len(ids)
 
