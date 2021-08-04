@@ -78,8 +78,16 @@ Classes
 """
 import numpy as np
 
+#from libcpp cimport bool
+from libcpp.set cimport set as cset
 from libcpp.vector cimport vector
+from libcpp.map cimport map as cmap
+from libcpp.utility cimport pair
 from libc cimport math
+from libc.float cimport FLT_MAX
+from cython.operator cimport dereference as deref
+from cython.operator cimport preincrement as incr
+from cython.operator cimport postdecrement as decr
 
 DEF END = -1
 
@@ -99,6 +107,19 @@ cdef extern from "calc_distances.h" nogil:
     void _triclinic_pbc(coordinate* coords, int numcoords, float* box)
 
 
+cdef extern from "cubeiter.h":
+    cdef cppclass ConcentricCubeIterator:
+        ConcentricCubeIterator()
+        bint next()
+        bint operator bool()
+        void expand()
+        void reset()
+
+        int x, y, z
+        unsigned short shell_number
+        char face
+
+
 cdef inline float fmax(float a, float b):
     if a > b:
         return a
@@ -116,6 +137,144 @@ cdef inline float degsin(float deg):
     # sin in degrees
     deg *= math.M_PI / 180.
     return math.sin(deg)
+
+
+# I&J refer to two sepcies, where we look for the nearest-N J species to I
+# i.e. when finding nearest N waters, I is the protein and J is the water
+# to avoid a case where a given I-J pair has an identical distance
+# use (distance, Jindex) as keys
+ctypedef pair[float, int] floatintpair
+ctypedef cmap[pair[float, int], int] results_map
+# to look up previous best distance for a given J member
+# i.e. if we get a new hit for a given J, we only use the best distance value
+ctypedef cmap[int, float] existing_map
+
+
+cdef class _NearestNContainer(object):
+    """Thing which keeps track of nearest-N searches"""
+    # maps a distance value to the pair that formed it
+    cdef results_map results  # maps (d, J) to I
+    cdef existing_map existing  # maps J to d to look up existing values
+    cdef int n  # total number of hits desired
+
+    def __init__(self, int n):
+        # n - number of results to keep maximum
+        if n <= 0:
+            raise ValueError
+        self.n = n
+
+    cdef int size(self):
+        # number of hits in the container
+        return self.results.size()
+
+    cdef float get_current_max(self):
+        if self.results.size() < self.n:
+            # if we've not got enough hits, the worst value is huge
+            return FLT_MAX
+        else:
+            # first value on reverse iterator
+            # safe to do as we've already checked size is >0 as n>0
+            return deref(self.results.rbegin()).first.first  # .first gets key, .first gets distance from tuple
+    
+    cdef bint add_hit(self, int i, int j, float d):
+        # potentially adds result, returns if this hit was an improvement and used in results
+        cdef cmap[pair[float, int], int].iterator results_iter
+        cdef cmap[int, float].iterator existing_iter
+        cdef float old_d
+        
+        # returns if this was added to best N or not
+        if d > self.get_current_max():
+            return False
+
+        existing_iter = self.existing.find(j)
+        if existing_iter != self.existing.end():
+            # we already had a result for this J, check if this one is an improvement
+            old_d = deref(existing_iter).second
+            if d > old_d:
+                return False
+            else:
+                # remove this entry and we'll use the new one
+                self.results.erase(floatintpair(d, j))
+                self.existing.erase(existing_iter)
+        
+        # add this result to the container
+        self.results[floatintpair(d, j)] = i
+
+        # if we have too many, pop the largest
+        if self.results.size() > self.n:
+            it = decr(self.results.end())  # access last element, can't be a reverse iterator here, so end()--
+            self.results.erase(it)
+
+        return True
+
+    def get_results(self):
+       # extract the results
+       # returns tuple of (i values, j values, distance values)
+       cdef object ix, jx, dx
+       cdef int[:] ix_view
+       cdef int[:] jx_view
+       cdef float[:] dx_view
+       cdef float d
+       cdef int i, j
+       cdef cmap[pair[float, int], int].iterator it
+       cdef floatintpair dj
+       
+       ix = np.empty(self.size(), dtype=np.int)
+       jx = np.empty(self.size(), dtype=np.int)
+       dx = np.empty(self.size(), dtype=np.float32)
+
+       ix_view = ix
+       jx_view = jx
+       dx_view = dx
+       
+       i = 0
+       it = self.results.begin()
+       while (it != self.results.end()):
+           dj = deref(it).first
+           d = dj.first
+           j = dj.second
+           i = deref(it).second
+
+           print(d)
+           
+           dx_view[i] = d
+           ix_view[i] = i
+           jx_view[i] = j
+
+           i += 1
+           incr(it)
+
+       return ix, jx, dx
+
+
+cdef inline int adjust_n(int x):
+    if x > 1:
+        return x - 1
+    elif x < 0:
+        return x + 1
+    else:
+        return 0
+
+
+cdef inline float min_possible_dist(int nx, int ny, int nz, float* box):
+    cdef double dist[3]
+    cdef double distsq
+
+    nx = adjust_n(nx)
+    ny = adjust_n(ny)
+    nz = adjust_n(nz)
+
+    dist[0] = nx * box[0]
+    dist[1] = ny * box[1]
+    dist[2] = nz * box[2]
+
+    minimum_image_triclinic(dist, box)
+
+    distsq = dist[0] * dist[0]
+    distsq += dist[1] * dist[1]
+    distsq += dist[2] * dist[2]
+
+    return math.sqrt(distsq)
 
 
 cdef class NSResults(object):
@@ -636,3 +795,85 @@ cdef class FastNS(object):
                         i = self.next_id[i]
 
         return results
+
+    def nearest_N(self, float[:, :] search_coords, int n_hits):
+        """Search 
+
+        Parameters
+        ----------
+        search_coords : numpy array dtype float
+          stuff what to search against
+        n_hits : int
+          how many of search_coords to identify as "nearest"
+
+        Returns
+        -------
+        i, j, d : numpy arrays, of type int, int float respectively
+          indices of grid and search coords and the distance betwixt them
+
+        versionadded:: 2.0.0
+        """
+        cdef int i, j, size_search
+        cdef int cellcoord[3]
+        cdef int ox, oy, oz, cj
+        cdef float tmpcoord[3]
+        cdef float dist
+        cdef ConcentricCubeIterator cubeiter
+        cdef bint useful_cube
+        cdef _NearestNContainer results
+        cdef cset[int] visit
+
+        results = _NearestNContainer(n_hits)
+        cubeiter = ConcentricCubeIterator()
+        
+        size_search = search_coords.shape[0]
+
+        for i in range(size_search):
+            tmpcoord[0] = search_coords[i][0]
+            tmpcoord[1] = search_coords[i][1]
+            tmpcoord[2] = search_coords[i][2]
+            if self.triclinic:
+                _triclinic_pbc(<coordinate*>&tmpcoord[0], 1, &self.triclinic_dimensions[0])
+            else:
+                _ortho_pbc(<coordinate*>&tmpcoord[0], 1, &self.dimensions[0])
+            # which cell is atom *i* in
+            self.coord2cellxyz(&tmpcoord[0], cellcoord)
+
+            visit.clear()
+            visit.insert(END)  # let's act like we've seen the invalid cell
+            
+            cubeiter.reset()
+            useful_cube = False
+            while True:
+                while cubeiter:
+                    # check we've not visited this cube before (can wrap around)
+                    ox = cubeiter.x + cellcoord[0]
+                    oy = cubeiter.y + cellcoord[1]
+                    oz = cubeiter.z + cellcoord[2]
+                    cj = self.cellxyz2cellid(ox, oy, oz)
+
+                    # check we've not already visited this cube
+                    if not visit.insert(cj).second:  # insert returns if item was new, so if true we can continue
+                        continue
+
+                    # check distance is useful
+                    if min_possible_dist(cubeiter.x, cubeiter.y, cubeiter.z, &self.triclinic_dimensions[0]) > results.get_current_max():
+                        continue
+                    useful_cube = True
+
+                    j = self.head_id[cj]
+                    while (j != END):
+                        dist = self.calc_distsq(&tmpcoord[0], &self.coords_bbox[j][0])
+                        dist = math.sqrt(dist)
+                        # TODO: Check i & j are the right way round here
+                        results.add_hit(i, j, dist)
+                        
+                        j = self.next_id[j]
+                        
+                    cubeiter.next()
+                # break when no useful (defined by a cube possible containing a better result) cube seen
+                if not useful_cube:
+                    break
+                cubeiter.expand()
+
+        return results.get_results()
