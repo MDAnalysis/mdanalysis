@@ -74,9 +74,10 @@ class MOL2Parser(TopologyReaderBase):
      - Atomnames
      - Atomtypes
      - Charges
-     - Resids,
+     - Resids
      - Resnames
      - Bonds
+     - Elements
 
     Guesses the following:
      - masses
