@@ -397,7 +397,7 @@ SYMB2Z = {v:k for k, v in Z2SYMB.items()}
 
 SYBYL2SYMB = {
     "H": "H", "H.spc": "H", "H.t3p": "H",
-    "C.3": "C", "C.2": "C", "C.1": "C", "C.ar": "C", "C.cat": "C", "Du.C": "C",
+    "C.3": "C", "C.2": "C", "C.1": "C", "C.ar": "C", "C.cat": "C",
     "N.3": "N", "N.2": "N", "N.1": "N", "N.ar": "N",
     "N.am": "N", "N.pl3": "N", "N.4": "N",
     "O.3": "O", "O.2": "O", "O.co2": "O", "O.spc": "O", "O.t3p": "O",
