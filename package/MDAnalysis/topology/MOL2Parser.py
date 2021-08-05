@@ -100,10 +100,7 @@ class MOL2Parser(TopologyReaderBase):
 
 
         .. versionchanged: 2.0.0
-           Parse elements from atom types. The elements attribute can contain
-           MOL2-specific atom types such as Du (dummy atom), Any,
-           Hal (halogen), Het (heteroatom) and Hev (heavy atoms).
-           Masses are "guessed" from elements.
+           Parse elements from atom types.
         """
         blocks = []
 
