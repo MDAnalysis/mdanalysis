@@ -23,7 +23,6 @@ The rules for this file:
   * 2.0.0
 
 Fixes
-  * MOL2 parser populates elements attribute from SYMBL atom types (Issue #3062)
   * Fixed sometimes wrong sorting of atoms into fragments when unwrapping
     (Issue #3352, PR #3353)
   * Fixed missing array flatten preventing PCA from running when mean positions  
@@ -118,6 +117,7 @@ Fixes
   * new `Results` class now can be pickled/unpickled. (PR #3309) 
 
 Enhancements
+  * MOL2 parser populates elements attribute from SYMBL atom types (Issue #3062)
   * Added guessers for aromaticity and Gasteiger partial charges (Issue #2468,
     PR #2926)
   * Added `Results` class for storing analysis results (#3115, PR #3233)
