@@ -93,8 +93,6 @@ def test_elements_selection():
     )
 
 
-# Bond information is needed
-# See #3057
 mol2_wrong_element = """\
 @<TRIPOS>MOLECULE
 FXA101_1
@@ -119,4 +117,53 @@ def test_wrong_elements_warnings():
     print(record[0].message)
 
     expected = np.array(['N', '', ''], dtype=object)
+    assert_equal(u.atoms.elements, expected)
+
+
+mol2_fake = """\
+@<TRIPOS>MOLECULE
+FXA101_1
+49 0 0 0 0
+SMALL
+USER_CHARGES
+
+
+@<TRIPOS>ATOM
+  1 H1       0.0000     1.0000    10.0000 H.spc  1 XXXX   5.0000
+  2 H2       0.0000     1.0000    10.0000 H.t3p  1 XXXX   5.0000
+  3 H3       0.0000     1.0000    10.0000 H.xyz  1 XXXX   5.0000
+  4 C1       0.0000     1.0000    10.0000 C.1  1 XXXX   5.0000
+  5 C2       0.0000     1.0000    10.0000 C.2  1 XXXX   5.0000
+  5 C3       0.0000     1.0000    10.0000 C.3  1 XXXX   5.0000
+  6 C4       0.0000     1.0000    10.0000 C.ar  1 XXXX   5.0000
+  7 C5       0.0000     1.0000    10.0000 C.cat  1 XXXX   5.0000
+  8 C6       0.0000     1.0000    10.0000 C.xyz  1 XXXX   5.0000
+  9 N1       0.0000     1.0000    10.0000 N.1  1 XXXX   5.0000
+  10 N2       0.0000     1.0000    10.0000 N.2  1 XXXX   5.0000
+  11 N3       0.0000     1.0000    10.0000 N.3  1 XXXX   5.0000
+  12 N4       0.0000     1.0000    10.0000 N.ar  1 XXXX   5.0000
+  13 O1       0.0000     1.0000    10.0000 O.2  1 XXXX   5.0000
+  14 O2       0.0000     1.0000    10.0000 O.3  1 XXXX   5.0000
+  15 O3       0.0000     1.0000    10.0000 O.co2  1 XXXX   5.0000
+  16 O4       0.0000     1.0000    10.0000 O.spc  1 XXXX   5.0000
+  16 O5       0.0000     1.0000    10.0000 O.t3p  1 XXXX   5.0000
+  17 S1       0.0000     1.0000    10.0000 S.3  1 XXXX   5.0000
+  18 S2       0.0000     1.0000    10.0000 S.2  1 XXXX   5.0000
+  19 S3       0.0000     1.0000    10.0000 S.O  1 XXXX   5.0000
+  20 S4       0.0000     1.0000    10.0000 S.O2  1 XXXX   5.0000
+  21 S5       0.0000     1.0000    10.0000 S.o  1 XXXX   5.0000
+  22 S6       0.0000     1.0000    10.0000 S.o2  1 XXXX   5.0000
+  23 P1       0.0000     1.0000    10.0000 P.3  1 XXXX   5.0000
+  24 Cr1       0.0000     1.0000    10.0000 Cr.th  1 XXXX   5.0000
+  25 Cr2       0.0000     1.0000    10.0000 Cr.oh  1 XXXX   5.0000
+  26 Co1       0.0000     1.0000    10.0000 Co.oh  1 XXXX   5.0000
+"""
+
+def test_all_elements():
+    with pytest.warns(UserWarning, match='Unknown elements found') as record:
+        u = mda.Universe(StringIO(mol2_fake), format='MOL2')
+
+    expected = ["H"] * 2 + [""] + ["C"] * 5 + [""] + ["N"] * 4 + ["O"] * 5 + \
+        ["S"] * 6 + ["P"] + ["Cr"] * 2 + ["Co"]
+    expected = np.array(expected, dtype=object)
     assert_equal(u.atoms.elements, expected)
