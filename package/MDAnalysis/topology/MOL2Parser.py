@@ -82,6 +82,10 @@ class MOL2Parser(TopologyReaderBase):
     Guesses the following:
      - masses
 
+    Notes
+    -----
+    Elements are obtained directly from the SYBYL atom types.
+
     .. versionchanged:: 0.9
        Now subclasses TopologyReaderBase
     .. versionchanged:: 0.20.0
