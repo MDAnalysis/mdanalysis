@@ -395,6 +395,8 @@ Z2SYMB = {1: 'H',                                                               
 
 SYMB2Z = {v:k for k, v in Z2SYMB.items()}
 
+# Conversion between SYBYL atom types and corresponding elements
+# Tripos MOL2 file format: https://zhanglab.ccmb.med.umich.edu/DockRMSD/mol2.pdf
 SYBYL2SYMB = {
     "H": "H", "H.spc": "H", "H.t3p": "H",
     "C.3": "C", "C.2": "C", "C.1": "C", "C.ar": "C", "C.cat": "C",
