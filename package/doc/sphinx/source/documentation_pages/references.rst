@@ -208,18 +208,18 @@ If you use H5MD files using
 :mod:`MDAnalysis.coordinates.H5MD.py`, please cite [Buyl2013]_ and
 [Jakupovic2021]_.
 
-.. [Buyl2013] P. Buyl, P. Colberg, and Felix Höfling (2013).
+.. [Buyl2013] Buyl P., Colberg P., and Höfling F.(2013).
    H5MD: A structured, efficient, and portable file format for molecular data.
    *Computer Physics Communications*, 185. doi:`10.1016/j.cpc.2014.01.018.
    <https://doi.org/10.1016/j.cpc.2014.01.018>`_
 
-.. [Jakupovic2021] Edis Jakupovic and Oliver Beckstein, `MPI-parallel Molecular
+.. [Jakupovic2021] Jakupovic E. and Beckstein O., MPI-parallel Molecular
    Dynamics Trajectory Analysis with the H5MD Format in the MDAnalysis
-   Python Package
-   <https://conference.scipy.org/proceedings/scipy2021/edis_jakupovic.html>`_,
-   in *Proceedings of the 20th Python in Science Conference*
+   Python Package, in *Proceedings of the 20th Python in Science Conference*,
    (Meghann Agarwal, Chris Calloway, Dillon Niederhut, and David Shupe, eds.),
-   pp. 18 – 26, 2021.
+   pp. 18 – 26, 2021. doi:`10.25080/majora-1b6fd038-005.
+   <https://www.doi.org/10.25080/majora-1b6fd038-005>`_
+
 
 .. _citations-using-duecredit:
 

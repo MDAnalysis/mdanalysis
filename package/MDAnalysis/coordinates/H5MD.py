@@ -178,6 +178,7 @@ parallel hdf5/h5py/mpi4py please let everyone know on the
 .. _`MDAnalysis notation`: https://userguide.mdanalysis.org/units.html
 .. _`MDAnalysis units`: https://userguide.mdanalysis.org/units.html
 .. _`MDAnalysis forums`: https://www.mdanalysis.org/#participating
+.. _`SciPy2021 paper`: https://www.doi.org/10.25080/majora-1b6fd038-005
 
 
 Classes
@@ -217,6 +218,14 @@ except ImportError:
 
 else:
     HAS_H5PY = True
+
+from ..due import due, Doi, BibTeX
+due.cite(Doi("10.25080/majora-1b6fd038-005"),
+         description="MDAnalysis trajectory reader/writer of the H5MD format",
+         path="MDAnalysis", cite_module=True)
+due.cite(Doi("10.1016/j.cpc.2014.01.018"),
+         description="Specifications of the H5MD standard",
+         path="MDAnalysis", cite_module=True)
 
 
 class H5MDReader(base.ReaderBase):
@@ -710,64 +719,10 @@ class H5MDReader(base.ReaderBase):
     def Writer(self, filename, n_atoms=None, **kwargs):
         """Return writer for trajectory format
 
-        Parameters
-        ----------
-        filename : str or :class:`h5py.File`
-            trajectory filename or open h5py file
-        n_atoms : int
-            number of atoms in trajectory
-        n_frames : int (optional)
-            number of frames to be written in trajectory
-        driver : str (optional)
-            H5PY file driver used to open H5MD file
-        comm : :class:`MPI.Comm` (optional)
-            MPI communicator used to open H5MD file
-            Must be passed with `'mpio'` file driver
-        convert_units : bool (optional)
-            convert units from MDAnalysis to desired units
-        chunks : tuple (optional)
-            custom chunk layout to be applied to the position,
-            velocity, and force datasets. By default, these datasets
-            are chunked in (1, n_atoms, 3) blocks
-        compression : str or int (optional)
-            HDF5 dataset compression setting to be applied
-            to position, velocity, and force datasets. Allowed
-            settings are 'gzip', 'szip', 'lzf'. If an integer
-            in range(10), this indicates gzip compression level.
-            Otherwise, an integer indicates the number of a
-            dynamically loaded compression filter.
-        compression_opts : int or tup (optional)
-            Compression settings.  This is an integer for gzip, 2-tuple for
-            szip, etc. If specifying a dynamically loaded compression filter
-            number, this must be a tuple of values. For gzip, 1 indicates
-            the lowest level of compression and 9 indicates maximum compression.
-        positions : bool (optional)
-            Write positions into the trajectory [``True``]
-        velocities : bool (optional)
-            Write velocities into the trajectory [``True``]
-        forces : bool (optional)
-            Write forces into the trajectory [``True``]
-        timeunit : str (optional)
-            option to convert values in the 'time' dataset to a custom unit,
-            must be recognizable by MDAnalysis
-        lengthunit : str (optional)
-            option to convert values in the 'position/value' dataset to a
-            custom unit, must be recognizable by MDAnalysis
-        velocityunit : str (optional)
-            option to convert values in the 'velocity/value' dataset to a
-            custom unit, must be recognizable by MDAnalysis
-        forceunit : str (optional)
-            option to convert values in the 'force/value' dataset to a
-            custom unit, must be recognizable by MDAnalysis
-        author : str (optional)
-            name of the author of the file
-        author_email : str (optional)
-            email of the author of the file
-        creator : str (optional)
-            software that wrote the file [``MDAnalysis``]
-        creator_version : str (optional)
-            version of software that wrote the file
-            [:attr:`MDAnalysis.__version__`]
+        See Also
+        --------
+        :class:`H5MDWriter`  Output class for the H5MD format
+
 
         .. versionadded:: 2.0.0
 
@@ -861,7 +816,8 @@ class H5MDWriter(base.WriterBase):
         H5PY file driver used to open H5MD file
     comm : :class:`MPI.Comm` (optional)
         MPI communicator used to open H5MD file
-        Must be passed with `'mpio'` file driver
+        Must be passed with `'mpio'` file driver.
+        This argument is currently disabled.
     convert_units : bool (optional)
         convert units from MDAnalysis to desired units
     chunks : tuple (optional)
@@ -984,13 +940,13 @@ class H5MDWriter(base.WriterBase):
     1 KiB - 1 MiB, however this can lead to suboptimal I/O performance.
     :class:`H5MDWriter` automatically sets the ``chunks=(1, n_atoms, 3)`` so
     as to mimic the typical access pattern of a trajectory by MDAnalysis. In
-    our tests, this chunk shape led to a speedup on the order of 10x versus
-    H5PY's auto-chunked shape. Users can set a custom chunk shape with the
-    ``chunks`` argument. Additionaly, the datasets in a file can be written
-    with a contiguous layout by setting ``chunks=False``, however this must be
-    accompanied by setting ``n_frames`` equal to the number of frames being
-    written, as HDF5 must know how much space to allocate on disk when creating
-    the dataset.
+    our tests (see `SciPy2021 paper`_), this chunk shape led to a speedup on the
+    order of 10x versus H5PY's auto-chunked shape. Users can set a custom
+    chunk shape with the ``chunks`` argument. Additionaly, the datasets in a
+    file can be written with a contiguous layout by setting ``chunks=False``,
+    however this must be accompanied by setting ``n_frames`` equal to the
+    number of frames being written, as HDF5 must know how much space to
+    allocate on disk when creating the dataset.
 
     .. _`H5PY compression options`: https://docs.h5py.org/en/stable/high/dataset.html#filter-pipeline
 
@@ -1177,7 +1133,7 @@ class H5MDWriter(base.WriterBase):
         """
 
         if self._comm is not None:  # pragma: no cover
-            # ValueError raised if communicator is passed
+            # ValueError raised in __init__() if communicator is passed
             # MPI parallel writing not yet supported
             self.h5md_file = h5py.File(name=self.filename,
                                        mode='w',
@@ -1257,6 +1213,7 @@ class H5MDWriter(base.WriterBase):
             self._set_attr_unit(self._edges, 'length')
             self._set_attr_unit(self._time, 'time')
         else:
+            # if no box, boundary attr must be "none" according to H5MD
             self._traj['box'].attrs['boundary'] = 3*['none']
             self._create_step_and_time_datasets()
 
@@ -1394,6 +1351,7 @@ class H5MDWriter(base.WriterBase):
             raise ValueError("The H5MD standard dictates that the step "
                              "dataset must increase monotonically in value.")
 
+        # the dataset.resize() method should work with any chunk shape
         self._time.resize(self._time.shape[0]+1, axis=0)
         self._time[i] = ts.time
 
