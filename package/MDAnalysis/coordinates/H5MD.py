@@ -178,7 +178,6 @@ parallel hdf5/h5py/mpi4py please let everyone know on the
 .. _`MDAnalysis notation`: https://userguide.mdanalysis.org/units.html
 .. _`MDAnalysis units`: https://userguide.mdanalysis.org/units.html
 .. _`MDAnalysis forums`: https://www.mdanalysis.org/#participating
-.. _`SciPy2021 paper`: https://www.doi.org/10.25080/majora-1b6fd038-005
 
 
 Classes
@@ -199,10 +198,11 @@ Classes
 
 """
 
-import MDAnalysis as mda
 import numpy as np
+from MDAnalysis import __version__ as mda_version
 from . import base, core
 from ..exceptions import NoDataError
+from ..due import due, Doi
 try:
     import h5py
 except ImportError:
@@ -218,14 +218,6 @@ except ImportError:
 
 else:
     HAS_H5PY = True
-
-from ..due import due, Doi, BibTeX
-due.cite(Doi("10.25080/majora-1b6fd038-005"),
-         description="MDAnalysis trajectory reader/writer of the H5MD format",
-         path="MDAnalysis", cite_module=True)
-due.cite(Doi("10.1016/j.cpc.2014.01.018"),
-         description="Specifications of the H5MD standard",
-         path="MDAnalysis", cite_module=True)
 
 
 class H5MDReader(base.ReaderBase):
@@ -375,6 +367,12 @@ class H5MDReader(base.ReaderBase):
         }
     }
 
+    @due.dcite(Doi("10.25080/majora-1b6fd038-005"),
+               description="MDAnalysis trajectory reader/writer of the H5MD"
+               "format", path=__name__)
+    @due.dcite(Doi("10.1016/j.cpc.2014.01.018"),
+               description="Specifications of the H5MD standard",
+               path=__name__, version='1.1')
     def __init__(self, filename,
                  convert_units=True,
                  driver=None,
@@ -888,7 +886,7 @@ class H5MDWriter(base.WriterBase):
     ValueError
         when any of the optional ``timeunit``, ``lengthunit``,
         ``velocityunit``, or ``forceunit`` keyword arguments are
-        unrecognizable by MDAnalysis
+        not recognized by MDAnalysis
 
     Notes
     -----
@@ -940,7 +938,7 @@ class H5MDWriter(base.WriterBase):
     1 KiB - 1 MiB, however this can lead to suboptimal I/O performance.
     :class:`H5MDWriter` automatically sets the ``chunks=(1, n_atoms, 3)`` so
     as to mimic the typical access pattern of a trajectory by MDAnalysis. In
-    our tests (see `SciPy2021 paper`_), this chunk shape led to a speedup on the
+    our tests ([Jakupovic2021]_), this chunk shape led to a speedup on the
     order of 10x versus H5PY's auto-chunked shape. Users can set a custom
     chunk shape with the ``chunks`` argument. Additionaly, the datasets in a
     file can be written with a contiguous layout by setting ``chunks=False``,
@@ -1002,13 +1000,19 @@ class H5MDWriter(base.WriterBase):
             'kcal/(mol*Angstrom)': 'kcal mol-1 Angstrom-1',
             'kcal/(mol*A)': 'kcal mol-1 Angstrom-1'}}
 
+    @due.dcite(Doi("10.25080/majora-1b6fd038-005"),
+               description="MDAnalysis trajectory reader/writer of the H5MD"
+               "format", path=__name__)
+    @due.dcite(Doi("10.1016/j.cpc.2014.01.018"),
+               description="Specifications of the H5MD standard",
+               path=__name__, version='1.1')
     def __init__(self, filename, n_atoms, n_frames=None, driver=None,
                  comm=None, convert_units=True, chunks=None, compression=None,
                  compression_opts=None, positions=True, velocities=True,
                  forces=True, timeunit=None, lengthunit=None,
                  velocityunit=None, forceunit=None, author='N/A',
                  author_email=None, creator='MDAnalysis',
-                 creator_version=mda.__version__, **kwargs):
+                 creator_version=mda_version, **kwargs):
 
         if not HAS_H5PY:
             raise RuntimeError("H5MDWriter: Please install h5py")
@@ -1359,6 +1363,8 @@ class H5MDWriter(base.WriterBase):
             self._edges.resize(self._edges.shape[0]+1, axis=0)
             self._edges.write_direct(ts.triclinic_dimensions,
                                      dest_sel=np.s_[i, :])
+        # These datasets are not resized if n_frames was provided as an
+        # argument, as they were initialized with their full size.
         if self._has['position']:
             if self.n_frames is None:
                 self._pos.resize(self._pos.shape[0]+1, axis=0)

@@ -383,6 +383,15 @@ class TestH5MDWriterWithRealTrajectory(object):
         return mda.Universe(TPR_xvf, H5MD_xvf)
 
     @pytest.fixture()
+    def universe_no_units(self):
+        u = mda.Universe(TPR_xvf, H5MD_xvf, convert_units=False)
+        u.trajectory.units['time'] = None
+        u.trajectory.units['length'] = None
+        u.trajectory.units['velocity'] = None
+        u.trajectory.units['force'] = None
+        return u
+
+    @pytest.fixture()
     def Writer(self):
         return mda.coordinates.H5MD.H5MDWriter
 
@@ -561,8 +570,6 @@ class TestH5MDWriterWithRealTrajectory(object):
                                 velocityunit, forceunit):
         with Writer(outfile,
                     universe.atoms.n_atoms,
-                    velocities=True,
-                    forces=True,
                     lengthunit=lengthunit,
                     velocityunit=velocityunit,
                     forceunit=forceunit,
@@ -594,24 +601,31 @@ class TestH5MDWriterWithRealTrajectory(object):
                 for ts in universe.trajectory:
                     W.write(universe)
 
-    def test_no_units_but_convert_true(self, universe, outfile, Writer):
+    def test_no_units_w_convert_true(self, universe_no_units, outfile, Writer):
+        # no units + convert_units = ValueError
         with pytest.raises(ValueError):
             with Writer(outfile,
-                        universe.atoms.n_atoms) as W:
-                for ts in universe.trajectory:
-                    universe.trajectory.units['time'] = None
-                    universe.trajectory.units['length'] = None
-                    universe.trajectory.units['velocity'] = None
-                    universe.trajectory.units['force'] = None
-                    W.write(universe)
+                        universe_no_units.atoms.n_atoms) as W:
+                for ts in universe_no_units.trajectory:
+                    W.write(universe_no_units)
+
+    def test_no_units_w_convert_false(self, universe_no_units,
+                                      outfile, Writer):
+        with Writer(outfile,
+                    universe_no_units.atoms.n_atoms,
+                    convert_units=False) as W:
+            for ts in universe_no_units.trajectory:
+                W.write(universe_no_units)
+
+            uw = mda.Universe(TPR_xvf, outfile, convert_units=False)
+            for unit in uw.trajectory.units.values():
+                assert_equal(unit, None)
 
     @pytest.mark.parametrize('convert_units', (True, False))
     def test_convert_units(self, universe, outfile, Writer,
                            convert_units):
         with Writer(outfile,
                     universe.atoms.n_atoms,
-                    velocities=True,
-                    forces=True,
                     convert_units=convert_units) as W:
             for ts in universe.trajectory:
                 W.write(universe)
