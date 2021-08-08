@@ -28,7 +28,7 @@ from itertools import combinations_with_replacement as comb
 import MDAnalysis
 from MDAnalysis.lib import distances
 from MDAnalysis.lib import mdamath
-from MDAnalysis.tests.datafiles import PSF, DCD, TRIC
+from MDAnalysis.tests.datafiles import PSF, DCD, TRIC, GRO, TRR
 
 
 class TestCheckResultArray(object):
@@ -1376,3 +1376,34 @@ class TestDistanceBackendSelection(object):
 
 def test_used_openmpflag():
     assert isinstance(distances.USED_OPENMP, bool)
+
+
+class TestNearestN:
+    @staticmethod
+    def reference_nearest(c1, c2, box, N):
+        # "slow" way of doing nearest N calculations
+        # returns the j indices and distances
+        da = distances.distance_array(c1, c2, box)
+        # minimum distance of a given J
+        min_j = da.min(axis=0)
+
+        j_sort = np.argsort(min_j)
+
+        return j_sort[:N], min_j[j_sort[:N]]
+        
+    def test_solvation(self):
+        u = MDAnalysis.Universe(GRO, TRR)
+
+        prot = u.select_atoms('protein')
+        sol = u.select_atoms('resname SOL and type O')
+
+        ix, d = distances.nearest_N(prot.positions, sol.positions, 10, box=u.dimensions)
+
+        assert len(ix) == 10
+        assert len(d) == 10
+
+        j_ref, d_ref = self.reference_nearest(prot.positions, sol.positions, u.dimensions, 10)
+
+        assert (ix[:, 1] == j_ref).all()
+        assert_almost_equal(d, d_ref)
+

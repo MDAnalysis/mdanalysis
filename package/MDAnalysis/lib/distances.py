@@ -57,6 +57,7 @@ Functions
 .. autofunction:: self_distance_array
 .. autofunction:: capped_distance
 .. autofunction:: self_capped_distance
+.. autofunction:: nearest_N
 .. autofunction:: calc_bonds
 .. autofunction:: calc_angles
 .. autofunction:: calc_dihedrals
@@ -1134,6 +1135,56 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
     if return_distances:
         return pairs, distances
     return pairs
+
+
+def nearest_N(coords_i, coords_j, N, box=None, grid_spacing=None):
+    """Find the nearest N from coords *j* to coords *i*
+
+    Parameters
+    ----------
+    coords_i, coords_j : numpy array, ``shape=(n_i, 3)``
+      coordinates of the two species.
+      For example in selecting the nearest N waters to a protein, the protein
+      is species *i* and the water species *j*.
+    N : int
+      the number of species *j* to identify, must be positive
+    box : numpy.ndarray, optional
+        The unitcell dimensions of the system, which can be orthogonal or
+        triclinic and must be provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        ``[lx, ly, lz, alpha, beta, gamma]``.
+    grid_spacing : float, optional
+        if the anticipated average distance between species *i* and *j* is
+        known, this can be used to optimise the performance
+
+    Returns
+    -------
+    pairs : numpy.ndarray (``dtype=numpy.int64``, ``shape=(N, 2)``)
+        Pairs of indices, the first column are from species *i* and the second
+        column from species *j*.
+        Indices from species *j* will not be repeated, whilst indices from
+        species *i* may be repeated.
+    distances : numpy.ndarray
+        Distances corresponding to each pair of indices, sorted from lowest
+        to highest. ``distances[k]`` corresponds to the ``k``-th pair returned
+        in `pairs` and gives the distance between the coordinates
+        ``coords_i[pairs[k, 0]]`` and ``coords_j[pairs[k, 1]]``.
+
+    .. versionadded:: 2.0.0
+    """
+    if N <= 0:
+        raise ValueError("N must be positive")
+
+    # TODO: Something clever about automatically choosing this distance
+    if grid_spacing is None:
+        grid_spacing = 4.0
+
+    if box is None:
+        raise ValueError("TODO")
+
+    grid = FastNS(grid_spacing, coords_i, box, pbc=box is not None)
+
+    return grid.nearest_N(coords_j, N)
 
 
 @check_coords('coords')
