@@ -84,7 +84,9 @@ class MOL2Parser(TopologyReaderBase):
 
     Notes
     -----
-    Elements are obtained directly from the SYBYL atom types.
+    Elements are obtained directly from the SYBYL atom types. If some atoms have
+    unknown atom types, they will be assigned an empty element record. If all
+    atoms have unknown atom types, the elements attribute will not be set.
 
     .. versionchanged:: 0.9
        Now subclasses TopologyReaderBase
