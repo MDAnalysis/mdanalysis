@@ -164,9 +164,9 @@ class MOL2Parser(TopologyReaderBase):
         validated_elements = np.empty(n_atoms, dtype="U3")
         invalid_elements = set()
         for i, at in enumerate(types):
-            try:
+            if at in SYBYL2SYMB:
                 validated_elements[i] = SYBYL2SYMB[at]
-            except KeyError:
+            else:
                 invalid_elements.add(at)
                 validated_elements[i] = ''
 
