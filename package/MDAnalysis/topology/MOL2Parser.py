@@ -95,6 +95,8 @@ class MOL2Parser(TopologyReaderBase):
        Ignores status bit strings
     .. versionchanged:: 2.0.0
        Bonds attribute is not added if no bonds are present in MOL2 file
+    .. versionchanged: 2.0.0
+       Parse elements from atom types.
     """
     format = 'MOL2'
 
@@ -104,10 +106,6 @@ class MOL2Parser(TopologyReaderBase):
         Returns
         -------
         A MDAnalysis Topology object
-
-
-        .. versionchanged: 2.0.0
-           Parse elements from atom types.
         """
         blocks = []
 
