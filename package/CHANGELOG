@@ -23,13 +23,9 @@ The rules for this file:
   * 2.0.0
 
 Fixes
-<<<<<<< HEAD
-  * Fixed missing array flatten preventing PCA from running when mean positions
-=======
   * Fixed sometimes wrong sorting of atoms into fragments when unwrapping
     (Issue #3352, PR #3353)
-  * Fixed missing array flatten preventing PCA from running when mean positions  
->>>>>>> 65319046c49f4bce5e49949b7ab451039adcbd67
+  * Fixed missing array flatten preventing PCA from running when mean positions
     provided and bugs causing tests to incorrectly pass (Issue #2728, PR #3296)
   * DL_POLY HISTORY file may contain unit cell dimensions even if there are
     no periodic boundary conditions (imcom=0) (Issue #3314, PR #3312).
@@ -194,6 +190,7 @@ Enhancements
   * Added `H5MDWriter` to coordinate writers (Issue #2866, PR #3189)
 
 Changes
+  * Aliased bfactors to tempfactors (Issue #1901, PR#3345)
   * The RDKitParser now raises an error if only part of the atoms have metadata
     on residues (Issue #3318, PR #3325)
   * `analysis.pca.PCA` class now stores `p_components`, `variance`,
@@ -294,6 +291,9 @@ Changes
   * Writing a TRZ file with no box information now raises a warning (Issue #3307)
 
 Deprecations
+  * Deprecated the `bfactors` topology attribute in favour of `tempfactors`.
+    In 2.0 `bfactors` is simply an alias of `tempfactors`; in 3.0 `bfactors`
+    will be removed. (Issue #1901, PR #3345)
   * The attributes `p_components`, `variance`, `cumulated_variance` and
     `mean_atoms` in `analysis.pca.PCA` are now deprecated in favour of
     `results.p_components`, `results.variance`, `results.cumulated_variance`
