@@ -53,8 +53,7 @@ def test_ts_error(writer, tmpdir):
     elif writer == mda.coordinates.LAMMPS.DATAWriter:
         pytest.skip("DATAWriter requires integer atom types")
     elif writer == mda.coordinates.H5MD.H5MDWriter and not mda.coordinates.H5MD.HAS_H5PY:
-        pytest.skip("H5MDWriter requires h5py to be installed, "
-                    "fails MIN dependency test")
+        pytest.skip("skipping H5MDWriter test because h5py is not installed")
     else:
         fn = str(tmpdir.join('out.traj'))
 
@@ -83,10 +82,12 @@ def test_write_with_atomgroup(writer, tmpdir):
     elif writer == mda.coordinates.LAMMPS.DATAWriter:
         pytest.skip("DATAWriter requires integer atom types")
     elif writer == mda.coordinates.H5MD.H5MDWriter and not mda.coordinates.H5MD.HAS_H5PY:
-        pytest.skip("macOS and ubuntu, 3.6, MIN tests fail")
+        pytest.skip("skipping H5MDWriter test because h5py is not installed")
     else:
         fn = str(tmpdir.join('out.traj'))
 
+    # H5MDWriter raises ValueError if the trajectory has no units and
+    # convert_units is True
     if writer == mda.coordinates.H5MD.H5MDWriter:
         with writer(fn, n_atoms=u.atoms.n_atoms, convert_units=False) as w:
             w.write(u.atoms)
@@ -109,10 +110,12 @@ def test_write_with_universe(writer, tmpdir):
     elif writer == mda.coordinates.LAMMPS.DATAWriter:
         pytest.skip("DATAWriter requires integer atom types")
     elif writer == mda.coordinates.H5MD.H5MDWriter and not mda.coordinates.H5MD.HAS_H5PY:
-        pytest.skip("macOS and ubuntu, 3.6, MIN tests fail")
+        pytest.skip("skipping H5MDWriter test because h5py is not installed")
     else:
         fn = str(tmpdir.join('out.traj'))
 
+    # H5MDWriter raises ValueError if the trajectory has no units and
+    # convert_units is True
     if writer == mda.coordinates.H5MD.H5MDWriter:
         with writer(fn, n_atoms=u.atoms.n_atoms, convert_units=False) as w:
             w.write(u.atoms)
