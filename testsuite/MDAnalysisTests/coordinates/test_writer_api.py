@@ -52,10 +52,9 @@ def test_ts_error(writer, tmpdir):
         fn = str(tmpdir.join('out.xtc'))
     elif writer == mda.coordinates.LAMMPS.DATAWriter:
         pytest.skip("DATAWriter requires integer atom types")
-    elif writer == mda.coordinates.H5MD.H5MDWriter:
-        if not mda.coordinates.H5MD.HAS_H5PY:
-            pytest.skip("H5MDWriter requires h5py to be installed, "
-                        "fails MIN dependency test")
+    elif writer == mda.coordinates.H5MD.H5MDWriter and not mda.coordinates.H5MD.HAS_H5PY:
+        pytest.skip("H5MDWriter requires h5py to be installed, "
+                    "fails MIN dependency test")
     else:
         fn = str(tmpdir.join('out.traj'))
 
@@ -83,14 +82,17 @@ def test_write_with_atomgroup(writer, tmpdir):
         pytest.skip("MOL2 only writes MOL2 back out")
     elif writer == mda.coordinates.LAMMPS.DATAWriter:
         pytest.skip("DATAWriter requires integer atom types")
-    elif writer == mda.coordinates.H5MD.H5MDWriter:
-        if not mda.coordinates.H5MD.HAS_H5PY:
-            pytest.skip("macOS and ubuntu, 3.6, MIN tests fail")
+    elif writer == mda.coordinates.H5MD.H5MDWriter and not mda.coordinates.H5MD.HAS_H5PY:
+        pytest.skip("macOS and ubuntu, 3.6, MIN tests fail")
     else:
         fn = str(tmpdir.join('out.traj'))
 
-    with writer(fn, n_atoms=u.atoms.n_atoms) as w:
-        w.write(u.atoms)
+    if writer == mda.coordinates.H5MD.H5MDWriter:
+        with writer(fn, n_atoms=u.atoms.n_atoms, convert_units=False) as w:
+            w.write(u.atoms)
+    else:
+        with writer(fn, n_atoms=u.atoms.n_atoms) as w:
+            w.write(u.atoms)
 
 
 @pytest.mark.parametrize('writer', writers)
@@ -106,11 +108,14 @@ def test_write_with_universe(writer, tmpdir):
         pytest.skip("MOL2 only writes MOL2 back out")
     elif writer == mda.coordinates.LAMMPS.DATAWriter:
         pytest.skip("DATAWriter requires integer atom types")
-    elif writer == mda.coordinates.H5MD.H5MDWriter:
-        if not mda.coordinates.H5MD.HAS_H5PY:
-            pytest.skip("macOS and ubuntu, 3.6, MIN tests fail")
+    elif writer == mda.coordinates.H5MD.H5MDWriter and not mda.coordinates.H5MD.HAS_H5PY:
+        pytest.skip("macOS and ubuntu, 3.6, MIN tests fail")
     else:
         fn = str(tmpdir.join('out.traj'))
 
-    with writer(fn, n_atoms=10) as w:
-        w.write(u)
+    if writer == mda.coordinates.H5MD.H5MDWriter:
+        with writer(fn, n_atoms=u.atoms.n_atoms, convert_units=False) as w:
+            w.write(u.atoms)
+    else:
+        with writer(fn, n_atoms=u.atoms.n_atoms) as w:
+            w.write(u.atoms)
