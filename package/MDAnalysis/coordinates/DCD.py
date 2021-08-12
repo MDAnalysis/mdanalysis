@@ -320,6 +320,13 @@ class DCDWriter(base.WriterBase):
     in Å and angle-cosines, ``[A, cos(gamma), B, cos(beta), cos(alpha), C]``)
     and writes positions in Å and time in AKMA time units.
 
+
+    .. note::
+        When writing out timesteps without ``dimensions`` (i.e. set ``None``)
+        the :class:`DCDWriter` will write out a zeroed unitcell (i.e.
+        ``[0, 0, 0, 0, 0, 0]``). As this behaviour is poorly defined, it may
+        not match the expectations of other software.
+
     """
     format = 'DCD'
     multiframe = True
@@ -418,6 +425,9 @@ class DCDWriter(base.WriterBase):
         try:
             dimensions = ts.dimensions.copy()
         except AttributeError:
+            wmsg = ('No dimensions set for current frame, zeroed unitcell '
+                    'will be written')
+            warnings.warn(wmsg)
             dimensions = np.zeros(6)
 
         if self._convert_units:
