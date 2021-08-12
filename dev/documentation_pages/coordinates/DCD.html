@@ -991,6 +991,13 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 <p>The writer follows recent NAMD/VMD convention for the unitcell (box lengths
 in Å and angle-cosines, <code class="docutils literal notranslate"><span class="pre">[A,</span> <span class="pre">cos(gamma),</span> <span class="pre">B,</span> <span class="pre">cos(beta),</span> <span class="pre">cos(alpha),</span> <span class="pre">C]</span></code>)
 and writes positions in Å and time in AKMA time units.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When writing out timesteps without <code class="docutils literal notranslate"><span class="pre">dimensions</span></code> (i.e. set <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+the <a class="reference internal" href="#MDAnalysis.coordinates.DCD.DCDWriter" title="MDAnalysis.coordinates.DCD.DCDWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">DCDWriter</span></code></a> will write out a zeroed unitcell (i.e.
+<code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>). As this behaviour is poorly defined, it may
+not match the expectations of other software.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

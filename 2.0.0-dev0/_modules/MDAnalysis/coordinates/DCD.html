@@ -504,6 +504,13 @@
 <span class="sd">    in Å and angle-cosines, ``[A, cos(gamma), B, cos(beta), cos(alpha), C]``)</span>
 <span class="sd">    and writes positions in Å and time in AKMA time units.</span>
 
+
+<span class="sd">    .. note::</span>
+<span class="sd">        When writing out timesteps without ``dimensions`` (i.e. set ``None``)</span>
+<span class="sd">        the :class:`DCDWriter` will write out a zeroed unitcell (i.e.</span>
+<span class="sd">        ``[0, 0, 0, 0, 0, 0]``). As this behaviour is poorly defined, it may</span>
+<span class="sd">        not match the expectations of other software.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;DCD&#39;</span>
     <span class="n">multiframe</span> <span class="o">=</span> <span class="kc">True</span>
@@ -602,6 +609,9 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">dimensions</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;No dimensions set for current frame, zeroed unitcell &#39;</span>
+                    <span class="s1">&#39;will be written&#39;</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
             <span class="n">dimensions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_units</span><span class="p">:</span>
