@@ -161,14 +161,14 @@ class MOL2Parser(TopologyReaderBase):
 
         n_atoms = len(ids)
 
-        validated_elements = []
+        validated_elements = np.empty(n_atoms, dtype="U3")
         invalid_elements = set()
-        for at in types:
+        for i, at in enumerate(types):
             try:
-                validated_elements.append(SYBYL2SYMB[at])
+                validated_elements[i] = SYBYL2SYMB[at]
             except KeyError:
                 invalid_elements.add(at)
-                validated_elements.append('')
+                validated_elements[i] = ''
 
         # Print single warning for all unknown elements, if any
         if invalid_elements:
@@ -186,7 +186,7 @@ class MOL2Parser(TopologyReaderBase):
         attrs.append(Masses(masses, guessed=True))
 
         if not np.all(validated_elements == ''):
-            attrs.append(Elements(np.array(validated_elements, dtype="U3")))
+            attrs.append(Elements(validated_elements))
 
         resids = np.array(resids, dtype=np.int32)
         resnames = np.array(resnames, dtype=object)
