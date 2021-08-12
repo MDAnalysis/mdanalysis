@@ -102,7 +102,6 @@ else:
         "resids": "ResidueNumber",
         "segindices": "SegmentNumber",
         "tempfactors": "TempFactor",
-        "bfactors": "TempFactor",
     }
     PERIODIC_TABLE = Chem.GetPeriodicTable()
 
@@ -187,8 +186,6 @@ class RDKitConverter(base.ConverterBase):
     +-----------------------+-------------------------------------------+
     | tempfactors           | atom.GetMonomerInfo().GetTempFactor()     |
     +-----------------------+-------------------------------------------+
-    | bfactors              | atom.GetMonomerInfo().GetTempFactor()     |
-    +-----------------------+-------------------------------------------+
     | charges               | atom.GetDoubleProp("_MDAnalysis_charge")  |
     +-----------------------+-------------------------------------------+
     | indices               | atom.GetIntProp("_MDAnalysis_index")      |
@@ -233,10 +230,6 @@ class RDKitConverter(base.ConverterBase):
 
     It also requires the `bonds` attribute, although they will be automatically
     guessed if not present.
-
-    If both ``tempfactors`` and ``bfactors`` attributes are present, the
-    conversion will fail, since only one of these should be present.
-    Refer to Issue #1901 for a solution
 
     Hydrogens should be explicit in the topology file. If this is not the case,
     use the parameter ``NoImplicit=False`` when using the converter to allow
@@ -371,12 +364,6 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
 
     # attributes accepted in PDBResidueInfo object
     pdb_attrs = {}
-    if hasattr(ag, "bfactors") and hasattr(ag, "tempfactors"):
-        raise AttributeError(
-            "Both `tempfactors` and `bfactors` attributes are present but "
-            "only one can be assigned to the RDKit molecule. Please "
-            "delete the unnecessary one and retry."
-        )
     for attr in RDATTRIBUTES.keys():
         if hasattr(ag, attr):
             pdb_attrs[attr] = getattr(ag, attr)
