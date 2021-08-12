@@ -20,19 +20,19 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import pytest
+from io import StringIO
+
+import numpy as np
 from numpy.testing import assert_equal
+import pytest
 
 import MDAnalysis as mda
-
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     mol2_molecule,
     mol2_molecules,
 )
 
-import numpy as np
-from io import StringIO
 
 class TestMOL2Base(ParserBase):
     parser = mda.topology.MOL2Parser.MOL2Parser
