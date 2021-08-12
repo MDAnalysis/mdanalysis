@@ -280,7 +280,7 @@
                      <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span><span class="p">,</span>
                      <span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
-<span class="kn">from</span> <span class="nn">.topologyattrs</span> <span class="kn">import</span> <span class="n">AtomAttr</span><span class="p">,</span> <span class="n">ResidueAttr</span><span class="p">,</span> <span class="n">SegmentAttr</span>
+<span class="kn">from</span> <span class="nn">.topologyattrs</span> <span class="kn">import</span> <span class="n">AtomAttr</span><span class="p">,</span> <span class="n">ResidueAttr</span><span class="p">,</span> <span class="n">SegmentAttr</span><span class="p">,</span> <span class="n">BFACTOR_WARNING</span>
 <span class="kn">from</span> <span class="nn">.topologyobjects</span> <span class="kn">import</span> <span class="n">TopologyObject</span>
 
 
@@ -958,6 +958,8 @@
 <span class="sd">            they will be aliases of the same attribute.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">topologyattr</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;bfactor&quot;</span><span class="p">,</span> <span class="s2">&quot;bfactors&quot;</span><span class="p">):</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">BFACTOR_WARNING</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">tcls</span> <span class="o">=</span> <span class="n">_TOPOLOGY_ATTRS</span><span class="p">[</span><span class="n">topologyattr</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
@@ -976,16 +978,6 @@
                     <span class="n">n_residues</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_residues</span><span class="p">,</span>
                     <span class="n">n_segments</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_segments</span><span class="p">,</span>
                     <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">)</span>
-        <span class="n">alias_pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;bfactors&quot;</span><span class="p">,</span> <span class="s2">&quot;tempfactors&quot;</span><span class="p">),</span>
-                       <span class="p">(</span><span class="s2">&quot;tempfactors&quot;</span><span class="p">,</span> <span class="s2">&quot;bfactors&quot;</span><span class="p">)]</span>
-        <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">alias_pairs</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">topologyattr</span><span class="o">.</span><span class="n">attrname</span> <span class="o">==</span> <span class="n">a</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-                <span class="n">err</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;You are adding </span><span class="si">{a}</span><span class="s2"> to a Universe that &quot;</span>
-                       <span class="s2">&quot;has </span><span class="si">{b}</span><span class="s2">. From MDAnalysis version 2.0, </span><span class="si">{a}</span><span class="s2"> &quot;</span>
-                       <span class="s2">&quot;and </span><span class="si">{b}</span><span class="s2"> will no longer be separate &quot;</span>
-                       <span class="s2">&quot;TopologyAttrs. Instead, they will be aliases &quot;</span>
-                       <span class="s2">&quot;of the same attribute.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_process_attr</span><span class="p">(</span><span class="n">topologyattr</span><span class="p">)</span></div>
 

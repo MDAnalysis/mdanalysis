@@ -255,7 +255,7 @@ valid. If partially missing or incorrect, empty records are assigned.</p>
 <dd><ul class="first last simple">
 <li>names</li>
 <li>chainids</li>
-<li>bfactors</li>
+<li>tempfactors</li>
 <li>occupancies</li>
 <li>record_types (ATOM/HETATM)</li>
 <li>resids</li>
@@ -287,7 +287,9 @@ valid. If partially missing or incorrect, empty records are assigned.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 2.0.0: </span>Bonds attribute is not added if no bonds are present in PDB file.
 If elements are invalid or partially missing, empty elements records
-are now assigned (Issue #2422).</p>
+are now assigned (Issue #2422).
+Aliased <code class="docutils literal notranslate"><span class="pre">bfactors</span></code> topologyattribute to <code class="docutils literal notranslate"><span class="pre">tempfactors</span></code>.
+<code class="docutils literal notranslate"><span class="pre">bfactors</span></code> is deprecated and will be removed in 3.0 (Issue #1901)</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.topology.PDBParser.PDBParser.close">

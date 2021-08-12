@@ -342,7 +342,7 @@
 <span class="sd">    Creates the following Attributes:</span>
 <span class="sd">     - names</span>
 <span class="sd">     - chainids</span>
-<span class="sd">     - bfactors</span>
+<span class="sd">     - tempfactors</span>
 <span class="sd">     - occupancies</span>
 <span class="sd">     - record_types (ATOM/HETATM)</span>
 <span class="sd">     - resids</span>
@@ -368,6 +368,8 @@
 <span class="sd">       Bonds attribute is not added if no bonds are present in PDB file.</span>
 <span class="sd">       If elements are invalid or partially missing, empty elements records</span>
 <span class="sd">       are now assigned (Issue #2422).</span>
+<span class="sd">       Aliased ``bfactors`` topologyattribute to ``tempfactors``.</span>
+<span class="sd">       ``bfactors`` is deprecated and will be removed in 3.0 (Issue #1901)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PDB&#39;</span><span class="p">,</span> <span class="s1">&#39;ENT&#39;</span><span class="p">]</span>
 

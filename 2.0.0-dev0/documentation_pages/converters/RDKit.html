@@ -669,19 +669,16 @@ an attribute that is typically found in a PDB file,</li>
 <tr class="row-even"><td>tempfactors</td>
 <td>atom.GetMonomerInfo().GetTempFactor()</td>
 </tr>
-<tr class="row-odd"><td>bfactors</td>
-<td>atom.GetMonomerInfo().GetTempFactor()</td>
-</tr>
-<tr class="row-even"><td>charges</td>
+<tr class="row-odd"><td>charges</td>
 <td>atom.GetDoubleProp(“_MDAnalysis_charge”)</td>
 </tr>
-<tr class="row-odd"><td>indices</td>
+<tr class="row-even"><td>indices</td>
 <td>atom.GetIntProp(“_MDAnalysis_index”)</td>
 </tr>
-<tr class="row-even"><td>segids</td>
+<tr class="row-odd"><td>segids</td>
 <td>atom.GetProp(“_MDAnalysis_segid”)</td>
 </tr>
-<tr class="row-odd"><td>types</td>
+<tr class="row-even"><td>types</td>
 <td>atom.GetProp(“_MDAnalysis_type”)</td>
 </tr>
 </tbody>
@@ -715,9 +712,6 @@ an attribute that is typically found in a PDB file,</li>
 attribute to be present in the topology, else it will fail.</p>
 <p>It also requires the <cite>bonds</cite> attribute, although they will be automatically
 guessed if not present.</p>
-<p>If both <code class="docutils literal notranslate"><span class="pre">tempfactors</span></code> and <code class="docutils literal notranslate"><span class="pre">bfactors</span></code> attributes are present, the
-conversion will fail, since only one of these should be present.
-Refer to Issue #1901 for a solution</p>
 <p>Hydrogens should be explicit in the topology file. If this is not the case,
 use the parameter <code class="docutils literal notranslate"><span class="pre">NoImplicit=False</span></code> when using the converter to allow
 implicit hydrogens and disable inferring bond orders and charges.</p>

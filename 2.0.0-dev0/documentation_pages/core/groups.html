@@ -676,6 +676,17 @@ before calculation. [<code class="docutils literal notranslate"><span class="pre
 </dd></dl>
 
 <dl class="attribute">
+<dt id="MDAnalysis.core.groups.AtomGroup.bfactors">
+<code class="descname">bfactors</code><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.bfactors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bfactor alias with warning</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have tempfactors. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="MDAnalysis.core.groups.AtomGroup.bond">
 <code class="descname">bond</code><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.bond" title="Permalink to this definition">¶</a></dt>
 <dd><p>This <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> represented as a
@@ -3095,6 +3106,17 @@ before calculation. [<code class="docutils literal notranslate"><span class="pre
 </div>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="MDAnalysis.core.groups.ResidueGroup.bfactors">
+<code class="descname">bfactors</code><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.bfactors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bfactor alias with warning</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have tempfactors. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.core.groups.ResidueGroup.bsphere">
 <code class="descname">bsphere</code><span class="sig-paren">(</span><em>pbc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.bsphere" title="Permalink to this definition">¶</a></dt>
@@ -4963,6 +4985,17 @@ before calculation. [<code class="docutils literal notranslate"><span class="pre
 </div>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="MDAnalysis.core.groups.SegmentGroup.bfactors">
+<code class="descname">bfactors</code><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.bfactors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bfactor alias with warning</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have tempfactors. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.core.groups.SegmentGroup.bsphere">
 <code class="descname">bsphere</code><span class="sig-paren">(</span><em>pbc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.bsphere" title="Permalink to this definition">¶</a></dt>
@@ -6516,6 +6549,17 @@ generating its Topology-specific <a class="reference internal" href="#MDAnalysis
 from <code class="xref py py-class docutils literal notranslate"><span class="pre">ComponentBase</span></code>, so this class only includes ad-hoc methods
 specific to <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>.</p>
 <dl class="attribute">
+<dt id="MDAnalysis.core.groups.Atom.bfactor">
+<code class="descname">bfactor</code><a class="headerlink" href="#MDAnalysis.core.groups.Atom.bfactor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bfactor alias with warning</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have tempfactors. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="MDAnalysis.core.groups.Atom.bonded_atoms">
 <code class="descname">bonded_atoms</code><a class="headerlink" href="#MDAnalysis.core.groups.Atom.bonded_atoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>An <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> of all
@@ -6701,6 +6745,17 @@ specific to <a class="reference internal" href="#MDAnalysis.core.groups.Residue"
 <code class="descname">atoms</code><a class="headerlink" href="#MDAnalysis.core.groups.Residue.atoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>An <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> present in this
 <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.groups.Residue.bfactors">
+<code class="descname">bfactors</code><a class="headerlink" href="#MDAnalysis.core.groups.Residue.bfactors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bfactor alias with warning</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have tempfactors. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -6934,6 +6989,17 @@ to select by resname.</p>
 <code class="descname">atoms</code><a class="headerlink" href="#MDAnalysis.core.groups.Segment.atoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>An <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> present in this
 <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.groups.Segment.bfactors">
+<code class="descname">bfactors</code><a class="headerlink" href="#MDAnalysis.core.groups.Segment.bfactors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bfactor alias with warning</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This requires the underlying topology to have tempfactors. Otherwise, a
+<a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
 </dd></dl>
 
 <dl class="method">

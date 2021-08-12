@@ -449,6 +449,25 @@
                 <span class="nb">setattr</span><span class="p">(</span><span class="n">dest_class</span><span class="p">,</span> <span class="n">method_name</span><span class="p">,</span> <span class="n">stub</span><span class="p">)</span>
 
 
+<span class="c1"># TODO: remove bfactors in 3.0</span>
+<span class="n">BFACTOR_WARNING</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The bfactor topology attribute is only &quot;</span>
+                   <span class="s2">&quot;provided as an alias to the tempfactor &quot;</span>
+                   <span class="s2">&quot;attribute. It will be removed in &quot;</span>
+                   <span class="s2">&quot;3.0. Please use the tempfactor attribute &quot;</span>
+                   <span class="s2">&quot;instead.&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">deprecate_bfactor_warning</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Bfactor alias with warning</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">BFACTOR_WARNING</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+
+
 <span class="k">class</span> <span class="nc">_TopologyAttrMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Register TopologyAttrs on class creation</span>
 
@@ -521,6 +540,14 @@
                            <span class="s2">&quot;selection keyword, define it manually &quot;</span>
                            <span class="s2">&quot;by subclassing core.selection.Selection&quot;</span><span class="p">)</span>
                     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="c1"># TODO: remove in 3.0</span>
+        <span class="k">if</span> <span class="n">attrname</span> <span class="o">==</span> <span class="s2">&quot;tempfactors&quot;</span><span class="p">:</span>
+            <span class="n">_TOPOLOGY_ATTRS</span><span class="p">[</span><span class="s2">&quot;bfactor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_TOPOLOGY_ATTRS</span><span class="p">[</span><span class="s2">&quot;bfactors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
+            <span class="n">selcls</span> <span class="o">=</span> <span class="n">selection</span><span class="o">.</span><span class="n">gen_selection_class</span><span class="p">(</span><span class="s2">&quot;bfactor&quot;</span><span class="p">,</span> <span class="s2">&quot;bfactors&quot;</span><span class="p">,</span>
+                                                   <span class="n">classdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dtype&quot;</span><span class="p">),</span>
+                                                   <span class="n">per_object</span><span class="o">=</span><span class="s2">&quot;atom&quot;</span><span class="p">)</span>
+            <span class="n">selcls</span><span class="o">.</span><span class="n">apply</span> <span class="o">=</span> <span class="n">deprecate_bfactor_warning</span><span class="p">(</span><span class="n">selcls</span><span class="o">.</span><span class="n">apply</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="TopologyAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.groups.TopologyAttr">[docs]</a><span class="k">class</span> <span class="nc">TopologyAttr</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_TopologyAttrMeta</span><span class="p">):</span>
@@ -1437,10 +1464,73 @@
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;tempfactor&#39;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span>
+    <span class="n">transplants</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span>
+
+    <span class="c1"># TODO: remove bfactors in 3.0</span>
+<div class="viewcode-block" id="Tempfactors.bfactor"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.groups.Tempfactors.bfactor">[docs]</a>    <span class="nd">@deprecate_bfactor_warning</span>
+    <span class="k">def</span> <span class="nf">bfactor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Alias for tempfactor</span>
+
+<span class="sd">        The bfactor topology attribute is only</span>
+<span class="sd">        provided as an alias to the tempfactor</span>
+<span class="sd">        attribute. It will be removed in</span>
+<span class="sd">        3.0. Please use the tempfactor attribute</span>
+<span class="sd">        instead.</span>
+
+<span class="sd">        .. versionadded:: 2.0.0</span>
+
+<span class="sd">        .. deprecated:: 2.0.0</span>
+<span class="sd">            Will be removed in 3.0.0. Use the</span>
+<span class="sd">            ``tempfactor`` attribute instead.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">tempfactor</span></div>
+
+<div class="viewcode-block" id="Tempfactors.bfactor_setter"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.groups.Tempfactors.bfactor_setter">[docs]</a>    <span class="nd">@deprecate_bfactor_warning</span>
+    <span class="k">def</span> <span class="nf">bfactor_setter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Tempfactor alias property for atom</span>
+
+<span class="sd">        .. versionadded:: 2.0.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">tempfactor</span> <span class="o">=</span> <span class="n">value</span></div>
+
+<div class="viewcode-block" id="Tempfactors.bfactors"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.groups.Tempfactors.bfactors">[docs]</a>    <span class="nd">@deprecate_bfactor_warning</span>
+    <span class="k">def</span> <span class="nf">bfactors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Alias for tempfactors</span>
+
+<span class="sd">        The bfactor topology attribute is only</span>
+<span class="sd">        provided as an alias to the tempfactor</span>
+<span class="sd">        attribute. It will be removed in</span>
+<span class="sd">        3.0. Please use the tempfactor attribute</span>
+<span class="sd">        instead.</span>
+
+<span class="sd">        .. versionadded:: 2.0.0</span>
+
+<span class="sd">        .. deprecated:: 2.0.0</span>
+<span class="sd">            Will be removed in 3.0.0. Use the</span>
+<span class="sd">            ``tempfactor`` attribute instead.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">tempfactors</span></div>
+
+<div class="viewcode-block" id="Tempfactors.bfactors_setter"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.groups.Tempfactors.bfactors_setter">[docs]</a>    <span class="nd">@deprecate_bfactor_warning</span>
+    <span class="k">def</span> <span class="nf">bfactors_setter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Tempfactor alias property for groups of atoms</span>
+
+<span class="sd">        .. versionadded:: 2.0.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">tempfactors</span> <span class="o">=</span> <span class="n">value</span></div>
+
+    <span class="n">transplants</span><span class="p">[</span><span class="n">Atom</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span><span class="s1">&#39;bfactor&#39;</span><span class="p">,</span> <span class="nb">property</span><span class="p">(</span><span class="n">bfactor</span><span class="p">,</span> <span class="n">bfactor_setter</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>
+                             <span class="n">bfactor</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)))</span>
+
+    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="p">(</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">Segment</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">):</span>
+        <span class="n">transplants</span><span class="p">[</span><span class="n">group</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">(</span><span class="s2">&quot;bfactors&quot;</span><span class="p">,</span> <span class="nb">property</span><span class="p">(</span><span class="n">bfactors</span><span class="p">,</span> <span class="n">bfactors_setter</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">bfactors</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)))</span></div>
 
 
 <div class="viewcode-block" id="Masses"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.groups.Masses">[docs]</a><span class="k">class</span> <span class="nc">Masses</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
@@ -1928,19 +2018,6 @@
 
     <span class="n">transplants</span><span class="p">[</span><span class="n">GroupBase</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
         <span class="p">(</span><span class="s1">&#39;total_charge&#39;</span><span class="p">,</span> <span class="n">total_charge</span><span class="p">))</span></div>
-
-
-<span class="c1"># TODO: update docs to property doc</span>
-<div class="viewcode-block" id="Bfactors"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.groups.Bfactors">[docs]</a><span class="k">class</span> <span class="nc">Bfactors</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Crystallographic B-factors in A**2 for each atom&quot;&quot;&quot;</span>
-    <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;bfactors&#39;</span>
-    <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;bfactor&#39;</span>
-    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span></div>
 
 
 <span class="c1"># TODO: update docs to property doc</span>

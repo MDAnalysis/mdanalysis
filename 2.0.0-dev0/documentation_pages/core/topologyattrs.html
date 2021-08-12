@@ -611,18 +611,6 @@ list is <code class="docutils literal notranslate"><span class="pre">None</span>
 </dd></dl>
 
 <dl class="class">
-<dt id="MDAnalysis.core.topologyattrs.Bfactors">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Bfactors</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Bfactors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Bfactors" title="Permalink to this definition">¶</a></dt>
-<dd><p>Crystallographic B-factors in A**2 for each atom</p>
-<dl class="attribute">
-<dt id="MDAnalysis.core.topologyattrs.Bfactors.dtype">
-<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Bfactors.dtype" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.float</span></code></p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
 <dt id="MDAnalysis.core.topologyattrs.Bonds">
 <em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Bonds</code><span class="sig-paren">(</span><em>values</em>, <em>types=None</em>, <em>guessed=False</em>, <em>order=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Bonds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Bonds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bonds between two atoms</p>
@@ -1580,10 +1568,40 @@ order of the elements in that group.</p>
 <dt id="MDAnalysis.core.topologyattrs.Tempfactors">
 <em class="property">class </em><code class="descclassname">MDAnalysis.core.topologyattrs.</code><code class="descname">Tempfactors</code><span class="sig-paren">(</span><em>values</em>, <em>guessed=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Tempfactors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Tempfactors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tempfactor for atoms</p>
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Tempfactors.bfactor">
+<code class="descname">bfactor</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Tempfactors.bfactor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Tempfactors.bfactor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bfactor alias with warning</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Tempfactors.bfactor_setter">
+<code class="descname">bfactor_setter</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Tempfactors.bfactor_setter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Tempfactors.bfactor_setter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bfactor alias with warning</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Tempfactors.bfactors">
+<code class="descname">bfactors</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Tempfactors.bfactors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Tempfactors.bfactors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bfactor alias with warning</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Tempfactors.bfactors_setter">
+<code class="descname">bfactors_setter</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Tempfactors.bfactors_setter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Tempfactors.bfactors_setter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bfactor alias with warning</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.core.topologyattrs.Tempfactors.dtype">
 <code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Tempfactors.dtype" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.float</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.core.topologyattrs.Tempfactors.group">
+<code class="descname">group</code><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Tempfactors.group" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="groups.html#MDAnalysis.core.groups.SegmentGroup" title="MDAnalysis.core.groups.SegmentGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.SegmentGroup</span></code></a></p>
 </dd></dl>
 
 </dd></dl>

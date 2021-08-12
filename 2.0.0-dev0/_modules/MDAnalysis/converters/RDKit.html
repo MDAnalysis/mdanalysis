@@ -286,7 +286,6 @@
         <span class="s2">&quot;resids&quot;</span><span class="p">:</span> <span class="s2">&quot;ResidueNumber&quot;</span><span class="p">,</span>
         <span class="s2">&quot;segindices&quot;</span><span class="p">:</span> <span class="s2">&quot;SegmentNumber&quot;</span><span class="p">,</span>
         <span class="s2">&quot;tempfactors&quot;</span><span class="p">:</span> <span class="s2">&quot;TempFactor&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;bfactors&quot;</span><span class="p">:</span> <span class="s2">&quot;TempFactor&quot;</span><span class="p">,</span>
     <span class="p">}</span>
     <span class="n">PERIODIC_TABLE</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">GetPeriodicTable</span><span class="p">()</span>
 
@@ -371,8 +370,6 @@
 <span class="sd">    +-----------------------+-------------------------------------------+</span>
 <span class="sd">    | tempfactors           | atom.GetMonomerInfo().GetTempFactor()     |</span>
 <span class="sd">    +-----------------------+-------------------------------------------+</span>
-<span class="sd">    | bfactors              | atom.GetMonomerInfo().GetTempFactor()     |</span>
-<span class="sd">    +-----------------------+-------------------------------------------+</span>
 <span class="sd">    | charges               | atom.GetDoubleProp(&quot;_MDAnalysis_charge&quot;)  |</span>
 <span class="sd">    +-----------------------+-------------------------------------------+</span>
 <span class="sd">    | indices               | atom.GetIntProp(&quot;_MDAnalysis_index&quot;)      |</span>
@@ -417,10 +414,6 @@
 
 <span class="sd">    It also requires the `bonds` attribute, although they will be automatically</span>
 <span class="sd">    guessed if not present.</span>
-
-<span class="sd">    If both ``tempfactors`` and ``bfactors`` attributes are present, the</span>
-<span class="sd">    conversion will fail, since only one of these should be present.</span>
-<span class="sd">    Refer to Issue #1901 for a solution</span>
 
 <span class="sd">    Hydrogens should be explicit in the topology file. If this is not the case,</span>
 <span class="sd">    use the parameter ``NoImplicit=False`` when using the converter to allow</span>
@@ -555,12 +548,6 @@
 
     <span class="c1"># attributes accepted in PDBResidueInfo object</span>
     <span class="n">pdb_attrs</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="s2">&quot;bfactors&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="s2">&quot;tempfactors&quot;</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-            <span class="s2">&quot;Both `tempfactors` and `bfactors` attributes are present but &quot;</span>
-            <span class="s2">&quot;only one can be assigned to the RDKit molecule. Please &quot;</span>
-            <span class="s2">&quot;delete the unnecessary one and retry.&quot;</span>
-        <span class="p">)</span>
     <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">RDATTRIBUTES</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
             <span class="n">pdb_attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
