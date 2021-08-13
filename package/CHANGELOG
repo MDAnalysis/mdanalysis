@@ -25,6 +25,10 @@ The rules for this file:
 Fixes
   * Fixed MDAnalysis.analysis.align.alignto to reindex given mobile and 
     reference atoms before passing for alignment (issue #2977)
+  * Only GRO files with unit cells defined with 3 or 9 entries are now
+    supported (Issue #3305)
+  * Ensures that reading and writing of GRO files with missing unit cell
+    information is consistently treated (Issue #3305)
   * Fixed sometimes wrong sorting of atoms into fragments when unwrapping
     (Issue #3352, PR #3353)
   * Fixed missing array flatten preventing PCA from running when mean positions  
@@ -119,6 +123,7 @@ Fixes
   * new `Results` class now can be pickled/unpickled. (PR #3309) 
 
 Enhancements
+  * MOL2 parser populates elements attribute from SYBYL atom types (Issue #3062)
   * Added guessers for aromaticity and Gasteiger partial charges (Issue #2468,
     PR #2926)
   * Added `Results` class for storing analysis results (#3115, PR #3233)
@@ -191,6 +196,7 @@ Enhancements
     to transfer data from HDF5 file into timestep. (PR #3293)
 
 Changes
+  * Aliased bfactors to tempfactors (Issue #1901, PR#3345)
   * The RDKitParser now raises an error if only part of the atoms have metadata
     on residues (Issue #3318, PR #3325)
   * `analysis.pca.PCA` class now stores `p_components`, `variance`, 
@@ -291,6 +297,9 @@ Changes
   * Writing a TRZ file with no box information now raises a warning (Issue #3307)
 
 Deprecations
+  * Deprecated the `bfactors` topology attribute in favour of `tempfactors`.
+    In 2.0 `bfactors` is simply an alias of `tempfactors`; in 3.0 `bfactors`
+    will be removed. (Issue #1901, PR #3345)
   * The attributes `p_components`, `variance`, `cumulated_variance` and 
     `mean_atoms` in `analysis.pca.PCA` are now deprecated in favour of 
     `results.p_components`, `results.variance`, `results.cumulated_variance` 

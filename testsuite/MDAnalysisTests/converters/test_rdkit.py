@@ -229,6 +229,10 @@ class TestRDKitConverter(object):
 
     def test_raise_requires_elements(self):
         u = mda.Universe(mol2_molecule)
+        
+        # Delete topology attribute (PR #3069)
+        u.del_TopologyAttr('elements')
+        
         with pytest.raises(
             AttributeError,
             match="`elements` attribute is required for the RDKitConverter"
@@ -274,24 +278,12 @@ class TestRDKitConverter(object):
         ("resids", 123, 123),
         ("segindices", 1, 1),
         ("tempfactors", 0.8, 0.8),
-        ("bfactors", 0.8, 0.8),
     ])
     def test_add_mda_attr_to_rdkit(self, attr, value, expected):
         mi = Chem.AtomPDBResidueInfo()
         _add_mda_attr_to_rdkit(attr, value, mi)
         rdvalue = getattr(mi, "Get%s" % RDATTRIBUTES[attr])()
         assert rdvalue == expected
-
-    def test_bfactors_tempfactors_raises_error(self):
-        u = mda.Universe.from_smiles("C")
-        bfactors = np.array(u.atoms.n_atoms*[1.0], dtype=np.float32)
-        u.add_TopologyAttr('bfactors', bfactors)
-        u.add_TopologyAttr('tempfactors', bfactors)
-        with pytest.raises(
-            AttributeError,
-            match="Both `tempfactors` and `bfactors` attributes are present"
-        ):
-            u.atoms.convert_to("RDKIT")
 
     @pytest.mark.parametrize("idx", [0, 10, 42])
     def test_other_attributes(self, mol2, idx):
