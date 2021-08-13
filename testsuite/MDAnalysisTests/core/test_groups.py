@@ -189,6 +189,31 @@ class TestGroupProperties(object):
         if is_same:
             assert unique_group is group
 
+    @pytest.mark.parametrize('ugroup', [uni.atoms, uni.residues, uni.segments])
+    def test_group_return_sorted_unsorted_unique(self, ugroup):
+        unsorted_unique = ugroup[[1, 3, 4]].asunique(sorted=False)
+        assert 'unsorted_unique' in unsorted_unique._cache
+        assert 'sorted_unique' not in unsorted_unique._cache
+        assert 'issorted' not in unsorted_unique._cache
+        assert 'isunique' in unsorted_unique._cache
+
+        sorted_unique = unsorted_unique.asunique(sorted=True)
+        assert sorted_unique is unsorted_unique
+        assert unsorted_unique._cache['issorted']
+        assert unsorted_unique._cache['sorted_unique'] is unsorted_unique
+
+    @pytest.mark.parametrize('ugroup', [uni.atoms, uni.residues, uni.segments])
+    def test_group_return_unsorted_sorted_unique(self, ugroup):
+        unique = ugroup[[1, 3, 3, 4]]
+        sorted_unique = unique.asunique(sorted=True)
+        assert unique._cache['sorted_unique'] is sorted_unique
+        assert 'unsorted_unique' not in unique._cache
+
+        unsorted_unique = unique.asunique(sorted=False)
+        assert unsorted_unique is sorted_unique
+        assert unique._cache['unsorted_unique'] is sorted_unique
+
+
 
 class TestGroupSlicing(object):
     """All Groups (Atom, Residue, Segment) should slice like a numpy array

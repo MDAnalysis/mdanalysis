@@ -1628,7 +1628,7 @@ class GroupBase(_MutableBase):
         --------
         :meth:`pack_into_box`
         :meth:`unwrap`
-        :meth:`MDanalysis.lib.distances.apply_PBC`
+        :meth:`MDAnalysis.lib.distances.apply_PBC`
 
 
         .. versionadded:: 0.9.2
@@ -2668,6 +2668,18 @@ class AtomGroup(GroupBase):
 
         If the :class:`AtomGroup` is unique, this is the group itself.
 
+        Parameters
+        ----------
+        sorted: bool (optional)
+            Whether or not the returned AtomGroup should be sorted
+            by index.
+
+        Returns
+        -------
+        :class:`AtomGroup`
+            Unique ``AtomGroup``
+
+
         Examples
         --------
 
@@ -2682,8 +2694,9 @@ class AtomGroup(GroupBase):
            False
            >>> ag3.ix
            array([0, 1, 2])
-           >>> u.atoms[[2, 1, 1, 0, 1]].asunique(sorted=False)
+           >>> u.atoms[[2, 1, 1, 0, 1]].asunique(sorted=False).ix
            array([2, 1, 0])
+
 
         .. versionadded:: 2.0.0
         """
@@ -3693,6 +3706,17 @@ class ResidueGroup(GroupBase):
 
         If the :class:`ResidueGroup` is unique, this is the group itself.
 
+        Parameters
+        ----------
+        sorted: bool (optional)
+            Whether or not the returned ResidueGroup should be sorted
+            by resindex.
+
+        Returns
+        -------
+        :class:`ResidueGroup`
+            Unique ``ResidueGroup``
+
         Examples
         --------
 
@@ -3846,10 +3870,21 @@ class SegmentGroup(GroupBase):
 
 
     def asunique(self, sorted=False):
-        """Return a :class:`ResidueGroup` containing unique
-        :class:`Residues<Residue>` only, with optional sorting.
+        """Return a :class:`SegmentGroup` containing unique
+        :class:`Segments<Segment>` only, with optional sorting.
 
         If the :class:`SegmentGroup` is unique, this is the group itself.
+
+        Parameters
+        ----------
+        sorted: bool (optional)
+            Whether or not the returned SegmentGroup should be sorted
+            by segindex.
+
+        Returns
+        -------
+        :class:`SegmentGroup`
+            Unique ``SegmentGroup``
 
         Examples
         --------

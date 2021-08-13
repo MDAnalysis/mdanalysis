@@ -45,7 +45,7 @@ packages with the help of :ref:`Selection exporters`.
         >>> np.all(ag3.ix == ag2.ix)
         False
 
-    You can turn this off with the ``sort`` keyword::
+    You can turn off sorting behavior with the ``sort`` keyword::
 
         >>> ag = u.select_atoms("name N")
         >>> ag2 = ag[[5, 1, 0]]
