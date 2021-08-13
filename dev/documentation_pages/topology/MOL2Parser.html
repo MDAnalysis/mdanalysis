@@ -237,9 +237,10 @@ and topology files. Used by the <a class="reference external" href="http://dock.
 <li>Atomnames</li>
 <li>Atomtypes</li>
 <li>Charges</li>
-<li>Resids,</li>
+<li>Resids</li>
 <li>Resnames</li>
 <li>Bonds</li>
+<li>Elements</li>
 </ul>
 </dd>
 <dt>Guesses the following:</dt>
@@ -248,6 +249,10 @@ and topology files. Used by the <a class="reference external" href="http://dock.
 </ul>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>Elements are obtained directly from the SYBYL atom types. If some atoms have
+unknown atom types, they will be assigned an empty element record. If all
+atoms have unknown atom types, the elements attribute will not be set.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.9: </span>Now subclasses TopologyReaderBase</p>
 </div>

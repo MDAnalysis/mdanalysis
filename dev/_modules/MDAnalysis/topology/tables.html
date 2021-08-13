@@ -578,6 +578,41 @@
           <span class="mi">113</span><span class="p">:</span> <span class="s1">&#39;Nh&#39;</span><span class="p">,</span> <span class="mi">114</span><span class="p">:</span> <span class="s1">&#39;Fl&#39;</span><span class="p">,</span> <span class="mi">115</span><span class="p">:</span> <span class="s1">&#39;Mc&#39;</span><span class="p">,</span> <span class="mi">116</span><span class="p">:</span> <span class="s1">&#39;Lv&#39;</span><span class="p">,</span> <span class="mi">117</span><span class="p">:</span> <span class="s1">&#39;Ts&#39;</span><span class="p">,</span> <span class="mi">118</span><span class="p">:</span> <span class="s1">&#39;Og&#39;</span><span class="p">}</span>
 
 <span class="n">SYMB2Z</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">Z2SYMB</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+<span class="c1"># Conversion between SYBYL atom types and corresponding elements</span>
+<span class="c1"># Tripos MOL2 file format:</span>
+<span class="c1">#   https://web.archive.org/web/*/http://chemyang.ccnu.edu.cn/ccb/server/AIMMS/mol2.pdf</span>
+<span class="n">SYBYL2SYMB</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;H&quot;</span><span class="p">:</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;H.spc&quot;</span><span class="p">:</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;H.t3p&quot;</span><span class="p">:</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;C.3&quot;</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;C.2&quot;</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;C.1&quot;</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;C.ar&quot;</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;C.cat&quot;</span><span class="p">:</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N.3&quot;</span><span class="p">:</span> <span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;N.2&quot;</span><span class="p">:</span> <span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;N.1&quot;</span><span class="p">:</span> <span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;N.ar&quot;</span><span class="p">:</span> <span class="s2">&quot;N&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N.am&quot;</span><span class="p">:</span> <span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;N.pl3&quot;</span><span class="p">:</span> <span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;N.4&quot;</span><span class="p">:</span> <span class="s2">&quot;N&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;O.3&quot;</span><span class="p">:</span> <span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;O.2&quot;</span><span class="p">:</span> <span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;O.co2&quot;</span><span class="p">:</span> <span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;O.spc&quot;</span><span class="p">:</span> <span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;O.t3p&quot;</span><span class="p">:</span> <span class="s2">&quot;O&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;S.3&quot;</span><span class="p">:</span> <span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;S.2&quot;</span><span class="p">:</span> <span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;S.O&quot;</span><span class="p">:</span> <span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;S.O2&quot;</span><span class="p">:</span> <span class="s2">&quot;S&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;S.o&quot;</span><span class="p">:</span> <span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;S.o2&quot;</span><span class="p">:</span> <span class="s2">&quot;S&quot;</span><span class="p">,</span>  <span class="c1"># Non-standard but often found in the wild...</span>
+    <span class="s2">&quot;P.3&quot;</span><span class="p">:</span> <span class="s2">&quot;P&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;F&quot;</span><span class="p">:</span> <span class="s2">&quot;F&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Li&quot;</span><span class="p">:</span> <span class="s2">&quot;Li&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Na&quot;</span><span class="p">:</span> <span class="s2">&quot;Na&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Mg&quot;</span><span class="p">:</span> <span class="s2">&quot;Mg&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Al&quot;</span><span class="p">:</span> <span class="s2">&quot;Al&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Si&quot;</span><span class="p">:</span> <span class="s2">&quot;Si&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;K&quot;</span><span class="p">:</span> <span class="s2">&quot;K&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Ca&quot;</span><span class="p">:</span> <span class="s2">&quot;Ca&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Cr.th&quot;</span><span class="p">:</span> <span class="s2">&quot;Cr&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Cr.oh&quot;</span><span class="p">:</span> <span class="s2">&quot;Cr&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Mn&quot;</span><span class="p">:</span> <span class="s2">&quot;Mn&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Fe&quot;</span><span class="p">:</span> <span class="s2">&quot;Fe&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Co.oh&quot;</span><span class="p">:</span> <span class="s2">&quot;Co&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Cu&quot;</span><span class="p">:</span> <span class="s2">&quot;Cu&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Cl&quot;</span><span class="p">:</span> <span class="s2">&quot;Cl&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Br&quot;</span><span class="p">:</span> <span class="s2">&quot;Br&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;I&quot;</span><span class="p">:</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Zn&quot;</span><span class="p">:</span> <span class="s2">&quot;Zn&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Se&quot;</span><span class="p">:</span> <span class="s2">&quot;Se&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Mo&quot;</span><span class="p">:</span> <span class="s2">&quot;Mo&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Sn&quot;</span><span class="p">:</span> <span class="s2">&quot;Sn&quot;</span><span class="p">,</span>
+<span class="p">}</span>
 </pre></div>
 
            </div>
