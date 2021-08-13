@@ -229,6 +229,10 @@ class TestRDKitConverter(object):
 
     def test_raise_requires_elements(self):
         u = mda.Universe(mol2_molecule)
+        
+        # Delete topology attribute (PR #3069)
+        u.del_TopologyAttr('elements')
+        
         with pytest.raises(
             AttributeError,
             match="`elements` attribute is required for the RDKitConverter"
