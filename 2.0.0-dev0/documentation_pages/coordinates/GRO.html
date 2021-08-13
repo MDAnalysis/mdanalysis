@@ -578,8 +578,20 @@ weren’t originally present.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">This Reader will only read the first frame present in a file.</p>
 </div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">GRO files with zeroed 3 entry unit cells (i.e. <code class="docutils literal notranslate"><span class="pre">0.0</span>&#160;&#160; <span class="pre">0.0</span>&#160;&#160; <span class="pre">0.0</span></code>)
+are read as missing unit cell information. In these cases <code class="docutils literal notranslate"><span class="pre">dimensions</span></code>
+will be set to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Reader now only parses boxes defined with 3 or 9 fields.
+Reader now reads a 3 entry zero unit cell (i.e. <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>) as a
+being without dimension information (i.e. will the timestep dimension
+to <code class="docutils literal notranslate"><span class="pre">None</span></code>).</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.GRO.GROReader.Writer">
@@ -616,7 +628,12 @@ weren’t originally present.</p>
 </dl>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The precision is hard coded to three decimal places</p>
+<p class="last">The precision is hard coded to three decimal places.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When dimensions are missing (i.e. set to <cite>None</cite>), a zero width
+unit cell box will be written (i.e. [0.0, 0.0, 0.0]).</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based</p>
@@ -631,6 +648,10 @@ Now now writes velocities where possible.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.18.0: </span>Added <cite>reindex</cite> keyword argument to allow original atom
 ids to be kept.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Raises a warning when writing timestep with missing dimension
+information (i.e. set to <code class="docutils literal notranslate"><span class="pre">None</span></code>).</p>
 </div>
 <p>Set up a GROWriter with a precision of 3 decimal places.</p>
 <table class="docutils field-list" frame="void" rules="none">

@@ -339,8 +339,19 @@
 <span class="sd">    .. note::</span>
 <span class="sd">       This Reader will only read the first frame present in a file.</span>
 
+
+<span class="sd">    .. note::</span>
+<span class="sd">       GRO files with zeroed 3 entry unit cells (i.e. ``0.0   0.0   0.0``)</span>
+<span class="sd">       are read as missing unit cell information. In these cases ``dimensions``</span>
+<span class="sd">       will be set to ``None``.</span>
+
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Frames now 0-based instead of 1-based</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       Reader now only parses boxes defined with 3 or 9 fields.</span>
+<span class="sd">       Reader now reads a 3 entry zero unit cell (i.e. ``[0, 0, 0]``) as a</span>
+<span class="sd">       being without dimension information (i.e. will the timestep dimension</span>
+<span class="sd">       to ``None``).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;GRO&#39;</span>
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;nm&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="s1">&#39;nm/ps&#39;</span><span class="p">}</span>
@@ -398,15 +409,19 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unitcell</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
             <span class="c1"># special case: a b c --&gt; (a 0 0) (b 0 0) (c 0 0)</span>
             <span class="c1"># see docstring above for format (!)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">unitcell</span><span class="p">,</span> <span class="p">[</span><span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">]]</span>
+            <span class="c1"># Treat empty 3 entry boxes as not having a unit cell</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">unitcell</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]):</span>
+                <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Empty box [0., 0., 0.] found - treating as missing &quot;</span>
+                        <span class="s2">&quot;unit cell. Dimensions set to `None`.&quot;</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="n">unitcell</span><span class="p">,</span> <span class="p">[</span><span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">]]</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">unitcell</span><span class="p">)</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">_gmx_to_dimensions</span><span class="p">(</span><span class="n">unitcell</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># or maybe raise an error for wrong format??</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;GRO unitcell has neither 3 nor 9 entries --- might be wrong.&quot;</span><span class="p">)</span>
-            <span class="c1"># fill linearly ... not sure about this</span>
-            <span class="n">unitcell2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
-            <span class="n">unitcell2</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">unitcell</span><span class="p">)]</span> <span class="o">=</span> <span class="n">unitcell</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">_gmx_to_dimensions</span><span class="p">(</span><span class="n">unitcell2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># raise an error for wrong format</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;GRO unitcell has neither 3 nor 9 entries.&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span>  <span class="c1"># in-place !</span>
@@ -442,9 +457,14 @@
 <span class="sd">     - resnames (defaults to &#39;UNK&#39;)</span>
 <span class="sd">     - resids (defaults to &#39;1&#39;)</span>
 
-<span class="sd">    Note</span>
-<span class="sd">    ----</span>
-<span class="sd">    The precision is hard coded to three decimal places</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        The precision is hard coded to three decimal places.</span>
+
+
+<span class="sd">    .. note::</span>
+<span class="sd">        When dimensions are missing (i.e. set to `None`), a zero width</span>
+<span class="sd">        unit cell box will be written (i.e. [0.0, 0.0, 0.0]).</span>
 
 
 <span class="sd">    .. versionchanged:: 0.11.0</span>
@@ -458,6 +478,9 @@
 <span class="sd">    .. versionchanged:: 0.18.0</span>
 <span class="sd">       Added `reindex` keyword argument to allow original atom</span>
 <span class="sd">       ids to be kept.</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       Raises a warning when writing timestep with missing dimension</span>
+<span class="sd">       information (i.e. set to ``None``).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;GRO&#39;</span>
@@ -639,6 +662,9 @@
             <span class="k">if</span> <span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">dimensions</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">3</span><span class="p">:],</span> <span class="p">[</span><span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">])):</span>
                 <span class="k">if</span> <span class="n">ag</span><span class="o">.</span><span class="n">dimensions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;missing dimension - setting unit cell to zeroed &quot;</span>
+                            <span class="s2">&quot;box [0., 0., 0.]&quot;</span><span class="p">)</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
                     <span class="n">box</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span>
