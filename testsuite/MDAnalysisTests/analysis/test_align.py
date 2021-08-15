@@ -564,4 +564,3 @@ def test_alignto_reorder_atomgroups():
     mobile = u.atoms[:4]
     ref = u.atoms[[3, 2, 1, 0]]
     align.alignto(mobile, ref, select='bynum 1-4')
-    

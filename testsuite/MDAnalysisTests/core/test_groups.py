@@ -127,7 +127,7 @@ class TestGroupProperties(object):
         # assert caches are cleared since the group changed:
         for attr in ('isunique', 'sorted_unique', 'unsorted_unique'):
             assert attr not in group._cache
-        
+
         # now not unique
         assert group.isunique is False
         assert not group.issorted
@@ -138,7 +138,7 @@ class TestGroupProperties(object):
         assert group._cache['unsorted_unique'] is group.asunique()
         assert group._cache['sorted_unique'] is group.asunique()
         assert group.unique is not group.asunique()
-        
+
         # check length and type:
         assert len(group.unique) == 2
         assert type(group.unique) is type(group)
