@@ -37,6 +37,7 @@ from numpy.testing import (
     assert_equal,
     assert_array_equal,
     assert_array_almost_equal,
+    assert_allclose,
 )
 
 #Function for Parametrizing conditional raising
@@ -563,4 +564,5 @@ def test_alignto_reorder_atomgroups():
     u = mda.Universe(PDB_helix)
     mobile = u.atoms[:4]
     ref = u.atoms[[3, 2, 1, 0]]
-    align.alignto(mobile, ref, select='bynum 1-4')
+    rmsd = align.alignto(mobile, ref, select='bynum 1-4')
+    assert_allclose(rmsd, (0.0, 0.0))
