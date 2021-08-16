@@ -605,7 +605,7 @@ class TestTimestep(object):
     @pytest.mark.parametrize('dim1', [None, [2., 2., 2., 90., 90., 90.]])
     def test_dims_mismatch_inequality(self, dim1):
         ts1 = self.Timestep(self.size)
-        ts1.dimensions = None
+        ts1.dimensions = dim1
         ts2 = self.Timestep(self.size)
         ts2.dimensions = [1., 1., 1., 90., 90., 90.]
 
