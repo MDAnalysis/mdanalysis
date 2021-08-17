@@ -623,6 +623,46 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 </div>
 </dd></dl>
 
+<dl class="method">
+<dt id="MDAnalysis.core.groups.AtomGroup.asunique">
+<code class="descname">asunique</code><span class="sig-paren">(</span><em>sorted=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/groups.html#AtomGroup.asunique"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.asunique" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> containing unique
+<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> only, with optional sorting.</p>
+<p>If the <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> is unique, this is the group itself.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sorted</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether or not the returned AtomGroup should be sorted
+by index.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Unique <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">asunique</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span> <span class="ow">is</span> <span class="n">ag</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span><span class="o">.</span><span class="n">ix</span>
+<span class="go">array([2, 1, 0])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">asunique</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="ow">is</span> <span class="n">ag</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span><span class="o">.</span><span class="n">ix</span>
+<span class="go">array([0, 1, 2])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">asunique</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">ix</span>
+<span class="go">array([2, 1, 0])</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.core.groups.AtomGroup.atoms">
 <code class="descname">atoms</code><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.atoms" title="Permalink to this definition">¶</a></dt>
@@ -1557,6 +1597,10 @@ i.e., the group contains no duplicates.</p>
 <span class="go">True</span>
 </pre></div>
 </div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.asunique" title="MDAnalysis.core.groups.AtomGroup.asunique"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asunique</span></code></a></p>
+</div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.19.0.</span></p>
 </div>
@@ -1903,7 +1947,7 @@ to new coordinates <span class="math notranslate nohighlight">\(\mathbf{x}'\)</s
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.select_atoms">
-<code class="descname">select_atoms</code><span class="sig-paren">(</span><em>sel</em>, <em>*othersel</em>, <em>periodic=True</em>, <em>rtol=1e-05</em>, <em>atol=1e-08</em>, <em>updating=False</em>, <em>**selgroups</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/groups.html#AtomGroup.select_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.select_atoms" title="Permalink to this definition">¶</a></dt>
+<code class="descname">select_atoms</code><span class="sig-paren">(</span><em>sel</em>, <em>*othersel</em>, <em>periodic=True</em>, <em>rtol=1e-05</em>, <em>atol=1e-08</em>, <em>updating=False</em>, <em>sorted=True</em>, <em>**selgroups</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/groups.html#AtomGroup.select_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.select_atoms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select atoms from within this Group using a selection string.</p>
 <p>Returns an <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> sorted according to their index in the
 topology (this is to ensure that there are no duplicates, which can
@@ -1925,6 +1969,7 @@ Passed to :func:<code class="docutils literal notranslate"><span class="pre">num
 <li><strong>updating</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – force the selection to be re evaluated each time the Timestep of the
 trajectory is changed.  See section on <strong>Dynamic selections</strong> below.
 [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
+<li><strong>sorted</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to sort the output AtomGroup by index.</li>
 <li><strong>**selgroups</strong> (<em>keyword arguments of str: AtomGroup</em><em> (</em><em>optional</em><em>)</em>) – when using the “group” keyword in selections, groups are defined by
 passing them as keyword arguments.  See section on <strong>preexisting
 selections</strong> below.</li>
@@ -2209,7 +2254,7 @@ periodic are now on by default (as with default flags)</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 2.0.0: </span>Added the <em>smarts</em> selection. Added <cite>atol</cite> and <cite>rtol</cite> keywords
-to select float values.</p>
+to select float values. Added the <code class="docutils literal notranslate"><span class="pre">sort</span></code> keyword.</p>
 </div>
 </dd></dl>
 
@@ -2597,7 +2642,6 @@ and the result is sorted.</p>
 <code class="descname">unique</code><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.unique" title="Permalink to this definition">¶</a></dt>
 <dd><p>An <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> containing sorted and unique
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> only.</p>
-<p>If the <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> is unique, this is the group itself.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span>
@@ -2610,16 +2654,16 @@ and the result is sorted.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span><span class="o">.</span><span class="n">ix</span>
 <span class="go">array([0, 1, 2])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span><span class="o">.</span><span class="n">unique</span> <span class="ow">is</span> <span class="n">ag2</span>
-<span class="go">True</span>
+<span class="go">False</span>
 </pre></div>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.16.0.</span></p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.19.0: </span>If the <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> is already unique,
-<a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.unique" title="MDAnalysis.core.groups.AtomGroup.unique"><code class="xref py py-attr docutils literal notranslate"><span class="pre">AtomGroup.unique</span></code></a> now returns the group itself instead of a
-copy.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.asunique" title="MDAnalysis.core.groups.AtomGroup.asunique"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asunique</span></code></a>, <code class="xref py py-obj docutils literal notranslate"></code>, <code class="xref py py-obj docutils literal notranslate"></code></p>
+<dl class="last docutils">
+<dt><code class="xref py py-obj docutils literal notranslate"></code></dt>
+<dd>This function now always returns a copy.</dd>
+</dl>
 </div>
 </dd></dl>
 
@@ -2833,7 +2877,7 @@ information from the current
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.pack_into_box" title="MDAnalysis.core.groups.AtomGroup.pack_into_box"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pack_into_box()</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.unwrap" title="MDAnalysis.core.groups.AtomGroup.unwrap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">unwrap()</span></code></a>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">MDanalysis.lib.distances.apply_PBC()</span></code></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.pack_into_box" title="MDAnalysis.core.groups.AtomGroup.pack_into_box"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pack_into_box()</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.unwrap" title="MDAnalysis.core.groups.AtomGroup.unwrap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">unwrap()</span></code></a>, <a class="reference internal" href="../lib/distances.html#MDAnalysis.lib.distances.apply_PBC" title="MDAnalysis.lib.distances.apply_PBC"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances.apply_PBC()</span></code></a></p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.9.2.</span></p>
@@ -3060,6 +3104,45 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 <p class="first admonition-title">Note</p>
 <p class="last">This requires the underlying topology to have masses. Otherwise, a
 <a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.ResidueGroup.asunique">
+<code class="descname">asunique</code><span class="sig-paren">(</span><em>sorted=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/groups.html#ResidueGroup.asunique"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.asunique" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a <a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a> containing unique
+<a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residues</span></code></a> only, with optional sorting.</p>
+<p>If the <a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a> is unique, this is the group itself.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sorted</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether or not the returned ResidueGroup should be sorted
+by resindex.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Unique <code class="docutils literal notranslate"><span class="pre">ResidueGroup</span></code></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rg</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">residues</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rg</span>
+<span class="go">&lt;ResidueGroup with 6 residues&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rg</span><span class="o">.</span><span class="n">ix</span>
+<span class="go">array([2, 1, 2, 2, 1, 0])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rg2</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">asunique</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rg2</span>
+<span class="go">&lt;ResidueGroup with 3 residues&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rg2</span><span class="o">.</span><span class="n">ix</span>
+<span class="go">array([0, 1, 2])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rg2</span><span class="o">.</span><span class="n">asunique</span><span class="p">()</span> <span class="ow">is</span> <span class="n">rg2</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
 </div>
 </dd></dl>
 
@@ -3777,6 +3860,10 @@ i.e., the group contains no duplicates.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span><span class="o">.</span><span class="n">isunique</span>
 <span class="go">True</span>
 </pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup.asunique" title="MDAnalysis.core.groups.ResidueGroup.asunique"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asunique</span></code></a></p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.19.0.</span></p>
@@ -4569,7 +4656,6 @@ and the result is sorted.</p>
 <code class="descname">unique</code><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.unique" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a <a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a> containing sorted and unique
 <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residues</span></code></a> only.</p>
-<p>If the <a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a> is unique, this is the group itself.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rg</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">residues</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rg</span>
@@ -4582,7 +4668,7 @@ and the result is sorted.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rg2</span><span class="o">.</span><span class="n">ix</span>
 <span class="go">array([0, 1, 2])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rg2</span><span class="o">.</span><span class="n">unique</span> <span class="ow">is</span> <span class="n">rg2</span>
-<span class="go">True</span>
+<span class="go">False</span>
 </pre></div>
 </div>
 <div class="versionadded">
@@ -4592,6 +4678,9 @@ and the result is sorted.</p>
 <p><span class="versionmodified">Changed in version 0.19.0: </span>If the <a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a> is already
 unique, <a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup.unique" title="MDAnalysis.core.groups.ResidueGroup.unique"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ResidueGroup.unique</span></code></a> now returns the group itself
 instead of a copy.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>This function now always returns a copy.</p>
 </div>
 </dd></dl>
 
@@ -4763,7 +4852,7 @@ information from the current
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup.pack_into_box" title="MDAnalysis.core.groups.ResidueGroup.pack_into_box"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pack_into_box()</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup.unwrap" title="MDAnalysis.core.groups.ResidueGroup.unwrap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">unwrap()</span></code></a>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">MDanalysis.lib.distances.apply_PBC()</span></code></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup.pack_into_box" title="MDAnalysis.core.groups.ResidueGroup.pack_into_box"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pack_into_box()</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup.unwrap" title="MDAnalysis.core.groups.ResidueGroup.unwrap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">unwrap()</span></code></a>, <a class="reference internal" href="../lib/distances.html#MDAnalysis.lib.distances.apply_PBC" title="MDAnalysis.lib.distances.apply_PBC"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances.apply_PBC()</span></code></a></p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.9.2.</span></p>
@@ -4938,6 +5027,45 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 <p class="first admonition-title">Note</p>
 <p class="last">This requires the underlying topology to have masses. Otherwise, a
 <a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code></a> is raised.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.groups.SegmentGroup.asunique">
+<code class="descname">asunique</code><span class="sig-paren">(</span><em>sorted=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/groups.html#SegmentGroup.asunique"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.asunique" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a <a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup" title="MDAnalysis.core.groups.SegmentGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">SegmentGroup</span></code></a> containing unique
+<a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segments</span></code></a> only, with optional sorting.</p>
+<p>If the <a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup" title="MDAnalysis.core.groups.SegmentGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">SegmentGroup</span></code></a> is unique, this is the group itself.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sorted</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether or not the returned SegmentGroup should be sorted
+by segindex.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Unique <code class="docutils literal notranslate"><span class="pre">SegmentGroup</span></code></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup" title="MDAnalysis.core.groups.SegmentGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">SegmentGroup</span></code></a></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sg</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">segments</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sg</span>
+<span class="go">&lt;SegmentGroup with 6 segments&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sg</span><span class="o">.</span><span class="n">ix</span>
+<span class="go">array([2, 1, 2, 2, 1, 0])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sg2</span> <span class="o">=</span> <span class="n">sg</span><span class="o">.</span><span class="n">asunique</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sg2</span>
+<span class="go">&lt;SegmentGroup with 3 segments&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sg2</span><span class="o">.</span><span class="n">ix</span>
+<span class="go">array([0, 1, 2])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sg2</span><span class="o">.</span><span class="n">asunique</span><span class="p">()</span> <span class="ow">is</span> <span class="n">sg2</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
 </div>
 </dd></dl>
 
@@ -5623,6 +5751,10 @@ i.e., the group contains no duplicates.</p>
 <span class="go">True</span>
 </pre></div>
 </div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup.asunique" title="MDAnalysis.core.groups.SegmentGroup.asunique"><code class="xref py py-obj docutils literal notranslate"><span class="pre">asunique</span></code></a></p>
+</div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.19.0.</span></p>
 </div>
@@ -6217,7 +6349,6 @@ and the result is sorted.</p>
 <code class="descname">unique</code><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.unique" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a <a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup" title="MDAnalysis.core.groups.SegmentGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">SegmentGroup</span></code></a> containing sorted and unique
 <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segments</span></code></a> only.</p>
-<p>If the <a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup" title="MDAnalysis.core.groups.SegmentGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">SegmentGroup</span></code></a> is unique, this is the group itself.</p>
 <p class="rubric">Examples</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sg</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">segments</span><span class="p">[[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sg</span>
@@ -6230,7 +6361,7 @@ and the result is sorted.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sg2</span><span class="o">.</span><span class="n">ix</span>
 <span class="go">array([0, 1, 2])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sg2</span><span class="o">.</span><span class="n">unique</span> <span class="ow">is</span> <span class="n">sg2</span>
-<span class="go">True</span>
+<span class="go">False</span>
 </pre></div>
 </div>
 <div class="versionadded">
@@ -6240,6 +6371,9 @@ and the result is sorted.</p>
 <p><span class="versionmodified">Changed in version 0.19.0: </span>If the <a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup" title="MDAnalysis.core.groups.SegmentGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">SegmentGroup</span></code></a> is already
 unique, <a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup.unique" title="MDAnalysis.core.groups.SegmentGroup.unique"><code class="xref py py-attr docutils literal notranslate"><span class="pre">SegmentGroup.unique</span></code></a> now returns the group itself
 instead of a copy.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>This function now always returns a copy.</p>
 </div>
 </dd></dl>
 
@@ -6411,7 +6545,7 @@ information from the current
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup.pack_into_box" title="MDAnalysis.core.groups.SegmentGroup.pack_into_box"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pack_into_box()</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup.unwrap" title="MDAnalysis.core.groups.SegmentGroup.unwrap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">unwrap()</span></code></a>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">MDanalysis.lib.distances.apply_PBC()</span></code></p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup.pack_into_box" title="MDAnalysis.core.groups.SegmentGroup.pack_into_box"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pack_into_box()</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup.unwrap" title="MDAnalysis.core.groups.SegmentGroup.unwrap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">unwrap()</span></code></a>, <a class="reference internal" href="../lib/distances.html#MDAnalysis.lib.distances.apply_PBC" title="MDAnalysis.lib.distances.apply_PBC"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances.apply_PBC()</span></code></a></p>
 </div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.9.2.</span></p>

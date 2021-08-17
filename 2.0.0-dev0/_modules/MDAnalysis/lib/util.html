@@ -405,6 +405,20 @@
                       <span class="s2">&quot;have not been built.&quot;</span><span class="p">)</span>
 
 
+<span class="k">def</span> <span class="nf">int_array_is_sorted</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">array</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">array</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">mask</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">mask</span><span class="o">.</span><span class="n">argmin</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+        <span class="c1"># Empty arrays are sorted, I guess...</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">def</span> <span class="nf">unique_int_1d_unsorted</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+    <span class="n">values</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">indices</span><span class="p">)]</span>
+
+
 <div class="viewcode-block" id="filename"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.filename">[docs]</a><span class="k">def</span> <span class="nf">filename</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return a new name that has suffix attached; replaces other extensions.</span>
 

@@ -223,6 +223,27 @@ which can happen with complicated selections).</p>
 <p>Almost all the basic CHARMM selections work.</p>
 <p>It is also possible to export selections for external software
 packages with the help of <a class="reference internal" href="selections_modules.html#selection-exporters"><span class="std std-ref">Selection exporters</span></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>By default, atoms are sorted by index in the output AtomGroup.
+For example, the below code will return the first, second, and
+sixth atom in <code class="docutils literal notranslate"><span class="pre">ag</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name N&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span> <span class="o">=</span> <span class="n">ag</span><span class="p">[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag2</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name N&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">ag3</span><span class="o">.</span><span class="n">ix</span> <span class="o">==</span> <span class="n">ag2</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<p>You can turn off sorting behavior with the <code class="docutils literal notranslate"><span class="pre">sorted</span></code> keyword:</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name N&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag2</span> <span class="o">=</span> <span class="n">ag</span><span class="p">[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ag3</span> <span class="o">=</span> <span class="n">ag2</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name N&quot;</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">ag3</span><span class="o">.</span><span class="n">ix</span> <span class="o">==</span> <span class="n">ag2</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="selection-keywords">
 <h2>3.1. Selection Keywords<a class="headerlink" href="#selection-keywords" title="Permalink to this headline">¶</a></h2>
 <p>The following describes all selection keywords currently understood by the

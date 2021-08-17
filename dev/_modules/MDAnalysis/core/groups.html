@@ -284,7 +284,10 @@
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="p">(</span><span class="n">_CONVERTERS</span><span class="p">,</span>
                 <span class="n">_TOPOLOGY_ATTRS</span><span class="p">,</span> <span class="n">_TOPOLOGY_TRANSPLANTS</span><span class="p">,</span> <span class="n">_TOPOLOGY_ATTRNAMES</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
-<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">cached</span><span class="p">,</span> <span class="n">warn_if_not_unique</span><span class="p">,</span> <span class="n">unique_int_1d</span>
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="p">(</span><span class="n">cached</span><span class="p">,</span> <span class="n">warn_if_not_unique</span><span class="p">,</span>
+                        <span class="n">unique_int_1d</span><span class="p">,</span> <span class="n">unique_int_1d_unsorted</span><span class="p">,</span>
+                        <span class="n">int_array_is_sorted</span>
+                        <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">distances</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">transformations</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">mdamath</span>
@@ -453,7 +456,7 @@
             <span class="nb">delattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attr</span><span class="o">.</span><span class="n">attrname</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">):</span>
             <span class="nb">delattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attr</span><span class="o">.</span><span class="n">singular</span><span class="p">)</span>
-        
+
         <span class="bp">cls</span><span class="o">.</span><span class="n">_SETATTR_WHITELIST</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">attrname</span><span class="p">)</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">_SETATTR_WHITELIST</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">singular</span><span class="p">)</span>
 
@@ -910,6 +913,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">dimensions</span>
 
     <span class="nd">@property</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;sorted_unique&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">sorted_unique</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asunique</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;unsorted_unique&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">unsorted_unique</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">asunique</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;issorted&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">issorted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">int_array_is_sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
     <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;isunique&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">isunique</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Boolean indicating whether all components of the group are unique,</span>
@@ -929,21 +947,71 @@
 <span class="sd">           &gt;&gt;&gt; ag2.isunique</span>
 <span class="sd">           True</span>
 
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        asunique</span>
+
 
 <span class="sd">        .. versionadded:: 0.19.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
-        <span class="c1"># Fast check for uniqueness</span>
-        <span class="c1"># 1. get sorted array of component indices:</span>
-        <span class="n">s_ix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ix</span><span class="p">)</span>
-        <span class="c1"># 2. If the group&#39;s components are unique, no pair of adjacent values in</span>
-        <span class="c1">#    the sorted indices array are equal. We therefore compute a boolean</span>
-        <span class="c1">#    mask indicating equality of adjacent sorted indices:</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">s_ix</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">s_ix</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="c1"># 3. The group is unique if all elements in the mask are False. We could</span>
-        <span class="c1">#    return ``not np.any(mask)`` here but using the following is faster:</span>
-        <span class="k">return</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">unique_int_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_asunique</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">set_mask</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;sorted_unique&#39;</span> <span class="k">if</span> <span class="nb">sorted</span> <span class="k">else</span> <span class="s1">&#39;unsorted_unique&#39;</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isunique</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">sorted</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unsorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+                <span class="k">return</span> <span class="bp">self</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">issorted</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unsorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;sorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+                <span class="k">return</span> <span class="bp">self</span>
+
+        <span class="k">if</span> <span class="nb">sorted</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">set_mask</span><span class="p">:</span>
+                <span class="n">unique_ix</span><span class="p">,</span> <span class="n">restore_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_unique_restore_mask</span> <span class="o">=</span> <span class="n">restore_mask</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">unique_ix</span> <span class="o">=</span> <span class="n">unique_int_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
+
+            <span class="n">_unique</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="n">unique_ix</span><span class="p">]</span>
+            <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;issorted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;sorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_unique</span>
+            <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unsorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_unique</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;sorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_unique</span>
+            <span class="k">return</span> <span class="n">_unique</span>
+
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">unique_int_1d_unsorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">set_mask</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">indices</span><span class="p">):</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span> <span class="o">==</span> <span class="n">x</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">mask</span><span class="p">[</span><span class="n">values</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_unique_restore_mask</span> <span class="o">=</span> <span class="n">mask</span>
+
+        <span class="n">issorted</span> <span class="o">=</span> <span class="n">int_array_is_sorted</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">issorted</span> <span class="ow">and</span> <span class="s1">&#39;sorted_unique&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unsorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted_unique</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted_unique</span>
+
+        <span class="n">_unique</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+        <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;issorted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">issorted</span>
+        <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unsorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_unique</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unsorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_unique</span>
+        <span class="k">if</span> <span class="n">issorted</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;sorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_unique</span>
+            <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;sorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_unique</span>
+        <span class="k">return</span> <span class="n">_unique</span>
 
     <span class="k">def</span> <span class="nf">_get_compound_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compound</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">compound</span> <span class="o">==</span> <span class="s1">&#39;residues&#39;</span><span class="p">:</span>
@@ -1422,7 +1490,7 @@
 <span class="sd">        .. versionadded:: 0.7.3</span>
 <span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">atomgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">unique</span>
+        <span class="n">atomgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">unsorted_unique</span>
 
         <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1498,7 +1566,7 @@
 <span class="sd">            \mathbf{x}&#39; = \mathbf{x} + \mathbf{t}</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">atomgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">unique</span>
+        <span class="n">atomgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">unsorted_unique</span>
         <span class="n">vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
         <span class="c1"># changes the coordinates in place</span>
         <span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">[</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">indices</span><span class="p">]</span> <span class="o">+=</span> <span class="n">vector</span>
@@ -1542,7 +1610,7 @@
         <span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
 
         <span class="c1"># changes the coordinates (in place)</span>
-        <span class="n">atomgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">unique</span>
+        <span class="n">atomgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">unsorted_unique</span>
         <span class="n">require_translation</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">point</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">require_translation</span><span class="p">:</span>
             <span class="n">atomgroup</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="o">-</span><span class="n">point</span><span class="p">)</span>
@@ -1738,7 +1806,7 @@
 <span class="sd">        --------</span>
 <span class="sd">        :meth:`pack_into_box`</span>
 <span class="sd">        :meth:`unwrap`</span>
-<span class="sd">        :meth:`MDanalysis.lib.distances.apply_PBC`</span>
+<span class="sd">        :meth:`MDAnalysis.lib.distances.apply_PBC`</span>
 
 
 <span class="sd">        .. versionadded:: 0.9.2</span>
@@ -1765,7 +1833,7 @@
         <span class="c1"># atoms:</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">isunique</span><span class="p">:</span>
-            <span class="n">_atoms</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">unique</span>
+            <span class="n">_atoms</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">unsorted_unique</span>
             <span class="n">restore_mask</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">_unique_restore_mask</span>
             <span class="n">atoms</span> <span class="o">=</span> <span class="n">_atoms</span>
 
@@ -1905,7 +1973,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="s1">&#39;bonds&#39;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.unwrap() not available; this requires Bonds&quot;</span>
                               <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
-        <span class="n">unique_atoms</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">unique</span>
+        <span class="n">unique_atoms</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">unsorted_unique</span>
 
         <span class="c1"># Parameter sanity checking</span>
         <span class="k">if</span> <span class="n">reference</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1993,14 +2061,27 @@
 <span class="sd">        .. versionadded:: 0.19.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[:]</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">_set_unique_caches_from</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">group</span>
+
+    <span class="k">def</span> <span class="nf">_set_unique_caches_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="c1"># Try to fill the copied group&#39;s uniqueness caches:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]:</span>
-                <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
-        <span class="k">return</span> <span class="n">group</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isunique</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unsorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;issorted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;issorted&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">issorted</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;isunique&#39;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;sorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">groupby</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topattrs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Group together items in this group according to values of *topattr*</span>
@@ -2636,7 +2717,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">rg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">unique_int_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resindices</span><span class="p">)]</span>
         <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rg</span>
+        <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;issorted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;sorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rg</span>
+        <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unsorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rg</span>
         <span class="k">return</span> <span class="n">rg</span>
 
     <span class="nd">@residues</span><span class="o">.</span><span class="n">setter</span>
@@ -2683,7 +2766,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="n">unique_int_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segindices</span><span class="p">)]</span>
         <span class="n">sg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">sg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sg</span>
+        <span class="n">sg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;issorted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">sg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;sorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sg</span>
+        <span class="n">sg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unsorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sg</span>
         <span class="k">return</span> <span class="n">sg</span>
 
     <span class="nd">@segments</span><span class="o">.</span><span class="n">setter</span>
@@ -2724,12 +2809,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique_restore_mask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mask</span>
 
     <span class="nd">@property</span>
-    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;unique&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">unique</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;An :class:`AtomGroup` containing sorted and unique</span>
 <span class="sd">        :class:`Atoms&lt;Atom&gt;` only.</span>
-
-<span class="sd">        If the :class:`AtomGroup` is unique, this is the group itself.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -2745,24 +2827,68 @@
 <span class="sd">           &gt;&gt;&gt; ag2.ix</span>
 <span class="sd">           array([0, 1, 2])</span>
 <span class="sd">           &gt;&gt;&gt; ag2.unique is ag2</span>
-<span class="sd">           True</span>
+<span class="sd">           False</span>
 
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        asunique</span>
 
 <span class="sd">        .. versionadded:: 0.16.0</span>
 <span class="sd">        .. versionchanged:: 0.19.0 If the :class:`AtomGroup` is already unique,</span>
 <span class="sd">            :attr:`AtomGroup.unique` now returns the group itself instead of a</span>
 <span class="sd">            copy.</span>
+<span class="sd">        .. versionchanged:: 2.0.0</span>
+<span class="sd">            This function now always returns a copy.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isunique</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span>
-        <span class="n">unique_ix</span><span class="p">,</span> <span class="n">restore_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">_unique</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">unique_ix</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_unique_restore_mask</span> <span class="o">=</span> <span class="n">restore_mask</span>
-        <span class="c1"># Since we know that _unique is a unique AtomGroup, we set its</span>
-        <span class="c1"># uniqueness caches from here:</span>
-        <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_unique</span>
-        <span class="k">return</span> <span class="n">_unique</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted_unique</span><span class="p">[:]</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;issorted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;sorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unsorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span>
+        <span class="k">return</span> <span class="n">group</span>
+
+<div class="viewcode-block" id="AtomGroup.asunique"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.asunique">[docs]</a>    <span class="k">def</span> <span class="nf">asunique</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a :class:`AtomGroup` containing unique</span>
+<span class="sd">        :class:`Atoms&lt;Atom&gt;` only, with optional sorting.</span>
+
+<span class="sd">        If the :class:`AtomGroup` is unique, this is the group itself.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sorted: bool (optional)</span>
+<span class="sd">            Whether or not the returned AtomGroup should be sorted</span>
+<span class="sd">            by index.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`AtomGroup`</span>
+<span class="sd">            Unique ``AtomGroup``</span>
+
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">           &gt;&gt;&gt; ag = u.atoms[[2, 1, 0]]</span>
+<span class="sd">           &gt;&gt;&gt; ag2 = ag.asunique(sorted=False)</span>
+<span class="sd">           &gt;&gt;&gt; ag2 is ag</span>
+<span class="sd">           True</span>
+<span class="sd">           &gt;&gt;&gt; ag2.ix</span>
+<span class="sd">           array([2, 1, 0])</span>
+<span class="sd">           &gt;&gt;&gt; ag3 = ag.asunique(sorted=True)</span>
+<span class="sd">           &gt;&gt;&gt; ag3 is ag</span>
+<span class="sd">           False</span>
+<span class="sd">           &gt;&gt;&gt; ag3.ix</span>
+<span class="sd">           array([0, 1, 2])</span>
+<span class="sd">           &gt;&gt;&gt; u.atoms[[2, 1, 1, 0, 1]].asunique(sorted=False).ix</span>
+<span class="sd">           array([2, 1, 0])</span>
+
+
+<span class="sd">        .. versionadded:: 2.0.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asunique</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="nb">sorted</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span>
+                              <span class="n">set_mask</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">positions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2883,7 +3009,7 @@
     <span class="c1"># (namely, &#39;updating&#39;) doesn&#39;t allow a very clean signature.</span>
 
 <div class="viewcode-block" id="AtomGroup.select_atoms"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">,</span> <span class="o">*</span><span class="n">othersel</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span>
-                     <span class="n">atol</span><span class="o">=</span><span class="mf">1e-08</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">selgroups</span><span class="p">):</span>
+                     <span class="n">atol</span><span class="o">=</span><span class="mf">1e-08</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">selgroups</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Select atoms from within this Group using a selection string.</span>
 
 <span class="sd">        Returns an :class:`AtomGroup` sorted according to their index in the</span>
@@ -2910,6 +3036,8 @@
 <span class="sd">          force the selection to be re evaluated each time the Timestep of the</span>
 <span class="sd">          trajectory is changed.  See section on **Dynamic selections** below.</span>
 <span class="sd">          [``True``]</span>
+<span class="sd">        sorted: bool, optional</span>
+<span class="sd">            Whether to sort the output AtomGroup by index.</span>
 <span class="sd">        **selgroups : keyword arguments of str: AtomGroup (optional)</span>
 <span class="sd">          when using the &quot;group&quot; keyword in selections, groups are defined by</span>
 <span class="sd">          passing them as keyword arguments.  See section on **preexisting</span>
@@ -3177,7 +3305,7 @@
 <span class="sd">           periodic are now on by default (as with default flags)</span>
 <span class="sd">        .. versionchanged:: 2.0.0</span>
 <span class="sd">            Added the *smarts* selection. Added `atol` and `rtol` keywords</span>
-<span class="sd">            to select float values.</span>
+<span class="sd">            to select float values. Added the ``sort`` keyword.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sel</span><span class="p">:</span>
@@ -3195,7 +3323,8 @@
 
         <span class="n">selections</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">selection</span><span class="o">.</span><span class="n">Parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">selgroups</span><span class="p">,</span>
                                                    <span class="n">periodic</span><span class="o">=</span><span class="n">periodic</span><span class="p">,</span>
-                                                   <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">)</span>
+                                                   <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span>
+                                                   <span class="nb">sorted</span><span class="o">=</span><span class="nb">sorted</span><span class="p">)</span>
                             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sel_strs</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">updating</span><span class="p">:</span>
             <span class="n">atomgrp</span> <span class="o">=</span> <span class="n">UpdatingAtomGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selections</span><span class="p">,</span> <span class="n">sel_strs</span><span class="p">)</span>
@@ -3641,12 +3770,7 @@
         <span class="c1"># atoms therein, since atoms can only belong to one residue at a time.</span>
         <span class="c1"># On the contrary, if the ResidueGroup is not unique, this does not</span>
         <span class="c1"># imply non-unique atoms, since residues might be empty.</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]:</span>
-                <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ag</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">pass</span>
+        <span class="n">ag</span><span class="o">.</span><span class="n">_set_unique_caches_from</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ag</span>
 
     <span class="nd">@property</span>
@@ -3690,7 +3814,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="n">unique_int_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segindices</span><span class="p">)]</span>
         <span class="n">sg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">sg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sg</span>
+        <span class="n">sg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;issorted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">sg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;sorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sg</span>
+        <span class="n">sg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unsorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sg</span>
         <span class="k">return</span> <span class="n">sg</span>
 
     <span class="nd">@segments</span><span class="o">.</span><span class="n">setter</span>
@@ -3729,12 +3855,9 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">segments</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;unique&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">unique</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a :class:`ResidueGroup` containing sorted and unique</span>
 <span class="sd">        :class:`Residues&lt;Residue&gt;` only.</span>
-
-<span class="sd">        If the :class:`ResidueGroup` is unique, this is the group itself.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -3750,22 +3873,60 @@
 <span class="sd">           &gt;&gt;&gt; rg2.ix</span>
 <span class="sd">           array([0, 1, 2])</span>
 <span class="sd">           &gt;&gt;&gt; rg2.unique is rg2</span>
-<span class="sd">           True</span>
+<span class="sd">           False</span>
 
 
 <span class="sd">        .. versionadded:: 0.16.0</span>
 <span class="sd">        .. versionchanged:: 0.19.0 If the :class:`ResidueGroup` is already</span>
 <span class="sd">            unique, :attr:`ResidueGroup.unique` now returns the group itself</span>
 <span class="sd">            instead of a copy.</span>
+<span class="sd">        .. versionchanged:: 2.0.0</span>
+<span class="sd">            This function now always returns a copy.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isunique</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span>
-        <span class="n">_unique</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">unique_int_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">)]</span>
-        <span class="c1"># Since we know that _unique is a unique ResidueGroup, we set its</span>
-        <span class="c1"># uniqueness caches from here:</span>
-        <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_unique</span>
-        <span class="k">return</span> <span class="n">_unique</span></div>
+        <span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted_unique</span><span class="p">[:]</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;issorted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;sorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unsorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span>
+        <span class="k">return</span> <span class="n">group</span>
+
+<div class="viewcode-block" id="ResidueGroup.asunique"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.ResidueGroup.asunique">[docs]</a>    <span class="k">def</span> <span class="nf">asunique</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a :class:`ResidueGroup` containing unique</span>
+<span class="sd">        :class:`Residues&lt;Residue&gt;` only, with optional sorting.</span>
+
+<span class="sd">        If the :class:`ResidueGroup` is unique, this is the group itself.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sorted: bool (optional)</span>
+<span class="sd">            Whether or not the returned ResidueGroup should be sorted</span>
+<span class="sd">            by resindex.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`ResidueGroup`</span>
+<span class="sd">            Unique ``ResidueGroup``</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">           &gt;&gt;&gt; rg = u.residues[[2, 1, 2, 2, 1, 0]]</span>
+<span class="sd">           &gt;&gt;&gt; rg</span>
+<span class="sd">           &lt;ResidueGroup with 6 residues&gt;</span>
+<span class="sd">           &gt;&gt;&gt; rg.ix</span>
+<span class="sd">           array([2, 1, 2, 2, 1, 0])</span>
+<span class="sd">           &gt;&gt;&gt; rg2 = rg.asunique()</span>
+<span class="sd">           &gt;&gt;&gt; rg2</span>
+<span class="sd">           &lt;ResidueGroup with 3 residues&gt;</span>
+<span class="sd">           &gt;&gt;&gt; rg2.ix</span>
+<span class="sd">           array([0, 1, 2])</span>
+<span class="sd">           &gt;&gt;&gt; rg2.asunique() is rg2</span>
+<span class="sd">           True</span>
+
+
+<span class="sd">        .. versionadded:: 2.0.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asunique</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="nb">sorted</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="SegmentGroup"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.SegmentGroup">[docs]</a><span class="k">class</span> <span class="nc">SegmentGroup</span><span class="p">(</span><span class="n">GroupBase</span><span class="p">):</span>
@@ -3801,12 +3962,7 @@
         <span class="c1"># residues therein, and thus, also for the atoms in those residues.</span>
         <span class="c1"># On the contrary, if the SegmentGroup is not unique, this does not</span>
         <span class="c1"># imply non-unique atoms, since segments or residues might be empty.</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]:</span>
-                <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ag</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">pass</span>
+        <span class="n">ag</span><span class="o">.</span><span class="n">_set_unique_caches_from</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ag</span>
 
     <span class="nd">@property</span>
@@ -3832,12 +3988,7 @@
         <span class="c1"># residues therein. On the contrary, if the SegmentGroup is not unique,</span>
         <span class="c1"># this does not imply non-unique residues, since segments might be</span>
         <span class="c1"># empty.</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]:</span>
-                <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rg</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">pass</span>
+        <span class="n">rg</span><span class="o">.</span><span class="n">_set_unique_caches_from</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">rg</span>
 
     <span class="nd">@property</span>
@@ -3875,12 +4026,9 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="nd">@cached</span><span class="p">(</span><span class="s1">&#39;unique&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">unique</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a :class:`SegmentGroup` containing sorted and unique</span>
 <span class="sd">        :class:`Segments&lt;Segment&gt;` only.</span>
-
-<span class="sd">        If the :class:`SegmentGroup` is unique, this is the group itself.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -3896,22 +4044,60 @@
 <span class="sd">           &gt;&gt;&gt; sg2.ix</span>
 <span class="sd">           array([0, 1, 2])</span>
 <span class="sd">           &gt;&gt;&gt; sg2.unique is sg2</span>
-<span class="sd">           True</span>
+<span class="sd">           False</span>
 
 
 <span class="sd">        .. versionadded:: 0.16.0</span>
 <span class="sd">        .. versionchanged:: 0.19.0 If the :class:`SegmentGroup` is already</span>
 <span class="sd">            unique, :attr:`SegmentGroup.unique` now returns the group itself</span>
 <span class="sd">            instead of a copy.</span>
+<span class="sd">        .. versionchanged:: 2.0.0</span>
+<span class="sd">            This function now always returns a copy.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isunique</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span>
-        <span class="n">_unique</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="n">unique_int_1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">)]</span>
-        <span class="c1"># Since we know that _unique is a unique SegmentGroup, we set its</span>
-        <span class="c1"># uniqueness caches from here:</span>
-        <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">_unique</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_unique</span>
-        <span class="k">return</span> <span class="n">_unique</span></div>
+        <span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sorted_unique</span><span class="p">[:]</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;issorted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;sorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unsorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">group</span>
+        <span class="k">return</span> <span class="n">group</span>
+
+<div class="viewcode-block" id="SegmentGroup.asunique"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.SegmentGroup.asunique">[docs]</a>    <span class="k">def</span> <span class="nf">asunique</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a :class:`SegmentGroup` containing unique</span>
+<span class="sd">        :class:`Segments&lt;Segment&gt;` only, with optional sorting.</span>
+
+<span class="sd">        If the :class:`SegmentGroup` is unique, this is the group itself.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sorted: bool (optional)</span>
+<span class="sd">            Whether or not the returned SegmentGroup should be sorted</span>
+<span class="sd">            by segindex.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`SegmentGroup`</span>
+<span class="sd">            Unique ``SegmentGroup``</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">           &gt;&gt;&gt; sg = u.segments[[2, 1, 2, 2, 1, 0]]</span>
+<span class="sd">           &gt;&gt;&gt; sg</span>
+<span class="sd">           &lt;SegmentGroup with 6 segments&gt;</span>
+<span class="sd">           &gt;&gt;&gt; sg.ix</span>
+<span class="sd">           array([2, 1, 2, 2, 1, 0])</span>
+<span class="sd">           &gt;&gt;&gt; sg2 = sg.asunique()</span>
+<span class="sd">           &gt;&gt;&gt; sg2</span>
+<span class="sd">           &lt;SegmentGroup with 3 segments&gt;</span>
+<span class="sd">           &gt;&gt;&gt; sg2.ix</span>
+<span class="sd">           array([0, 1, 2])</span>
+<span class="sd">           &gt;&gt;&gt; sg2.asunique() is sg2</span>
+<span class="sd">           True</span>
+
+
+<span class="sd">        .. versionadded:: 2.0.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_asunique</span><span class="p">(</span><span class="nb">sorted</span><span class="o">=</span><span class="nb">sorted</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="p">)</span></div></div>
 
 
 <span class="nd">@functools</span><span class="o">.</span><span class="n">total_ordering</span>
@@ -4182,7 +4368,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">indices</span><span class="p">[</span><span class="bp">self</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
         <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ag</span>
+        <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;issorted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;sorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ag</span>
+        <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unsorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ag</span>
         <span class="k">return</span> <span class="n">ag</span>
 
     <span class="nd">@property</span>
@@ -4230,7 +4418,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">indices</span><span class="p">[</span><span class="bp">self</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
         <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ag</span>
+        <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;issorted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;sorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ag</span>
+        <span class="n">ag</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unsorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ag</span>
         <span class="k">return</span> <span class="n">ag</span>
 
     <span class="nd">@property</span>
@@ -4240,7 +4430,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">rg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">resindices</span><span class="p">[</span><span class="bp">self</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
         <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;isunique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rg</span>
+        <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;issorted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;sorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rg</span>
+        <span class="n">rg</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;unsorted_unique&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rg</span>
         <span class="k">return</span> <span class="n">rg</span></div>
 
 
