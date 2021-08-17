@@ -156,6 +156,7 @@ import numpy as np
 import warnings
 import errno
 import logging
+from math import isclose
 
 import MDAnalysis
 from . import base
@@ -647,15 +648,13 @@ class NCDFReader(base.ReaderBase):
         """Helper function to get variable at given frame from NETCDF file and
         scale if necessary.
 
-        TODO
+        Note
         ----
-        For now we always scale if a scale_factor exists as AMBER doesn't tend
-        to add scale_factors for anything else but velocities. Should other
-        engines add scale_factors of 1.0, then we should skip scaling in those
-        cases to avoid overheads.
+        If scale_factor is 1.0 within numerical precision then we don't apply
+        the scaling.
         """
         scale_factor = self.scale_factors[variable]
-        if scale_factor is None:
+        if scale_factor is None or isclose(scale_factor, 1):
             return self.trjfile.variables[variable][frame]
         else:
             return self.trjfile.variables[variable][frame] * scale_factor
@@ -792,11 +791,13 @@ class NCDFWriter(base.WriterBase):
     for the lengths and picoseconds for the time (and hence Å/ps for
     velocities and kilocalorie/mole/Å for forces).
 
-    Scale factor variables for time, velocities, cell lengths, cell angles, coordinates, velocities, or forces can be passed into the writer. If so, they will be written to the
-    NetCDF file. In this case, the trajectory data will be written to the
-    NetCDF file divided by the scale factor value. By default, scale factor
-    variables are not written. The only exception is for velocities, where it is set to 20.455,
-    replicating the default behaviour of AMBER.
+    Scale factor variables for time, velocities, cell lengths, cell angles,
+    coordinates, velocities, or forces can be passed into the writer. If so,
+    they will be written to the NetCDF file. In this case, the trajectory data
+    will be written to the NetCDF file divided by the scale factor value. By
+    default, scale factor variables are not written. The only exception is for
+    velocities, where it is set to 20.455, replicating the default behaviour of
+    AMBER.
 
     Unit cell information is written if available.
 
@@ -1010,7 +1011,7 @@ class NCDFWriter(base.WriterBase):
                                        ('frame', 'atom', 'spatial'))
         setattr(coords, 'units', 'angstrom')
         if self.scale_factors['coordinates']:
-            setattr(coords, 'scale_factor', self.scale_factors['coordinates'])
+            coords.scale_factor = self.scale_factors['coordinates']
 
         spatial = ncfile.createVariable('spatial', 'c', ('spatial', ))
         spatial[:] = np.asarray(list('xyz'))
@@ -1018,7 +1019,7 @@ class NCDFWriter(base.WriterBase):
         time = ncfile.createVariable('time', 'f4', ('frame',))
         setattr(time, 'units', 'picosecond')
         if self.scale_factors['time']:
-            setattr(time, 'scale_factor', self.scale_factors['time'])
+            time.scale_factor = self.scale_factors['time']
 
         self.periodic = periodic
         if self.periodic:
@@ -1026,8 +1027,7 @@ class NCDFWriter(base.WriterBase):
                                                  ('frame', 'cell_spatial'))
             setattr(cell_lengths, 'units', 'angstrom')
             if self.scale_factors['cell_lengths']:
-                setattr(cell_lengths, 'scale_factor',
-                        self.scale_factors['cell_lengths'])
+                cell_lengths.scale_factor = self.scale_factors['cell_lengths']
 
             cell_spatial = ncfile.createVariable('cell_spatial', 'c',
                                                  ('cell_spatial', ))
@@ -1037,8 +1037,7 @@ class NCDFWriter(base.WriterBase):
                                                 ('frame', 'cell_angular'))
             setattr(cell_angles, 'units', 'degree')
             if self.scale_factors['cell_angles']:
-                setattr(cell_angles, 'scale_factor',
-                        self.scale_factors['cell_angles'])
+                cell_angles.scale_factor = self.scale_factors['cell_angles']
 
             cell_angular = ncfile.createVariable('cell_angular', 'c',
                                                  ('cell_angular', 'label'))
@@ -1051,15 +1050,13 @@ class NCDFWriter(base.WriterBase):
                                            ('frame', 'atom', 'spatial'))
             setattr(velocs, 'units', 'angstrom/picosecond')
             if self.scale_factors['velocities']:
-                setattr(velocs, 'scale_factor',
-                        self.scale_factors['velocities'])
+                velocs.scale_factor = self.scale_factors['velocities']
         if self.has_forces:
             forces = ncfile.createVariable('forces', 'f4',
                                            ('frame', 'atom', 'spatial'))
             setattr(forces, 'units', 'kilocalorie/mole/angstrom')
             if self.scale_factors['forces']:
-                setattr(forces, 'scale_factor',
-                        self.scale_factors['forces'])
+                forces.scale_factor = self.scale_factors['forces']
 
         # Important for netCDF4! Disable maskandscale for created variables!
         # Won't work if called before variable creation!
@@ -1122,12 +1119,19 @@ class NCDFWriter(base.WriterBase):
 
         return self._write_next_timestep(ts)
 
-    @staticmethod
-    def _scale(variable, scale_factor):
-        if scale_factor is None or scale_factor == 1:
-            return variable
+    def _set_frame_var_and_scale(self, varname, data):
+        """Helper function to set variables and scale them if necessary.
+
+        Note
+        ----
+        If scale_factor is numerically close to 1.0, the variable data is not
+        scaled.
+        """
+        sfactor = self.scale_factors[varname]
+        if sfactor is None or isclose(sfactor, 1):
+            self.trjfile.variables[varname][self.curr_frame] = data
         else:
-            return variable / scale_factor
+            self.trjfile.variables[varname][self.curr_frame] = data / sfactor
 
     def _write_next_timestep(self, ts):
         """Write coordinates and unitcell information to NCDF file.
@@ -1164,26 +1168,17 @@ class NCDFWriter(base.WriterBase):
 
         # write step
         # coordinates
-        self.trjfile.variables['coordinates'][
-                self.curr_frame, :, :] = self._scale(
-                        pos, self.scale_factors['coordinates'])
+        self._set_frame_var_and_scale('coordinates', pos)
 
         # time
-        self.trjfile.variables['time'][self.curr_frame] = self._scale(
-                time, self.scale_factors['time'])
+        self._set_frame_var_and_scale('time', time)
 
         # unitcell
         if self.periodic:
             # cell lengths
-            self.trjfile.variables['cell_lengths'][
-                    self.curr_frame, :] = self._scale(
-                            unitcell[:3],
-                            self.scale_factors['cell_lengths'])
+            self._set_frame_var_and_scale('cell_lengths', unitcell[:3])
 
-            self.trjfile.variables['cell_angles'][
-                    self.curr_frame, :] = self._scale(
-                            unitcell[3:],
-                            self.scale_factors['cell_angles'])
+            self._set_frame_var_and_scale('cell_angles', unitcell[3:])
 
         # velocities
         if self.has_velocities:
@@ -1192,9 +1187,7 @@ class NCDFWriter(base.WriterBase):
                 velocities = self.convert_velocities_to_native(
                     velocities, inplace=False)
 
-            self.trjfile.variables['velocities'][
-                    self.curr_frame, :, :] = self._scale(
-                            velocities, self.scale_factors['velocities'])
+            self._set_frame_var_and_scale('velocities', velocities)
 
         # forces
         if self.has_forces:
@@ -1203,9 +1196,7 @@ class NCDFWriter(base.WriterBase):
                 forces = self.convert_forces_to_native(
                     forces, inplace=False)
 
-            self.trjfile.variables['forces'][
-                    self.curr_frame, :, :] = self._scale(
-                            forces, self.scale_factors['forces'])
+            self._set_frame_var_and_scale('forces', forces)
 
         self.trjfile.sync()
         self.curr_frame += 1
