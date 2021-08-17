@@ -1649,7 +1649,7 @@ class GroupBase(_MutableBase):
         # atoms:
         atoms = self.atoms
         if not self.isunique:
-            _atoms = atoms.sorted_unique
+            _atoms = atoms.unsorted_unique
             restore_mask = atoms._unique_restore_mask
             atoms = _atoms
 
