@@ -476,8 +476,10 @@ class NCDFReader(base.ReaderBase):
 
         super(NCDFReader, self).__init__(filename, **kwargs)
 
+        # ensure maskandscale is off so we don't end up double scaling
         self.trjfile = NCDFPicklable(self.filename,
-                                     mmap=self._mmap)
+                                     mmap=self._mmap,
+                                     maskandscale=False)
 
         # AMBER NetCDF files should always have a convention
         try:
@@ -644,12 +646,22 @@ class NCDFReader(base.ReaderBase):
             n_atoms = f.dimensions['atom']
         return n_atoms
 
-    @staticmethod
-    def _scale(variable, scale_factor):
-        if scale_factor is None or scale_factor == 1:
-            return variable
+    def _get_var_and_scale(self, variable, frame):
+        """Helper function to get variable at given frame from NETCDF file and
+        scale if necessary.
+
+        TODO
+        ----
+        For now we always scale if a scale_factor exists as AMBER doesn't tend
+        to add scale_factors for anything else but velocities. Should other
+        engines add scale_factors of 1.0, then we should skip scaling in those
+        cases to avoid overheads.
+        """
+        scale_factor = self.scale_factors[variable]
+        if scale_factor is None:
+            return self.trjfile.variables[variable][frame]
         else:
-            return scale_factor * variable
+            return self.trjfile.variables[variable][frame] * scale_factor
 
     def _read_frame(self, frame):
         ts = self.ts
@@ -663,25 +675,15 @@ class NCDFReader(base.ReaderBase):
             raise IndexError("frame index must be 0 <= frame < {0}".format(
                 self.n_frames))
         # note: self.trjfile.variables['coordinates'].shape == (frames, n_atoms, 3)
-        ts._pos[:] = self._scale(self.trjfile.variables['coordinates'][frame],
-                                 self.scale_factors['coordinates'])
-        ts.time = self._scale(self.trjfile.variables['time'][frame],
-                              self.scale_factors['time'])
+        ts._pos[:] = self._get_var_and_scale('coordinates', frame)
+        ts.time = self._get_var_and_scale('time', frame)
         if self.has_velocities:
-            ts._velocities[:] = self._scale(
-                    self.trjfile.variables['velocities'][frame],
-                    self.scale_factors['velocities'])
+            ts._velocities[:] = self._get_var_and_scale('velocities', frame)
         if self.has_forces:
-            ts._forces[:] = self._scale(
-                    self.trjfile.variables['forces'][frame],
-                    self.scale_factors['forces'])
+            ts._forces[:] = self._get_var_and_scale('forces', frame)
         if self.periodic:
-            ts._unitcell[:3] = self._scale(
-                    self.trjfile.variables['cell_lengths'][frame],
-                    self.scale_factors['cell_lengths'])
-            ts._unitcell[3:] = self._scale(
-                    self.trjfile.variables['cell_angles'][frame],
-                    self.scale_factors['cell_angles'])
+            ts._unitcell[:3] = self._get_var_and_scale('cell_lengths', frame)
+            ts._unitcell[3:] = self._get_var_and_scale('cell_angles', frame)
         if self.convert_units:
             self.convert_pos_from_native(ts._pos)  # in-place !
             self.convert_time_from_native(
@@ -817,15 +819,15 @@ class NCDFWriter(base.WriterBase):
     scale_time : float (optional)
         Scale factor for time units [`None`]
     scale_cell_lengths : float (optional)
-        Scale factor for cell lengths [`None`]
+        Scale factor for cell lengths [``None``]
     scale_cell_angles : float (optional)
-        Scale factor for cell angles [`None`]
+        Scale factor for cell angles [``None``]
     scale_coordinates : float (optional)
-        Scale factor for coordinates [`None`]
+        Scale factor for coordinates [``None``]
     scale_velocities : float (optional)
         Scale factor for velocities [20.455]
     scale_forces : float (optional)
-        Scale factor for forces [`None`]
+        Scale factor for forces [``None``]
 
 
     Note
@@ -887,10 +889,11 @@ class NCDFWriter(base.WriterBase):
        of `degree` instead of the `degrees` written in previous version of
        MDAnalysis (Issue #2327).
     .. versionchanged:: 2.0.0
-       `dt`, `start`, and `step` keywords were unused and are no longer set.
-       Writing of `scale_factor` values has now been implemented. By default
+       ``dt``, ``start``, and ``step`` keywords were unused and are no longer
+       set.
+       Writing of ``scale_factor`` values has now been implemented. By default
        only velocities write a scale_factor of 20.455 (echoing the behaviour
-       seen from AMBER)
+       seen from AMBER).
 
     """
 
@@ -938,6 +941,12 @@ class NCDFWriter(base.WriterBase):
 
         self.curr_frame = 0
 
+    @staticmethod
+    def _create_var():
+        """Helper function to create ncdfile variable and disable maskandscale
+        if necessary (i.e. using netCDF4)"""
+        pass
+
     def _init_netcdf(self, periodic=True):
         """Initialize netcdf AMBER 1.0 trajectory.
 
@@ -963,12 +972,14 @@ class NCDFWriter(base.WriterBase):
                 "Attempt to write to closed file {0}".format(self.filename))
 
         if netCDF4:
-            ncfile = netCDF4.Dataset(self.filename, 'w', format='NETCDF3_64BIT')
+            ncfile = netCDF4.Dataset(self.filename, 'w',
+                                     format='NETCDF3_64BIT')
         else:
             ncfile = scipy.io.netcdf.netcdf_file(self.filename,
-                                                 mode='w', version=2)
-            wmsg = "Could not find netCDF4 module. Falling back to MUCH slower "\
-                   "scipy.io.netcdf implementation for writing."
+                                                 mode='w', version=2,
+                                                 maskandscale=False)
+            wmsg = ("Could not find netCDF4 module. Falling back to MUCH "
+                    "slower scipy.io.netcdf implementation for writing.")
             logger.warning(wmsg)
             warnings.warn(wmsg)
 
@@ -1044,6 +1055,11 @@ class NCDFWriter(base.WriterBase):
             if self.scale_factors['forces']:
                 setattr(forces, 'scale_factor',
                         self.scale_factors['forces'])
+
+        # Important for netCDF4! Disable maskandscale for created variables!
+        # Won't work if called before variable creation!
+        if netCDF4:
+            ncfile.set_auto_maskandscale(False)
 
         ncfile.sync()
         self._first_frame = False
@@ -1216,6 +1232,11 @@ class NCDFPicklable(scipy.io.netcdf.netcdf_file):
     mmap : None or bool, optional
         Whether to mmap `filename` when reading. True when `filename`
         is a file name, False when `filename` is a file-like object.
+    version : {1, 2}, optional
+        Sets the netcdf file version to read / write. 1 is classic, 2 is
+        65-bit offset format. Default is 1.
+    maskandscale : bool, optional
+        Whether to automatically scale and mask data. Default is False.
 
     Example
     -------
@@ -1242,7 +1263,9 @@ class NCDFPicklable(scipy.io.netcdf.netcdf_file):
     .. versionadded:: 2.0.0
     """
     def __getstate__(self):
-        return self.filename, self.use_mmap
+        return (self.filename, self.use_mmap, self.version_byte,
+                self.maskandscale)
 
     def __setstate__(self, args):
-        self.__init__(args[0], mmap=args[1])
+        self.__init__(args[0], mmap=args[1], version=args[2],
+                      maskandscale=args[3])
