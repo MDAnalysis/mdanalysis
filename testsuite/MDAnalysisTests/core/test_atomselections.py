@@ -1385,7 +1385,7 @@ def test_default_selection_on_ordered_unique_group(u_pdb_icodes, sel, ix):
 def test_unique_selection_on_ordered_unique_group(u_pdb_icodes, sel, sort, ix):
     # manually ordered unique atomgroup
     base_ag = u_pdb_icodes.atoms[[335, 5, 451, 8, 7, 6]]
-    ag = base_ag.select_atoms(sel, sort=sort)
+    ag = base_ag.select_atoms(sel, sorted=sort)
     assert_equal(ag.ix, ix)
 
 
@@ -1398,5 +1398,5 @@ def test_unique_selection_on_ordered_unique_group(u_pdb_icodes, sel, sort, ix):
 def test_unique_selection_on_ordered_group(u_pdb_icodes, sel, sort, ix):
     # manually ordered duplicate atomgroup
     base_ag = u_pdb_icodes.atoms[[335, 5, 451, 8, 5, 5, 7, 6, 451]]
-    ag = base_ag.select_atoms(sel, sort=sort)
+    ag = base_ag.select_atoms(sel, sorted=sort)
     assert_equal(ag.ix, ix)

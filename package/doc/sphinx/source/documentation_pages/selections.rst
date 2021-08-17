@@ -45,11 +45,11 @@ packages with the help of :ref:`Selection exporters`.
         >>> np.all(ag3.ix == ag2.ix)
         False
 
-    You can turn off sorting behavior with the ``sort`` keyword::
+    You can turn off sorting behavior with the ``sorted`` keyword::
 
         >>> ag = u.select_atoms("name N")
         >>> ag2 = ag[[5, 1, 0]]
-        >>> ag3 = ag2.select_atoms("name N", sort=False)
+        >>> ag3 = ag2.select_atoms("name N", sorted=False)
         >>> np.all(ag3.ix == ag2.ix)
         True
 

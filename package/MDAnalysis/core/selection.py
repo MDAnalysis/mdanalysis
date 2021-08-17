@@ -178,7 +178,7 @@ class LogicOperation(object, metaclass=_Operationmeta):
         self.parser = parser
 
     def apply(self, *args, **kwargs):
-        return self._apply(*args, **kwargs).asunique(sorted=self.parser.sort)
+        return self._apply(*args, **kwargs).asunique(sorted=self.parser.sorted)
 
 
 class AndOperation(LogicOperation):
@@ -238,7 +238,7 @@ class Selection(object, metaclass=_Selectionmeta):
         self.parser = parser
 
     def apply(self, *args, **kwargs):
-        return self._apply(*args, **kwargs).asunique(sorted=self.parser.sort)
+        return self._apply(*args, **kwargs).asunique(sorted=self.parser.sorted)
 
 
 class AllSelection(Selection):
@@ -1387,7 +1387,7 @@ class SelectionParser(object):
                 "".format(self.tokens[0], token))
 
     def parse(self, selectstr, selgroups, periodic=None, atol=1e-08,
-              rtol=1e-05, sort=True):
+              rtol=1e-05, sorted=True):
         """Create a Selection object from a string.
 
         Parameters
@@ -1405,8 +1405,8 @@ class SelectionParser(object):
         rtol : float, optional
             The relative tolerance parameter for float comparisons.
             Passed to :func:`numpy.isclose`.
-        sort : bool, optional
-            Whether to sort the output AtomGroup.
+        sorted : bool, optional
+            Whether to sorted the output AtomGroup.
 
 
         Returns
@@ -1426,7 +1426,7 @@ class SelectionParser(object):
         self.periodic = periodic
         self.atol = atol
         self.rtol = rtol
-        self.sort = sort
+        self.sorted = sorted
 
         self.selectstr = selectstr
         self.selgroups = selgroups

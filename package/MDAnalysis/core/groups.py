@@ -2825,7 +2825,7 @@ class AtomGroup(GroupBase):
     # (namely, 'updating') doesn't allow a very clean signature.
 
     def select_atoms(self, sel, *othersel, periodic=True, rtol=1e-05,
-                     atol=1e-08, updating=False, sort=True, **selgroups):
+                     atol=1e-08, updating=False, sorted=True, **selgroups):
         """Select atoms from within this Group using a selection string.
 
         Returns an :class:`AtomGroup` sorted according to their index in the
@@ -2852,7 +2852,7 @@ class AtomGroup(GroupBase):
           force the selection to be re evaluated each time the Timestep of the
           trajectory is changed.  See section on **Dynamic selections** below.
           [``True``]
-        sort: bool, optional
+        sorted: bool, optional
             Whether to sort the output AtomGroup by index.
         **selgroups : keyword arguments of str: AtomGroup (optional)
           when using the "group" keyword in selections, groups are defined by
@@ -3140,7 +3140,7 @@ class AtomGroup(GroupBase):
         selections = tuple((selection.Parser.parse(s, selgroups,
                                                    periodic=periodic,
                                                    atol=atol, rtol=rtol,
-                                                   sort=sort)
+                                                   sorted=sorted)
                             for s in sel_strs))
         if updating:
             atomgrp = UpdatingAtomGroup(self, selections, sel_strs)
