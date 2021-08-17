@@ -23,6 +23,9 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * Fixes AtomGroup.unique, ResidueGroup.unique, SegmentGroup.unique not
+    sorting the output atoms. The returned group is now always a copy.
+    (Issue #3364, Issue #2977, PR #3368)
   * Only GRO files with unit cells defined with 3 or 9 entries are now
     supported (Issue #3305)
   * Ensures that reading and writing of GRO files with missing unit cell
@@ -121,6 +124,12 @@ Fixes
   * new `Results` class now can be pickled/unpickled. (PR #3309) 
 
 Enhancements
+  * Add a ``sort`` keyword to AtomGroup.select_atoms for ordered selections
+    (Issue #3364, PR #3368)
+  * Adds AtomGroup.asunique, ResidueGroup.asunique, SegmentGroup.asunique
+    with optional sorting. The returned group may or may not be a copy
+    if it is already unique and/or sorted. (Issue #3364, PR #3368)
+  * Adds ``issorted`` property (PR #3368)
   * MOL2 parser populates elements attribute from SYBYL atom types (Issue #3062)
   * Added guessers for aromaticity and Gasteiger partial charges (Issue #2468,
     PR #2926)
