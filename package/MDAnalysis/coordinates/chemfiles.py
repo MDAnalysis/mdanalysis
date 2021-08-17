@@ -23,9 +23,9 @@
 Reading trajectories with *chemfiles* --- :mod:`MDAnalysis.coordinates.chemfiles`
 =================================================================================
 
-MDAnalysis interoperates with the `chemfiles`_ library. The *chemfiles* C++ library 
+MDAnalysis interoperates with the `chemfiles`_ library. The *chemfiles* C++ library
 supports an expanding set of file formats, some of which are not natively supported by
-MDAnalysis. Using the *CHEMFILES* reader you can use  `chemfiles`_ for the low-level 
+MDAnalysis. Using the *CHEMFILES* reader you can use  `chemfiles`_ for the low-level
 file reading. Check the list of `chemfile-supported file formats <formats>`_.
 
 .. _chemfiles: https://chemfiles.org
@@ -37,7 +37,7 @@ file reading. Check the list of `chemfile-supported file formats <formats>`_.
 Using the CHEMFILES reader
 --------------------------
 
-When reading, set the ``format="CHEMFILES"`` keyword argument and I/O is delegated to 
+When reading, set the ``format="CHEMFILES"`` keyword argument and I/O is delegated to
 `chemfiles`_. For example::
 
    >>> import MDAnalysis as mda
@@ -80,9 +80,11 @@ Helper functions
 
 """
 from distutils.version import LooseVersion
+import numpy as np
 import warnings
+import numpy as np
 
-from . import base, core
+from . import base
 
 try:
     import chemfiles
@@ -94,6 +96,7 @@ except ImportError:
 
     class MockTrajectory:
         pass
+
     chemfiles = types.ModuleType("chemfiles")
     chemfiles.Trajectory = MockTrajectory
 else:
@@ -105,14 +108,14 @@ else:
 MIN_CHEMFILES_VERSION = LooseVersion("0.9")
 #: Lowest version of chemfiles that is *not supported*
 #: by MDAnalysis.
-MAX_CHEMFILES_VERSION = LooseVersion("0.10")
+MAX_CHEMFILES_VERSION = LooseVersion("0.11")
 
 
 def check_chemfiles_version():
     """Check if an appropriate *chemfiles* is available
 
     Returns ``True`` if a usable chemfiles version is available,
-    with :data:`MIN_CHEMFILES_VERSION` <= version < 
+    with :data:`MIN_CHEMFILES_VERSION` <= version <
     :data:`MAX_CHEMFILES_VERSION`
 
     .. versionadded:: 1.0.0
@@ -127,8 +130,9 @@ def check_chemfiles_version():
     wrong = version < MIN_CHEMFILES_VERSION or version >= MAX_CHEMFILES_VERSION
     if wrong:
         warnings.warn(
-            "unsupported Chemfiles version {}, we need a version >{} and <{}"
-            .format(version, MIN_CHEMFILES_VERSION, MAX_CHEMFILES_VERSION)
+            "unsupported Chemfiles version {}, we need a version >{} and <{}".format(
+                version, MIN_CHEMFILES_VERSION, MAX_CHEMFILES_VERSION
+            )
         )
     return not wrong
 
@@ -142,8 +146,9 @@ class ChemfilesReader(base.ReaderBase):
 
     .. versionadded:: 1.0.0
     """
-    format = 'chemfiles'
-    units = {'time': 'fs', 'length': 'Angstrom'}
+
+    format = "chemfiles"
+    units = {"time": "fs", "length": "Angstrom"}
 
     def __init__(self, filename, chemfiles_format="", **kwargs):
         """
@@ -161,8 +166,9 @@ class ChemfilesReader(base.ReaderBase):
 
         """
         if not check_chemfiles_version():
-            raise RuntimeError("Please install Chemfiles > {}"
-                               "".format(MIN_CHEMFILES_VERSION))
+            raise RuntimeError(
+                "Please install Chemfiles > {}" "".format(MIN_CHEMFILES_VERSION)
+            )
         super(ChemfilesReader, self).__init__(filename, **kwargs)
         self._format = chemfiles_format
         self._cached_n_atoms = None
@@ -184,7 +190,7 @@ class ChemfilesReader(base.ReaderBase):
         if isinstance(self.filename, chemfiles.Trajectory):
             self._file = self.filename
         else:
-            self._file = ChemfilesPicklable(self.filename, 'r', self._format)
+            self._file = ChemfilesPicklable(self.filename, "r", self._format)
 
     def close(self):
         """close reader"""
@@ -217,7 +223,7 @@ class ChemfilesReader(base.ReaderBase):
     def _read_next_timestep(self, ts=None):
         """copy next frame into timestep"""
         if self._step >= self.n_frames:
-            raise IOError('trying to go over trajectory limit')
+            raise IOError("trying to go over trajectory limit")
         if ts is None:
             ts = self.ts
         self.ts = ts
@@ -235,7 +241,7 @@ class ChemfilesReader(base.ReaderBase):
                 "This is not supported by MDAnalysis."
             )
 
-        ts.dimensions[:] = frame.cell.lengths + frame.cell.angles
+        ts.dimensions = np.r_[frame.cell.lengths, frame.cell.angles]
         ts.positions[:] = frame.positions[:]
         if frame.has_velocities():
             ts.has_velocities = True
@@ -262,7 +268,8 @@ class ChemfilesWriter(base.WriterBase):
 
     .. versionadded:: 1.0.0
     """
-    format = 'chemfiles'
+
+    format = "chemfiles"
     multiframe = True
 
     # chemfiles mostly[1] uses these units for the in-memory representation,
@@ -270,9 +277,17 @@ class ChemfilesWriter(base.WriterBase):
     #
     # [1] mostly since some format don't have a specified unit
     # (XYZ for example), so then chemfiles just assume they are in A and fs.
-    units = {'time': 'fs', 'length': 'Angstrom'}
+    units = {"time": "fs", "length": "Angstrom"}
 
-    def __init__(self, filename, n_atoms=0, mode="w", chemfiles_format="", topology=None, **kwargs):
+    def __init__(
+        self,
+        filename,
+        n_atoms=0,
+        mode="w",
+        chemfiles_format="",
+        topology=None,
+        **kwargs
+    ):
         """
         Parameters
         ----------
@@ -298,8 +313,9 @@ class ChemfilesWriter(base.WriterBase):
 
         """
         if not check_chemfiles_version():
-            raise RuntimeError("Please install Chemfiles > {}"
-                               "".format(MIN_CHEMFILES_VERSION))
+            raise RuntimeError(
+                "Please install Chemfiles > {}" "".format(MIN_CHEMFILES_VERSION)
+            )
         self.filename = filename
         self.n_atoms = n_atoms
         if mode != "a" and mode != "w":
@@ -328,7 +344,7 @@ class ChemfilesWriter(base.WriterBase):
         constructor.
 
         If `obj` contains velocities, and the underlying format supports it, the
-        velocities are writen to the file. Writing forces is unsupported at the
+        velocities are written to the file. Writing forces is unsupported at the
         moment.
 
         Parameters
@@ -342,21 +358,23 @@ class ChemfilesWriter(base.WriterBase):
            Deprecated support for Timestep argument has now been removed.
            Use AtomGroup or Universe as an input instead.
         """
-        if hasattr(obj, "atoms"):
-            if hasattr(obj, 'universe'):
+        try:
+            atoms = obj.atoms
+        except AttributeError:
+            errmsg = "Input obj is neither an AtomGroup or Universe"
+            raise TypeError(errmsg) from None
+        else:
+            if hasattr(obj, "universe"):
                 # For AtomGroup and children (Residue, ResidueGroup, Segment)
                 ts_full = obj.universe.trajectory.ts
-                if ts_full.n_atoms == obj.atoms.n_atoms:
+                if ts_full.n_atoms == atoms.n_atoms:
                     ts = ts_full
                 else:
                     # Only populate a time step with the selected atoms.
                     ts = ts_full.copy_slice(atoms.indices)
-            elif hasattr(obj, 'trajectory'):
+            elif hasattr(obj, "trajectory"):
                 # For Universe only --- get everything
                 ts = obj.trajectory.ts
-        else:
-            errmsg = "Input obj is neither an AtomGroup or Universe"
-            raise TypeError(errmsg) from None
 
         frame = self._timestep_to_chemfiles(ts)
         frame.topology = self._topology_to_chemfiles(obj, len(frame.atoms))
@@ -375,7 +393,20 @@ class ChemfilesWriter(base.WriterBase):
         if ts.has_velocities:
             frame.add_velocities()
             frame.velocities[:] = ts.velocities[:]
-        frame.cell = chemfiles.UnitCell(*ts.dimensions)
+
+        # if there is no cell information in this universe, still pass a valid
+        # cell to chemfiles
+        if ts.dimensions is None:
+            lengths, angles = np.zeros(3), np.array([90, 90, 90.0])
+        else:
+            lengths = ts.dimensions[:3]
+            angles = ts.dimensions[3:]
+            
+        if chemfiles.__version__.startswith("0.9"):
+            frame.cell = chemfiles.UnitCell(*lengths, *angles)
+        else:
+            frame.cell = chemfiles.UnitCell(lengths, angles)
+
         return frame
 
     def _topology_to_chemfiles(self, obj, n_atoms):
@@ -391,21 +422,21 @@ class ChemfilesWriter(base.WriterBase):
         # (1) add all atoms to the topology
         residues = {}
         for atom in obj.atoms:
-            name = getattr(atom, 'name', "")
-            type = getattr(atom, 'type', name)
+            name = getattr(atom, "name", "")
+            type = getattr(atom, "type", name)
             chemfiles_atom = chemfiles.Atom(name, type)
 
-            if hasattr(atom, 'altLoc'):
+            if hasattr(atom, "altLoc"):
                 chemfiles_atom["altloc"] = str(atom.altLoc)
 
-            if hasattr(atom, 'segid'):
+            if hasattr(atom, "segid"):
                 chemfiles_atom["segid"] = str(atom.segid)
 
-            if hasattr(atom, 'segindex'):
+            if hasattr(atom, "segindex"):
                 chemfiles_atom["segindex"] = int(atom.segindex)
 
-            if hasattr(atom, 'resid'):
-                resname = getattr(atom, 'resname', "")
+            if hasattr(atom, "resid"):
+                resname = getattr(atom, "resname", "")
                 if atom.resid not in residues.keys():
                     residues[atom.resid] = chemfiles.Residue(resname, atom.resid)
                 residue = residues[atom.resid]
@@ -486,13 +517,11 @@ class ChemfilesPicklable(chemfiles.Trajectory):
 
     .. versionadded:: 2.0.0
     """
+
     def __init__(self, path, mode="r", format=""):
-        if mode != 'r':
-            raise ValueError("Only read mode ('r') "
-                             "files can be pickled.")
-        super().__init__(path=path,
-                         mode=mode,
-                         format=format)
+        if mode != "r":
+            raise ValueError("Only read mode ('r') files can be pickled.")
+        super().__init__(path=path, mode=mode, format=format)
 
     def __getstate__(self):
         return self.path, self._Trajectory__mode, self._Trajectory__format

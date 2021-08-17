@@ -21,14 +21,14 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""OpenMM topology parser
-=========================
+"""OpenMM topology parser :mod:`MDAnalysis.converters.OpenMMParser`
+===================================================================
 
 .. versionadded:: 2.0.0
 
 
 Converts an
-`OpenMM <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.topology.Topology.html#simtk.openmm.app.topology.Topology>`_
+`OpenMM topology <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.topology.Topology.html#simtk.openmm.app.topology.Topology>`_
 :class:`simtk.openmm.app.topology.Topology` into a :class:`MDAnalysis.core.Topology`.
 
 Also converts some objects within the
@@ -57,8 +57,7 @@ Classes
 
 import numpy as np
 
-from .base import TopologyReaderBase
-from .guessers import guess_types
+from ..topology.base import TopologyReaderBase
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
@@ -116,7 +115,7 @@ class OpenMMTopologyParser(TopologyReaderBase):
         resnames = [r.name for r in omm_topology.residues()]
         resids = [r.index + 1 for r in omm_topology.residues()]
         resnums = resids.copy()
-        segids = [c.index for c in omm_topology.chains()]
+        segids = [str(c.index) for c in omm_topology.chains()]
         bonds = [(b.atom1.index, b.atom2.index) for b in omm_topology.bonds()]
         bond_orders = [b.order for b in omm_topology.bonds()]
         bond_types = [b.type for b in omm_topology.bonds()]

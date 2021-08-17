@@ -9,14 +9,21 @@ on:
       - develop
       - master
 
+concurrency:
+  # Probably overly cautious group naming.
+  # Commits to develop/master will cancel each other, but PRs will only cancel
+  # commits within the same PR
+  group: "${{ github.ref }}-${{ github.head_ref }}"
+  cancel-in-progress: true
+
 defaults:
   run:
     shell: bash -l {0}
 
 env:
-  MDA_CONDA_MIN_DEPS: "pip pytest==6.1.2 mmtf-python biopython networkx cython matplotlib-base scipy griddataformats hypothesis gsd codecov threadpoolctl openmm"
-  MDA_CONDA_EXTRA_DEPS: "seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles tqdm>=4.43.0 tidynamics>=1.0.0 rdkit>=2020.03.1 h5py"
-  MDA_PIP_MIN_DEPS: 'coveralls coverage<5 pytest-cov pytest-xdist'
+  MDA_CONDA_MIN_DEPS: "pip pytest mmtf-python biopython networkx cython matplotlib-base scipy griddataformats hypothesis gsd codecov threadpoolctl"
+  MDA_CONDA_EXTRA_DEPS: "seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles-python>=0.9 tqdm>=4.43.0 tidynamics>=1.0.0 rdkit>=2020.03.1 h5py openmm"
+  MDA_PIP_MIN_DEPS: 'coverage<5 pytest-cov==2.10.1 pytest-xdist'
   MDA_PIP_EXTRA_DEPS: 'duecredit parmed'
 
 
@@ -33,17 +40,17 @@ jobs:
           install_hole: [true, ]
           codecov: [true, ]
           include:
-            - name: macOS_py39
-              os: macOS-latest
+            - name: macOS_bigsur_py39
+              os: macOS-11
               python-version: 3.9
               run_type: FULL
               install_hole: true
               codecov: true
-            - name: macOS_py36_min
-              os: macOS-latest
+            - name: macOS_catalina_py36
+              os: macOS-10.15
               python-version: 3.6
-              run_type: MIN
-              install_hole: false
+              run_type: FULL
+              install_hole: true
               codecov: false
             - name: minimal-ubuntu
               os: ubuntu-latest
@@ -107,11 +114,15 @@ jobs:
         python-version: ${{ matrix.python-version }}
         auto-update-conda: true
         channel-priority: flexible
+        # The order of these channel matters: both provide "fundamental"
+        # software (curl, ssh, ...), but the version in biobuilds are very
+        # outdated. This can lead to problem when loading shared libraries,
+        # see https://github.com/MDAnalysis/mdanalysis/pull/3126#issuecomment-813112080
         channels: conda-forge, biobuilds
         add-pip-as-python-dependency: true
         mamba-version: "*"
         architecture: x64
-        
+
     - name: install_deps
       env:
         MDA_CONDA_FULL_DEPS: "${{ env.MDA_CONDA_MIN_DEPS }} ${{ env.MDA_CONDA_EXTRA_DEPS }}"
@@ -128,7 +139,7 @@ jobs:
         if [ ${{ matrix.name }} = "asv_check" ]; then
           pip install asv
         fi
-    
+
     - name: check_setup
       run: |
         # Check OS and python setup
@@ -175,7 +186,7 @@ jobs:
 
     - name: codecov
       if: matrix.codecov
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v2
       with:
         file: coverage.xml
         fail_ci_if_error: True

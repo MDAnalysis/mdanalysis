@@ -76,7 +76,7 @@ class TestOpenMMBasicSimulationReader():
         assert omm_sim_uni.residues.n_residues == 1
         assert omm_sim_uni.residues.resnames[0] == "RES"
         assert omm_sim_uni.segments.n_segments == 1
-        assert omm_sim_uni.segments.segids[0] == 0
+        assert omm_sim_uni.segments.segids[0] == '0'
         assert len(omm_sim_uni.bonds.indices) == 0
 
 

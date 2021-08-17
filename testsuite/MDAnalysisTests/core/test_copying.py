@@ -109,7 +109,6 @@ TA_FILLER = {
     (ta.Tempfactors, float),
     (ta.Masses, float),
     (ta.Charges, float),
-    (ta.Bfactors, float),
     (ta.Occupancies, float),
     (ta.AltLocs, object),
     (ta.Resids, int),

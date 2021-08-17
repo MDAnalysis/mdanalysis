@@ -12,7 +12,6 @@ netcdf4
 networkx
 numpy>=1.16.0
 parmed
-psutil
 pytest
 scikit-learn
 scipy

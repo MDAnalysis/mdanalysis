@@ -33,7 +33,7 @@ app = pytest.importorskip('simtk.openmm.app')
 
 
 class OpenMMTopologyBase(ParserBase):
-    parser = mda.topology.OpenMMParser.OpenMMTopologyParser
+    parser = mda.converters.OpenMMParser.OpenMMTopologyParser
     expected_attrs = [
         "ids",
         "names",
@@ -90,6 +90,7 @@ class OpenMMTopologyBase(ParserBase):
 
     def test_segids(self, top):
         assert len(top.segids.values) == self.expected_n_segments
+        assert all(isinstance(segid, str) for segid in top.segids.values)
         if self.expected_n_segments:
             assert isinstance(top.segids.values, np.ndarray)
         else:
@@ -97,7 +98,7 @@ class OpenMMTopologyBase(ParserBase):
 
 
 class OpenMMAppTopologyBase(OpenMMTopologyBase):
-    parser = mda.topology.OpenMMParser.OpenMMAppTopologyParser
+    parser = mda.converters.OpenMMParser.OpenMMAppTopologyParser
     expected_attrs = [
         "ids",
         "names",

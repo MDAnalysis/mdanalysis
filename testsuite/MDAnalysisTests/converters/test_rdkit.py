@@ -36,7 +36,7 @@ from MDAnalysisTests.util import import_not_available
 try:
     from rdkit import Chem
     from rdkit.Chem import AllChem
-    from MDAnalysis.coordinates.RDKit import (
+    from MDAnalysis.converters.RDKit import (
         RDATTRIBUTES,
         _add_mda_attr_to_rdkit,
         _infer_bo_and_charges,
@@ -167,11 +167,20 @@ class TestRDKitConverter(object):
         u.add_TopologyAttr('elements', elements)
         return u.select_atoms("resid 2-12")
 
+    @pytest.fixture
+    def uo2(self):
+        return mda.Universe.from_smiles("O=O")
+
+    def test_no_atoms_attr(self):
+        rdkit_converter = mda._CONVERTERS["RDKIT"]().convert
+        with pytest.raises(TypeError, match=""):
+            rdkit_converter("foo")
+
     @pytest.mark.parametrize("smi", ["[H]", "C", "O", "[He]"])
     def test_single_atom_mol(self, smi):
         u = mda.Universe.from_smiles(smi, addHs=False,
                                      generate_coordinates=False)
-        mol = u.atoms.convert_to("RDKIT")
+        mol = u.atoms.convert_to.rdkit(NoImplicit=False)
         assert mol.GetNumAtoms() == 1
         assert mol.GetAtomWithIdx(0).GetSymbol() == smi.strip("[]")
 
@@ -193,7 +202,7 @@ class TestRDKitConverter(object):
     ])
     def test_monomer_info(self, pdb, sel_str, atom_index):
         sel = pdb.select_atoms(sel_str)
-        umol = sel.convert_to("RDKIT")
+        umol = sel.convert_to.rdkit(NoImplicit=False)
         atom = umol.GetAtomWithIdx(atom_index)
         mda_index = atom.GetIntProp("_MDAnalysis_index")
         mi = atom.GetMonomerInfo()
@@ -220,6 +229,10 @@ class TestRDKitConverter(object):
 
     def test_raise_requires_elements(self):
         u = mda.Universe(mol2_molecule)
+        
+        # Delete topology attribute (PR #3069)
+        u.del_TopologyAttr('elements')
+        
         with pytest.raises(
             AttributeError,
             match="`elements` attribute is required for the RDKitConverter"
@@ -232,13 +245,26 @@ class TestRDKitConverter(object):
                           match="No `bonds` attribute in this AtomGroup"):
             u.atoms.convert_to("RDKIT")
 
-    def test_warn_no_hydrogen(self):
-        u = mda.Universe.from_smiles("O=O")
-        with pytest.warns(
-            UserWarning,
-            match="No hydrogen atom could be found in the topology"
-        ):
-            u.atoms.convert_to("RDKIT")
+    def test_bonds_outside_sel(self):
+        u = mda.Universe(Chem.MolFromSmiles("CC(=O)C"))
+        ag = u.select_atoms("index 1")
+        ag.convert_to.rdkit(NoImplicit=False)
+
+    def test_error_no_hydrogen(self, uo2):
+        with pytest.raises(AttributeError,
+                           match="the converter requires all hydrogens to be "
+                                 "explicit"):
+            uo2.atoms.convert_to("RDKIT")
+
+    def test_error_no_hydrogen_implicit(self, uo2):
+        with pytest.warns(None) as record:
+            uo2.atoms.convert_to.rdkit(NoImplicit=False)
+        assert len(record) == 0
+
+    def test_warning_no_hydrogen_force(self, uo2):
+        with pytest.warns(UserWarning,
+                          match="Forcing to continue the conversion"):
+            uo2.atoms.convert_to.rdkit(NoImplicit=False, force=True)
 
     @pytest.mark.parametrize("attr, value, expected", [
         ("names", "C1", " C1 "),
@@ -252,24 +278,12 @@ class TestRDKitConverter(object):
         ("resids", 123, 123),
         ("segindices", 1, 1),
         ("tempfactors", 0.8, 0.8),
-        ("bfactors", 0.8, 0.8),
     ])
     def test_add_mda_attr_to_rdkit(self, attr, value, expected):
         mi = Chem.AtomPDBResidueInfo()
         _add_mda_attr_to_rdkit(attr, value, mi)
         rdvalue = getattr(mi, "Get%s" % RDATTRIBUTES[attr])()
         assert rdvalue == expected
-
-    def test_bfactors_tempfactors_raises_error(self):
-        u = mda.Universe.from_smiles("C")
-        bfactors = np.array(u.atoms.n_atoms*[1.0], dtype=np.float32)
-        u.add_TopologyAttr('bfactors', bfactors)
-        u.add_TopologyAttr('tempfactors', bfactors)
-        with pytest.raises(
-            AttributeError,
-            match="Both `tempfactors` and `bfactors` attributes are present"
-        ):
-            u.atoms.convert_to("RDKIT")
 
     @pytest.mark.parametrize("idx", [0, 10, 42])
     def test_other_attributes(self, mol2, idx):
@@ -288,14 +302,14 @@ class TestRDKitConverter(object):
     ])
     def test_index_property(self, pdb, sel_str):
         ag = pdb.select_atoms(sel_str)
-        mol = ag.convert_to("RDKIT")
+        mol = ag.convert_to.rdkit(NoImplicit=False)
         expected = [i for i in range(len(ag))]
         indices = sorted([a.GetIntProp("_MDAnalysis_index")
                           for a in mol.GetAtoms()])
         assert_equal(indices, expected)
 
     def test_assign_coordinates(self, pdb):
-        mol = pdb.atoms.convert_to("RDKIT")
+        mol = pdb.atoms.convert_to.rdkit(NoImplicit=False)
         positions = mol.GetConformer().GetPositions()
         indices = sorted(mol.GetAtoms(),
                          key=lambda a: a.GetIntProp("_MDAnalysis_index"))
@@ -331,34 +345,57 @@ class TestRDKitConverter(object):
             mol.GetConformer()
 
     def test_cache(self):
-        u = mda.Universe.from_smiles("CCO", numConfs=5)
-        ag = u.atoms
-        cache = mda.coordinates.RDKit.RDKitConverter._cache
+        """5 tests are performed here:
+
+        * while iterating on timesteps in a trajectory, the number of cached
+          objects should not change
+        * the cache should remember about 2 atomgroups by default
+        * the cache size can be increased
+        * the cache is sensitive to arguments passed to the converter as they
+          might change the output molecule
+        * the cache can be ignored
+        """
+        cached_func = mda.converters.RDKit.atomgroup_to_mol
+        # create universes
+        utraj = mda.Universe.from_smiles("CCO", numConfs=5)
+        uc = mda.Universe.from_smiles("C")
+        ucc = mda.Universe.from_smiles("CC")
+        uccc = mda.Universe.from_smiles("CCC")
+        # test (1): iterating over frames in a trajectory
         previous_cache = None
-        for ts in u.trajectory:
-            mol = ag.convert_to("RDKIT")
+        for ts in utraj.trajectory:
+            utraj.atoms.convert_to("RDKIT")
+            cache = cached_func.cache_info()
             if previous_cache:
                 # the cache shouldn't change when iterating on timesteps
-                assert cache == previous_cache
+                assert cache.currsize == previous_cache.currsize
                 previous_cache = copy.deepcopy(cache)
-        # cached molecule shouldn't store coordinates
-        mol = list(cache.values())[0]
-        with pytest.raises(ValueError, match="Bad Conformer Id"):
-            mol.GetConformer()
-        # only 1 molecule should be cached
-        u = mda.Universe.from_smiles("C")
-        mol = u.atoms.convert_to("RDKIT")
-        assert len(cache) == 1
-        assert cache != previous_cache
-        # converter with kwargs
-        rdkit_converter = mda.coordinates.RDKit.RDKitConverter().convert
-        # cache should depend on passed arguments
-        previous_cache = copy.deepcopy(cache)
-        mol = rdkit_converter(u.atoms, NoImplicit=False)
-        assert cache != previous_cache
-        # skip cache
-        mol = rdkit_converter(u.atoms, cache=False)
-        assert cache == {}
+        # test (2): only 2 molecules should be cached by default
+        cached_func.cache_clear()
+        uc.atoms.convert_to("RDKIT")
+        ucc.atoms.convert_to("RDKIT")
+        uccc.atoms.convert_to("RDKIT")
+        cache = cached_func.cache_info()
+        assert cache.currsize == 2
+        assert cache.misses == 3
+        ucc.atoms.convert_to("RDKIT")  # should be inside of the cache
+        assert cached_func.cache_info().hits == 1
+        uc.atoms.convert_to("RDKIT")  # outside of the cache
+        assert cached_func.cache_info().hits == 1
+        assert cached_func.cache_info().misses == 4
+        # test (3): increase cache size
+        mda.converters.RDKit.set_converter_cache_size(3)
+        cached_func = mda.converters.RDKit.atomgroup_to_mol
+        assert cached_func.cache_info().maxsize == 3
+        # test (4): caching is sensitive to converter arguments
+        previous_cache = cached_func.cache_info()
+        uc.atoms.convert_to.rdkit(NoImplicit=False)
+        cache = cached_func.cache_info()
+        assert cache.misses == previous_cache.misses + 1
+        # test (5): skip cache
+        uc.atoms.convert_to.rdkit(cache=False)
+        new_cache = cached_func.cache_info()
+        assert cache == new_cache
 
 
 @requires_rdkit
@@ -434,9 +471,11 @@ class TestRDKitFunctions(object):
 
     @pytest.mark.parametrize("attr, value, getter", [
         ("index", 42, "GetIntProp"),
-        ("index", np.int(42), "GetIntProp"),
+        ("index", np.int32(42), "GetIntProp"),
+        ("index", np.int64(42), "GetIntProp"),
         ("charge", 4.2, "GetDoubleProp"),
-        ("charge", np.float(4.2), "GetDoubleProp"),
+        ("charge", np.float32(4.2), "GetDoubleProp"),
+        ("charge", np.float64(4.2), "GetDoubleProp"),
         ("type", "C.3", "GetProp"),
     ])
     def test_set_atom_property(self, attr, value, getter):

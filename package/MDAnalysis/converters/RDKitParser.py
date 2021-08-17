@@ -22,15 +22,15 @@
 #
 
 """
-RDKit topology parser
-=====================
+RDKit topology parser --- :mod:`MDAnalysis.converters.RDKitParser`
+==================================================================
 
 Converts an `RDKit <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol>`_ :class:`rdkit.Chem.rdchem.Mol` into a :class:`MDAnalysis.core.Topology`.
 
 
 See Also
 --------
-:mod:`MDAnalysis.coordinates.RDKit`
+:mod:`MDAnalysis.converters.RDKit`
 
 
 Classes
@@ -46,8 +46,8 @@ import logging
 import warnings
 import numpy as np
 
-from .base import TopologyReaderBase, change_squash
-from . import guessers
+from ..topology.base import TopologyReaderBase, change_squash
+from ..topology import guessers
 from ..core.topologyattrs import (
     Atomids,
     Atomnames,
@@ -69,7 +69,7 @@ from ..core.topologyattrs import (
 )
 from ..core.topology import Topology
 
-logger = logging.getLogger("MDAnalysis.topology.RDKitParser")
+logger = logging.getLogger("MDAnalysis.converters.RDKitParser")
 
 
 class RDKitParser(TopologyReaderBase):
@@ -134,6 +134,11 @@ class RDKitParser(TopologyReaderBase):
     +---------------------------------------------+-------------------------+
     | atom.GetProp('_TriposAtomType')             | types                   |
     +---------------------------------------------+-------------------------+
+
+    Raises
+    ------
+    ValueError
+        If only part of the atoms have MonomerInfo available
 
 
     .. versionadded:: 2.0.0
@@ -236,6 +241,14 @@ class RDKitParser(TopologyReaderBase):
         # make Topology attributes
         attrs = []
         n_atoms = len(ids)
+
+        if resnums and (len(resnums) != n_atoms):
+            raise ValueError(
+                "ResidueInfo is only partially available in the molecule. "
+                "If you have added hydrogens to the input RDKit molecule with "
+                "`Chem.AddHs(mol)`, consider using "
+                "`Chem.AddHs(mol, addResidueInfo=True)` instead"
+            )
 
         # * Attributes always present *
 

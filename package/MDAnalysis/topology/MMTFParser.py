@@ -35,12 +35,16 @@ attribute on Universe.
 .. versionchanged:: 0.20.0
    Can now read files with optional fields missing/empty
 
+.. versionchanged:: 2.0.0
+   Aliased ``bfactors`` topologyattribute to ``tempfactors``.
+   ``tempfactors`` is deprecated and will be removed in 3.0 (Issue #1901)
+
 Reads the following topology attributes:
 
 Atoms:
  - altLoc
  - atom ID
- - bfactor
+ - tempfactor
  - bonds
  - charge
  - masses (guessed)
@@ -79,7 +83,7 @@ from ..core.topologyattrs import (
     Atomids,
     Atomnames,
     Atomtypes,
-    Bfactors,
+    Tempfactors,
     Bonds,
     Charges,
     ICodes,
@@ -199,9 +203,9 @@ class MMTFParser(base.TopologyReaderBase):
         else:
             attrs.append(AltLocs(['']*natoms))
         if len(mtop.b_factor_list):
-            attrs.append(Bfactors(mtop.b_factor_list))
+            attrs.append(Tempfactors(mtop.b_factor_list))
         else:
-            attrs.append(Bfactors([0]*natoms))
+            attrs.append(Tempfactors([0]*natoms))
         if len(mtop.occupancy_list):
             attrs.append(Occupancies(mtop.occupancy_list))
         else:

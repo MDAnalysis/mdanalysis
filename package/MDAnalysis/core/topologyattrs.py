@@ -265,6 +265,25 @@ def _attach_transplant_stubs(attribute_name, topology_attribute_class):
                 setattr(dest_class, method_name, stub)
 
 
+# TODO: remove bfactors in 3.0
+BFACTOR_WARNING = ("The bfactor topology attribute is only "
+                   "provided as an alias to the tempfactor "
+                   "attribute. It will be removed in "
+                   "3.0. Please use the tempfactor attribute "
+                   "instead.")
+
+
+def deprecate_bfactor_warning(func):
+
+    def wrapper(*args, **kwargs):
+        """
+        Bfactor alias with warning
+        """
+        warnings.warn(BFACTOR_WARNING, DeprecationWarning)
+        return func(*args, **kwargs)
+    return wrapper
+
+
 class _TopologyAttrMeta(type):
     r"""Register TopologyAttrs on class creation
 
@@ -327,7 +346,6 @@ class _TopologyAttrMeta(type):
             dtype = classdict.get("dtype")
             if dtype is not None:
                 per_obj = classdict.get("per_object", bases[0].per_object)
-
                 try:
                     selection.gen_selection_class(singular, attrname,
                                                   dtype, per_obj)
@@ -338,6 +356,14 @@ class _TopologyAttrMeta(type):
                            "selection keyword, define it manually "
                            "by subclassing core.selection.Selection")
                     warnings.warn(msg)
+
+        # TODO: remove in 3.0
+        if attrname == "tempfactors":
+            _TOPOLOGY_ATTRS["bfactor"] = _TOPOLOGY_ATTRS["bfactors"] = cls
+            selcls = selection.gen_selection_class("bfactor", "bfactors",
+                                                   classdict.get("dtype"),
+                                                   per_object="atom")
+            selcls.apply = deprecate_bfactor_warning(selcls.apply)
 
 
 class TopologyAttr(object, metaclass=_TopologyAttrMeta):
@@ -1113,7 +1139,6 @@ class Atomnames(_AtomStringAttr):
             :class:`MDAnalysis.analysis.dihedrals.Janin` class does not incorporate
             amino acids where the gamma atom is not carbon, into its chi1 selections.
 
-
         Parameters
         ----------
         c_name: str (optional)
@@ -1255,10 +1280,73 @@ class Tempfactors(AtomAttr):
     singular = 'tempfactor'
     per_object = 'atom'
     dtype = float
+    transplants = defaultdict(list)
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
         return np.zeros(na)
+
+    # TODO: remove bfactors in 3.0
+    @deprecate_bfactor_warning
+    def bfactor(self):
+        """Alias for tempfactor
+
+        The bfactor topology attribute is only
+        provided as an alias to the tempfactor
+        attribute. It will be removed in
+        3.0. Please use the tempfactor attribute
+        instead.
+
+        .. versionadded:: 2.0.0
+
+        .. deprecated:: 2.0.0
+            Will be removed in 3.0.0. Use the
+            ``tempfactor`` attribute instead.
+        """
+        return self.universe.atoms[self.ix].tempfactor
+
+    @deprecate_bfactor_warning
+    def bfactor_setter(self, value):
+        """Tempfactor alias property for atom
+
+        .. versionadded:: 2.0.0
+        """
+        self.universe.atoms[self.ix].tempfactor = value
+
+    @deprecate_bfactor_warning
+    def bfactors(self):
+        """Alias for tempfactors
+
+        The bfactor topology attribute is only
+        provided as an alias to the tempfactor
+        attribute. It will be removed in
+        3.0. Please use the tempfactor attribute
+        instead.
+
+        .. versionadded:: 2.0.0
+
+        .. deprecated:: 2.0.0
+            Will be removed in 3.0.0. Use the
+            ``tempfactor`` attribute instead.
+        """
+        return self.universe.atoms[self.atoms.ix].tempfactors
+
+    @deprecate_bfactor_warning
+    def bfactors_setter(self, value):
+        """Tempfactor alias property for groups of atoms
+
+        .. versionadded:: 2.0.0
+        """
+        self.universe.atoms[self.atoms.ix].tempfactors = value
+
+    transplants[Atom].append(
+        ('bfactor', property(bfactor, bfactor_setter, None,
+                             bfactor.__doc__)))
+
+    for group in (AtomGroup, Residue, ResidueGroup, Segment, SegmentGroup):
+        transplants[group].append(
+            ("bfactors", property(bfactors, bfactors_setter, None,
+                                  bfactors.__doc__)))
 
 
 class Masses(AtomAttr):
@@ -1746,19 +1834,6 @@ class Charges(AtomAttr):
 
     transplants[GroupBase].append(
         ('total_charge', total_charge))
-
-
-# TODO: update docs to property doc
-class Bfactors(AtomAttr):
-    """Crystallographic B-factors in A**2 for each atom"""
-    attrname = 'bfactors'
-    singular = 'bfactor'
-    per_object = 'atom'
-    dtype = float
-
-    @staticmethod
-    def _gen_initial_values(na, nr, ns):
-        return np.zeros(na)
 
 
 # TODO: update docs to property doc

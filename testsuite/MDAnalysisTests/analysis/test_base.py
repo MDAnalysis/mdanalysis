@@ -21,6 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from collections import UserDict
+import pickle
 
 import pytest
 
@@ -124,6 +125,10 @@ class Test_Results:
         msg = f"'data' is a protected dictionary attribute"
         with pytest.raises(AttributeError, match=msg):
             results.update({"data": 0})
+
+    def test_pickle(self, results):
+        results_p = pickle.dumps(results)
+        results_new = pickle.loads(results_p)
 
     @pytest.mark.parametrize("args, kwargs, length", [
         (({"darth": "tater"},), {}, 1),

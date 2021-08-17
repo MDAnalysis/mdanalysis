@@ -153,8 +153,6 @@ class DCDReader(base.ReaderBase):
         self.ts = self._frame_to_ts(frame, self.ts)
         # these should only be initialized once
         self.ts.dt = dt
-        if self.convert_units:
-            self.convert_pos_from_native(self.ts.dimensions[:3])
 
     @staticmethod
     def parse_n_atoms(filename, **kwargs):
@@ -246,7 +244,8 @@ class DCDReader(base.ReaderBase):
         ts.positions = frame.xyz
 
         if self.convert_units:
-            self.convert_pos_from_native(ts.dimensions[:3])
+            if ts.dimensions is not None:
+                self.convert_pos_from_native(ts.dimensions[:3])
             self.convert_pos_from_native(ts.positions)
 
         return ts
@@ -320,6 +319,13 @@ class DCDWriter(base.WriterBase):
     The writer follows recent NAMD/VMD convention for the unitcell (box lengths
     in Å and angle-cosines, ``[A, cos(gamma), B, cos(beta), cos(alpha), C]``)
     and writes positions in Å and time in AKMA time units.
+
+
+    .. note::
+        When writing out timesteps without ``dimensions`` (i.e. set ``None``)
+        the :class:`DCDWriter` will write out a zeroed unitcell (i.e.
+        ``[0, 0, 0, 0, 0, 0]``). As this behaviour is poorly defined, it may
+        not match the expectations of other software.
 
     """
     format = 'DCD'
@@ -416,7 +422,13 @@ class DCDWriter(base.WriterBase):
                 errmsg = "Input obj is neither an AtomGroup or Universe"
                 raise TypeError(errmsg) from None
         xyz = ts.positions.copy()
-        dimensions = ts.dimensions.copy()
+        try:
+            dimensions = ts.dimensions.copy()
+        except AttributeError:
+            wmsg = ('No dimensions set for current frame, zeroed unitcell '
+                    'will be written')
+            warnings.warn(wmsg)
+            dimensions = np.zeros(6)
 
         if self._convert_units:
             xyz = self.convert_pos_to_native(xyz, inplace=True)

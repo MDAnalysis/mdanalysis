@@ -306,6 +306,8 @@ class HELANAL(AnalysisBase):
         of best fit, and the local screw angles.
     flatten_single_helix : bool, optional
         Whether to flatten results if only one selection is passed.
+    split_residue_sequences : bool, optional
+        Wether to split residues into a list of same or consecutive helices.
     verbose : bool, optional
         Turn on more logging and debugging.
 

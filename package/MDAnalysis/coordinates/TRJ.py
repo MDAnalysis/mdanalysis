@@ -272,8 +272,7 @@ class TRJReader(base.ReaderBase):
         if self.periodic:
             line = next(self.trjfile)
             box = self.box_line_parser.read(line)
-            ts._unitcell[:3] = np.array(box, dtype=np.float32)
-            ts._unitcell[3:] = [90., 90., 90.]  # assumed
+            ts.dimensions = box + [90., 90., 90.]  # assumed
 
         # probably slow ... could be optimized by storing the coordinates in
         # X,Y,Z lists or directly filling the array; the array/reshape is not
@@ -321,11 +320,9 @@ class TRJReader(base.ReaderBase):
         nentries = self.default_line_parser.number_of_matches(line)
         if nentries == 3:
             self.periodic = True
-            ts._unitcell[:3] = self.box_line_parser.read(line)
-            ts._unitcell[3:] = [90., 90., 90.]  # assumed
+            ts.dimensions = self.box_line_parser.read(line) + [90., 90., 90.]
         else:
             self.periodic = False
-            ts._unitcell = np.zeros(6, np.float32)
         self.close()
         return self.periodic
 
@@ -682,8 +679,10 @@ class NCDFReader(base.ReaderBase):
         if self.has_forces:
             ts._forces[:] = self._get_var_and_scale('forces', frame)
         if self.periodic:
-            ts._unitcell[:3] = self._get_var_and_scale('cell_lengths', frame)
-            ts._unitcell[3:] = self._get_var_and_scale('cell_angles', frame)
+            unitcell = np.zeros(6)
+            unitcell[:3] = self._get_var_and_scale('cell_lengths', frame)
+            unitcell[3:] = self._get_var_and_scale('cell_angles', frame)
+            ts.dimensions = unitcell
         if self.convert_units:
             self.convert_pos_from_native(ts._pos)  # in-place !
             self.convert_time_from_native(
@@ -694,8 +693,8 @@ class NCDFReader(base.ReaderBase):
             if self.has_forces:
                 self.convert_forces_from_native(ts._forces, inplace=True)
             if self.periodic:
-                self.convert_pos_from_native(
-                    ts._unitcell[:3])  # in-place ! (only lengths)
+                # in-place ! (only lengths)
+                self.convert_pos_from_native(ts.dimensions[:3])
         ts.frame = frame  # frame labels are 0-based
         self._current_frame = frame
         return ts
@@ -871,6 +870,18 @@ class NCDFWriter(base.WriterBase):
     .. _`Issue #506`:
        https://github.com/MDAnalysis/mdanalysis/issues/506#issuecomment-225081416
 
+    Raises
+    ------
+    FutureWarning
+        When writing. The :class:`NCDFWriter` currently does not write any
+        `scale_factor` values for the data variables. Whilst not in breach
+        of the AMBER NetCDF standard, this behaviour differs from that of
+        most AMBER writers, especially for velocities which usually have a
+        `scale_factor` of 20.455. In MDAnalysis 2.0, the :class:`NCDFWriter`
+        will enforce `scale_factor` writing to either match user inputs (either
+        manually defined or via the :class:`NCDFReader`) or those as written by
+        AmberTools's :program:`sander` under default operation.
+
     See Also
     --------
     :class:`NCDFReader`
@@ -940,12 +951,6 @@ class NCDFWriter(base.WriterBase):
                 raise TypeError(errmsg)
 
         self.curr_frame = 0
-
-    @staticmethod
-    def _create_var():
-        """Helper function to create ncdfile variable and disable maskandscale
-        if necessary (i.e. using netCDF4)"""
-        pass
 
     def _init_netcdf(self, periodic=True):
         """Initialize netcdf AMBER 1.0 trajectory.
@@ -1079,7 +1084,7 @@ class NCDFWriter(base.WriterBase):
         bool
             Return ``True`` if `ts` contains a valid simulation box
         """
-        return np.all(ts.dimensions > 0)
+        return ts.dimensions is not None
 
     def _write_next_frame(self, ag):
         """Write information associated with ``ag`` at current frame into trajectory
