@@ -31,6 +31,7 @@ Read DL Poly_ format coordinate files
 import numpy as np
 
 from . import base
+from .base import Timestep
 from . import core
 from ..lib import util
 from ..lib.util import cached
@@ -38,30 +39,20 @@ from ..lib.util import cached
 _DLPOLY_UNITS = {'length': 'Angstrom', 'velocity': 'Angstrom/ps', 'time': 'ps'}
 
 
-class Timestep(base.Timestep):
-    def _init_unitcell(self):
-        return np.zeros((3, 3), dtype=np.float32, order='F')
-
-    @property
-    def dimensions(self):
-        return core.triclinic_box(*self._unitcell)
-
-    @dimensions.setter
-    def dimensions(self, new):
-        self._unitcell[:] = core.triclinic_vectors(new)
-
-
 class ConfigReader(base.SingleFrameReaderBase):
     """DLPoly Config file Reader
 
+
     .. versionadded:: 0.11.0
+    .. versionchanged:: 2.0.0
+       coordinates, velocities, and forces are no longer stored in 'F' memory
+       layout, instead now using the numpy default of 'C'.
     """
     format = 'CONFIG'
     units = _DLPOLY_UNITS
-    _Timestep = Timestep
 
     def _read_first_frame(self):
-        unitcell = np.zeros((3, 3), dtype=np.float32, order='F')
+        unitcell = np.zeros((3, 3), dtype=np.float32)
 
         with open(self.filename, 'r') as inf:
             self.title = inf.readline().strip()
@@ -105,11 +96,11 @@ class ConfigReader(base.SingleFrameReaderBase):
 
                 line = inf.readline().strip()
 
-        coords = np.array(coords, dtype=np.float32, order='F')
+        coords = np.array(coords, dtype=np.float32)
         if has_vels:
-            velocities = np.array(velocities, dtype=np.float32, order='F')
+            velocities = np.array(velocities, dtype=np.float32)
         if has_forces:
-            forces = np.array(forces, dtype=np.float32, order='F')
+            forces = np.array(forces, dtype=np.float32)
         self.n_atoms = len(coords)
 
         if ids:
@@ -133,7 +124,7 @@ class ConfigReader(base.SingleFrameReaderBase):
         if has_forces:
             ts._forces = forces
         if not imcon == 0:
-            ts._unitcell = unitcell
+            ts.dimensions = core.triclinic_box(*unitcell)
 
         ts.frame = 0
 
@@ -145,7 +136,6 @@ class HistoryReader(base.ReaderBase):
     """
     format = 'HISTORY'
     units = _DLPOLY_UNITS
-    _Timestep = Timestep
 
     def __init__(self, filename, **kwargs):
         super(HistoryReader, self).__init__(filename, **kwargs)
@@ -182,9 +172,11 @@ class HistoryReader(base.ReaderBase):
             raise IOError
 
         if self._has_cell:
-            ts._unitcell[0] = self._file.readline().split()
-            ts._unitcell[1] = self._file.readline().split()
-            ts._unitcell[2] = self._file.readline().split()
+            unitcell = np.zeros((3, 3))
+            unitcell[0] = self._file.readline().split()
+            unitcell[1] = self._file.readline().split()
+            unitcell[2] = self._file.readline().split()
+            ts.dimensions = core.triclinic_box(*unitcell)            
 
         # If ids are given, put them in here
         # and later sort by them

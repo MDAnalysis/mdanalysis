@@ -63,7 +63,7 @@ the attributes they provide.
                                 types,
                                 chainids,
                                 occupancies,
-                                bfactors,
+                                tempfactors,
                                 resids, icodes,
                                 resnames,
                                 segids,
@@ -158,9 +158,9 @@ the attributes they provide.
                                 dihedrals         :mod:`MDAnalysis.topology.GSDParser`
 
    MMTF [#a]_        mmtf       altLocs,          `Macromolecular Transmission Format (MMTF)`_. An
-                                bfactors, bonds,  efficient compact format for biomolecular
+                                tempfactors,      efficient compact format for biomolecular
                                 charges, masses,  structures.
-                                names,
+                                names, bonds,
                                 occupancies,
                                 types, icodes,
                                 resnames, resids,

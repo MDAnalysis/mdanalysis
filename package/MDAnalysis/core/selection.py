@@ -290,28 +290,7 @@ class ByResSelection(UnarySelection):
         return group[mask].unique
 
 
-class DistanceSelection(Selection):
-    """Base class for distance search based selections"""
-
-    def validate_dimensions(self, dimensions):
-        r"""Check if the system is periodic in all three-dimensions.
-
-        Parameters
-        ----------
-        dimensions : numpy.ndarray
-            6-item array denoting system size and angles
-
-        Returns
-        -------
-        None or numpy.ndarray
-            Returns argument dimensions if system is periodic in all
-            three-dimensions, otherwise returns None
-        """
-        if self.periodic and all(dimensions[:3]):
-            return dimensions
-        return None
-
-class AroundSelection(DistanceSelection):
+class AroundSelection(Selection):
     token = 'around'
     precedence = 1
 
@@ -330,7 +309,7 @@ class AroundSelection(DistanceSelection):
         if not sys or not sel:
             return sys[[]]
 
-        box = self.validate_dimensions(group.dimensions)
+        box = group.dimensions if self.periodic else None
         pairs = distances.capped_distance(sel.positions, sys.positions,
                                           self.cutoff, box=box,
                                           return_distances=False)
@@ -339,7 +318,7 @@ class AroundSelection(DistanceSelection):
 
         return sys[np.asarray(indices, dtype=np.int64)].unique
 
-class SphericalLayerSelection(DistanceSelection):
+class SphericalLayerSelection(Selection):
     token = 'sphlayer'
     precedence = 1
 
@@ -355,8 +334,8 @@ class SphericalLayerSelection(DistanceSelection):
         sel = self.sel.apply(group)
         if len(sel) == 0:
             return group[[]]
-        box = self.validate_dimensions(group.dimensions)
-        periodic = box is not None
+
+        box = group.dimensions if self.periodic else None
         ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
         pairs = distances.capped_distance(ref, group.positions, self.exRadius,
                                           min_cutoff=self.inRadius,
@@ -368,7 +347,7 @@ class SphericalLayerSelection(DistanceSelection):
         return group[np.asarray(indices, dtype=np.int64)].unique
 
 
-class SphericalZoneSelection(DistanceSelection):
+class SphericalZoneSelection(Selection):
     token = 'sphzone'
     precedence = 1
 
@@ -383,8 +362,8 @@ class SphericalZoneSelection(DistanceSelection):
         sel = self.sel.apply(group)
         if len(sel) == 0:
             return group[[]]
-        box = self.validate_dimensions(group.dimensions)
-        periodic = box is not None
+
+        box = group.dimensions if self.periodic else None
         ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
         pairs = distances.capped_distance(ref, group.positions, self.cutoff,
                                           box=box,
@@ -404,7 +383,7 @@ class CylindricalSelection(Selection):
         # Calculate vectors between point of interest and our group
         vecs = group.positions - sel.center_of_geometry()
 
-        if self.periodic and not np.any(group.dimensions[:3] == 0):
+        if self.periodic and not group.dimensions is None:
             box = group.dimensions[:3]
             cyl_z_hheight = self.zmax - self.zmin
 
@@ -480,7 +459,7 @@ class CylindricalLayerSelection(CylindricalSelection):
         self.sel = parser.parse_expression(self.precedence)
 
 
-class PointSelection(DistanceSelection):
+class PointSelection(Selection):
     token = 'point'
 
     def __init__(self, parser, tokens):
@@ -494,7 +473,8 @@ class PointSelection(DistanceSelection):
     @return_empty_on_apply
     def apply(self, group):
         indices = []
-        box = self.validate_dimensions(group.dimensions)
+
+        box = group.dimensions if self.periodic else None
         pairs = distances.capped_distance(self.ref[None, :], group.positions, self.cutoff,
                                           box=box,
                                           return_distances=False)

@@ -669,8 +669,7 @@ class TestMakeWhole(object):
         u = mda.Universe(fullerene)
 
         bbox = u.atoms.bbox()
-        u.dimensions[:3] = bbox[1] - bbox[0]
-        u.dimensions[3:] = 90.0
+        u.dimensions = np.r_[bbox[1] - bbox[0], [90]*3]
 
         blengths = u.atoms.bonds.values()
         # kaboom
@@ -2069,12 +2068,16 @@ class TestCheckBox(object):
                                  np.array([1, 1, 1, 1, 1, 1,
                                            90, 90, 90, 90, 90, 90],
                                           dtype=np.float32)[::2]))
-    def test_ckeck_box_ortho(self, box):
+    def test_check_box_ortho(self, box):
         boxtype, checked_box = util.check_box(box)
         assert boxtype == 'ortho'
         assert_equal(checked_box, self.ref_ortho)
         assert checked_box.dtype == np.float32
         assert checked_box.flags['C_CONTIGUOUS']
+
+    def test_check_box_None(self):
+        with pytest.raises(ValueError, match="Box is None"):
+            util.check_box(None)
 
     @pytest.mark.parametrize('box',
                              ([1, 1, 2, 45, 90, 90],

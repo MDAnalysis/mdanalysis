@@ -188,6 +188,7 @@ Classes
 import numpy as np
 import MDAnalysis as mda
 from . import base, core
+from .base import Timestep
 from ..exceptions import NoDataError
 try:
     import h5py
@@ -204,35 +205,6 @@ except ImportError:
 
 else:
     HAS_H5PY = True
-
-
-class Timestep(base.Timestep):
-    """H5MD Timestep
-    """
-    order = 'C'
-
-    def _init_unitcell(self):
-        return np.zeros((3, 3), dtype=np.float32)
-
-    @property
-    def dimensions(self):
-        """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
-
-        lengths *A*, *B*, *C* are in the MDAnalysis length unit (Å), and
-        angles are in degrees.
-
-        Setting dimensions will populate the underlying native format
-        description (triclinic box vectors). If `edges
-        <https://nongnu.org/h5md/h5md.html#simulation-box>`_ is a matrix,
-        the box is of triclinic shape with the edge vectors given by
-        the rows of the matrix.
-        """
-        if self._unitcell is not None:
-            return core.triclinic_box(*self._unitcell)
-
-    @dimensions.setter
-    def dimensions(self, box):
-        self._unitcell[:] = core.triclinic_vectors(box)
 
 
 class H5MDReader(base.ReaderBase):
@@ -379,7 +351,6 @@ class H5MDReader(base.ReaderBase):
             'kcal mol-1 A-1': 'kcal/(mol*Angstrom)'
         }
     }
-    _Timestep = Timestep
 
     def __init__(self, filename,
                  convert_units=True,
@@ -615,11 +586,10 @@ class H5MDReader(base.ReaderBase):
 
         # Sets frame box dimensions
         # Note: H5MD files must contain 'box' group in each 'particles' group
-        if 'edges' in particle_group['box'] and ts._unitcell is not None:
-            ts._unitcell[:] = particle_group['box/edges/value'][frame, :]
+        if 'edges' in particle_group['box']:
+            ts.dimensions = core.triclinic_box(*particle_group['box/edges/value'][frame, :])
         else:
-            # sets ts.dimensions = None
-            ts._unitcell = None
+            ts.dimensions = None
 
         # set the timestep positions, velocities, and forces with
         # current frame dataset
@@ -677,7 +647,7 @@ class H5MDReader(base.ReaderBase):
 
         self.ts.time = self.convert_time_from_native(self.ts.time)
 
-        if 'edges' in self._particle_group['box']:
+        if 'edges' in self._particle_group['box'] and self.ts.dimensions is not None:
             self.convert_pos_from_native(self.ts.dimensions[:3])
 
         if self._has['position']:
