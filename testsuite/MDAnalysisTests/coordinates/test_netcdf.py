@@ -39,6 +39,7 @@ from MDAnalysisTests.datafiles import (PFncdf_Top, PFncdf_Trj,
 from MDAnalysisTests.coordinates.test_trj import _TRJReaderTest
 from MDAnalysisTests.coordinates.reference import (RefVGV, RefTZ2)
 from MDAnalysisTests import make_Universe
+from MDAnalysisTests.util import block_import
 
 
 class _NCDFReaderTest(_TRJReaderTest):
@@ -997,6 +998,20 @@ class TestNCDFWriterScaleFactors:
                                 universe3.atoms.velocities, 4)
             assert_almost_equal(universe.atoms.forces,
                                 universe3.atoms.forces, 4)
+
+
+class TestScipyScaleFactors(TestNCDFWriterScaleFactors):
+    """As above, but netCDF4 is disabled since scaleandmask is different
+    between the two libraries"""
+    @pytest.fixture(autouse=True)
+    def block_netcdf4(self, monkeypatch):
+        monkeypatch.setattr(sys.modules['MDAnalysis.coordinates.TRJ'], 'netCDF4', None)
+
+    def test_ncdf4_not_present(self, outfile, universe):
+        # whilst we're here, let's also test this warning
+        with pytest.warns(UserWarning, match="Could not find netCDF4 module"):
+            with universe.trajectory.Writer(outfile) as W:
+                W.write(universe.atoms)
 
 
 class TestNCDFWriterUnits(object):
