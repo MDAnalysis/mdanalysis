@@ -765,8 +765,8 @@ class GroupBase(_MutableBase):
 
         See Also
         --------
-
         asunique
+
 
         .. versionadded:: 0.19.0
         """
