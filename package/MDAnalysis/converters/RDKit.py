@@ -53,7 +53,7 @@ molecule::
     infers the structures of approximately 90% of the `ChEMBL27`_ dataset.
     Work is currently ongoing on further improving this and updates to the
     converter are expected in future releases of MDAnalysis.
-    Please see `Issue #3044`_ for more details.
+    Please see `Pull Request #3044`_ for more details.
 
 
 
@@ -76,7 +76,7 @@ Classes
 .. Links
 
 .. _`ChEMBL27`: https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_27/
-.. _`Issue #3044`: https://github.com/MDAnalysis/mdanalysis/pull/3044
+.. _`Pull Request #3044`: https://github.com/MDAnalysis/mdanalysis/pull/3044
 
 """
 
