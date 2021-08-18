@@ -577,8 +577,6 @@ class TestSelectionRDKit(object):
 
     def test_passing_args_to_converter(self):
         u = mda.Universe.from_smiles("O=C=O")
-        with pytest.raises(AttributeError, match="No hydrogen atom"):
-            u.select_atoms("smarts [*]")
         sel = u.select_atoms("smarts [$(O=C)]", rdkit_kwargs=dict(force=True))
         assert sel.n_atoms == 2
 
