@@ -2825,7 +2825,8 @@ class AtomGroup(GroupBase):
     # (namely, 'updating') doesn't allow a very clean signature.
 
     def select_atoms(self, sel, *othersel, periodic=True, rtol=1e-05,
-                     atol=1e-08, updating=False, sorted=True, **selgroups):
+                     atol=1e-08, updating=False, sorted=True,
+                     rdkit_kwargs=None, **selgroups):
         """Select atoms from within this Group using a selection string.
 
         Returns an :class:`AtomGroup` sorted according to their index in the
@@ -2853,7 +2854,11 @@ class AtomGroup(GroupBase):
           trajectory is changed.  See section on **Dynamic selections** below.
           [``True``]
         sorted: bool, optional
-            Whether to sort the output AtomGroup by index.
+          Whether to sort the output AtomGroup by index.
+        rdkit_kwargs : dict (optional)
+          Arguments passed to the
+          :class:`~MDAnalysis.converters.RDKit.RDKitConverter` when using
+          selection based on SMARTS queries
         **selgroups : keyword arguments of str: AtomGroup (optional)
           when using the "group" keyword in selections, groups are defined by
           passing them as keyword arguments.  See section on **preexisting
@@ -3121,7 +3126,8 @@ class AtomGroup(GroupBase):
            periodic are now on by default (as with default flags)
         .. versionchanged:: 2.0.0
             Added the *smarts* selection. Added `atol` and `rtol` keywords
-            to select float values. Added the ``sort`` keyword.
+            to select float values. Added the ``sort`` keyword. Added
+            `rdkit_kwargs` to pass parameters to the RDKitConverter.
         """
 
         if not sel:
@@ -3140,7 +3146,8 @@ class AtomGroup(GroupBase):
         selections = tuple((selection.Parser.parse(s, selgroups,
                                                    periodic=periodic,
                                                    atol=atol, rtol=rtol,
-                                                   sorted=sorted)
+                                                   sorted=sorted,
+                                                   rdkit_kwargs=rdkit_kwargs)
                             for s in sel_strs))
         if updating:
             atomgrp = UpdatingAtomGroup(self, selections, sel_strs)
