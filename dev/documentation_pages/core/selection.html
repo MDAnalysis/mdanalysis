@@ -441,7 +441,7 @@ expressions into nested Selection tree.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.selection.SelectionParser.parse">
-<code class="descname">parse</code><span class="sig-paren">(</span><em>selectstr</em>, <em>selgroups</em>, <em>periodic=None</em>, <em>atol=1e-08</em>, <em>rtol=1e-05</em>, <em>sorted=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SelectionParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.SelectionParser.parse" title="Permalink to this definition">¶</a></dt>
+<code class="descname">parse</code><span class="sig-paren">(</span><em>selectstr</em>, <em>selgroups</em>, <em>periodic=None</em>, <em>atol=1e-08</em>, <em>rtol=1e-05</em>, <em>sorted=True</em>, <em>rdkit_kwargs=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SelectionParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.SelectionParser.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a Selection object from a string.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -457,6 +457,8 @@ Passed to <a class="reference external" href="https://numpy.org/doc/stable/refer
 <li><strong>rtol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – The relative tolerance parameter for float comparisons.
 Passed to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.isclose.html#numpy.isclose" title="(in NumPy v1.21)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.isclose()</span></code></a>.</li>
 <li><strong>sorted</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to sorted the output AtomGroup.</li>
+<li><strong>rdkit_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a><em>, </em><em>optional</em>) – Arguments passed to the RDKitConverter when using selection based
+on SMARTS queries</li>
 </ul>
 </td>
 </tr>
@@ -473,7 +475,8 @@ Passed to <a class="reference external" href="https://numpy.org/doc/stable/refer
 </tbody>
 </table>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span>Added <cite>atol</cite> and <cite>rtol</cite> keywords to select float values.</p>
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Added <cite>atol</cite> and <cite>rtol</cite> keywords to select float values. Added
+<cite>rdkit_kwargs</cite> to pass arguments to the RDKitConverter</p>
 </div>
 </dd></dl>
 

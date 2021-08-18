@@ -3009,7 +3009,8 @@
     <span class="c1"># (namely, &#39;updating&#39;) doesn&#39;t allow a very clean signature.</span>
 
 <div class="viewcode-block" id="AtomGroup.select_atoms"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">,</span> <span class="o">*</span><span class="n">othersel</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span>
-                     <span class="n">atol</span><span class="o">=</span><span class="mf">1e-08</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">selgroups</span><span class="p">):</span>
+                     <span class="n">atol</span><span class="o">=</span><span class="mf">1e-08</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">rdkit_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">selgroups</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Select atoms from within this Group using a selection string.</span>
 
 <span class="sd">        Returns an :class:`AtomGroup` sorted according to their index in the</span>
@@ -3037,7 +3038,11 @@
 <span class="sd">          trajectory is changed.  See section on **Dynamic selections** below.</span>
 <span class="sd">          [``True``]</span>
 <span class="sd">        sorted: bool, optional</span>
-<span class="sd">            Whether to sort the output AtomGroup by index.</span>
+<span class="sd">          Whether to sort the output AtomGroup by index.</span>
+<span class="sd">        rdkit_kwargs : dict (optional)</span>
+<span class="sd">          Arguments passed to the</span>
+<span class="sd">          :class:`~MDAnalysis.converters.RDKit.RDKitConverter` when using</span>
+<span class="sd">          selection based on SMARTS queries</span>
 <span class="sd">        **selgroups : keyword arguments of str: AtomGroup (optional)</span>
 <span class="sd">          when using the &quot;group&quot; keyword in selections, groups are defined by</span>
 <span class="sd">          passing them as keyword arguments.  See section on **preexisting</span>
@@ -3305,7 +3310,8 @@
 <span class="sd">           periodic are now on by default (as with default flags)</span>
 <span class="sd">        .. versionchanged:: 2.0.0</span>
 <span class="sd">            Added the *smarts* selection. Added `atol` and `rtol` keywords</span>
-<span class="sd">            to select float values. Added the ``sort`` keyword.</span>
+<span class="sd">            to select float values. Added the ``sort`` keyword. Added</span>
+<span class="sd">            `rdkit_kwargs` to pass parameters to the RDKitConverter.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sel</span><span class="p">:</span>
@@ -3324,7 +3330,8 @@
         <span class="n">selections</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">selection</span><span class="o">.</span><span class="n">Parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">selgroups</span><span class="p">,</span>
                                                    <span class="n">periodic</span><span class="o">=</span><span class="n">periodic</span><span class="p">,</span>
                                                    <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span>
-                                                   <span class="nb">sorted</span><span class="o">=</span><span class="nb">sorted</span><span class="p">)</span>
+                                                   <span class="nb">sorted</span><span class="o">=</span><span class="nb">sorted</span><span class="p">,</span>
+                                                   <span class="n">rdkit_kwargs</span><span class="o">=</span><span class="n">rdkit_kwargs</span><span class="p">)</span>
                             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sel_strs</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">updating</span><span class="p">:</span>
             <span class="n">atomgrp</span> <span class="o">=</span> <span class="n">UpdatingAtomGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selections</span><span class="p">,</span> <span class="n">sel_strs</span><span class="p">)</span>
