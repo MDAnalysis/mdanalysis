@@ -57,21 +57,21 @@ members agree and adhere to --- please read it.
    http://groups.google.com/group/mdnalysis-discussion
 .. _`Code of Conduct`: https://www.mdanalysis.org/pages/conduct/
 
-.. _installation-instructions: 
 
 
 User Guide
 ==========
-The MDAnalysis `userguide`_ provides comprehensive information on how to
+The MDAnalysis `User Guide`_ provides comprehensive information on how to
 use the library. We would recommend that new users have a look at the
 `quick start guide`_. The userguide also has a set of `examples`_ on how to
 use the MDAnalysis library which may be of interest.
 
-.. _`userguide`: https://userguide.mdanalysis.org/stable/index.html
+.. _`User Guide`: https://userguide.mdanalysis.org/stable/index.html
 .. _`quick start guide`: https://userguide.mdanalysis.org/stable/examples/quickstart.html
 .. _`examples`: https://userguide.mdanalysis.org/stable/examples/README.html
 
 
+.. _installation-instructions: 
 Installing MDAnalysis
 =====================
 
@@ -147,7 +147,7 @@ Licence, version 2`_. Obtain the sources with `git`_.
    git clone https://github.com/MDAnalysis/mdanalysis.git
 
 
-The userguide provides more information on how to
+The `User Guide`_ provides more information on how to
 `install the development version`_ of MDAnalysis.
 
 .. _GNU Public Licence, version 2:
