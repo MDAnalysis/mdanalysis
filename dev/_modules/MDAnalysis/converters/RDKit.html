@@ -231,6 +231,16 @@
 <span class="sd">    &lt;rdkit.Chem.rdchem.Mol object at 0x7fcebb958148&gt;</span>
 
 
+<span class="sd">.. warning::</span>
+<span class="sd">    The RDKit converter is currently *experimental* and may not work as</span>
+<span class="sd">    expected for all molecules. Currently the converter accurately</span>
+<span class="sd">    infers the structures of approximately 90% of the `ChEMBL27`_ dataset.</span>
+<span class="sd">    Work is currently ongoing on further improving this and updates to the</span>
+<span class="sd">    converter are expected in future releases of MDAnalysis.</span>
+<span class="sd">    Please see `Pull Request #3044`_ for more details.</span>
+
+
+
 <span class="sd">Classes</span>
 <span class="sd">-------</span>
 
@@ -245,6 +255,12 @@
 <span class="sd">.. autofunction:: _standardize_patterns</span>
 
 <span class="sd">.. autofunction:: _rebuild_conjugated_bonds</span>
+
+
+<span class="sd">.. Links</span>
+
+<span class="sd">.. _`ChEMBL27`: https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_27/</span>
+<span class="sd">.. _`Pull Request #3044`: https://github.com/MDAnalysis/mdanalysis/pull/3044</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 

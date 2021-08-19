@@ -592,6 +592,15 @@ molecule:</p>
 <span class="go">&lt;rdkit.Chem.rdchem.Mol object at 0x7fcebb958148&gt;</span>
 </pre></div>
 </div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The RDKit converter is currently <em>experimental</em> and may not work as
+expected for all molecules. Currently the converter accurately
+infers the structures of approximately 90% of the <a class="reference external" href="https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_27/">ChEMBL27</a> dataset.
+Work is currently ongoing on further improving this and updates to the
+converter are expected in future releases of MDAnalysis.
+Please see <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/pull/3044">Pull Request #3044</a> for more details.</p>
+</div>
 <div class="section" id="id1">
 <h2>7.4.1. Classes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
