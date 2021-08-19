@@ -61,39 +61,24 @@ members agree and adhere to --- please read it.
 
 User Guide
 ==========
+
 The MDAnalysis `User Guide`_ provides comprehensive information on how to
 use the library. We would recommend that new users have a look at the
-`quick start guide`_. The userguide also has a set of `examples`_ on how to
+`Quick Start Guide`_. The User Guide also has a set of `examples`_ on how to
 use the MDAnalysis library which may be of interest.
 
 .. _`User Guide`: https://userguide.mdanalysis.org/stable/index.html
-.. _`quick start guide`: https://userguide.mdanalysis.org/stable/examples/quickstart.html
+.. _`Quick Start Guide`: https://userguide.mdanalysis.org/stable/examples/quickstart.html
 .. _`examples`: https://userguide.mdanalysis.org/stable/examples/README.html
 
 
-.. _installation-instructions: 
+.. _installation-instructions:
+
 Installing MDAnalysis
 =====================
 
 The easiest approach to `install the latest release`_ is to use a package that
-can be installed either with pip_ or conda_.
-
-pip
----
-
-Installation with `pip`_ and a *minimal set of dependencies*:
-
-.. code-block:: bash 
-
-   pip install --upgrade MDAnalysis
-
-To install with a *full set of dependencies* (which includes everything needed
-for :mod:`MDAnalysis.analysis`), add the ``[analysis]`` tag:
-
-.. code-block:: bash 
-
-   pip install --upgrade MDAnalysis[analysis]
-
+can be installed either with conda_ or pip_.
 
 conda
 -----
@@ -113,6 +98,23 @@ To upgrade later:
 
    conda update mdanalysis
 
+pip
+---
+
+Installation with `pip`_ and a *minimal set of dependencies*:
+
+.. code-block:: bash 
+
+   pip install --upgrade MDAnalysis
+
+To install with a *full set of dependencies* (which includes everything needed
+for :mod:`MDAnalysis.analysis`), add the ``[analysis]`` tag:
+
+.. code-block:: bash 
+
+   pip install --upgrade MDAnalysis[analysis]
+
+
 Tests
 -----
 
@@ -122,8 +124,8 @@ examples in the documentation or the tutorials_, also install the
 
 .. code-block:: bash 
 
-   pip install --upgrade MDAnalysisTests    # with pip
    conda install mdanalysistests            # with conda
+   pip install --upgrade MDAnalysisTests    # with pip
 
 .. _install the latest release:
    https://userguide.mdanalysis.org/stable/installation.html#installation
