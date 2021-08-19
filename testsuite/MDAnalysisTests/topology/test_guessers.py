@@ -81,6 +81,11 @@ class TestGuessTypes(object):
     def test_guess_atom_element(self):
         assert guessers.guess_atom_element('MG2+') == 'MG'
 
+    def test_guess_atom_elements_from_masses(self):
+        assert guessers.guess_atom_element_from_mass(12.01) == 'C'
+        guess_elements = guessers.guess_atom_elements_from_masses([14.007, 16.00])
+        np.testing.assert_equal(guess_elements, ['N', 'O'])
+
     def test_guess_atom_element_empty(self):
         assert guessers.guess_atom_element('') == ''
 
