@@ -263,7 +263,7 @@ also recognized when they are compressed with :program:`gzip` or
    | `chemfiles`_  | CHEMFILES |  r/w  | interface to `chemfiles`_, see the `list of chemfiles|
    | library       |           |       | file formats`_ and                                   |
    |               |           |       | :mod:`MDAnalysis.coordinates.chemfiles`              |
-   +---------------+-----------+-------+------------------------------------------------------+   
+   +---------------+-----------+-------+------------------------------------------------------+
 
 .. [#a] This format can also be used to provide basic *topology*
    information (i.e. the list of atoms); it is possible to create a
@@ -641,8 +641,15 @@ or::
 Methods
 .......
 
- ``__init__(filename,n_atoms[,start[,step[,delta[,remarks]]]])``
-     opens *filename* and writes header if required by format
+ ``__init__(filename, n_atoms, **kwargs)``
+
+     Set-up the reader. This *may* open file *filename* and *may*
+     write content to it such as headers immediately but the writer is
+     allowed to delay I/O up to the first call of ``write()``.
+
+     Any ``**kwargs`` that are not processed by the writer must be
+     silently ignored.
+
  ``write(obj)``
      write Timestep data in *obj*
  ``convert_dimensions_to_unitcell(timestep)``
@@ -658,8 +665,6 @@ Attributes
 
  ``filename``
      name of the trajectory file
- ``start, stop, step``
-     first and last frame number (0-based) and step
  ``units``
      dictionary with keys *time*, *length*, *speed*, *force* and the
      appropriate unit (e.g. 'AKMA' and 'Angstrom' for Charmm dcds, 'ps' and
