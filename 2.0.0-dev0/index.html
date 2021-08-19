@@ -218,22 +218,17 @@ list</a>.</p>
 <p>The MDAnalysis community subscribes to a <a class="reference external" href="https://www.mdanalysis.org/pages/conduct/">Code of Conduct</a> that all community
 members agree and adhere to — please read it.</p>
 </div>
+<div class="section" id="user-guide">
+<h2>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h2>
+<p>The MDAnalysis <a class="reference external" href="https://userguide.mdanalysis.org/stable/index.html">User Guide</a> provides comprehensive information on how to
+use the library. We would recommend that new users have a look at the
+<a class="reference external" href="https://userguide.mdanalysis.org/stable/examples/quickstart.html">Quick Start Guide</a>. The User Guide also has a set of <a class="reference external" href="https://userguide.mdanalysis.org/stable/examples/README.html">examples</a> on how to
+use the MDAnalysis library which may be of interest.</p>
+</div>
 <div class="section" id="installing-mdanalysis">
 <span id="installation-instructions"></span><h2>Installing MDAnalysis<a class="headerlink" href="#installing-mdanalysis" title="Permalink to this headline">¶</a></h2>
-<p>The easiest approach to <a class="reference external" href="https://www.mdanalysis.org/pages/installation_quick_start/">install the latest release</a> is to use a package that
-can be installed either with <a class="reference external" href="http://www.pip-installer.org/en/latest/index.html">pip</a> or <a class="reference external" href="http://conda.pydata.org/docs/">conda</a>.</p>
-<div class="section" id="pip">
-<h3>pip<a class="headerlink" href="#pip" title="Permalink to this headline">¶</a></h3>
-<p>Installation with <a class="reference external" href="http://www.pip-installer.org/en/latest/index.html">pip</a> and a <em>minimal set of dependencies</em>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --upgrade MDAnalysis
-</pre></div>
-</div>
-<p>To install with a <em>full set of dependencies</em> (which includes everything needed
-for <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis</span></code>), add the <code class="docutils literal notranslate"><span class="pre">[analysis]</span></code> tag:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --upgrade MDAnalysis<span class="o">[</span>analysis<span class="o">]</span>
-</pre></div>
-</div>
-</div>
+<p>The easiest approach to <a class="reference external" href="https://userguide.mdanalysis.org/stable/installation.html#installation">install the latest release</a> is to use a package that
+can be installed either with <a class="reference external" href="http://conda.pydata.org/docs/">conda</a> or <a class="reference external" href="http://www.pip-installer.org/en/latest/index.html">pip</a>.</p>
 <div class="section" id="conda">
 <h3>conda<a class="headerlink" href="#conda" title="Permalink to this headline">¶</a></h3>
 <p>First installation with <a class="reference external" href="http://conda.pydata.org/docs/">conda</a>:</p>
@@ -247,13 +242,25 @@ conda install mdanalysis
 </pre></div>
 </div>
 </div>
+<div class="section" id="pip">
+<h3>pip<a class="headerlink" href="#pip" title="Permalink to this headline">¶</a></h3>
+<p>Installation with <a class="reference external" href="http://www.pip-installer.org/en/latest/index.html">pip</a> and a <em>minimal set of dependencies</em>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --upgrade MDAnalysis
+</pre></div>
+</div>
+<p>To install with a <em>full set of dependencies</em> (which includes everything needed
+for <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis</span></code>), add the <code class="docutils literal notranslate"><span class="pre">[analysis]</span></code> tag:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --upgrade MDAnalysis<span class="o">[</span>analysis<span class="o">]</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="tests">
 <h3>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h3>
 <p>If you want to <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests">run the tests</a> or use example files to follow some of the
 examples in the documentation or the <a class="reference external" href="https://www.mdanalysis.org/pages/learning_MDAnalysis/">tutorials</a>, also install the
 <code class="docutils literal notranslate"><span class="pre">MDAnalysisTests</span></code> package:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --upgrade MDAnalysisTests    <span class="c1"># with pip</span>
-conda install mdanalysistests            <span class="c1"># with conda</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install mdanalysistests            <span class="c1"># with conda</span>
+pip install --upgrade MDAnalysisTests    <span class="c1"># with pip</span>
 </pre></div>
 </div>
 </div>
@@ -262,15 +269,17 @@ conda install mdanalysistests            <span class="c1"># with conda</span>
 <h2>Source Code<a class="headerlink" href="#source-code" title="Permalink to this headline">¶</a></h2>
 <p><strong>Source code</strong> is available from
 <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/">https://github.com/MDAnalysis/mdanalysis/</a> under the <a class="reference external" href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html">GNU Public
-Licence, version 2</a>. Obtain the sources with <a class="reference external" href="https://git-scm.com/">git</a></p>
+Licence, version 2</a>. Obtain the sources with <a class="reference external" href="https://git-scm.com/">git</a>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/MDAnalysis/mdanalysis.git
 </pre></div>
 </div>
+<p>The <a class="reference external" href="https://userguide.mdanalysis.org/stable/index.html">User Guide</a> provides more information on how to
+<a class="reference external" href="https://userguide.mdanalysis.org/stable/installation.html#development-versions">install the development version</a> of MDAnalysis.</p>
 </div>
 <div class="section" id="citation">
 <h2>Citation<a class="headerlink" href="#citation" title="Permalink to this headline">¶</a></h2>
 <p>When using MDAnalysis in published work, please cite
-<a class="reference internal" href="documentation_pages/references.html#michaud-agrawal2011" id="id3">[Michaud-Agrawal2011]</a> and <a class="reference internal" href="documentation_pages/references.html#gowers2016" id="id4">[Gowers2016]</a>.</p>
+<a class="reference internal" href="documentation_pages/references.html#michaud-agrawal2011" id="id4">[Michaud-Agrawal2011]</a> and <a class="reference internal" href="documentation_pages/references.html#gowers2016" id="id5">[Gowers2016]</a>.</p>
 <p>MDAnalysis also contains specific algorithms and whole analysis
 modules whose algorithms have also been published in the scientific
 literature. Please make sure to also reference any
