@@ -412,7 +412,6 @@ class NCDFReader(base.ReaderBase):
     Current limitations:
 
     * only trajectories with time in ps and lengths in Angstroem are processed
-      writing
 
     The NCDF reader uses :mod:`scipy.io.netcdf` and therefore :mod:`scipy` must
     be installed. It supports the *mmap* keyword argument (when reading):
