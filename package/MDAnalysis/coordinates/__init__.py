@@ -275,7 +275,7 @@ also recognized when they are compressed with :program:`gzip` or
 .. _`chemfiles`: https://chemfiles.org/
 .. _`list of chemfiles file formats`: https://chemfiles.org/chemfiles/latest/formats.html
 
-.. _Trajectory API:
+.. _`Trajectory API`:
 
 Trajectory API
 --------------
