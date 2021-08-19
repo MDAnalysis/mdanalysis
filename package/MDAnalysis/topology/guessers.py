@@ -178,8 +178,9 @@ def guess_atom_type(atomname):
     return guess_atom_element(atomname)
 
 
-NUMBERS = re.compile(r'[0-9]') # match numbers
+NUMBERS = re.compile(r'[0-9]')  # match numbers
 SYMBOLS = re.compile(r'[*+-]')  # match *, +, -
+
 
 def guess_atom_element(atomname):
     """Guess the element of the atom from the name.
@@ -223,6 +224,16 @@ def guess_atom_element(atomname):
 
         # if it's numbers
         return no_symbols
+
+
+def guess_atom_element_from_mass(mass_guess, tol=0.1):
+    for element, mass in tables.masses.items():
+        if abs(mass - mass_guess) < tol:
+            return element
+    raise ValueError(f'the molecular weight: {mass_guess} amu, is not valid')
+
+
+guess_atom_elements_from_masses = np.vectorize(guess_atom_element_from_mass)
 
 
 def guess_bonds(atoms, coords, box=None, **kwargs):
@@ -323,11 +334,11 @@ def guess_bonds(atoms, coords, box=None, **kwargs):
     bonds = []
 
     pairs, dist = distances.self_capped_distance(coords,
-                                                 max_cutoff=2.0*max_vdw,
+                                                 max_cutoff=2.0 * max_vdw,
                                                  min_cutoff=lower_bound,
                                                  box=box)
     for idx, (i, j) in enumerate(pairs):
-        d = (vdwradii[atomtypes[i]] + vdwradii[atomtypes[j]])*fudge_factor
+        d = (vdwradii[atomtypes[i]] + vdwradii[atomtypes[j]]) * fudge_factor
         if (dist[idx] < d):
             bonds.append((atoms[i].index, atoms[j].index))
     return tuple(bonds)
