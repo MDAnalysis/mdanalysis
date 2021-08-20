@@ -1,13 +1,14 @@
 import pytest
 from numpy.testing import assert_almost_equal, assert_equal
 import numpy as np
+import sys
 import MDAnalysis as mda
 from MDAnalysis.coordinates.H5MD import HAS_H5PY
 if HAS_H5PY:
     import h5py
 from MDAnalysis.exceptions import NoDataError
 from MDAnalysisTests import make_Universe
-from MDAnalysisTests.datafiles import (H5MD_xvf, TPR_xvf,
+from MDAnalysisTests.datafiles import (H5MD_xvf, TPR_xvf, TRR_xvf,
                                        COORDINATES_TOPOLOGY,
                                        COORDINATES_H5MD)
 from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
@@ -418,10 +419,11 @@ class TestH5MDWriterWithRealTrajectory(object):
                 for ts in universe.trajectory:
                     W.write(universe)
 
-    def test_no_dimensions(self, universe, Writer, outfile):
+    @pytest.mark.parametrize('dimensions', (None, 0))
+    def test_no_dimensions(self, universe, Writer, outfile, dimensions):
         with Writer(outfile, universe.atoms.n_atoms) as W:
             for ts in universe.trajectory:
-                ts.dimensions = None
+                ts.dimensions = dimensions
                 W.write(universe)
 
         uw = mda.Universe(TPR_xvf, outfile)
@@ -734,15 +736,12 @@ class TestH5MDWriterWithRealTrajectory(object):
         file = uw.trajectory._file
         assert_equal(file.driver, driver)
 
-    @pytest.mark.parametrize('driver, comm', (('mpio', 'mock MPI.COMM_WORLD'),
-                                              ('mpio', None),
-                                              (None, 'mock MPI.COMM_WORLD')))
-    def test_parallel_disabled(self, universe, Writer, outfile, driver, comm):
+    def test_parallel_disabled(self, universe, Writer, outfile,
+                               driver='mpio'):
         with pytest.raises(ValueError):
             with Writer(outfile,
                         universe.atoms.n_atoms,
-                        driver=driver,
-                        comm=comm) as W:
+                        driver=driver) as W:
                 for ts in universe.trajectory:
                     W.write(universe)
 
@@ -765,3 +764,32 @@ class TestH5MDWriterWithRealTrajectory(object):
             err_msg="Positions in Timestep were modified by writer.")
         assert_equal(
             ts.time, time, err_msg="Time in Timestep was modified by writer.")
+
+class TestH5PYNotInstalled(object):
+    """Tests RuntimeErrors when h5py not installed"""
+
+    @pytest.fixture(autouse=True)
+    def block_h5py(self, monkeypatch):
+        monkeypatch.setattr(
+            sys.modules['MDAnalysis.coordinates.H5MD'], 'HAS_H5PY', False)
+
+    @pytest.fixture()
+    def Writer(self):
+        return mda.coordinates.H5MD.H5MDWriter
+
+    @pytest.fixture()
+    def outfile(self, tmpdir):
+        return str(tmpdir) + 'h5md-writer-test.h5md'
+
+    def test_reader_no_h5py(self):
+        with pytest.raises(RuntimeError, match="Please install h5py"):
+            u = mda.Universe(TPR_xvf, H5MD_xvf)
+
+    def test_writer_no_h5py(self, Writer, outfile):
+        u = mda.Universe(TPR_xvf, TRR_xvf)
+        with pytest.raises(RuntimeError,
+                           match="H5MDWriter: Please install h5py"):
+            with Writer(outfile,
+                        u.atoms.n_atoms) as W:
+                for ts in u.trajectory:
+                    W.write(universe)

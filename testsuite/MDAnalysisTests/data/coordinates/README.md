@@ -47,4 +47,5 @@ test.h5md
 Written with MDAnalysis using the 'create_h5md_data.py' script
 
 ## Validation
-Manually examined contents of test.h5md with MDAnalysis.
+Manually examined contents of the datasets in test.h5md with h5py and compared
+with MDAnalysis.

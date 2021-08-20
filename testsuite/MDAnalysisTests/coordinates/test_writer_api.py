@@ -88,12 +88,10 @@ def test_write_with_atomgroup(writer, tmpdir):
 
     # H5MDWriter raises ValueError if the trajectory has no units and
     # convert_units is True
-    if writer == mda.coordinates.H5MD.H5MDWriter:
-        with writer(fn, n_atoms=u.atoms.n_atoms, convert_units=False) as w:
-            w.write(u.atoms)
-    else:
-        with writer(fn, n_atoms=u.atoms.n_atoms) as w:
-            w.write(u.atoms)
+    convert_units = (writer != mda.coordinates.H5MD.H5MDWriter)
+
+    with writer(fn, n_atoms=u.atoms.n_atoms, convert_units=convert_units) as w:
+        w.write(u.atoms)
 
 
 @pytest.mark.parametrize('writer', writers)
@@ -116,9 +114,7 @@ def test_write_with_universe(writer, tmpdir):
 
     # H5MDWriter raises ValueError if the trajectory has no units and
     # convert_units is True
-    if writer == mda.coordinates.H5MD.H5MDWriter:
-        with writer(fn, n_atoms=u.atoms.n_atoms, convert_units=False) as w:
-            w.write(u.atoms)
-    else:
-        with writer(fn, n_atoms=u.atoms.n_atoms) as w:
-            w.write(u.atoms)
+    convert_units = (writer != mda.coordinates.H5MD.H5MDWriter)
+
+    with writer(fn, n_atoms=u.atoms.n_atoms, convert_units=convert_units) as w:
+        w.write(u.atoms)

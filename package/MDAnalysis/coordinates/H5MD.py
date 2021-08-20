@@ -56,7 +56,7 @@ set ``convert_units=False``.
 writes the trajectory with those units, unless one of ``timeunit``,
 ``lengthunit``, ``velocityunit``, ``forceunit`` arugments are supplied. In
 this case, the writer will write the corresponding dataset with the selected
-unit only if it is recognizable by `MDAnalysis units`_.
+unit only if it is recognized by `MDAnalysis units`_.
 
 
 Example: Loading an H5MD simulation
@@ -92,6 +92,16 @@ To write to an H5MD file from a trajectory loaded with MDAnalysis, do:
     u = mda.Universe("topology.tpr", "trajectory.h5md")
     with mda.Writer("output.h5md", n_atoms=u.trajectory.n_atoms) as W:
         for ts in u.trajectory:
+            W.write(u)
+
+To write an H5MD file with contiguous datasets, you must specifly the
+number of frames to be written and set ``chunks=False``:
+
+.. code-block:: python
+
+    with mda.Writer("output_contigous.h5md", n_atoms=u.trajectory.n_atoms,
+                    n_frames=3, chunks=False) as W:
+        for ts in u.trajectory[:3]:
             W.write(u)
 
 The writer also supports writing directly from an :class:`~MDAnalysis.core.groups.AtomGroup`::
@@ -199,7 +209,7 @@ Classes
 """
 
 import numpy as np
-from MDAnalysis import __version__ as mda_version
+import MDAnalysis as mda
 from . import base, core
 from ..exceptions import NoDataError
 from ..due import due, Doi
@@ -437,10 +447,15 @@ class H5MDReader(base.ReaderBase):
         self._has = {name: name in self._particle_group for
                      name in ('position', 'velocity', 'force')}
 
-        # Gets n_atoms from first available group
+        # Gets some info about what settings the datasets were created with
+        # from first available group
         for name, value in self._has.items():
             if value:
-                self.n_atoms = self._particle_group[name]['value'].shape[1]
+                dset = self._particle_group[f'{name}/value']
+                self.n_atoms = dset.shape[1]
+                self.chunks = dset.chunks
+                self.compression = dset.compression
+                self.compression_opts = dset.compression_opts
                 break
         else:
             raise NoDataError("Provide at least a position, velocity"
@@ -565,11 +580,11 @@ class H5MDReader(base.ReaderBase):
                                            mode='r',
                                            driver=self._driver,
                                            comm=self._comm)
-            elif self._driver is not None:
-                self._file = H5PYPicklable(name=self.filename, mode='r',
-                                           driver=self._driver)
             else:
-                self._file = H5PYPicklable(name=self.filename, mode='r')
+                self._file = H5PYPicklable(name=self.filename,
+                                           mode='r',
+                                           driver=self._driver)
+
         # pulls first key out of 'particles'
         # allows for arbitrary name of group1 in 'particles'
         self._particle_group = self._file['particles'][
@@ -638,7 +653,7 @@ class H5MDReader(base.ReaderBase):
         for name, value in self._has.items():
             if value:
                 if 'time' in self._particle_group[name]:
-                    self.ts.data['time'] = self._particle_group[name][
+                    self.ts.time = self._particle_group[name][
                         'time'][self._frame]
                     break
         for name, value in self._has.items():
@@ -727,11 +742,14 @@ class H5MDReader(base.ReaderBase):
         """
         if n_atoms is None:
             n_atoms = self.n_atoms
-        return H5MDWriter(
-            filename,
-            n_atoms=n_atoms,
-            convert_units=self.convert_units,
-            **kwargs)
+        kwargs.setdefault('driver', self._driver)
+        kwargs.setdefault('chunks', self.chunks)
+        kwargs.setdefault('compression', self.compression)
+        kwargs.setdefault('compression_opts', self.compression_opts)
+        kwargs.setdefault('positions', self.has_positions)
+        kwargs.setdefault('velocities', self.has_velocities)
+        kwargs.setdefault('forces', self.has_forces)
+        return H5MDWriter(filename, n_atoms, **kwargs)
 
     @property
     def has_positions(self):
@@ -792,8 +810,7 @@ class H5MDWriter(base.WriterBase):
     :exc:`NoDataError` is raised if no positions, velocities, or forces are
     found in the input trajectory. While the H5MD standard allows for this
     case, :class:`H5MDReader` cannot currently read files without at least
-    one of these three groups. A future change to both the reader and
-    writer will allow this case.
+    one of these three groups.
 
     Note
     ----
@@ -811,17 +828,14 @@ class H5MDWriter(base.WriterBase):
     n_frames : int (optional)
         number of frames to be written in trajectory
     driver : str (optional)
-        H5PY file driver used to open H5MD file
-    comm : :class:`MPI.Comm` (optional)
-        MPI communicator used to open H5MD file
-        Must be passed with `'mpio'` file driver.
-        This argument is currently disabled.
+        H5PY file driver used to open H5MD file. See `H5PY drivers`_ for
+        list of available drivers.
     convert_units : bool (optional)
-        convert units from MDAnalysis to desired units
+        Convert units from MDAnalysis to desired units
     chunks : tuple (optional)
-        custom chunk layout to be applied to the position,
+        Custom chunk layout to be applied to the position,
         velocity, and force datasets. By default, these datasets
-        are chunked in (1, n_atoms, 3) blocks
+        are chunked in ``(1, n_atoms, 3)`` blocks
     compression : str or int (optional)
         HDF5 dataset compression setting to be applied
         to position, velocity, and force datasets. Allowed
@@ -841,25 +855,25 @@ class H5MDWriter(base.WriterBase):
     forces : bool (optional)
         Write forces into the trajectory [``True``]
     timeunit : str (optional)
-        option to convert values in the 'time' dataset to a custom unit,
+        Option to convert values in the 'time' dataset to a custom unit,
         must be recognizable by MDAnalysis
     lengthunit : str (optional)
-        option to convert values in the 'position/value' dataset to a
+        Option to convert values in the 'position/value' dataset to a
         custom unit, must be recognizable by MDAnalysis
     velocityunit : str (optional)
-        option to convert values in the 'velocity/value' dataset to a
+        Option to convert values in the 'velocity/value' dataset to a
         custom unit, must be recognizable by MDAnalysis
     forceunit : str (optional)
-        option to convert values in the 'force/value' dataset to a
+        Option to convert values in the 'force/value' dataset to a
         custom unit, must be recognizable by MDAnalysis
     author : str (optional)
-        name of the author of the file
+        Name of the author of the file
     author_email : str (optional)
-        email of the author of the file
+        Email of the author of the file
     creator : str (optional)
-        software that wrote the file [``MDAnalysis``]
+        Software that wrote the file [``MDAnalysis``]
     creator_version : str (optional)
-        version of software that wrote the file
+        Version of software that wrote the file
         [:attr:`MDAnalysis.__version__`]
 
     Raises
@@ -868,9 +882,6 @@ class H5MDWriter(base.WriterBase):
         when `H5PY`_ is not installed
     ValueError
         when ``n_atoms`` is 0
-    ValueError
-        when the file is opened with ``driver=='mpio'`` or
-        with an MPI communicator
     ValueError
         when ``chunks=False`` but the user did not specify ``n_frames``
     ValueError
@@ -947,6 +958,7 @@ class H5MDWriter(base.WriterBase):
     allocate on disk when creating the dataset.
 
     .. _`H5PY compression options`: https://docs.h5py.org/en/stable/high/dataset.html#filter-pipeline
+    .. _`H5PY drivers`: https://docs.h5py.org/en/stable/high/file.html#file-drivers
 
 
     .. versionadded:: 2.0.0
@@ -1007,12 +1019,12 @@ class H5MDWriter(base.WriterBase):
                description="Specifications of the H5MD standard",
                path=__name__, version='1.1')
     def __init__(self, filename, n_atoms, n_frames=None, driver=None,
-                 comm=None, convert_units=True, chunks=None, compression=None,
+                 convert_units=True, chunks=None, compression=None,
                  compression_opts=None, positions=True, velocities=True,
                  forces=True, timeunit=None, lengthunit=None,
                  velocityunit=None, forceunit=None, author='N/A',
                  author_email=None, creator='MDAnalysis',
-                 creator_version=mda_version, **kwargs):
+                 creator_version=mda.__version__, **kwargs):
 
         if not HAS_H5PY:
             raise RuntimeError("H5MDWriter: Please install h5py")
@@ -1020,8 +1032,7 @@ class H5MDWriter(base.WriterBase):
         if n_atoms == 0:
             raise ValueError("H5MDWriter: no atoms in output trajectory")
         self._driver = driver
-        self._comm = comm
-        if self._comm is not None or self._driver == 'mpio':
+        if self._driver == 'mpio':
             raise ValueError("H5MDWriter: parallel writing with MPI I/O "
                              "is not currently supported.")
         self.n_atoms = n_atoms
@@ -1114,10 +1125,10 @@ class H5MDWriter(base.WriterBase):
             if value is not None:
                 if value not in self._unit_translation_dict[key]:
                     raise ValueError(f"{value} is not a unit recognized by"
-                                     " MDAnalyis. Allowed units are:"
+                                     " MDAnalysis. Allowed units are:"
                                      f" {self._unit_translation_dict.keys()}"
                                      " For more information on units, see"
-                                     " `MDAnalyis units`_.")
+                                     " `MDAnalysis units`_.")
                 else:
                     self.units[key] = self._new_units[key]
 
@@ -1136,20 +1147,9 @@ class H5MDWriter(base.WriterBase):
 
         """
 
-        if self._comm is not None:  # pragma: no cover
-            # ValueError raised in __init__() if communicator is passed
-            # MPI parallel writing not yet supported
-            self.h5md_file = h5py.File(name=self.filename,
-                                       mode='w',
-                                       driver=self._driver,
-                                       comm=self._comm)
-        elif self._driver is not None:
-            self.h5md_file = h5py.File(name=self.filename,
-                                       mode='w',
-                                       driver=self._driver)
-        else:
-            self.h5md_file = h5py.File(name=self.filename,
-                                       mode='w')
+        self.h5md_file = h5py.File(name=self.filename,
+                                   mode='w',
+                                   driver=self._driver)
 
         # fill in H5MD metadata from kwargs
         self.h5md_file.require_group('h5md')
@@ -1250,7 +1250,7 @@ class H5MDWriter(base.WriterBase):
 
         :attr:`self._step` and :attr`self._time` serve as links to the created
         datasets that other datasets can also point to for their step and time.
-        This servers two purposes:
+        This serves two purposes:
             1. Avoid redundant writing of multiple datasets that share the
                same step and time data.
             2. In HDF5, each chunked dataset has a cache (default 1 MiB),
@@ -1385,11 +1385,11 @@ class H5MDWriter(base.WriterBase):
                 obs[i] = ts.data[key]
 
         if self.convert_units:
-            self._convert_units(i)
+            self._convert_dataset_with_units(i)
 
         self._counter += 1
 
-    def _convert_units(self, i):
+    def _convert_dataset_with_units(self, i):
         """convert values in the dataset arrays with self.units dictionary"""
 
         # Note: simply doing convert_pos_to_native(self._pos[-1]) does not
