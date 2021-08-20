@@ -457,13 +457,23 @@ class TestH5MDWriterWithRealTrajectory(object):
         for step, frame in zip(steps, frames):
             assert_equal(step, frame)
 
-    def test_has_setter(self, universe, Writer, outfile):
+    def test_has_property(self, universe, Writer, outfile):
         with Writer(outfile, universe.atoms.n_atoms) as W:
             W.write(universe)
             assert_equal(W.has_positions, W._has['position'])
             assert_equal(W.has_velocities, W._has['velocity'])
             assert_equal(W.has_forces, W._has['force'])
 
+    def test_has_setter(self, universe, Writer, outfile):
+        with Writer(outfile, universe.atoms.n_atoms) as W:
+            W.has_forces = False
+            W.has_velocities = False
+            W.write(universe)
+
+        uw = mda.Universe(TPR_xvf, outfile)
+        assert_equal(uw.trajectory.ts.has_positions, True)
+        assert_equal(uw.trajectory.ts.has_velocities, False)
+        assert_equal(uw.trajectory.ts.has_forces, False)
 
     @pytest.mark.parametrize('pos, vel, force', (
             (True, False, False),
