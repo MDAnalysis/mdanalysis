@@ -205,6 +205,9 @@ Enhancements
     to transfer data from HDF5 file into timestep. (PR #3293)
 
 Changes
+  * NCDFWriter now allows for the writing of `scale_factor` attributes for
+    trajectory variables. Default writing is no `scale_factor` except for
+    velocities where it is 20.455 (Issue #2327)
   * Update the API for coordinate writers to reflect practice:
     start. stop, step are not required anymore (#3392)
   * Aliased bfactors to tempfactors (Issue #1901, PR#3345)
