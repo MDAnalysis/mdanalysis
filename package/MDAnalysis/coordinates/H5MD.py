@@ -453,7 +453,6 @@ class H5MDReader(base.ReaderBase):
             if value:
                 dset = self._particle_group[f'{name}/value']
                 self.n_atoms = dset.shape[1]
-                self.chunks = dset.chunks
                 self.compression = dset.compression
                 self.compression_opts = dset.compression_opts
                 break
@@ -732,6 +731,19 @@ class H5MDReader(base.ReaderBase):
     def Writer(self, filename, n_atoms=None, **kwargs):
         """Return writer for trajectory format
 
+        Note
+        ----
+        The chunk shape of the input file will not be copied to the output
+        file, as :class:`H5MDWriter` uses a chunk shape of ``(1, n_atoms, 3)``
+        by default. To use a custom chunk shape, you must specify the
+        ``chunks`` argument. If you would like to copy an existing chunk
+        format from a dataset (positions, velocities, or forces), do
+        the following::
+
+            chunks = u.trajectory._particle_group['position/value'].chunks
+
+        Note that the writer will set the same layout for all particle groups.
+
         See Also
         --------
         :class:`H5MDWriter`  Output class for the H5MD format
@@ -743,7 +755,6 @@ class H5MDReader(base.ReaderBase):
         if n_atoms is None:
             n_atoms = self.n_atoms
         kwargs.setdefault('driver', self._driver)
-        kwargs.setdefault('chunks', self.chunks)
         kwargs.setdefault('compression', self.compression)
         kwargs.setdefault('compression_opts', self.compression_opts)
         kwargs.setdefault('positions', self.has_positions)
@@ -904,9 +915,11 @@ class H5MDWriter(base.WriterBase):
 
     By default, the writer will write all available data (positions,
     velocities, and forces) if detected in the input
-    :class:`~MDAnalysis.coordinates.base.Timestep`. To write a file without
-    any one of these datsets, set ``positions=False``, ``velocities=False``,
-    or ``forces=False``.
+    :class:`~MDAnalysis.coordinates.base.Timestep`. In addition, the settings
+    for ``compression`` and ``compression_opts`` will be read from
+    the first available group of positions, velocities, or forces and used as
+    the default value. To write a file without any one of these datsets,
+    set ``positions=False``, ``velocities=False``, or ``forces=False``.
 
     .. rubric:: Units
 
@@ -1221,15 +1234,15 @@ class H5MDWriter(base.WriterBase):
             self._traj['box'].attrs['boundary'] = 3*['none']
             self._create_step_and_time_datasets()
 
-        if self._has['position']:
+        if self.has_positions:
             self._create_trajectory_dataset('position')
             self._pos = self._traj['position/value']
             self._set_attr_unit(self._pos, 'length')
-        if self._has['velocity']:
+        if self.has_velocities:
             self._create_trajectory_dataset('velocity')
             self._vel = self._traj['velocity/value']
             self._set_attr_unit(self._vel, 'velocity')
-        if self._has['force']:
+        if self.has_forces:
             self._create_trajectory_dataset('force')
             self._force = self._traj['force/value']
             self._set_attr_unit(self._force, 'force')
@@ -1365,15 +1378,15 @@ class H5MDWriter(base.WriterBase):
                                      dest_sel=np.s_[i, :])
         # These datasets are not resized if n_frames was provided as an
         # argument, as they were initialized with their full size.
-        if self._has['position']:
+        if self.has_positions:
             if self.n_frames is None:
                 self._pos.resize(self._pos.shape[0]+1, axis=0)
             self._pos.write_direct(ts.positions, dest_sel=np.s_[i, :])
-        if self._has['velocity']:
+        if self.has_velocities:
             if self.n_frames is None:
                 self._vel.resize(self._vel.shape[0]+1, axis=0)
             self._vel.write_direct(ts.velocities, dest_sel=np.s_[i, :])
-        if self._has['force']:
+        if self.has_forces:
             if self.n_frames is None:
                 self._force.resize(self._force.shape[0]+1, axis=0)
             self._force.write_direct(ts.forces, dest_sel=np.s_[i, :])
