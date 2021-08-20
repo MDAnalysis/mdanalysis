@@ -340,6 +340,7 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">errno</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">isclose</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
@@ -595,8 +596,6 @@
 <span class="sd">    Current limitations:</span>
 
 <span class="sd">    * only trajectories with time in ps and lengths in Angstroem are processed</span>
-<span class="sd">    * scale_factors are supported on read but are currently not kept/used when</span>
-<span class="sd">      writing</span>
 
 <span class="sd">    The NCDF reader uses :mod:`scipy.io.netcdf` and therefore :mod:`scipy` must</span>
 <span class="sd">    be installed. It supports the *mmap* keyword argument (when reading):</span>
@@ -637,6 +636,8 @@
 <span class="sd">       :class:`NCDFPicklable`.</span>
 <span class="sd">       Reading of `dt` now defaults to 1.0 ps if `dt` cannot be extracted from</span>
 <span class="sd">       the first two frames of the trajectory.</span>
+<span class="sd">       :meth:`Writer` now also sets `convert_units`, `velocities`, `forces` and</span>
+<span class="sd">       `scale_factor` information for the :class:`NCDFWriter`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -656,8 +657,10 @@
 
         <span class="nb">super</span><span class="p">(</span><span class="n">NCDFReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
+        <span class="c1"># ensure maskandscale is off so we don&#39;t end up double scaling</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span> <span class="o">=</span> <span class="n">NCDFPicklable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
-                                     <span class="n">mmap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mmap</span><span class="p">)</span>
+                                     <span class="n">mmap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mmap</span><span class="p">,</span>
+                                     <span class="n">maskandscale</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="c1"># AMBER NetCDF files should always have a convention</span>
         <span class="k">try</span><span class="p">:</span>
@@ -762,17 +765,19 @@
 
         <span class="c1"># Check for scale_factor attributes for all data variables and</span>
         <span class="c1"># store this to multiply through later (Issue #2323)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-                              <span class="s1">&#39;cell_lengths&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-                              <span class="s1">&#39;cell_angles&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-                              <span class="s1">&#39;coordinates&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-                              <span class="s1">&#39;velocities&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-                              <span class="s1">&#39;forces&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="s1">&#39;cell_lengths&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="s1">&#39;cell_angles&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="s1">&#39;coordinates&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="s1">&#39;velocities&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="s1">&#39;forces&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
 
         <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">variable</span><span class="p">],</span> <span class="s1">&#39;scale_factor&#39;</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">variable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">:</span>
                     <span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">scale_factor</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">scale_factor</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">)):</span>
+                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scale_factor</span><span class="si">}</span><span class="s2"> is not a float&quot;</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span> <span class="o">=</span> <span class="n">scale_factor</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;scale_factors for variable </span><span class="si">{0}</span><span class="s2"> are &quot;</span>
@@ -822,6 +827,21 @@
             <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;atom&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">n_atoms</span></div>
 
+    <span class="k">def</span> <span class="nf">_get_var_and_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Helper function to get variable at given frame from NETCDF file and</span>
+<span class="sd">        scale if necessary.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        If scale_factor is 1.0 within numerical precision then we don&#39;t apply</span>
+<span class="sd">        the scaling.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">scale_factor</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">isclose</span><span class="p">(</span><span class="n">scale_factor</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">variable</span><span class="p">][</span><span class="n">frame</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">variable</span><span class="p">][</span><span class="n">frame</span><span class="p">]</span> <span class="o">*</span> <span class="n">scale_factor</span>
+
     <span class="k">def</span> <span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
 
@@ -834,24 +854,17 @@
             <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;frame index must be 0 &lt;= frame &lt; </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">))</span>
         <span class="c1"># note: self.trjfile.variables[&#39;coordinates&#39;].shape == (frames, n_atoms, 3)</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">][</span><span class="n">frame</span><span class="p">]</span> <span class="o">*</span>
-                      <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">])</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="n">frame</span><span class="p">]</span> <span class="o">*</span>
-                   <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_var_and_scale</span><span class="p">(</span><span class="s1">&#39;coordinates&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_var_and_scale</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">:</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;velocities&#39;</span><span class="p">][</span><span class="n">frame</span><span class="p">]</span> <span class="o">*</span>
-                                 <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;velocities&#39;</span><span class="p">])</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_var_and_scale</span><span class="p">(</span><span class="s1">&#39;velocities&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span><span class="p">:</span>
-            <span class="n">ts</span><span class="o">.</span><span class="n">_forces</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;forces&#39;</span><span class="p">][</span><span class="n">frame</span><span class="p">]</span> <span class="o">*</span>
-                             <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;forces&#39;</span><span class="p">])</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">_forces</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_var_and_scale</span><span class="p">(</span><span class="s1">&#39;forces&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span><span class="p">:</span>
             <span class="n">unitcell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
-            <span class="n">unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;cell_lengths&#39;</span><span class="p">][</span><span class="n">frame</span><span class="p">]</span> <span class="o">*</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;cell_lengths&#39;</span><span class="p">])</span>
-            <span class="n">unitcell</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;cell_angles&#39;</span><span class="p">][</span><span class="n">frame</span><span class="p">]</span> <span class="o">*</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;cell_angles&#39;</span><span class="p">])</span>
+            <span class="n">unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_var_and_scale</span><span class="p">(</span><span class="s1">&#39;cell_lengths&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
+            <span class="n">unitcell</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_var_and_scale</span><span class="p">(</span><span class="s1">&#39;cell_angles&#39;</span><span class="p">,</span> <span class="n">frame</span><span class="p">)</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">unitcell</span>
-
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span>  <span class="c1"># in-place !</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_time_from_native</span><span class="p">(</span>
@@ -915,10 +928,26 @@
 <span class="sd">            filename of the output NCDF trajectory</span>
 <span class="sd">        n_atoms : int (optional)</span>
 <span class="sd">            number of atoms</span>
-<span class="sd">        dt : float (optional)</span>
-<span class="sd">            length of one timestep in picoseconds</span>
 <span class="sd">        remarks : str (optional)</span>
 <span class="sd">            string that is stored in the title field</span>
+<span class="sd">        convert_units : bool (optional)</span>
+<span class="sd">            ``True``: units are converted to the AMBER base format</span>
+<span class="sd">        velocities : bool (optional)</span>
+<span class="sd">            Write velocities into the trajectory</span>
+<span class="sd">        forces : bool (optional)</span>
+<span class="sd">            Write forces into the trajectory</span>
+<span class="sd">        scale_time : float (optional)</span>
+<span class="sd">            Scale factor for time units</span>
+<span class="sd">        scale_cell_lengths : float (optional)</span>
+<span class="sd">            Scale factor for cell lengths</span>
+<span class="sd">        scale_cell_angles : float (optional)</span>
+<span class="sd">            Scale factor for cell angles</span>
+<span class="sd">        scale_coordinates : float (optional)</span>
+<span class="sd">            Scale factor for coordinates</span>
+<span class="sd">        scale_velocities : float (optional)</span>
+<span class="sd">            Scale factor for velocities</span>
+<span class="sd">        scale_forces : float (optional)</span>
+<span class="sd">            Scale factor for forces</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -926,7 +955,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;n_atoms&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
         <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;remarks&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span><span class="p">)</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;dt&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;convert_units&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;velocities&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;forces&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;scale_</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">NCDFWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 
 
@@ -939,7 +972,15 @@
 <span class="sd">    Velocities are written out if they are detected in the input</span>
 <span class="sd">    :class:`Timestep`. The trajectories are always written with ångström</span>
 <span class="sd">    for the lengths and picoseconds for the time (and hence Å/ps for</span>
-<span class="sd">    velocities).</span>
+<span class="sd">    velocities and kilocalorie/mole/Å for forces).</span>
+
+<span class="sd">    Scale factor variables for time, velocities, cell lengths, cell angles,</span>
+<span class="sd">    coordinates, velocities, or forces can be passed into the writer. If so,</span>
+<span class="sd">    they will be written to the NetCDF file. In this case, the trajectory data</span>
+<span class="sd">    will be written to the NetCDF file divided by the scale factor value. By</span>
+<span class="sd">    default, scale factor variables are not written. The only exception is for</span>
+<span class="sd">    velocities, where it is set to 20.455, replicating the default behaviour of</span>
+<span class="sd">    AMBER.</span>
 
 <span class="sd">    Unit cell information is written if available.</span>
 
@@ -952,18 +993,24 @@
 <span class="sd">        name of output file</span>
 <span class="sd">    n_atoms : int</span>
 <span class="sd">        number of atoms in trajectory file</span>
-<span class="sd">    start : int (optional)</span>
-<span class="sd">        starting timestep</span>
-<span class="sd">    step : int (optional)</span>
-<span class="sd">        skip between subsequent timesteps</span>
-<span class="sd">    dt : float (optional)</span>
-<span class="sd">        timestep</span>
 <span class="sd">    convert_units : bool (optional)</span>
 <span class="sd">        ``True``: units are converted to the AMBER base format; [``True``]</span>
 <span class="sd">    velocities : bool (optional)</span>
 <span class="sd">        Write velocities into the trajectory [``False``]</span>
 <span class="sd">    forces : bool (optional)</span>
 <span class="sd">        Write forces into the trajectory [``False``]</span>
+<span class="sd">    scale_time : float (optional)</span>
+<span class="sd">        Scale factor for time units [`None`]</span>
+<span class="sd">    scale_cell_lengths : float (optional)</span>
+<span class="sd">        Scale factor for cell lengths [``None``]</span>
+<span class="sd">    scale_cell_angles : float (optional)</span>
+<span class="sd">        Scale factor for cell angles [``None``]</span>
+<span class="sd">    scale_coordinates : float (optional)</span>
+<span class="sd">        Scale factor for coordinates [``None``]</span>
+<span class="sd">    scale_velocities : float (optional)</span>
+<span class="sd">        Scale factor for velocities [20.455]</span>
+<span class="sd">    scale_forces : float (optional)</span>
+<span class="sd">        Scale factor for forces [``None``]</span>
 
 
 <span class="sd">    Note</span>
@@ -1036,9 +1083,12 @@
 <span class="sd">       Changes the `cell_angles` unit to the AMBER NetCDF convention standard</span>
 <span class="sd">       of `degree` instead of the `degrees` written in previous version of</span>
 <span class="sd">       MDAnalysis (Issue #2327).</span>
-
-<span class="sd">    .. TODO:</span>
-<span class="sd">       * Implement `scale_factor` handling (Issue #2327).</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       ``dt``, ``start``, and ``step`` keywords were unused and are no longer</span>
+<span class="sd">       set.</span>
+<span class="sd">       Writing of ``scale_factor`` values has now been implemented. By default</span>
+<span class="sd">       only velocities write a scale_factor of 20.455 (echoing the behaviour</span>
+<span class="sd">       seen from AMBER).</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1050,15 +1100,11 @@
              <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom/ps&#39;</span><span class="p">,</span>
              <span class="s1">&#39;force&#39;</span><span class="p">:</span> <span class="s1">&#39;kcal/(mol*Angstrom)&#39;</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">filename</span><span class="p">,</span>
-                 <span class="n">n_atoms</span><span class="p">,</span>
-                 <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                 <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                 <span class="n">dt</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-                 <span class="n">remarks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="n">remarks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">velocities</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">scale_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">scale_cell_lengths</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale_cell_angles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">scale_coordinates</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale_velocities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">scale_forces</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
         <span class="k">if</span> <span class="n">n_atoms</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;NCDFWriter: no atoms in output trajectory&quot;</span><span class="p">)</span>
@@ -1066,24 +1112,29 @@
         <span class="c1"># convert length and time to base units on the fly?</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">start</span>  <span class="c1"># do we use those?</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">step</span>  <span class="c1"># do we use those?</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">dt</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span> <span class="o">=</span> <span class="n">remarks</span> <span class="ow">or</span> <span class="s2">&quot;AMBER NetCDF format (MDAnalysis.coordinates.trj.NCDFWriter)&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_first_frame</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># signals to open trajectory</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># open on first write with _init_netcdf()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># detect on first write</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;velocities&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;forces&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">curr_frame</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span> <span class="o">=</span> <span class="n">velocities</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span> <span class="o">=</span> <span class="n">forces</span>
 
-        <span class="c1"># warn users of upcoming changes</span>
-        <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;In MDAnalysis v2.0, `scale_factor` writing will change (&quot;</span>
-                <span class="s2">&quot;currently these are not written), to better match the way &quot;</span>
-                <span class="s2">&quot;they are written by AMBER programs. See NCDFWriter docstring &quot;</span>
-                <span class="s2">&quot;for more details.&quot;</span><span class="p">)</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="ne">FutureWarning</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">scale_time</span><span class="p">,</span>
+                <span class="s1">&#39;cell_lengths&#39;</span><span class="p">:</span> <span class="n">scale_cell_lengths</span><span class="p">,</span>
+                <span class="s1">&#39;cell_angles&#39;</span><span class="p">:</span> <span class="n">scale_cell_angles</span><span class="p">,</span>
+                <span class="s1">&#39;coordinates&#39;</span><span class="p">:</span> <span class="n">scale_coordinates</span><span class="p">,</span>
+                <span class="s1">&#39;velocities&#39;</span><span class="p">:</span> <span class="n">scale_velocities</span><span class="p">,</span>
+                <span class="s1">&#39;forces&#39;</span><span class="p">:</span> <span class="n">scale_forces</span><span class="p">}</span>
+        <span class="c1"># NCDF standard enforces float scale_factors</span>
+        <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+                    <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">))):</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;scale_factor </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> is not a float&quot;</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">curr_frame</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">def</span> <span class="nf">_init_netcdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize netcdf AMBER 1.0 trajectory.</span>
@@ -1110,12 +1161,14 @@
                 <span class="s2">&quot;Attempt to write to closed file </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">netCDF4</span><span class="p">:</span>
-            <span class="n">ncfile</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;NETCDF3_64BIT&#39;</span><span class="p">)</span>
+            <span class="n">ncfile</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span>
+                                     <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;NETCDF3_64BIT&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ncfile</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">netcdf</span><span class="o">.</span><span class="n">netcdf_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
-                                                 <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-            <span class="n">wmsg</span> <span class="o">=</span> <span class="s2">&quot;Could not find netCDF4 module. Falling back to MUCH slower &quot;</span>\
-                   <span class="s2">&quot;scipy.io.netcdf implementation for writing.&quot;</span>
+                                                 <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                                 <span class="n">maskandscale</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Could not find netCDF4 module. Falling back to MUCH &quot;</span>
+                    <span class="s2">&quot;slower scipy.io.netcdf implementation for writing.&quot;</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
 
@@ -1140,18 +1193,24 @@
         <span class="n">coords</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;coordinates&#39;</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">,</span>
                                        <span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="s1">&#39;atom&#39;</span><span class="p">,</span> <span class="s1">&#39;spatial&#39;</span><span class="p">))</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]:</span>
+            <span class="n">coords</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span>
 
         <span class="n">spatial</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;spatial&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;spatial&#39;</span><span class="p">,</span> <span class="p">))</span>
         <span class="n">spatial</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="s1">&#39;xyz&#39;</span><span class="p">))</span>
 
         <span class="n">time</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,))</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;picosecond&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="n">periodic</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span><span class="p">:</span>
             <span class="n">cell_lengths</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;cell_lengths&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span>
                                                  <span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="s1">&#39;cell_spatial&#39;</span><span class="p">))</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="n">cell_lengths</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;angstrom&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;cell_lengths&#39;</span><span class="p">]:</span>
+                <span class="n">cell_lengths</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;cell_lengths&#39;</span><span class="p">]</span>
 
             <span class="n">cell_spatial</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;cell_spatial&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span>
                                                  <span class="p">(</span><span class="s1">&#39;cell_spatial&#39;</span><span class="p">,</span> <span class="p">))</span>
@@ -1160,6 +1219,8 @@
             <span class="n">cell_angles</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;cell_angles&#39;</span><span class="p">,</span> <span class="s1">&#39;f8&#39;</span><span class="p">,</span>
                                                 <span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="s1">&#39;cell_angular&#39;</span><span class="p">))</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="n">cell_angles</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;degree&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;cell_angles&#39;</span><span class="p">]:</span>
+                <span class="n">cell_angles</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;cell_angles&#39;</span><span class="p">]</span>
 
             <span class="n">cell_angular</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;cell_angular&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span>
                                                  <span class="p">(</span><span class="s1">&#39;cell_angular&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">))</span>
@@ -1171,10 +1232,19 @@
             <span class="n">velocs</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;velocities&#39;</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">,</span>
                                            <span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="s1">&#39;atom&#39;</span><span class="p">,</span> <span class="s1">&#39;spatial&#39;</span><span class="p">))</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="n">velocs</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;angstrom/picosecond&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;velocities&#39;</span><span class="p">]:</span>
+                <span class="n">velocs</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;velocities&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span><span class="p">:</span>
             <span class="n">forces</span> <span class="o">=</span> <span class="n">ncfile</span><span class="o">.</span><span class="n">createVariable</span><span class="p">(</span><span class="s1">&#39;forces&#39;</span><span class="p">,</span> <span class="s1">&#39;f4&#39;</span><span class="p">,</span>
                                            <span class="p">(</span><span class="s1">&#39;frame&#39;</span><span class="p">,</span> <span class="s1">&#39;atom&#39;</span><span class="p">,</span> <span class="s1">&#39;spatial&#39;</span><span class="p">))</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="n">forces</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;kilocalorie/mole/angstrom&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;forces&#39;</span><span class="p">]:</span>
+                <span class="n">forces</span><span class="o">.</span><span class="n">scale_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="s1">&#39;forces&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Important for netCDF4! Disable maskandscale for created variables!</span>
+        <span class="c1"># Won&#39;t work if called before variable creation!</span>
+        <span class="k">if</span> <span class="n">netCDF4</span><span class="p">:</span>
+            <span class="n">ncfile</span><span class="o">.</span><span class="n">set_auto_maskandscale</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="n">ncfile</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_first_frame</span> <span class="o">=</span> <span class="kc">False</span>
@@ -1232,6 +1302,20 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_next_timestep</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">_set_frame_var_and_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">varname</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Helper function to set variables and scale them if necessary.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        If scale_factor is numerically close to 1.0, the variable data is not</span>
+<span class="sd">        scaled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sfactor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale_factors</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">sfactor</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">isclose</span><span class="p">(</span><span class="n">sfactor</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">varname</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">curr_frame</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">varname</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">curr_frame</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span> <span class="o">/</span> <span class="n">sfactor</span>
+
     <span class="k">def</span> <span class="nf">_write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write coordinates and unitcell information to NCDF file.</span>
 
@@ -1245,6 +1329,10 @@
 <span class="sd">           https://github.com/MDAnalysis/mdanalysis/issues/109</span>
 <span class="sd">        .. _`netcdf4storage.py`:</span>
 <span class="sd">           https://storage.googleapis.com/google-code-attachments/mdanalysis/issue-109/comment-2/netcdf4storage.py</span>
+
+
+<span class="sd">        .. versionchanged:: 2.0.0</span>
+<span class="sd">           Can now write scale_factors, and scale variables accordingly.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pos</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span>
         <span class="n">time</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span>
@@ -1262,27 +1350,36 @@
             <span class="n">unitcell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 
         <span class="c1"># write step</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">curr_frame</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">pos</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">curr_frame</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;cell_lengths&#39;</span><span class="p">][</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">curr_frame</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;cell_angles&#39;</span><span class="p">][</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">curr_frame</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">unitcell</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+        <span class="c1"># coordinates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_frame_var_and_scale</span><span class="p">(</span><span class="s1">&#39;coordinates&#39;</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
 
+        <span class="c1"># time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_frame_var_and_scale</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">time</span><span class="p">)</span>
+
+        <span class="c1"># unitcell</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span><span class="p">:</span>
+            <span class="c1"># cell lengths</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_frame_var_and_scale</span><span class="p">(</span><span class="s1">&#39;cell_lengths&#39;</span><span class="p">,</span> <span class="n">unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_frame_var_and_scale</span><span class="p">(</span><span class="s1">&#39;cell_angles&#39;</span><span class="p">,</span> <span class="n">unitcell</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
+
+        <span class="c1"># velocities</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">:</span>
             <span class="n">velocities</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
                 <span class="n">velocities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_velocities_to_native</span><span class="p">(</span>
                     <span class="n">velocities</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;velocities&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">curr_frame</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">velocities</span>
 
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_frame_var_and_scale</span><span class="p">(</span><span class="s1">&#39;velocities&#39;</span><span class="p">,</span> <span class="n">velocities</span><span class="p">)</span>
+
+        <span class="c1"># forces</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span><span class="p">:</span>
             <span class="n">forces</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">_forces</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
                 <span class="n">forces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_forces_to_native</span><span class="p">(</span>
                     <span class="n">forces</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;forces&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">curr_frame</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">forces</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_frame_var_and_scale</span><span class="p">(</span><span class="s1">&#39;forces&#39;</span><span class="p">,</span> <span class="n">forces</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">curr_frame</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -1307,6 +1404,13 @@
 <span class="sd">    This means that for a successful unpickle, the original file still has to</span>
 <span class="sd">    be accessible with its filename.</span>
 
+
+<span class="sd">    .. note::</span>
+<span class="sd">        This class subclasses :class:`scipy.io.netcdf.netcdf_file`, please</span>
+<span class="sd">        see the `scipy netcdf API documentation`_ for more information on</span>
+<span class="sd">        the parameters and how the class behaviour.</span>
+
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    filename : str or file-like</span>
@@ -1314,6 +1418,11 @@
 <span class="sd">    mmap : None or bool, optional</span>
 <span class="sd">        Whether to mmap `filename` when reading. True when `filename`</span>
 <span class="sd">        is a file name, False when `filename` is a file-like object.</span>
+<span class="sd">    version : {1, 2}, optional</span>
+<span class="sd">        Sets the netcdf file version to read / write. 1 is classic, 2 is</span>
+<span class="sd">        64-bit offset format. Default is 1 (but note AMBER ncdf *requires* 2).</span>
+<span class="sd">    maskandscale : bool, optional</span>
+<span class="sd">        Whether to automatically scale and mask data. Default is False.</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
@@ -1338,12 +1447,17 @@
 
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
+
+
+<span class="sd">    .. _`scipy netcdf API documentation`: https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.netcdf_file.html</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_mmap</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_mmap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">version_byte</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">maskandscale</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mmap</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mmap</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">version</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                      <span class="n">maskandscale</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span></div>
 </pre></div>
 
            </div>

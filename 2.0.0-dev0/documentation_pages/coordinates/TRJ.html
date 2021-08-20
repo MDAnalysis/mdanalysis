@@ -334,8 +334,6 @@ the trajectory, then <code class="xref py py-attr docutils literal notranslate">
 <p>Current limitations:</p>
 <ul class="simple">
 <li>only trajectories with time in ps and lengths in Angstroem are processed</li>
-<li>scale_factors are supported on read but are currently not kept/used when
-writing</li>
 </ul>
 <p>The NCDF reader uses <code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code> and therefore <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/index.html#module-scipy" title="(in SciPy v1.7.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy</span></code></a> must
 be installed. It supports the <em>mmap</em> keyword argument (when reading):
@@ -375,7 +373,9 @@ removed (Issue #2327)</p>
 <p><span class="versionmodified">Changed in version 2.0.0: </span>Now use a picklable <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.io.netcdf_file.html#scipy.io.netcdf_file" title="(in SciPy v1.7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf.netcdf_file</span></code></a>–
 <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFPicklable" title="MDAnalysis.coordinates.TRJ.NCDFPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFPicklable</span></code></a>.
 Reading of <cite>dt</cite> now defaults to 1.0 ps if <cite>dt</cite> cannot be extracted from
-the first two frames of the trajectory.</p>
+the first two frames of the trajectory.
+<a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFReader.Writer" title="MDAnalysis.coordinates.TRJ.NCDFReader.Writer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Writer()</span></code></a> now also sets <cite>convert_units</cite>, <cite>velocities</cite>, <cite>forces</cite> and
+<cite>scale_factor</cite> information for the <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="MDAnalysis.coordinates.TRJ.NCDFWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFWriter</span></code></a>.</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFReader.Writer">
@@ -389,8 +389,16 @@ the first two frames of the trajectory.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – filename of the output NCDF trajectory</li>
 <li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – number of atoms</li>
-<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – length of one timestep in picoseconds</li>
 <li><strong>remarks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – string that is stored in the title field</li>
+<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code>: units are converted to the AMBER base format</li>
+<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Write velocities into the trajectory</li>
+<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Write forces into the trajectory</li>
+<li><strong>scale_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for time units</li>
+<li><strong>scale_cell_lengths</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for cell lengths</li>
+<li><strong>scale_cell_angles</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for cell angles</li>
+<li><strong>scale_coordinates</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for coordinates</li>
+<li><strong>scale_velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for velocities</li>
+<li><strong>scale_forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for forces</li>
 </ul>
 </td>
 </tr>
@@ -439,14 +447,21 @@ before the file can be closed.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFWriter">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.TRJ.</code><code class="descname">NCDFWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms</em>, <em>start=0</em>, <em>step=1</em>, <em>dt=1.0</em>, <em>remarks=None</em>, <em>convert_units=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.TRJ.</code><code class="descname">NCDFWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms</em>, <em>remarks=None</em>, <em>convert_units=True</em>, <em>velocities=False</em>, <em>forces=False</em>, <em>scale_time=None</em>, <em>scale_cell_lengths=None</em>, <em>scale_cell_angles=None</em>, <em>scale_coordinates=None</em>, <em>scale_velocities=None</em>, <em>scale_forces=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writer for <a class="reference external" href="http://ambermd.org/netcdf/nctraj.xhtml">AMBER NETCDF format</a> (version 1.0).</p>
 <p>AMBER binary trajectories are automatically recognised by the
 file extension “.ncdf” or “.nc”.</p>
 <p>Velocities are written out if they are detected in the input
 <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.Timestep" title="MDAnalysis.coordinates.TRJ.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>. The trajectories are always written with ångström
 for the lengths and picoseconds for the time (and hence Å/ps for
-velocities).</p>
+velocities and kilocalorie/mole/Å for forces).</p>
+<p>Scale factor variables for time, velocities, cell lengths, cell angles,
+coordinates, velocities, or forces can be passed into the writer. If so,
+they will be written to the NetCDF file. In this case, the trajectory data
+will be written to the NetCDF file divided by the scale factor value. By
+default, scale factor variables are not written. The only exception is for
+velocities, where it is set to 20.455, replicating the default behaviour of
+AMBER.</p>
 <p>Unit cell information is written if available.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -455,12 +470,15 @@ velocities).</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – name of output file</li>
 <li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of atoms in trajectory file</li>
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – starting timestep</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – skip between subsequent timesteps</li>
-<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – timestep</li>
 <li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code>: units are converted to the AMBER base format; [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
 <li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Write velocities into the trajectory [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
 <li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Write forces into the trajectory [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<li><strong>scale_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for time units [<cite>None</cite>]</li>
+<li><strong>scale_cell_lengths</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for cell lengths [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
+<li><strong>scale_cell_angles</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for cell angles [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
+<li><strong>scale_coordinates</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for coordinates [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
+<li><strong>scale_velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for velocities [20.455]</li>
+<li><strong>scale_forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for forces [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
 </ul>
 </td>
 </tr>
@@ -534,6 +552,13 @@ AmberTools’s <strong class="program">sander</strong> under default operation.<
 of <cite>degree</cite> instead of the <cite>degrees</cite> written in previous version of
 MDAnalysis (Issue #2327).</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span><code class="docutils literal notranslate"><span class="pre">dt</span></code>, <code class="docutils literal notranslate"><span class="pre">start</span></code>, and <code class="docutils literal notranslate"><span class="pre">step</span></code> keywords were unused and are no longer
+set.
+Writing of <code class="docutils literal notranslate"><span class="pre">scale_factor</span></code> values has now been implemented. By default
+only velocities write a scale_factor of 20.455 (echoing the behaviour
+seen from AMBER).</p>
+</div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFWriter.close">
 <code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFWriter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter.close" title="Permalink to this definition">¶</a></dt>
@@ -574,6 +599,12 @@ the file are saved. On unpickling, the file is opened by filename,
 and the mmap file is loaded.
 This means that for a successful unpickle, the original file still has to
 be accessible with its filename.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This class subclasses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.io.netcdf_file.html#scipy.io.netcdf_file" title="(in SciPy v1.7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf.netcdf_file</span></code></a>, please
+see the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.netcdf_file.html">scipy netcdf API documentation</a> for more information on
+the parameters and how the class behaviour.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -582,6 +613,9 @@ be accessible with its filename.</p>
 <li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>file-like</em>) – a filename given a text or byte string.</li>
 <li><strong>mmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to mmap <cite>filename</cite> when reading. True when <cite>filename</cite>
 is a file name, False when <cite>filename</cite> is a file-like object.</li>
+<li><strong>version</strong> (<em>{1</em><em>, </em><em>2}</em><em>, </em><em>optional</em>) – Sets the netcdf file version to read / write. 1 is classic, 2 is
+64-bit offset format. Default is 1 (but note AMBER ncdf <em>requires</em> 2).</li>
+<li><strong>maskandscale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to automatically scale and mask data. Default is False.</li>
 </ul>
 </td>
 </tr>
