@@ -1413,27 +1413,15 @@ class H5MDWriter(base.WriterBase):
         """``True`` if writer is writing positions from Timestep."""
         return self._has['position']
 
-    @has_positions.setter
-    def has_positions(self, value: bool):
-        self._has['position'] = value
-
     @property
     def has_velocities(self):
         """``True`` if writer is writing velocities from Timestep."""
         return self._has['velocity']
 
-    @has_velocities.setter
-    def has_velocities(self, value: bool):
-        self._has['velocity'] = value
-
     @property
     def has_forces(self):
         """``True`` if writer is writing forces from Timestep."""
         return self._has['force']
-
-    @has_forces.setter
-    def has_forces(self, value: bool):
-        self._has['force'] = value
 
 
 class H5PYPicklable(h5py.File):
