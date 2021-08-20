@@ -916,9 +916,15 @@ another frame is appended to the trajectory.</p>
 <div class="section" id="id20">
 <h4>6.1.5.4.1. Methods<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h4>
 <blockquote>
-<div><dl class="docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">__init__(filename,n_atoms[,start[,step[,delta[,remarks]]]])</span></code></dt>
-<dd>opens <em>filename</em> and writes header if required by format</dd>
+<div><p><code class="docutils literal notranslate"><span class="pre">__init__(filename,</span> <span class="pre">n_atoms,</span> <span class="pre">**kwargs)</span></code></p>
+<blockquote>
+<div><p>Set-up the reader. This <em>may</em> open file <em>filename</em> and <em>may</em>
+write content to it such as headers immediately but the writer is
+allowed to delay I/O up to the first call of <code class="docutils literal notranslate"><span class="pre">write()</span></code>.</p>
+<p>Any <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> that are not processed by the writer must be
+silently ignored.</p>
+</div></blockquote>
+<dl class="docutils">
 <dt><code class="docutils literal notranslate"><span class="pre">write(obj)</span></code></dt>
 <dd>write Timestep data in <em>obj</em></dd>
 <dt><code class="docutils literal notranslate"><span class="pre">convert_dimensions_to_unitcell(timestep)</span></code></dt>
@@ -937,8 +943,6 @@ unitcell representation of the format</dd>
 <div><dl class="docutils">
 <dt><code class="docutils literal notranslate"><span class="pre">filename</span></code></dt>
 <dd>name of the trajectory file</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">start,</span> <span class="pre">stop,</span> <span class="pre">step</span></code></dt>
-<dd>first and last frame number (0-based) and step</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">units</span></code></dt>
 <dd>dictionary with keys <em>time</em>, <em>length</em>, <em>speed</em>, <em>force</em> and the
 appropriate unit (e.g. ‘AKMA’ and ‘Angstrom’ for Charmm dcds, ‘ps’ and

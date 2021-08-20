@@ -232,8 +232,7 @@
   <span class="target" id="module-MDAnalysis.coordinates.base"></span><div class="section" id="base-classes-mdanalysis-coordinates-base">
 <h1>6.28. Base classes — <a class="reference internal" href="#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a><a class="headerlink" href="#base-classes-mdanalysis-coordinates-base" title="Permalink to this headline">¶</a></h1>
 <p>Derive other Timestep, FrameIterator, Reader and Writer classes from the classes
-in this module. The derived classes must follow the <a class="reference internal" href="init.html#trajectory-api"><span class="std std-ref">Trajectory API</span></a>
-in <a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.__init__</span></code></a>.</p>
+in this module. The derived classes must follow the <a class="reference internal" href="init.html#trajectory-api"><span class="std std-ref">Trajectory API</span></a>.</p>
 <div class="section" id="timestep">
 <h2>6.28.1. Timestep<a class="headerlink" href="#timestep" title="Permalink to this headline">¶</a></h2>
 <p>A <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> holds information for the current time frame in
@@ -711,7 +710,7 @@ contain many frames. These readers are typically derived from
 <a class="reference internal" href="#MDAnalysis.coordinates.base.ReaderBase" title="MDAnalysis.coordinates.base.ReaderBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReaderBase</span></code></a>.</li>
 <li>Readers for <em>single frame formats</em>: These file formats only contain a single
 coordinate set. These readers are derived from
-:class`:SingleFrameReaderBase`.</li>
+<a class="reference internal" href="#MDAnalysis.coordinates.base.SingleFrameReaderBase" title="MDAnalysis.coordinates.base.SingleFrameReaderBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">SingleFrameReaderBase</span></code></a>.</li>
 </ol>
 <p>The underlying low-level readers handle closing of files in different
 ways. Typically, the MDAnalysis readers try to ensure that files are always
@@ -729,8 +728,7 @@ case, <a class="reference internal" href="#MDAnalysis.coordinates.base.ProtoRead
 <a class="reference internal" href="#MDAnalysis.coordinates.base.ReaderBase.close" title="MDAnalysis.coordinates.base.ReaderBase.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">close()</span></code></a> method, to ensure proper release of resources (mainly file
 handles). Readers that are inherently safe in this regard should subclass
 <a class="reference internal" href="#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProtoReader</span></code></a> instead.</p>
-<p>See the <a class="reference internal" href="init.html#trajectory-api"><span class="std std-ref">Trajectory API</span></a> definition in
-<a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.__init__</span></code></a> for the required attributes and
+<p>See the <a class="reference internal" href="init.html#trajectory-api"><span class="std std-ref">Trajectory API</span></a> definition in for the required attributes and
 methods.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
@@ -2462,8 +2460,8 @@ file.</p>
 <dt id="MDAnalysis.coordinates.base.WriterBase">
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.base.</code><code class="descname">WriterBase</code><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#WriterBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.WriterBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for trajectory writers.</p>
-<p>See Trajectory API definition in <a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.__init__</span></code></a> for
-the required attributes and methods.</p>
+<p>See <a class="reference internal" href="init.html#trajectory-api"><span class="std std-ref">Trajectory API</span></a> definition in for the required attributes and
+methods.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 2.0.0: </span>Deprecated <code class="xref py py-func docutils literal notranslate"><span class="pre">write_next_timestep()</span></code> has now been removed, please use
 <a class="reference internal" href="#MDAnalysis.coordinates.base.WriterBase.write" title="MDAnalysis.coordinates.base.WriterBase.write"><code class="xref py py-func docutils literal notranslate"><span class="pre">write()</span></code></a> instead.</p>
@@ -2773,6 +2771,10 @@ removed. Use AtomGroup or Universe as an input instead.</p>
 <dt id="MDAnalysis.coordinates.base.ConverterBase">
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.base.</code><code class="descname">ConverterBase</code><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#ConverterBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.ConverterBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for converting to other libraries.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../converters.html#module-MDAnalysis.converters" title="MDAnalysis.converters"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.converters</span></code></a></p>
+</div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.ConverterBase.close">
 <code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.base.ConverterBase.close" title="Permalink to this definition">¶</a></dt>

@@ -211,8 +211,7 @@
 <span class="sd">===================================================</span>
 
 <span class="sd">Derive other Timestep, FrameIterator, Reader and Writer classes from the classes</span>
-<span class="sd">in this module. The derived classes must follow the :ref:`Trajectory API`</span>
-<span class="sd">in :mod:`MDAnalysis.coordinates.__init__`.</span>
+<span class="sd">in this module. The derived classes must follow the :ref:`Trajectory API`.</span>
 
 <span class="sd">Timestep</span>
 <span class="sd">--------</span>
@@ -325,7 +324,7 @@
 
 <span class="sd">2. Readers for *single frame formats*: These file formats only contain a single</span>
 <span class="sd">   coordinate set. These readers are derived from</span>
-<span class="sd">   :class`:SingleFrameReaderBase`.</span>
+<span class="sd">   :class:`SingleFrameReaderBase`.</span>
 
 <span class="sd">The underlying low-level readers handle closing of files in different</span>
 <span class="sd">ways. Typically, the MDAnalysis readers try to ensure that files are always</span>
@@ -2294,8 +2293,7 @@
 <span class="sd">    handles). Readers that are inherently safe in this regard should subclass</span>
 <span class="sd">    :class:`ProtoReader` instead.</span>
 
-<span class="sd">    See the :ref:`Trajectory API` definition in</span>
-<span class="sd">    :mod:`MDAnalysis.coordinates.__init__` for the required attributes and</span>
+<span class="sd">    See the :ref:`Trajectory API` definition in for the required attributes and</span>
 <span class="sd">    methods.</span>
 
 <span class="sd">    See Also</span>
@@ -2312,6 +2310,7 @@
 <span class="sd">       Provides kwargs to be passed to :class:`Timestep`</span>
 <span class="sd">    .. versionchanged:: 1.0</span>
 <span class="sd">       Removed deprecated flags functionality, use convert_units kwarg instead</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -2388,13 +2387,14 @@
 <div class="viewcode-block" id="WriterBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.WriterBase">[docs]</a><span class="k">class</span> <span class="nc">WriterBase</span><span class="p">(</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Writermeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for trajectory writers.</span>
 
-<span class="sd">    See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for</span>
-<span class="sd">    the required attributes and methods.</span>
+<span class="sd">    See :ref:`Trajectory API` definition in for the required attributes and</span>
+<span class="sd">    methods.</span>
 
 
 <span class="sd">    .. versionchanged:: 2.0.0</span>
 <span class="sd">       Deprecated :func:`write_next_timestep` has now been removed, please use</span>
 <span class="sd">       :func:`write` instead.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="WriterBase.convert_dimensions_to_unitcell"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.WriterBase.convert_dimensions_to_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -2625,6 +2625,10 @@
 
 <div class="viewcode-block" id="ConverterBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.converters.OpenMMParser.ConverterBase">[docs]</a><span class="k">class</span> <span class="nc">ConverterBase</span><span class="p">(</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_Convertermeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for converting to other libraries.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :mod:`MDAnalysis.converters`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
