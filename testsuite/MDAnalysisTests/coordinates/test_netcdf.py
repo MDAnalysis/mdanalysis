@@ -906,6 +906,8 @@ class TestNCDFWriterScaleFactors:
     def get_scale_factors(self, ncdfile):
         """Get a dictionary of scale factors stored in netcdf file"""
         sfactors = {}
+        # being overly cautious by setting mmap to False, probably would
+        # be faster & ok to set it to True
         with netcdf.netcdf_file(ncdfile, mmap=False) as f:
             for var in f.variables:
                 if hasattr(f.variables[var], 'scale_factor'):

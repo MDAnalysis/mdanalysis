@@ -1221,6 +1221,13 @@ class NCDFPicklable(scipy.io.netcdf.netcdf_file):
     This means that for a successful unpickle, the original file still has to
     be accessible with its filename.
 
+
+    .. note::
+        This class subclasses :class:`scipy.io.netcdf.netcdf_file`, please
+        see the `scipy netcdf API documentation`_ for more information on
+        the parameters and how the class behaviour.
+
+
     Parameters
     ----------
     filename : str or file-like
@@ -1257,6 +1264,9 @@ class NCDFPicklable(scipy.io.netcdf.netcdf_file):
 
 
     .. versionadded:: 2.0.0
+
+
+    .. _`scipy netcdf API documentation`: https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.netcdf_file.html
     """
     def __getstate__(self):
         return (self.filename, self.use_mmap, self.version_byte,
