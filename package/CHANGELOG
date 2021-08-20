@@ -34,7 +34,7 @@ Fixes
     information is consistently treated (Issue #3305)
   * Fixed sometimes wrong sorting of atoms into fragments when unwrapping
     (Issue #3352, PR #3353)
-  * Fixed missing array flatten preventing PCA from running when mean positions  
+  * Fixed missing array flatten preventing PCA from running when mean positions
     provided and bugs causing tests to incorrectly pass (Issue #2728, PR #3296)
   * DL_POLY HISTORY file may contain unit cell dimensions even if there are
     no periodic boundary conditions (imcom=0) (Issue #3314, PR #3312).
@@ -123,7 +123,7 @@ Fixes
   * Fix tests for analysis.bat that could fail when run in parallel and that
     would create a test artifact (Issue #2979, PR #2981)
   * Fix syntax warning over comparison of literals using is (Issue #3066)
-  * new `Results` class now can be pickled/unpickled. (PR #3309) 
+  * new `Results` class now can be pickled/unpickled. (PR #3309)
 
 Enhancements
   * Add a ``sort`` keyword to AtomGroup.select_atoms for ordered selections
@@ -205,11 +205,13 @@ Enhancements
     to transfer data from HDF5 file into timestep. (PR #3293)
 
 Changes
+  * Update the API for coordinate writers to reflect practice:
+    start. stop, step are not required anymore (#3392)
   * Aliased bfactors to tempfactors (Issue #1901, PR#3345)
   * The RDKitParser now raises an error if only part of the atoms have metadata
     on residues (Issue #3318, PR #3325)
-  * `analysis.pca.PCA` class now stores `p_components`, `variance`, 
-    `cumulated_variance` and `mean_atoms` using the 
+  * `analysis.pca.PCA` class now stores `p_components`, `variance`,
+    `cumulated_variance` and `mean_atoms` using the
     `analysis.base.Results` class (Issues #3275 #3285)
   * Timestep now stores information in 'C' memory layout instead of
     the previous 'F' default (PR #1738)
