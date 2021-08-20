@@ -1236,7 +1236,7 @@ class NCDFPicklable(scipy.io.netcdf.netcdf_file):
         is a file name, False when `filename` is a file-like object.
     version : {1, 2}, optional
         Sets the netcdf file version to read / write. 1 is classic, 2 is
-        65-bit offset format. Default is 1.
+        64-bit offset format. Default is 1 (but note AMBER ncdf *requires* 2).
     maskandscale : bool, optional
         Whether to automatically scale and mask data. Default is False.
 
