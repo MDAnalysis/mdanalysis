@@ -155,8 +155,19 @@ class GROReader(base.SingleFrameReaderBase):
     .. note::
        This Reader will only read the first frame present in a file.
 
+
+    .. note::
+       GRO files with zeroed 3 entry unit cells (i.e. ``0.0   0.0   0.0``)
+       are read as missing unit cell information. In these cases ``dimensions``
+       will be set to ``None``.
+
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
+    .. versionchanged:: 2.0.0
+       Reader now only parses boxes defined with 3 or 9 fields.
+       Reader now reads a 3 entry zero unit cell (i.e. ``[0, 0, 0]``) as a
+       being without dimension information (i.e. will the timestep dimension
+       to ``None``).
     """
     format = 'GRO'
     units = {'time': None, 'length': 'nm', 'velocity': 'nm/ps'}
@@ -214,15 +225,19 @@ class GROReader(base.SingleFrameReaderBase):
         if len(unitcell) == 3:
             # special case: a b c --> (a 0 0) (b 0 0) (c 0 0)
             # see docstring above for format (!)
-            self.ts.dimensions = np.r_[unitcell, [90., 90., 90.]]
+            # Treat empty 3 entry boxes as not having a unit cell
+            if np.allclose(unitcell, [0., 0., 0.]):
+                wmsg = ("Empty box [0., 0., 0.] found - treating as missing "
+                        "unit cell. Dimensions set to `None`.")
+                warnings.warn(wmsg)
+                self.ts.dimensions = None
+            else:
+                self.ts.dimensions = np.r_[unitcell, [90., 90., 90.]]
         elif len(unitcell) == 9:
             self.ts.dimensions = _gmx_to_dimensions(unitcell)
-        else:  # or maybe raise an error for wrong format??
-            warnings.warn("GRO unitcell has neither 3 nor 9 entries --- might be wrong.")
-            # fill linearly ... not sure about this
-            unitcell2 = np.zeros(9)
-            unitcell2[:len(unitcell)] = unitcell
-            self.ts.dimensions = _gmx_to_dimensions(unitcell2)
+        else:  # raise an error for wrong format
+            errmsg = "GRO unitcell has neither 3 nor 9 entries."
+            raise ValueError(errmsg)
 
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
@@ -258,9 +273,14 @@ class GROWriter(base.WriterBase):
      - resnames (defaults to 'UNK')
      - resids (defaults to '1')
 
-    Note
-    ----
-    The precision is hard coded to three decimal places
+
+    .. note::
+        The precision is hard coded to three decimal places.
+
+
+    .. note::
+        When dimensions are missing (i.e. set to `None`), a zero width
+        unit cell box will be written (i.e. [0.0, 0.0, 0.0]).
 
 
     .. versionchanged:: 0.11.0
@@ -274,6 +294,9 @@ class GROWriter(base.WriterBase):
     .. versionchanged:: 0.18.0
        Added `reindex` keyword argument to allow original atom
        ids to be kept.
+    .. versionchanged:: 2.0.0
+       Raises a warning when writing timestep with missing dimension
+       information (i.e. set to ``None``).
     """
 
     format = 'GRO'
@@ -455,6 +478,9 @@ class GROWriter(base.WriterBase):
             if (ag.dimensions is None or
                 np.allclose(ag.dimensions[3:], [90., 90., 90.])):
                 if ag.dimensions is None:
+                    wmsg = ("missing dimension - setting unit cell to zeroed "
+                            "box [0., 0., 0.]")
+                    warnings.warn(wmsg)
                     box = np.zeros(3)
                 else:
                     box = self.convert_pos_to_native(

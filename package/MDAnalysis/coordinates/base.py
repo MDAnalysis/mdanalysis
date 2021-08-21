@@ -27,8 +27,7 @@ Base classes --- :mod:`MDAnalysis.coordinates.base`
 ===================================================
 
 Derive other Timestep, FrameIterator, Reader and Writer classes from the classes
-in this module. The derived classes must follow the :ref:`Trajectory API`
-in :mod:`MDAnalysis.coordinates.__init__`.
+in this module. The derived classes must follow the :ref:`Trajectory API`.
 
 Timestep
 --------
@@ -141,7 +140,7 @@ common API to the user in MDAnalysis. There are two types of readers:
 
 2. Readers for *single frame formats*: These file formats only contain a single
    coordinate set. These readers are derived from
-   :class`:SingleFrameReaderBase`.
+   :class:`SingleFrameReaderBase`.
 
 The underlying low-level readers handle closing of files in different
 ways. Typically, the MDAnalysis readers try to ensure that files are always
@@ -2110,8 +2109,7 @@ class ReaderBase(ProtoReader):
     handles). Readers that are inherently safe in this regard should subclass
     :class:`ProtoReader` instead.
 
-    See the :ref:`Trajectory API` definition in
-    :mod:`MDAnalysis.coordinates.__init__` for the required attributes and
+    See the :ref:`Trajectory API` definition in for the required attributes and
     methods.
 
     See Also
@@ -2128,6 +2126,7 @@ class ReaderBase(ProtoReader):
        Provides kwargs to be passed to :class:`Timestep`
     .. versionchanged:: 1.0
        Removed deprecated flags functionality, use convert_units kwarg instead
+
     """
 
     def __init__(self, filename, convert_units=True, **kwargs):
@@ -2204,13 +2203,14 @@ class _Writermeta(type):
 class WriterBase(IOBase, metaclass=_Writermeta):
     """Base class for trajectory writers.
 
-    See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for
-    the required attributes and methods.
+    See :ref:`Trajectory API` definition in for the required attributes and
+    methods.
 
 
     .. versionchanged:: 2.0.0
        Deprecated :func:`write_next_timestep` has now been removed, please use
        :func:`write` instead.
+
     """
 
     def convert_dimensions_to_unitcell(self, ts, inplace=True):
@@ -2441,6 +2441,10 @@ class _Convertermeta(type):
 
 class ConverterBase(IOBase, metaclass=_Convertermeta):
     """Base class for converting to other libraries.
+
+    See Also
+    --------
+    :mod:`MDAnalysis.converters`
     """
 
     def __repr__(self):

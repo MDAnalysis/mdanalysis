@@ -93,6 +93,13 @@ option are guaranteed to conform to the above format::
 
    pdb2pqr --ff=charmm --whitespace 4ake.pdb 4ake.pqr
 
+
+Notes
+-----
+The PQR format does not provide a means by which to provide box information.
+In all cases the `dimensions` attribute will be set to `None`.
+
+
 .. _PQR:     https://apbs-pdb2pqr.readthedocs.io/en/latest/formats/pqr.html
 .. _APBS:    https://apbs-pdb2pqr.readthedocs.io/en/latest/apbs/index.html
 .. _PDB2PQR: https://apbs-pdb2pqr.readthedocs.io/en/latest/pdb2pqr/index.html
@@ -130,7 +137,6 @@ class PQRReader(base.SingleFrameReaderBase):
         flavour = None
 
         coords = []
-        unitcell = None
         with util.openany(self.filename) as pqrfile:
             for line in pqrfile:
                 if line.startswith(('ATOM', 'HETATM')):
@@ -145,13 +151,10 @@ class PQRReader(base.SingleFrameReaderBase):
         self.n_atoms = len(coords)
         self.ts = self._Timestep.from_coordinates(
             coords, **self._ts_kwargs)
-        self.ts.dimensions = unitcell
         self.ts.frame = 0  # 0-based frame number
         if self.convert_units:
             # in-place !
             self.convert_pos_from_native(self.ts._pos)
-            if not self.ts.dimensions is None:
-                self.convert_pos_from_native(self.ts.dimensions[:3])
 
     def Writer(self, filename, **kwargs):
         """Returns a PQRWriter for *filename*.

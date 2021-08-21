@@ -44,7 +44,7 @@ matrix:
       group: edge
       if: type = cron
       before_install:
-        - python -m pip install cython numpy scipy
+        - python -m pip install cython "numpy>=1.19.2" scipy
         - python -m pip install --no-build-isolation hypothesis matplotlib pytest pytest-cov pytest-xdist tqdm threadpoolctl
       install:
         - cd package

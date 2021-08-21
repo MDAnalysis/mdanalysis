@@ -537,6 +537,13 @@ class TestTimestep(object):
         assert ts1 != ts2
         assert ts2 != ts1
 
+    def test_no_pos_inequality(self):
+        ts1 = self.Timestep(self.size, positions=False)
+        ts2 = self.Timestep(self.size)
+
+        assert ts1 != ts2
+        assert ts2 != ts1
+
     def test_check_vels_equality(self):
         ts1 = self.Timestep(self.size, velocities=True)
         ts2 = self.Timestep(self.size, velocities=True)
@@ -591,6 +598,16 @@ class TestTimestep(object):
 
         ts1.forces = self._get_pos()
         ts2.forces = self._get_pos() + 1.0
+
+        assert ts1 != ts2
+        assert ts2 != ts1
+
+    @pytest.mark.parametrize('dim1', [None, [2., 2., 2., 90., 90., 90.]])
+    def test_dims_mismatch_inequality(self, dim1):
+        ts1 = self.Timestep(self.size)
+        ts1.dimensions = dim1
+        ts2 = self.Timestep(self.size)
+        ts2.dimensions = [1., 1., 1., 90., 90., 90.]
 
         assert ts1 != ts2
         assert ts2 != ts1

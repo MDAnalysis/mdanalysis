@@ -53,6 +53,7 @@ from ..core.topologyattrs import (
     Atomtypes,
     Bonds,
     Charges,
+    Elements,
     Masses,
     Resids,
     Resnums,
@@ -60,6 +61,9 @@ from ..core.topologyattrs import (
     Segids,
 )
 from ..core.topology import Topology
+from .tables import SYBYL2SYMB
+
+import warnings
 
 
 class MOL2Parser(TopologyReaderBase):
@@ -70,12 +74,19 @@ class MOL2Parser(TopologyReaderBase):
      - Atomnames
      - Atomtypes
      - Charges
-     - Resids,
+     - Resids
      - Resnames
      - Bonds
+     - Elements
 
     Guesses the following:
      - masses
+
+    Notes
+    -----
+    Elements are obtained directly from the SYBYL atom types. If some atoms have
+    unknown atom types, they will be assigned an empty element record. If all
+    atoms have unknown atom types, the elements attribute will not be set.
 
     .. versionchanged:: 0.9
        Now subclasses TopologyReaderBase
@@ -84,6 +95,8 @@ class MOL2Parser(TopologyReaderBase):
        Ignores status bit strings
     .. versionchanged:: 2.0.0
        Bonds attribute is not added if no bonds are present in MOL2 file
+    .. versionchanged: 2.0.0
+       Parse elements from atom types.
     """
     format = 'MOL2'
 
@@ -148,7 +161,22 @@ class MOL2Parser(TopologyReaderBase):
 
         n_atoms = len(ids)
 
-        masses = guessers.guess_masses(types)
+        validated_elements = np.empty(n_atoms, dtype="U3")
+        invalid_elements = set()
+        for i, at in enumerate(types):
+            if at in SYBYL2SYMB:
+                validated_elements[i] = SYBYL2SYMB[at]
+            else:
+                invalid_elements.add(at)
+                validated_elements[i] = ''
+
+        # Print single warning for all unknown elements, if any
+        if invalid_elements:
+            warnings.warn("Unknown elements found for some "
+                          f"atoms: {invalid_elements}. "
+                          "These have been given an empty element record.")
+
+        masses = guessers.guess_masses(validated_elements)
 
         attrs = []
         attrs.append(Atomids(np.array(ids, dtype=np.int32)))
@@ -156,6 +184,9 @@ class MOL2Parser(TopologyReaderBase):
         attrs.append(Atomtypes(np.array(types, dtype=object)))
         attrs.append(Charges(np.array(charges, dtype=np.float32)))
         attrs.append(Masses(masses, guessed=True))
+
+        if not np.all(validated_elements == ''):
+            attrs.append(Elements(validated_elements))
 
         resids = np.array(resids, dtype=np.int32)
         resnames = np.array(resnames, dtype=object)
