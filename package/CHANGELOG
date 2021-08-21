@@ -126,6 +126,9 @@ Fixes
   * new `Results` class now can be pickled/unpickled. (PR #3309)
 
 Enhancements
+  * LAMMPSDumpReader can now read coordinates in all the different LAMMPS
+    coordinate conventions. Both LAMMPSDumpReader and LAMMPSDumpParser are no
+    longer hardcoded to a set column layout (Issue #3358, PR #3360).
   * Add a ``sort`` keyword to AtomGroup.select_atoms for ordered selections
     (Issue #3364, PR #3368)
   * Adds AtomGroup.asunique, ResidueGroup.asunique, SegmentGroup.asunique
@@ -203,6 +206,7 @@ Enhancements
     checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
   * Improved performance of H5MDReader by using h5py.Dataset.read_direct()
     to transfer data from HDF5 file into timestep. (PR #3293)
+  * Added `H5MDWriter` to coordinate writers (Issue #2866, PR #3189)
 
 Changes
   * NCDFWriter now allows for the writing of `scale_factor` attributes for
@@ -314,10 +318,10 @@ Deprecations
   * Deprecated the `bfactors` topology attribute in favour of `tempfactors`.
     In 2.0 `bfactors` is simply an alias of `tempfactors`; in 3.0 `bfactors`
     will be removed. (Issue #1901, PR #3345)
-  * The attributes `p_components`, `variance`, `cumulated_variance` and 
-    `mean_atoms` in `analysis.pca.PCA` are now deprecated in favour of 
-    `results.p_components`, `results.variance`, `results.cumulated_variance` 
-    and `results.mean_atoms`. They will be removed in 3.0.0 
+  * The attributes `p_components`, `variance`, `cumulated_variance` and
+    `mean_atoms` in `analysis.pca.PCA` are now deprecated in favour of
+    `results.p_components`, `results.variance`, `results.cumulated_variance`
+    and `results.mean_atoms`. They will be removed in 3.0.0
     (Issues #3275 #3285)
   * The `bins`, `edges`, `count`, `rdf` attributes for `analysis.rdf.InterRDF`
     and `analysis.rdf.InterRDF_s`, and `cdf` attributes for
