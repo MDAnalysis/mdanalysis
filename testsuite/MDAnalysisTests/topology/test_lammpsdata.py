@@ -270,7 +270,8 @@ class TestDumpParser(ParserBase):
         # the 4th in file has id==13, but should have been sorted
         assert u.atoms[3].id == 4
 
-
+# this tests that topology can still be constructed if non-standard or uneven
+# column present.
 class TestDumpParserLong(TestDumpParser):
 
     ref_filename = LAMMPSDUMP_long
