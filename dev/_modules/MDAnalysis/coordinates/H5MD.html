@@ -233,8 +233,14 @@
 <span class="sd">provided, a :exc:`RuntimeError` is raised.  If no units are provided,</span>
 <span class="sd">MDAnalysis stores a value of ``None`` for each unit.  If the H5MD file does not</span>
 <span class="sd">contain units and ``convert_units=True``, MDAnalysis will raise a</span>
-<span class="sd">:exc`ValueError`. To load a universe from an H5MD file with no units, set</span>
-<span class="sd">``convert_units=False``.</span>
+<span class="sd">:exc:`ValueError`. To load a universe from an H5MD file with no units defined,</span>
+<span class="sd">set ``convert_units=False``.</span>
+
+<span class="sd">:class:`H5MDWriter` detects the native units of the parent trajectory and</span>
+<span class="sd">writes the trajectory with those units, unless one of `timeunit`,</span>
+<span class="sd">`lengthunit`, `velocityunit`, `forceunit` arugments are supplied. In</span>
+<span class="sd">this case, the writer will write the corresponding dataset with the selected</span>
+<span class="sd">unit only if it is recognized by `MDAnalysis units`_.</span>
 
 
 <span class="sd">Example: Loading an H5MD simulation</span>
@@ -254,8 +260,39 @@
 <span class="sd">    with h5py.File(&quot;trajectory.h5md&quot;, &#39;r&#39;) as f:</span>
 <span class="sd">         u = mda.Universe(&quot;topology.tpr&quot;, f)</span>
 
+
 <span class="sd">.. Note:: Directly using a `h5py.File` does not work yet.</span>
 <span class="sd">   See issue `#2884 &lt;https://github.com/MDAnalysis/mdanalysis/issues/2884&gt;`_.</span>
+
+
+<span class="sd">Example: Writing an H5MD file</span>
+<span class="sd">-----------------------------</span>
+
+<span class="sd">To write to an H5MD file from a trajectory loaded with MDAnalysis, do:</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    import MDAnalysis as mda</span>
+<span class="sd">    u = mda.Universe(&quot;topology.tpr&quot;, &quot;trajectory.h5md&quot;)</span>
+<span class="sd">    with mda.Writer(&quot;output.h5md&quot;, n_atoms=u.trajectory.n_atoms) as W:</span>
+<span class="sd">        for ts in u.trajectory:</span>
+<span class="sd">            W.write(u)</span>
+
+<span class="sd">To write an H5MD file with contiguous datasets, you must specify the</span>
+<span class="sd">number of frames to be written and set ``chunks=False``:</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    with mda.Writer(&quot;output_contigous.h5md&quot;, n_atoms=u.trajectory.n_atoms,</span>
+<span class="sd">                    n_frames=3, chunks=False) as W:</span>
+<span class="sd">        for ts in u.trajectory[:3]:</span>
+<span class="sd">            W.write(u)</span>
+
+<span class="sd">The writer also supports writing directly from an :class:`~MDAnalysis.core.groups.AtomGroup`::</span>
+
+<span class="sd">    ag = u.select_atoms(&quot;protein and name CA&quot;)</span>
+<span class="sd">    ag.write(&quot;alpha_carbons.h5md&quot;, frames=&#39;all&#39;)</span>
+
 
 <span class="sd">Example: Opening an H5MD file in parallel</span>
 <span class="sd">-----------------------------------------</span>
@@ -270,6 +307,7 @@
 <span class="sd">    from mpi4py import MPI</span>
 <span class="sd">    u = mda.Universe(&quot;topology.tpr&quot;, &quot;trajectory.h5md&quot;,</span>
 <span class="sd">                     driver=&quot;mpio&quot;, comm=MPI.COMM_WORLD)</span>
+
 
 <span class="sd">.. Note::</span>
 <span class="sd">   :mod:`h5py` must be built with parallel features enabled on top of a parallel</span>
@@ -332,37 +370,22 @@
 <span class="sd">.. _`Build h5py from sources`: https://docs.h5py.org/en/stable/mpi.html#building-against-parallel-hdf5</span>
 <span class="sd">.. _`H5MD notation`: https://nongnu.org/h5md/modules/units.html</span>
 <span class="sd">.. _`MDAnalysis notation`: https://userguide.mdanalysis.org/units.html</span>
+<span class="sd">.. _`MDAnalysis units`: https://userguide.mdanalysis.org/units.html</span>
 <span class="sd">.. _`MDAnalysis forums`: https://www.mdanalysis.org/#participating</span>
 
 
 <span class="sd">Classes</span>
 <span class="sd">-------</span>
 
-<span class="sd">.. autoclass:: Timestep</span>
-<span class="sd">   :members:</span>
-
-<span class="sd">   .. attribute:: positions</span>
-
-<span class="sd">      coordinates of the atoms as a :class:`numpy.ndarray` of shape</span>
-<span class="sd">      `(n_atoms, 3)`</span>
-
-<span class="sd">   .. attribute:: velocities</span>
-
-<span class="sd">      velocities of the atoms as a :class:`numpy.ndarray` of shape</span>
-<span class="sd">      `(n_atoms, 3)`; only available if the trajectory contains velocities</span>
-<span class="sd">      or if the `velocities` = ``True`` keyword has been supplied.</span>
-
-<span class="sd">   .. attribute:: forces</span>
-
-<span class="sd">      forces of the atoms as a :class:`numpy.ndarray` of shape</span>
-<span class="sd">      `(n_atoms, 3)`; only available if the trajectory contains forces</span>
-<span class="sd">      or if the `forces` = ``True`` keyword has been supplied.</span>
-
-
 <span class="sd">.. autoclass:: H5MDReader</span>
 <span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
 
 <span class="sd">   .. automethod:: H5MDReader._reopen</span>
+
+<span class="sd">.. autoclass:: H5MDWriter</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
 
 <span class="sd">.. autoclass:: H5PYPicklable</span>
 <span class="sd">   :members:</span>
@@ -372,8 +395,8 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span><span class="p">,</span> <span class="n">core</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">Timestep</span>
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
+<span class="kn">from</span> <span class="nn">..due</span> <span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">h5py</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
@@ -402,10 +425,12 @@
 <span class="sd">    `convert_units` is set to ``True``.</span>
 
 <span class="sd">    Additional data in the *observables* group of the H5MD file are</span>
-<span class="sd">    loaded into the :attr:`Timestep.data` dictionary.</span>
+<span class="sd">    loaded into the :attr:`Timestep.data</span>
+<span class="sd">    &lt;MDAnalysis.coordinates.base.Timestep.data&gt;` dictionary.</span>
 
 <span class="sd">    Only 3D-periodic boxes or no periodicity are supported; for no</span>
-<span class="sd">    periodicity, :attr:`Timestep.dimensions` will return ``None``.</span>
+<span class="sd">    periodicity, :attr:`Timestep.dimensions</span>
+<span class="sd">    &lt;MDAnalysis.coordinates.base.Timestep.dimensions&gt;` will return ``None``.</span>
 
 <span class="sd">    Although H5MD can store varying numbers of particles per time step</span>
 <span class="sd">    as produced by, e.g., GCMC simulations, MDAnalysis can currently</span>
@@ -536,6 +561,12 @@
         <span class="p">}</span>
     <span class="p">}</span>
 
+    <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span><span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.25080/majora-1b6fd038-005&quot;</span><span class="p">),</span>
+               <span class="n">description</span><span class="o">=</span><span class="s2">&quot;MDAnalysis trajectory reader/writer of the H5MD&quot;</span>
+               <span class="s2">&quot;format&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span><span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1016/j.cpc.2014.01.018&quot;</span><span class="p">),</span>
+               <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Specifications of the H5MD standard&quot;</span><span class="p">,</span>
+               <span class="n">path</span><span class="o">=</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;1.1&#39;</span><span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span>
                  <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="n">driver</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -600,10 +631,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_has</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span> <span class="k">for</span>
                      <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;force&#39;</span><span class="p">)}</span>
 
-        <span class="c1"># Gets n_atoms from first available group</span>
+        <span class="c1"># Gets some info about what settings the datasets were created with</span>
+        <span class="c1"># from first available group</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">dset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">/value&#39;</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">dset</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">compression</span> <span class="o">=</span> <span class="n">dset</span><span class="o">.</span><span class="n">compression</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">compression_opts</span> <span class="o">=</span> <span class="n">dset</span><span class="o">.</span><span class="n">compression_opts</span>
                 <span class="k">break</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Provide at least a position, velocity&quot;</span>
@@ -728,11 +763,11 @@
                                            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
                                            <span class="n">driver</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">,</span>
                                            <span class="n">comm</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_comm</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">H5PYPicklable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
-                                           <span class="n">driver</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">H5PYPicklable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">H5PYPicklable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                                           <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
+                                           <span class="n">driver</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
+
         <span class="c1"># pulls first key out of &#39;particles&#39;</span>
         <span class="c1"># allows for arbitrary name of group1 in &#39;particles&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">[</span><span class="s1">&#39;particles&#39;</span><span class="p">][</span>
@@ -797,12 +832,18 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">[</span><span class="s1">&#39;observables&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">][</span>
                     <span class="s1">&#39;value&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">]</span>
 
-        <span class="c1"># pulls &#39;time&#39; out of first available parent group</span>
+        <span class="c1"># pulls &#39;time&#39; and &#39;step&#39; out of first available parent group</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
                 <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span><span class="p">[</span><span class="n">name</span><span class="p">]:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span><span class="p">[</span><span class="n">name</span><span class="p">][</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span><span class="p">[</span><span class="n">name</span><span class="p">][</span>
                         <span class="s1">&#39;time&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">]</span>
+                    <span class="k">break</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;step&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span><span class="p">[</span><span class="n">name</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span><span class="p">[</span><span class="n">name</span><span class="p">][</span>
+                        <span class="s1">&#39;step&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span><span class="p">]</span>
                     <span class="k">break</span>
 
     <span class="k">def</span> <span class="nf">_read_dataset_into_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">attribute</span><span class="p">):</span>
@@ -871,6 +912,40 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">open_trajectory</span><span class="p">()</span></div>
 
+<div class="viewcode-block" id="H5MDReader.Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return writer for trajectory format</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        The chunk shape of the input file will not be copied to the output</span>
+<span class="sd">        file, as :class:`H5MDWriter` uses a chunk shape of ``(1, n_atoms, 3)``</span>
+<span class="sd">        by default. To use a custom chunk shape, you must specify the</span>
+<span class="sd">        `chunks` argument. If you would like to copy an existing chunk</span>
+<span class="sd">        format from a dataset (positions, velocities, or forces), do</span>
+<span class="sd">        the following::</span>
+
+<span class="sd">            chunks = u.trajectory._particle_group[&#39;position/value&#39;].chunks</span>
+
+<span class="sd">        Note that the writer will set the same layout for all particle groups.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :class:`H5MDWriter`  Output class for the H5MD format</span>
+
+
+<span class="sd">        .. versionadded:: 2.0.0</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">n_atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;driver&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;compression&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">compression</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;compression_opts&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">compression_opts</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;positions&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_positions</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;velocities&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;forces&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">H5MDWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">has_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;``True`` if &#39;position&#39; group is in trajectory.&quot;&quot;&quot;</span>
@@ -908,6 +983,642 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">[</span><span class="s1">&#39;particles&#39;</span><span class="p">][</span>
                                <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">[</span><span class="s1">&#39;particles&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]]</span>
         <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="H5MDWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDWriter">[docs]</a><span class="k">class</span> <span class="nc">H5MDWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Writer for `H5MD`_ format (version 1.1).</span>
+
+<span class="sd">    H5MD trajectories are automatically recognised by the</span>
+<span class="sd">    file extension &quot;.h5md&quot;.</span>
+
+<span class="sd">    All data from the input :class:`~MDAnalysis.coordinates.base.Timestep` is</span>
+<span class="sd">    written by default. For detailed information on how :class:`H5MDWriter`</span>
+<span class="sd">    handles units, compression, and chunking, see the Notes section below.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    Parellel writing with the use of a MPI communicator and the ``&#39;mpio&#39;``</span>
+<span class="sd">    HDF5 driver is currently not supported.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    :exc:`NoDataError` is raised if no positions, velocities, or forces are</span>
+<span class="sd">    found in the input trajectory. While the H5MD standard allows for this</span>
+<span class="sd">    case, :class:`H5MDReader` cannot currently read files without at least</span>
+<span class="sd">    one of these three groups.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    Writing H5MD files with fancy trajectory slicing where the Timestep</span>
+<span class="sd">    does not increase monotonically such as ``u.trajectory[[2,1,0]]``</span>
+<span class="sd">    or ``u.trajectory[[0,1,2,0,1,2]]`` raises a :exc:`ValueError` as this</span>
+<span class="sd">    violates the rules of the step dataset in the H5MD standard.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str or :class:`h5py.File`</span>
+<span class="sd">        trajectory filename or open h5py file</span>
+<span class="sd">    n_atoms : int</span>
+<span class="sd">        number of atoms in trajectory</span>
+<span class="sd">    n_frames : int (optional)</span>
+<span class="sd">        number of frames to be written in trajectory</span>
+<span class="sd">    driver : str (optional)</span>
+<span class="sd">        H5PY file driver used to open H5MD file. See `H5PY drivers`_ for</span>
+<span class="sd">        list of available drivers.</span>
+<span class="sd">    convert_units : bool (optional)</span>
+<span class="sd">        Convert units from MDAnalysis to desired units</span>
+<span class="sd">    chunks : tuple (optional)</span>
+<span class="sd">        Custom chunk layout to be applied to the position,</span>
+<span class="sd">        velocity, and force datasets. By default, these datasets</span>
+<span class="sd">        are chunked in ``(1, n_atoms, 3)`` blocks</span>
+<span class="sd">    compression : str or int (optional)</span>
+<span class="sd">        HDF5 dataset compression setting to be applied</span>
+<span class="sd">        to position, velocity, and force datasets. Allowed</span>
+<span class="sd">        settings are &#39;gzip&#39;, &#39;szip&#39;, &#39;lzf&#39;. If an integer</span>
+<span class="sd">        in range(10), this indicates gzip compression level.</span>
+<span class="sd">        Otherwise, an integer indicates the number of a</span>
+<span class="sd">        dynamically loaded compression filter.</span>
+<span class="sd">    compression_opts : int or tup (optional)</span>
+<span class="sd">        Compression settings.  This is an integer for gzip, 2-tuple for</span>
+<span class="sd">        szip, etc. If specifying a dynamically loaded compression filter</span>
+<span class="sd">        number, this must be a tuple of values. For gzip, 1 indicates</span>
+<span class="sd">        the lowest level of compression and 9 indicates maximum compression.</span>
+<span class="sd">    positions : bool (optional)</span>
+<span class="sd">        Write positions into the trajectory [``True``]</span>
+<span class="sd">    velocities : bool (optional)</span>
+<span class="sd">        Write velocities into the trajectory [``True``]</span>
+<span class="sd">    forces : bool (optional)</span>
+<span class="sd">        Write forces into the trajectory [``True``]</span>
+<span class="sd">    timeunit : str (optional)</span>
+<span class="sd">        Option to convert values in the &#39;time&#39; dataset to a custom unit,</span>
+<span class="sd">        must be recognizable by MDAnalysis</span>
+<span class="sd">    lengthunit : str (optional)</span>
+<span class="sd">        Option to convert values in the &#39;position/value&#39; dataset to a</span>
+<span class="sd">        custom unit, must be recognizable by MDAnalysis</span>
+<span class="sd">    velocityunit : str (optional)</span>
+<span class="sd">        Option to convert values in the &#39;velocity/value&#39; dataset to a</span>
+<span class="sd">        custom unit, must be recognizable by MDAnalysis</span>
+<span class="sd">    forceunit : str (optional)</span>
+<span class="sd">        Option to convert values in the &#39;force/value&#39; dataset to a</span>
+<span class="sd">        custom unit, must be recognizable by MDAnalysis</span>
+<span class="sd">    author : str (optional)</span>
+<span class="sd">        Name of the author of the file</span>
+<span class="sd">    author_email : str (optional)</span>
+<span class="sd">        Email of the author of the file</span>
+<span class="sd">    creator : str (optional)</span>
+<span class="sd">        Software that wrote the file [``MDAnalysis``]</span>
+<span class="sd">    creator_version : str (optional)</span>
+<span class="sd">        Version of software that wrote the file</span>
+<span class="sd">        [:attr:`MDAnalysis.__version__`]</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    RuntimeError</span>
+<span class="sd">        when `H5PY`_ is not installed</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        when `n_atoms` is 0</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        when ``chunks=False`` but the user did not specify `n_frames`</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        when `positions`, `velocities`, and `forces` are all</span>
+<span class="sd">        set to ``False``</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        when the input object is not a :class:`Universe` or</span>
+<span class="sd">        :class:`AtomGroup`</span>
+<span class="sd">    IOError</span>
+<span class="sd">        when `n_atoms` of the :class:`Universe` or :class:`AtomGroup`</span>
+<span class="sd">        being written does not match `n_atoms` passed as an argument</span>
+<span class="sd">        to the writer</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        when any of the optional `timeunit`, `lengthunit`,</span>
+<span class="sd">        `velocityunit`, or `forceunit` keyword arguments are</span>
+<span class="sd">        not recognized by MDAnalysis</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+
+<span class="sd">    By default, the writer will write all available data (positions,</span>
+<span class="sd">    velocities, and forces) if detected in the input</span>
+<span class="sd">    :class:`~MDAnalysis.coordinates.base.Timestep`. In addition, the settings</span>
+<span class="sd">    for `compression` and `compression_opts` will be read from</span>
+<span class="sd">    the first available group of positions, velocities, or forces and used as</span>
+<span class="sd">    the default value. To write a file without any one of these datsets,</span>
+<span class="sd">    set `positions`, `velocities`, or `forces` to ``False``.</span>
+
+<span class="sd">    .. rubric:: Units</span>
+
+<span class="sd">    The H5MD format is very flexible with regards to units, as there is no</span>
+<span class="sd">    standard defined unit for the format. For this reason, :class:`H5MDWriter`</span>
+<span class="sd">    does not enforce any units. The units of the written trajectory can be set</span>
+<span class="sd">    explicitly with the keyword arguments `lengthunit`, `velocityunit`,</span>
+<span class="sd">    and `forceunit`. If units are not explicitly specified, they are set to</span>
+<span class="sd">    the native units of the trajectory that is the source of the coordinates.</span>
+<span class="sd">    For example, if one converts a DCD trajectory, then positions are written</span>
+<span class="sd">    in ångstrom and time in AKMA units. A GROMACS XTC will be written in nm and</span>
+<span class="sd">    ps. The units are stored in the metadata of the H5MD file so when</span>
+<span class="sd">    MDAnalysis loads the H5MD trajectory, the units will be automatically</span>
+<span class="sd">    set correctly.</span>
+
+<span class="sd">    .. rubric:: Compression</span>
+
+<span class="sd">    HDF5 natively supports various compression modes. To write the trajectory</span>
+<span class="sd">    with compressed datasets, set ``compression=&#39;gzip&#39;``, ``compression=&#39;lzf&#39;``</span>
+<span class="sd">    , etc. See `H5PY compression options`_ for all supported modes of</span>
+<span class="sd">    compression. An additional argument, `compression_opts`, can be used to</span>
+<span class="sd">    fine tune the level of compression. For example, for GZIP compression,</span>
+<span class="sd">    `compression_opts` can be set to 1 for minimum compression and 9 for</span>
+<span class="sd">    maximum compression.</span>
+
+<span class="sd">    .. rubric:: HDF5 Chunking</span>
+
+<span class="sd">    HDF5 datasets can be *chunked*, meaning the dataset can be split into equal</span>
+<span class="sd">    sized pieces and stored in different, noncontiguous places on disk.</span>
+<span class="sd">    If HDF5 tries to read an element from a chunked dataset, the *entire*</span>
+<span class="sd">    dataset must be read, therefore an ill-thought-out chunking scheme can</span>
+<span class="sd">    drastically effect file I/O performance. In the case of all MDAnalysis</span>
+<span class="sd">    writers, in general, the number of frames being written is not known</span>
+<span class="sd">    apriori by the writer, therefore the HDF5 must be extendable. However, the</span>
+<span class="sd">    allocation of diskspace is defined when the dataset is created, therefore</span>
+<span class="sd">    extendable HDF5 datasets *must* be chunked so as to allow dynamic storage</span>
+<span class="sd">    on disk of any incoming data to the writer. In such cases where chunking</span>
+<span class="sd">    isn&#39;t explicity defined by the user, H5PY automatically selects a chunk</span>
+<span class="sd">    shape via an algorithm that attempts to make mostly square chunks between</span>
+<span class="sd">    1 KiB - 1 MiB, however this can lead to suboptimal I/O performance.</span>
+<span class="sd">    :class:`H5MDWriter` uses a default chunk shape of ``(1, n_atoms, 3)``so</span>
+<span class="sd">    as to mimic the typical access pattern of a trajectory by MDAnalysis. In</span>
+<span class="sd">    our tests ([Jakupovic2021]_), this chunk shape led to a speedup on the</span>
+<span class="sd">    order of 10x versus H5PY&#39;s auto-chunked shape. Users can set a custom</span>
+<span class="sd">    chunk shape with the `chunks` argument. Additionaly, the datasets in a</span>
+<span class="sd">    file can be written with a contiguous layout by setting ``chunks=False``,</span>
+<span class="sd">    however this must be accompanied by setting `n_frames` equal to the</span>
+<span class="sd">    number of frames being written, as HDF5 must know how much space to</span>
+<span class="sd">    allocate on disk when creating the dataset.</span>
+
+<span class="sd">    .. _`H5PY compression options`: https://docs.h5py.org/en/stable/high/dataset.html#filter-pipeline</span>
+<span class="sd">    .. _`H5PY drivers`: https://docs.h5py.org/en/stable/high/file.html#file-drivers</span>
+
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;H5MD&#39;</span>
+    <span class="n">multiframe</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="c1">#: These variables are not written from :attr:`Timestep.data`</span>
+    <span class="c1">#: dictionary to the observables group in the H5MD file</span>
+    <span class="n">data_blacklist</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;dt&#39;</span><span class="p">]</span>
+
+    <span class="c1">#: currently written version of the file format</span>
+    <span class="n">H5MD_VERSION</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># This dictionary is used to translate MDAnalysis units to H5MD units.</span>
+    <span class="c1"># (https://nongnu.org/h5md/modules/units.html)</span>
+    <span class="n">_unit_translation_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;ps&#39;</span><span class="p">:</span> <span class="s1">&#39;ps&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;fs&#39;</span><span class="p">:</span> <span class="s1">&#39;fs&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;ns&#39;</span><span class="p">:</span> <span class="s1">&#39;ns&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;second&#39;</span><span class="p">:</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;sec&#39;</span><span class="p">:</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;s&#39;</span><span class="p">:</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;AKMA&#39;</span><span class="p">:</span> <span class="s1">&#39;AKMA&#39;</span><span class="p">},</span>
+        <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;Angstrom&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;angstrom&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;nm&#39;</span><span class="p">:</span> <span class="s1">&#39;nm&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;pm&#39;</span><span class="p">:</span> <span class="s1">&#39;pm&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;fm&#39;</span><span class="p">:</span> <span class="s1">&#39;fm&#39;</span><span class="p">},</span>
+        <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;Angstrom/ps&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom ps-1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;A/ps&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom ps-1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Angstrom/fs&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom fs-1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;A/fs&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom fs-1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Angstrom/AKMA&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom AKMA-1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;A/AKMA&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom AKMA-1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;nm/ps&#39;</span><span class="p">:</span> <span class="s1">&#39;nm ps-1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;nm/ns&#39;</span><span class="p">:</span> <span class="s1">&#39;nm ns-1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;pm/ps&#39;</span><span class="p">:</span> <span class="s1">&#39;pm ps-1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;m/s&#39;</span><span class="p">:</span> <span class="s1">&#39;m s-1&#39;</span><span class="p">},</span>
+        <span class="s1">&#39;force&#39;</span><span class="p">:</span>  <span class="p">{</span>
+            <span class="s1">&#39;kJ/(mol*Angstrom)&#39;</span><span class="p">:</span> <span class="s1">&#39;kJ mol-1 Angstrom-1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;kJ/(mol*nm)&#39;</span><span class="p">:</span> <span class="s1">&#39;kJ mol-1 nm-1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Newton&#39;</span><span class="p">:</span> <span class="s1">&#39;Newton&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;N&#39;</span><span class="p">:</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;J/m&#39;</span><span class="p">:</span> <span class="s1">&#39;J m-1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;kcal/(mol*Angstrom)&#39;</span><span class="p">:</span> <span class="s1">&#39;kcal mol-1 Angstrom-1&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;kcal/(mol*A)&#39;</span><span class="p">:</span> <span class="s1">&#39;kcal mol-1 Angstrom-1&#39;</span><span class="p">}}</span>
+
+    <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span><span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.25080/majora-1b6fd038-005&quot;</span><span class="p">),</span>
+               <span class="n">description</span><span class="o">=</span><span class="s2">&quot;MDAnalysis trajectory reader/writer of the H5MD&quot;</span>
+               <span class="s2">&quot;format&quot;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span><span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1016/j.cpc.2014.01.018&quot;</span><span class="p">),</span>
+               <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Specifications of the H5MD standard&quot;</span><span class="p">,</span>
+               <span class="n">path</span><span class="o">=</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;1.1&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">chunks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">compression_opts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">positions</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">velocities</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">forces</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeunit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lengthunit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">velocityunit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">forceunit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="s1">&#39;N/A&#39;</span><span class="p">,</span>
+                 <span class="n">author_email</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">creator</span><span class="o">=</span><span class="s1">&#39;MDAnalysis&#39;</span><span class="p">,</span>
+                 <span class="n">creator_version</span><span class="o">=</span><span class="n">mda</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_H5PY</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;H5MDWriter: Please install h5py&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="k">if</span> <span class="n">n_atoms</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;H5MDWriter: no atoms in output trajectory&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span> <span class="o">=</span> <span class="n">driver</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span> <span class="o">==</span> <span class="s1">&#39;mpio&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;H5MDWriter: parallel writing with MPI I/O &quot;</span>
+                             <span class="s2">&quot;is not currently supported.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">=</span> <span class="n">n_frames</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="k">if</span> <span class="n">chunks</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">chunks</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;H5MDWriter must know how many frames will be &quot;</span>
+                             <span class="s2">&quot;written if ``chunks=False``.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contiguous</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compression</span> <span class="o">=</span> <span class="n">compression</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compression_opts</span> <span class="o">=</span> <span class="n">compression_opts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">h5md_file</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># The writer defaults to writing all data from the parent Timestep if</span>
+        <span class="c1"># it exists. If these are True, the writer will check each</span>
+        <span class="c1"># Timestep.has_*  value and fill the self._has dictionary accordingly</span>
+        <span class="c1"># in _initialize_hdf5_datasets()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_positions</span> <span class="o">=</span> <span class="n">positions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_velocities</span> <span class="o">=</span> <span class="n">velocities</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_forces</span> <span class="o">=</span> <span class="n">forces</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_write_positions</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_write_velocities</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_write_velocities</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;At least one of positions, velocities, or &quot;</span>
+                             <span class="s2">&quot;forces must be set to ``True``.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_new_units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">timeunit</span><span class="p">,</span>
+                           <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="n">lengthunit</span><span class="p">,</span>
+                           <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="n">velocityunit</span><span class="p">,</span>
+                           <span class="s1">&#39;force&#39;</span><span class="p">:</span> <span class="n">forceunit</span><span class="p">}</span>
+
+        <span class="c1"># Pull out various keywords to store metadata in &#39;h5md&#39; group</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">author</span> <span class="o">=</span> <span class="n">author</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">author_email</span> <span class="o">=</span> <span class="n">author_email</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">creator</span> <span class="o">=</span> <span class="n">creator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">creator_version</span> <span class="o">=</span> <span class="n">creator_version</span>
+
+    <span class="k">def</span> <span class="nf">_write_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write information associated with ``ag`` at current frame</span>
+<span class="sd">        into trajectory</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ag : AtomGroup or Universe</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Atomgroup?</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">ts</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Universe?</span>
+                <span class="n">ts</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;Input obj is neither an AtomGroup or Universe&quot;</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+
+        <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;H5MDWriter: Timestep does not have&quot;</span>
+                          <span class="s2">&quot; the correct number of atoms&quot;</span><span class="p">)</span>
+
+        <span class="c1"># This should only be called once when first timestep is read.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">h5md_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_determine_units</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_open_file</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_hdf5_datasets</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_next_timestep</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_determine_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;determine which units the file will be written with</span>
+
+<span class="sd">        By default, it fills the :attr:`self.units` dictionary by copying the</span>
+<span class="sd">        units dictionary of the parent file. Because H5MD files have no</span>
+<span class="sd">        standard unit restrictions, users may pass a kwarg in ``(timeunit,</span>
+<span class="sd">        lengthunit, velocityunit, forceunit)`` to the writer so long as</span>
+<span class="sd">        MDAnalysis has a conversion factor for it (:exc:`ValueError` raised if</span>
+<span class="sd">        it does not). These custom unit arguments must be in</span>
+<span class="sd">        `MDAnalysis notation`_. If custom units are supplied from the user,</span>
+<span class="sd">        :attr`self.units[unit]` is replaced with the corresponding</span>
+<span class="sd">        `unit` argument.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># set user input units</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_new_units</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unit_translation_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> is not a unit recognized by&quot;</span>
+                                     <span class="s2">&quot; MDAnalysis. Allowed units are:&quot;</span>
+                                     <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_unit_translation_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+                                     <span class="s2">&quot; For more information on units, see&quot;</span>
+                                     <span class="s2">&quot; `MDAnalysis units`_.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_new_units</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
+            <span class="c1"># check if all units are None</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The trajectory has no units, but &quot;</span>
+                                 <span class="s2">&quot;`convert_units` is set to ``True`` by &quot;</span>
+                                 <span class="s2">&quot;default in MDAnalysis. To write the file &quot;</span>
+                                 <span class="s2">&quot;with no units, set ``convert_units=False``.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_open_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Opens file with `H5PY`_ library and fills in metadata from kwargs.</span>
+
+<span class="sd">        :attr:`self.h5md_file` becomes file handle that links to root level.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">h5md_file</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                                   <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span>
+                                   <span class="n">driver</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
+
+        <span class="c1"># fill in H5MD metadata from kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">h5md_file</span><span class="o">.</span><span class="n">require_group</span><span class="p">(</span><span class="s1">&#39;h5md&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">h5md_file</span><span class="p">[</span><span class="s1">&#39;h5md&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">H5MD_VERSION</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">h5md_file</span><span class="p">[</span><span class="s1">&#39;h5md&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">require_group</span><span class="p">(</span><span class="s1">&#39;author&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">h5md_file</span><span class="p">[</span><span class="s1">&#39;h5md/author&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">author_email</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">h5md_file</span><span class="p">[</span><span class="s1">&#39;h5md/author&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;email&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">author_email</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">h5md_file</span><span class="p">[</span><span class="s1">&#39;h5md&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">require_group</span><span class="p">(</span><span class="s1">&#39;creator&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">h5md_file</span><span class="p">[</span><span class="s1">&#39;h5md/creator&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">creator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">h5md_file</span><span class="p">[</span><span class="s1">&#39;h5md/creator&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">creator_version</span>
+
+    <span class="k">def</span> <span class="nf">_initialize_hdf5_datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;initializes all datasets that will be written to by</span>
+<span class="sd">        :meth:`_write_next_timestep`</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        :exc:`NoDataError` is raised if no positions, velocities, or forces are</span>
+<span class="sd">        found in the input trajectory. While the H5MD standard allows for this</span>
+<span class="sd">        case, :class:`H5MDReader` cannot currently read files without at least</span>
+<span class="sd">        one of these three groups. A future change to both the reader and</span>
+<span class="sd">        writer will allow this case.</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># for keeping track of where to write in the dataset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># ask the parent file if it has positions, velocities, and forces</span>
+        <span class="c1"># if prompted by the writer with the self._write_* attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has</span> <span class="o">=</span> <span class="p">{</span><span class="n">group</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;has_</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                     <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;_write_</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                     <span class="k">else</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                     <span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;force&#39;</span><span class="p">),</span>
+                     <span class="p">(</span><span class="s1">&#39;positions&#39;</span><span class="p">,</span> <span class="s1">&#39;velocities&#39;</span><span class="p">,</span> <span class="s1">&#39;forces&#39;</span><span class="p">))}</span>
+
+        <span class="c1"># initialize trajectory group</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">h5md_file</span><span class="o">.</span><span class="n">require_group</span><span class="p">(</span><span class="s1">&#39;particles&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">require_group</span><span class="p">(</span><span class="s1">&#39;trajectory&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">h5md_file</span><span class="p">[</span><span class="s1">&#39;particles/trajectory&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_keys</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_blacklist</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_keys</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obsv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">h5md_file</span><span class="o">.</span><span class="n">require_group</span><span class="p">(</span><span class="s1">&#39;observables&#39;</span><span class="p">)</span>
+
+        <span class="c1"># box group is required for every group in &#39;particles&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="o">.</span><span class="n">require_group</span><span class="p">(</span><span class="s1">&#39;box&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="p">[</span><span class="s1">&#39;box&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;dimension&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="p">[</span><span class="s1">&#39;box&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;boundary&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="p">[</span><span class="s1">&#39;periodic&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="p">[</span><span class="s1">&#39;box&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">require_group</span><span class="p">(</span><span class="s1">&#39;edges&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="o">.</span><span class="n">require_dataset</span><span class="p">(</span><span class="s1">&#39;box/edges/value&#39;</span><span class="p">,</span>
+                                                     <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                                                     <span class="n">maxshape</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                                                     <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="o">.</span><span class="n">require_dataset</span><span class="p">(</span><span class="s1">&#39;box/edges/step&#39;</span><span class="p">,</span>
+                                                    <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
+                                                    <span class="n">maxshape</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,),</span>
+                                                    <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="o">.</span><span class="n">require_dataset</span><span class="p">(</span><span class="s1">&#39;box/edges/time&#39;</span><span class="p">,</span>
+                                                    <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
+                                                    <span class="n">maxshape</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,),</span>
+                                                    <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_attr_unit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_edges</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_attr_unit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_time</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># if no box, boundary attr must be &quot;none&quot; according to H5MD</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="p">[</span><span class="s1">&#39;box&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;boundary&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="p">[</span><span class="s1">&#39;none&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_step_and_time_datasets</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_positions</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_trajectory_dataset</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="p">[</span><span class="s1">&#39;position/value&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_attr_unit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_trajectory_dataset</span><span class="p">(</span><span class="s1">&#39;velocity&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="p">[</span><span class="s1">&#39;velocity/value&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_attr_unit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vel</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_create_trajectory_dataset</span><span class="p">(</span><span class="s1">&#39;force&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_force</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="p">[</span><span class="s1">&#39;force/value&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_attr_unit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_force</span><span class="p">,</span> <span class="s1">&#39;force&#39;</span><span class="p">)</span>
+
+        <span class="c1"># intialize observable datasets from ts.data dictionary that</span>
+        <span class="c1"># are NOT in self.data_blacklist</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_keys</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_keys</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_create_observables_dataset</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_create_step_and_time_datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;helper function to initialize a dataset for step and time</span>
+
+<span class="sd">        Hunts down first available location to create the step and time</span>
+<span class="sd">        datasets. This should only be called if the trajectory has no</span>
+<span class="sd">        dimension, otherwise the &#39;box/edges&#39; group creates step and time</span>
+<span class="sd">        datasets since &#39;box&#39; is the only required group in &#39;particles&#39;.</span>
+
+<span class="sd">        :attr:`self._step` and :attr`self._time` serve as links to the created</span>
+<span class="sd">        datasets that other datasets can also point to for their step and time.</span>
+<span class="sd">        This serves two purposes:</span>
+<span class="sd">            1. Avoid redundant writing of multiple datasets that share the</span>
+<span class="sd">               same step and time data.</span>
+<span class="sd">            2. In HDF5, each chunked dataset has a cache (default 1 MiB),</span>
+<span class="sd">               so only 1 read is required to access step and time data</span>
+<span class="sd">               for all datasets that share the same step and time.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="o">.</span><span class="n">require_dataset</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s1">/step&#39;</span><span class="p">,</span>
+                                                        <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
+                                                        <span class="n">maxshape</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,),</span>
+                                                        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="o">.</span><span class="n">require_dataset</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s1">/time&#39;</span><span class="p">,</span>
+                                                        <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,),</span>
+                                                        <span class="n">maxshape</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,),</span>
+                                                        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_set_attr_unit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_time</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+                <span class="k">break</span>
+
+    <span class="k">def</span> <span class="nf">_create_trajectory_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;helper function to initialize a dataset for</span>
+<span class="sd">        position, velocity, and force&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="n">maxshape</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+            <span class="n">maxshape</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">chunks</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">contiguous</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="o">.</span><span class="n">require_group</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="o">.</span><span class="n">require_dataset</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s1">/value&#39;</span><span class="p">,</span>
+                                   <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
+                                   <span class="n">maxshape</span><span class="o">=</span><span class="n">maxshape</span><span class="p">,</span>
+                                   <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+                                   <span class="n">chunks</span><span class="o">=</span><span class="n">chunks</span><span class="p">,</span>
+                                   <span class="n">compression</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">compression</span><span class="p">,</span>
+                                   <span class="n">compression_opts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">compression_opts</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;step&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="p">[</span><span class="n">group</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s1">/step&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span>
+        <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="p">[</span><span class="n">group</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s1">/time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time</span>
+
+    <span class="k">def</span> <span class="nf">_create_observables_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;helper function to initialize a dataset for each observable&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obsv</span><span class="o">.</span><span class="n">require_group</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="c1"># guarantee ints and floats have a shape ()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obsv</span><span class="o">.</span><span class="n">require_dataset</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s1">/value&#39;</span><span class="p">,</span>
+                                   <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)</span> <span class="o">+</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+                                   <span class="n">maxshape</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,)</span> <span class="o">+</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+                                   <span class="n">dtype</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;step&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obsv</span><span class="p">[</span><span class="n">group</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obsv</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s1">/step&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span>
+        <span class="k">if</span> <span class="s1">&#39;time&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obsv</span><span class="p">[</span><span class="n">group</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_obsv</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s1">/time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time</span>
+
+    <span class="k">def</span> <span class="nf">_set_attr_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dset</span><span class="p">,</span> <span class="n">unit</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;helper function to set a &#39;unit&#39; attribute for an HDF5 dataset&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">unit</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">dset</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unit_translation_dict</span><span class="p">[</span><span class="n">unit</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">unit</span><span class="p">]]</span>
+
+    <span class="k">def</span> <span class="nf">_write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write coordinates and unitcell information to H5MD file.</span>
+
+<span class="sd">        Do not call this method directly; instead use</span>
+<span class="sd">        :meth:`write` because some essential setup is done</span>
+<span class="sd">        there before writing the first frame.</span>
+
+<span class="sd">        The first dimension of each dataset is extended by +1 and</span>
+<span class="sd">        then the data is written to the new slot.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        Writing H5MD files with fancy trajectory slicing where the Timestep</span>
+<span class="sd">        does not increase monotonically such as ``u.trajectory[[2,1,0]]``</span>
+<span class="sd">        or ``u.trajectory[[0,1,2,0,1,2]]`` raises a :exc:`ValueError` as this</span>
+<span class="sd">        violates the rules of the step dataset in the H5MD standard.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span>
+
+        <span class="c1"># H5MD step refers to the integration step at which the data were</span>
+        <span class="c1"># sampled, therefore ts.data[&#39;step&#39;] is the most appropriate value</span>
+        <span class="c1"># to use. However, step is also necessary in H5MD to allow</span>
+        <span class="c1"># temporal matching of the data, so ts.frame is used as an alternative</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">(</span><span class="ne">KeyError</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The H5MD standard dictates that the step &quot;</span>
+                             <span class="s2">&quot;dataset must increase monotonically in value.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># the dataset.resize() method should work with any chunk shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_time</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_time</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_time</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span>
+
+        <span class="k">if</span> <span class="s1">&#39;edges&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="p">[</span><span class="s1">&#39;box&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_edges</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span><span class="o">.</span><span class="n">write_direct</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">triclinic_dimensions</span><span class="p">,</span>
+                                     <span class="n">dest_sel</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="c1"># These datasets are not resized if n_frames was provided as an</span>
+        <span class="c1"># argument, as they were initialized with their full size.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_positions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="o">.</span><span class="n">write_direct</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">dest_sel</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_vel</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vel</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vel</span><span class="o">.</span><span class="n">write_direct</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">velocities</span><span class="p">,</span> <span class="n">dest_sel</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_forces</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_force</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_force</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_force</span><span class="o">.</span><span class="n">write_direct</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">forces</span><span class="p">,</span> <span class="n">dest_sel</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">s_</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_keys</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_keys</span><span class="p">:</span>
+                <span class="n">obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_obsv</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">/value&#39;</span><span class="p">]</span>
+                <span class="n">obs</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">obs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">obs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_convert_dataset_with_units</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">_convert_dataset_with_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;convert values in the dataset arrays with self.units dictionary&quot;&quot;&quot;</span>
+
+        <span class="c1"># Note: simply doing convert_pos_to_native(self._pos[-1]) does not</span>
+        <span class="c1"># actually change the values in the dataset, so assignment required</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_time</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_time_to_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_time</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">if</span> <span class="s1">&#39;edges&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_traj</span><span class="p">[</span><span class="s1">&#39;box&#39;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_edges</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_vel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_velocities_to_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vel</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_force</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_forces_to_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_force</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">has_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;``True`` if writer is writing positions from Timestep.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="p">[</span><span class="s1">&#39;position&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">has_velocities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;``True`` if writer is writing velocities from Timestep.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">has_forces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;``True`` if writer is writing forces from Timestep.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="H5PYPicklable"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5PYPicklable">[docs]</a><span class="k">class</span> <span class="nc">H5PYPicklable</span><span class="p">(</span><span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">):</span>
