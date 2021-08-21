@@ -584,37 +584,33 @@ class DumpReader(base.ReaderBase):
 
         atomline = f.readline()  # ITEM ATOMS etc
         attrs = atomline.split()[2:]  # attributes on coordinate line
-        col_ids = {attr: i for i, attr in enumerate(attrs)}  # column numbers
-        keys = col_ids.keys()
-        # check for ids and what type of coordinate convention
-        ids = "id" in keys
-        # coord_dict keys = convention keys = column data or False
-        coord_dict = {conv: False for conv in self._conventions[1:]}
-        for coordtype, col_names in self._coordtype_column_names.items():
-            if all(axis in col_ids for axis in col_names):
-                coord_dict[coordtype] = [col_ids[axis] for axis in col_names]
-
+        attr_to_col_ix = {x: i for i, x in enumerate(attrs)}
+        convention_to_col_ix = {}
+        for cv_name, cv_col_names in self._coordtype_column_names.items():
+            try:
+                convention_to_col_ix[cv_name] = [attr_to_col_ix[x] for x in cv_col_names]
+            except KeyError:
+                pass
         # this should only trigger on first read of "ATOM" card, after which it
         # is fixed to the guessed value. Auto proceeds unscaled -> scaled
         # -> unwrapped -> scaled_unwrapped
         if self.lammps_coordinate_convention == "auto":
-            match = [var for var in self._conventions[1:] if coord_dict[var]]
             try:
-                self.lammps_coordinate_convention = match[0]
+                # this will automatically select in order of priority
+                # as defined in the original coordtype_column_names dict
+                self.lammps_coordinate_convention = list(convention_to_col_ix)[0]
             except IndexError:
-                raise ValueError("no coordinate information detected")
+                raise ValueError("No coordinate information detected")
+        elif not self.lammps_coordinate_convention in convention_to_col_ix:
+            raise ValueError(f"No coordinates following convention {self.lammps_coordinate_convention} found in timestep")
 
-        if not coord_dict[self.lammps_coordinate_convention]:
-            raise ValueError(
-                f"no coordinate information of type"
-                f"{self.lammps_coordinate_convention} present in timestep")
-        else:
-            coord_cols = coord_dict[self.lammps_coordinate_convention]
+        coord_cols = convention_to_col_ix[self.lammps_coordinate_convention]
 
+        ids = "id" in attr_to_col_ix
         for i in range(self.n_atoms):
             fields = f.readline().split()
             if ids:
-                indices[i] = fields[col_ids["id"]]
+                indices[i] = fields[attr_to_col_ix["id"]]
             ts.positions[i] = [fields[dim] for dim in coord_cols]
 
         order = np.argsort(indices)

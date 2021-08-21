@@ -514,7 +514,7 @@ class TestLammpsDumpReader(object):
 @pytest.mark.parametrize("convention",
                          ["unscaled", "unwrapped", "scaled_unwrapped"])
 def test_open_absent_convention_fails(convention):
-    with pytest.raises(ValueError, match="no coordinate information of type"):
+    with pytest.raises(ValueError, match="No coordinates following"):
         mda.Universe(LAMMPSDUMP, format='LAMMPSDUMP',
                      lammps_coordinate_convention=convention)
 
@@ -537,7 +537,7 @@ def test_open_all_convention(convention, result):
 
 
 def test_no_coordinate_info():
-    with pytest.raises(ValueError, match="no coordinate information detected"):
+    with pytest.raises(ValueError, match="No coordinate information detected"):
         u = mda.Universe(LAMMPSDUMP_nocoords, format='LAMMPSDUMP',
                          lammps_coordinate_convention="auto")
 
