@@ -52,6 +52,8 @@ def test_ts_error(writer, tmpdir):
         fn = str(tmpdir.join('out.xtc'))
     elif writer == mda.coordinates.LAMMPS.DATAWriter:
         pytest.skip("DATAWriter requires integer atom types")
+    elif writer == mda.coordinates.H5MD.H5MDWriter and not mda.coordinates.H5MD.HAS_H5PY:
+        pytest.skip("skipping H5MDWriter test because h5py is not installed")
     else:
         fn = str(tmpdir.join('out.traj'))
 
@@ -79,10 +81,16 @@ def test_write_with_atomgroup(writer, tmpdir):
         pytest.skip("MOL2 only writes MOL2 back out")
     elif writer == mda.coordinates.LAMMPS.DATAWriter:
         pytest.skip("DATAWriter requires integer atom types")
+    elif writer == mda.coordinates.H5MD.H5MDWriter and not mda.coordinates.H5MD.HAS_H5PY:
+        pytest.skip("skipping H5MDWriter test because h5py is not installed")
     else:
         fn = str(tmpdir.join('out.traj'))
 
-    with writer(fn, n_atoms=u.atoms.n_atoms) as w:
+    # H5MDWriter raises ValueError if the trajectory has no units and
+    # convert_units is True
+    convert_units = (writer != mda.coordinates.H5MD.H5MDWriter)
+
+    with writer(fn, n_atoms=u.atoms.n_atoms, convert_units=convert_units) as w:
         w.write(u.atoms)
 
 
@@ -99,8 +107,14 @@ def test_write_with_universe(writer, tmpdir):
         pytest.skip("MOL2 only writes MOL2 back out")
     elif writer == mda.coordinates.LAMMPS.DATAWriter:
         pytest.skip("DATAWriter requires integer atom types")
+    elif writer == mda.coordinates.H5MD.H5MDWriter and not mda.coordinates.H5MD.HAS_H5PY:
+        pytest.skip("skipping H5MDWriter test because h5py is not installed")
     else:
         fn = str(tmpdir.join('out.traj'))
 
-    with writer(fn, n_atoms=10) as w:
-        w.write(u)
+    # H5MDWriter raises ValueError if the trajectory has no units and
+    # convert_units is True
+    convert_units = (writer != mda.coordinates.H5MD.H5MDWriter)
+
+    with writer(fn, n_atoms=u.atoms.n_atoms, convert_units=convert_units) as w:
+        w.write(u.atoms)

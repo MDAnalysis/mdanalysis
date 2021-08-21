@@ -107,6 +107,12 @@ MDAnalysis.
    .. autoattribute:: dimensions
    .. autoattribute:: triclinic_dimensions
    .. autoattribute:: volume
+   .. attribute:: data
+
+      :class:`dict` that holds arbitrary per Timestep data
+
+      .. versionadded:: 0.11.0
+
    .. automethod:: __getitem__
    .. automethod:: __eq__
    .. automethod:: __iter__
