@@ -94,7 +94,7 @@ To write to an H5MD file from a trajectory loaded with MDAnalysis, do:
         for ts in u.trajectory:
             W.write(u)
 
-To write an H5MD file with contiguous datasets, you must specifly the
+To write an H5MD file with contiguous datasets, you must specify the
 number of frames to be written and set ``chunks=False``:
 
 .. code-block:: python
