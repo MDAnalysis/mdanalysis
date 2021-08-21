@@ -1,0 +1,27 @@
+@import 'theme.css';
+@import 'jupyter.min.css';
+
+.wy-side-nav-search {
+    background-color: #ffffff;
+}
+
+.wy-side-nav-search > div.version {
+    color: rgba(0, 0, 0, 0.74);
+}
+
+.wy-table-responsive table td {
+    white-space: normal;
+}
+
+.rst-content .align-right {
+    width: 300px;
+}
+
+.rst-content p.caption {
+    font-size: 100%;
+    font-weight: unset;
+}
+
+.rst-content .section ol li {
+    margin-bottom: 0.3em;
+}
