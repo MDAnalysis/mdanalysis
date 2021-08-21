@@ -926,11 +926,11 @@ class H5MDWriter(base.WriterBase):
     The H5MD format is very flexible with regards to units, as there is no
     standard defined unit for the format. For this reason, :class:`H5MDWriter`
     does not enforce any units. The units of the written trajectory can be set
-    explicitly with the keyword arguments `lengthunit`, `velocityunit`, and
-    `forceunit`. If units are not explicitly specified, they are set to the
-    native units of the trajectory that is the source of the coordinates. For
-    example, if one converts a DCD trajectory, then positions are written in
-    ångstrom and time in AKMA units. A GROMACS XTC will be written in nm and
+    explicitly with the keyword arguments ``lengthunit``, ``velocityunit``,
+    and ``forceunit``. If units are not explicitly specified, they are set to
+    the native units of the trajectory that is the source of the coordinates.
+    For example, if one converts a DCD trajectory, then positions are written
+    in ångstrom and time in AKMA units. A GROMACS XTC will be written in nm and
     ps. The units are stored in the metadata of the H5MD file so when
     MDAnalysis loads the H5MD trajectory, the units will be automatically
     set correctly.
@@ -938,8 +938,8 @@ class H5MDWriter(base.WriterBase):
     .. rubric:: Compression
 
     HDF5 natively supports various compression modes. To write the trajectory
-    with compressed datasets, set ``compression='gzip'``, ``compression='lzf'``,
-    etc. See `H5PY compression options`_ for all supported modes of
+    with compressed datasets, set ``compression='gzip'``, ``compression='lzf'``
+    , etc. See `H5PY compression options`_ for all supported modes of
     compression. An additional argument, ``compression_opts``, can be used to
     fine tune the level of compression. For example, for GZIP compression,
     ``compression_opts`` can be set to 1 for minimum compression and 9 for

@@ -414,7 +414,8 @@ class TestH5MDWriterWithRealTrajectory(object):
     @pytest.mark.parametrize('scalar, error, match',
         ((0, ValueError, "H5MDWriter: no atoms in output trajectory"),
         (0.5, IOError, "H5MDWriter: Timestep does not have")))
-    def test_n_atoms_errors(self, universe, Writer, outfile, scalar, error, match):
+    def test_n_atoms_errors(self, universe, Writer, outfile,
+                            scalar, error, match):
         n_atoms = universe.atoms.n_atoms * scalar
         with pytest.raises(error, match=match):
             with Writer(outfile, n_atoms) as W:
@@ -473,8 +474,8 @@ class TestH5MDWriterWithRealTrajectory(object):
             W.write(universe)
             # make sure property is pulled from _has dict
             assert W.has_positions == W._has['position']
-            assert W.has_velocities ==  W._has['velocity']
-            assert W.has_forces ==  W._has['force']
+            assert W.has_velocities == W._has['velocity']
+            assert W.has_forces == W._has['force']
             # make sure the values are correct
             assert W.has_positions is True
             assert W.has_velocities is True
@@ -784,6 +785,7 @@ class TestH5MDWriterWithRealTrajectory(object):
             err_msg="Positions in Timestep were modified by writer.")
         assert_equal(
             ts.time, time, err_msg="Time in Timestep was modified by writer.")
+
 
 class TestH5PYNotInstalled(object):
     """Tests RuntimeErrors when h5py not installed"""
