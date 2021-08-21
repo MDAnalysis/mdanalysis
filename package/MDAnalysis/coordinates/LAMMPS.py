@@ -456,7 +456,7 @@ class DumpReader(base.ReaderBase):
     "unwrapped" (xu,yu,zu) and "scaled_unwrapped" (xsu,ysu,zsu) coordinate
     conventions (see https://docs.lammps.org/dump.html for more details).
     If no coordinate convention is provided, or if "auto" is selected,
-    one will be guessed. Auto proceeds in the order "unscaled",
+    one will be guessed. Guessing checks whether the coordinates fit each convention in the order "unscaled",
     "scaled", "unwrapped", "scaled_unwrapped" and whichever set of coordinates
     is detected first will be used. If coordinates are given in the scaled
     coordinate convention (xs,ys,zs) or scaled unwrapped coordinate convention
