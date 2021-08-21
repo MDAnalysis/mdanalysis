@@ -622,6 +622,6 @@ class TestCoordinateMatches(object):
     def test_auto_is_unscaled_match(self, universes):
         assert(len(universes["auto"].trajectory) ==
                len(universes["unscaled"].trajectory))
-        for ts_u, ts_s in zip(universes["auto"].trajectory,
+        for ts_a, ts_s in zip(universes["auto"].trajectory,
                               universes["unscaled"].trajectory):
-            assert_almost_equal(ts_u.positions, ts_s.positions, decimal=5)
+            assert_almost_equal(ts_a.positions, ts_s.positions, decimal=5)
