@@ -53,8 +53,8 @@ contain units and ``convert_units=True``, MDAnalysis will raise a
 set ``convert_units=False``.
 
 :class:`H5MDWriter` detects the native units of the parent trajectory and
-writes the trajectory with those units, unless one of ``timeunit``,
-``lengthunit``, ``velocityunit``, ``forceunit`` arugments are supplied. In
+writes the trajectory with those units, unless one of `timeunit`,
+`lengthunit`, `velocityunit`, `forceunit` arugments are supplied. In
 this case, the writer will write the corresponding dataset with the selected
 unit only if it is recognized by `MDAnalysis units`_.
 
@@ -736,7 +736,7 @@ class H5MDReader(base.ReaderBase):
         The chunk shape of the input file will not be copied to the output
         file, as :class:`H5MDWriter` uses a chunk shape of ``(1, n_atoms, 3)``
         by default. To use a custom chunk shape, you must specify the
-        ``chunks`` argument. If you would like to copy an existing chunk
+        `chunks` argument. If you would like to copy an existing chunk
         format from a dataset (positions, velocities, or forces), do
         the following::
 
@@ -892,22 +892,22 @@ class H5MDWriter(base.WriterBase):
     RuntimeError
         when `H5PY`_ is not installed
     ValueError
-        when ``n_atoms`` is 0
+        when `n_atoms` is 0
     ValueError
-        when ``chunks=False`` but the user did not specify ``n_frames``
+        when ``chunks=False`` but the user did not specify `n_frames`
     ValueError
-        when ``positions``, ``velocities``, and ``forces`` are all
+        when `positions`, `velocities`, and `forces` are all
         set to ``False``
     TypeError
         when the input object is not a :class:`Universe` or
         :class:`AtomGroup`
     IOError
-        when ``n_atoms`` of the :class:`Universe` or :class:`AtomGroup`
-        being written does not match ``n_atoms`` passed as an argument
+        when `n_atoms` of the :class:`Universe` or :class:`AtomGroup`
+        being written does not match `n_atoms` passed as an argument
         to the writer
     ValueError
-        when any of the optional ``timeunit``, ``lengthunit``,
-        ``velocityunit``, or ``forceunit`` keyword arguments are
+        when any of the optional `timeunit`, `lengthunit`,
+        `velocityunit`, or `forceunit` keyword arguments are
         not recognized by MDAnalysis
 
     Notes
@@ -916,18 +916,18 @@ class H5MDWriter(base.WriterBase):
     By default, the writer will write all available data (positions,
     velocities, and forces) if detected in the input
     :class:`~MDAnalysis.coordinates.base.Timestep`. In addition, the settings
-    for ``compression`` and ``compression_opts`` will be read from
+    for `compression` and `compression_opts` will be read from
     the first available group of positions, velocities, or forces and used as
     the default value. To write a file without any one of these datsets,
-    set ``positions=False``, ``velocities=False``, or ``forces=False``.
+    set `positions`, `velocities`, or `forces` to ``False``.
 
     .. rubric:: Units
 
     The H5MD format is very flexible with regards to units, as there is no
     standard defined unit for the format. For this reason, :class:`H5MDWriter`
     does not enforce any units. The units of the written trajectory can be set
-    explicitly with the keyword arguments ``lengthunit``, ``velocityunit``,
-    and ``forceunit``. If units are not explicitly specified, they are set to
+    explicitly with the keyword arguments `lengthunit`, `velocityunit`,
+    and `forceunit`. If units are not explicitly specified, they are set to
     the native units of the trajectory that is the source of the coordinates.
     For example, if one converts a DCD trajectory, then positions are written
     in ångstrom and time in AKMA units. A GROMACS XTC will be written in nm and
@@ -940,9 +940,9 @@ class H5MDWriter(base.WriterBase):
     HDF5 natively supports various compression modes. To write the trajectory
     with compressed datasets, set ``compression='gzip'``, ``compression='lzf'``
     , etc. See `H5PY compression options`_ for all supported modes of
-    compression. An additional argument, ``compression_opts``, can be used to
+    compression. An additional argument, `compression_opts`, can be used to
     fine tune the level of compression. For example, for GZIP compression,
-    ``compression_opts`` can be set to 1 for minimum compression and 9 for
+    `compression_opts` can be set to 1 for minimum compression and 9 for
     maximum compression.
 
     .. rubric:: HDF5 Chunking
@@ -960,13 +960,13 @@ class H5MDWriter(base.WriterBase):
     isn't explicity defined by the user, H5PY automatically selects a chunk
     shape via an algorithm that attempts to make mostly square chunks between
     1 KiB - 1 MiB, however this can lead to suboptimal I/O performance.
-    :class:`H5MDWriter` automatically sets the ``chunks=(1, n_atoms, 3)`` so
+    :class:`H5MDWriter` uses a default chunk shape of ``(1, n_atoms, 3)``so
     as to mimic the typical access pattern of a trajectory by MDAnalysis. In
     our tests ([Jakupovic2021]_), this chunk shape led to a speedup on the
     order of 10x versus H5PY's auto-chunked shape. Users can set a custom
-    chunk shape with the ``chunks`` argument. Additionaly, the datasets in a
+    chunk shape with the `chunks` argument. Additionaly, the datasets in a
     file can be written with a contiguous layout by setting ``chunks=False``,
-    however this must be accompanied by setting ``n_frames`` equal to the
+    however this must be accompanied by setting `n_frames` equal to the
     number of frames being written, as HDF5 must know how much space to
     allocate on disk when creating the dataset.
 
@@ -1127,7 +1127,7 @@ class H5MDWriter(base.WriterBase):
         it does not). These custom unit arguments must be in
         `MDAnalysis notation`_. If custom units are supplied from the user,
         :attr`self.units[unit]` is replaced with the corresponding
-        ``unit`` argument.
+        `unit` argument.
 
         """
 
@@ -1149,7 +1149,7 @@ class H5MDWriter(base.WriterBase):
             # check if all units are None
             if not any(self.units.values()):
                 raise ValueError("The trajectory has no units, but "
-                                 "``convert_units`` is set to ``True`` by "
+                                 "`convert_units` is set to ``True`` by "
                                  "default in MDAnalysis. To write the file "
                                  "with no units, set ``convert_units=False``.")
 
