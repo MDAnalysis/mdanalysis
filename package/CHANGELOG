@@ -126,6 +126,9 @@ Fixes
   * new `Results` class now can be pickled/unpickled. (PR #3309)
 
 Enhancements
+  * LAMMPSDumpReader can now read coordinates in all the different LAMMPS
+    coordinate conventions. Both LAMMPSDumpReader and LAMMPSDumpParser are no
+    longer hardcoded to a set column layout (Issue #3358, PR #3360).
   * Add a ``sort`` keyword to AtomGroup.select_atoms for ordered selections
     (Issue #3364, PR #3368)
   * Adds AtomGroup.asunique, ResidueGroup.asunique, SegmentGroup.asunique
