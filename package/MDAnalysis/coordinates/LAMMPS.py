@@ -597,7 +597,7 @@ class DumpReader(base.ReaderBase):
         if self.lammps_coordinate_convention == "auto":
             try:
                 # this will automatically select in order of priority
-                # as defined in the original coordtype_column_names dict
+                # unscaled, scaled, unwrapped, scaled_unwrapped
                 self.lammps_coordinate_convention = list(convention_to_col_ix)[0]
             except IndexError:
                 raise ValueError("No coordinate information detected")
