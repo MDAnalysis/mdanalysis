@@ -35,7 +35,7 @@ jobs:
         fail-fast: false
         matrix:
           os: [ubuntu-latest, ]
-          python-version: [3.6, 3.7, 3.8, 3.9]
+          python-version: [3.7, 3.8, 3.9]
           run_type: [FULL, ]
           install_hole: [true, ]
           codecov: [true, ]
@@ -46,25 +46,25 @@ jobs:
               run_type: FULL
               install_hole: true
               codecov: true
-            - name: macOS_catalina_py36
+            - name: macOS_catalina_py37
               os: macOS-10.15
-              python-version: 3.6
+              python-version: 3.7
               run_type: FULL
               install_hole: true
               codecov: false
             - name: minimal-ubuntu
               os: ubuntu-latest
-              python-version: 3.6
+              python-version: 3.7
               run_type: MIN
               install_hole: false
               codecov: true
             - name: numpy_min
               os: ubuntu-latest
-              python-version: 3.6
+              python-version: 3.7
               run_type: FULL
               install_hole: false
               codecov: false
-              numpy: numpy=1.16.0
+              numpy: numpy=1.18.0
             - name: asv_check
               os: ubuntu-latest
               python-version: 3.7

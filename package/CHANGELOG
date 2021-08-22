@@ -13,6 +13,21 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+??/??/?? IAlibay
+
+ * 2.1.0
+
+Fixes
+
+Enhancements
+
+Changes
+  * Dropped python 3.6 support and raised minimum numpy version to 1.18.0
+    (NEP29)
+
+Deprecations
+
+
 08/21/21 tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
