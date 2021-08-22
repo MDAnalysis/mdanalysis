@@ -68,21 +68,9 @@ import sys
 # trigger an MPI warning because importing the uuid module triggers a call to
 # os.fork(). This happens if MPI_Init() has been called prior to importing
 # MDAnalysis. The problem is actually caused by the uuid module and not by
-# MDAnalysis itself. Python 3.7 fixes the problem. However, for Python < 3.7,
-# the uuid module works perfectly fine with os.fork() disabled during import.
-# A clean solution is therefore simply to disable os.fork() prior to importing
-# the uuid module and to re-enable it afterwards.
+# MDAnalysis itself. Python 3.7 fixes the problem.
 import os
-
-# Windows doesn't have os.fork so can ignore
-# the issue for that platform
-if sys.version_info >= (3, 7) or os.name == 'nt':
-    import uuid
-else:
-    _os_dot_fork, os.fork = os.fork, None
-    import uuid
-    os.fork = _os_dot_fork
-    del _os_dot_fork
+import uuid
 
 from .. import _TOPOLOGY_ATTRS, _PARSERS
 from ..exceptions import NoDataError
