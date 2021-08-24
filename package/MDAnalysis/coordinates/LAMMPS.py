@@ -560,9 +560,14 @@ class DumpReader(base.ReaderBase):
 
         triclinic = len(f.readline().split()) == 9  # ITEM BOX BOUNDS
         if triclinic:
-            xlo, xhi, xy = map(float, f.readline().split())
-            ylo, yhi, xz = map(float, f.readline().split())
+            xlo_bound, xhi_bound, xy = map(float, f.readline().split())
+            ylo_bound, yhi_bound, xz = map(float, f.readline().split())
             zlo, zhi, yz = map(float, f.readline().split())
+
+            xlo = xlo_bound - min(0.0, xy, xz, xy + xz)
+            xhi = xhi_bound - max(0.0, xy, xz, xy + xz)
+            ylo = ylo_bound - min(0.0, yz)
+            yhi = yhi_bound - max(0.0, yz)
 
             box = np.zeros((3, 3), dtype=np.float64)
             box[0] = xhi - xlo, 0.0, 0.0
