@@ -45,7 +45,8 @@ from ..lib.mdamath import triclinic_box
 
 
 def offsets_filename(filename, ending='npz'):
-    """Return offset filename for XDR files. For this the filename is appended
+    """Return offset or its lock filename for XDR files.
+    For this the filename is appended
     with `_offsets.{ending}`.
 
     Parameters
@@ -58,28 +59,6 @@ def offsets_filename(filename, ending='npz'):
     Returns
     -------
     offset_filename : str
-
-    """
-    head, tail = split(filename)
-    return join(head, '.{tail}_offsets.{ending}'.format(tail=tail,
-                                                        ending=ending))
-
-
-def offset_lock_filename(filename, ending='lock'):
-    """Return offset lock filename for XDR files. For this
-    the filename is appended
-    with `_offsets.{ending}`.
-
-    Parameters
-    ----------
-    filename : str
-        filename of trajectory
-    ending : str (optional)
-        fileending of offsets file
-
-    Returns
-    -------
-    offset_lock_filename : str
 
     """
     head, tail = split(filename)
@@ -204,7 +183,9 @@ class XDRBaseReader(base.ReaderBase):
         """load frame offsets from file, reread them from the trajectory if that
         fails"""
         fname = offsets_filename(self.filename)
-        lock_name = offset_lock_filename(self.filename)
+        lock_name = offsets_filename(self.filename,
+                                     ending='lock')
+
         lock = fasteners.InterProcessLock(lock_name)
         lock.acquire()
 
