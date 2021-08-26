@@ -84,7 +84,7 @@ def read_numpy_offsets(filename):
     """
     try:
         return {k: v for k, v in np.load(filename).items()}
-    except IOError:
+    except (ValueError, IOError):
         warnings.warn("Failed to load offsets file {}\n".format(filename))
         return False
 
