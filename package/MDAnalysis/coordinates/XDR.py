@@ -38,6 +38,7 @@ import errno
 import numpy as np
 from os.path import getctime, getsize, isfile, split, join
 import warnings
+import fasteners
 
 from . import base
 from ..lib.mdamath import triclinic_box
@@ -57,6 +58,28 @@ def offsets_filename(filename, ending='npz'):
     Returns
     -------
     offset_filename : str
+
+    """
+    head, tail = split(filename)
+    return join(head, '.{tail}_offsets.{ending}'.format(tail=tail,
+                                                        ending=ending))
+
+
+def offset_lock_filename(filename, ending='lock'):
+    """Return offset lock filename for XDR files. For this
+    the filename is appended
+    with `_offsets.{ending}`.
+
+    Parameters
+    ----------
+    filename : str
+        filename of trajectory
+    ending : str (optional)
+        fileending of offsets file
+
+    Returns
+    -------
+    offset_lock_filename : str
 
     """
     head, tail = split(filename)
@@ -181,6 +204,9 @@ class XDRBaseReader(base.ReaderBase):
         """load frame offsets from file, reread them from the trajectory if that
         fails"""
         fname = offsets_filename(self.filename)
+        lock_name = offset_lock_filename(self.filename)
+        lock = fasteners.InterProcessLock(lock_name)
+        lock.acquire()
 
         if not isfile(fname):
             self._read_offsets(store=True)
@@ -217,15 +243,18 @@ class XDRBaseReader(base.ReaderBase):
             self._read_offsets(store=True)
         else:
             self._xdr.set_offsets(data['offsets'])
+        lock.release()
+
 
     def _read_offsets(self, store=False):
         """read frame offsets from trajectory"""
+        fname = offsets_filename(self.filename)
         offsets = self._xdr.offsets
         if store:
             ctime = getctime(self.filename)
             size = getsize(self.filename)
             try:
-                np.savez(offsets_filename(self.filename),
+                np.savez(fname,
                          offsets=offsets, size=size, ctime=ctime,
                          n_atoms=self._xdr.n_atoms)
             except Exception as e:
