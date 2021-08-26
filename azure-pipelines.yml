@@ -60,6 +60,7 @@ jobs:
       h5py
       tqdm
       threadpoolctl
+      fasteners
     displayName: 'Install dependencies'
   # TODO: recent rdkit is not on PyPI
   - script: >-
