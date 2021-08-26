@@ -381,6 +381,8 @@ class TestH5MDReaderWithRealTrajectory(object):
         assert_equal(u.trajectory._file.driver, "core")
 
 
+@pytest.mark.xfail(os.name == 'nt',
+                   reason="occasional PermissionError on windows")
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 class TestH5MDWriterWithRealTrajectory(object):
 
