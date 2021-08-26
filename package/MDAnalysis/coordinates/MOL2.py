@@ -61,6 +61,16 @@ Classes
    :members:
 
 
+Notes
+-----
+
+* The MDAnalysis :class:`MOL2Reader` and :class:`MOL2Writer` only handle the
+  MOLECULE, SUBSTRUCTURE, ATOM, and BOND record types. Other records are not
+  currently read or preserved on writing.
+* As the CRYSIN record type is not parsed / written, MOL2 systems always have
+  dimensions set to ``None`` and dimensionless MOL2 files are written.
+
+
 MOL2 format notes
 -----------------
 
@@ -210,7 +220,6 @@ class MOL2Reader(base.ReaderBase):
         return self._read_frame(frame)
 
     def _read_frame(self, frame):
-        unitcell = np.zeros(6, dtype=np.float32)
         try:
             block = self.frames[frame]
         except IndexError:
@@ -227,11 +236,10 @@ class MOL2Reader(base.ReaderBase):
                 pass
 
         self.ts.positions = np.array(coords, dtype=np.float32)
-        self.ts.unitcell = unitcell
+
         if self.convert_units:
             # in-place !
             self.convert_pos_from_native(self.ts._pos)
-            self.convert_pos_from_native(self.ts._unitcell[:3])
         self.ts.frame = frame
 
         return self.ts

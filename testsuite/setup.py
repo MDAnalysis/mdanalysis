@@ -87,7 +87,7 @@ if sys.version_info[:2] < (3, 6):
 
 if __name__ == '__main__':
     # this must be in-sync with MDAnalysis
-    RELEASE = "2.0.0-dev0"
+    RELEASE = "2.1.0-dev0"
     with open("README") as summary:
         LONG_DESCRIPTION = summary.read()
 
@@ -101,7 +101,6 @@ if __name__ == '__main__':
         'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
@@ -185,7 +184,6 @@ if __name__ == '__main__':
               'MDAnalysis=={0!s}'.format(RELEASE),  # same as this release!
               'pytest>=3.3.0', # Raised to 3.3.0 due to Issue 2329
               'hypothesis',
-              'psutil>=4.0.2',
           ],
           # had 'KeyError' as zipped egg (2MB savings are not worth the
           # trouble)

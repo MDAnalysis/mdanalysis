@@ -13,16 +13,46 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
+??/??/?? IAlibay
+
+ * 2.1.0
+
+Fixes
+
+Enhancements
+
+Changes
+  * Dropped python 3.6 support and raised minimum numpy version to 1.18.0
+    (NEP29)
+
+Deprecations
+
+
+08/21/21 tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
          calcraven，xiki-tempula, mieczyslaw, manuel.nuno.melo, PicoCentauri,
          hanatok, rmeli, aditya-kamath, tirkarthi, LeonardoBarneschi, hejamu,
          biogen98, orioncohen, z3y50n, hp115, ojeda-e, thadanipaarth, HenryKobin,
-         1ut, sulays, ahy3nz
+         1ut, sulays, ahy3nz, fiszczyp, fiona-naughton
 
   * 2.0.0
 
 Fixes
+  * Added an `rdkit_kwargs` parameter to pass arguments to the RDKitConverter
+    from the `select_atoms` method (Issue #3319, PR #3324)
+  * Fixes AtomGroup.unique, ResidueGroup.unique, SegmentGroup.unique not
+    sorting the output atoms. The returned group is now always a copy.
+    (Issue #3364, Issue #2977, PR #3368)
+  * Only GRO files with unit cells defined with 3 or 9 entries are now
+    supported (Issue #3305)
+  * Ensures that reading and writing of GRO files with missing unit cell
+    information is consistently treated (Issue #3305)
+  * Fixed sometimes wrong sorting of atoms into fragments when unwrapping
+    (Issue #3352, PR #3353)
+  * Fixed missing array flatten preventing PCA from running when mean positions
+    provided and bugs causing tests to incorrectly pass (Issue #2728, PR #3296)
+  * DL_POLY HISTORY file may contain unit cell dimensions even if there are
+    no periodic boundary conditions (imcom=0) (Issue #3314, PR #3312).
   * New RDKitConverter cache system to fix issue #2958 (PR #2942)
   * Fixed OpenMM converter documentation not showing up in the Converters
     section (Issue #3262, PR #2882)
@@ -108,8 +138,19 @@ Fixes
   * Fix tests for analysis.bat that could fail when run in parallel and that
     would create a test artifact (Issue #2979, PR #2981)
   * Fix syntax warning over comparison of literals using is (Issue #3066)
+  * new `Results` class now can be pickled/unpickled. (PR #3309)
 
 Enhancements
+  * LAMMPSDumpReader can now read coordinates in all the different LAMMPS
+    coordinate conventions. Both LAMMPSDumpReader and LAMMPSDumpParser are no
+    longer hardcoded to a set column layout (Issue #3358, PR #3360).
+  * Add a ``sort`` keyword to AtomGroup.select_atoms for ordered selections
+    (Issue #3364, PR #3368)
+  * Adds AtomGroup.asunique, ResidueGroup.asunique, SegmentGroup.asunique
+    with optional sorting. The returned group may or may not be a copy
+    if it is already unique and/or sorted. (Issue #3364, PR #3368)
+  * Adds ``issorted`` property (PR #3368)
+  * MOL2 parser populates elements attribute from SYBYL atom types (Issue #3062)
   * Added guessers for aromaticity and Gasteiger partial charges (Issue #2468,
     PR #2926)
   * Added `Results` class for storing analysis results (#3115, PR #3233)
@@ -178,15 +219,31 @@ Enhancements
     explicit in the topology (Issue #2468, PR #2775)
   * Added `TransformationBase`. Implemented threadlimit and add an attribute for
     checking if it can be used in parallel analysis. (Issue #2996, PR #2950)
+  * Improved performance of H5MDReader by using h5py.Dataset.read_direct()
+    to transfer data from HDF5 file into timestep. (PR #3293)
+  * Added `H5MDWriter` to coordinate writers (Issue #2866, PR #3189)
 
 Changes
+  * NCDFWriter now allows for the writing of `scale_factor` attributes for
+    trajectory variables. Default writing is no `scale_factor` except for
+    velocities where it is 20.455 (Issue #2327)
+  * Update the API for coordinate writers to reflect practice:
+    start. stop, step are not required anymore (#3392)
+  * Aliased bfactors to tempfactors (Issue #1901, PR#3345)
+  * The RDKitParser now raises an error if only part of the atoms have metadata
+    on residues (Issue #3318, PR #3325)
+  * `analysis.pca.PCA` class now stores `p_components`, `variance`,
+    `cumulated_variance` and `mean_atoms` using the
+    `analysis.base.Results` class (Issues #3275 #3285)
+  * Timestep now stores information in 'C' memory layout instead of
+    the previous 'F' default (PR #1738)
   * `analysis.rdf.InterRDF` and `analysis.rdf.InterRDF_s` now store
     their result attributes using the `analysis.base.Results` class
     (Issue #3276, #3261)
   * Adds a `force` parameter to the RDKitConverter to allow conversion of
     molecules with no hydrogen atom, and a `set_converter_cache_size` function
     to change how many items are retained in the cache (PR #2942)
-  * `hydrogenbonds.WaterBridgeAnalysis.generate_table()` now returns the table; as previously, 
+  * `hydrogenbonds.WaterBridgeAnalysis.generate_table()` now returns the table; as previously,
     it also generates the `table` attribute but the attribute will be removed in 3.0.0.
   * `hydrogenbonds.WaterBridgeAnalysis` now stores data using the
     `hydrogenbonds.WaterBridgeAnalysis.results` attribute
@@ -198,7 +255,7 @@ Changes
     passes keyword arguments to the underlying converter. It can also be used
     as `convert_to.lowercase_pkg_name()` for tab-completion (PR #2882)
   * `analysis.polymer.PersistenceLength` class now stores `lb`,
-    `lp` and `fit` using the `analysis.base.Results` class 
+    `lp` and `fit` using the `analysis.base.Results` class
     (Issues #3289, #3291)
   * `analysis.hole2.HoleAnalysis` now stores ``sphpdbs``, ``outfiles``
     and ``profiles`` in the `analysis.base.Results` class (Issues #3261, #3269)
@@ -270,8 +327,17 @@ Changes
   * Move water bridge analysis from hbonds to hydrogenbonds (Issue #2739 PR #2913)
   * `threadpoolctl` is required for installation (Issue #2860)
   * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
+  * Writing a TRZ file with no box information now raises a warning (Issue #3307)
 
 Deprecations
+  * Deprecated the `bfactors` topology attribute in favour of `tempfactors`.
+    In 2.0 `bfactors` is simply an alias of `tempfactors`; in 3.0 `bfactors`
+    will be removed. (Issue #1901, PR #3345)
+  * The attributes `p_components`, `variance`, `cumulated_variance` and
+    `mean_atoms` in `analysis.pca.PCA` are now deprecated in favour of
+    `results.p_components`, `results.variance`, `results.cumulated_variance`
+    and `results.mean_atoms`. They will be removed in 3.0.0
+    (Issues #3275 #3285)
   * The `bins`, `edges`, `count`, `rdf` attributes for `analysis.rdf.InterRDF`
     and `analysis.rdf.InterRDF_s`, and `cdf` attributes for
     `analysis.rdf.InterRDF_s` are now deprecated in favour of `results.bins`,
@@ -282,13 +348,13 @@ Deprecations
   * The `hydrogenbonds.WaterBridgeAnalysis.network` attribute is now deprecated
     in favour of `hydrogenbonds.WaterBridgeAnalysis.results.network`. It will be
     removed in 3.0.0 (Issue #3261, Issue #3270)
-  * The `analysis.Contacts.timeseries` attribute is now deprecated in favour of 
+  * The `analysis.Contacts.timeseries` attribute is now deprecated in favour of
     `analysis.Contacts.results.timeseries`. It will be removed in 3.0.0
     (Issue #3261)
   * In 3.0.0 the ParmEd classes will only be accessible from the
     `MDAnalysis.converters` module.
   * The `analysis.polymer.PersistenceLength.lb`,
-    `analysis.polymer.PersistenceLength.lp` and 
+    `analysis.polymer.PersistenceLength.lp` and
     `analysis.polymer.PersistenceLength.fit` attributes are now deprecated in
     favour of `analysis.polymer.PersistenceLength.results.lb`,
     `analysis.polymer.PersistenceLength.results.lp` and
@@ -371,7 +437,7 @@ Deprecations
     replaced with hydrogenbonds.WaterBridgeAnalysis (#3111)
   * TPRParser indexing resids from 0 by default is deprecated.
     From 2.0 TPRParser will index resids from 1 by default.
-  
+
 
 Enhancements
   * Added `get_connections` method to get bonds, angles, dihedrals, etc.
@@ -379,7 +445,7 @@ Enhancements
   * Added `tpr_resid_from_one` keyword to select whether TPRParser
     indexes resids from 0 or 1 (Issue #2364, PR #3153)
 
-    
+
 01/17/21 richardjgowers, IAlibay, orbeckst, tylerjereddy, jbarnoud,
          yuxuanzhuang, lilyminium, VOD555, p-j-smith, bieniekmateusz,
          calcraven, ianmkenney, rcrehuet, manuel.nuno.melo, hanatok
@@ -465,7 +531,7 @@ Fixes
   * n_components correctly selects PCA components (Issue #2623)
   * Use internal residue indices instead of resids for similarity and connectivity
     selections (Issues #2669 and #2672, PR #2673)
-  * Checks for cryo-em 1 A^3 default CRYST1 record, 
+  * Checks for cryo-em 1 A^3 default CRYST1 record,
     disabling setting of box dimensions if found (Issue #2599)
   * mdamath.angles now returns np.pi instead of -np.pi in cases of
     lower bound roundoff errors. (Issue #2632, PR #2634)
@@ -527,7 +593,7 @@ Fixes
 Enhancements
   * Added support for FHI-AIMS input files (PR #2705)
   * vastly improved support for 32-bit Windows (PR #2696)
-  * Added methods to compute the root-mean-square-inner-product of subspaces 
+  * Added methods to compute the root-mean-square-inner-product of subspaces
     and the cumulative overlap of a vector in a subspace for PCA (PR #2613)
   * Added .frames and .times arrays to AnalysisBase (Issue #2661)
   * Added elements attribute to PDBParser (Issue #2553, #2647)
@@ -574,7 +640,7 @@ Enhancements
 
 Changes
   * Unused `MDAnalysis.lib.mdamath._angle` has been removed (Issue #2650)
-  * Refactored dihedral selections and Ramachandran.__init__ to speed up 
+  * Refactored dihedral selections and Ramachandran.__init__ to speed up
     dihedral selections for faster tests (Issue #2671, PR #2706)
   * Removes the deprecated `t0`, `tf`, and `dtmax` from
     :class:Waterdynamics.SurvivalProbability. Instead the `start`, `stop` and

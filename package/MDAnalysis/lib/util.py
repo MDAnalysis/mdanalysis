@@ -221,6 +221,20 @@ except ImportError:
                       "have not been built.")
 
 
+def int_array_is_sorted(array):
+    mask = array[:-1] <= array[1:]
+    try:
+        return mask[0] and mask.argmin() == 0
+    except IndexError:
+        # Empty arrays are sorted, I guess...
+        return True
+
+
+def unique_int_1d_unsorted(array):
+    values, indices = np.unique(array, return_index=True)
+    return array[np.sort(indices)]
+
+
 def filename(name, ext=None, keep=False):
     """Return a new name that has suffix attached; replaces other extensions.
 
@@ -2386,6 +2400,8 @@ def check_box(box):
          in :mod:`~MDAnalysis.lib.c_distances`.
        * Removed obsolete box types ``tri_box`` and ``tri_vecs_bad``.
     """
+    if box is None:
+        raise ValueError("Box is None")
     from .mdamath import triclinic_vectors  # avoid circular import
     box = np.asarray(box, dtype=np.float32, order='C')
     if box.shape != (6,):

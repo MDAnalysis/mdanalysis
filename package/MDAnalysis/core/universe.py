@@ -68,21 +68,9 @@ import sys
 # trigger an MPI warning because importing the uuid module triggers a call to
 # os.fork(). This happens if MPI_Init() has been called prior to importing
 # MDAnalysis. The problem is actually caused by the uuid module and not by
-# MDAnalysis itself. Python 3.7 fixes the problem. However, for Python < 3.7,
-# the uuid module works perfectly fine with os.fork() disabled during import.
-# A clean solution is therefore simply to disable os.fork() prior to importing
-# the uuid module and to re-enable it afterwards.
+# MDAnalysis itself. Python 3.7 fixes the problem.
 import os
-
-# Windows doesn't have os.fork so can ignore
-# the issue for that platform
-if sys.version_info >= (3, 7) or os.name == 'nt':
-    import uuid
-else:
-    _os_dot_fork, os.fork = os.fork, None
-    import uuid
-    os.fork = _os_dot_fork
-    del _os_dot_fork
+import uuid
 
 from .. import _TOPOLOGY_ATTRS, _PARSERS
 from ..exceptions import NoDataError
@@ -96,7 +84,7 @@ from .groups import (ComponentBase, GroupBase,
                      Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup)
 from .topology import Topology
-from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr
+from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr, BFACTOR_WARNING
 from .topologyobjects import TopologyObject
 
 
@@ -450,14 +438,13 @@ class Universe(object):
 
         if trajectory:
             coords = np.zeros((1, n_atoms, 3), dtype=np.float32)
-            dims = np.zeros(6, dtype=np.float32)
             vels = np.zeros_like(coords) if velocities else None
             forces = np.zeros_like(coords) if forces else None
 
             # grab and attach a MemoryReader
             u.trajectory = get_reader_for(coords)(
                 coords, order='fac', n_atoms=n_atoms,
-                dimensions=dims, velocities=vels, forces=forces)
+                velocities=vels, forces=forces)
 
         return u
 
@@ -775,6 +762,8 @@ class Universe(object):
             they will be aliases of the same attribute.
         """
         if isinstance(topologyattr, str):
+            if topologyattr in ("bfactor", "bfactors"):
+                warnings.warn(BFACTOR_WARNING, DeprecationWarning)
             try:
                 tcls = _TOPOLOGY_ATTRS[topologyattr]
             except KeyError:
@@ -793,16 +782,6 @@ class Universe(object):
                     n_residues=self._topology.n_residues,
                     n_segments=self._topology.n_segments,
                     values=values)
-        alias_pairs = [("bfactors", "tempfactors"),
-                       ("tempfactors", "bfactors")]
-        for a, b in alias_pairs:
-            if topologyattr.attrname == a and hasattr(self._topology, b):
-                err = ("You are adding {a} to a Universe that "
-                       "has {b}. From MDAnalysis version 2.0, {a} "
-                       "and {b} will no longer be separate "
-                       "TopologyAttrs. Instead, they will be aliases "
-                       "of the same attribute.").format(a=a, b=b)
-                warnings.warn(err, DeprecationWarning)
         self._topology.add_TopologyAttr(topologyattr)
         self._process_attr(topologyattr)
 

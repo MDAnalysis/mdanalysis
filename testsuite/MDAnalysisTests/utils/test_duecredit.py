@@ -29,7 +29,7 @@ import importlib
 # (if set to 'no', the tests will be SKIPPED; has to be yes, true, or 1 for duecredit
 # to work; duecredit must also be installed)
 import MDAnalysis as mda
-from MDAnalysisTests.datafiles import MMTF
+from MDAnalysisTests.datafiles import MMTF, TPR_xvf, H5MD_xvf
 
 # duecredit itself is not needed in the name space but this is a
 # convenient way to skip all tests if duecredit is not installed
@@ -80,7 +80,7 @@ class TestDuecredit(object):
          "qcprot2"),
         ("MDAnalysis.analysis.encore",
          "MDAnalysis.analysis.encore",
-         "10.1371/journal.pcbi.1004415"),
+         "10.1371/journal.pcbi.1004415")
         ])
     def test_duecredit_collector_analysis_modules(self, module, path, citekey):
         importlib.import_module(module)
@@ -94,3 +94,12 @@ class TestDuecredit(object):
                                   '10.1371/journal.pcbi.1005575')].cites_module
         assert mda.due.citations[('MDAnalysis.topology.MMTFParser',
                                   '10.1371/journal.pcbi.1005575')].cites_module
+
+    def test_duecredit_h5md(self):
+        # doesn't trigger on import but on use of either reader or writer
+        u = mda.Universe(TPR_xvf, H5MD_xvf)
+
+        assert mda.due.citations[('MDAnalysis.coordinates.H5MD',
+                                  '10.25080/majora-1b6fd038-005')].cites_module
+        assert mda.due.citations[('MDAnalysis.coordinates.H5MD',
+                                  '10.1016/j.cpc.2014.01.018')].cites_module

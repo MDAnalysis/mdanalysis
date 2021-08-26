@@ -73,7 +73,7 @@ else:
     from commands import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "2.0.0-dev0"
+RELEASE = "2.1.0-dev0"
 
 is_release = 'dev' not in RELEASE
 
@@ -303,7 +303,7 @@ def extensions(config):
         cpp_extra_compile_args.append('-stdlib=libc++')
         cpp_extra_compile_args.append('-mmacosx-version-min=10.9')
         cpp_extra_link_args.append('-stdlib=libc++')
-        cpp_extra_link_args.append('-mmacosx-version-min=10.7')
+        cpp_extra_link_args.append('-mmacosx-version-min=10.9')
 
     # Needed for large-file seeking under 32bit systems (for xtc/trr indexing
     # and access).
@@ -574,7 +574,6 @@ if __name__ == '__main__':
         'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
@@ -588,7 +587,7 @@ if __name__ == '__main__':
     exts, cythonfiles = extensions(config)
 
     install_requires = [
-          'numpy>=1.16.0',
+          'numpy>=1.18.0',
           'biopython>=1.71',
           'networkx>=1.0',
           'GridDataFormats>=0.4.0',
@@ -635,14 +634,11 @@ if __name__ == '__main__':
                         ],
           },
           ext_modules=exts,
-          requires=['numpy (>=1.16.0)', 'biopython (>= 1.71)', 'mmtf (>=1.0.0)',
-                    'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib',
-                    'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)', 'tqdm (>=4.43.0)',
-                    ],
+          python_requires='>=3.7',
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
-              'numpy>=1.16.0',
+              'numpy>=1.18.0',
           ],
           install_requires=install_requires,
           # extras can be difficult to install through setuptools and/or

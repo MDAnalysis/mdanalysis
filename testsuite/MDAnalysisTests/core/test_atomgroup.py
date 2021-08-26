@@ -604,7 +604,7 @@ class TestAtomGroupProperties(object):
         with pytest.raises(KeyError):
             _ = ag._cache['unique_restore_mask']
         # access unique property:
-        uag = ag.unique
+        uag = ag.asunique()
         # assert restore mask cache is still empty since ag is unique:
         with pytest.raises(KeyError):
             _ = ag._cache['unique_restore_mask']

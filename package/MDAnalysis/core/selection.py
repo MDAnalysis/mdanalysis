@@ -172,30 +172,34 @@ class _Operationmeta(type):
 
 
 class LogicOperation(object, metaclass=_Operationmeta):
-    def __init__(self, lsel, rsel):
+    def __init__(self, lsel, rsel, parser):
         self.rsel = rsel
         self.lsel = lsel
+        self.parser = parser
+
+    def apply(self, *args, **kwargs):
+        return self._apply(*args, **kwargs).asunique(sorted=self.parser.sorted)
 
 
 class AndOperation(LogicOperation):
     token = 'and'
     precedence = 3
 
-    def apply(self, group):
+    def _apply(self, group):
         rsel = self.rsel.apply(group)
         lsel = self.lsel.apply(group)
 
         # Mask which lsel indices appear in rsel
         mask = np.in1d(rsel.indices, lsel.indices)
         # and mask rsel according to that
-        return rsel[mask].unique
+        return rsel[mask]
 
 
 class OrOperation(LogicOperation):
     token = 'or'
     precedence = 3
 
-    def apply(self, group):
+    def _apply(self, group):
         lsel = self.lsel.apply(group)
         rsel = self.rsel.apply(group)
 
@@ -211,11 +215,11 @@ def return_empty_on_apply(func):
     without evaluating it
     """
     @functools.wraps(func)
-    def apply(self, group):
+    def _apply(self, group):
         if len(group) == 0:
             return group
         return func(self, group)
-    return apply
+    return _apply
 
 
 class _Selectionmeta(type):
@@ -229,27 +233,30 @@ class _Selectionmeta(type):
 
 
 class Selection(object, metaclass=_Selectionmeta):
-    pass
+
+    def __init__(self, parser, tokens):
+        self.parser = parser
+
+    def apply(self, *args, **kwargs):
+        return self._apply(*args, **kwargs).asunique(sorted=self.parser.sorted)
 
 
 class AllSelection(Selection):
     token = 'all'
 
-    def __init__(self, parser, tokens):
-        pass
-
-    def apply(self, group):
+    def _apply(self, group):
         # Check whether group is identical to the one stored
         # in the corresponding universe, in which case this
         # is returned directly. This works since the Universe.atoms
         # are unique by construction.
         if group is group.universe.atoms:
             return group
-        return group[:].unique
+        return group[:]
 
 
 class UnarySelection(Selection):
     def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
         sel = parser.parse_expression(self.precedence)
         self.sel = sel
 
@@ -258,16 +265,16 @@ class NotSelection(UnarySelection):
     token = 'not'
     precedence = 5
 
-    def apply(self, group):
+    def _apply(self, group):
         notsel = self.sel.apply(group)
-        return group[~np.in1d(group.indices, notsel.indices)].unique
+        return group[~np.in1d(group.indices, notsel.indices)]
 
 
 class GlobalSelection(UnarySelection):
     token = 'global'
     precedence = 5
 
-    def apply(self, group):
+    def _apply(self, group):
         return self.sel.apply(group.universe.atoms).unique
 
 
@@ -282,46 +289,26 @@ class ByResSelection(UnarySelection):
     token = 'byres'
     precedence = 1
 
-    def apply(self, group):
+    def _apply(self, group):
         res = self.sel.apply(group)
         unique_res = unique_int_1d(res.resindices)
         mask = np.in1d(group.resindices, unique_res)
 
-        return group[mask].unique
+        return group[mask]
 
 
-class DistanceSelection(Selection):
-    """Base class for distance search based selections"""
-
-    def validate_dimensions(self, dimensions):
-        r"""Check if the system is periodic in all three-dimensions.
-
-        Parameters
-        ----------
-        dimensions : numpy.ndarray
-            6-item array denoting system size and angles
-
-        Returns
-        -------
-        None or numpy.ndarray
-            Returns argument dimensions if system is periodic in all
-            three-dimensions, otherwise returns None
-        """
-        if self.periodic and all(dimensions[:3]):
-            return dimensions
-        return None
-
-class AroundSelection(DistanceSelection):
+class AroundSelection(Selection):
     token = 'around'
     precedence = 1
 
     def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
         self.periodic = parser.periodic
         self.cutoff = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
 
     @return_empty_on_apply
-    def apply(self, group):
+    def _apply(self, group):
         indices = []
         sel = self.sel.apply(group)
         # All atoms in group that aren't in sel
@@ -330,33 +317,34 @@ class AroundSelection(DistanceSelection):
         if not sys or not sel:
             return sys[[]]
 
-        box = self.validate_dimensions(group.dimensions)
+        box = group.dimensions if self.periodic else None
         pairs = distances.capped_distance(sel.positions, sys.positions,
                                           self.cutoff, box=box,
                                           return_distances=False)
         if pairs.size > 0:
             indices = np.sort(pairs[:, 1])
 
-        return sys[np.asarray(indices, dtype=np.int64)].unique
+        return sys[np.asarray(indices, dtype=np.int64)]
 
-class SphericalLayerSelection(DistanceSelection):
+class SphericalLayerSelection(Selection):
     token = 'sphlayer'
     precedence = 1
 
     def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
         self.periodic = parser.periodic
         self.inRadius = float(tokens.popleft())
         self.exRadius = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
 
     @return_empty_on_apply
-    def apply(self, group):
+    def _apply(self, group):
         indices = []
         sel = self.sel.apply(group)
         if len(sel) == 0:
             return group[[]]
-        box = self.validate_dimensions(group.dimensions)
-        periodic = box is not None
+
+        box = group.dimensions if self.periodic else None
         ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
         pairs = distances.capped_distance(ref, group.positions, self.exRadius,
                                           min_cutoff=self.inRadius,
@@ -365,26 +353,27 @@ class SphericalLayerSelection(DistanceSelection):
         if pairs.size > 0:
             indices = np.sort(pairs[:, 1])
 
-        return group[np.asarray(indices, dtype=np.int64)].unique
+        return group[np.asarray(indices, dtype=np.int64)]
 
 
-class SphericalZoneSelection(DistanceSelection):
+class SphericalZoneSelection(Selection):
     token = 'sphzone'
     precedence = 1
 
     def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
         self.periodic = parser.periodic
         self.cutoff = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
 
     @return_empty_on_apply
-    def apply(self, group):
+    def _apply(self, group):
         indices = []
         sel = self.sel.apply(group)
         if len(sel) == 0:
             return group[[]]
-        box = self.validate_dimensions(group.dimensions)
-        periodic = box is not None
+
+        box = group.dimensions if self.periodic else None
         ref = sel.center_of_geometry().reshape(1, 3).astype(np.float32)
         pairs = distances.capped_distance(ref, group.positions, self.cutoff,
                                           box=box,
@@ -392,19 +381,19 @@ class SphericalZoneSelection(DistanceSelection):
         if pairs.size > 0:
             indices = np.sort(pairs[:, 1])
 
-        return group[np.asarray(indices, dtype=np.int64)].unique
+        return group[np.asarray(indices, dtype=np.int64)]
 
 
 class CylindricalSelection(Selection):
     @return_empty_on_apply
-    def apply(self, group):
+    def _apply(self, group):
         sel = self.sel.apply(group)
         if len(sel) == 0:
             return group[[]]
         # Calculate vectors between point of interest and our group
         vecs = group.positions - sel.center_of_geometry()
 
-        if self.periodic and not np.any(group.dimensions[:3] == 0):
+        if self.periodic and not group.dimensions is None:
             box = group.dimensions[:3]
             cyl_z_hheight = self.zmax - self.zmin
 
@@ -452,7 +441,7 @@ class CylindricalSelection(Selection):
             # Only for cylayer, cyzone doesn't have inRadius
             pass
 
-        return group[mask].unique
+        return group[mask]
 
 
 class CylindricalZoneSelection(CylindricalSelection):
@@ -460,6 +449,7 @@ class CylindricalZoneSelection(CylindricalSelection):
     precedence = 1
 
     def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
         self.periodic = parser.periodic
         self.exRadius = float(tokens.popleft())
         self.zmax = float(tokens.popleft())
@@ -472,6 +462,7 @@ class CylindricalLayerSelection(CylindricalSelection):
     precedence = 1
 
     def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
         self.periodic = parser.periodic
         self.inRadius = float(tokens.popleft())
         self.exRadius = float(tokens.popleft())
@@ -480,10 +471,11 @@ class CylindricalLayerSelection(CylindricalSelection):
         self.sel = parser.parse_expression(self.precedence)
 
 
-class PointSelection(DistanceSelection):
+class PointSelection(Selection):
     token = 'point'
 
     def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
         self.periodic = parser.periodic
         x = float(tokens.popleft())
         y = float(tokens.popleft())
@@ -492,27 +484,29 @@ class PointSelection(DistanceSelection):
         self.cutoff = float(tokens.popleft())
 
     @return_empty_on_apply
-    def apply(self, group):
+    def _apply(self, group):
         indices = []
-        box = self.validate_dimensions(group.dimensions)
+
+        box = group.dimensions if self.periodic else None
         pairs = distances.capped_distance(self.ref[None, :], group.positions, self.cutoff,
                                           box=box,
                                           return_distances=False)
         if pairs.size > 0:
             indices = np.sort(pairs[:, 1])
 
-        return group[np.asarray(indices, dtype=np.int64)].unique
+        return group[np.asarray(indices, dtype=np.int64)]
 
 
 class AtomSelection(Selection):
     token = 'atom'
 
     def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
         self.segid = tokens.popleft()
         self.resid = int(tokens.popleft())
         self.name = tokens.popleft()
 
-    def apply(self, group):
+    def _apply(self, group):
         sub = group[group.names == self.name]
         if sub:
             sub = sub[sub.resids == self.resid]
@@ -526,9 +520,10 @@ class BondedSelection(Selection):
     precedence = 1
 
     def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
         self.sel = parser.parse_expression(self.precedence)
 
-    def apply(self, group):
+    def _apply(self, group):
         grp = self.sel.apply(group)
         # Check if we have bonds
         if not group.bonds:
@@ -555,6 +550,7 @@ class SelgroupSelection(Selection):
     token = 'group'
 
     def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
         grpname = tokens.popleft()
         if grpname in _RESERVED_KWARGS:
             raise TypeError("The '{}' keyword is reserved and cannot be "
@@ -566,7 +562,7 @@ class SelgroupSelection(Selection):
             errmsg = f"Failed to find group: {grpname}"
             raise ValueError(errmsg) from None
 
-    def apply(self, group):
+    def _apply(self, group):
         mask = np.in1d(group.indices, self.grp.indices)
         return group[mask]
 
@@ -578,6 +574,7 @@ class _ProtoStringSelection(Selection):
         Supports multiple wildcards, based on fnmatch
     """
     def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
         vals = grab_not_keywords(tokens)
         if not vals:
             raise ValueError("Unexpected token '{0}'".format(tokens[0]))
@@ -585,7 +582,7 @@ class _ProtoStringSelection(Selection):
         self.values = vals
 
     @return_empty_on_apply
-    def apply(self, group):
+    def _apply(self, group):
         # rather than work on group.names, cheat and look at the lookup table
         nmattr = getattr(group.universe._topology, self.field)
 
@@ -598,7 +595,7 @@ class _ProtoStringSelection(Selection):
         # atomname indices for members of this group
         nmidx = nmattr.nmidx[getattr(group, self.level)]
 
-        return group[np.in1d(nmidx, matches)].unique
+        return group[np.in1d(nmidx, matches)]
 
 
 class AromaticSelection(Selection):
@@ -609,11 +606,8 @@ class AromaticSelection(Selection):
     token = 'aromatic'
     field = 'aromaticities'
 
-    def __init__(self, parser, tokens):
-        pass
-
-    def apply(self, group):
-        return group[group.aromaticities].unique
+    def _apply(self, group):
+        return group[group.aromaticities]
 
 
 class SmartsSelection(Selection):
@@ -625,6 +619,7 @@ class SmartsSelection(Selection):
     token = 'smarts'
 
     def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
         # The parser will add spaces around parentheses and then split the
         # selection based on spaces to create the tokens
         # If the input SMARTS query contained parentheses, the query will be
@@ -647,8 +642,9 @@ class SmartsSelection(Selection):
             val = tokens.popleft()
             pattern.append(val)
         self.pattern = "".join(pattern)
+        self.rdkit_kwargs = parser.rdkit_kwargs
 
-    def apply(self, group):
+    def _apply(self, group):
         try:
             from rdkit import Chem
         except ImportError:
@@ -659,7 +655,7 @@ class SmartsSelection(Selection):
         pattern = Chem.MolFromSmarts(self.pattern)
         if not pattern:
             raise ValueError(f"{self.pattern!r} is not a valid SMARTS query")
-        mol = group.convert_to("RDKIT")
+        mol = group.convert_to("RDKIT", **self.rdkit_kwargs)
         matches = mol.GetSubstructMatches(pattern, useChirality=True)
         # convert rdkit indices to mdanalysis'
         indices = [
@@ -681,6 +677,7 @@ class ResidSelection(Selection):
     token = 'resid'
 
     def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
         values = grab_not_keywords(tokens)
         if not values:
             raise ValueError("Unexpected token: '{0}'".format(tokens[0]))
@@ -716,7 +713,7 @@ class ResidSelection(Selection):
         self.lowers = lowers
         self.uppers = uppers
 
-    def apply(self, group):
+    def _apply(self, group):
         # Grab arrays here to reduce number of calls to main topology
         vals = group.resids
         try:  # optional attribute
@@ -735,7 +732,7 @@ class ResidSelection(Selection):
         else:
             mask = self._sel_without_icodes(vals)
 
-        return group[mask].unique
+        return group[mask]
 
     def _sel_without_icodes(self, vals):
         # Final mask that gets applied to group
@@ -801,6 +798,7 @@ class BoolSelection(Selection):
     """Selection for boolean values"""
 
     def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
         values = grab_not_keywords(tokens)
         if not values:
             values = ["true"]
@@ -818,12 +816,12 @@ class BoolSelection(Selection):
                                  "Use 'True' or 'False'")
             self.values.append(bval)
 
-    def apply(self, group):
+    def _apply(self, group):
         vals = getattr(group, self.field)
         mask = np.zeros(len(vals), dtype=bool)
         for val in self.values:
             mask |= vals == val
-        return group[mask].unique
+        return group[mask]
 
 
 class RangeSelection(Selection):
@@ -834,6 +832,7 @@ class RangeSelection(Selection):
     dtype = int
 
     def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
         self.rtol = parser.rtol
         self.atol = parser.atol
 
@@ -864,7 +863,7 @@ class RangeSelection(Selection):
         self.lowers = lowers
         self.uppers = uppers
 
-    def apply(self, group):
+    def _apply(self, group):
         mask = np.zeros(len(group), dtype=bool)
         vals = getattr(group, self.field) + self.value_offset
 
@@ -876,7 +875,7 @@ class RangeSelection(Selection):
                 thismask = vals == lower
 
             mask |= thismask
-        return group[mask].unique
+        return group[mask]
 
 
 class FloatRangeSelection(RangeSelection):
@@ -885,7 +884,7 @@ class FloatRangeSelection(RangeSelection):
     pattern = f"({FLOAT_PATTERN}){RANGE_PATTERN}({FLOAT_PATTERN})"
     dtype = float
 
-    def apply(self, group):
+    def _apply(self, group):
         mask = np.zeros(len(group), dtype=bool)
         vals = getattr(group, self.field) + self.value_offset
 
@@ -910,7 +909,7 @@ class FloatRangeSelection(RangeSelection):
                                       rtol=self.rtol)
 
             mask |= thismask
-        return group[mask].unique
+        return group[mask]
 
 
 class ByNumSelection(RangeSelection):
@@ -965,10 +964,7 @@ class ProteinSelection(Selection):
         'CCYX', 'CMET', 'CME', 'ASF',
     }
 
-    def __init__(self, parser, tokens):
-        pass
-
-    def apply(self, group):
+    def _apply(self, group):
         resname_attr = group.universe._topology.resnames
         # which values in resname attr are in prot_res?
         matches = [ix for (nm, ix) in resname_attr.namedict.items()
@@ -976,7 +972,7 @@ class ProteinSelection(Selection):
         # index of each atom's resname
         nmidx = resname_attr.nmidx[group.resindices]
         # intersect atom's resname index and matches to prot_res
-        return group[np.in1d(nmidx, matches)].unique
+        return group[np.in1d(nmidx, matches)]
 
 
 class NucleicSelection(Selection):
@@ -1006,10 +1002,7 @@ class NucleicSelection(Selection):
         'RA3', 'RU3', 'RG3', 'RC3'
     }
 
-    def __init__(self, parser, tokens):
-        pass
-
-    def apply(self, group):
+    def _apply(self, group):
         resnames = group.universe._topology.resnames
         nmidx = resnames.nmidx[group.resindices]
 
@@ -1017,7 +1010,7 @@ class NucleicSelection(Selection):
                    if nm in self.nucl_res]
         mask = np.in1d(nmidx, matches)
 
-        return group[mask].unique
+        return group[mask]
 
 
 class BackboneSelection(ProteinSelection):
@@ -1034,7 +1027,7 @@ class BackboneSelection(ProteinSelection):
     token = 'backbone'
     bb_atoms = {'N', 'CA', 'C', 'O'}
 
-    def apply(self, group):
+    def _apply(self, group):
         atomnames = group.universe._topology.names
         resnames = group.universe._topology.resnames
 
@@ -1067,7 +1060,7 @@ class NucleicBackboneSelection(NucleicSelection):
     token = 'nucleicbackbone'
     bb_atoms = {"P", "C5'", "C3'", "O3'", "O5'"}
 
-    def apply(self, group):
+    def _apply(self, group):
         atomnames = group.universe._topology.names
         resnames = group.universe._topology.resnames
 
@@ -1105,7 +1098,7 @@ class BaseSelection(NucleicSelection):
         'O6', 'N2', 'N6',
         'O2', 'N4', 'O4', 'C5M'}
 
-    def apply(self, group):
+    def _apply(self, group):
         atomnames = group.universe._topology.names
         resnames = group.universe._topology.resnames
 
@@ -1135,7 +1128,7 @@ class NucleicSugarSelection(NucleicSelection):
     token = 'nucleicsugar'
     sug_atoms = {"C1'", "C2'", "C3'", "C4'", "O4'"}
 
-    def apply(self, group):
+    def _apply(self, group):
         atomnames = group.universe._topology.names
         resnames = group.universe._topology.resnames
 
@@ -1197,6 +1190,8 @@ class PropertySelection(Selection):
         prop x <5
         prop x<5
         """
+        super().__init__(parser, tokens)
+
         prop = tokens.popleft()
         oper = None
         value = None
@@ -1252,7 +1247,7 @@ class PropertySelection(Selection):
                                                   rtol=parser.rtol)
         self.value = float(value)
 
-    def apply(self, group):
+    def _apply(self, group):
         try:
             values = getattr(group, self.props[self.prop])
         except KeyError:
@@ -1274,7 +1269,7 @@ class PropertySelection(Selection):
             values = np.abs(values)
         mask = self.operator(values, self.value)
 
-        return group[mask].unique
+        return group[mask]
 
 
 class SameSelection(Selection):
@@ -1309,6 +1304,8 @@ class SameSelection(Selection):
     }
 
     def __init__(self, parser, tokens):
+        super().__init__(parser, tokens)
+
         prop = tokens.popleft()
         if prop not in self.prop_trans:
             raise ValueError("Unknown same property : {0}"
@@ -1319,7 +1316,7 @@ class SameSelection(Selection):
         self.sel = parser.parse_expression(self.precedence)
         self.prop = prop
 
-    def apply(self, group):
+    def _apply(self, group):
         res = self.sel.apply(group)
         if not res:
             return group[[]]  # empty selection
@@ -1331,7 +1328,7 @@ class SameSelection(Selection):
             allfrags = functools.reduce(lambda x, y: x + y, res.fragments)
 
             mask = np.in1d(group.indices, allfrags.indices)
-            return group[mask].unique
+            return group[mask]
         # [xyz] must come before self.prop_trans lookups too!
         try:
             pos_idx = {'x': 0, 'y': 1, 'z': 2}[self.prop]
@@ -1343,7 +1340,7 @@ class SameSelection(Selection):
             vals = getattr(res, attrname)
             mask = np.in1d(getattr(group, attrname), vals)
 
-            return group[mask].unique
+            return group[mask]
         else:
             vals = res.positions[:, pos_idx]
             pos = group.positions[:, pos_idx]
@@ -1351,7 +1348,7 @@ class SameSelection(Selection):
             # isclose only does one value at a time
             mask = np.vstack([np.isclose(pos, v)
                               for v in vals]).any(axis=0)
-            return group[mask].unique
+            return group[mask]
 
 
 class SelectionParser(object):
@@ -1391,7 +1388,7 @@ class SelectionParser(object):
                 "".format(self.tokens[0], token))
 
     def parse(self, selectstr, selgroups, periodic=None, atol=1e-08,
-              rtol=1e-05):
+              rtol=1e-05, sorted=True, rdkit_kwargs=None):
         """Create a Selection object from a string.
 
         Parameters
@@ -1409,6 +1406,11 @@ class SelectionParser(object):
         rtol : float, optional
             The relative tolerance parameter for float comparisons.
             Passed to :func:`numpy.isclose`.
+        sorted : bool, optional
+            Whether to sorted the output AtomGroup.
+        rdkit_kwargs : dict, optional
+            Arguments passed to the RDKitConverter when using selection based
+            on SMARTS queries
 
 
         Returns
@@ -1423,11 +1425,14 @@ class SelectionParser(object):
 
 
         .. versionchanged:: 2.0.0
-            Added `atol` and `rtol` keywords to select float values.
+            Added `atol` and `rtol` keywords to select float values. Added
+            `rdkit_kwargs` to pass arguments to the RDKitConverter
         """
         self.periodic = periodic
         self.atol = atol
         self.rtol = rtol
+        self.sorted = sorted
+        self.rdkit_kwargs = rdkit_kwargs or {}
 
         self.selectstr = selectstr
         self.selgroups = selgroups
@@ -1447,7 +1452,7 @@ class SelectionParser(object):
             op = _OPERATIONS[self.tokens.popleft()]
             q = 1 + op.precedence
             exp2 = self.parse_expression(q)
-            exp1 = op(exp1, exp2)
+            exp1 = op(exp1, exp2, self)
         return exp1
 
     def _parse_subexp(self):

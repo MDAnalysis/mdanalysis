@@ -30,7 +30,7 @@ from numpy.testing import (
     assert_almost_equal,
 )
 import pytest
-from MDAnalysisTests.datafiles import PSF, DCD, PDB_CHECK_RIGHTHAND_PA
+from MDAnalysisTests.datafiles import PSF, DCD, PDB_CHECK_RIGHTHAND_PA, MMTF
 from MDAnalysisTests import make_Universe, no_deprecated_call
 
 import MDAnalysis as mda
@@ -547,3 +547,41 @@ def test_warn_selection_for_strange_dtype():
             attrname = "stars"  # :(
             per_object = "atom"
             dtype = dict
+
+
+class TestDeprecateBFactor:
+
+    MATCH = "use the tempfactor attribute"
+
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(MMTF)
+
+    def test_deprecate_bfactors_get_group(self, universe):
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            universe.atoms.bfactors
+
+    def test_deprecate_bfactors_get_atom(self, universe):
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            assert universe.atoms[0].bfactor == universe.atoms[0].tempfactor
+
+    def test_deprecate_bfactors_set_group(self, universe):
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            universe.atoms[:2].bfactors = [3.14, 10]
+        assert universe.atoms.tempfactors[0] == 3.14
+        assert universe.atoms.tempfactors[1] == 10
+
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            assert universe.atoms.bfactors[0] == 3.14
+            assert universe.atoms.bfactors[1] == 10
+
+    def test_deprecate_bfactors_set_atom(self, universe):
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            universe.atoms[0].bfactor = 3.14
+        assert universe.atoms[0].tempfactor == 3.14
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            assert universe.atoms[0].bfactor == 3.14
+
+    def test_deprecate_bfactor_sel(self, universe):
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            universe.select_atoms("bfactor 3")
