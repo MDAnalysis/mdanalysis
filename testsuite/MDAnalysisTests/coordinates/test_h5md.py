@@ -2,6 +2,7 @@ import pytest
 from numpy.testing import assert_almost_equal, assert_equal
 import numpy as np
 import sys
+import os
 import MDAnalysis as mda
 from MDAnalysis.coordinates.H5MD import HAS_H5PY
 if HAS_H5PY:
@@ -381,8 +382,6 @@ class TestH5MDReaderWithRealTrajectory(object):
         assert_equal(u.trajectory._file.driver, "core")
 
 
-@pytest.mark.xfail(os.name == 'nt',
-                   reason="occasional PermissionError on windows")
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 class TestH5MDWriterWithRealTrajectory(object):
 
@@ -746,6 +745,8 @@ class TestH5MDWriterWithRealTrajectory(object):
         assert_equal(dset.compression, filter)
         assert_equal(dset.compression_opts, opts)
 
+    @pytest.mark.xfail(os.name == 'nt',
+                       reason="occasional PermissionError on windows")
     @pytest.mark.parametrize('driver', ('core', 'stdio'))
     def test_write_with_drivers(self, universe, outfile, Writer, driver):
         with Writer(outfile,
