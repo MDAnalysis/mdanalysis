@@ -277,7 +277,7 @@ def extensions(config):
         # lower optimization level on Windows
         # because of gh-3248 (really only applies
         # to msvc 2019+ it seems)
-        extra_compile_args = ['-std=c99', '-ffast-math', '-O2',
+        extra_compile_args = ['-std=c99', '-ffast-math', '-O1',
                               '-funroll-loops',
                               '-fsigned-zeros']  # see #2722
     else:
