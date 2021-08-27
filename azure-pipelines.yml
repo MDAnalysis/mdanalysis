@@ -26,9 +26,6 @@ jobs:
         Python37-32bit-full:
           PYTHON_VERSION: '3.7'
           PYTHON_ARCH: 'x86'
-        Python36-64bit-full:
-          PYTHON_VERSION: '3.6'
-          PYTHON_ARCH: 'x64'
         Python37-64bit-full:
           PYTHON_VERSION: '3.7'
           PYTHON_ARCH: 'x64'
@@ -57,7 +54,7 @@ jobs:
       pytest-xdist
       scikit-learn
       scipy
-      h5py
+      "h5py<3.4.0"
       tqdm
       threadpoolctl
     displayName: 'Install dependencies'
