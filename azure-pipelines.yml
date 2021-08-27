@@ -54,7 +54,7 @@ jobs:
       pytest-xdist
       scikit-learn
       scipy
-      h5py
+      "h5py<3.4.0"
       tqdm
       threadpoolctl
     displayName: 'Install dependencies'
