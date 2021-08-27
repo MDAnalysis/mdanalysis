@@ -78,8 +78,8 @@ class MDA_SDist(sdist.sdist):
 
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (3, 6):
-    print("MDAnalysis requires Python 3.6 or better. "
+if sys.version_info[:2] < (3, 7):
+    print("MDAnalysis requires Python 3.7 or better. "
           "Python {0:d}.{1:d} detected".format(*sys.version_info[:2]))
     print("Please upgrade your version of Python.")
     sys.exit(-1)
