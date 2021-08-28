@@ -17,14 +17,50 @@ try:
 except:
     pass
 
+class BetweenBench(object):
+    """Benchmark for the MDAnalysis.analysis.distances.between
+    function.
+    """
+    u = MDAnalysis.Universe(GRO)
+    tri_clinic_dimensions = u.dimensions
+
+
+    params = ([10, 100, 1000, 10000])
+    param_names = (['num_atoms'])
+
+    def setup(self, num_atoms):
+
+        self.u = MDAnalysis.Universe(GRO)
+
+        self.ag1 = self.u.atoms[:num_atoms]
+        self.ag2 = self.u.atoms[num_atoms: 2 * num_atoms]
+        self.ag3 = self.u.atoms[-num_atoms:]
+
+        np.random.seed(17809)
+        self.coords_1 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
+        np.random.seed(9008716)
+        self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
+        self.allocated_array_2D = np.empty((num_atoms, num_atoms),
+                                            dtype=np.float64)
+        self.array_shape_1D = int(num_atoms * (num_atoms - 1) / 2.)
+        self.allocated_array_1D = np.empty(self.array_shape_1D,
+                                           dtype=np.float64)
+
+
+    def time_between(self, num_atoms):
+        """Benchmark determination of subgroup
+        of atomgroup that is within a specific
+        distance of two other atomgroups.
+        """
+        distances.between(group=self.ag3,
+                          A=self.ag1,
+                          B=self.ag2, 
+                          distance=15.0)
+
 class DistancesBench(object):
     """Benchmarks for MDAnalysis.analysis.distances
-    functions.
+    functions. Excluding contact matrices.
     """
-
-    # TODO: eventually we should include box / pbc
-    # unit cell information in the benchmarks
-    temp_universe = MDAnalysis.Universe(GRO)
     u = MDAnalysis.Universe(GRO)
     tri_clinic_dimensions = u.dimensions
 
@@ -34,12 +70,12 @@ class DistancesBench(object):
 
     def setup(self, num_atoms, pbc_type):
 
+        self.u = MDAnalysis.Universe(GRO)
+
         if pbc_type == None: 
-            self.u = MDAnalysis.Universe(GRO)
             self.box_dims = None
 
         elif pbc_type == 'orthogonal': 
-            self.u = MDAnalysis.Universe(GRO)
             box_shape =  self.u.dimensions
             basis_vectors = mdamath.triclinic_vectors(box_shape)
 
@@ -53,8 +89,6 @@ class DistancesBench(object):
             self.box_dims = np.array([orthogonal_box_size,orthogonal_box_size,orthogonal_box_size,angle,angle,angle])
 
         elif pbc_type == 'triclinic': 
-            self.u = MDAnalysis.Universe(GRO)
-            print(self.u.dimensions)
             self.box_dims = self.u.dimensions
 
         else:
@@ -139,27 +173,12 @@ class DistancesBench(object):
                        box=self.box_dims,
                        offset=20)
 
-    def time_between(self, num_atoms,box_dims):
-        """Benchmark determination of subgroup
-        of atomgroup that is within a specific
-        distance of two other atomgroups.
-        """
-        distances.between(group=self.ag3,
-                          A=self.ag1,
-                          B=self.ag2, 
-                          distance=15.0)
-
 class ContactsBench(object):
-    """Benchmarks for MDAnalysis.analysis.distances
-    functions.
+    """Benchmarks for the MDAnalysis.analysis.distances.contact_matrix
+    function in both default and sparse settings.
     """
-
-    # TODO: eventually we should include box / pbc
-    # unit cell information in the benchmarks
-    temp_universe = MDAnalysis.Universe(GRO)
     u = MDAnalysis.Universe(GRO)
     tri_clinic_dimensions = u.dimensions
-
 
     params = ([10, 100, 1000], [None, 'orthogonal', 'triclinic'])
     param_names = [ 'num_atoms','pbc_type']
@@ -171,13 +190,15 @@ class ContactsBench(object):
             self.box_dims = None
 
         elif pbc_type == 'orthogonal': 
+            #some strange math/type 
             self.u = MDAnalysis.Universe(GRO)
             box_shape =  self.u.dimensions
             basis_vectors = mdamath.triclinic_vectors(box_shape)
 
             #this will calculate the furthest point from the origin on the unit cell.
             furthest_point = np.sum(basis_vectors, axis = 0)
-            #get full size of cube and also deal with certain distance functions requiring float32
+
+            #get full size of cube and deal with certain distance functions requiring float32
             orthogonal_box_size = np.float32(np.max(furthest_point))
             angle=np.float32(90.0)
             
