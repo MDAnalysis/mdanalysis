@@ -17,13 +17,13 @@ try:
 except:
     pass
 
+
 class BetweenBench(object):
     """Benchmark for the MDAnalysis.analysis.distances.between
     function.
     """
     u = MDAnalysis.Universe(GRO)
     tri_clinic_dimensions = u.dimensions
-
 
     params = ([10, 100, 1000, 10000])
     param_names = (['num_atoms'])
@@ -41,11 +41,10 @@ class BetweenBench(object):
         np.random.seed(9008716)
         self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
         self.allocated_array_2D = np.empty((num_atoms, num_atoms),
-                                            dtype=np.float64)
+                                           dtype=np.float64)
         self.array_shape_1D = int(num_atoms * (num_atoms - 1) / 2.)
         self.allocated_array_1D = np.empty(self.array_shape_1D,
                                            dtype=np.float64)
-
 
     def time_between(self, num_atoms):
         """Benchmark determination of subgroup
@@ -54,8 +53,9 @@ class BetweenBench(object):
         """
         distances.between(group=self.ag3,
                           A=self.ag1,
-                          B=self.ag2, 
+                          B=self.ag2,
                           distance=15.0)
+
 
 class DistancesBench(object):
     """Benchmarks for MDAnalysis.analysis.distances
@@ -64,35 +64,39 @@ class DistancesBench(object):
     u = MDAnalysis.Universe(GRO)
     tri_clinic_dimensions = u.dimensions
 
-
     params = ([10, 100, 1000, 10000], [None, 'orthogonal', 'triclinic'])
-    param_names = [ 'num_atoms','pbc_type']
+    param_names = ['num_atoms', 'pbc_type']
 
     def setup(self, num_atoms, pbc_type):
 
         self.u = MDAnalysis.Universe(GRO)
 
-        if pbc_type == None: 
+        if pbc_type is None:
             self.box_dims = None
 
-        elif pbc_type == 'orthogonal': 
-            box_shape =  self.u.dimensions
+        elif pbc_type == 'orthogonal':
+            box_shape = self.u.dimensions
             basis_vectors = mdamath.triclinic_vectors(box_shape)
 
-            #this will calculate the furthest point from the origin on the unit cell.
-            furthest_point = np.sum(basis_vectors, axis = 0)
-            #get full size of cube and also deal with certain distance functions requiring float32
+            # this will calculate the furthest point from the origin on
+            # the triclinic unit cell.
+            furthest_point = np.sum(basis_vectors, axis=0)
+            # get full size of cube and also deal with certain distance
+            # functions requiring float32
             orthogonal_box_size = np.float32(np.max(furthest_point))
-            angle=np.float32(90.0)
-            
-            #make dummy cubic box, must be np.array, does not accept list
-            self.box_dims = np.array([orthogonal_box_size,orthogonal_box_size,orthogonal_box_size,angle,angle,angle])
+            angle = np.float32(90.0)
 
-        elif pbc_type == 'triclinic': 
+            # make dummy cubic box, must be np.array, does not accept list
+            self.box_dims = np.array([orthogonal_box_size,
+                                      orthogonal_box_size,
+                                      orthogonal_box_size,
+                                      angle, angle, angle])
+
+        elif pbc_type == 'triclinic':
             self.box_dims = self.u.dimensions
 
         else:
-            raise Exception("You must specify 'orthogonal', 'triclinic', or None for the box type")
+            raise Exception("Specify only 'orthogonal', 'triclinic', or None for the box type")
 
         self.ag1 = self.u.atoms[:num_atoms]
         self.ag2 = self.u.atoms[num_atoms: 2 * num_atoms]
@@ -103,7 +107,7 @@ class DistancesBench(object):
         np.random.seed(9008716)
         self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
         self.allocated_array_2D = np.empty((num_atoms, num_atoms),
-                                            dtype=np.float64)
+                                           dtype=np.float64)
         self.array_shape_1D = int(num_atoms * (num_atoms - 1) / 2.)
         self.allocated_array_1D = np.empty(self.array_shape_1D,
                                            dtype=np.float64)
@@ -152,7 +156,6 @@ class DistancesBench(object):
                                       result=self.allocated_array_1D,
                                       backend='serial')
 
-
     def time_dist(self, num_atoms, box_dims):
         """Benchmark calculation of distances between
         atoms in two atomgroups with no offsets
@@ -173,6 +176,7 @@ class DistancesBench(object):
                        box=self.box_dims,
                        offset=20)
 
+
 class ContactsBench(object):
     """Benchmarks for the MDAnalysis.analysis.distances.contact_matrix
     function in both default and sparse settings.
@@ -181,36 +185,43 @@ class ContactsBench(object):
     tri_clinic_dimensions = u.dimensions
 
     params = ([10, 100, 1000], [None, 'orthogonal', 'triclinic'])
-    param_names = [ 'num_atoms','pbc_type']
+    param_names = ['num_atoms', 'pbc_type']
 
     def setup(self, num_atoms, pbc_type):
 
-        if pbc_type == None: 
+        if pbc_type is None:
             self.u = MDAnalysis.Universe(GRO)
             self.box_dims = None
 
-        elif pbc_type == 'orthogonal': 
-            #some strange math/type 
+        elif pbc_type == 'orthogonal':
+            # Some strange math/type issues. Essentially we create the smallest
+            # cubic box which encloses the triclinic unit cell.
             self.u = MDAnalysis.Universe(GRO)
-            box_shape =  self.u.dimensions
+            box_shape = self.u.dimensions
             basis_vectors = mdamath.triclinic_vectors(box_shape)
 
-            #this will calculate the furthest point from the origin on the unit cell.
-            furthest_point = np.sum(basis_vectors, axis = 0)
+            # This will calculate the furthest point from the origin on the
+            # triclinic unit cell.
+            furthest_point = np.sum(basis_vectors, axis=0)
 
-            #get full size of cube and deal with certain distance functions requiring float32
+            # Get full size of cube and deal with certain distance functions
+            # requiring float32.
             orthogonal_box_size = np.float32(np.max(furthest_point))
-            angle=np.float32(90.0)
-            
-            #make dummy cubic box, must be np.array, does not accept list
-            self.box_dims = np.array([orthogonal_box_size, orthogonal_box_size, orthogonal_box_size, angle, angle, angle])
+            angle = np.float32(90.0)
 
-        elif pbc_type == 'triclinic': 
+            # make dummy cubic box, must be np.array, some functions do
+            # not accept list
+            self.box_dims = np.array([orthogonal_box_size,
+                                      orthogonal_box_size,
+                                      orthogonal_box_size,
+                                      angle, angle, angle])
+
+        elif pbc_type == 'triclinic':
             self.u = MDAnalysis.Universe(GRO)
             print(self.u.dimensions)
             self.box_dims = self.u.dimensions
         else:
-            raise Exception("You must specify 'orthogonal', 'triclinic', or None for the box type")
+            raise Exception("Specify only 'orthogonal', 'triclinic', or None for the box type")
 
         self.ag1 = self.u.atoms[:num_atoms]
         self.ag2 = self.u.atoms[num_atoms: 2 * num_atoms]
@@ -221,7 +232,7 @@ class ContactsBench(object):
         np.random.seed(9008716)
         self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
         self.allocated_array_2D = np.empty((num_atoms, num_atoms),
-                                            dtype=np.float64)
+                                           dtype=np.float64)
         self.array_shape_1D = int(num_atoms * (num_atoms - 1) / 2.)
         self.allocated_array_1D = np.empty(self.array_shape_1D,
                                            dtype=np.float64)
@@ -246,4 +257,3 @@ class ContactsBench(object):
                                  cutoff=15.0,
                                  returntype='sparse',
                                  box=self.box_dims)
-
