@@ -22,8 +22,6 @@ class BetweenBench(object):
     """Benchmark for the MDAnalysis.analysis.distances.between
     function.
     """
-    u = MDAnalysis.Universe(GRO)
-    tri_clinic_dimensions = u.dimensions
 
     params = ([10, 100, 1000, 10000])
     param_names = (['num_atoms'])
@@ -61,9 +59,6 @@ class DistancesBench(object):
     """Benchmarks for MDAnalysis.analysis.distances
     functions. Excluding contact matrices.
     """
-    u = MDAnalysis.Universe(GRO)
-    tri_clinic_dimensions = u.dimensions
-
     params = ([10, 100, 1000, 10000], [None, 'orthogonal', 'triclinic'])
     param_names = ['num_atoms', 'pbc_type']
 
@@ -86,7 +81,8 @@ class DistancesBench(object):
             orthogonal_box_size = np.float32(np.max(furthest_point))
             angle = np.float32(90.0)
 
-            # make dummy cubic box, must be np.array, does not accept list
+            # make dummy cubic box, must be np.array, distance functions do
+            # not accept list
             self.box_dims = np.array([orthogonal_box_size,
                                       orthogonal_box_size,
                                       orthogonal_box_size,
@@ -94,9 +90,6 @@ class DistancesBench(object):
 
         elif pbc_type == 'triclinic':
             self.box_dims = self.u.dimensions
-
-        else:
-            raise Exception("Specify only 'orthogonal', 'triclinic', or None for the box type")
 
         self.ag1 = self.u.atoms[:num_atoms]
         self.ag2 = self.u.atoms[num_atoms: 2 * num_atoms]
@@ -181,9 +174,6 @@ class ContactsBench(object):
     """Benchmarks for the MDAnalysis.analysis.distances.contact_matrix
     function in both default and sparse settings.
     """
-    u = MDAnalysis.Universe(GRO)
-    tri_clinic_dimensions = u.dimensions
-
     params = ([10, 100, 1000], [None, 'orthogonal', 'triclinic'])
     param_names = ['num_atoms', 'pbc_type']
 
@@ -209,7 +199,7 @@ class ContactsBench(object):
             orthogonal_box_size = np.float32(np.max(furthest_point))
             angle = np.float32(90.0)
 
-            # make dummy cubic box, must be np.array, some functions do
+            # make dummy cubic box, must be np.array, distance functions do
             # not accept list
             self.box_dims = np.array([orthogonal_box_size,
                                       orthogonal_box_size,
@@ -220,8 +210,6 @@ class ContactsBench(object):
             self.u = MDAnalysis.Universe(GRO)
             print(self.u.dimensions)
             self.box_dims = self.u.dimensions
-        else:
-            raise Exception("Specify only 'orthogonal', 'triclinic', or None for the box type")
 
         self.ag1 = self.u.atoms[:num_atoms]
         self.ag2 = self.u.atoms[num_atoms: 2 * num_atoms]
