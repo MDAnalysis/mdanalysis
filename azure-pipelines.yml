@@ -81,7 +81,7 @@ jobs:
   # supports the Python version in use
   # to check the ABI compatibility of our wheels
   - script: >-
-      python -m pip install numpy==1.17.5
+      python -m pip install numpy==1.18.0
     displayName: 'pin to older NumPy (wheel test)'
     condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'wheel'))
   # TODO: recent rdkit is not on PyPI

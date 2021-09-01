@@ -2,7 +2,9 @@
 # Minimum requirements for the build system to execute
 requires = [
     "Cython>=0.16",
-    "numpy>=1.16.0",
+    # lowest NumPy we can use on Python 3.8,
+    # except for more exotic platforms (linux/Mac ARM flavors)
+    "numpy==1.18; python_version=='3.8' and (platform_machine!='arm64' or platform_system!='Darwin') and platform_machine!='aarch64'",
     "setuptools",
     "wheel",
 ]
