@@ -26,21 +26,39 @@ jobs:
         Python37-32bit-full:
           PYTHON_VERSION: '3.7'
           PYTHON_ARCH: 'x86'
+          BUILD_TYPE: 'normal'
         Python37-64bit-full:
           PYTHON_VERSION: '3.7'
           PYTHON_ARCH: 'x64'
+          BUILD_TYPE: 'normal'
         Python38-64bit-full:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
+          BUILD_TYPE: 'normal'
         Python39-64bit-full:
           PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
+          BUILD_TYPE: 'normal'
+        Python38-64bit-full-wheel:
+          PYTHON_VERSION: '3.8'
+          PYTHON_ARCH: 'x64'
+          BUILD_TYPE: 'wheel'
   steps:
   - task: UsePythonVersion@0
     inputs:
       versionSpec: $(PYTHON_VERSION)
       addToPath: true
       architecture: $(PYTHON_ARCH)
+  # a PEP518 compliant wheel build shoud be
+  # able to build MDAnalysis in an isolated
+  # environment *before* any deps are installed
+  # "manually"
+  - powershell: |
+      cd package
+      python -m pip install .
+      cd ..
+    displayName: 'Build MDAnalysis (wheel)'
+    condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'wheel'))
   - script: python -m pip install --upgrade pip setuptools wheel
     displayName: 'Install tools'
   - script: >-
@@ -58,6 +76,14 @@ jobs:
       tqdm
       threadpoolctl
     displayName: 'Install dependencies'
+  # for wheel install testing, we pin to an
+  # older NumPy, the oldest version we support and that
+  # supports the Python version in use
+  # to check the ABI compatibility of our wheels
+  - script: >-
+      python -m pip install numpy==1.17.5
+    displayName: 'pin to older NumPy (wheel test)'
+    condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'wheel'))
   # TODO: recent rdkit is not on PyPI
   - script: >-
       python -m pip install
@@ -80,6 +106,7 @@ jobs:
       python setup.py install
       cd ..
     displayName: 'Build MDAnalysis'
+    condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'normal'))
   - powershell: |
       cd testsuite
       pytest .\MDAnalysisTests --disable-pytest-warnings -n 2 -rsx --cov=MDAnalysis
