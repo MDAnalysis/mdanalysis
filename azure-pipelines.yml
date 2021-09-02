@@ -27,18 +27,18 @@ jobs:
           PYTHON_VERSION: '3.7'
           PYTHON_ARCH: 'x86'
           BUILD_TYPE: 'normal'
-        Python37-64bit-full:
+        Python37-64bit-full-wheel:
           PYTHON_VERSION: '3.7'
           PYTHON_ARCH: 'x64'
-          BUILD_TYPE: 'normal'
+          BUILD_TYPE: 'wheel'
         Python38-64bit-full:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
-        Python39-64bit-full:
+        Python39-64bit-full-wheel:
           PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
-          BUILD_TYPE: 'normal'
+          BUILD_TYPE: 'wheel'
         Python38-64bit-full-wheel:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
