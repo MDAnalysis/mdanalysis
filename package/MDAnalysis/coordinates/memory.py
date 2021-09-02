@@ -127,7 +127,7 @@ same functionality for any supported trajectory format::
   u = mda.Universe(PDB, XTC)
 
   coordinates = AnalysisFromFunction(lambda ag: ag.positions.copy(),
-                                     u.atoms).run().results
+                                     u.atoms).run().results['timeseries']
   u2 = mda.Universe(PDB, coordinates, format=MemoryReader)
 
 .. _creating-in-memory-trajectory-label:
@@ -154,7 +154,7 @@ only the protein is created::
   protein = u.select_atoms("protein")
 
   coordinates = AnalysisFromFunction(lambda ag: ag.positions.copy(),
-                                     protein).run().results
+                                     protein).run().results['timeseries']
   u2 = mda.Merge(protein)            # create the protein-only Universe
   u2.load_new(coordinates, format=MemoryReader)
 
@@ -164,7 +164,7 @@ principle, this could have all be done in one line::
 
   u2 = mda.Merge(protein).load_new(
            AnalysisFromFunction(lambda ag: ag.positions.copy(),
-                                protein).run().results,
+                                protein).run().results['timeseries'],
            format=MemoryReader)
 
 The new :class:`~MDAnalysis.core.universe.Universe` ``u2`` can be used
