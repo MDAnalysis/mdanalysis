@@ -1,0 +1,17 @@
+# Labeler triggered by .github/workflows/labels.yml
+
+Component-Analysis:
+- any: ["package/MDAnalysis/analysis/**/*"]
+
+Component-Core:
+- any: ["package/MDAnalysis/core/*"]
+
+Component-lib:
+- any: ["package/MDAnalysis/lib/**/*"]
+
+performance:
+- any: ["benchmarks/**/*"]
+
+Continuous Integration:
+- any: ["**/*.yml"]
+- any: ["**/*.yaml"]
