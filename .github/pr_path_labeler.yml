@@ -1,5 +1,11 @@
 # Labeler triggered by .github/workflows/labels.yml
 
+Component-Topology :
+- any: ["package/MDAnalysis/topology/**/*"]
+
+Component-Converters :
+- any: ["package/MDAnalysis/converters/*"]
+
 Component-Analysis:
 - any: ["package/MDAnalysis/analysis/**/*"]
 
