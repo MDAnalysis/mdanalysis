@@ -13,13 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, melomcr
+??/??/?? IAlibay, melomcr, rsexton2
 
  * 2.1.0
 
 Fixes
 
 Enhancements
+  * Added frames processing to AnalysisBase.run (Issue #1985)
 
 Changes
   * Dropped python 3.6 support and raised minimum numpy version to 1.18.0

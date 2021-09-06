@@ -197,6 +197,47 @@ def test_start_stop_step(u, run_kwargs, frames):
     assert_almost_equal(an.times, frames+1, decimal=4, err_msg=TIMES_ERR)
 
 
+@pytest.mark.parametrize('run_kwargs, frames', [
+    ({'frames': [4, 5, 6, 7, 8, 9]}, np.arange(4, 10)),
+    ({'frames': [0, 2, 4, 6, 8]}, np.arange(0, 10, 2)),
+    ({'frames': [4, 6, 8]}, np.arange(4, 10, 2)),
+    ({'frames': [0, 3, 4, 3, 5]}, [0, 3, 4, 3, 5]),
+    ({'frames': [True, True, False, True, False, True, True, False, True,
+                 False]}, (0, 1, 3, 5, 6, 8)),
+])
+def test_frame_slice(run_kwargs, frames):
+    u = mda.Universe(TPR, XTC)  # dt = 100
+    an = FrameAnalysis(u.trajectory).run(**run_kwargs)
+    assert an.n_frames == len(frames)
+    assert_equal(an.found_frames, frames)
+    assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
+
+
+@pytest.mark.parametrize('run_kwargs', [
+    ({'start': 4, 'frames': [4, 5, 6, 7, 8, 9]}),
+    ({'stop': 6, 'frames': [0, 1, 2, 3, 4, 5]}),
+    ({'step': 2, 'frames': [0, 2, 4, 6, 8]}),
+    ({'start': 4, 'stop': 7, 'frames': [4, 5, 6]}),
+    ({'stop': 6, 'step': 2, 'frames': [0, 2, 4, 6]}),
+    ({'start': 4, 'step': 2, 'frames': [4, 6, 8]}),
+    ({'start': 0, 'stop': 0, 'step': 0, 'frames': [4, 6, 8]}),
+])
+def test_frame_fail(u, run_kwargs):
+    an = FrameAnalysis(u.trajectory)
+    msg = 'start/stop/step cannot be combined with frames'
+    with pytest.raises(ValueError, match=msg):
+        an.run(**run_kwargs)
+
+
+def test_frame_bool_fail():
+    u = mda.Universe(TPR, XTC)  # dt = 100
+    an = FrameAnalysis(u.trajectory)
+    frames = [True, True, False]
+    msg = 'boolean index did not match indexed array along dimension 0'
+    with pytest.raises(IndexError, match=msg):
+        an.run(frames=frames)
+
+
 def test_frames_times():
     u = mda.Universe(TPR, XTC)  # dt = 100
     an = FrameAnalysis(u.trajectory).run(start=1, stop=8, step=2)

@@ -223,7 +223,8 @@ class AnalysisBase(object):
         self._verbose = verbose
         self.results = Results()
 
-    def _setup_frames(self, trajectory, start=None, stop=None, step=None):
+    def _setup_frames(self, trajectory, start=None, stop=None, step=None,
+                      frames=None):
         """
         Pass a Reader object and define the desired iteration pattern
         through the trajectory
@@ -238,17 +239,32 @@ class AnalysisBase(object):
             stop frame of analysis
         step : int, optional
             number of frames to skip between each analysed frame
+        frames : array_like, optional
+            array of integers or booleans to slice trajectory
 
 
         .. versionchanged:: 1.0.0
             Added .frames and .times arrays as attributes
+
+        .. versionchanged:: 2.1.0
+            Added ability to iterate through trajectory by passing a list of
+            frame indices
         """
         self._trajectory = trajectory
-        start, stop, step = trajectory.check_slice_indices(start, stop, step)
+        if frames is not None:
+            if not all(opt is None for opt in [start, stop, step]):
+                raise ValueError("start/stop/step cannot be combined with "
+                                 "frames")
+            slicer = frames
+        else:
+            start, stop, step = trajectory.check_slice_indices(start, stop,
+                                                               step)
+            slicer = slice(start, stop, step)
+        self._sliced_trajectory = trajectory[slicer]
         self.start = start
         self.stop = stop
         self.step = step
-        self.n_frames = len(range(start, stop, step))
+        self.n_frames = len(self._sliced_trajectory)
         self.frames = np.zeros(self.n_frames, dtype=int)
         self.times = np.zeros(self.n_frames)
 
@@ -270,7 +286,8 @@ class AnalysisBase(object):
         """
         pass  # pylint: disable=unnecessary-pass
 
-    def run(self, start=None, stop=None, step=None, verbose=None):
+    def run(self, start=None, stop=None, step=None, frames=None,
+            verbose=None):
         """Perform the calculation
 
         Parameters
@@ -281,25 +298,32 @@ class AnalysisBase(object):
             stop frame of analysis
         step : int, optional
             number of frames to skip between each analysed frame
+        frames : array_like, optional
+            array of integers or booleans to slice trajectory
         verbose : bool, optional
             Turn on verbosity
+
+
+        .. versionchanged:: 2.1.0
+            Added ability to iterate through trajectory by passing a list of
+            frame indices
         """
         logger.info("Choosing frames to analyze")
         # if verbose unchanged, use class default
         verbose = getattr(self, '_verbose',
                           False) if verbose is None else verbose
 
-        self._setup_frames(self._trajectory, start, stop, step)
+        self._setup_frames(self._trajectory, start=start, stop=stop,
+                           step=step, frames=frames)
         logger.info("Starting preparation")
         self._prepare()
         for i, ts in enumerate(ProgressBar(
-                self._trajectory[self.start:self.stop:self.step],
+                self._sliced_trajectory,
                 verbose=verbose)):
             self._frame_index = i
             self._ts = ts
             self.frames[i] = ts.frame
             self.times[i] = ts.time
-            # logger.info("--> Doing frame {} of {}".format(i+1, self.n_frames))
             self._single_frame()
         logger.info("Finishing up")
         self._conclude()
