@@ -309,7 +309,7 @@ class AnalysisBase(object):
        import MDAnalysis as mda
        from MDAnalysisTests.datafiles import TPR, XTC
        from MDAnalysis.analysis import rms
-       
+
        u = mda.Universe(TPR, XTC)
 
        rmsd = rms.RMSD(u, select='name CA')
@@ -319,7 +319,7 @@ class AnalysisBase(object):
        rmsd.run(frames=[True, False, True, True, False, False, True, False,
                         False, True])
 
-        
+
         .. versionchanged:: 2.1.0
             Added ability to iterate through trajectory by passing a list of
             frame indices
@@ -342,7 +342,7 @@ class AnalysisBase(object):
             self.times[i] = ts.time
             self._single_frame()
         # rewind added for behavioral consistency, Issue #3416
-        self._trajectory.rewind() 
+        self._trajectory.rewind()
         logger.info("Finishing up")
         self._conclude()
         return self
