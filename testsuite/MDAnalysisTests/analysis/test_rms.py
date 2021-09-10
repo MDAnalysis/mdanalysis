@@ -189,6 +189,13 @@ class TestRMSD(object):
                             err_msg="error: rmsd profile should match" +
                             "test values")
 
+    def test_rmsd_frames(self, universe, correct_values):
+        RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA')
+        RMSD.run(frames=[0, 49])
+        assert_almost_equal(RMSD.results.rmsd, correct_values, 4,
+                            err_msg="error: rmsd profile should match" +
+                            "test values")
+
     def test_rmsd_unicode_selection(self, universe, correct_values):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select=u'name CA')
         RMSD.run(step=49)

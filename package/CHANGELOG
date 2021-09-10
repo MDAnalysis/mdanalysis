@@ -20,7 +20,8 @@ The rules for this file:
 Fixes
 
 Enhancements
-  * Added frames processing to AnalysisBase.run (Issue #1985)
+  * Added `frames` argument to AnalysisBase.run to allow analysis to run on 
+    arbitrary list of frames (Issue #1985)
 
 Changes
   * Dropped python 3.6 support and raised minimum numpy version to 1.18.0
