@@ -31,6 +31,7 @@ jobs:
           PYTHON_VERSION: '3.7'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
+          NUMPY_MIN: '1.18.0'
         Python38-64bit-full:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
@@ -39,10 +40,12 @@ jobs:
           PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
+          NUMPY_MIN: '1.19.3'
         Python38-64bit-full-wheel:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
+          NUMPY_MIN: '1.18.0'
   steps:
   - task: UsePythonVersion@0
     inputs:
@@ -81,7 +84,7 @@ jobs:
   # supports the Python version in use
   # to check the ABI compatibility of our wheels
   - script: >-
-      python -m pip install numpy==1.18.0
+      python -m pip install numpy==$(NUMPY_MIN)
     displayName: 'pin to older NumPy (wheel test)'
     condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'wheel'))
   # TODO: recent rdkit is not on PyPI

@@ -6,7 +6,7 @@ requires = [
     # except for more exotic platforms (linux/Mac ARM flavors)
     "numpy==1.18; python_version=='3.7' and (platform_machine!='arm64' or platform_system!='Darwin') and platform_machine!='aarch64'",
     "numpy==1.18; python_version=='3.8' and (platform_machine!='arm64' or platform_system!='Darwin') and platform_machine!='aarch64'",
-    "numpy==1.18; python_version=='3.9' and (platform_machine!='arm64' or platform_system!='Darwin') and platform_machine!='aarch64'",
+    "numpy==1.19.3; python_version=='3.9' and (platform_machine!='arm64' or platform_system!='Darwin') and platform_machine!='aarch64'",
     "setuptools",
     "wheel",
 ]
