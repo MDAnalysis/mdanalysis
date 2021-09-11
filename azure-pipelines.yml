@@ -15,37 +15,54 @@ pr:
 
 
 jobs:
-- job: Windows
+- job: Azure_Tests
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))  # skip for PR merges
-  pool:
-    vmImage: 'VS2017-Win2016'
   variables:
     MPLBACKEND: agg
   strategy:
     matrix:
-        Python37-32bit-full:
+        Win-Python37-32bit-full:
           PYTHON_VERSION: '3.7'
           PYTHON_ARCH: 'x86'
           BUILD_TYPE: 'normal'
-        Python37-64bit-full-wheel:
+          imageName: 'vs2017-win2016'
+        Win-Python37-64bit-full-wheel:
           PYTHON_VERSION: '3.7'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.18.0'
-        Python38-64bit-full:
+          imageName: 'vs2017-win2016'
+        Win-Python38-64bit-full:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
-        Python39-64bit-full-wheel:
+          imageName: 'vs2017-win2016'
+        Win-Python39-64bit-full-wheel:
           PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.19.3'
-        Python38-64bit-full-wheel:
+          imageName: 'vs2017-win2016'
+        Win-Python38-64bit-full-wheel:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.18.0'
+          imageName: 'vs2017-win2016'
+        Linux-Python39-64bit-full-wheel:
+          PYTHON_VERSION: '3.9'
+          PYTHON_ARCH: 'x64'
+          BUILD_TYPE: 'wheel'
+          NUMPY_MIN: '1.19.3'
+          imageName: 'ubuntu-latest'
+        Linux-Python37-64bit-full-wheel:
+          PYTHON_VERSION: '3.7'
+          PYTHON_ARCH: 'x64'
+          BUILD_TYPE: 'wheel'
+          NUMPY_MIN: '1.19.3'
+          imageName: 'ubuntu-latest'
+  pool:
+    vmImage: $(imageName)
   steps:
   - task: UsePythonVersion@0
     inputs:
@@ -105,14 +122,15 @@ jobs:
   - powershell: |
       cd package
       python setup.py install
-      cd ..\testsuite
+      cd ..
+      cd testsuite
       python setup.py install
       cd ..
     displayName: 'Build MDAnalysis'
     condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'normal'))
   - powershell: |
       cd testsuite
-      pytest .\MDAnalysisTests --disable-pytest-warnings -n 2 -rsx --cov=MDAnalysis
+      pytest MDAnalysisTests --disable-pytest-warnings -n 2 -rsx --cov=MDAnalysis
     displayName: 'Run MDAnalysis Test Suite'
   - script: |
       curl -s https://codecov.io/bash | bash
