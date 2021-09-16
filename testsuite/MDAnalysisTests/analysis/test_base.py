@@ -237,6 +237,7 @@ def test_frame_bool_fail():
     with pytest.raises(IndexError, match=msg):
         an.run(frames=frames)
 
+
 def test_rewind():
     u = mda.Universe(TPR, XTC)  # dt = 100
     an = FrameAnalysis(u.trajectory).run(frames=[0, 2, 3, 5, 9])

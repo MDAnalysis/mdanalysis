@@ -315,7 +315,8 @@ class AnalysisBase(object):
            rmsd = rms.RMSD(u, select='name CA')
            # A list of frames to run the analysis on can be passed
            rmsd.run(frames=[0,2,3,6,9])
-           # A list of booleans the same length of the trajectory can also be used
+           # A list of booleans the same length of the trajectory can also be
+           # used
            rmsd.run(frames=[True, False, True, True, False, False, True, False,
                             False, True])
            # Or start, stop, and step can be used
