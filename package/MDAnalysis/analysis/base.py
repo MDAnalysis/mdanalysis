@@ -304,20 +304,22 @@ class AnalysisBase(object):
             Turn on verbosity
 
 
-    Example
-    -------
-       import MDAnalysis as mda
-       from MDAnalysisTests.datafiles import TPR, XTC
-       from MDAnalysis.analysis import rms
+        Example
+        -------
+           import MDAnalysis as mda
+           from MDAnalysisTests.datafiles import TPR, XTC
+           from MDAnalysis.analysis import rms
 
-       u = mda.Universe(TPR, XTC)
+           u = mda.Universe(TPR, XTC)
 
-       rmsd = rms.RMSD(u, select='name CA')
-       # A list of frames to run the analysis on can be passed
-       rmsd.run(frames=[0,2,3,6,9])
-       # A list of booleans the same length of the trajectory can also be used
-       rmsd.run(frames=[True, False, True, True, False, False, True, False,
-                        False, True])
+           rmsd = rms.RMSD(u, select='name CA')
+           # A list of frames to run the analysis on can be passed
+           rmsd.run(frames=[0,2,3,6,9])
+           # A list of booleans the same length of the trajectory can also be used
+           rmsd.run(frames=[True, False, True, True, False, False, True, False,
+                            False, True])
+           # Or start, stop, and step can be used
+           rmsd.run(start=2, stop=8, step=2)
 
 
         .. versionchanged:: 2.1.0
