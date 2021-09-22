@@ -26,6 +26,7 @@ from unittest.mock import patch
 import errno
 import numpy as np
 import os
+from os.path import split
 import shutil
 import subprocess
 
@@ -818,6 +819,10 @@ class _GromacsReader_offsets(object):
         # try to write a offsets file
         self._reader(filename)
         assert_equal(os.path.exists(XDR.offsets_filename(filename)), False)
+
+        # test if the offset lock file is created in tmp folder
+        head, tail = split(filename)
+        assert_equal(os.path.exists('/tmp/' + tail + '.lock'), True)
 
     def test_offset_lock_created(self):
         assert_equal(os.path.exists(XDR.offsets_filename(self.filename,

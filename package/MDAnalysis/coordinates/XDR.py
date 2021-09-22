@@ -198,7 +198,7 @@ class XDRBaseReader(base.ReaderBase):
             filelock.release()
         except PermissionError:
             head, tail = split(self.filename)
-            filelock = fasteners.InterProcessLock('/tmp/' + tail +'.lock')
+            filelock = fasteners.InterProcessLock('/tmp/' + tail + '.lock')
 
         with filelock:
             if not isfile(fname):
