@@ -189,47 +189,42 @@ class XDRBaseReader(base.ReaderBase):
         lock_name = offsets_filename(self.filename,
                                      ending='lock')
 
-        try:
-            lock = fasteners.InterProcessLock(lock_name)
-            lock.acquire()
+        with fasteners.InterProcessLock(lock_name):
+            if not isfile(fname):
+                self._read_offsets(store=True)
+                return
 
-        if not isfile(fname):
-            self._read_offsets(store=True)
-            return
+            # if offsets file read correctly, data will be a dictionary of offsets
+            # if not, data will be False
+            # if False, offsets should be read from the trajectory
+            # this warning can be avoided by loading Universe like:
+            # u = mda.Universe(data.TPR, data.XTC, refresh_offsets=True)
+            # refer to Issue #1893
+            data = read_numpy_offsets(fname)
+            if not data:
+                warnings.warn("Reading offsets from {} failed, "
+                              "reading offsets from trajectory instead\n"
+                              "Consider setting 'refresh_offsets=True' "
+                              "when loading your Universe".format(fname))
+                self._read_offsets(store=True)
+                return
 
-        # if offsets file read correctly, data will be a dictionary of offsets
-        # if not, data will be False
-        # if False, offsets should be read from the trajectory
-        # this warning can be avoided by loading Universe like:
-        # u = mda.Universe(data.TPR, data.XTC, refresh_offsets=True)
-        # refer to Issue #1893
-        data = read_numpy_offsets(fname)
-        if not data:
-            warnings.warn("Reading offsets from {} failed, "
-                          "reading offsets from trajectory instead\n"
-                          "Consider setting 'refresh_offsets=True' "
-                          "when loading your Universe".format(fname))
-            self._read_offsets(store=True)
-            return
+            ctime_ok = size_ok = n_atoms_ok = False
 
-        ctime_ok = size_ok = n_atoms_ok = False
+            try:
+                ctime_ok = getctime(self.filename) == data['ctime']
+                size_ok = getsize(self.filename) == data['size']
+                n_atoms_ok = self._xdr.n_atoms == data['n_atoms']
+            except KeyError:
+                # we tripped over some old offset formated file
+                pass
 
-        try:
-            ctime_ok = getctime(self.filename) == data['ctime']
-            size_ok = getsize(self.filename) == data['size']
-            n_atoms_ok = self._xdr.n_atoms == data['n_atoms']
-        except KeyError:
-            # we tripped over some old offset formated file
-            pass
-
-        if not (ctime_ok and size_ok and n_atoms_ok):
-            warnings.warn("Reload offsets from trajectory\n "
-                          "ctime or size or n_atoms did not match")
-            self._read_offsets(store=True)
-        else:
-            self._xdr.set_offsets(data['offsets'])
-        lock.release()
-
+            if not (ctime_ok and size_ok and n_atoms_ok):
+                warnings.warn("Reload offsets from trajectory\n "
+                              "ctime or size or n_atoms did not match")
+                self._read_offsets(store=True)
+            else:
+                self._xdr.set_offsets(data['offsets'])
 
     def _read_offsets(self, store=False):
         """read frame offsets from trajectory"""
