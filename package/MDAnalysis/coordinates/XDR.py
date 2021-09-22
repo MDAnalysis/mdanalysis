@@ -84,6 +84,8 @@ def read_numpy_offsets(filename):
     """
     try:
         return {k: v for k, v in np.load(filename).items()}
+
+    #  `ValueError` is encountered when the offset file is corrupted.
     except (ValueError, IOError):
         warnings.warn("Failed to load offsets file {}\n".format(filename))
         return False
@@ -181,13 +183,15 @@ class XDRBaseReader(base.ReaderBase):
 
     def _load_offsets(self):
         """load frame offsets from file, reread them from the trajectory if that
-        fails"""
+        fails. To prevent the competition of generating the same offset file
+        from multiple processes, an `InterProcessLock` is used."""
         fname = offsets_filename(self.filename)
         lock_name = offsets_filename(self.filename,
                                      ending='lock')
 
-        lock = fasteners.InterProcessLock(lock_name)
-        lock.acquire()
+        try:
+            lock = fasteners.InterProcessLock(lock_name)
+            lock.acquire()
 
         if not isfile(fname):
             self._read_offsets(store=True)
