@@ -56,8 +56,8 @@ import warnings
 import platform
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (3, 6):
-    print('MDAnalysis requires Python 3.6 or better. Python {0:d}.{1:d} detected'.format(*
+if sys.version_info[:2] < (3, 7):
+    print('MDAnalysis requires Python 3.7 or better. Python {0:d}.{1:d} detected'.format(*
           sys.version_info[:2]))
     print('Please upgrade your version of Python.')
     sys.exit(-1)
@@ -189,7 +189,7 @@ def get_numpy_include():
         import numpy as np
     except ImportError:
         print('*** package "numpy" not found ***')
-        print('MDAnalysis requires a version of NumPy (>=1.16.0), even for setup.')
+        print('MDAnalysis requires a version of NumPy (>=1.18.0), even for setup.')
         print('Please get it from http://numpy.scipy.org/ or install it through '
               'your package manager.')
         sys.exit(-1)
