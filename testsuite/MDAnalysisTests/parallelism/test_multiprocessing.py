@@ -23,6 +23,7 @@
 import multiprocessing
 
 import numpy as np
+import os
 import pytest
 import pickle
 from numpy.testing import assert_equal
@@ -30,6 +31,7 @@ from numpy.testing import assert_equal
 import MDAnalysis as mda
 from MDAnalysis.coordinates.core import get_reader_for
 from MDAnalysis.analysis.rms import RMSD
+from MDAnalysis.coordinates import XDR
 
 from MDAnalysisTests.datafiles import (
     CRD,
@@ -123,6 +125,23 @@ def test_universe_unpickle_in_new_process():
     p.close()
 
     assert_equal(ref, res)
+
+
+def create_universe():
+    return mda.Universe(GRO, XTC)
+
+
+def test_creating_multiple_universe_without_offset():
+    #  test if they can be created without generating
+    #  the offset simultaneously.
+    try:
+        os.remove(XDR.offsets_filename(XTC))
+    except OSError:
+        pass
+    p = multiprocessing.Pool(2)
+    _ = [p.apply(create_universe)
+            for i in range(3)]
+    p.close()
 
 
 @pytest.fixture(params=[
