@@ -439,7 +439,7 @@ class TestTimestep(object):
     def test_copy(self, func, ts):
         if self.uni_args is None:
             return
-        u = mda.Universe(*self.uni_args)
+        u = mda.Universe(*self.uni_args)  # pylint: disable=not-an-iterable
         ts = u.trajectory.ts
         func(self, self.name, ts)
 

@@ -2343,7 +2343,6 @@ class _ConnectionTopologyAttrMeta(_TopologyAttrMeta):
     to return only the connections within the atoms in the group.
     """
     def __init__(cls, name, bases, classdict):
-        type.__init__(type, name, bases, classdict)
         attrname = classdict.get('attrname')
 
         if attrname is not None:

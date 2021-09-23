@@ -60,4 +60,3 @@ class NullWriter(base.WriterBase):
         except AttributeError:
             errmsg = "Input obj is neither an AtomGroup or Universe"
             raise TypeError(errmsg) from None
-        pass
