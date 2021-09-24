@@ -189,6 +189,7 @@ class TestITPAtomtypes(ParserBase):
         assert_almost_equal(universe.atoms[2].mass, 20.989)
         assert_almost_equal(universe.atoms[3].mass, 1.008)
 
+
 class TestITPAtomtypes(ParserBase):
     parser = mda.topology.ITPParser.ITPParser
     ref_filename = ITP_charges
