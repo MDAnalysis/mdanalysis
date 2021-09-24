@@ -24,6 +24,7 @@ Enhancements
 Changes
   * Dropped python 3.6 support and raised minimum numpy version to 1.18.0
     (NEP29)
+  * Fix ITPParser charge reading (Issue #3419).
 
 Deprecations
 
@@ -38,7 +39,6 @@ Deprecations
   * 2.0.0
 
 Fixes
-  * Fix ITPParser charge reading (Issue #3419).
   * Added an `rdkit_kwargs` parameter to pass arguments to the RDKitConverter
     from the `select_atoms` method (Issue #3319, PR #3324)
   * Fixes AtomGroup.unique, ResidueGroup.unique, SegmentGroup.unique not
