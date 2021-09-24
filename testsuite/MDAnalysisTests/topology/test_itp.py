@@ -184,8 +184,8 @@ class TestITPAtomtypes(ParserBase):
 
     def test_mass_parse_or_guess(self, universe):
         assert_almost_equal(universe.atoms[0].mass, 8.0)
-        assert_almost_equal(universe.atoms[1].mass, 20.98)
-        assert_almost_equal(universe.atoms[2].mass, 20.98)
+        assert_almost_equal(universe.atoms[1].mass, 20.989)
+        assert_almost_equal(universe.atoms[2].mass, 20.989)
         assert_almost_equal(universe.atoms[3].mass, 1.008)
 
 

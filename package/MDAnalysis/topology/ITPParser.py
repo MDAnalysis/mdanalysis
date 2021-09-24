@@ -531,8 +531,8 @@ class ITPParser(TopologyReaderBase):
         self.build_system()
 
         self.types = np.array(self.types)
-        self.charges = np.array(self.charges)
-        self.masses = np.array(self.masses)
+        self.charges = np.array(self.charges, dtype=object)
+        self.masses = np.array(self.masses, dtype=object)
 
         if not all(self.charges):
             empty = self.charges == ''
