@@ -192,6 +192,7 @@ __all__ = [
     "ITP", # for GROMACS generated itps
     "ITP_nomass", # for ATB generated itps
     "ITP_atomtypes",  # atom definitions to check atomtyes section parsing
+    "ITP_charges", # atom definitions to test custom particle charge parsing.
     "NAMDBIN", # for NAMD generated binary file
     "ITP_edited", # to check different directives are read properly
     "ITP_tip5p", # tip5p water from opls-aa, edited with additional keywords
