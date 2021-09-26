@@ -13,18 +13,18 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, melomcr
+??/??/?? IAlibay, melomcr, mdd31 
 
  * 2.1.0
 
 Fixes
-
+  * Fix ITPParser charge reading (Issue #3419).
+  
 Enhancements
 
 Changes
   * Dropped python 3.6 support and raised minimum numpy version to 1.18.0
     (NEP29)
-  * Fix ITPParser charge reading (Issue #3419).
 
 Deprecations
 
