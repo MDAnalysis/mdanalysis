@@ -13,12 +13,13 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, melomcr
+??/??/?? IAlibay, melomcr, mdd31 
 
  * 2.1.0
 
 Fixes
-
+  * Fix ITPParser charge reading (Issue #3419).
+  
 Enhancements
 
 Changes
