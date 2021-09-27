@@ -46,6 +46,7 @@ Google groups forbids any name that contains the string `anal'.)
 from setuptools import setup, Extension, find_packages
 from distutils.ccompiler import new_compiler
 from distutils.sysconfig import customize_compiler
+from distutils.msvccompiler import MSVCCompiler
 import codecs
 import os
 import sys
@@ -267,6 +268,16 @@ def using_clang():
         is_clang = False
     return is_clang
 
+def using_msvc():
+    """Will we be using an MSVC compiler?"""
+    # how portable is this?
+    compiler = new_compiler()
+    customize_compiler(compiler)
+    if isinstance(compiler, MSVCCompiler):
+        is_msvc = True
+    else:
+        is_msvc = False
+    return is_msvc
 
 def extensions(config):
     # usually (except coming from release tarball) cython files must be generated
@@ -284,7 +295,11 @@ def extensions(config):
     # build optimized versions of MDAnalysis.
     arch = config.get('march', default=False)
     if arch:
-        extra_compile_args.append('-march={}'.format(arch))
+        if using_msvc():
+            # MSVC doesn't have a good equivalent for the march flag
+            pass
+        else:
+            extra_compile_args.append('-march={}'.format(arch))
 
     # encore is sensitive to floating point accuracy, especially on non-x86
     # to avoid reducing optimisations on everything, we make a set of compile
