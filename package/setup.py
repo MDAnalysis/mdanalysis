@@ -305,7 +305,15 @@ def extensions(config):
             # MSVC doesn't have a good equivalent for the march flag
             pass
         else:
-            extra_compile_args.append('-march={}'.format(arch))
+            if platform.machine() == "x86_64":
+                extra_compile_args.append('-march={}'.format(arch))
+            elif: platform.machine == "arm":
+            `   # arm prefers the use of  mcpu only
+                extra_compile_args.append('-mcpu={}'.format(arch))
+            else:
+                # platform specific optimizations skipped
+                pass
+            
 
     cpp_extra_compile_args = [a for a in extra_compile_args if 'std' not in a]
     cpp_extra_compile_args.append('-std=c++11')
