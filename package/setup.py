@@ -308,7 +308,7 @@ def extensions(config):
             if platform.machine() == "x86_64":
                 extra_compile_args.append('-march={}'.format(arch))
             elif platform.machine == "arm":
-            `   # arm prefers the use of  mcpu only
+                # arm prefers the use of  mcpu only
                 extra_compile_args.append('-mcpu={}'.format(arch))
             else:
                 # platform specific optimizations skipped
