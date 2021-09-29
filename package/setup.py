@@ -270,13 +270,9 @@ def using_clang():
 
 def using_msvc():
     """Will we be using an MSVC compiler?"""
-    # how portable is this?
-    compiler = new_compiler()
-    customize_compiler(compiler)
-    if isinstance(compiler, MSVCCompiler):
-        is_msvc = True
-    else:
-        is_msvc = False
+    # from numpy.random setup.py
+    is_msvc = (platform.platform().startswith('Windows') and
+        platform.python_compiler().startswith('MS'))
     return is_msvc
 
 def extensions(config):
@@ -291,15 +287,7 @@ def extensions(config):
         extra_compile_args.extend(['-Wall', '-pedantic'])
         define_macros.extend([('DEBUG', '1')])
 
-    # allow using architecture specific instructions. This allows people to
-    # build optimized versions of MDAnalysis.
-    arch = config.get('march', default=False)
-    if arch:
-        if using_msvc():
-            # MSVC doesn't have a good equivalent for the march flag
-            pass
-        else:
-            extra_compile_args.append('-march={}'.format(arch))
+
 
     # encore is sensitive to floating point accuracy, especially on non-x86
     # to avoid reducing optimisations on everything, we make a set of compile
@@ -309,6 +297,16 @@ def extensions(config):
         encore_compile_args.append('-O1')
     else:
         encore_compile_args.append('-O3')
+
+    # allow using architecture specific instructions. This allows people to
+    # build optimized versions of MDAnalysis. Do here so not included in encore
+    arch = config.get('march', default=False)
+    if arch:
+        if using_msvc():
+            # MSVC doesn't have a good equivalent for the march flag
+            pass
+        else:
+            extra_compile_args.append('-march={}'.format(arch))
 
     cpp_extra_compile_args = [a for a in extra_compile_args if 'std' not in a]
     cpp_extra_compile_args.append('-std=c++11')
