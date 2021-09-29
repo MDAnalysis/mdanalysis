@@ -46,7 +46,6 @@ Google groups forbids any name that contains the string `anal'.)
 from setuptools import setup, Extension, find_packages
 from distutils.ccompiler import new_compiler
 from distutils.sysconfig import customize_compiler
-from distutils.msvccompiler import MSVCCompiler
 import codecs
 import os
 import sys
