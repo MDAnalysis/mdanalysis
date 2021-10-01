@@ -105,7 +105,7 @@ class TRRWriter(XDRBaseWriter):
                 self.convert_forces_to_native(forces)
 
         time = ts.time
-        step = ts.frame
+        step = ts.data.get('step', ts.frame)
 
         if self._convert_units:
             dimensions = self.convert_dimensions_to_unitcell(ts, inplace=False)
