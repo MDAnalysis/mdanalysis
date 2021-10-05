@@ -2343,7 +2343,8 @@ class _ConnectionTopologyAttrMeta(_TopologyAttrMeta):
     to return only the connections within the atoms in the group.
     """
     def __init__(cls, name, bases, classdict):
-        type.__init__(type, name, bases, classdict)
+        super().__init__(name, bases, classdict)
+
         attrname = classdict.get('attrname')
 
         if attrname is not None:
@@ -2355,8 +2356,6 @@ class _ConnectionTopologyAttrMeta(_TopologyAttrMeta):
             method = MethodType(intra_connection, cls)
             prop = property(method, None, None, method.__doc__)
             cls.transplants[AtomGroup].append((f"intra_{attrname}", prop))
-
-        super().__init__(name, bases, classdict)
 
 
 class _Connection(AtomAttr, metaclass=_ConnectionTopologyAttrMeta):
