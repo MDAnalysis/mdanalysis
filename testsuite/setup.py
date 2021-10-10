@@ -41,7 +41,6 @@ Also free to ask on the MDAnalysis mailing list for help:
 (Note that the group really is called `mdnalysis-discussion' because
 Google groups forbids any name that contains the string `anal'.)
 """
-from __future__ import print_function
 from setuptools import setup, find_packages
 from setuptools.command import sdist
 
@@ -79,8 +78,8 @@ class MDA_SDist(sdist.sdist):
 
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (2, 7):
-    print("MDAnalysis requires Python 2.7 or better. "
+if sys.version_info[:2] < (3, 7):
+    print("MDAnalysis requires Python 3.7 or better. "
           "Python {0:d}.{1:d} detected".format(*sys.version_info[:2]))
     print("Please upgrade your version of Python.")
     sys.exit(-1)
@@ -88,12 +87,12 @@ if sys.version_info[:2] < (2, 7):
 
 if __name__ == '__main__':
     # this must be in-sync with MDAnalysis
-    RELEASE = "0.19.3-dev"
+    RELEASE = "2.1.0-dev0"
     with open("README") as summary:
         LONG_DESCRIPTION = summary.read()
 
     CLASSIFIERS = [
-        'Development Status :: 4 - Beta',
+        'Development Status :: 6 - Mature',
         'Environment :: Console',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
@@ -101,12 +100,10 @@ if __name__ == '__main__':
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Programming Language :: C',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
@@ -119,16 +116,15 @@ if __name__ == '__main__':
           description='MDAnalysis testsuite',
           long_description=LONG_DESCRIPTION,
           long_description_content_type='text/x-rst',
-          author='Naveen Michaud-Agrawal',
-          author_email='naveen.michaudagrawal@gmail.com',
-          maintainer='Richard Gowers',
-          maintainer_email='mdnalysis-discussion@googlegroups.com',
+          author='MDAnalysis Development Team',
+          author_email='mdanalysis@numfocus.org',
+          maintainer='MDAnalysis Core Developers',
+          maintainer_email='mdanalysis@numfocus.org',
           url='https://www.mdanalysis.org',
           download_url='https://github.com/MDAnalysis/mdanalysis/releases',
-          project_urls={'Documentation': 'https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests',
-                        'CI Tests': 'https://travis-ci.org/MDAnalysis/mdanalysis',
+          project_urls={'Documentation': 'https://userguide.mdanalysis.org/stable/testing.html',
                         'CI Coverage': 'https://codecov.io/gh/MDAnalysis/mdanalysis',
-                        'Developer Group': 'https://groups.google.com/forum/#!forum/mdnalysis-devel',
+                        'Developer Group': 'https://groups.google.com/g/mdnalysis-devel',
                         'Issue Tracker': 'https://github.com/mdanalysis/mdanalysis/issues',
                         'Source': 'https://github.com/mdanalysis/mdanalysis',
                         },
@@ -139,15 +135,17 @@ if __name__ == '__main__':
                        'MDAnalysisTests.plugins': 'MDAnalysisTests/plugins'},
           package_data={'MDAnalysisTests':
                         ['data/*.psf', 'data/*.dcd', 'data/*.pdb',
-                         'data/tprs/*.tpr', 'data/tprs/all_bonded/*.tpr',
+                         'data/tprs/*.tpr',
                          'data/tprs/all_bonded/*.gro',
                          'data/tprs/all_bonded/*.top',
                          'data/tprs/all_bonded/*.mdp', 'data/*.tpr',
+                         'data/tprs/*/*.tpr',
                          'data/*.gro', 'data/*.xtc', 'data/*.trr', 'data/*npy',
                          'data/*.crd', 'data/*.xyz',
                          'data/Amber/*.bz2',
                          'data/Amber/*.prmtop', 'data/Amber/*.top',
                          'data/Amber/*.parm7',
+                         'data/Amber/*.rst7',
                          'data/Amber/*.trj', 'data/Amber/*.mdcrd',
                          'data/Amber/*.ncdf', 'data/Amber/*.nc',
                          'data/Amber/*.inpcrd',
@@ -174,14 +172,18 @@ if __name__ == '__main__':
                          'data/analysis/*',
                          'data/*.gsd',
                          'data/windows/*',
+                         'data/*.itp', "data/gromacs/gromos54a7_edited.ff/*",
+                         'data/*.coor',
+                         'data/*.h5md',
+                         'data/*.in',
+                         'data/*.top',
+                         'data/*.sdf',
                         ],
           },
           install_requires=[
               'MDAnalysis=={0!s}'.format(RELEASE),  # same as this release!
-              'pytest>=3.1.2',
+              'pytest>=3.3.0', # Raised to 3.3.0 due to Issue 2329
               'hypothesis',
-              'psutil>=4.0.2',
-              'mock>=2.0.0',  # replace with unittest.mock in python 3 only version
           ],
           # had 'KeyError' as zipped egg (2MB savings are not worth the
           # trouble)

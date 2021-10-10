@@ -31,8 +31,7 @@ See Also
 MDAnalysis.coordinates.XTC: Read and write GROMACS XTC trajectory files.
 MDAnalysis.coordinates.XDR: BaseReader/Writer for XDR based formats
 """
-from __future__ import absolute_import
-
+from . import base
 from .XDR import XDRBaseReader, XDRBaseWriter
 from ..lib.formats.libmdaxdr import TRRFile
 from ..lib.mdamath import triclinic_vectors, triclinic_box
@@ -42,13 +41,18 @@ class TRRWriter(XDRBaseWriter):
     """Writer for the Gromacs TRR format.
 
     The Gromacs TRR trajectory format is a lossless format. The TRR format can
-    store *velocoties* and *forces* in addition to the coordinates. It is also
+    store *velocities* and *forces* in addition to the coordinates. It is also
     used by other Gromacs tools to store and process other data such as modes
     from a principal component analysis.
 
     If the data dictionary of a :class:`Timestep` contains the key
     'lambda' the corresponding value will be used as the lambda value
     for written TRR file.  If ``None`` is found the lambda is set to 0.
+
+    If the data dictionary of a :class:`Timestep` contains the key
+    'step' the corresponding value will be used as the step value for
+    the written TRR file. If the dictionary does not contain 'step', then
+    the step is set to the :class:`Timestep` frame attribute.
 
     """
 
@@ -58,18 +62,38 @@ class TRRWriter(XDRBaseWriter):
              'force': 'kJ/(mol*nm)'}
     _file = TRRFile
 
-    def write_next_timestep(self, ts):
-        """Write timestep object into trajectory.
+    def _write_next_frame(self, ag):
+        """Write information associated with ``ag`` at current frame into trajectory
 
         Parameters
         ----------
-        ts : :class:`~base.Timestep`
+        ag : AtomGroup or Universe
 
         See Also
         --------
         <FormatWriter>.write(AtomGroup/Universe/TimeStep)
         The normal write() method takes a more general input
+
+
+        .. versionchanged:: 1.0.0
+           Renamed from `write_next_timestep` to `_write_next_frame`.
+        .. versionchanged:: 2.0.0
+           Deprecated support for Timestep argument has now been removed.
+           Use AtomGroup or Universe as an input instead.
+        .. versionchanged:: 2.1.0
+           When possible, TRRWriter assigns `ts.data['step']` to `step` rather
+           than `ts.frame`.
         """
+        try:
+            ts = ag.ts
+        except AttributeError:
+            try:
+                # special case: can supply a Universe, too...
+                ts = ag.trajectory.ts
+            except AttributeError:
+                errmsg = "Input obj is neither an AtomGroup or Universe"
+                raise TypeError(errmsg) from None
+
         xyz = None
         if ts.has_positions:
             xyz = ts.positions.copy()
@@ -89,7 +113,7 @@ class TRRWriter(XDRBaseWriter):
                 self.convert_forces_to_native(forces)
 
         time = ts.time
-        step = ts.frame
+        step = ts.data.get('step', ts.frame)
 
         if self._convert_units:
             dimensions = self.convert_dimensions_to_unitcell(ts, inplace=False)
@@ -108,7 +132,7 @@ class TRRReader(XDRBaseReader):
     """Reader for the Gromacs TRR format.
 
     The Gromacs TRR trajectory format is a lossless format. The TRR format can
-    store *velocoties* and *forces* in addition to the coordinates. It is also
+    store *velocities* and *forces* in addition to the coordinates. It is also
     used by other Gromacs tools to store and process other data such as modes
     from a principal component analysis.
 
@@ -139,7 +163,8 @@ class TRRReader(XDRBaseReader):
         ts.dimensions = triclinic_box(*frame.box)
 
         if self.convert_units:
-            self.convert_pos_from_native(ts.dimensions[:3])
+            if ts.dimensions is not None:
+                self.convert_pos_from_native(ts.dimensions[:3])
 
         if ts.has_positions:
             if self._sub is not None:

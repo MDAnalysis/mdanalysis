@@ -27,8 +27,7 @@ Base classes --- :mod:`MDAnalysis.coordinates.base`
 ===================================================
 
 Derive other Timestep, FrameIterator, Reader and Writer classes from the classes
-in this module. The derived classes must follow the :ref:`Trajectory API`
-in :mod:`MDAnalysis.coordinates.__init__`.
+in this module. The derived classes must follow the :ref:`Trajectory API`.
 
 Timestep
 --------
@@ -42,7 +41,6 @@ MDAnalysis.
    .. automethod:: __init__
    .. automethod:: from_coordinates
    .. automethod:: from_timestep
-   .. automethod:: _init_unitcell
    .. autoattribute:: n_atoms
    .. attribute::`frame`
 
@@ -109,6 +107,12 @@ MDAnalysis.
    .. autoattribute:: dimensions
    .. autoattribute:: triclinic_dimensions
    .. autoattribute:: volume
+   .. attribute:: data
+
+      :class:`dict` that holds arbitrary per Timestep data
+
+      .. versionadded:: 0.11.0
+
    .. automethod:: __getitem__
    .. automethod:: __eq__
    .. automethod:: __iter__
@@ -142,7 +146,7 @@ common API to the user in MDAnalysis. There are two types of readers:
 
 2. Readers for *single frame formats*: These file formats only contain a single
    coordinate set. These readers are derived from
-   :class`:SingleFrameReaderBase`.
+   :class:`SingleFrameReaderBase`.
 
 The underlying low-level readers handle closing of files in different
 ways. Typically, the MDAnalysis readers try to ensure that files are always
@@ -177,6 +181,16 @@ file.
    :inherited-members:
 
 
+Converters
+----------
+
+Converters output information to other libraries.
+
+.. autoclass:: ConverterBase
+   :members:
+   :inherited-members:
+
+
 Helper classes
 --------------
 
@@ -187,10 +201,6 @@ writers share.
    :members:
 
 """
-from __future__ import absolute_import
-import six
-from six.moves import range
-
 import numpy as np
 import numbers
 import copy
@@ -200,14 +210,14 @@ import weakref
 from . import core
 from .. import NoDataError
 from .. import (
-    _READERS,
+    _READERS, _READER_HINTS,
     _SINGLEFRAME_WRITERS,
     _MULTIFRAME_WRITERS,
+    _CONVERTERS
 )
 from .. import units
 from ..auxiliary.base import AuxReader
 from ..auxiliary.core import auxreader
-from ..core import flags
 from ..lib.util import asiterable, Namespace
 
 
@@ -220,6 +230,7 @@ class Timestep(object):
 
          create a timestep object with space for n_atoms
 
+
     .. versionchanged:: 0.11.0
        Added :meth:`from_timestep` and :meth:`from_coordinates` constructor
        methods.
@@ -227,8 +238,13 @@ class Timestep(object):
        :attr:`n_atoms` now a read only property.
        :attr:`frame` now 0-based instead of 1-based.
        Attributes `status` and `step` removed.
+    .. versionchanged:: 2.0.0
+       Timestep now can be (un)pickled. Weakref for Reader
+       will be dropped.
+       Timestep now stores in to numpy array memory in 'C' order rather than
+       'F' (Fortran).
     """
-    order = 'F'
+    order = 'C'
 
     def __init__(self, n_atoms, **kwargs):
         """Create a Timestep, representing a frame of a trajectory
@@ -282,6 +298,7 @@ class Timestep(object):
         self._has_positions = False
         self._has_velocities = False
         self._has_forces = False
+        self._has_dimensions = False
 
         # These will allocate the arrays if the has flag
         # gets set to True
@@ -289,11 +306,10 @@ class Timestep(object):
         self.has_velocities = kwargs.get('velocities', False)
         self.has_forces = kwargs.get('forces', False)
 
-        self._unitcell = self._init_unitcell()
+        self._unitcell = np.zeros(6, dtype=np.float32)
 
         # set up aux namespace for adding auxiliary data
         self.aux = Namespace()
-
 
     @classmethod
     def from_timestep(cls, other, **kwargs):
@@ -375,10 +391,21 @@ class Timestep(object):
 
         return ts
 
-    def _init_unitcell(self):
-        """Create custom datastructure for :attr:`_unitcell`."""
-        # override for other Timesteps
-        return np.zeros((6), np.float32)
+    def __getstate__(self):
+        #  The `dt` property is lazy loaded.
+        #  We need to load it once from the `_reader` (if exists)
+        #  attached to this timestep to get the dt value.
+        #  This will help to (un)pickle a `Timestep` without pickling `_reader`
+        #  and retain its dt value.
+        self.dt
+
+        state = self.__dict__.copy()
+        state.pop('_reader', None)
+
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
 
     def __eq__(self, other):
         """Compare with another Timestep
@@ -398,6 +425,15 @@ class Timestep(object):
             return False
         if self.has_positions:
             if not (self.positions == other.positions).all():
+                return False
+
+        if self.dimensions is None:
+            if other.dimensions is not None:
+                return False
+        else:
+            if other.dimensions is None:
+                return False
+            if not (self.dimensions == other.dimensions).all():
                 return False
 
         if not self.has_velocities == other.has_velocities:
@@ -436,6 +472,14 @@ class Timestep(object):
             return self._pos[atoms]
         else:
             raise TypeError
+
+    def __getattr__(self, attr):
+        # special-case timestep info
+        if attr in ('velocities', 'forces', 'positions'):
+            raise NoDataError('This Timestep has no ' + attr)
+        err = "{selfcls} object has no attribute '{attr}'"
+        raise AttributeError(err.format(selfcls=type(self).__name__,
+                                        attr=attr))
 
     def __len__(self):
         return self.n_atoms
@@ -508,30 +552,33 @@ class Timestep(object):
         except NoDataError:
             # It's cool if there's no Data, we'll live
             pos = None
-        except:
-            raise TypeError("Selection type must be compatible with slicing"
-                            " the coordinates")
+        except Exception:
+            errmsg = ("Selection type must be compatible with slicing the "
+                      "coordinates")
+            raise TypeError(errmsg) from None
         try:
             vel = self.velocities[sel, :]
         except NoDataError:
             vel = None
-        except:
-            raise TypeError("Selection type must be compatible with slicing"
-                            " the coordinates")
+        except Exception:
+            errmsg = ("Selection type must be compatible with slicing the "
+                      "coordinates")
+            raise TypeError(errmsg) from None
         try:
             force = self.forces[sel, :]
         except NoDataError:
             force = None
-        except:
-            raise TypeError("Selection type must be compatible with slicing"
-                            " the coordinates")
+        except Exception:
+            errmsg = ("Selection type must be compatible with slicing the "
+                      "coordinates")
+            raise TypeError(errmsg) from None
 
         new_TS = self.__class__.from_coordinates(
             positions=pos,
             velocities=vel,
             forces=force)
 
-        new_TS._unitcell = self._unitcell.copy()
+        new_TS.dimensions = self.dimensions
 
         new_TS.frame = self.frame
 
@@ -745,28 +792,30 @@ class Timestep(object):
 
     @property
     def dimensions(self):
-        """unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
+        """View of unitcell dimensions (*A*, *B*, *C*, *alpha*, *beta*, *gamma*)
 
         lengths *a*, *b*, *c* are in the MDAnalysis length unit (Å), and
         angles are in degrees.
-
-        Setting dimensions will populate the underlying native format
-        description of box dimensions
         """
-        # The actual Timestep._unitcell depends on the underlying
-        # trajectory format. It can be e.g. six floats representing
-        # the box edges and angles or the 6 unique components of the
-        # box matrix or the full box matrix.
-        return self._unitcell
+        if (self._unitcell[:3] == 0).all():
+            return None
+        else:
+            return self._unitcell
 
     @dimensions.setter
     def dimensions(self, box):
-        self._unitcell[:] = box
+        if box is None:
+            self._unitcell[:] = 0
+        else:
+            self._unitcell[:] = box
 
     @property
     def volume(self):
         """volume of the unitcell"""
-        return core.box_volume(self.dimensions)
+        if self.dimensions is None:
+            return 0
+        else:
+            return core.box_volume(self.dimensions)
 
     @property
     def triclinic_dimensions(self):
@@ -804,7 +853,10 @@ class Timestep(object):
 
         .. versionadded:: 0.11.0
         """
-        return core.triclinic_vectors(self.dimensions)
+        if self.dimensions is None:
+            return None
+        else:
+            return core.triclinic_vectors(self.dimensions)
 
     @triclinic_dimensions.setter
     def triclinic_dimensions(self, new):
@@ -812,7 +864,10 @@ class Timestep(object):
 
         .. versionadded:: 0.11.0
         """
-        self.dimensions = core.triclinic_box(*new)
+        if new is None:
+            self.dimensions = None
+        else:
+            self.dimensions = core.triclinic_box(*new)
 
     @property
     def dt(self):
@@ -932,16 +987,7 @@ class FrameIteratorSliced(FrameIteratorBase):
         )
 
     def __len__(self):
-        start, stop, step = self.start, self.stop, self.step
-        if (step > 0 and start < stop):
-            # We go from a lesser number to a larger one.
-            return int(1 + (stop - 1 - start) // step)
-        elif (step < 0 and start > stop):
-            # We count backward from a larger number to a lesser one.
-            return int(1 + (start - 1 - stop) // (-step))
-        else:
-            # The range is empty.
-            return 0
+        return range_length(self.start, self.stop, self.step)
 
     def __iter__(self):
         for i in range(self.start, self.stop, self.step):
@@ -959,20 +1005,33 @@ class FrameIteratorSliced(FrameIteratorBase):
             frame = self.start + frame * self.step
             return self.trajectory._read_frame_with_aux(frame)
         elif isinstance(frame, slice):
-            start = self.start + (frame.start or 0) * self.step
+            step = (frame.step or 1) * self.step
+            if frame.start is None:
+                if frame.step is None or frame.step > 0:
+                    start = self.start
+                else:
+                    start = self.start + (len(self) - 1) * self.step
+            else:
+                start = self.start + (frame.start or 0) * self.step
             if frame.stop is None:
-                stop = self.stop
+                if frame.step is None or frame.step > 0:
+                    last = start + (range_length(start, self.stop, step) - 1) * step
+                else:
+                    last = self.start
+                stop = last + np.sign(step)
             else:
                 stop = self.start + (frame.stop or 0) * self.step
-            step = (frame.step or 1) * self.step
-
-            if step > 0:
-                start = max(0, start)
-            else:
-                stop = max(0, stop)
 
             new_slice = slice(start, stop, step)
-            return FrameIteratorSliced(self.trajectory, new_slice)
+            frame_iterator = FrameIteratorSliced(self.trajectory, new_slice)
+            # The __init__ of FrameIteratorSliced does some conversion between
+            # the way indices are handled in slices and the way they are
+            # handled by range. We need to overwrite this conversion as we
+            # already use the logic for range.
+            frame_iterator._start = start
+            frame_iterator._stop = stop
+            frame_iterator._step = step
+            return frame_iterator
         else:
             # Indexing with a lists of bools does not behave the same in all
             # version of numpy.
@@ -1103,8 +1162,8 @@ class IOBase(object):
            returned.
 
         """
-        f = units.get_conversion_factor(
-            'length', self.units['length'], flags['length_unit'])
+        f = units.get_conversion_factor('length',
+                                        self.units['length'], 'Angstrom')
         if f == 1.:
             return x
         if not inplace:
@@ -1132,7 +1191,7 @@ class IOBase(object):
         .. versionadded:: 0.7.5
         """
         f = units.get_conversion_factor(
-            'speed', self.units['velocity'], flags['speed_unit'])
+            'speed', self.units['velocity'], 'Angstrom/ps')
         if f == 1.:
             return v
         if not inplace:
@@ -1159,7 +1218,7 @@ class IOBase(object):
         .. versionadded:: 0.7.7
         """
         f = units.get_conversion_factor(
-            'force', self.units['force'], flags['force_unit'])
+            'force', self.units['force'], 'kJ/(mol*Angstrom)')
         if f == 1.:
             return force
         if not inplace:
@@ -1194,7 +1253,7 @@ class IOBase(object):
 
         """
         f = units.get_conversion_factor(
-            'time', self.units['time'], flags['time_unit'])
+            'time', self.units['time'], 'ps')
         if f == 1.:
             return t
         if not inplace:
@@ -1227,7 +1286,7 @@ class IOBase(object):
 
         """
         f = units.get_conversion_factor(
-            'length', flags['length_unit'], self.units['length'])
+            'length', 'Angstrom', self.units['length'])
         if f == 1.:
             return x
         if not inplace:
@@ -1255,7 +1314,7 @@ class IOBase(object):
         .. versionadded:: 0.7.5
         """
         f = units.get_conversion_factor(
-            'speed', flags['speed_unit'], self.units['velocity'])
+            'speed', 'Angstrom/ps', self.units['velocity'])
         if f == 1.:
             return v
         if not inplace:
@@ -1283,7 +1342,7 @@ class IOBase(object):
         .. versionadded:: 0.7.7
         """
         f = units.get_conversion_factor(
-            'force', flags['force_unit'], self.units['force'])
+            'force', 'kJ/(mol*Angstrom)', self.units['force'])
         if f == 1.:
             return force
         if not inplace:
@@ -1316,7 +1375,7 @@ class IOBase(object):
 
         """
         f = units.get_conversion_factor(
-            'time', flags['time_unit'], self.units['time'])
+            'time', 'ps', self.units['time'])
         if f == 1.:
             return t
         if not inplace:
@@ -1338,6 +1397,11 @@ class IOBase(object):
 
 
 class _Readermeta(type):
+    """Automatic Reader registration metaclass
+
+    .. versionchanged:: 1.0.0
+       Added _format_hint functionality
+    """
     # Auto register upon class creation
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
@@ -1346,12 +1410,16 @@ class _Readermeta(type):
         except KeyError:
             pass
         else:
-            for f in fmt:
-                f = f.upper()
-                _READERS[f] = cls
+            for fmt_name in fmt:
+                fmt_name = fmt_name.upper()
+                _READERS[fmt_name] = cls
+
+                if '_format_hint' in classdict:
+                    # isn't bound yet, so access __func__
+                    _READER_HINTS[fmt_name] = classdict['_format_hint'].__func__
 
 
-class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
+class ProtoReader(IOBase, metaclass=_Readermeta):
     """Base class for Readers, without a :meth:`__del__` method.
 
     Extends :class:`IOBase` with most attributes and methods of a generic
@@ -1370,6 +1438,9 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
+    .. versionchanged:: 2.0.0
+       Now supports (un)pickle. Upon unpickling,
+       the current timestep is retained by reconstrunction.
     """
 
     #: The appropriate Timestep class, e.g.
@@ -1408,7 +1479,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
             ts = self._read_next_timestep()
         except (EOFError, IOError):
             self.rewind()
-            raise StopIteration
+            raise StopIteration from None
         else:
             for auxname in self.aux_list:
                 ts = self._auxs[auxname].update_ts(ts)
@@ -1540,7 +1611,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         elif isinstance(frame, (list, np.ndarray)):
             if len(frame) != 0 and isinstance(frame[0], (bool, np.bool_)):
                 # Avoid having list of bools
-                frame = np.asarray(frame, dtype=np.bool)
+                frame = np.asarray(frame, dtype=bool)
                 # Convert bool array to int array
                 frame = np.arange(len(self))[frame]
             return FrameIteratorIndices(self, frame)
@@ -1563,7 +1634,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         # self._jump_to_frame(frame)
         # ts = self.ts
         # ts.frame = self._read_next_frame(ts._x, ts._y, ts._z,
-        #                                  ts._unitcell, 1)
+        #                                  ts.dimensions, 1)
         # return ts
 
     def _read_frame_with_aux(self, frame):
@@ -1592,8 +1663,8 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
                 yield self._read_frame_with_aux(i)
             self.rewind()
         except TypeError:  # if _read_frame not implemented
-            raise TypeError("{0} does not support slicing."
-                            "".format(self.__class__.__name__))
+            errmsg = f"{self.__class__.__name__} does not support slicing."
+            raise TypeError(errmsg) from None
 
     def check_slice_indices(self, start, stop, step):
         """Check frame indices are valid and clip to fit trajectory.
@@ -2012,7 +2083,9 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         try:
             self.transformations = transformations
         except ValueError:
-            raise ValueError("Can't add transformations again. Please create new Universe object")
+            errmsg = ("Can't add transformations again. Please create a new "
+                      "Universe object")
+            raise ValueError(errmsg) from None
         else:
             self.ts = self._apply_transformations(self.ts)
 
@@ -2028,6 +2101,9 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
 
         return ts
 
+    def __setstate__(self, state):
+        self.__dict__ = state
+        self[self.ts.frame]
 
 
 class ReaderBase(ProtoReader):
@@ -2039,8 +2115,7 @@ class ReaderBase(ProtoReader):
     handles). Readers that are inherently safe in this regard should subclass
     :class:`ProtoReader` instead.
 
-    See the :ref:`Trajectory API` definition in
-    :mod:`MDAnalysis.coordinates.__init__` for the required attributes and
+    See the :ref:`Trajectory API` definition in for the required attributes and
     methods.
 
     See Also
@@ -2055,16 +2130,15 @@ class ReaderBase(ProtoReader):
        functionality, all ReaderBase subclasses must now :func:`super` through this
        class.  Added attribute :attr:`_ts_kwargs`, which is created in init.
        Provides kwargs to be passed to :class:`Timestep`
+    .. versionchanged:: 1.0
+       Removed deprecated flags functionality, use convert_units kwarg instead
 
     """
 
-    def __init__(self, filename, convert_units=None, **kwargs):
+    def __init__(self, filename, convert_units=True, **kwargs):
         super(ReaderBase, self).__init__()
 
         self.filename = filename
-
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         self.convert_units = convert_units
 
         ts_kwargs = {}
@@ -2132,11 +2206,17 @@ class _Writermeta(type):
                     _MULTIFRAME_WRITERS[f] = cls
 
 
-class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
+class WriterBase(IOBase, metaclass=_Writermeta):
     """Base class for trajectory writers.
 
-    See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for
-    the required attributes and methods.
+    See :ref:`Trajectory API` definition in for the required attributes and
+    methods.
+
+
+    .. versionchanged:: 2.0.0
+       Deprecated :func:`write_next_timestep` has now been removed, please use
+       :func:`write` instead.
+
     """
 
     def convert_dimensions_to_unitcell(self, ts, inplace=True):
@@ -2147,7 +2227,10 @@ class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
         """
         # override if the native trajectory format does NOT use
         # [A,B,C,alpha,beta,gamma]
-        lengths, angles = ts.dimensions[:3], ts.dimensions[3:]
+        if ts.dimensions is None:
+            lengths, angles = np.zeros(3), np.zeros(3)
+        else:
+            lengths, angles = ts.dimensions[:3], ts.dimensions[3:]
         if not inplace:
             lengths = lengths.copy()
         lengths = self.convert_pos_to_native(lengths)
@@ -2158,26 +2241,20 @@ class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
 
         Parameters
         ----------
-        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe` or a :class:`Timestep`
+        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`
             write coordinate information associate with `obj`
 
         Note
         ----
         The size of the `obj` must be the same as the number of atoms provided
         when setting up the trajectory.
+
+
+        .. versionchanged:: 2.0.0
+           Deprecated support for Timestep argument to write has now been
+           removed. Use AtomGroup or Universe as an input instead.
         """
-        if isinstance(obj, Timestep):
-            ts = obj
-        else:
-            try:
-                ts = obj.ts
-            except AttributeError:
-                try:
-                    # special case: can supply a Universe, too...
-                    ts = obj.trajectory.ts
-                except AttributeError:
-                    raise TypeError("No Timestep found in obj argument")
-        return self.write_next_timestep(ts)
+        return self._write_next_frame(obj)
 
     def __del__(self):
         self.close()
@@ -2211,8 +2288,6 @@ class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
         x = np.ravel(x)
         return np.all(criteria["min"] < x) and np.all(x <= criteria["max"])
 
-        # def write_next_timestep(self, ts=None)
-
 
 class SingleFrameReaderBase(ProtoReader):
     """Base class for Readers that only have one frame.
@@ -2228,12 +2303,10 @@ class SingleFrameReaderBase(ProtoReader):
     """
     _err = "{0} only contains a single frame"
 
-    def __init__(self, filename, convert_units=None, n_atoms=None, **kwargs):
+    def __init__(self, filename, convert_units=True, n_atoms=None, **kwargs):
         super(SingleFrameReaderBase, self).__init__()
 
         self.filename = filename
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         self.convert_units = convert_units
 
         self.n_frames = 1
@@ -2345,3 +2418,43 @@ class SingleFrameReaderBase(ProtoReader):
         # to avoid applying the same transformations multiple times on each frame
 
         return ts
+
+
+def range_length(start, stop, step):
+    if (step > 0 and start < stop):
+        # We go from a lesser number to a larger one.
+        return int(1 + (stop - 1 - start) // step)
+    elif (step < 0 and start > stop):
+        # We count backward from a larger number to a lesser one.
+        return int(1 + (start - 1 - stop) // (-step))
+    else:
+        # The range is empty.
+        return 0
+
+
+class _Convertermeta(type):
+    # Auto register upon class creation
+    def __init__(cls, name, bases, classdict):
+        type.__init__(type, name, bases, classdict)
+        try:
+            fmt = asiterable(classdict['lib'])
+        except KeyError:
+            pass
+        else:
+            for f in fmt:
+                f = f.upper()
+                _CONVERTERS[f] = cls
+
+class ConverterBase(IOBase, metaclass=_Convertermeta):
+    """Base class for converting to other libraries.
+
+    See Also
+    --------
+    :mod:`MDAnalysis.converters`
+    """
+
+    def __repr__(self):
+        return "<{cls}>".format(cls=self.__class__.__name__)
+
+    def convert(self, obj):
+        raise NotImplementedError

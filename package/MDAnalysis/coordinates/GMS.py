@@ -37,8 +37,6 @@ will need to tweak the :class:`GMSReader`.
    :members:
 
 """
-from __future__ import absolute_import
-
 import os
 import errno
 import re
@@ -204,7 +202,7 @@ class GMSReader(base.ReaderBase):
                     line) is not None):
                     flag = 2
                     continue
-                if (flag == 2) and (re.match(r'^\s*[-]+\s*', line) is not None):
+                if (flag == 2) and (re.match(r'^\s*-+\s*', line) is not None):
                     flag = 3
                     continue
                 if flag == 3 and counter < self.n_atoms:

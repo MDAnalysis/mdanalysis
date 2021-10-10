@@ -40,9 +40,9 @@ Helper functions for common mathematical operations
 .. autofunction:: find_fragments
 
 .. versionadded:: 0.11.0
+.. versionchanged: 1.0.0
+   Unused function :func:`_angle()` has now been removed.
 """
-from __future__ import division, absolute_import
-from six.moves import zip
 import numpy as np
 
 from ..exceptions import NoDataError
@@ -51,6 +51,8 @@ from ._cutil import (make_whole, find_fragments, _sarrus_det_single,
                      _sarrus_det_multiple)
 
 # geometric functions
+
+
 def norm(v):
     r"""Calculate the norm of a vector v.
 
@@ -90,7 +92,39 @@ def normal(vec1, vec2):
     n = norm(normal)
     if n == 0.0:
         return normal  # returns [0,0,0] instead of [nan,nan,nan]
-    return normal / n  # ... could also use numpy.nan_to_num(normal/norm(normal))
+    # ... could also use numpy.nan_to_num(normal/norm(normal))
+    return normal / n
+
+
+def pdot(a, b):
+    """Pairwise dot product.
+
+    ``a`` must be the same shape as ``b``.
+
+    Parameters
+    ----------
+    a: :class:`numpy.ndarray` of shape (N, M)
+    b: :class:`numpy.ndarray` of shape (N, M)
+
+    Returns
+    -------
+    :class:`numpy.ndarray` of shape (N,)
+    """
+    return np.einsum('ij,ij->i', a, b)
+
+
+def pnorm(a):
+    """Euclidean norm of each vector in a matrix
+
+    Parameters
+    ----------
+    a: :class:`numpy.ndarray` of shape (N, M)
+
+    Returns
+    -------
+    :class:`numpy.ndarray` of shape (N,)
+    """
+    return pdot(a, a)**0.5
 
 
 def angle(a, b):
@@ -98,13 +132,13 @@ def angle(a, b):
 
     .. versionchanged:: 0.11.0
        Moved into lib.mdamath
+    .. versionchanged:: 1.0.0
+       Changed rounding-off code to use `np.clip()`. Values lower than
+       -1.0 now return `np.pi` instead of `-np.pi`
     """
     x = np.dot(a, b) / (norm(a) * norm(b))
     # catch roundoffs that lead to nan otherwise
-    if x > 1.0:
-        return 0.0
-    elif x < -1.0:
-        return -np.pi
+    x = np.clip(x, -1.0, 1.0)
     return np.arccos(x)
 
 
@@ -144,20 +178,6 @@ def dihedral(ab, bc, cd):
     """
     x = angle(normal(ab, bc), normal(bc, cd))
     return (x if stp(ab, bc, cd) <= 0.0 else -x)
-
-
-def _angle(a, b):
-    """Angle between two vectors *a* and *b* in degrees.
-
-    If one of the lengths is 0 then the angle is returned as 0
-    (instead of `nan`).
-    """
-    # This function has different limits than angle?
-
-    angle = np.arccos(np.dot(a, b) / (norm(a) * norm(b)))
-    if np.isnan(angle):
-        return 0.0
-    return np.rad2deg(angle)
 
 
 def sarrus_det(matrix):
@@ -317,7 +337,7 @@ def triclinic_vectors(dimensions, dtype=np.float32):
     dim = np.asarray(dimensions, dtype=np.float64)
     lx, ly, lz, alpha, beta, gamma = dim
     # Only positive edge lengths and angles in (0, 180) are allowed:
-    if not (np.all(dim > 0.0) and \
+    if not (np.all(dim > 0.0) and
             alpha < 180.0 and beta < 180.0 and gamma < 180.0):
         # invalid box, return zero vectors:
         box_matrix = np.zeros((3, 3), dtype=dtype)
@@ -349,7 +369,7 @@ def triclinic_vectors(dimensions, dtype=np.float32):
         box_matrix[1, 1] = ly * sin_gamma
         box_matrix[2, 0] = lz * cos_beta
         box_matrix[2, 1] = lz * (cos_alpha - cos_beta * cos_gamma) / sin_gamma
-        box_matrix[2, 2] = np.sqrt(lz * lz - box_matrix[2, 0] ** 2 - \
+        box_matrix[2, 2] = np.sqrt(lz * lz - box_matrix[2, 0] ** 2 -
                                    box_matrix[2, 1] ** 2)
         # The discriminant of the above square root is only negative or zero for
         # triplets of box angles that lead to an invalid box (i.e., the sum of
@@ -402,4 +422,3 @@ def box_volume(dimensions):
         tri_vecs = triclinic_vectors(dim, dtype=np.float64)
         volume = tri_vecs[0, 0] * tri_vecs[1, 1] * tri_vecs[2, 2]
     return volume
-

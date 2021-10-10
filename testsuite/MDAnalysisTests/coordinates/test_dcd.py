@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import, print_function, division
-from six.moves import zip, range
 import numpy as np
 
 import MDAnalysis as mda
@@ -35,7 +33,8 @@ from MDAnalysisTests.datafiles import (DCD, PSF, DCD_empty, PRMncdf, NCDF,
                                        COORDINATES_TOPOLOGY, COORDINATES_DCD,
                                        PSF_TRICLINIC, DCD_TRICLINIC,
                                        PSF_NAMD_TRICLINIC, DCD_NAMD_TRICLINIC,
-                                       PSF_NAMD_GBIS, DCD_NAMD_GBIS)
+                                       PSF_NAMD_GBIS, DCD_NAMD_GBIS,
+                                       PDB_closed)
 from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
                                               BaseReference,
                                               BaseWriterTest)
@@ -135,6 +134,16 @@ def test_write_random_unitcell(tmpdir):
                                   decimal=5)
 
 
+def test_empty_dimension_warning(tmpdir):
+
+    u = mda.Universe(PDB_closed)
+    testname = str(tmpdir.join('test.dcd'))
+
+    with mda.Writer(testname, n_atoms=u.atoms.n_atoms) as w:
+        msg = "zeroed unitcell will be written"
+        with pytest.warns(UserWarning, match=msg):
+            w.write(u.atoms)
+
 
 ################
 # Legacy tests #
@@ -199,11 +208,6 @@ def test_timeseries_slices(slice, length, universe_dcd):
     assert_array_almost_equal(xyz, allframes[start:stop:step])
 
 
-def test_timeseries_deprecation(universe_dcd):
-    with pytest.warns(DeprecationWarning):
-        universe_dcd.trajectory.timeseries(format='fac')
-
-
 @pytest.mark.parametrize("order, shape", (
     ('fac', (98, 3341, 3)),
     ('fca', (98, 3, 3341)),
@@ -230,12 +234,6 @@ def test_timeseries_empty_selection(universe_dcd):
     with pytest.raises(NoDataError):
         asel = universe_dcd.select_atoms('name FOO')
         universe_dcd.trajectory.timeseries(asel=asel)
-
-
-def test_timeseries_skip(universe_dcd):
-    with pytest.warns(DeprecationWarning):
-        xyz = universe_dcd.trajectory.timeseries(skip=2, order='fac')
-    assert len(xyz) == universe_dcd.trajectory.n_frames / 2
 
 
 def test_reader_set_dt():
@@ -291,7 +289,7 @@ def test_other_writer(universe_dcd, tmpdir, ext, decimal):
     outfile = str(tmpdir.join("test.{}".format(ext)))
     with t.OtherWriter(outfile) as W:
         for ts in universe_dcd.trajectory:
-            W.write_next_timestep(ts)
+            W.write(universe_dcd)
 
     uw = mda.Universe(PSF, outfile)
     # check that the coordinates are identical for each time step
@@ -375,7 +373,7 @@ def test_write_unitcell_triclinic(ref, tmpdir):
     with tmpdir.as_cwd():
         with u.trajectory.OtherWriter(outfile) as w:
             for ts in u.trajectory:
-                w.write(ts)
+                w.write(u)
 
         w = mda.Universe(ref.topology, outfile)
         for ts_orig, ts_copy in zip(u.trajectory, w.trajectory):
@@ -392,7 +390,7 @@ def ncdf2dcd(tmpdir_factory):
     ncdf = mda.Universe(PRMncdf, NCDF)
     with mda.Writer(testfile, n_atoms=ncdf.atoms.n_atoms) as w:
         for ts in ncdf.trajectory:
-            w.write(ts)
+            w.write(ncdf)
     return ncdf, mda.Universe(PRMncdf, testfile)
 
 

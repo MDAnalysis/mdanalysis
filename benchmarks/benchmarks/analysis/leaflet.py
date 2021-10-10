@@ -1,5 +1,3 @@
-from __future__ import division, absolute_import, print_function
-
 import MDAnalysis
 
 # use a lipid bilayer system for leaflet testing
@@ -33,7 +31,7 @@ class LeafletBench(object):
         membrane system.
         """
         leaflet.LeafletFinder(universe=self.u,
-                              selectionstring=self.headgroup_sel,
+                              select=self.headgroup_sel,
                               cutoff=cutoff,
                               pbc=pbc,
                               sparse=sparse)
@@ -58,6 +56,6 @@ class LeafletOptimizeBench(object):
         range.
         """
         leaflet.optimize_cutoff(universe=self.u,
-                                selection=self.headgroup_sel,
+                                select=self.headgroup_sel,
                                 pbc=pbc,
                                 sparse=sparse)

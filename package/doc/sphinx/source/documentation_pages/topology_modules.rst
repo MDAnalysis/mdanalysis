@@ -28,9 +28,12 @@ topology file format in the *topology_format* keyword argument to
    topology/CRDParser
    topology/DLPolyParser
    topology/DMSParser
+   topology/FHIAIMSParser   
    topology/GMSParser
    topology/GROParser
+   topology/GSDParser   
    topology/HoomdXMLParser
+   topology/ITPParser
    topology/LAMMPSParser
    topology/MinimalParser
    topology/MMTFParser

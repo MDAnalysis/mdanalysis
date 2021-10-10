@@ -35,12 +35,16 @@ attribute on Universe.
 .. versionchanged:: 0.20.0
    Can now read files with optional fields missing/empty
 
+.. versionchanged:: 2.0.0
+   Aliased ``bfactors`` topologyattribute to ``tempfactors``.
+   ``tempfactors`` is deprecated and will be removed in 3.0 (Issue #1901)
+
 Reads the following topology attributes:
 
 Atoms:
  - altLoc
  - atom ID
- - bfactor
+ - tempfactor
  - bonds
  - charge
  - masses (guessed)
@@ -66,9 +70,6 @@ Classes
 
 .. _Macromolecular Transmission Format (MMTF) format: https://mmtf.rcsb.org/
 """
-from __future__ import absolute_import
-from six.moves import zip
-
 from collections import defaultdict
 import mmtf
 import numpy as np
@@ -82,7 +83,7 @@ from ..core.topologyattrs import (
     Atomids,
     Atomnames,
     Atomtypes,
-    Bfactors,
+    Tempfactors,
     Bonds,
     Charges,
     ICodes,
@@ -135,7 +136,7 @@ class ModelSelection(RangeSelection):
     field = 'models'
 
     def apply(self, group):
-        mask = np.zeros(len(group), dtype=np.bool)
+        mask = np.zeros(len(group), dtype=bool)
         vals = group.models
 
         for upper, lower in zip(self.uppers, self.lowers):
@@ -151,6 +152,14 @@ class ModelSelection(RangeSelection):
 
 class MMTFParser(base.TopologyReaderBase):
     format = 'MMTF'
+
+    @staticmethod
+    def _format_hint(thing):
+        """Can parser read *thing*?
+
+        .. versionadded:: 1.0.0
+        """
+        return isinstance(thing, mmtf.MMTFDecoder)
 
     @due.dcite(
         Doi('10.1371/journal.pcbi.1005575'),
@@ -191,10 +200,16 @@ class MMTFParser(base.TopologyReaderBase):
         if mtop.alt_loc_list:
             attrs.append(AltLocs([val.replace('\x00', '').strip()
                                   for val in mtop.alt_loc_list]))
+        else:
+            attrs.append(AltLocs(['']*natoms))
         if len(mtop.b_factor_list):
-            attrs.append(Bfactors(mtop.b_factor_list))
+            attrs.append(Tempfactors(mtop.b_factor_list))
+        else:
+            attrs.append(Tempfactors([0]*natoms))
         if len(mtop.occupancy_list):
             attrs.append(Occupancies(mtop.occupancy_list))
+        else:
+            attrs.append(Occupancies([1]*natoms))
 
         # Residue things
         # required
@@ -208,6 +223,8 @@ class MMTFParser(base.TopologyReaderBase):
         if mtop.ins_code_list:
             attrs.append(ICodes([val.replace('\x00', '').strip()
                                  for val in mtop.ins_code_list]))
+        else:
+            attrs.append(ICodes(['']*nresidues))
 
         # Segment things
         # optional

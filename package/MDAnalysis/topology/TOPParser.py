@@ -59,6 +59,7 @@ Amber keywords are turned into the following attributes:
 +----------------------------+----------------------+
 
 TODO:
+  Add support for Chamber-style topologies
   More stringent tests
 
 .. Note::
@@ -66,6 +67,15 @@ TODO:
    The Amber charge is converted to electron charges as used in
    MDAnalysis and other packages. To get back Amber charges, multiply
    by 18.2223.
+
+   Chamber-style Amber topologies (i.e. topologies generated via parmed
+   conversion of a CHARMM topology to an AMBER one) are not currently
+   supported. Support will likely be added in future MDAnalysis releases.
+
+   As of version 2.0.0, elements are no longer guessed if ATOMIC_NUMBER records
+   are missing. In those scenarios, if elements are necessary, users will have
+   to invoke the element guessers after parsing the topology file. Please see
+   :mod:`MDAnalysis.topology.guessers` for more details.
 
 .. _`PARM parameter/topology file specification`:
    http://ambermd.org/formats.html#topology
@@ -78,16 +88,10 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import, division
-
-from six.moves import range, zip
 import numpy as np
-import functools
-from math import ceil
 import itertools
 
-from . import guessers
-from .tables import NUMBER_TO_ELEMENT
+from .tables import Z2SYMB
 from ..lib.util import openany, FORTRANReader
 from .base import TopologyReaderBase
 from ..core.topology import Topology
@@ -108,6 +112,11 @@ from ..core.topologyattrs import (
     Dihedrals,
     Impropers
 )
+
+import warnings
+import logging
+
+logger = logging.getLogger('MDAnalysis.topology.TOPParser')
 
 
 class TypeIndices(AtomAttr):
@@ -132,9 +141,6 @@ class TOPParser(TopologyReaderBase):
     - Angles
     - Dihedrals (inc. impropers)
 
-    Guesses the following attributes:
-     - Elements (if not included in topology)
-
     The format is defined in `PARM parameter/topology file
     specification`_.  The reader tries to detect if it is a newer
     (AMBER 12?) file format by looking for the flag "ATOMIC_NUMBER".
@@ -142,10 +148,20 @@ class TOPParser(TopologyReaderBase):
     .. _`PARM parameter/topology file specification`:
        http://ambermd.org/formats.html#topology
 
+    Notes
+    -----
+    Elements are obtained from the atomic numbers (if present). If a given
+    input atomic number does not belong to an element (usually either -1 or 0),
+    the element will be assigned an empty record.
+
     .. versionchanged:: 0.7.6
       parses both amber10 and amber12 formats
     .. versionchanged:: 0.19.0
       parses bonds, angles, dihedrals, and impropers
+    .. versionchanged:: 1.0.0
+      warns users that chamber-style topologies are not currently supported
+    .. versionchanged:: 2.0.0
+      no longer guesses elements if missing
     """
     format = ['TOP', 'PRMTOP', 'PARM7']
 
@@ -162,7 +178,8 @@ class TOPParser(TopologyReaderBase):
             "CHARGE": (1, 5, self.parse_charges, "charge", 0),
             "ATOMIC_NUMBER": (1, 10, self.parse_elements, "elements", 0),
             "MASS": (1, 5, self.parse_masses, "mass", 0),
-            "ATOM_TYPE_INDEX": (1, 10, self.parse_type_indices, "type_indices", 0),
+            "ATOM_TYPE_INDEX": (1, 10, self.parse_type_indices, "type_indices",
+                                0),
             "AMBER_ATOM_TYPE": (1, 20, self.parse_types, "types", 0),
             "RESIDUE_LABEL": (1, 20, self.parse_resnames, "resname", 11),
             "RESIDUE_POINTER": (1, 10, self.parse_residx, "respoint", 11),
@@ -185,10 +202,18 @@ class TOPParser(TopologyReaderBase):
                     "{0} is not a valid TOP file. %VE Missing in header"
                     "".format(self.filename))
             title = next(self.topfile).split()
+
             if not (title[1] == "TITLE"):
-                raise ValueError(
-                    "{0} is not a valid TOP file. 'TITLE' missing in header"
-                    "".format(self.filename))
+                # Raise a separate warning if Chamber-style TOP is detected
+                if title[1] == "CTITLE":
+                    emsg = ("{0} is detected as a Chamber-style TOP file. "
+                            "At this time MDAnalysis does not support such "
+                            "topologies".format(self.filename))
+                else:
+                    emsg = ("{0} is not a valid TOP file. "
+                            "'TITLE' missing in header".format(self.filename))
+                raise ValueError(emsg)
+
             while not header.startswith('%FLAG POINTERS'):
                 header = next(self.topfile)
             next(self.topfile)
@@ -229,9 +254,9 @@ class TOPParser(TopologyReaderBase):
                     try:
                         next_section = line.split("%FLAG")[1].strip()
                     except IndexError:
-                        msg = ("%FLAG section not found, formatting error "
-                               "for PARM7 file {0} ".format(self.filename))
-                        raise IndexError(msg)
+                        errmsg = (f"%FLAG section not found, formatting error "
+                                  f"for PARM7 file {self.filename} ")
+                        raise IndexError(errmsg) from None
 
         # strip out a few values to play with them
         n_atoms = len(attrs['name'])
@@ -254,11 +279,20 @@ class TOPParser(TopologyReaderBase):
         attrs['dihedrals'], attrs['impropers'] = self.parse_dihedrals(
                               attrs.pop('diha'), attrs.pop('dihh'))
 
-        # Guess elements if not in topology
-        if not 'elements' in attrs:
-            attrs['elements'] = Elements(
-                guessers.guess_types(attrs['types'].values),
-                guessed=True)
+        # Warn user if elements not in topology
+        if 'elements' not in attrs:
+            msg = ("ATOMIC_NUMBER record not found, elements attribute will "
+                   "not be populated. If needed these can be guessed using "
+                   "MDAnalysis.topology.guessers.")
+            logger.warning(msg)
+            warnings.warn(msg)
+        elif np.any(attrs['elements'].values == ""):
+            # only send out one warning that some elements are unknown
+            msg = ("Unknown ATOMIC_NUMBER value found for some atoms, these "
+                   "have been given an empty element record. If needed these "
+                   "can be guessed using MDAnalysis.topology.guessers.")
+            logger.warning(msg)
+            warnings.warn(msg)
 
         # atom ids are mandatory
         attrs['atomids'] = Atomids(np.arange(n_atoms) + 1)
@@ -384,9 +418,21 @@ class TOPParser(TopologyReaderBase):
         attr : :class:`Elements`
             A :class:`Elements` instance containing the element of each atom
             as defined in the parm7 file
+
+        Note
+        ----
+        If the record contains unknown atomic numbers (e.g. <= 0), these will
+        be treated as unknown elements and assigned an empty string value. See
+        issues #2306 and #2651 for more details.
+
+        .. versionchanged:: 2.0.0
+           Unrecognised elements will now return a empty string. The parser
+           will no longer attempt to guess the element by default.
         """
+
         vals = self.parsesection_mapper(
-                numlines, lambda x: NUMBER_TO_ELEMENT[int(x)])
+                numlines,
+                lambda x: Z2SYMB[int(x)] if int(x) > 0 else "")
         attr = Elements(np.array(vals, dtype=object))
         return attr
 

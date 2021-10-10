@@ -20,9 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-from six.moves import zip
-
 import pytest
 
 import MDAnalysis as mda
@@ -50,7 +47,7 @@ def test_nbins(u):
     s2 = u.atoms[3:]
     rdf = InterRDF(s1, s2, nbins=412).run()
 
-    assert len(rdf.bins) == 412
+    assert len(rdf.results.bins) == 412
 
 
 def test_range(u):
@@ -59,8 +56,8 @@ def test_range(u):
     rmin, rmax = 1.0, 13.0
     rdf = InterRDF(s1, s2, range=(rmin, rmax)).run()
 
-    assert rdf.edges[0] == rmin
-    assert rdf.edges[-1] == rmax
+    assert rdf.results.edges[0] == rmin
+    assert rdf.results.edges[-1] == rmax
 
 
 def test_count_sum(sels):
@@ -68,14 +65,14 @@ def test_count_sum(sels):
     # should see 8 comparisons in count
     s1, s2 = sels
     rdf = InterRDF(s1, s2).run()
-    assert rdf.count.sum() == 8
+    assert rdf.results.count.sum() == 8
 
 
 def test_count(sels):
     # should see two distances with 4 counts each
     s1, s2 = sels
     rdf = InterRDF(s1, s2).run()
-    assert len(rdf.count[rdf.count == 4]) == 2
+    assert len(rdf.results.count[rdf.results.count == 4]) == 2
 
 
 def test_double_run(sels):
@@ -83,11 +80,20 @@ def test_double_run(sels):
     s1, s2 = sels
     rdf = InterRDF(s1, s2).run()
     rdf.run()
-    assert len(rdf.count[rdf.count == 4]) == 2
+    assert len(rdf.results.count[rdf.results.count == 4]) == 2
 
 
 def test_exclusion(sels):
     # should see two distances with 4 counts each
     s1, s2 = sels
     rdf = InterRDF(s1, s2, exclusion_block=(1, 2)).run()
-    assert rdf.count.sum() == 4
+    assert rdf.results.count.sum() == 4
+
+
+@pytest.mark.parametrize("attr", ("rdf", "bins", "edges", "count"))
+def test_rdf_attr_warning(sels, attr):
+    s1, s2 = sels
+    rdf = InterRDF(s1, s2).run()
+    wmsg = f"The `{attr}` attribute was deprecated in MDAnalysis 2.0.0"
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        getattr(rdf, attr) is rdf.results[attr]

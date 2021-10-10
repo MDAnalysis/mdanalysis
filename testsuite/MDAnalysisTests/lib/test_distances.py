@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-
-from __future__ import division, absolute_import
 import pytest
 import numpy as np
 from numpy.testing import assert_equal, assert_almost_equal
@@ -86,8 +84,8 @@ def test_capped_distance_noresults():
 
 npoints_1 = (1, 100)
 
-boxes_1 = (np.array([1, 2, 3, 90, 90, 90], dtype=np.float32),  # ortho
-           np.array([1, 2, 3, 30, 45, 60], dtype=np.float32),  # tri_box
+boxes_1 = (np.array([10, 20, 30, 90, 90, 90], dtype=np.float32),  # ortho
+           np.array([10, 20, 30, 30, 45, 60], dtype=np.float32),  # tri_box
            None,  # Non Periodic
            )
 
@@ -110,7 +108,7 @@ def test_capped_distance_checkbrute(npoints, box, query, method, min_cutoff):
     np.random.seed(90003)
     points = (np.random.uniform(low=0, high=1.0,
                         size=(npoints, 3))*(boxes_1[0][:3])).astype(np.float32)
-    max_cutoff = 0.3
+    max_cutoff = 2.5
     # capped distance should be able to handle array of vectors
     # as well as single vectors.
     pairs, dist = distances.capped_distance(query, points, max_cutoff,
@@ -185,32 +183,29 @@ def test_self_capped_distance(npoints, box, method, min_cutoff, ret_dist):
         pairs, cdists = result
     else:
         pairs = result
-    found_pairs, found_distance = [], []
-    for i, coord in enumerate(points):
-        dist = distances.distance_array(coord, points[i+1:], box=box)
-        if min_cutoff is not None:
-            idx = np.where((dist <= max_cutoff) & (dist > min_cutoff))[1]
-        else:
-            idx = np.where((dist < max_cutoff))[1]
-        for other_idx in idx:
-            j = other_idx + 1 + i
-            found_pairs.append((i, j))
-            found_distance.append(dist[0, other_idx])
-    # check number of found pairs:
-    assert_equal(len(pairs), len(found_pairs))
-    # check pair/distance correspondence:
-    if ret_dist and len(pairs) > 0:
-        # get result pairs and distances in one array:
-        res = np.hstack((pairs.astype(cdists.dtype), cdists[:, None]))
-        # get reference pairs and distances in one array:
-        ref = np.hstack((np.array(found_pairs, dtype=np.float64),
-                         np.array(found_distance, dtype=np.float64)[:, None]))
-        # sort both arrays by column 1 and 0:
-        res = res[res[:, 1].argsort()] # no stable sort needed.
-        res = res[res[:, 0].argsort(kind='mergesort')] # sort must be stable!
-        ref = ref[ref[:, 1].argsort()]
-        ref = ref[ref[:, 0].argsort(kind='mergesort')]
-        assert_almost_equal(res, ref, decimal=5)
+
+    # Check we found all hits
+    ref = distances.self_distance_array(points, box)
+    ref_d = ref[ref < 0.2]
+    if not min_cutoff is None:
+        ref_d = ref_d[ref_d > min_cutoff]
+    assert len(ref_d) == len(pairs)
+
+    # Go through hit by hit and check we got the indices correct too
+    ref = distances.distance_array(points, points, box)
+    if ret_dist:
+        for (i, j), d in zip(pairs, cdists):
+            d_ref = ref[i, j]
+            assert d_ref < 0.2
+            if not min_cutoff is None:
+                assert d_ref > min_cutoff
+            assert_almost_equal(d, d_ref, decimal=6)
+    else:
+        for i, j in pairs:
+            d_ref = ref[i, j]
+            assert d_ref < 0.2
+            if not min_cutoff is None:
+                assert d_ref > min_cutoff
 
 
 @pytest.mark.parametrize('box', (None,
@@ -1245,7 +1240,7 @@ class TestOutputTypes(object):
         else:
             pairs = res
         assert type(pairs) == np.ndarray
-        assert pairs.dtype.type == np.int64
+        assert pairs.dtype.type == np.intp
         assert pairs.ndim == 2
         assert pairs.shape[1] == 2
         if ret_dist:
@@ -1270,7 +1265,7 @@ class TestOutputTypes(object):
         else:
             pairs = res
         assert type(pairs) == np.ndarray
-        assert pairs.dtype.type == np.int64
+        assert pairs.dtype.type == np.intp
         assert pairs.ndim == 2
         assert pairs.shape[1] == 2
         if ret_dist:

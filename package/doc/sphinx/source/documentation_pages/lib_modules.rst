@@ -59,6 +59,8 @@ List of modules
    ./lib/transformations
    ./lib/qcprot
    ./lib/util
+   ./lib/correlations
+   ./lib/picklable_file_io
 
 Low level file formats
 ----------------------

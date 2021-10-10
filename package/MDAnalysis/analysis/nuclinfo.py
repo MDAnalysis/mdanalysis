@@ -103,8 +103,6 @@ Dihedral angles
 .. autofunction:: pseudo_dihe_baseflip
 
 """
-from __future__ import division, absolute_import
-
 import numpy as np
 from math import pi, sin, cos, atan2, sqrt, pow
 
@@ -711,8 +709,10 @@ def hydroxyl(universe, seg, i):
     try:
         hydr = h.dihedral.value() % 360
     except ValueError:
-        raise ValueError("Resid {0} does not contain atoms C1', C2', O2', H2' but atoms {1}"
-                         .format(i, str(list(h.atoms))))
+        errmsg = (f"Resid {i} does not contain atoms C1', C2', O2', H2' but "
+                  f"atoms {list(h.atoms)}")
+        raise ValueError(errmsg) from None
+
     return hydr
 
 

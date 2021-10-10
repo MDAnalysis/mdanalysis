@@ -134,7 +134,6 @@ Data
 
 .. autodata:: constants
 .. autodata:: lengthUnit_factor
-.. autodata:: N_Avogadro
 .. autodata:: water
 .. autodata:: densityUnit_factor
 .. autodata:: timeUnit_factor
@@ -165,18 +164,6 @@ References and footnotes
       X' = f_{b,b'} X
 
 """
-
-from __future__ import unicode_literals, division
-
-#: `Avogadro's constant`_ in mol**-1.
-#:
-#: .. deprecated:: 0.9.0
-#:    Use *N_Avogadro* in dict :data:`constants` instead.
-#:
-#: .. versionchanged:: 0.9.0
-#:    Use CODATA 2010 value, which differs from the previously used value
-#:    6.02214179e+23 mol**-1 by -5.00000000e+16 mol**-1.
-N_Avogadro = 6.02214129e+23  # mol**-1
 
 #
 # NOTE: Whenever a constant is added to the constants dict, you also
@@ -364,13 +351,16 @@ def convert(x, u1, u2):
     try:
         ut1 = unit_types[u1]
     except KeyError:
-        raise ValueError("unit '{0}' not recognized.\n"
-                          "It must be one of {1}.".format(u1, ", ".join(unit_types)))
+        errmsg = (f"unit '{u1}' not recognized.\n"
+                  f"It must be one of {', '.join(unit_types)}.")
+        raise ValueError(errmsg) from None
+                  
     try:
         ut2 = unit_types[u2]
     except KeyError:
-        raise ValueError("unit '{0}' not recognized.\n"
-                          "It must be one of {1}.".format(u2, ", ".join(unit_types)))
+        errmsg = (f"unit '{u2}' not recognized.\n"
+                  f"It must be one of {', '.join(unit_types)}.")
+        raise ValueError(errmsg) from None
     if ut1 != ut2:
         raise ValueError("Cannot convert between unit types "
                          "{0} --> {1}".format(u1, u2))

@@ -56,9 +56,8 @@ Helper functions
 .. autofunction:: make_downshift_arrays
 
 """
-from __future__ import absolute_import
+import contextlib
 
-from six.moves import zip
 import numpy as np
 
 from .topologyattrs import Atomindices, Resindices, Segindices
@@ -113,6 +112,9 @@ def make_downshift_arrays(upshift, nparents):
     .. warning:: This means negative indexing should **never**
                  be used with these arrays.
     """
+    if not len(upshift):
+        return np.array([], dtype=object)
+        
     order = np.argsort(upshift)
 
     upshift_sorted = upshift[order]
@@ -516,6 +518,21 @@ class Topology(object):
         topologyattr.top = self
         self.__setattr__(topologyattr.attrname, topologyattr)
 
+    def del_TopologyAttr(self, topologyattr):
+        """Remove a TopologyAttr from the Topology.
+
+        If it is not present, nothing happens.
+
+        Parameters
+        ----------
+        topologyattr : TopologyAttr
+
+
+        .. versionadded:: 2.0.0
+        """
+        self.__delattr__(topologyattr.attrname)
+        self.attrs.remove(topologyattr)
+
     @property
     def guessed_attributes(self):
         """A list of the guessed attributes in this topology"""
@@ -580,3 +597,4 @@ class Topology(object):
             attr.values = np.concatenate([attr.values, np.array([newval])])
 
         return segidx
+        

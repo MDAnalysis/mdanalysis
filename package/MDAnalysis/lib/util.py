@@ -20,7 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""
+r"""
 Helper functions --- :mod:`MDAnalysis.lib.util`
 ====================================================
 
@@ -28,6 +28,11 @@ Small helper functions that don't fit anywhere else.
 
 .. versionchanged:: 0.11.0
    Moved mathematical functions into lib.mdamath
+
+.. versionchanged::2.0.0
+   The following aliases, that existed for compatibility with python versions
+   older than 3.6, were removed: `callable` for the built-in of the same name,
+   `PathLike` for :class:`os.PathLike`, and `bz_open` for :func:`bz2.open`.
 
 
 Files and directories
@@ -50,7 +55,7 @@ Streams
 Many of the readers are not restricted to just reading files. They can
 also use gzip-compressed or bzip2-compressed files (through the
 internal use of :func:`openany`). It is also possible to provide more
-general streams as inputs, such as a :func:`cStringIO.StringIO`
+general streams as inputs, such as a :class:`io.StringIO`
 instances (essentially, a memory buffer) by wrapping these instances
 into a :class:`NamedStream`. This :class:`NamedStream` can then be
 used in place of an ordinary file name (typically, with a
@@ -63,10 +68,10 @@ In the following example, we use a PDB stored as a string ``pdb_s``::
 
    import MDAnalysis
    from MDAnalysis.lib.util import NamedStream
-   import cStringIO
+   from io import StringIO
 
    pdb_s = "TITLE     Lonely Ion\\nATOM      1  NA  NA+     1      81.260  64.982  10.926  1.00  0.00\\n"
-   u = MDAnalysis.Universe(NamedStream(cStringIO.StringIO(pdb_s), "ion.pdb"))
+   u = MDAnalysis.Universe(NamedStream(StringIO(pdb_s), "ion.pdb"))
    print(u)
    #  <Universe with 1 atoms>
    print(u.atoms.positions)
@@ -81,7 +86,7 @@ provide the ``format="pdb"`` keyword argument to the
 The use of streams becomes more interesting when MDAnalysis is used as glue
 between different analysis packages and when one can arrange things so that
 intermediate frames (typically in the PDB format) are not written to disk but
-remain in memory via e.g. :mod:`cStringIO` buffers.
+remain in memory via e.g. :class:`io.StringIO` buffers.
 
 
 .. The following does *not* work because most readers need to
@@ -119,6 +124,7 @@ Arrays
 .. autofunction:: unique_int_1d(values)
 .. autofunction:: unique_rows
 .. autofunction:: blocks_of
+.. autofunction:: group_same_or_consecutive_integers
 
 File parsing
 ------------
@@ -179,9 +185,6 @@ Data format checks
    underlying stream and ``NamedStream.close(force=True)`` will also
    close it.
 """
-from __future__ import division, absolute_import
-import six
-from six.moves import range, map
 import sys
 
 __docformat__ = "restructuredtext en"
@@ -196,10 +199,10 @@ import gzip
 import re
 import io
 import warnings
-import collections
 import functools
 from functools import wraps
 import textwrap
+import weakref
 
 import mmtf
 import numpy as np
@@ -207,26 +210,29 @@ import numpy as np
 from numpy.testing import assert_equal
 import inspect
 
+from .picklable_file_io import pickle_open, bz2_pickle_open, gzip_pickle_open
+
 from ..exceptions import StreamWarning, DuplicateWarning
-from ._cutil import unique_int_1d
-
-
-# Python 3.0, 3.1 do not have the builtin callable()
 try:
-    callable(list)
-except NameError:
-    # http://bugs.python.org/issue10518
-    import collections
-
-    def callable(obj):
-        return isinstance(obj, collections.Callable)
-
-try:
-    from os import PathLike
+    from ._cutil import unique_int_1d
 except ImportError:
-   class PathLike(object):
-       pass
+    raise ImportError("MDAnalysis not installed properly. "
+                      "This can happen if your C extensions "
+                      "have not been built.")
 
+
+def int_array_is_sorted(array):
+    mask = array[:-1] <= array[1:]
+    try:
+        return mask[0] and mask.argmin() == 0
+    except IndexError:
+        # Empty arrays are sorted, I guess...
+        return True
+
+
+def unique_int_1d_unsorted(array):
+    values, indices = np.unique(array, return_index=True)
+    return array[np.sort(indices)]
 
 
 def filename(name, ext=None, keep=False):
@@ -313,25 +319,6 @@ def openany(datasource, mode='rt', reset=True):
         stream.close()
 
 
-# On python 3, we want to use bz2.open to open and uncompress bz2 files. That
-# function allows to specify the type of the uncompressed file (bytes ot text).
-# The function does not exist in python 2, thus we must use bz2.BZFile to
-# which we cannot tell if the uncompressed file contains bytes or text.
-# Therefore, on python 2 we use a proxy function that removes the type of the
-# uncompressed file from the `mode` argument.
-try:
-    bz2.open
-except AttributeError:
-    # We are on python 2 and bz2.open is not available
-    def bz2_open(filename, mode):
-        """Open and uncompress a BZ2 file"""
-        mode = mode.replace('t', '').replace('b', '')
-        return bz2.BZ2File(filename, mode)
-else:
-    # We are on python 3 so we can use bz2.open
-    bz2_open = bz2.open
-
-
 def anyopen(datasource, mode='rt', reset=True):
     """Open datasource (gzipped, bzipped, uncompressed) and return a stream.
 
@@ -346,7 +333,7 @@ def anyopen(datasource, mode='rt', reset=True):
     ----------
     datasource
         a file (from :class:`file` or :func:`open`) or a stream (e.g. from
-        :func:`urllib2.urlopen` or :class:`cStringIO.StringIO`)
+        :func:`urllib2.urlopen` or :class:`io.StringIO`)
     mode: {'r', 'w', 'a'} (optional)
         Open in r(ead), w(rite) or a(ppen) mode. More complicated
         modes ('r+', 'w+', ...) are not supported; only the first letter of
@@ -368,8 +355,19 @@ def anyopen(datasource, mode='rt', reset=True):
        Only returns the ``stream`` and tries to set ``stream.name = filename`` instead of the previous
        behavior to return a tuple ``(stream, filename)``.
 
+    .. versionchanged:: 2.0.0
+       New read handlers support pickle functionality
+       if `datasource` is a filename.
+       They return a custom picklable file stream in
+       :class:`MDAnalysis.lib.picklable_file_io`.
+
     """
-    handlers = {'bz2': bz2_open, 'gz': gzip.open, '': open}
+    read_handlers = {'bz2': bz2_pickle_open,
+                     'gz': gzip_pickle_open,
+                     '': pickle_open}
+    write_handlers = {'bz2': bz2.open,
+                      'gz': gzip.open,
+                      '': open}
 
     if mode.startswith('r'):
         if isstream(datasource):
@@ -392,7 +390,7 @@ def anyopen(datasource, mode='rt', reset=True):
             stream = None
             filename = datasource
             for ext in ('bz2', 'gz', ''):  # file == '' should be last
-                openfunc = handlers[ext]
+                openfunc = read_handlers[ext]
                 stream = _get_stream(datasource, openfunc, mode=mode)
                 if stream is not None:
                     break
@@ -413,7 +411,7 @@ def anyopen(datasource, mode='rt', reset=True):
                 ext = ext[1:]
             if not ext in ('bz2', 'gz'):
                 ext = ''  # anything else but bz2 or gz is just a normal file
-            openfunc = handlers[ext]
+            openfunc = write_handlers[ext]
             stream = openfunc(datasource, mode=mode)
             if stream is None:
                 raise IOError(errno.EIO, "Cannot open file or stream in mode={mode!r}.".format(**vars()), repr(filename))
@@ -422,7 +420,7 @@ def anyopen(datasource, mode='rt', reset=True):
     try:
         stream.name = filename
     except (AttributeError, TypeError):
-        pass  # can't set name (e.g. cStringIO.StringIO)
+        pass  # can't set name (e.g. io.StringIO)
     return stream
 
 
@@ -435,7 +433,7 @@ def _get_stream(filename, openfunction=open, mode='r'):
         # case we have to ignore the error and return None. Second is when openfunction can't open the file because
         # either the file isn't there or the permissions don't allow access.
         if errno.errorcode[err.errno] in ['ENOENT', 'EACCES']:
-            six.reraise(*sys.exc_info())
+            raise sys.exc_info()[1] from err
         return None
     if mode.startswith('r'):
         # additional check for reading (eg can we uncompress) --- is this needed?
@@ -570,7 +568,7 @@ def which(program):
 
 
 @functools.total_ordering
-class NamedStream(io.IOBase, PathLike):
+class NamedStream(io.IOBase, os.PathLike):
     """Stream that also provides a (fake) name.
 
     By wrapping a stream `stream` in this class, it can be passed to
@@ -589,11 +587,11 @@ class NamedStream(io.IOBase, PathLike):
 
     Example
     -------
-    Wrap a :func:`cStringIO.StringIO` instance to write to::
+    Wrap a :class:`io.StringIO` instance to write to::
 
-      import cStringIO
+      from io import StringIO
       import os.path
-      stream = cStringIO.StringIO()
+      stream = StringIO()
       f = NamedStream(stream, "output.pdb")
       print(os.path.splitext(f))
 
@@ -636,7 +634,7 @@ class NamedStream(io.IOBase, PathLike):
         Parameters
         ----------
         stream : stream
-            an open stream (e.g. :class:`file` or :func:`cStringIO.StringIO`)
+            an open stream (e.g. :class:`file` or :class:`io.StringIO`)
         filename : str
             the filename that should be associated with the stream
         reset : bool (optional)
@@ -852,7 +850,8 @@ class NamedStream(io.IOBase, PathLike):
             return self.stream.fileno()
         except AttributeError:
             # IOBase.fileno does not raise IOError as advertised so we do this here
-            raise IOError("This NamedStream does not use a file descriptor.")
+            errmsg = "This NamedStream does not use a file descriptor."
+            raise IOError(errmsg) from None
 
     def readline(self):
         try:
@@ -923,8 +922,10 @@ def get_ext(filename):
     ext : str
     """
     root, ext = os.path.splitext(filename)
+
     if ext.startswith(os.extsep):
         ext = ext[1:]
+
     return root, ext.lower()
 
 
@@ -955,9 +956,9 @@ def check_compressed_format(root, ext):
     if ext.lower() in ("bz2", "gz"):
         try:
             root, ext = get_ext(root)
-        except:
-            raise TypeError("Cannot determine coordinate format for '{0}.{1}'"
-                            "".format(root, ext))
+        except Exception:
+            errmsg = f"Cannot determine coordinate format for '{root}.{ext}'"
+            raise TypeError(errmsg) from None
 
     return ext.upper()
 
@@ -980,11 +981,11 @@ def format_from_filename_extension(filename):
     """
     try:
         root, ext = get_ext(filename)
-    except:
-        raise TypeError(
-            "Cannot determine file format for file '{0}'.\n"
-            "           You can set the format explicitly with "
-            "'Universe(..., format=FORMAT)'.".format(filename))
+    except Exception:
+        errmsg = (f"Cannot determine file format for file '{filename}'.\n"
+                  f"           You can set the format explicitly with "
+                  f"'Universe(..., format=FORMAT)'.")
+        raise TypeError(errmsg) from None
     format = check_compressed_format(root, ext)
     return format
 
@@ -1022,8 +1023,9 @@ def guess_format(filename):
             format = format_from_filename_extension(filename.name)
         except AttributeError:
             # format is None so we need to complain:
-            raise ValueError("guess_format requires an explicit format specifier "
-                             "for stream {0}".format(filename))
+            errmsg = (f"guess_format requires an explicit format specifier "
+                      f"for stream {filename}")
+            raise ValueError(errmsg) from None
     else:
         # iterator, list, filename: simple extension checking... something more
         # complicated is left for the ambitious.
@@ -1038,7 +1040,7 @@ def guess_format(filename):
 def iterable(obj):
     """Returns ``True`` if `obj` can be iterated over and is *not* a  string
     nor a :class:`NamedStream`"""
-    if isinstance(obj, (six.string_types, NamedStream)):
+    if isinstance(obj, (str, NamedStream)):
         return False  # avoid iterating over characters of a string
 
     if hasattr(obj, 'next'):
@@ -1065,11 +1067,13 @@ def asiterable(obj):
         obj = [obj]
     return obj
 
+
 #: Regular expresssion (see :mod:`re`) to parse a simple `FORTRAN edit descriptor`_.
 #: ``(?P<repeat>\d?)(?P<format>[IFELAX])(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?``
 #:
 #: .. _FORTRAN edit descriptor: http://www.cs.mtu.edu/~shene/COURSES/cs201/NOTES/chap05/format.html
-FORTRAN_format_regex = "(?P<repeat>\d+?)(?P<format>[IFEAX])(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?"
+FORTRAN_format_regex = (r"(?P<repeat>\d+?)(?P<format>[IFEAX])"
+                        r"(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?")
 _FORTRAN_format_pattern = re.compile(FORTRAN_format_regex)
 
 
@@ -1110,7 +1114,9 @@ class FixedcolumnEntry(object):
         try:
             return self.convertor(line[self.start:self.stop])
         except ValueError:
-            raise ValueError("{0!r}: Failed to read&convert {1!r}".format(self, line[self.start:self.stop]))
+            errmsg = (f"{self}: Failed to read&convert "
+                      f"{line[self.start:self.stop]}")
+            raise ValueError(errmsg) from None
 
     def __len__(self):
         """Length of the field in columns (stop - start)"""
@@ -1344,19 +1350,21 @@ def get_weights(atoms, weights):
         try:
             weights = atoms.masses
         except AttributeError:
-            raise TypeError("weights='mass' selected but atoms.masses is missing")
+            errmsg = "weights='mass' selected but atoms.masses is missing"
+            raise TypeError(errmsg) from None
 
     if iterable(weights):
-        if len(np.asarray(weights).shape) != 1:
+        if len(np.asarray(weights, dtype=object).shape) != 1:
             raise ValueError("weights must be a 1D array, not with shape "
-                            "{0}".format(np.asarray(weights).shape))
+                            "{0}".format(np.asarray(weights,
+                             dtype=object).shape))
         elif len(weights) != len(atoms):
             raise ValueError("weights (length {0}) must be of same length as "
-                            "the atoms ({1})".format(
-                                len(weights), len(atoms)))
+                             "the atoms ({1})".format(
+                                 len(weights), len(atoms)))
     elif weights is not None:
-        raise TypeError("weights must be {'mass', None} or an iterable of the "
-                        "same size as the atomgroup.")
+        raise ValueError("weights must be {'mass', None} or an iterable of the "
+                         "same size as the atomgroup.")
 
     return weights
 
@@ -1374,7 +1382,8 @@ canonical_inverse_aa_codes = {
     'THR': 'T', 'VAL': 'V', 'TRP': 'W', 'TYR': 'Y'}
 #: translation table for 1-letter codes --> *canonical* 3-letter codes.
 #: The table is used for :func:`convert_aa_code`.
-amino_acid_codes = {one: three for three, one in canonical_inverse_aa_codes.items()}
+amino_acid_codes = {one: three for three,
+                    one in canonical_inverse_aa_codes.items()}
 #: non-default charge state amino acids or special charge state descriptions
 #: (Not fully synchronized with :class:`MDAnalysis.core.selection.ProteinSelection`.)
 alternative_inverse_aa_codes = {
@@ -1424,12 +1433,14 @@ def convert_aa_code(x):
     try:
         return d[x.upper()]
     except KeyError:
-        raise ValueError("No conversion for {0} found (1 letter -> 3 letter or 3/4 letter -> 1 letter)".format(x))
+        errmsg = (f"No conversion for {x} found (1 letter -> 3 letter or 3/4 "
+                  f"letter -> 1 letter)")
+        raise ValueError(errmsg) from None
 
 
 #: Regular expression to match and parse a residue-atom selection; will match
 #: "LYS300:HZ1" or "K300:HZ1" or "K300" or "4GB300:H6O" or "4GB300" or "YaA300".
-RESIDUE = re.compile("""
+RESIDUE = re.compile(r"""
                  (?P<aa>([ACDEFGHIKLMNPQRSTVWY])   # 1-letter amino acid
                         |                          #   or
                         ([0-9A-Z][a-zA-Z][A-Z][A-Z]?)    # 3-letter or 4-letter residue name
@@ -1500,10 +1511,18 @@ def conv_float(s):
         return s
 
 
-def cached(key):
+# A dummy, empty, cheaply-hashable object class to use with weakref caching.
+# (class object doesn't allow weakrefs to its instances, but user-defined
+#  classes do)
+class _CacheKey:
+    pass
+
+
+def cached(key, universe_validation=False):
     """Cache a property within a class.
 
-    Requires the Class to have a cache dict called ``_cache``.
+    Requires the Class to have a cache dict :attr:`_cache` and, with
+    `universe_validation`, a :attr:`universe` with a cache dict :attr:`_cache`.
 
     Example
     -------
@@ -1517,23 +1536,54 @@ def cached(key):
            @property
            @cached('keyname')
            def size(self):
-               # This code gets ran only if the lookup of keyname fails
-               # After this code has been ran once, the result is stored in
+               # This code gets run only if the lookup of keyname fails
+               # After this code has been run once, the result is stored in
                # _cache with the key: 'keyname'
-               size = 10.0
+               return 10.0
+
+           @property
+           @cached('keyname', universe_validation=True)
+           def othersize(self):
+               # This code gets run only if the lookup
+               # id(self) is not in the validation set under
+               # self.universe._cache['_valid']['keyname']
+               # After this code has been run once, id(self) is added to that
+               # set. The validation set can be centrally invalidated at the
+               # universe level (say, if a topology change invalidates specific
+               # caches).
+               return 20.0
 
 
     .. versionadded:: 0.9.0
 
+    .. versionchanged::2.0.0
+        Added the `universe_validation` keyword.
     """
 
     def cached_lookup(func):
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             try:
+                if universe_validation:  # Universe-level cache validation
+                    u_cache = self.universe._cache.setdefault('_valid', dict())
+                    # A WeakSet is used so that keys from out-of-scope/deleted
+                    # objects don't clutter it.
+                    valid_caches = u_cache.setdefault(key, weakref.WeakSet())
+                    try:
+                        if self._cache_key not in valid_caches:
+                            raise KeyError
+                    except AttributeError:  # No _cache_key yet
+                        # Must create a reference key for the validation set.
+                        # self could be used itself as a weakref but set()
+                        # requires hashing it, which can be slow for AGs. Using
+                        # id(self) fails because ints can't be weak-referenced.
+                        self._cache_key = _CacheKey()
+                        raise KeyError
                 return self._cache[key]
             except KeyError:
                 self._cache[key] = ret = func(self, *args, **kwargs)
+                if universe_validation:
+                    valid_caches.add(self._cache_key)
                 return ret
 
         return wrapper
@@ -1563,7 +1613,7 @@ def unique_rows(arr, return_index=False):
     Examples
     --------
     Remove dupicate rows from an array:
-    
+
     >>> a = np.array([[0, 1], [1, 2], [1, 2], [0, 1], [2, 3]])
     >>> b = unique_rows(a)
     >>> b
@@ -1667,15 +1717,37 @@ def blocks_of(a, n, m):
 
     return np.lib.stride_tricks.as_strided(a, new_shape, new_strides)
 
+
+def group_same_or_consecutive_integers(arr):
+    """Split an array of integers into a list of same or consecutive
+    sequences.
+
+    Parameters
+    ----------
+    arr: :class:`numpy.ndarray`
+
+    Returns
+    -------
+    list of :class:`numpy.ndarray`
+
+    Examples
+    >>> arr = np.array([ 2,  3,  4,  7,  8,  9, 10, 11, 15, 16])
+    >>> group_same_or_consecutive_integers(arr)
+    [array([2, 3, 4]), array([ 7,  8,  9, 10, 11]), array([15, 16])]
+    """
+    return np.split(arr, np.where(np.ediff1d(arr)-1 > 0)[0] + 1)
+
+
 class Namespace(dict):
     """Class to allow storing attributes in new namespace. """
+
     def __getattr__(self, key):
         # a.this causes a __getattr__ call for key = 'this'
         try:
             return dict.__getitem__(self, key)
         except KeyError:
-            raise AttributeError('"{}" is not known in the namespace.'
-                                 .format(key))
+            errmsg = f'"{key}" is not known in the namespace.'
+            raise AttributeError(errmsg) from None
 
     def __setattr__(self, key, value):
         dict.__setitem__(self, key, value)
@@ -1684,8 +1756,8 @@ class Namespace(dict):
         try:
             dict.__delitem__(self, key)
         except KeyError:
-            raise AttributeError('"{}" is not known in the namespace.'
-                                 .format(key))
+            errmsg = f'"{key}" is not known in the namespace.'
+            raise AttributeError(errmsg) from None
 
     def __eq__(self, other):
         try:
@@ -1746,7 +1818,7 @@ def flatten_dict(d, parent_key=tuple()):
             new_key = parent_key + (k, )
         else:
             new_key = parent_key + k
-        if isinstance(v, collections.MutableMapping):
+        if isinstance(v, dict):
             items.extend(flatten_dict(v, new_key).items())
         else:
             items.append((new_key, v))
@@ -1824,7 +1896,8 @@ def warn_if_not_unique(groupmethod):
         if group.isunique or warn_if_not_unique.warned:
             return groupmethod(group, *args, **kwargs)
         # Otherwise, throw a DuplicateWarning and execute the method.
-        method_name = ".".join((group.__class__.__name__, groupmethod.__name__))
+        method_name = ".".join(
+            (group.__class__.__name__, groupmethod.__name__))
         # Try to get the group's variable name(s):
         caller_locals = inspect.currentframe().f_back.f_locals.items()
         group_names = []
@@ -1947,7 +2020,7 @@ def check_coords(*coord_names, **options):
     convert_single = options.get('convert_single', True)
     reduce_result_if_single = options.get('reduce_result_if_single', True)
     check_lengths_match = options.get('check_lengths_match',
-                                     len(coord_names) > 1)
+                                      len(coord_names) > 1)
     if not coord_names:
         raise ValueError("Decorator check_coords() cannot be used without "
                          "positional arguments.")
@@ -1989,10 +2062,12 @@ def check_coords(*coord_names, **options):
                     raise ValueError("{}(): {}.shape must be (n, 3), got {}."
                                      "".format(fname, argname, coords.shape))
             try:
-                coords = coords.astype(np.float32, order='C', copy=enforce_copy)
+                coords = coords.astype(
+                    np.float32, order='C', copy=enforce_copy)
             except ValueError:
-                raise TypeError("{}(): {}.dtype must be convertible to float32,"
-                                " got {}.".format(fname, argname, coords.dtype))
+                errmsg = (f"{fname}(): {argname}.dtype must be convertible to "
+                          f"float32, got {coords.dtype}.")
+                raise TypeError(errmsg) from None
             return coords, is_single
 
         @wraps(func)
@@ -2046,7 +2121,7 @@ def check_coords(*coord_names, **options):
     return check_coords_decorator
 
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 #
 # our own deprecate function, derived from numpy (see
 # https://github.com/MDAnalysis/mdanalysis/pull/1763#issuecomment-403231136)
@@ -2057,6 +2132,7 @@ def check_coords(*coord_names, **options):
 def _set_function_name(func, name):
     func.__name__ = name
     return func
+
 
 class _Deprecate(object):
     """
@@ -2153,8 +2229,9 @@ class _Deprecate(object):
             newfunc.__dict__.update(d)
         return newfunc
 
+
 def deprecate(*args, **kwargs):
-    """Issues a DeprecationWarning, adds warning to `old_name`'s
+    r"""Issues a DeprecationWarning, adds warning to `old_name`'s
     docstring, rebinds ``old_name.__name__`` and returns the new
     function object.
 
@@ -2247,7 +2324,8 @@ def deprecate(*args, **kwargs):
     else:
         return _Deprecate(*args, **kwargs)
 #
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
+
 
 def dedent_docstring(text):
     """Dedent typical python doc string.
@@ -2287,7 +2365,7 @@ def check_box(box):
     box : array_like
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
-        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
+        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
         ``[lx, ly, lz, alpha, beta, gamma]``.
 
     Returns
@@ -2322,6 +2400,8 @@ def check_box(box):
          in :mod:`~MDAnalysis.lib.c_distances`.
        * Removed obsolete box types ``tri_box`` and ``tri_vecs_bad``.
     """
+    if box is None:
+        raise ValueError("Box is None")
     from .mdamath import triclinic_vectors  # avoid circular import
     box = np.asarray(box, dtype=np.float32, order='C')
     if box.shape != (6,):

@@ -35,10 +35,13 @@ a different file format (e.g. the "extended" PDB, *XPDB* format, see
 :mod:`~MDAnalysis.topology.ExtendedPDBParser`) that can handle residue
 numbers up to 99,999.
 
+
+
 .. Note::
 
    The parser processes atoms and their names. Masses are guessed and set to 0
-   if unknown. Partial charges are not set.
+   if unknown. Partial charges are not set. Elements are parsed if they are
+   valid. If partially missing or incorrect, empty records are assigned.
 
 See Also
 --------
@@ -55,13 +58,11 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import, print_function
-
 import numpy as np
 import warnings
 
-from six.moves import range
 from .guessers import guess_masses, guess_types
+from .tables import SYMB2Z
 from ..lib import util
 from .base import TopologyReaderBase, change_squash
 from ..core.topology import Topology
@@ -72,6 +73,7 @@ from ..core.topologyattrs import (
     Bonds,
     ChainIDs,
     Atomtypes,
+    Elements,
     ICodes,
     Masses,
     Occupancies,
@@ -83,16 +85,19 @@ from ..core.topologyattrs import (
     Tempfactors,
 )
 
+
 def float_or_default(val, default):
     try:
         return float(val)
     except ValueError:
         return default
 
+
 DIGITS_UPPER = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 DIGITS_LOWER = DIGITS_UPPER.lower()
 DIGITS_UPPER_VALUES = dict([pair for pair in zip(DIGITS_UPPER, range(36))])
 DIGITS_LOWER_VALUES = dict([pair for pair in zip(DIGITS_LOWER, range(36))])
+
 
 def decode_pure(digits_values, s):
     """Decodes the string s using the digit, value associations for each
@@ -153,12 +158,14 @@ class PDBParser(TopologyReaderBase):
     Creates the following Attributes:
      - names
      - chainids
-     - bfactors
+     - tempfactors
      - occupancies
      - record_types (ATOM/HETATM)
      - resids
      - resnames
      - segids
+     - elements
+     - bonds
 
     Guesses the following Attributes:
      - masses
@@ -167,9 +174,18 @@ class PDBParser(TopologyReaderBase):
     --------
     :class:`MDAnalysis.coordinates.PDB.PDBReader`
 
+
     .. versionadded:: 0.8
     .. versionchanged:: 0.18.0
        Added parsing of Record types
+    .. versionchanged:: 1.0.0
+       Added parsing of valid Elements
+    .. versionchanged:: 2.0.0
+       Bonds attribute is not added if no bonds are present in PDB file.
+       If elements are invalid or partially missing, empty elements records
+       are now assigned (Issue #2422).
+       Aliased ``bfactors`` topologyattribute to ``tempfactors``.
+       ``bfactors`` is deprecated and will be removed in 3.0 (Issue #1901)
     """
     format = ['PDB', 'ENT']
 
@@ -188,7 +204,9 @@ class PDBParser(TopologyReaderBase):
             warnings.warn("Invalid atom serials were present, "
                           "bonds will not be parsed")
         else:
-            top.add_TopologyAttr(bonds)
+            # Issue 2832: don't append Bonds if there are no bonds
+            if bonds:
+                top.add_TopologyAttr(bonds)
 
         return top
 
@@ -204,16 +222,16 @@ class PDBParser(TopologyReaderBase):
         icodes = []
         tempfactors = []
         occupancies = []
-        atomtypes = []
 
         resids = []
         resnames = []
 
         segids = []
+        elements = []
 
         self._wrapped_serials = False  # did serials go over 100k?
         last_wrapped_serial = 100000  # if serials wrap, start from here
-        with util.openany(self.filename ) as f:
+        with util.openany(self.filename) as f:
             for line in f:
                 line = line.strip()  # Remove extra spaces
                 if not line:  # Skip line if empty
@@ -241,6 +259,7 @@ class PDBParser(TopologyReaderBase):
                 altlocs.append(line[16:17].strip())
                 resnames.append(line[17:21].strip())
                 chainids.append(line[21:22].strip())
+                elements.append(line[76:78].strip())
 
                 # Resids are optional
                 try:
@@ -257,7 +276,6 @@ class PDBParser(TopologyReaderBase):
                     warnings.warn("PDB file is missing resid information.  "
                                   "Defaulted to '1'")
                     resid = 1
-                    icode = ''
                 finally:
                     resids.append(resid)
                     icodes.append(line[26:27].strip())
@@ -266,7 +284,6 @@ class PDBParser(TopologyReaderBase):
                 tempfactors.append(float_or_default(line[60:66], 1.0))  # AKA bfactor
 
                 segids.append(line[66:76].strip())
-                atomtypes.append(line[76:78].strip())
 
         # Warn about wrapped serials
         if self._wrapped_serials:
@@ -275,7 +292,7 @@ class PDBParser(TopologyReaderBase):
 
         # If segids not present, try to use chainids
         if not any(segids):
-            segids, chainids = chainids, None
+            segids = chainids
 
         n_atoms = len(serials)
 
@@ -290,16 +307,33 @@ class PDBParser(TopologyReaderBase):
                 (tempfactors, Tempfactors, np.float32),
                 (occupancies, Occupancies, np.float32),
         ):
-            if not vals is None:
-                attrs.append(Attr(np.array(vals, dtype=dtype)))
+            attrs.append(Attr(np.array(vals, dtype=dtype)))
         # Guessed attributes
         # masses from types if they exist
         # OPT: We do this check twice, maybe could refactor to avoid this
-        if not any(atomtypes):
+        if not any(elements):
             atomtypes = guess_types(names)
             attrs.append(Atomtypes(atomtypes, guessed=True))
+            warnings.warn("Element information is missing, elements attribute "
+                          "will not be populated. If needed these can be "
+                          "guessed using MDAnalysis.topology.guessers.")
         else:
-            attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
+            # Feed atomtypes as raw element column, but validate elements
+            atomtypes = elements
+            attrs.append(Atomtypes(np.array(elements, dtype=object)))
+
+            validated_elements = []
+            for elem in elements:
+                if elem.capitalize() in SYMB2Z:
+                    validated_elements.append(elem.capitalize())
+                else:
+                    wmsg = (f"Unknown element {elem} found for some atoms. "
+                            f"These have been given an empty element record. "
+                            f"If needed they can be guessed using "
+                            f"MDAnalysis.topology.guessers.")
+                    warnings.warn(wmsg)
+                    validated_elements.append('')
+            attrs.append(Elements(np.array(validated_elements, dtype=object)))
 
         masses = guess_masses(atomtypes)
         attrs.append(Masses(masses, guessed=True))
@@ -322,7 +356,7 @@ class PDBParser(TopologyReaderBase):
         attrs.append(ICodes(icodes))
         attrs.append(Resnames(resnames))
 
-        if any(segids) and not any(val == None for val in segids):
+        if any(segids) and not any(val is None for val in segids):
             segidx, (segids,) = change_squash((segids,), (segids,))
             n_segments = len(segids)
             attrs.append(Segids(segids))
@@ -397,7 +431,7 @@ def _parse_conect(conect):
     RuntimeError
         Raised if ``conect`` is not a valid CONECT record
     """
-    atom_id = np.int(conect[6:11])
+    atom_id = int(conect[6:11])
     n_bond_atoms = len(conect[11:]) // 5
 
     try:

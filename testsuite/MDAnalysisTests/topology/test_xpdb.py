@@ -20,7 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
@@ -32,9 +31,9 @@ from MDAnalysisTests.datafiles import (
 class TestXPDBParser(ParserBase):
     parser = mda.topology.ExtendedPDBParser.ExtendedPDBParser
     ref_filename = XPDB_small
-    expected_attrs = ['ids', 'names',
-                      'resids', 'resnames',
-                      'segids']
+    expected_attrs = ['ids', 'names', 'record_types', 'resids',
+                      'resnames', 'altLocs', 'icodes', 'occupancies',
+                      'tempfactors', 'chainIDs']
     guessed_attrs = ['masses', 'types']
     expected_n_atoms = 5
     expected_n_residues = 5

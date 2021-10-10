@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 import numpy as np
 from collections import OrderedDict
 from MDAnalysis.coordinates.base import (
@@ -261,6 +259,8 @@ class TestMultiFrameReader(_Multi):
         slice(None, None, None),
         slice(None, 3, None),
         slice(4, 0, -1),
+        slice(None, None, -1),
+        slice(None, None, 2),
     ])
     def test_double_getitem(self, sl1, sl2, reader):
         traj_iterable = reader[sl1][sl2]

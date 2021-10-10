@@ -37,8 +37,6 @@ Classes
    :members:
 
 """
-from __future__ import absolute_import
-
 from . import base
 
 
@@ -56,5 +54,9 @@ class NullWriter(base.WriterBase):
     def __init__(self, filename, **kwargs):
         pass
 
-    def write_next_timestep(self, ts=None):
-        pass
+    def _write_next_frame(self, obj):
+        try:
+            atoms = obj.atoms
+        except AttributeError:
+            errmsg = "Input obj is neither an AtomGroup or Universe"
+            raise TypeError(errmsg) from None

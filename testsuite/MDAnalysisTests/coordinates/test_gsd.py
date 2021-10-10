@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 import pytest
 from numpy.testing import assert_almost_equal
 
@@ -35,8 +33,6 @@ import os
 def GSD_U():
     return mda.Universe(GSD)
 
-@pytest.mark.skipif(os.name == 'nt',
-                    reason="gsd not windows compatible")
 def test_gsd_positions(GSD_U):
     # first frame first particle
     ts = GSD_U.trajectory[0]
@@ -47,20 +43,14 @@ def test_gsd_positions(GSD_U):
     assert_almost_equal(GSD_U.atoms.positions[0],
                         [ -5.58348083,  -9.98546982, -10.17657185])
 
-@pytest.mark.skipif(os.name == 'nt',
-                    reason="gsd not windows compatible")
 def test_gsd_n_frames(GSD_U):
     assert len(GSD_U.trajectory) == 2
 
-@pytest.mark.skipif(os.name == 'nt',
-                    reason="gsd not windows compatible")
 def test_gsd_dimensions(GSD_U):
     ts = GSD_U.trajectory[0]
     assert_almost_equal(ts.dimensions,
                         [ 21.60000038,21.60000038,21.60000038,90.,90.,90.])
 
-@pytest.mark.skipif(os.name == 'nt',
-                    reason="gsd not windows compatible")
 def test_gsd_data_step(GSD_U):
     assert GSD_U.trajectory[0].data['step'] == 0
     assert GSD_U.trajectory[1].data['step'] == 500

@@ -20,9 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-from six.moves import range
-
 import numpy as np
 from numpy.testing import (
     assert_equal,
@@ -81,7 +78,7 @@ def case2():
 
 
 class TestFragments(object):
-    """Use 125 atom test Universe
+    r"""Use 125 atom test Universe
 
     5 segments of 5 residues of 5 atoms
 
@@ -129,7 +126,7 @@ class TestFragments(object):
         # number of unique fragindices must correspond to number of fragments:
         assert len(np.unique(fragindices)) == len(fragments)
         # check fragindices dtype:
-        assert fragindices.dtype == np.int64
+        assert fragindices.dtype == np.intp
         #check n_fragments
         assert u.atoms.n_fragments == len(fragments)
 
@@ -214,6 +211,24 @@ class TestFragments(object):
             getattr(u.atoms[10], 'fragment')
         with pytest.raises(NoDataError):
             getattr(u.atoms[10], 'fragindex')
+
+    def test_atomgroup_fragment_cache_invalidation_bond_making(self):
+        u = case1()
+        fgs = u.atoms.fragments
+        assert fgs is u.atoms._cache['fragments']
+        assert u.atoms._cache_key in u._cache['_valid']['fragments']
+        u.add_bonds((fgs[0][-1] + fgs[1][0],))  # should trigger invalidation
+        assert 'fragments' not in u._cache['_valid']
+        assert len(fgs) > len(u.atoms.fragments)  # recomputed
+
+    def test_atomgroup_fragment_cache_invalidation_bond_breaking(self):
+        u = case1()
+        fgs = u.atoms.fragments
+        assert fgs is u.atoms._cache['fragments']
+        assert u.atoms._cache_key in u._cache['_valid']['fragments']
+        u.delete_bonds((u.atoms.bonds[3],))  # should trigger invalidation
+        assert 'fragments' not in u._cache['_valid']
+        assert len(fgs) < len(u.atoms.fragments)  # recomputed
 
 
 def test_tpr_fragments():

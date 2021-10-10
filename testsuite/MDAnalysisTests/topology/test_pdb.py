@@ -20,11 +20,10 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
-from six.moves import StringIO
+from io import StringIO
 
 import pytest
+import numpy as np
 from numpy.testing import assert_equal
 import MDAnalysis as mda
 
@@ -37,9 +36,12 @@ from MDAnalysisTests.datafiles import (
     PDB_conect2TER,
     PDB_singleconect,
     PDB_chainidnewres,
-    PDB_sameresid_diffresname
+    PDB_sameresid_diffresname,
+    PDB_helix,
+    PDB_elements,
 )
 from MDAnalysis.topology.PDBParser import PDBParser
+from MDAnalysis import NoDataError
 
 _PDBPARSER = mda.topology.PDBParser.PDBParser
 
@@ -63,28 +65,32 @@ hybrid36 = [
     ("10267", 10267)
 ]
 
+
 @pytest.mark.parametrize('hybrid, integer', hybrid36)
 def test_hy36decode(hybrid, integer):
     assert mda.topology.PDBParser.hy36decode(5, hybrid) == integer
 
-class TestPDBParser(ParserBase):
+
+class PDBBase(ParserBase):
+    expected_attrs = ['ids', 'names', 'record_types', 'resids',
+                      'resnames', 'altLocs', 'icodes', 'occupancies',
+                      'tempfactors', 'chainIDs']
+    guessed_attrs = ['types', 'masses']
+
+
+class TestPDBParser(PDBBase):
     """This one has neither chainids or segids"""
     parser = mda.topology.PDBParser.PDBParser
     ref_filename = PDB
-    expected_attrs = ['ids', 'names', 'record_types', 'resids', 'resnames']
-    guessed_attrs = ['types', 'masses']
     expected_n_atoms = 47681
     expected_n_residues = 11302
     expected_n_segments = 1
 
 
-class TestPDBParserSegids(ParserBase):
+class TestPDBParserSegids(PDBBase):
     """Has segids"""
     parser = mda.topology.PDBParser.PDBParser
     ref_filename = PDB_small
-    expected_attrs = ['ids', 'names', 'record_types', 'resids', 'resnames',
-                      'segids']
-    guessed_attrs = ['types', 'masses']
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1
@@ -200,6 +206,7 @@ ATOM      4  H2  TIP3           66.986  49.547  22.931  1.00  0.00      TIP3
 ENDMDL
 """
 
+
 def test_PDB_no_resid():
     u = mda.Universe(StringIO(PDB_noresid), format='PDB')
 
@@ -207,6 +214,7 @@ def test_PDB_no_resid():
     assert len(u.residues) == 1
     # should have default resid of 1
     assert u.residues[0].resid == 1
+
 
 PDB_hex = """\
 REMARK For testing reading of hex atom numbers
@@ -221,6 +229,16 @@ HETATMA0003  H     2 L 400      10.208  30.067  70.045
 END
 """
 
+# this causes an error on Win64/Python 3.8 on Azure when loaded
+# in as a file instead
+PDB_metals = """\
+HETATM    1 CU    CU A   1      00.000  00.000  00.000  1.00 00.00          Cu
+HETATM    2 FE    FE A   2      03.000  03.000  03.000  1.00 00.00          Fe
+HETATM    3 Ca    Ca A   3      03.000  03.000  03.000  1.00 00.00          Ca
+HETATM    3 Mg    Mg A   3      03.000  03.000  03.000  1.00 00.00          Mg
+"""
+
+
 def test_PDB_hex():
     u = mda.Universe(StringIO(PDB_hex), format='PDB')
     assert len(u.atoms) == 5
@@ -229,3 +247,81 @@ def test_PDB_hex():
     assert u.atoms[2].id == 100001
     assert u.atoms[3].id == 100002
     assert u.atoms[4].id == 100003
+
+
+@pytest.mark.filterwarnings("error:Failed to guess the mass")
+def test_PDB_metals():
+    from MDAnalysis.topology import tables
+
+    u = mda.Universe(StringIO(PDB_metals), format='PDB')
+
+    assert len(u.atoms) == 4
+    assert u.atoms[0].mass == pytest.approx(tables.masses["CU"])
+    assert u.atoms[1].mass == pytest.approx(tables.masses["FE"])
+    assert u.atoms[2].mass == pytest.approx(tables.masses["CA"])
+    assert u.atoms[3].mass == pytest.approx(tables.masses["MG"])
+
+
+def test_PDB_elements():
+    """The test checks whether elements attribute are assigned
+    properly given a PDB file with valid elements record.
+    """
+    u = mda.Universe(PDB_elements, format='PDB')
+    element_list = np.array(['N', 'C', 'C', 'O', 'C', 'C', 'O', 'N', 'H',
+                             'H', 'H', 'H', 'H', 'H', 'H', 'H', 'Cu', 'Fe',
+                             'Mg', 'Ca', 'S', 'O', 'C', 'C', 'S', 'O', 'C',
+                             'C'], dtype=object)
+    assert_equal(u.atoms.elements, element_list)
+
+
+def test_missing_elements_noattribute():
+    """Check that:
+
+    1) a warning is raised if elements are missing
+    2) the elements attribute is not set
+    """
+    wmsg = ("Element information is missing, elements attribute will not be "
+            "populated")
+    with pytest.warns(UserWarning, match=wmsg):
+        u = mda.Universe(PDB_small)
+    with pytest.raises(AttributeError):
+        _ = u.atoms.elements
+
+
+PDB_wrong_ele = """\
+REMARK For testing warnings of wrong elements
+REMARK This file represent invalid elements in the elements column
+ATOM      1  N   ASN A   1      -8.901   4.127  -0.555  1.00  0.00           N
+ATOM      2  CA  ASN A   1      -8.608   3.135  -1.618  1.00  0.00
+ATOM      3  C   ASN A   1      -7.117   2.964  -1.897  1.00  0.00           C
+ATOM      4  O   ASN A   1      -6.634   1.849  -1.758  1.00  0.00           O
+ATOM      5  X   ASN A   1      -9.437   3.396  -2.889  1.00  0.00          XX
+TER       6
+HETATM    7 CU    CU A   2      03.000  00.000  00.000  1.00 00.00          CU
+HETATM    8 FE    FE A   3      00.000  03.000  00.000  1.00 00.00          Fe
+HETATM    9 Mg    Mg A   4      03.000  03.000  03.000  1.00 00.00          MG
+TER       10
+"""
+
+
+def test_wrong_elements_warnings():
+    """The test checks whether there are invalid elements in the elements
+    column which have been parsed and returns an appropriate warning.
+    """
+    with pytest.warns(UserWarning, match='Unknown element XX found'):
+        u = mda.Universe(StringIO(PDB_wrong_ele), format='PDB')
+
+    expected = np.array(['N', '', 'C', 'O', '', 'Cu', 'Fe', 'Mg'],
+                        dtype=object)
+    assert_equal(u.atoms.elements, expected)
+
+
+def test_nobonds_error():
+    """Issue #2832: PDB without CONECT record should not have a bonds
+    attribute and raises NoDataError on access"""
+    u = mda.Universe(PDB_helix)
+
+    errmsg = "This Universe does not contain bonds information"
+
+    with pytest.raises(NoDataError, match=errmsg):
+        u.atoms.bonds

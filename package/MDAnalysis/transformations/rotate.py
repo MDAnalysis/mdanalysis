@@ -25,52 +25,61 @@
 Trajectory rotation --- :mod:`MDAnalysis.transformations.rotate`
 ================================================================
 
-Rotates the coordinates by a given angle arround an axis formed by a direction and a
-point 
+Rotates the coordinates by a given angle arround an axis formed by a direction
+and a point.
 
-.. autofunction:: rotateby
+.. autoclass:: rotateby
 
 """
-from __future__ import absolute_import
-
-import math
 import numpy as np
 from functools import partial
 
 from ..lib.transformations import rotation_matrix
 from ..lib.util import get_weights
 
-def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
+from .base import TransformationBase
+
+
+class rotateby(TransformationBase):
     '''
-    Rotates the trajectory by a given angle on a given axis. The axis is defined by 
+    Rotates the trajectory by a given angle on a given axis. The axis is defined by
     the user, combining the direction vector and a point. This point can be the center
-    of geometry or the center of mass of a user defined AtomGroup, or an array defining 
+    of geometry or the center of mass of a user defined AtomGroup, or an array defining
     custom coordinates.
-    
+
+    Note
+    ----
+    ``max_threads`` is set to 1 for this transformation
+    with which it performs better.
+
     Examples
     --------
-    
-    e.g. rotate the coordinates by 90 degrees on a axis formed by the [0,0,1] vector and 
+
+    e.g. rotate the coordinates by 90 degrees on a axis formed by the [0,0,1] vector and
     the center of geometry of a given AtomGroup:
-    
+
     .. code-block:: python
-    
+
+        from MDAnalysis import transformations
+
         ts = u.trajectory.ts
         angle = 90
-        ag = u.atoms()
+        ag = u.atoms
         d = [0,0,1]
-        rotated = MDAnalysis.transformations.rotate(angle, direction=d, ag=ag)(ts)
-    
+        rotated = transformations.rotate.rotateby(angle, direction=d, ag=ag)(ts)
+
     e.g. rotate the coordinates by a custom axis:
-    
+
     .. code-block:: python
+
+        from MDAnalysis import transformations
 
         ts = u.trajectory.ts
         angle = 90
         p = [1,2,3]
         d = [0,0,1]
-        rotated = MDAnalysis.transformations.rotate(angle, direction=d, point=point)(ts) 
-    
+        rotated = transformations.rotate.rotateby(angle, direction=d, point=p)(ts)
+
     Parameters
     ----------
     angle: float
@@ -99,53 +108,83 @@ def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
     Returns
     -------
     MDAnalysis.coordinates.base.Timestep
-    
+
     Warning
     -------
     Wrapping/unwrapping the trajectory or performing PBC corrections may not be possible 
     after rotating the trajectory.
 
+
+    .. versionchanged:: 2.0.0
+        The transformation was changed from a function/closure to a class
+        with ``__call__``.
+    .. versionchanged:: 2.0.0
+       The transformation was changed to inherit from the base class for
+       limiting threads and checking if it can be used in parallel analysis.
     '''
-    angle = np.deg2rad(angle)
-    try:
-        direction = np.asarray(direction, np.float32)
-        if direction.shape != (3, ) and direction.shape != (1, 3):
-            raise ValueError('{} is not a valid direction'.format(direction))
-        direction = direction.reshape(3, )
-    except ValueError:
-        raise ValueError('{} is not a valid direction'.format(direction))
-    if point is not None:
-        point = np.asarray(point, np.float32)
-        if point.shape != (3, ) and point.shape != (1, 3):
-            raise ValueError('{} is not a valid point'.format(point))
-        point = point.reshape(3, )
-    elif ag:
+    def __init__(self,
+                 angle,
+                 direction,
+                 point=None,
+                 ag=None,
+                 weights=None,
+                 wrap=False,
+                 max_threads=1,
+                 parallelizable=True):
+        super().__init__(max_threads=max_threads,
+                         parallelizable=parallelizable)
+
+        self.angle = angle
+        self.direction = direction
+        self.point = point
+        self.ag = ag
+        self.weights = weights
+        self.wrap = wrap
+
+        self.angle = np.deg2rad(self.angle)
         try:
-            atoms = ag.atoms
-        except AttributeError:
-            raise ValueError('{} is not an AtomGroup object'.format(ag))
-        else:
+            self.direction = np.asarray(self.direction, np.float32)
+            if self.direction.shape != (3, ) and \
+               self.direction.shape != (1, 3):
+                raise ValueError('{} is not a valid direction'
+                                 .format(self.direction))
+            self.direction = self.direction.reshape(3, )
+        except ValueError:
+            raise ValueError(f'{self.direction} is not a valid direction') \
+                             from None
+        if self.point is not None:
+            self.point = np.asarray(self.point, np.float32)
+            if self.point.shape != (3, ) and self.point.shape != (1, 3):
+                raise ValueError('{} is not a valid point'.format(self.point))
+            self.point = self.point.reshape(3, )
+        elif self.ag:
             try:
-                weights = get_weights(atoms, weights=weights)
-            except (ValueError, TypeError):
-                raise TypeError("weights must be {'mass', None} or an iterable of the "
-                                "same size as the atomgroup.")
-        center_method = partial(atoms.center, weights, pbc=wrap)
-    else:
-        raise ValueError('A point or an AtomGroup must be specified')
-    
-    def wrapped(ts):
-        if point is None:
-            position = center_method()
+                self.atoms = self.ag.atoms
+            except AttributeError:
+                raise ValueError(f'{self.ag} is not an AtomGroup object') \
+                                from None
+            else:
+                try:
+                    self.weights = get_weights(self.atoms,
+                                               weights=self.weights)
+                except (ValueError, TypeError):
+                    errmsg = ("weights must be {'mass', None} or an iterable "
+                              "of the same size as the atomgroup.")
+                    raise TypeError(errmsg) from None
+            self.center_method = partial(self.atoms.center,
+                                         self.weights,
+                                         pbc=self.wrap)
         else:
-            position = point
-        matrix = rotation_matrix(angle, direction, position)
+            raise ValueError('A point or an AtomGroup must be specified')
+
+    def _transform(self, ts):
+        if self.point is None:
+            position = self.center_method()
+        else:
+            position = self.point
+        matrix = rotation_matrix(self.angle, self.direction, position)
         rotation = matrix[:3, :3].T
         translation = matrix[:3, 3]
-        ts.positions= np.dot(ts.positions, rotation)
+        ts.positions = np.dot(ts.positions, rotation)
         ts.positions += translation
-        
         return ts
-    
-    return wrapped
-    

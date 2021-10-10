@@ -41,7 +41,9 @@ An example is provided in the MDAnalysis Cookbook_, listed as GNMExample_.
 .. _Cookbook: https://github.com/MDAnalysis/MDAnalysisCookbook
 
 The basic approach is to pass a trajectory to :class:`GNMAnalysis` and then run
-the analysis::
+the analysis:
+
+.. code-block:: python
 
     u = MDAnalysis.Universe(PSF, DCD)
     C = MDAnalysis.analysis.gnm.GNMAnalysis(u, ReportVector="output.txt")
@@ -85,16 +87,16 @@ directly needed to perform the analysis.
    removed un-unsed function :func:`backup_file`
 
 """
-
-from __future__ import print_function, division, absolute_import
-from six.moves import range
-
 import itertools
+import logging
+import warnings
 
 import numpy as np
 
-import warnings
-import logging
+from .base import AnalysisBase
+
+
+from MDAnalysis.analysis.base import Results
 
 logger = logging.getLogger('MDAnalysis.analysis.GNM')
 
@@ -193,7 +195,7 @@ def order_list(w):
     return list_map
 
 
-class GNMAnalysis(object):
+class GNMAnalysis(AnalysisBase):
     """Basic tool for GNM analysis.
 
     Each frame is treated as a novel structure and the GNM
@@ -205,21 +207,29 @@ class GNMAnalysis(object):
     ----------
     universe : Universe
           Analyze the full trajectory in the universe.
-    selection : str (optional)
-          MDAnalysis selection string, default "protein and name CA"
+    select : str (optional)
+          MDAnalysis selection string
     cutoff : float (optional)
           Consider selected atoms within the cutoff as neighbors for the
           Gaussian network model.
     ReportVector : str (optional)
           filename to write eigenvectors to, by default no output is written
-          (``None``)
     Bonus_groups : tuple
           This is a tuple of selection strings that identify additional groups
           (such as ligands). The center of mass of each group will be added as
           a single point in the ENM (it is a popular way of treating small
           ligands such as drugs). You need to ensure that none of the atoms in
           `Bonus_groups` is contained in `selection` as this could lead to
-          double counting. No checks are applied. Default is ``None``.
+          double counting. No checks are applied.
+
+    Attributes
+    ----------
+    results.times : numpy.ndarray
+            simulation times used in analysis
+    results.eigenvalues : numpy.ndarray
+            calculated eigenvalues
+    results.eigenvectors : numpy.ndarray
+            calculated eigenvectors
 
     See Also
     --------
@@ -229,27 +239,37 @@ class GNMAnalysis(object):
     .. versionchanged:: 0.16.0
        Made :meth:`generate_output` a private method :meth:`_generate_output`.
 
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
+
+    .. versionchanged:: 2.0.0
+       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and
+       store results as attributes ``times``, ``eigenvalues`` and
+       ``eigenvectors`` of the ``results`` attribute.
     """
 
     def __init__(self,
                  universe,
-                 selection='protein and name CA',
+                 select='protein and name CA',
                  cutoff=7.0,
                  ReportVector=None,
                  Bonus_groups=None):
+        super(GNMAnalysis, self).__init__(universe.trajectory)
         self.u = universe
-        self.selection = selection
+        self.select = select
         self.cutoff = cutoff
-        self.results = []  # final result
+        self.results = Results()
+        self.results.eigenvalues = []
+        self.results.eigenvectors = []
         self._timesteps = None  # time for each frame
         self.ReportVector = ReportVector
         self.Bonus_groups = [self.u.select_atoms(item) for item in Bonus_groups] \
                             if Bonus_groups else []
-        self.ca = self.u.select_atoms(self.selection)
+        self.ca = self.u.select_atoms(self.select)
 
-    def _generate_output(self, w, v, outputobject, time, matrix,
-                         nmodes=2, ReportVector=None, counter=0):
-        """Appends eigenvalues and eigenvectors to results.
+    def _generate_output(self, w, v, outputobject,
+                         ReportVector=None, counter=0):
+        """Appends time, eigenvalues and eigenvectors to results.
 
         This generates the output by adding eigenvalue and
         eigenvector data to an appendable object and optionally
@@ -264,14 +284,13 @@ class GNMAnalysis(object):
                     print(
                         "",
                         counter,
-                        time,
                         item[0] + 1,
                         w[list_map[1]],
                         item[1],
                         file=oup)
-        outputobject.append((time, w[list_map[1]], v[list_map[1]]))
-        # outputobject.append((time, [ w[list_map[i]] for i in range(nmodes) ],
-        # [ v[list_map[i]] for i in range( nmodes) ] ))
+
+        outputobject.eigenvalues.append(w[list_map[1]])
+        outputobject.eigenvectors.append(v[list_map[1]])
 
     def generate_kirchoff(self):
         """Generate the Kirchhoff matrix of contacts.
@@ -307,53 +326,32 @@ class GNMAnalysis(object):
 
         return matrix
 
-    def run(self, start=None, stop=None, step=None):
-        """Analyze trajectory and produce timeseries.
+    def _single_frame(self):
+        matrix = self.generate_kirchoff()
+        try:
+            _, w, v = np.linalg.svd(matrix)
+        except np.linalg.LinAlgError:
+            msg = f"SVD with cutoff {self.cutoff} failed to converge. "
+            msg += f"Skip frame at {self._ts.time}."
+            warnings.warn(msg)
+            logger.warning(msg)
+            return
+        # Save the results somewhere useful in some useful format. Usefully.
+        self._generate_output(
+            w,
+            v,
+            self.results,
+            ReportVector=self.ReportVector,
+            counter=self._ts.frame)
 
-        Parameters
-        ----------
-        start : int (optional)
-        stop : int (optional)
-        step : int (optional)
-
-        Returns
-        -------
-        results : list
-            GNM results per frame::
-
-                results = [(time,eigenvalues[1],eigenvectors[1]),(time,eigenvalues[1],eigenvectors[1])... ]
-
-        .. versionchanged:: 0.16.0
-           use start, stop, step instead of skip
-        """
-        logger.info("GNM analysis: starting")
-
-        self.timeseries = []
-        self._timesteps = []
-
-        for ts in self.u.trajectory[start:stop:step]:
-            self._timesteps.append(ts.time)
-
-            matrix = self.generate_kirchoff()
-            try:
-                u, w, v = np.linalg.svd(matrix)
-            except np.linalg.LinAlgError:
-                print("\nFrame skip at", ts.time,
-                      "(SVD failed to converge). Cutoff", self.cutoff)
-                continue
-            #Save the results somewhere useful in some useful format. Usefully.
-            self._generate_output(
-                w,
-                v,
-                self.results,
-                ts.time,
-                matrix,
-                ReportVector=self.ReportVector,
-                counter=ts.frame)
+    def _conclude(self):
+        self.results.times = self.times
+        self.results.eigenvalues = np.asarray(self.results.eigenvalues)
+        self.results.eigenvectors = np.asarray(self.results.eigenvectors)
 
 
 class closeContactGNMAnalysis(GNMAnalysis):
-    """GNMAnalysis only using close contacts.
+    r"""GNMAnalysis only using close contacts.
 
     This is a version of the GNM where the Kirchoff matrix is
     constructed from the close contacts between individual atoms
@@ -363,28 +361,31 @@ class closeContactGNMAnalysis(GNMAnalysis):
     ----------
     universe : Universe
           Analyze the full trajectory in the universe.
-    selection : str (optional)
-          MDAnalysis selection string, default "protein"
+    select : str (optional)
+          MDAnalysis selection string
     cutoff : float (optional)
           Consider selected atoms within the cutoff as neighbors for the
-          Gaussian network model [4.5 Å].
+          Gaussian network model.
     ReportVector : str (optional)
           filename to write eigenvectors to, by default no output is written
-          (``None``)
     weights : {"size", None} (optional)
           If set to "size" (the default) then weight the contact by
           :math:`1/\sqrt{N_i N_j}` where :math:`N_i` and :math:`N_j` are the
           number of atoms in the residues :math:`i` and :math:`j` that contain
           the atoms that form a contact.
-    MassWeight : bool (deprecated, optional)
-          if set to ``True`` equivalent to `weights` set to "size".
+
+    Attributes
+    ----------
+    results.times : numpy.ndarray
+            simulation times used in analysis
+    results.eigenvalues : numpy.ndarray
+            calculated eigenvalues
+    results.eigenvectors : numpy.ndarray
+            calculated eigenvectors
 
     Notes
     -----
-    The `MassWeight` option does not perform a true mass weighting but
-    weighting by the number of atoms in each residue; the name of the parameter
-    exists for historical reasons and will be removed in 0.17.0. Until then,
-    setting `MassWeight` to anything but ``None`` will override `weights`.
+    The `MassWeight` option has now been removed.
 
     See Also
     --------
@@ -396,34 +397,30 @@ class closeContactGNMAnalysis(GNMAnalysis):
 
     .. deprecated:: 0.16.0
        Instead of ``MassWeight=True`` use ``weights="size"``.
+
+    .. versionchanged:: 1.0.0
+       MassWeight option (see above deprecation entry).
+       Changed `selection` keyword to `select`
+
+    .. versionchanged:: 2.0.0
+       Use :class:`~MDAnalysis.analysis.AnalysisBase` as parent class and
+       store results as attributes ``times``, ``eigenvalues`` and
+       ``eigenvectors`` of the `results` attribute.
     """
 
     def __init__(self,
                  universe,
-                 selection='protein',
+                 select='protein',
                  cutoff=4.5,
                  ReportVector=None,
-                 weights="size",
-                 MassWeight=None):
-        self.u = universe
-        self.selection = selection
-        self.cutoff = cutoff
-        self.results = []  # final result
-        self._timesteps = None  # time for each frame
-        self.ReportVector = ReportVector
-        self.ca = self.u.select_atoms(self.selection)
-
+                 weights="size"):
+        super(closeContactGNMAnalysis, self).__init__(universe,
+                                                      select,
+                                                      cutoff,
+                                                      ReportVector)
         self.weights = weights
-        # remove MassWeight in 0.17.0
-        if MassWeight is not None:
-            warnings.warn(
-                "MassWeight=True|False is deprecated in favor of weights='size'|None "
-                "and will be removed in 0.17.0",
-                category=DeprecationWarning)
-            self.weights = "size" if MassWeight else None
 
     def generate_kirchoff(self):
-        natoms = self.ca.n_atoms
         nresidues = self.ca.n_residues
         positions = self.ca.positions
         residue_index_map = [

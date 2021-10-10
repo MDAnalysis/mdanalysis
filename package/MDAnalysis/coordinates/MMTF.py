@@ -41,8 +41,6 @@ Classes
 .. _MMTF: https://mmtf.rcsb.org/
 
 """
-from __future__ import absolute_import
-
 import mmtf
 
 from . import base
@@ -60,6 +58,14 @@ def _parse_mmtf(fn):
 class MMTFReader(base.SingleFrameReaderBase):
     """Coordinate reader for the Macromolecular Transmission Format format (MMTF_)."""
     format = 'MMTF'
+
+    @staticmethod
+    def _format_hint(thing):
+        """Can this Reader read *thing*?
+
+        .. versionadded:: 1.0.0
+        """
+        return isinstance(thing, mmtf.MMTFDecoder)
 
     @due.dcite(
         Doi('10.1371/journal.pcbi.1005575'),
@@ -82,8 +88,6 @@ class MMTFReader(base.SingleFrameReaderBase):
         if not top.unit_cell is None:
             # optional field
             ts.dimensions = top.unit_cell
-        else:
-            ts._unitcell = None
 
         return ts
 

@@ -43,9 +43,6 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import, division
-from six.moves import range
-
 import logging
 import functools
 from math import ceil
@@ -152,7 +149,9 @@ class PSFParser(TopologyReaderBase):
                         attr(self._parse_sec(psffile, info)))
             except StopIteration:
                 # Reached the end of the file before we expected
-                pass
+                for attr in (Bonds, Angles, Dihedrals, Impropers):
+                    if not hasattr(top, attr.attrname):
+                        top.add_TopologyAttr(attr([]))
 
         return top
 
@@ -277,10 +276,9 @@ class PSFParser(TopologyReaderBase):
             try:
                 line = lines()
             except StopIteration:
-                err = ("{0} is not valid PSF file"
-                       "".format(self.filename))
+                err = f"{self.filename} is not valid PSF file"
                 logger.error(err)
-                raise ValueError(err)
+                raise ValueError(err) from None
             try:
                 vals = set_type(atom_parser(line))
             except ValueError:

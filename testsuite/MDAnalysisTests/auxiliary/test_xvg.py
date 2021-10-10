@@ -20,9 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
-from six.moves import range
 import pytest
 from numpy.testing import assert_array_equal
 import numpy as np
@@ -31,8 +28,10 @@ import os
 
 import MDAnalysis as mda
 
-from MDAnalysisTests.datafiles import AUX_XVG, XVG_BAD_NCOL, XVG_BZ2
+from MDAnalysisTests.datafiles import (AUX_XVG, XVG_BAD_NCOL, XVG_BZ2,
+                                       COORDINATES_XTC, COORDINATES_TOPOLOGY)
 from MDAnalysisTests.auxiliary.base import (BaseAuxReaderTest, BaseAuxReference)
+from MDAnalysis.auxiliary.XVG import XVGStep
 
 
 class XVGReference(BaseAuxReference):
@@ -52,11 +51,41 @@ class XVGReference(BaseAuxReference):
         self.select_data_ref = [self.format_data([2*i, 2**i]) for i in range(self.n_steps)]
 
 
+class TestXVGStep():
+
+    @staticmethod
+    @pytest.fixture()
+    def step():
+        return XVGStep()
+
+    def test_select_time_none(self, step):
+
+        st = step._select_time(None)
+
+        assert st is None
+
+    def test_select_time_invalid_index(self, step):
+        with pytest.raises(ValueError, match="Time selector must be single index"):
+            step._select_time([0])
+
+    def test_select_data_none(self, step):
+
+        st = step._select_data(None)
+
+        assert st is None
+
 class TestXVGReader(BaseAuxReaderTest):
     @staticmethod
     @pytest.fixture()
     def ref():
         return XVGReference()
+
+    @staticmethod
+    @pytest.fixture
+    def ref_universe(ref):
+        u = mda.Universe(COORDINATES_TOPOLOGY, COORDINATES_XTC)
+        u.trajectory.add_auxiliary('test', ref.testdata)
+        return u
 
     @staticmethod
     @pytest.fixture()
@@ -102,6 +131,13 @@ class TestXVGFileReader(TestXVGReader):
     @pytest.fixture()
     def ref():
         return XVGFileReference()
+
+    @staticmethod
+    @pytest.fixture
+    def ref_universe(ref):
+        u = mda.Universe(COORDINATES_TOPOLOGY, COORDINATES_XTC)
+        u.trajectory.add_auxiliary('test', ref.testdata)
+        return u
 
     @staticmethod
     @pytest.fixture()

@@ -38,20 +38,17 @@ interest to developers.
    .. automethod:: _get
    .. automethod:: _get_same
    .. automethod:: _read_frame
-   .. automethod:: _chained_iterator
 
 """
-from __future__ import absolute_import
-
 import warnings
 
 import os.path
-import itertools
 import bisect
 import copy
 
 import numpy as np
 
+from ..lib import util
 from ..lib.util import asiterable
 from . import base
 from . import core
@@ -140,6 +137,28 @@ def filter_times(times, dt):
     return used_idx
 
 
+def check_allowed_filetypes(readers, allowed):
+    """
+    Make a check that  all readers have the same filetype and are  of the
+    allowed files types. Throws Exception on failure.
+
+    Parameters
+    ----------
+    readers : list of MDA readers
+    allowed : list of allowed formats
+    """
+    classname = type(readers[0])
+    only_one_reader = np.all([isinstance(r,  classname) for r in readers])
+    if not only_one_reader:
+        readernames = [type(r) for r in readers]
+        raise ValueError("ChainReader: continuous=true only supported"
+                         " when all files are using the same reader. "
+                         "Found: {}".format(readernames))
+    if readers[0].format not in allowed:
+        raise NotImplementedError("ChainReader: continuous=True only "
+                                  "supported for formats: {}".format(allowed))
+
+
 class ChainReader(base.ProtoReader):
     """Reader that concatenates multiple trajectories on the fly.
 
@@ -192,6 +211,9 @@ class ChainReader(base.ProtoReader):
        added ``continuous`` trajectory option
     .. versionchanged:: 0.19.0
        limit output of __repr__
+    .. versionchanged:: 2.0.0
+       Now ChainReader can be (un)pickled. Upon unpickling,
+       current timestep is retained.
 
     """
     format = 'CHAIN'
@@ -242,7 +264,8 @@ class ChainReader(base.ProtoReader):
             kwargs['dt'] = dt
         self.readers = [core.reader(filename, **kwargs)
                         for filename in filenames]
-        self.filenames = np.array([fn[0] if isinstance(fn, tuple) else fn for fn in filenames])
+        self.filenames = np.array([fn[0] if isinstance(fn, tuple) else fn
+                                                        for fn in filenames])
         # pointer to "active" trajectory index into self.readers
         self.__active_reader_index = 0
 
@@ -269,23 +292,12 @@ class ChainReader(base.ProtoReader):
         self.dts = np.array(self._get('dt'))
         self.total_times = self.dts * n_frames
 
-        #: source for trajectories frame (fakes trajectory)
-        self.__chained_trajectories_iter = None
-
         # calculate new start_frames to have a time continuous trajectory.
         if continuous:
-            filetypes = np.unique([r.format for r in self.readers])
-            if not len(filetypes) == 1:
-                raise ValueError("ChainReader: continuous=true only supported"
-                                 " when all files are using the same format. "
-                                 "found {}".format(filetypes))
+            check_allowed_filetypes(self.readers, ['XTC', 'TRR'])
             if np.any(np.array(n_frames) == 1):
                 raise RuntimeError("ChainReader: Need at least two frames in "
                                    "every trajectory with continuous=True")
-            if filetypes[0] not in ['XTC', 'TRR']:
-                raise NotImplementedError("ChainReader: continuous=True only "
-                                          "supported for xtc and trr format")
-
             # TODO: allow floating point precision in dt check
             dt = self._get_same('dt')
             n_frames = np.asarray(self._get('n_frames'))
@@ -333,7 +345,8 @@ class ChainReader(base.ProtoReader):
                 # check for interleaving
                 r1[1]
                 if r1_start_time < start_time < r1.time:
-                    raise RuntimeError("ChainReader: Interleaving not supported with continuous=True.")
+                    raise RuntimeError("ChainReader: Interleaving not supported "
+                                       "with continuous=True.")
 
                 # find end where trajectory was restarted from
                 for ts in r1[::-1]:
@@ -352,6 +365,16 @@ class ChainReader(base.ProtoReader):
         # rewind() also sets self.ts
         self.ts = None
         self.rewind()
+
+    @staticmethod
+    def _format_hint(thing):
+        """Can ChainReader read the object *thing*
+
+        .. versionadded:: 1.0.0
+        """
+        return (not isinstance(thing, np.ndarray) and
+                util.iterable(thing) and
+                not util.isstream(thing))
 
     def _get_local_frame(self, k):
         """Find trajectory index and trajectory frame for chained frame `k`.
@@ -394,6 +417,25 @@ class ChainReader(base.ProtoReader):
         f = k - self._start_frames[i]
         return i, f
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        #  save ts temporarily otherwise it will be changed during rewinding.
+        state['ts'] = self.ts.__deepcopy__()
+
+        #  the ts.frame of each reader is set to the chained frame index during
+        #  iteration, thus we need to rewind the readers that have been used.
+        #  PR #2723
+        for reader in state['readers'][:self.__active_reader_index + 1]:
+            reader.rewind()
+
+        #  retrieve the current ts
+        self.ts = state['ts']
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self.ts.frame = self.__current_frame
+
     # methods that can change with the current reader
     def convert_time_from_native(self, t):
         return self.active_reader.convert_time_from_native(t)
@@ -415,8 +457,6 @@ class ChainReader(base.ProtoReader):
         # been modified since initial load
         new.ts = self.ts.copy()
         return new
-
-
 
     # attributes that can change with the current reader
     @property
@@ -538,49 +578,39 @@ class ChainReader(base.ProtoReader):
         # update Timestep
         self.ts = self.active_reader.ts
         self.ts.frame = frame  # continuous frames, 0-based
+        self.__current_frame = frame
         return self.ts
 
-    def _chained_iterator(self):
-        """Iterator that presents itself as a chained trajectory."""
-        self._rewind()  # must rewind all readers
-        for i in range(self.n_frames):
-            j, f = self._get_local_frame(i)
-            self.__activate_reader(j)
-            self.ts = self.active_reader[f]
-            self.ts.frame = i
-            yield self.ts
 
     def _read_next_timestep(self, ts=None):
-        self.ts = next(self.__chained_trajectories_iter)
-        return self.ts
+        if ts is None:
+            ts = self.ts
+        ts = self.__next__()
+        return ts
 
     def rewind(self):
         """Set current frame to the beginning."""
         self._rewind()
-        self.__chained_trajectories_iter = self._chained_iterator()
-        # set time step for frame 1
-        self.ts = next(self.__chained_trajectories_iter)
 
     def _rewind(self):
         """Internal method: Rewind trajectories themselves and trj pointer."""
+        self.__current_frame = -1
         self._apply('rewind')
-        self.__activate_reader(0)
+        self.__next__()
 
     def close(self):
         self._apply('close')
 
     def __iter__(self):
-        """Generator for all frames, starting at frame 1."""
-        self._rewind()
+        """Generator for all frames, starting at frame 0."""
+        self.__current_frame = -1
         # start from first frame
-        self.__chained_trajectories_iter = self._chained_iterator()
-        for ts in self.__chained_trajectories_iter:
-            yield ts
+        return self
 
     def __repr__(self):
         if len(self.filenames) > 3:
             fnames = "{fname} and {nfanmes} more".format(
-                    fname=os.path.basename(self.filenames[0]), 
+                    fname=os.path.basename(self.filenames[0]),
                     nfanmes=len(self.filenames) - 1)
         else:
             fnames = ", ".join([os.path.basename(fn) for fn in self.filenames])
@@ -633,3 +663,14 @@ class ChainReader(base.ProtoReader):
         # to avoid applying the same transformations multiple times on each frame
 
         return ts
+
+    def __next__(self):
+        if self.__current_frame < self.n_frames - 1:
+            j, f = self._get_local_frame(self.__current_frame + 1)
+            self.__activate_reader(j)
+            self.ts = self.active_reader[f]
+            self.ts.frame = self.__current_frame + 1
+            self.__current_frame += 1
+            return self.ts
+        else:
+            raise StopIteration()

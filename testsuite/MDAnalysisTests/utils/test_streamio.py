@@ -20,12 +20,9 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 from os.path import abspath, basename, dirname, expanduser, normpath, relpath, split, splitext
 
-import six
-from six.moves import range, cStringIO, StringIO
+from io import StringIO
 
 import pytest
 import numpy as np
@@ -36,7 +33,6 @@ import MDAnalysis
 import MDAnalysis.lib.util as util
 import MDAnalysis.tests.datafiles as datafiles
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
-from MDAnalysisTests import tempdir
 
 import os
 
@@ -63,17 +59,6 @@ class TestIsstream(object):
         with open(datafiles.PSF) as obj:
             assert_equal(util.isstream(obj), True)
 
-    def test_cStringIO_read(self):
-        with open(datafiles.PSF, "r") as f:
-            obj = cStringIO(f.read())
-        assert_equal(util.isstream(obj), True)
-        obj.close()
-
-    def test_cStringIO_write(self):
-        obj = cStringIO()
-        assert_equal(util.isstream(obj), True)
-        obj.close()
-
     def test_StringIO_read(self):
         with open(datafiles.PSF, "r") as f:
             obj = StringIO(f.read())
@@ -97,14 +82,14 @@ class TestNamedStream(object):
     textname = "jabberwock.txt"
 
     def test_closing(self):
-        obj = cStringIO("".join(self.text))
+        obj = StringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname, close=True)
         assert_equal(ns.closed, False)
         ns.close()
         assert_equal(ns.closed, True)
 
     def test_closing_force(self):
-        obj = cStringIO("".join(self.text))
+        obj = StringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname)
         assert_equal(ns.closed, False)
         ns.close()
@@ -112,8 +97,8 @@ class TestNamedStream(object):
         ns.close(force=True)
         assert_equal(ns.closed, True)
 
-    def test_cStringIO_read(self):
-        obj = cStringIO("".join(self.text))
+    def test_StringIO_read(self):
+        obj = StringIO("".join(self.text))
         ns = util.NamedStream(obj, self.textname)
         assert_equal(ns.name, self.textname)
         assert_equal(str(ns), self.textname)
@@ -132,8 +117,8 @@ class TestNamedStream(object):
         assert_equal(len(ns.readlines()), self.numlines)
         ns.close(force=True)
 
-    def test_cStringIO_write(self):
-        obj = cStringIO()
+    def test_StringIO_write(self):
+        obj = StringIO()
         ns = util.NamedStream(obj, self.textname)
         ns.writelines(self.text)
         assert_equal(ns.name, self.textname)
@@ -144,8 +129,8 @@ class TestNamedStream(object):
         assert_equal(ns.read(20), "".join(self.text)[:20])
         ns.close(force=True)
 
-    def test_File_write(self):
-        with tempdir.in_tempdir():
+    def test_File_write(self, tmpdir):
+        with tmpdir.as_cwd():
             outfile = "lookingglas.txt"
             with open(outfile, "w") as obj:
                 with util.NamedStream(obj, outfile, close=True) as ns:
@@ -160,7 +145,7 @@ class TestNamedStream(object):
             assert_equal("".join(text), "".join(self.text))
 
     def test_matryoshka(self):
-        obj = cStringIO()
+        obj = StringIO()
         ns = util.NamedStream(obj, 'r')
         with pytest.warns(RuntimeWarning):
             ns2 = util.NamedStream(ns, 'f')
@@ -176,7 +161,7 @@ class TestNamedStream_filename_behavior(object):
     def create_NamedStream(self, name=None):
         if name is None:
             name = self.textname
-        obj = cStringIO()
+        obj = StringIO()
         return util.NamedStream(obj, name)
 
     @pytest.mark.parametrize('func', (
@@ -275,7 +260,7 @@ class _StreamData(object):
 
     def __init__(self):
         self.buffers = {name: "".join(open(fn).readlines())
-                        for name, fn in six.iteritems(self.filenames)}
+                        for name, fn in self.filenames.items()}
         self.filenames['XYZ_PSF'] = u"bogus/path/mini.psf"
         self.buffers['XYZ_PSF'] = u"""\
 PSF CMAP
@@ -331,11 +316,8 @@ frame 3
     def as_StringIO(self, name):
         return StringIO(self.buffers[name])
 
-    def as_cStringIO(self, name):
-        return cStringIO(self.buffers[name])
-
     def as_NamedStream(self, name):
-        return util.NamedStream(self.as_cStringIO(name), self.filenames[name])
+        return util.NamedStream(self.as_StringIO(name), self.filenames[name])
 
 
 streamData = _StreamData()

@@ -1,11 +1,9 @@
-from __future__ import division, absolute_import, print_function
-
 import MDAnalysis
 import numpy as np
 
 try:
-    from MDAnalysisTests.datafiles import (GRO, TPR, XTC, 
-                                           PSF, DCD, 
+    from MDAnalysisTests.datafiles import (GRO, TPR, XTC,
+                                           PSF, DCD,
                                            TRZ_psf, TRZ)
     from MDAnalysis.exceptions import NoDataError
 except:
@@ -190,7 +188,7 @@ class AtomGroupMethodsBench(object):
         coordinates.
         """
         self.ag.translate([0,0.5,1])
-        
+
     def time_union(self, num_atoms):
         """Benchmark union operation
         on atomgroups.
@@ -202,7 +200,7 @@ class AtomGroupMethodsBench(object):
         atomgroup with default params.
         """
         self.ag.wrap()
-        
+
 
 
 class AtomGroupAttrsBench(object):
@@ -232,7 +230,7 @@ class AtomGroupAttrsBench(object):
 
     def time_dihedral(self, num_atoms):
         """Benchmark Dihedral object
-        creation time. Requires ag of 
+        creation time. Requires ag of
         size 4.
         """
         self.ag[:4].dihedral
@@ -326,15 +324,92 @@ class AtomGroupAttrsBench(object):
         self.ag[:2].bond
 
 
+class CompoundSplitting(object):
+    """Test how fast can we split compounds into masks and apply them
+    
+    The benchmark used in Issue #3000. Parameterizes multiple compound number
+    and size combinations.
+    """
+    
+    params = [(100, 10000, 1000000),  # n_atoms
+              (1, 10, 100),           # n_compounds
+              (True, False),          # homogeneous
+              (True, False)]          # contiguous
+
+    def setup(self, n_atoms, n_compounds, homogeneous, contiguous):
+        rg = np.random.Generator(np.random.MT19937(3000))
+
+        # some parameter screening for nonsensical combinations.
+        if n_compounds > n_atoms:
+            raise NotImplementedError
+
+        if n_compounds == 1 and not (homogeneous and contiguous):
+            raise NotImplementedError
+            
+        if n_compounds == n_atoms:
+            if not (homogeneous and contiguous):
+                raise NotImplementedError
+            compound_indices = np.arange(n_compounds)
+        elif homogeneous:
+            ats_per_compound, remainder = divmod(n_atoms, n_compounds)
+            if remainder:
+                raise NotImplementedError
+            compound_indices = np.tile(np.arange(n_compounds),
+                                       (ats_per_compound, 1)).T.ravel()
+        else:
+            compound_indices = np.sort(np.floor(rg.random(n_atoms)
+                                                * n_compounds).astype(np.int))
+                
+        unique_indices = np.unique(compound_indices)
+        if len(unique_indices) != n_compounds:
+            raise RuntimeError
+        
+        if not contiguous:
+            rg.shuffle(compound_indices)
+        
+        self.u = MDAnalysis.Universe.empty(n_atoms,
+                                           n_residues=n_compounds,
+                                           n_segments=1,
+                                           atom_resindex=compound_indices,
+                                           trajectory=True)
+        self.u.atoms.positions = rg.random((n_atoms, 3),
+                                           dtype=np.float32) * 100
+        self.u.dimensions = [50, 50, 50, 90, 90, 90]
+
+    def time_center_compounds(self, *args):
+        self.u.atoms.center(None, compound='residues')
+
+
 class FragmentFinding(object):
     """Test how quickly we find fragments (distinct molecules from bonds)"""
-    params = [(TPR, XTC),  # single large fragment, many small solvents
-              (PSF, DCD),  # single large fragment
-              (TRZ_psf, TRZ)]  # 20ish polymer chains
-    param_names = ['universe']
+    # if we try to parametrize over topology &
+    # trajectory formats asv will use all
+    # possible combinations, so instead handle
+    # this in setup()
+    params = ('large_fragment_small_solvents',
+              'large_fragment',
+              'polymer_chains', # 20ish polymer chains
+              )
+    param_names = ['universe_type']
 
-    def setup(self, universe):
-        self.u = MDAnalysis.Universe(*universe)
+    def setup(self, universe_type):
+        if universe_type == 'large_fragment_small_solvents':
+            univ = (TPR, XTC) 
+        elif universe_type == 'large_fragment':
+            univ = (PSF, DCD)
+        else:
+            univ = (TRZ_psf, TRZ) 
+        self.u = MDAnalysis.Universe(*univ)
 
-    def test_find_fragments(self, universe):
+    def time_find_fragments(self, universe_type):
+        frags = self.u.atoms.fragments
+
+
+class FragmentCaching(FragmentFinding):
+    """Test how quickly we find cached fragments"""
+    def setup(self, universe_type):
+        super(FragmentCaching, self).setup(universe_type)
+        frags = self.u.atoms.fragments  # Priming the cache
+
+    def time_find_cached_fragments(self, universe_type):
         frags = self.u.atoms.fragments

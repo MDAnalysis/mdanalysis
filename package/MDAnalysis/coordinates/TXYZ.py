@@ -45,9 +45,6 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import, division
-from six.moves import range
-
 import numpy as np
 import os
 import errno
@@ -77,15 +74,15 @@ class TXYZReader(base.ReaderBase):
         self._cache = dict()
         # Check if file has box information saved
         with util.openany(self.filename) as inp:
-           inp.readline()
-           line = inp.readline()
-           # If second line has float at second position, we have box info
-           try:
-               float(line.split()[1])
-           except ValueError:
-               self.periodic = False
-           else:
-               self.periodic = True
+            inp.readline()
+            line = inp.readline()
+            # If second line has float at second position, we have box info
+            try:
+                float(line.split()[1])
+            except ValueError:
+                self.periodic = False
+            else:
+                self.periodic = True
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
 
         self._read_next_timestep()
@@ -154,7 +151,7 @@ class TXYZReader(base.ReaderBase):
             ts.frame += 1
             return ts
         except (ValueError, IndexError) as err:
-            raise EOFError(err)
+            raise EOFError(err) from None
 
     def _reopen(self):
         self.close()

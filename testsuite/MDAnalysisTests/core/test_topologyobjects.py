@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 import numpy as np
 from numpy.testing import (
     assert_almost_equal,
@@ -200,6 +198,34 @@ class TestTopologyObjects(object):
             repr(imp),
             '<ImproperDihedral between: Atom 1, Atom 8, Atom 7, Atom 4>')
 
+    def test_ureybradley_repr(self, PSFDCD):
+        ub = PSFDCD.atoms[[30, 10]].ureybradley
+
+        assert_equal(repr(ub), '<UreyBradley between: Atom 10, Atom 30>')
+
+    def test_ureybradley_repr_VE(self, PSFDCD):
+        with pytest.raises(ValueError):
+            ub = PSFDCD.atoms[[30, 10, 2]].ureybradley
+
+    def test_ureybradley_partner(self, PSFDCD):
+        ub = PSFDCD.atoms[[30, 10]].ureybradley
+        assert ub.partner(PSFDCD.atoms[30]) == PSFDCD.atoms[10]
+        assert ub.partner(PSFDCD.atoms[10]) == PSFDCD.atoms[30]
+
+    def test_ureybradley_distance(self, b):
+        assert_almost_equal(b.atoms.ureybradley.distance(), b.length(), self.precision)
+
+    def test_cmap_repr(self, PSFDCD):
+        cmap = PSFDCD.atoms[[4, 7, 8, 1, 2]].cmap
+
+        assert_equal(
+            repr(cmap),
+            '<CMap between: Atom 2, Atom 1, Atom 8, Atom 7, Atom 4>')
+    
+    def test_cmap_repr_VE(self, PSFDCD):
+        with pytest.raises(ValueError):
+            cmap = PSFDCD.atoms[[30, 10, 2]].cmap
+
 class TestTopologyGroup(object):
     """Tests TopologyDict and TopologyGroup classes with psf input"""
 
@@ -361,13 +387,13 @@ class TestTopologyGroup(object):
         vals = np.array([[0, 10], [5, 15]])
         tg = TopologyGroup(vals, PSFDCD, guessed=True)
 
-        assert_equal(tg._guessed, np.array([[True], [True]]))
+        assert_equal(tg._guessed, np.array([True, True]))
 
     def test_create_guessed_tg_2(self, PSFDCD):
         vals = np.array([[0, 10], [5, 15]])
         tg = TopologyGroup(vals, PSFDCD, guessed=False)
 
-        assert_equal(tg._guessed, np.array([[False], [False]]))
+        assert_equal(tg._guessed, np.array([False, False]))
 
     def test_TG_equality(self, PSFDCD):
         """Make two identical TGs,

@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 import MDAnalysis as mda
 import pytest
 
@@ -31,8 +29,8 @@ from MDAnalysisTests.datafiles import TXYZ, ARC
 
 class TestTXYZParser(ParserBase):
     parser = mda.topology.TXYZParser.TXYZParser
-    guessed_attrs = [ 'masses']
-    expected_attrs = ['ids', 'names', 'bonds', 'types' ] 
+    guessed_attrs = ['masses']
+    expected_attrs = ['ids', 'names', 'bonds', 'types']
     expected_n_residues = 1
     expected_n_atoms = 9
     expected_n_segments = 1
@@ -43,3 +41,13 @@ class TestTXYZParser(ParserBase):
     @pytest.fixture(params=(TXYZ, ARC))
     def filename(self, request):
         return request.param
+
+    def test_atom_type_type(self, top):
+        """
+        ``u.atoms.types`` contains strings.
+
+        See `issue #2435 <https://github.com/MDAnalysis/mdanalysis/issues/2435>
+        """
+        types = top.types.values
+        type_is_str = [isinstance(atom_type, str) for atom_type in types]
+        assert all(type_is_str)

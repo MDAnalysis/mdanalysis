@@ -61,6 +61,16 @@ Classes
    :members:
 
 
+Notes
+-----
+
+* The MDAnalysis :class:`MOL2Reader` and :class:`MOL2Writer` only handle the
+  MOLECULE, SUBSTRUCTURE, ATOM, and BOND record types. Other records are not
+  currently read or preserved on writing.
+* As the CRYSIN record type is not parsed / written, MOL2 systems always have
+  dimensions set to ``None`` and dimensionless MOL2 files are written.
+
+
 MOL2 format notes
 -----------------
 
@@ -111,12 +121,9 @@ MOL2 format notes
     1   BENZENE 1   PERM    0   ****    ****    0   ROOT
 
 """
-from __future__ import absolute_import
-
 import numpy as np
 
 from . import base
-from ..core import flags
 from ..lib import util
 
 
@@ -129,6 +136,9 @@ class MOL2Reader(base.ReaderBase):
        previously created a new instance of Timestep each frame.
     .. versionchanged:: 0.20.0
        Allows for comments at top of file.
+       Ignores status bit strings
+    .. versionchanged:: 2.0.0
+       Bonds attribute is not added if no bonds are present in MOL2 file
     """
     format = 'MOL2'
     units = {'time': None, 'length': 'Angstrom'}
@@ -177,7 +187,7 @@ class MOL2Reader(base.ReaderBase):
                 continue
             sections[cursor].append(line)
 
-        atom_lines, bond_lines = sections["atom"], sections["bond"]
+        atom_lines = sections["atom"]
         if not len(atom_lines):
             raise Exception("The mol2 (starting at line {0}) block has no atoms"
                             "".format(block["start_line"]))
@@ -191,13 +201,10 @@ class MOL2Reader(base.ReaderBase):
                 "frame has {0}, the next frame has {1} atoms"
                 "".format(self.n_atoms, len(atom_lines)))
 
-        if not len(bond_lines):
-            raise Exception("The mol2 (starting at line {0}) block has no bonds"
-                            "".format(block["start_line"]))
-
         coords = np.zeros((self.n_atoms, 3), dtype=np.float32)
         for i, a in enumerate(atom_lines):
-            aid, name, x, y, z, atom_type, resid, resname, charge = a.split()
+            aid, name, x, y, z, atom_type, resid, resname, charge = a.split()[:9]
+
             #x, y, z = float(x), float(y), float(z)
             coords[i, :] = x, y, z
 
@@ -213,12 +220,12 @@ class MOL2Reader(base.ReaderBase):
         return self._read_frame(frame)
 
     def _read_frame(self, frame):
-        unitcell = np.zeros(6, dtype=np.float32)
         try:
             block = self.frames[frame]
         except IndexError:
-            raise IOError("Invalid frame {0} for trajectory with length {1}"
-                          "".format(frame, len(self)))
+            errmsg = (f"Invalid frame {frame} for trajectory with length "
+                      f"{len(self)}")
+            raise IOError(errmsg) from None
 
         sections, coords = self.parse_block(block)
 
@@ -229,11 +236,10 @@ class MOL2Reader(base.ReaderBase):
                 pass
 
         self.ts.positions = np.array(coords, dtype=np.float32)
-        self.ts.unitcell = unitcell
+
         if self.convert_units:
             # in-place !
             self.convert_pos_from_native(self.ts._pos)
-            self.convert_pos_from_native(self.ts._unitcell[:3])
         self.ts.frame = frame
 
         return self.ts
@@ -277,7 +283,7 @@ class MOL2Writer(base.WriterBase):
     multiframe = True
     units = {'time': None, 'length': 'Angstrom'}
 
-    def __init__(self, filename, n_atoms=None, convert_units=None):
+    def __init__(self, filename, n_atoms=None, convert_units=True):
         """Create a new MOL2Writer
 
         Parameters
@@ -285,12 +291,9 @@ class MOL2Writer(base.WriterBase):
         filename: str
             name of output file
         convert_units: bool (optional)
-            units are converted to the MDAnalysis base format; ``None`` selects
-            the value of :data:`MDAnalysis.core.flags` ['convert_lengths']
+            units are converted to the MDAnalysis base format; [``True``]
         """
         self.filename = filename
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
 
         self.frames_written = 0
@@ -306,32 +309,43 @@ class MOL2Writer(base.WriterBase):
         ----------
         obj : AtomGroup or Universe
         """
+        # Issue 2717
+        try:
+            obj = obj.atoms
+        except AttributeError:
+            errmsg = "Input obj is neither an AtomGroup or Universe"
+            raise TypeError(errmsg) from None
+
         traj = obj.universe.trajectory
         ts = traj.ts
 
         try:
             molecule = ts.data['molecule']
         except KeyError:
-            raise NotImplementedError(
-                "MOL2Writer cannot currently write non MOL2 data")
+            errmsg = "MOL2Writer cannot currently write non MOL2 data"
+            raise NotImplementedError(errmsg) from None
 
         # Need to remap atom indices to 1 based in this selection
         mapping = {a: i for i, a in enumerate(obj.atoms, start=1)}
 
-        # Grab only bonds between atoms in the obj
-        # ie none that extend out of it
-        bondgroup = obj.bonds.atomgroup_intersection(obj, strict=True)
-        bonds = sorted((b[0], b[1], b.order) for b in bondgroup)
-        bond_lines = ["@<TRIPOS>BOND"]
-        bond_lines.extend("{0:>5} {1:>5} {2:>5} {3:>2}"
-                          "".format(bid,
-                                    mapping[atom1],
-                                    mapping[atom2],
-                                    order)
-                          for bid, (atom1, atom2, order)in enumerate(
-                                  bonds, start=1))
-        bond_lines.append("\n")
-        bond_lines = "\n".join(bond_lines)
+        # only write bonds if the Bonds attribute exists (Issue #3057)
+        if hasattr(obj, "bonds"):
+            # Grab only bonds between atoms in the obj
+            # ie none that extend out of it
+            bondgroup = obj.intra_bonds
+            bonds = sorted((b[0], b[1], b.order) for b in bondgroup)
+            bond_lines = ["@<TRIPOS>BOND"]
+            bls = ["{0:>5} {1:>5} {2:>5} {3:>2}".format(bid,
+                                                        mapping[atom1],
+                                                        mapping[atom2],
+                                                        order)
+                   for bid, (atom1, atom2, order) in enumerate(bonds, start=1)]
+            bond_lines.extend(bls)
+            bond_lines.append("\n")
+            bond_lines = "\n".join(bond_lines)
+        else:
+            bondgroup = []
+            bond_lines = ""
 
         atom_lines = ["@<TRIPOS>ATOM"]
         atom_lines.extend("{0:>4} {1:>4} {2:>13.4f} {3:>9.4f} {4:>9.4f}"
@@ -356,26 +370,32 @@ class MOL2Writer(base.WriterBase):
 
         check_sums = molecule[1].split()
         check_sums[0], check_sums[1] = str(len(obj.atoms)), str(len(bondgroup))
+
+        # prevent behavior change between repeated calls
+        # see gh-2678
+        molecule_0_store = molecule[0]
+        molecule_1_store = molecule[1]
+
         molecule[1] = "{0}\n".format(" ".join(check_sums))
         molecule.insert(0, "@<TRIPOS>MOLECULE\n")
 
-        return "".join(molecule) + atom_lines + bond_lines + "".join(substructure)
+        return_val = ("".join(molecule) + atom_lines +
+                      bond_lines + "".join(substructure))
 
-    def write(self, obj):
+        molecule[0] = molecule_0_store
+        molecule[1] = molecule_1_store
+        return return_val
+
+    def _write_next_frame(self, obj):
         """Write a new frame to the MOL2 file.
 
         Parameters
         ----------
         obj : AtomGroup or Universe
-        """
-        self.write_next_timestep(obj)
 
-    def write_next_timestep(self, obj):
-        """Write a new frame to the MOL2 file.
 
-        Parameters
-        ----------
-        obj : AtomGroup or Universe
+        .. versionchanged:: 1.0.0
+            Renamed from `write_next_timestep` to `_write_next_frame`.
         """
         block = self.encode_block(obj)
         self.file.writelines(block)

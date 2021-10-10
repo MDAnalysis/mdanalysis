@@ -127,7 +127,7 @@ same functionality for any supported trajectory format::
   u = mda.Universe(PDB, XTC)
 
   coordinates = AnalysisFromFunction(lambda ag: ag.positions.copy(),
-                                     u.atoms).run().results
+                                     u.atoms).run().results['timeseries']
   u2 = mda.Universe(PDB, coordinates, format=MemoryReader)
 
 .. _creating-in-memory-trajectory-label:
@@ -154,7 +154,7 @@ only the protein is created::
   protein = u.select_atoms("protein")
 
   coordinates = AnalysisFromFunction(lambda ag: ag.positions.copy(),
-                                     protein).run().results
+                                     protein).run().results['timeseries']
   u2 = mda.Merge(protein)            # create the protein-only Universe
   u2.load_new(coordinates, format=MemoryReader)
 
@@ -164,7 +164,7 @@ principle, this could have all be done in one line::
 
   u2 = mda.Merge(protein).load_new(
            AnalysisFromFunction(lambda ag: ag.positions.copy(),
-                                protein).run().results,
+                                protein).run().results['timeseries'],
            format=MemoryReader)
 
 The new :class:`~MDAnalysis.core.universe.Universe` ``u2`` can be used
@@ -184,59 +184,57 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import
 import logging
 import errno
 import numpy as np
 import warnings
 
 from . import base
+from .base import Timestep
 
 
-class Timestep(base.Timestep):
-    """Timestep for the :class:`MemoryReader`
+# These methods all pass in an existing *view* onto a larger array
+def _replace_positions_array(ts, new):
+    """Replace the array of positions
 
-    Compared to the base :class:`base.Timestep`, this version
-    (:class:`memory.Timestep`) has an additional
-    :meth:`_replace_positions_array` method, which replaces the array of
-    positions while the :attr:`positions` property replaces the content of the
-    array.
+    Replaces the array of positions by another array.
 
+
+    Note
+    ----
+    The behavior of :meth:`_replace_positions_array` is different from the
+    behavior of the :attr:`position` property that replaces the **content**
+    of the array. The :meth:`_replace_positions_array` method should only be
+    used to set the positions to a different frame in
+    :meth:`MemoryReader._read_next_timestep`; there, the memory reader sets
+    the positions to a view of the correct frame.  Modifying the positions
+    for a given frame should be done with the :attr:`positions` attribute
+    that does not break the link between the array of positions in the time
+    step and the :attr:`MemoryReader.coordinate_array`.
+
+
+    .. versionadded:: 0.19.0
+    .. versionchanged:: 2.0.0
+       This function, and the _repalace helper functions for velocities,
+       forces, and dimensions, have been moved out of the now removed
+       custom timestep object for :class:`MemoryReader`.
     """
-    def _replace_positions_array(self, new):
-        """Replace the array of positions
-
-        Replaces the array of positions by another array.
+    ts.has_positions = True
+    ts._pos = new
 
 
-        Note
-        ----
-        The behavior of :meth:`_replace_positions_array` is different from the
-        behavior of the :attr:`position` property that replaces the **content**
-        of the array. The :meth:`_replace_positions_array` method should only be
-        used to set the positions to a different frame in
-        :meth:`MemoryReader._read_next_timestep`; there, the memory reader sets
-        the positions to a view of the correct frame.  Modifying the positions
-        for a given frame should be done with the :attr:`positions` attribute
-        that does not break the link between the array of positions in the time
-        step and the :attr:`MemoryReader.coordinate_array`.
+def _replace_velocities_array(ts, new):
+    ts.has_velocities = True
+    ts._velocities = new
 
 
-        .. versionadded:: 0.19.0
-        """
-        self.has_positions = True
-        self._pos = new
+def _replace_forces_array(ts, new):
+    ts.has_forces = True
+    ts._forces = new
 
-    def _replace_velocities_array(self, new):
-        self.has_velocities = True
-        self._velocities = new
 
-    def _replace_forces_array(self, new):
-        self.has_forces = True
-        self._forces = new
-
-    def _replace_dimensions(self, new):
-        self._unitcell = new
+def _replace_dimensions(ts, new):
+    ts._unitcell = new
 
 
 class MemoryReader(base.ProtoReader):
@@ -245,14 +243,15 @@ class MemoryReader(base.ProtoReader):
 
     A trajectory reader interface to a numpy array of the coordinates.
     For compatibility with the timeseries interface, support is provided for
-    specifying the order of columns through the format option.
+    specifying the order of columns through the `order` keyword.
 
     .. versionadded:: 0.16.0
-
+    .. versionchanged:: 1.0.0
+       Support for the deprecated `format` keyword for
+       :meth:`MemoryReader.timeseries` has now been removed.
     """
 
     format = 'MEMORY'
-    _Timestep = Timestep
 
     def __init__(self, coordinate_array, order='fac',
                  dimensions=None, dt=1, filename=None,
@@ -315,10 +314,10 @@ class MemoryReader(base.ProtoReader):
         try:
             if coordinate_array.ndim == 2 and coordinate_array.shape[1] == 3:
                 coordinate_array = coordinate_array[np.newaxis, :, :]
-        except AttributeError as e:
-            raise TypeError("The input has to be a numpy.ndarray that "
-                            "corresponds to the layout specified by the "
-                            "'order' keyword.")
+        except AttributeError:
+            errmsg = ("The input has to be a numpy.ndarray that corresponds "
+                      "to the layout specified by the 'order' keyword.")
+            raise TypeError(errmsg) from None
 
         self.set_array(coordinate_array, order)
         self.n_frames = \
@@ -330,8 +329,9 @@ class MemoryReader(base.ProtoReader):
             try:
                 velocities = np.asarray(velocities, dtype=np.float32)
             except ValueError:
-                raise TypeError("'velocities' must be array-like got {}"
-                                "".format(type(velocities)))
+                errmsg = (f"'velocities' must be array-like got "
+                          f"{type(velocities)}")
+                raise TypeError(errmsg) from None
             # if single frame, make into array of 1 frame
             if velocities.ndim == 2:
                 velocities = velocities[np.newaxis, :, :]
@@ -348,8 +348,8 @@ class MemoryReader(base.ProtoReader):
             try:
                 forces = np.asarray(forces, dtype=np.float32)
             except ValueError:
-                raise TypeError("'forces' must be array like got {}"
-                                "".format(type(forces)))
+                errmsg = f"'forces' must be array like got {type(forces)}"
+                raise TypeError(errmsg) from None
             if forces.ndim == 2:
                 forces = forces[np.newaxis, :, :]
             if not forces.shape == self.coordinate_array.shape:
@@ -363,22 +363,26 @@ class MemoryReader(base.ProtoReader):
 
         provided_n_atoms = kwargs.pop("n_atoms", None)
         if (provided_n_atoms is not None and
-            provided_n_atoms != self.n_atoms):
-                raise ValueError("The provided value for n_atoms ({}) "
-                                 "does not match the shape of the coordinate "
-                                 "array ({})"
-                                 .format(provided_n_atoms, self.n_atoms))
+            provided_n_atoms != self.n_atoms
+        ):
+            raise ValueError(
+                "The provided value for n_atoms ({}) "
+                "does not match the shape of the coordinate "
+                "array ({})".format(provided_n_atoms, self.n_atoms)
+            )
 
         self.ts = self._Timestep(self.n_atoms, **kwargs)
         self.ts.dt = dt
+
         if dimensions is None:
-            dimensions = np.zeros((self.n_frames, 6), dtype=np.float32)
+            self.dimensions_array = np.zeros((self.n_frames, 6), dtype=np.float32)
         else:
             try:
                 dimensions = np.asarray(dimensions, dtype=np.float32)
             except ValueError:
-                raise TypeError("'dimensions' must be array-like got {}"
-                                "".format(type(dimensions)))
+                errmsg = (f"'dimensions' must be array-like got "
+                          f"{type(dimensions)}")
+                raise TypeError(errmsg) from None
             if dimensions.shape == (6,):
                 # single box, tile this to trajectory length
                 # allows modifying the box of some frames
@@ -387,10 +391,19 @@ class MemoryReader(base.ProtoReader):
                 raise ValueError("Provided dimensions array has shape {}. "
                                  "This must be a array of shape (6,) or "
                                  "(n_frames, 6)".format(dimensions.shape))
-        self.dimensions_array = dimensions
+            self.dimensions_array = dimensions
+
         self.ts.frame = -1
         self.ts.time = -1
         self._read_next_timestep()
+
+    @staticmethod
+    def _format_hint(thing):
+        """For internal use: Check if MemoryReader can operate on *thing*
+
+        .. versionadded:: 1.0.0
+        """
+        return isinstance(thing, np.ndarray)
 
     @staticmethod
     def parse_n_atoms(filename, order='fac', **kwargs):
@@ -472,10 +485,10 @@ class MemoryReader(base.ProtoReader):
         self.ts.frame = -1
         self.ts.time = -1
 
-    def timeseries(self, asel=None, start=0, stop=-1, step=1, order='afc', format=None):
+    def timeseries(self, asel=None, start=0, stop=-1, step=1, order='afc'):
         """Return a subset of coordinate data for an AtomGroup in desired
-        column order/format. If no selection is given, it will return a view of
-        the underlying array, while a copy is returned otherwise.
+        column order. If no selection is given, it will return a view of the
+        underlying array, while a copy is returned otherwise.
 
         Parameters
         ---------
@@ -494,26 +507,11 @@ class MemoryReader(base.ProtoReader):
             of 'a', 'f', 'c' are allowed ie "fac" - return array
             where the shape is (frame, number of atoms,
             coordinates).
-        format : str (optional)
-            deprecated, equivalent to `order`
-
-        Note
-        ----
-        The `format` parameter name is used to mimic the
-        :class:`MDAnalysis.coordinates.DCD.timeseries` interface. It is
-        identical to the `order` parameter for :class:`MemoryReader`. In a
-        future version, `format` will be renamed to `order`.
 
 
-        .. deprecated:: 0.17.0
-           `format` has been deprecated in favor of the standard keyword `order`.
+        .. versionchanged:: 1.0.0
+           Deprecated `format` keyword has been removed. Use `order` instead.
         """
-        if format is not None:
-            warnings.warn(
-                "'format' is deprecated and will be removed in 1.0. Use 'order' instead",
-                category=DeprecationWarning)
-            order = format
-
         array = self.get_array()
         if order == self.stored_order:
             pass
@@ -561,12 +559,12 @@ class MemoryReader(base.ProtoReader):
         basic_slice = ([slice(None)]*(f_index) +
                        [self.ts.frame] +
                        [slice(None)]*(2-f_index))
-        ts._replace_positions_array(self.coordinate_array[tuple(basic_slice)])
-        ts._replace_dimensions(self.dimensions_array[self.ts.frame])
+        _replace_positions_array(ts, self.coordinate_array[tuple(basic_slice)])
+        _replace_dimensions(ts, self.dimensions_array[self.ts.frame])
         if self.velocity_array is not None:
-            ts._replace_velocities_array(self.velocity_array[tuple(basic_slice)])
+            _replace_velocities_array(ts, self.velocity_array[tuple(basic_slice)])
         if self.force_array is not None:
-            ts._replace_forces_array(self.force_array[tuple(basic_slice)])
+            _replace_forces_array(ts, self.force_array[tuple(basic_slice)])
 
         ts.time = self.ts.frame * self.dt
         return ts

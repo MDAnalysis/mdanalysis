@@ -33,8 +33,6 @@ MDAnalysis.coordinates.XTC: Read and write GROMACS XTC trajectory files.
 MDAnalysis.coordinates.TRR: Read and write GROMACS TRR trajectory files.
 MDAnalysis.lib.formats.libmdaxdr: Low level xdr format reader
 """
-from __future__ import absolute_import
-import six
 
 import errno
 import numpy as np
@@ -82,14 +80,17 @@ def read_numpy_offsets(filename):
         dictionary of offsets information
 
     """
-    return {k: v for k, v in six.iteritems(np.load(filename))}
-
+    try:
+        return {k: v for k, v in np.load(filename).items()}
+    except IOError:
+        warnings.warn("Failed to load offsets file {}\n".format(filename))
+        return False
 
 class XDRBaseReader(base.ReaderBase):
     """Base class for libmdaxdr file formats xtc and trr
 
     This class handles integration of XDR based formats into MDAnalysis. The
-    XTC and TRR classes only implement `write_next_timestep` and
+    XTC and TRR classes only implement `_write_next_frame` and
     `_frame_to_ts`.
 
     .. _offsets-label:
@@ -109,6 +110,9 @@ class XDRBaseReader(base.ReaderBase):
     the offsets will nevertheless be used during the lifetime of the trajectory
     Reader. However, the  next time the trajectory is opened,  the offsets will
     have to be rebuilt again.
+
+    .. versionchanged:: 1.0.0
+       XDR offsets read from trajectory if offsets file read-in fails
 
     """
     def __init__(self, filename, convert_units=True, sub=None,
@@ -160,7 +164,8 @@ class XDRBaseReader(base.ReaderBase):
         self.ts.dt = dt
         self.ts.dimensions = triclinic_box(*frame.box)
         if self.convert_units:
-            self.convert_pos_from_native(self.ts.dimensions[:3])
+            if self.ts.dimensions is not None:
+                self.convert_pos_from_native(self.ts.dimensions[:3])
 
     @classmethod
     def parse_n_atoms(cls, filename, **kwargs):
@@ -181,7 +186,21 @@ class XDRBaseReader(base.ReaderBase):
             self._read_offsets(store=True)
             return
 
+        # if offsets file read correctly, data will be a dictionary of offsets
+        # if not, data will be False
+        # if False, offsets should be read from the trajectory
+        # this warning can be avoided by loading Universe like:
+        # u = mda.Universe(data.TPR, data.XTC, refresh_offsets=True)
+        # refer to Issue #1893
         data = read_numpy_offsets(fname)
+        if not data:
+            warnings.warn("Reading offsets from {} failed, "
+                          "reading offsets from trajectory instead\n"
+                          "Consider setting 'refresh_offsets=True' "
+                          "when loading your Universe".format(fname))
+            self._read_offsets(store=True)
+            return
+
         ctime_ok = size_ok = n_atoms_ok = False
 
         try:

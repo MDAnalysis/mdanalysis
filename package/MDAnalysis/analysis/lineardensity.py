@@ -25,69 +25,85 @@ Linear Density --- :mod:`MDAnalysis.analysis.lineardensity`
 ===========================================================
 
 A tool to compute mass and charge density profiles along the three
-cartesian axes of the simulation cell. Works only for orthorombic,
+cartesian axes [xyz] of the simulation cell. Works only for orthorombic,
 fixed volume cells (thus for simulations in canonical NVT ensemble).
 """
-from __future__ import division, absolute_import
-
 import os.path as path
 
 import numpy as np
 
-from MDAnalysis.analysis.base import AnalysisBase
-from MDAnalysis.lib.util import deprecate
+from MDAnalysis.analysis.base import AnalysisBase, Results
+
 
 class LinearDensity(AnalysisBase):
     """Linear density profile
 
     Parameters
     ----------
-    selection : AtomGroup
+    select : AtomGroup
           any atomgroup
     grouping : str {'atoms', 'residues', 'segments', 'fragments'}
           Density profiles will be computed on the center of geometry
-          of a selected group of atoms ['atoms']
+          of a selected group of atoms
     binsize : float
           Bin width in Angstrom used to build linear density
           histograms. Defines the resolution of the resulting density
-          profile (smaller --> higher resolution) [0.25]
-    start : int
-          The frame to start at [0]
-    stop : int
-          The frame to end at [-1]
-    step : int
-          The step size through the trajectory in frames [0]
-    verbose : bool (optional)
-          Show detailed progress of the calculation if set to ``True``; the
-          default is ``False``.
+          profile (smaller --> higher resolution)
+    verbose : bool, optional
+          Show detailed progress of the calculation if set to ``True``
 
     Attributes
     ----------
-    results : dict
-          Keys 'x', 'y', and 'z' for the three directions. Under these
-          keys, find 'pos', 'pos_std' (mass-weighted density and
-          standard deviation), 'char', 'char_std' (charge density and
-          its standard deviation), 'slice_volume' (volume of bin).
+    results.x.dim : int
+           index of the [xyz] axes
+    results.x.pos : numpy.ndarray
+           mass density in [xyz] direction
+    results.x.pos_std : numpy.ndarray
+           standard deviation of the mass density in [xyz] direction
+    results.x.char : numpy.ndarray
+           charge density in [xyz] direction
+    results.x.char_std : numpy.ndarray
+           standard deviation of the charge density in [xyz] direction
+    results.x.slice_volume : float
+           volume of bin in [xyz] direction
 
     Example
     -------
-    First create a LinearDensity object by supplying a selection,
-    then use the :meth:`run` method::
+    First create a ``LinearDensity`` object by supplying a selection,
+    then use the :meth:`run` method. Finally access the results
+    stored in results, i.e. the mass density in the x direction.
 
-      ldens = LinearDensity(selection)
-      ldens.run()
+    .. code-block:: python
+
+       ldens = LinearDensity(selection)
+       ldens.run()
+       print(ldens.results.x.pos)
 
 
     .. versionadded:: 0.14.0
 
+    .. versionchanged:: 1.0.0
+       Support for the ``start``, ``stop``, and ``step`` keywords has been
+       removed. These should instead be passed to :meth:`LinearDensity.run`.
+       The ``save()`` method was also removed, you can use ``np.savetxt()`` or
+       ``np.save()`` on the :attr:`LinearDensity.results` dictionary contents
+       instead.
+
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
+
+    .. versionchanged:: 2.0.0
+       Results are now instances of
+       :class:`~MDAnalysis.core.analysis.Results` allowing access
+       via key and attribute.
     """
 
-    def __init__(self, selection, grouping='atoms', binsize=0.25, **kwargs):
-        super(LinearDensity, self).__init__(selection.universe.trajectory,
+    def __init__(self, select, grouping='atoms', binsize=0.25, **kwargs):
+        super(LinearDensity, self).__init__(select.universe.trajectory,
                                             **kwargs)
         # allows use of run(parallel=True)
-        self._ags = [selection]
-        self._universe = selection.universe
+        self._ags = [select]
+        self._universe = select.universe
 
         self.binsize = binsize
 
@@ -95,8 +111,10 @@ class LinearDensity(AnalysisBase):
         # AtomGroup.wrap())
         self.grouping = grouping
 
-        # Dictionary containing results
-        self.results = {'x': {'dim': 0}, 'y': {'dim': 1}, 'z': {'dim': 2}}
+        # Initiate result instances
+        self.results["x"] = Results(dim=0)
+        self.results["y"] = Results(dim=1)
+        self.results["z"] = Results(dim=2)
         # Box sides
         self.dimensions = self._universe.dimensions[:3]
         self.volume = np.prod(self.dimensions)
@@ -113,9 +131,9 @@ class LinearDensity(AnalysisBase):
         # Initialize results array with zeros
         for dim in self.results:
             idx = self.results[dim]['dim']
-            self.results[dim].update({'slice volume': slices_vol[idx]})
+            self.results[dim]['slice_volume'] = slices_vol[idx]
             for key in self.keys:
-                self.results[dim].update({key: np.zeros(self.nbins)})
+                self.results[dim][key] = np.zeros(self.nbins)
 
         # Variables later defined in _prepare() method
         self.masses = None
@@ -176,7 +194,7 @@ class LinearDensity(AnalysisBase):
     def _conclude(self):
         k = 6.022e-1  # divide by avodagro and convert from A3 to cm3
 
-        # Average results over the  number of configurations
+        # Average results over the number of configurations
         for dim in ['x', 'y', 'z']:
             for key in ['pos', 'pos_std', 'char', 'char_std']:
                 self.results[dim][key] /= self.n_frames
@@ -187,91 +205,9 @@ class LinearDensity(AnalysisBase):
                 'char_std'] - np.square(self.results[dim]['char']))
 
         for dim in ['x', 'y', 'z']:
-            self.results[dim]['pos'] /= self.results[dim]['slice volume'] * k
-            self.results[dim]['char'] /= self.results[dim]['slice volume'] * k
-            self.results[dim]['pos_std'] /= self.results[dim]['slice volume'] * k
-            self.results[dim]['char_std'] /= self.results[dim]['slice volume'] * k
-
-    @deprecate(release="0.19.0", remove="1.0.0",
-               message="Instead save the :attr:`results` dictionary directly in "
-               "your favorite format (pickle, json, hdf5, ...).")
-    def save(self, description='', form='txt'):
-        """Save density profile to file
-
-        Allows to save the density profile to either a ASCII txt file or a
-        binary numpy npz file. Output file has extension 'ldens' and begins
-        with the name of the trajectory file.
-
-        Parameters
-        ----------
-        description : str
-          An arbitrary description added to the output filename. Can be useful
-        form : str {'txt', 'npz'}
-          Format of the output. 'txt' will generate an ASCII text file while
-          'npz' will produce a numpy binary file.
-
-        Example
-        -------
-        After initializing and running a `LinearDensity` object, results can be
-        written to file as follows::
-
-          ldens.save(description='mydensprof', form='txt')
-
-        which will output the linear density profiles in a file named
-        `<trajectory_filename>.mydensprof_<grouping>.ldens`.
-
-
-        """
-        # Take root of trajectory filename for output file naming
-        trajname = path.splitext(path.basename(
-            self._universe.trajectory.filename))[0]
-        # additional string for naming the output file
-        description = description + "_" + str(self.grouping)
-        filename = trajname + "." + description + ".ldens"
-
-        if form is 'txt':
-            self._savetxt(filename)
-        elif form is 'npz':
-            self._savez(filename)
-        else:
-            raise ValueError('form argument must be either txt or npz')
-
-    def _savetxt(self, filename):
-        # DEPRECATED: remove in 1.0.0
-        bins = np.linspace(0.0, max(self.dimensions), num=self.nbins)
-
-        # Create list of results which will be output
-        output = [bins]
-
-        for dim in ['x', 'y', 'z']:
-            output.append(self.results[dim]['pos'])
-            output.append(self.results[dim]['pos_std'])
-
-        for dim in ['x', 'y', 'z']:
-            output.append(self.results[dim]['char'])
-            output.append(self.results[dim]['char_std'])
-
-        density = self.totalmass / self.volume
-        header = ("1 coord [Ang] 2-7 mass density (x,sx,y,sz,z,sz) [g/cm^3]"
-                  "8-13 charge density (x,sx,y,sz,z,sz) [e/A^3]\n Average "
-                  "density: {} g/cm3".format(density))
-        np.savetxt(filename,
-                   np.column_stack(output),
-                   fmt='%10.5f',
-                   header=header)
-
-    def _savez(self, filename):
-        # DEPRECATED: remove in 1.0.0
-        bins = np.linspace(0.0, max(self.dimensions), num=self.nbins)
-        dictionary = {'bins': bins}
-
-        for dim in self.results:
-            self.results[dim].pop('dim')
-            self.results[dim].pop('slice volume')
-            for key in self.results[dim]:
-                dictionary[dim + "_" + key] = self.results[dim][key]
-
-        np.savez(filename, **dictionary)
+            norm = k * self.results[dim]['slice_volume']
+            for key in self.keys:
+                self.results[dim][key] /= norm
 
     def _add_other_results(self, other):
         # For parallel analysis

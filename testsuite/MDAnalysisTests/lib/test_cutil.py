@@ -20,13 +20,13 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 import pytest
 import numpy as np
 from numpy.testing import assert_equal
 
-from MDAnalysis.lib._cutil import unique_int_1d, find_fragments
+from MDAnalysis.lib._cutil import (
+    unique_int_1d, find_fragments, _in2d,
+)
 
 
 @pytest.mark.parametrize('values', (
@@ -38,7 +38,7 @@ from MDAnalysis.lib._cutil import unique_int_1d, find_fragments
     [1, 2, 2, 6, 4, 4, ],  # duplicates, non-monotonic
 ))
 def test_unique_int_1d(values):
-    array = np.array(values, dtype=np.int64)
+    array = np.array(values, dtype=np.intp)
     ref = np.unique(array)
     res = unique_int_1d(array)
     assert_equal(res, ref)
@@ -64,3 +64,24 @@ def test_find_fragments(edges, ref):
     assert len(fragments) == len(ref)
     for frag, r in zip(fragments, ref):
         assert_equal(frag, r)
+
+
+def test_in2d():
+    arr1 = np.array([[1, 2], [3, 4], [5, 6]], dtype=np.intp)
+    arr2 = np.array([[3, 4], [2, 1], [5, 5], [6, 6]], dtype=np.intp)
+
+    result = _in2d(arr1, arr2)
+
+    assert_equal(result, np.array([False, True, False]))
+
+
+@pytest.mark.parametrize('arr1,arr2', [
+    (np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=np.intp),
+     np.array([[1, 2], [3, 4]], dtype=np.intp)),
+    (np.array([[1, 2], [3, 4]], dtype=np.intp),
+     np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=np.intp)),
+])
+def test_in2d_VE(arr1, arr2):
+    with pytest.raises(ValueError,
+                       match=r'Both arrays must be \(n, 2\) arrays'):
+        _in2d(arr1, arr2)

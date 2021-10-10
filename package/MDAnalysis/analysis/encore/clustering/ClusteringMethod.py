@@ -33,8 +33,6 @@ others are available only if scikit-learn is installed
 .. versionadded:: 0.16.0
 
 """
-from __future__ import absolute_import
-
 import numpy as np
 import warnings
 import logging
@@ -84,10 +82,11 @@ class ClusteringMethod (object):
             encore.utils.TriangularMatrix, encoding the conformational
             distance matrix
 
-        Returns
-        -------
-        numpy.array
-            list of cluster indices
+        Raises
+        ------
+        NotImplementedError
+           Method or behavior needs to be defined by a subclass    
+        
         """
         raise NotImplementedError("Class {0} doesn't implement __call__()"
                                   .format(self.__class__.__name__))
@@ -146,8 +145,11 @@ class AffinityPropagationNative(ClusteringMethod):
 
         Returns
         -------
-        numpy.array
-            list of cluster indices
+        numpy.array : array, shape(n_elements) 
+            centroid frames of the clusters for all of the elements
+
+        .. versionchanged:: 1.0.0
+           This method no longer returns ``details``
         """
         clusters = affinityprop.AffinityPropagation(
             s=distance_matrix * -1.,   # invert sign
@@ -156,9 +158,8 @@ class AffinityPropagationNative(ClusteringMethod):
             max_iterations = self.max_iter,
             convergence = self.convergence_iter,
             noise=int(self.add_noise))
-        details = {}
-        return clusters, details
-
+        
+        return clusters
 if sklearn:
 
     class AffinityPropagation(ClusteringMethod):
@@ -194,6 +195,9 @@ if sklearn:
                 (default is 50). Parameter in the Affinity Propagation for
                 clustering.
 
+            **kwargs : optional
+                Other keyword arguments are passed to :class:`sklearn.cluster.AffinityPropagation`.
+
             """
             self.ap = \
                 sklearn.cluster.AffinityPropagation(
@@ -214,9 +218,11 @@ if sklearn:
 
             Returns
             -------
-            numpy.array
-                list of cluster indices
+            numpy.array : array, shape(n_elements) 
+                centroid frames of the clusters for all of the elements
 
+            .. versionchanged:: 1.0.0
+               This method no longer returns ``details``
             """
             logging.info("Starting Affinity Propagation: {0}".format
                          (self.ap.get_params()))
@@ -226,8 +232,9 @@ if sklearn:
             clusters = self.ap.fit_predict(similarity_matrix)
             clusters = encode_centroid_info(clusters,
                                             self.ap.cluster_centers_indices_)
-            details = {}
-            return clusters, details
+            
+            return clusters
+
 
 
     class DBSCAN(ClusteringMethod):
@@ -290,9 +297,11 @@ if sklearn:
 
             Returns
             -------
-            numpy.array
-                list of cluster indices
+            numpy.array : array, shape(n_elements) 
+                centroid frames of the clusters for all of the elements
 
+            .. versionchanged:: 1.0.0
+               This method no longer returns ``details``
             """
             logging.info("Starting DBSCAN: {0}".format(
                 self.dbscan.get_params()))
@@ -304,8 +313,8 @@ if sklearn:
             cluster_representatives = np.unique(clusters, return_index=True)[1]
             clusters = encode_centroid_info(clusters,
                                             cluster_representatives)
-            details = {}
-            return clusters, details
+          
+            return clusters
 
     class KMeans(ClusteringMethod):
 
@@ -317,15 +326,14 @@ if sklearn:
         """
         def __init__(self,
                      n_clusters,
-                     max_iter = 300,
-                     n_init = 10,
-                     init = 'k-means++',
+                     max_iter=300,
+                     n_init=10,
+                     init='k-means++',
                      algorithm="auto",
-                     tol = 1e-4,
+                     tol=1e-4,
                      verbose=False,
                      random_state=None,
                      copy_x=True,
-                     n_jobs=1,
                      **kwargs):
             """
             Parameters
@@ -352,15 +360,7 @@ if sklearn:
                 If an ndarray is passed, it should be of shape
                 (n_clusters, n_features) and gives the initial centers.
                 If a callable is passed, it should take arguments X, k and
-                and a ranndom state and return an initialization.
-
-            precompute_distances : {'auto', True, False}
-                Precompute distances (faster but takes more memory).
-                'auto' : do not precompute distances if
-                n_samples * n_clusters > 12 million. This corresponds to about
-                100MB overhead per job using double precision.
-                True : always precompute distances
-                False : never precompute distances
+                and a random state and return an initialization.
 
             tol : float, optional (default 1e-4)
                 The relative increment in the results before declaring
@@ -382,25 +382,15 @@ if sklearn:
                 differences may be introduced by subtracting and then adding
                 the data mean.
 
-            n_jobs : int
-                The number of jobs to use for the computation. This works by
-                computing each of the n_init runs in parallel. If -1 all CPUs
-                are used. If 1 is given, no parallel computing code is used at
-                all, which is useful for debugging. For n_jobs below -1,
-                (n_cpus + 1 + n_jobs) are used. Thus for n_jobs = -2, all CPUs
-                but one are used.
-
             """
-            self.kmeans = sklearn.cluster.KMeans(n_clusters = n_clusters,
-                                                 max_iter = max_iter,
-                                                 n_init = n_init,
-                                                 init = init,
-                                                 precompute_distances='auto',
-                                                 tol = tol,
+            self.kmeans = sklearn.cluster.KMeans(n_clusters=n_clusters,
+                                                 max_iter=max_iter,
+                                                 n_init=n_init,
+                                                 init=init,
+                                                 tol=tol,
                                                  verbose=verbose,
                                                  random_state=random_state,
                                                  copy_x=copy_x,
-                                                 n_jobs=n_jobs,
                                                  **kwargs)
 
         def __call__(self, coordinates):
@@ -414,8 +404,11 @@ if sklearn:
 
             Returns
             -------
-            numpy.array
-                list of cluster indices
+            numpy.array : array, shape(n_elements) 
+                centroid frames of the clusters for all of the elements
+
+            .. versionchanged:: 1.0.0
+               This method no longer returns ``details``
             """
             logging.info("Starting Kmeans: {0}".format(
                          (self.kmeans.get_params())))
@@ -424,5 +417,5 @@ if sklearn:
             cluster_center_indices = np.argmin(distances, axis=0)
             clusters = encode_centroid_info(clusters,
                                              cluster_center_indices)
-            details = {}
-            return clusters, details
+            
+            return clusters

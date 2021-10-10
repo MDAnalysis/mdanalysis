@@ -55,8 +55,6 @@ Classes
 .. _AutoDock:
    http://autodock.scripps.edu/
 """
-from __future__ import absolute_import
-
 import numpy as np
 
 from . import guessers
@@ -69,6 +67,7 @@ from ..core.topologyattrs import (
     AltLocs,
     Atomtypes,
     Charges,
+    ICodes,
     Masses,
     Occupancies,
     RecordTypes,
@@ -172,6 +171,7 @@ class PDBQTParser(TopologyReaderBase):
         n_residues = len(resids)
         attrs.append(Resids(resids))
         attrs.append(Resnums(resids.copy()))
+        attrs.append(ICodes(icodes))
         attrs.append(Resnames(resnames))
 
         segidx, (segids,) = change_squash((chainids,), (chainids,))

@@ -119,15 +119,14 @@ Classes
 .. autoclass:: DATAWriter
    :members:
    :inherited-members:
+.. autoclass:: DumpReader
+   :members:
+   :inherited-members:
 
 """
-from __future__ import absolute_import
-
-from six.moves import zip, range, map
 import os
 import numpy as np
 
-from ..core import flags
 from ..core.groups import requires
 from ..lib import util, mdamath, distances
 from ..lib.util import cached
@@ -161,7 +160,8 @@ class DCDWriter(DCD.DCDWriter):
                 if units.unit_types[unit] != unit_type:
                     raise TypeError("LAMMPS DCDWriter: wrong unit {0!r} for unit type {1!r}".format(unit, unit_type))
             except KeyError:
-                raise ValueError("LAMMPS DCDWriter: unknown unit {0!r}".format(unit))
+                errmsg = f"LAMMPS DCDWriter: unknown unit {unit}"
+                raise ValueError(errmsg) from None
         super(DCDWriter, self).__init__(*args, **kwargs)
 
 
@@ -251,18 +251,18 @@ class DATAWriter(base.WriterBase):
     """
     format = 'DATA'
 
-    def __init__(self, filename, convert_units=None, **kwargs):
+    def __init__(self, filename, convert_units=True, **kwargs):
         """Set up a DATAWriter
 
         Parameters
         ----------
         filename : str
             output filename
+        convert_units : bool, optional
+            units are converted to the MDAnalysis base format; [``True``]
         """
         self.filename = util.filename(filename, ext='data')
 
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         self.convert_units = convert_units
 
         self.units = {'time': 'fs', 'length': 'Angstrom'}
@@ -341,9 +341,9 @@ class DATAWriter(base.WriterBase):
                 self.f.write('{:d} {:d} '.format(i, int(bond.type))+\
                         ' '.join((bond.atoms.indices + 1).astype(str))+'\n')
             except TypeError:
-                raise TypeError('LAMMPS DATAWriter: Trying to write bond, '
-                                'but bond type {} is not '
-                                'numerical.'.format(bond.type))
+                errmsg = (f"LAMMPS DATAWriter: Trying to write bond, but bond "
+                          f"type {bond.type} is not numerical.")
+                raise TypeError(errmsg) from None
 
     def _write_dimensions(self, dimensions):
         """Convert dimensions to triclinic vectors, convert lengths to native
@@ -402,8 +402,9 @@ class DATAWriter(base.WriterBase):
         try:
             atoms.types.astype(np.int32)
         except ValueError:
-            raise ValueError('LAMMPS.DATAWriter: atom types must be '+
-                    'convertible to integers')
+            errmsg = ("LAMMPS.DATAWriter: atom types must be convertible to "
+                      "integers")
+            raise ValueError(errmsg) from None
 
         try:
             velocities = atoms.velocities
@@ -422,25 +423,18 @@ class DATAWriter(base.WriterBase):
                 ('dihedral', 'dihedrals'), ('improper', 'impropers')]
 
             for btype, attr_name in attrs:
-                try:
-                    features[btype] = atoms.__getattribute__(attr_name)
-                    self.f.write('{:>12d}  {}\n'.format(len(features[btype]),
-                                 attr_name))
-                    features[btype] = features[btype].atomgroup_intersection(
-                                      atoms, strict=True)
-                except AttributeError:
-                    features[btype] = None
-                    self.f.write('{:>12d}  {}\n'.format(0, attr_name))
+                features[btype] = atoms.__getattribute__(attr_name)
+                self.f.write('{:>12d}  {}\n'.format(len(features[btype]),
+                                                    attr_name))
+                features[btype] = features[btype].atomgroup_intersection(
+                                    atoms, strict=True)
 
             self.f.write('\n')
             self.f.write('{:>12d}  atom types\n'.format(max(atoms.types.astype(np.int32))))
 
             for btype, attr in features.items():
-                if attr is None:
-                    self.f.write('{:>12d}  {} types\n'.format(0, btype))
-                else:
-                    self.f.write('{:>12d}  {} types\n'.format(len(attr.types()),
-                                                              btype))
+                self.f.write('{:>12d}  {} types\n'.format(len(attr.types()),
+                                                          btype))
 
             self._write_dimensions(atoms.dimensions)
 
@@ -458,19 +452,46 @@ class DATAWriter(base.WriterBase):
 class DumpReader(base.ReaderBase):
     """Reads the default `LAMMPS dump format`_
 
-    Expects trajectories produced by the default 'atom' style dump.
+    Supports coordinates in the LAMMPS "unscaled" (x,y,z), "scaled" (xs,ys,zs),
+    "unwrapped" (xu,yu,zu) and "scaled_unwrapped" (xsu,ysu,zsu) coordinate
+    conventions (see https://docs.lammps.org/dump.html for more details).
+    If `lammps_coordinate_convention='auto'` (default),
+    one will be guessed. Guessing checks whether the coordinates fit each convention in the order "unscaled",
+    "scaled", "unwrapped", "scaled_unwrapped" and whichever set of coordinates
+    is detected first will be used. If coordinates are given in the scaled
+    coordinate convention (xs,ys,zs) or scaled unwrapped coordinate convention
+    (xsu,ysu,zsu) they will automatically be converted from their
+    scaled/fractional representation to their real values.
 
-    Will automatically convert positions from their scaled/fractional
-    representation to their real values.
 
+    .. versionchanged:: 2.0.0
+       Now parses coordinates in multiple lammps conventions (x,xs,xu,xsu)
     .. versionadded:: 0.19.0
     """
     format = 'LAMMPSDUMP'
+    _conventions = ["auto", "unscaled", "scaled", "unwrapped",
+                    "scaled_unwrapped"]
+    _coordtype_column_names = {
+        "unscaled": ["x", "y", "z"],
+        "scaled": ["xs", "ys", "zs"],
+        "unwrapped": ["xu", "yu", "zu"],
+        "scaled_unwrapped": ["xsu", "ysu", "zsu"]
+    }
 
-    def __init__(self, filename, **kwargs):
+    def __init__(self, filename, lammps_coordinate_convention="auto",
+                 **kwargs):
         super(DumpReader, self).__init__(filename, **kwargs)
 
         root, ext = os.path.splitext(self.filename)
+        if lammps_coordinate_convention in self._conventions:
+            self.lammps_coordinate_convention = lammps_coordinate_convention
+        else:
+            option_string = "'" + "', '".join(self._conventions) + "'"
+            raise ValueError("lammps_coordinate_convention="
+                             f"'{lammps_coordinate_convention}'"
+                             " is not a valid option. "
+                             f"Please choose one of {option_string}")
+
         self._cache = {}
 
         self._reopen()
@@ -527,15 +548,15 @@ class DumpReader(base.ReaderBase):
         if ts.frame >= len(self):
             raise EOFError
 
-        f.readline() # ITEM TIMESTEP
+        f.readline()  # ITEM TIMESTEP
         step_num = int(f.readline())
         ts.data['step'] = step_num
 
-        f.readline() # ITEM NUMBER OF ATOMS
+        f.readline()  # ITEM NUMBER OF ATOMS
         n_atoms = int(f.readline())
         if n_atoms != self.n_atoms:
             raise ValueError("Number of atoms in trajectory changed "
-                             "this is not suported in MDAnalysis")
+                             "this is not supported in MDAnalysis")
 
         triclinic = len(f.readline().split()) == 9  # ITEM BOX BOUNDS
         if triclinic:
@@ -561,16 +582,42 @@ class DumpReader(base.ReaderBase):
 
         indices = np.zeros(self.n_atoms, dtype=int)
 
-        f.readline()  # ITEM ATOMS etc
-        for i in range(self.n_atoms):
-            idx, _, xs, ys, zs = f.readline().split()
+        atomline = f.readline()  # ITEM ATOMS etc
+        attrs = atomline.split()[2:]  # attributes on coordinate line
+        attr_to_col_ix = {x: i for i, x in enumerate(attrs)}
+        convention_to_col_ix = {}
+        for cv_name, cv_col_names in self._coordtype_column_names.items():
+            try:
+                convention_to_col_ix[cv_name] = [attr_to_col_ix[x] for x in cv_col_names]
+            except KeyError:
+                pass
+        # this should only trigger on first read of "ATOM" card, after which it
+        # is fixed to the guessed value. Auto proceeds unscaled -> scaled
+        # -> unwrapped -> scaled_unwrapped
+        if self.lammps_coordinate_convention == "auto":
+            try:
+                # this will automatically select in order of priority
+                # unscaled, scaled, unwrapped, scaled_unwrapped
+                self.lammps_coordinate_convention = list(convention_to_col_ix)[0]
+            except IndexError:
+                raise ValueError("No coordinate information detected")
+        elif not self.lammps_coordinate_convention in convention_to_col_ix:
+            raise ValueError(f"No coordinates following convention {self.lammps_coordinate_convention} found in timestep")
 
-            indices[i] = idx
-            ts.positions[i] = xs, ys, zs
+        coord_cols = convention_to_col_ix[self.lammps_coordinate_convention]
+
+        ids = "id" in attr_to_col_ix
+        for i in range(self.n_atoms):
+            fields = f.readline().split()
+            if ids:
+                indices[i] = fields[attr_to_col_ix["id"]]
+            ts.positions[i] = [fields[dim] for dim in coord_cols]
 
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
-        # by default coordinates are given in scaled format, undo that
-        ts.positions = distances.transform_StoR(ts.positions, ts.dimensions)
+        if (self.lammps_coordinate_convention.startswith("scaled")):
+            # if coordinates are given in scaled format, undo that
+            ts.positions = distances.transform_StoR(ts.positions,
+                                                    ts.dimensions)
 
         return ts

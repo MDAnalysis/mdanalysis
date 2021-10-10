@@ -32,34 +32,13 @@ coordinate files (as used by the Desmond_ MD package).
 .. _Desmond: http://www.deshawresearch.com/resources_desmond.html
 .. _DMS: http://www.deshawresearch.com/Desmond_Users_Guide-0.7.pdf
 """
-from __future__ import absolute_import
-
 import numpy as np
 import sqlite3
 
 from . import base
-from .core import triclinic_box, triclinic_vectors
+from .core import triclinic_box
 
-
-class Timestep(base.Timestep):
-    def _init_unitcell(self):
-        return {'x': np.zeros(3),
-                'y': np.zeros(3),
-                'z': np.zeros(3)}
-
-    @property
-    def dimensions(self):
-        """unitcell dimensions (A, B, C, alpha, beta, gamma)"""
-        x = self._unitcell['x']
-        y = self._unitcell['y']
-        z = self._unitcell['z']
-        return triclinic_box(x, y, z)
-
-    @dimensions.setter
-    def dimensions(self, box):
-        x, y, z = triclinic_vectors(box)
-        cell = {'x': x, 'y': y, 'z': z}
-        self._unitcell = cell
+from .base import Timestep
 
 
 class DMSReader(base.SingleFrameReaderBase):
@@ -71,7 +50,6 @@ class DMSReader(base.SingleFrameReaderBase):
     """
     format = 'DMS'
     units = {'time': None, 'length': 'A', 'velocity': 'A/ps'}
-    _Timestep = Timestep
 
     def get_coordinates(self, cur):
         cur.execute('SELECT * FROM particle')
@@ -126,10 +104,12 @@ class DMSReader(base.SingleFrameReaderBase):
             **self._ts_kwargs)
         self.ts.frame = 0  # 0-based frame number
 
-        self.ts._unitcell = unitcell
+        self.ts.dimensions = triclinic_box(unitcell['x'], unitcell['y'], unitcell['z'])
+
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
-            self.convert_pos_from_native(self.ts._unitcell)  # in-place ! (all are lengths)
+            if self.ts.dimensions is not None:
+                self.convert_pos_from_native(self.ts.dimensions[:3])  # in-place !
             if self.ts.has_velocities:
                 # converts nm/ps to A/ps units
                 self.convert_velocities_from_native(self.ts._velocities)

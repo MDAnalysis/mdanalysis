@@ -34,9 +34,6 @@ See Also
 
 """
 
-from __future__ import print_function, absolute_import
-import six
-
 # Global imports
 import os.path
 import numpy as np

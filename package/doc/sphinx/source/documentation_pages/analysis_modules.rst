@@ -5,42 +5,60 @@ Analysis modules
 ****************
 
 The :mod:`MDAnalysis.analysis` module contains code to carry out specific
-analysis functionality. It is based on the core functionality (i.e. trajectory
+analysis functionality for MD trajectories. 
+It is based on the core functionality (i.e. trajectory
 I/O, selections etc). The analysis modules can be used as examples for how to
 use MDAnalysis but also as working code for research projects; typically all
 contributed code has been used by the authors in their own work.
+An analysis using the available modules
+usually follows the same structure
 
-Please see the individual module documentation for additional references and
-citation information.
+#. Import the desired module, since analysis modules are not imported 
+   by default.
+#. Initialize the module previously imported.
+#. Run the analysis, optionally for specific trajectory slices
+#. Access the analysis from the `results` attribute
 
-These modules are not imported by default; in order to use them one has to
-import them from :mod:`MDAnalysis.analysis`, for instance ::
+.. code-block:: python
 
-    import MDAnalysis.analysis.align
+   from MDAnalysis.analysis import ExampleAnalysisModule  # (e.g. RMSD)
+
+   analysis_obj = ExampleAnalysisModule(universe, ...)
+   analysis_obj.run(start_frame, stop_frame, step)
+   print(analysis_obj.results)
+
+
+Please see the individual module documentation for any specific caveats 
+and also read and cite the reference papers associated with these algorithms.
 
 .. rubric:: Additional dependencies
 
 Some of the modules in :mod:`MDAnalysis.analysis` require additional Python
 packages to enable full functionality. For example,
 :mod:`MDAnalysis.analysis.encore` provides more options if `scikit-learn`_ is
-installed. These package are *not automatically installed* with
-:program:`pip`(although one can add the ``[analysis]`` requirement to the
-:program:`pip` command line to force their installation). If you install
-MDAnalysis with :program:`conda` (see :ref:`installation-instructions`) then a
+installed. If you installed MDAnalysis with
+:program:`pip` (see :ref:`installation-instructions`) 
+these packages are *not automatically installed*. 
+Although, one can add the ``[analysis]`` tag to the
+:program:`pip` command to force their installation. If you installed
+MDAnalysis with :program:`conda` then a
 *full set of dependencies* is automatically installed.
 
 Other modules require external programs. For instance, the
-:mod:`MDAnalysis.analysis.hole` module requires an installation of the HOLE_
-suite of programs. You will need to install these external dependencies by
-following their installation instructions before you can use the corresponding
-MDAnalysis module.
+:mod:`MDAnalysis.analysis.hole2.hole` module requires an installation of the
+HOLE_ suite of programs. You will need to install these external dependencies
+by following their installation instructions before you can use the
+corresponding MDAnalysis module.
 
 .. _scikit-learn: http://scikit-learn.org/
 .. _HOLE: http://www.holeprogram.org/
 
-
 Building blocks for Analysis
 ============================
+
+The building block for the analysis modules is
+:class:`MDAnalysis.analysis.base.AnalysisBase`.
+To build your own analysis class start by reading the documentation.
 
 .. toctree::
    :maxdepth: 1
@@ -59,6 +77,7 @@ Distances and contacts
    analysis/rms
    analysis/psa
    analysis/encore
+   analysis/bat
 
 Hydrogen bonding
 ================
@@ -66,9 +85,16 @@ Hydrogen bonding
 .. toctree::
    :maxdepth: 1
 
-   analysis/hbond_analysis
+   analysis/hydrogenbonds
    analysis/hbond_autocorrel
    analysis/wbridge_analysis
+
+Deprecated modules:
+
+.. toctree::
+   :maxdepth: 1
+
+   analysis/hbond_autocorrel_deprecated	      
 
 Membranes and membrane proteins
 ===============================
@@ -76,7 +102,7 @@ Membranes and membrane proteins
 .. toctree::
    :maxdepth: 1
 
-   analysis/hole
+   analysis/hole2
    analysis/leaflet
 
 Nucleic acids
@@ -99,14 +125,24 @@ Polymers
 Structure
 =========
 
+Macromolecules
+--------------
+
 .. toctree::
    :maxdepth: 1
 
    analysis/gnm
-   analysis/helanal
-   analysis/rdf
+   analysis/helix_analysis
    analysis/dihedrals
 
+Liquids
+-------
+
+.. toctree::
+   :maxdepth: 1
+
+   analysis/rdf
+   analysis/msd
 
 Volumetric analysis
 ===================

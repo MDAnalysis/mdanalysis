@@ -54,7 +54,7 @@ extensions to the MAJOR.MINOR.PATCH format.
 
 .. _`semantic versioning`: http://semver.org/
 .. _`versioning of MDAnalysis`:
-   http://wiki.mdanalysis.org/SemanticVersioning
+   https://github.com/MDAnalysis/mdanalysis/wiki/SemanticVersioning
 
 Data
 ----
@@ -67,4 +67,4 @@ Data
 # e.g. with lib.log
 
 #: Release of MDAnalysis as a string, using `semantic versioning`_.
-__version__ = "0.19.3-dev"  # NOTE: keep in sync with RELEASE in setup.py
+__version__ = "2.1.0-dev0"  # NOTE: keep in sync with RELEASE in setup.py

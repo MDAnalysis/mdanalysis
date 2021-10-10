@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 import pytest
 from numpy.testing import assert_equal
 import functools
@@ -33,19 +31,42 @@ from MDAnalysis.tests.datafiles import (
     TPR400, TPR402, TPR403, TPR404, TPR405, TPR406, TPR407,
     TPR450, TPR451, TPR452, TPR453, TPR454, TPR455, TPR455Double,
     TPR460, TPR461, TPR502, TPR504, TPR505, TPR510, TPR510_bonded,
-    TPR2016, TPR2018, TPR2019B3, TPR2016_bonded, TPR2018_bonded,
-    TPR2019B3_bonded,
+    TPR2016, TPR2018, TPR2019B3, TPR2020B2, TPR2020, TPR2020Double,
+    TPR2021, TPR2021Double,
+    TPR2016_bonded, TPR2018_bonded, TPR2019B3_bonded,
+    TPR2020B2_bonded, TPR2020_bonded, TPR2020_double_bonded,
+    TPR2021_bonded, TPR2021_double_bonded, TPR334_bonded,
+    TPR_EXTRA_2021, TPR_EXTRA_2020, TPR_EXTRA_2018,
+    TPR_EXTRA_2016, TPR_EXTRA_407,
+    XTC,
 )
 from MDAnalysisTests.topology.base import ParserBase
 import MDAnalysis.topology.TPRParser
+import MDAnalysis as mda
+
+BONDED_TPRS = (
+    TPR510_bonded,
+    TPR2016_bonded,
+    TPR2018_bonded,
+    TPR2019B3_bonded,
+    TPR2021_bonded,
+    TPR2021_double_bonded,
+    TPR2020_bonded,
+    TPR2020_double_bonded,
+    TPR_EXTRA_2021,
+    TPR_EXTRA_2020,
+    TPR_EXTRA_2018,
+    TPR_EXTRA_2016,
+    TPR_EXTRA_407,
+)
 
 
 class TPRAttrs(ParserBase):
     parser = MDAnalysis.topology.TPRParser.TPRParser
-    expected_attrs = ['ids', 'names',
+    expected_attrs = ['ids', 'names', 'elements',
                       'resids', 'resnames',
-                      'moltypes', 'molnums']
-    guessed_attrs = ['elements']
+                      'moltypes', 'molnums', 'charges',
+                      'bonds', 'angles', 'dihedrals', 'impropers']
 
     def test_moltypes(self, top):
         moltypes = top.moltypes.values
@@ -54,7 +75,7 @@ class TPRAttrs(ParserBase):
     def test_molnums(self, top):
         molnums = top.molnums.values
         assert_equal(molnums, self.ref_molnums)
-        assert molnums.dtype == np.int64
+        assert molnums.dtype == np.intp
 
 
 class TestTPR(TPRAttrs):
@@ -86,7 +107,8 @@ class TestTPRGromacsVersions(TPRAttrs):
     @pytest.fixture(params=[TPR400, TPR402, TPR403, TPR404, TPR405, TPR406,
                             TPR407, TPR450, TPR451, TPR452, TPR453, TPR454,
                             TPR455, TPR502, TPR504, TPR505, TPR510, TPR2016,
-                            TPR2018, TPR2019B3])
+                            TPR2018, TPR2019B3, TPR2020, TPR2020Double,
+                            TPR2021, TPR2021Double])
     def filename(self, request):
         return request.param
 
@@ -127,6 +149,12 @@ def _test_is_in_topology(name, elements, topology_path, topology_section):
     """
     Test if an interaction appears as expected in the topology
     """
+    post_40_potentials = {
+        'RESTRAINTPOT', 'RESTRANGLES', 'RESTRDIHS', 'CBTDIHS', 'PIDIHS',
+    }
+    if name in post_40_potentials and topology_path == TPR_EXTRA_407:
+        # The potential is not yet implemented in this version of gromacs
+        return
     parser = MDAnalysis.topology.TPRParser.TPRParser(topology_path)
     top = parser.parse()
     for element in elements:
@@ -134,12 +162,7 @@ def _test_is_in_topology(name, elements, topology_path, topology_section):
             'Interaction type "{}" not found'.format(name)
 
 
-@pytest.mark.parametrize('topology', (
-        TPR510_bonded,
-        TPR2016_bonded,
-        TPR2018_bonded,
-        TPR2019B3_bonded,
-))
+@pytest.mark.parametrize('topology', BONDED_TPRS)
 @pytest.mark.parametrize('bond', (
         ('BONDS', [(0, 1)]),
         ('G96BONDS', [(1, 2)]),
@@ -162,10 +185,7 @@ def test_all_bonds(topology, bond):
     bond_type_in_topology(bond_type, elements, topology)
 
 
-@pytest.mark.parametrize('topology', (
-    TPR510_bonded,
-    TPR2016_bonded
-))
+@pytest.mark.parametrize('topology', BONDED_TPRS)
 @pytest.mark.parametrize('angle', (
     ('ANGLES', [(0, 1, 2)]),
     ('G96ANGLES', [(1, 2, 3)]),
@@ -183,10 +203,7 @@ def test_all_angles(topology, angle):
     angle_type_in_topology(angle_type, elements, topology)
 
 
-@pytest.mark.parametrize('topology', (
-    TPR510_bonded,
-    TPR2016_bonded
-))
+@pytest.mark.parametrize('topology', BONDED_TPRS)
 @pytest.mark.parametrize('dih', (
         ('PDIHS', [(0, 1, 2, 3), (1, 2, 3, 4), (7, 8, 9, 10)]),
         ('RBDIHS', [(4, 5, 6, 7)]),
@@ -202,10 +219,7 @@ def test_all_dihedrals(topology, dih):
     dih_type_in_topology(dih_type, elements, topology)
 
 
-@pytest.mark.parametrize('topology', (
-    TPR510_bonded,
-    TPR2016_bonded
-))
+@pytest.mark.parametrize('topology', BONDED_TPRS)
 @pytest.mark.parametrize('impr', (
     ('IDIHS', [(2, 3, 4, 5), (3, 4, 5, 6)]),
     ('PIDIHS', [(5, 6, 7, 8)])
@@ -239,3 +253,56 @@ def test_settle(bonds_water):
     assert len(bonds_water) == 202
     # The last index corresponds to the last water atom
     assert bonds_water[-1][1] == 2262
+
+
+@pytest.mark.parametrize('tpr_path, expected_exception', (
+    (TPR2020B2, IOError),  # Gromacs 2020 beta see issue #2428
+    (TPR2020B2_bonded, IOError),  # Gromacs 2020 beta see issue #2428
+    (TPR334_bonded, NotImplementedError),  # Too old
+    (XTC, IOError),  # Not a TPR file
+))
+def test_fail_for_unsupported_files(tpr_path, expected_exception):
+    parser = MDAnalysis.topology.TPRParser.TPRParser(tpr_path)
+    with pytest.raises(expected_exception):
+        parser.parse()
+
+
+@pytest.mark.parametrize('tpr_path', BONDED_TPRS)
+def test_no_elements(tpr_path):
+    """
+    If the TPR does not contain element information, the element topology
+    attribute is not defined.
+    """
+    parser = MDAnalysis.topology.TPRParser.TPRParser(tpr_path)
+    topology = parser.parse()
+    with pytest.raises(AttributeError):
+        _ = topology.elements
+
+
+def test_elements():
+    tpr_path = TPR
+    parser = MDAnalysis.topology.TPRParser.TPRParser(tpr_path)
+    topology = parser.parse()
+    reference = np.array((
+         'H,C,H,H,C,H,H,H,C,H,H,H,C,O,N,H,C,H,C,H,H,C,H,C,H,H,H,C,H,H,'
+         'H,C,O,N,H,C,H,H,C,O,O,O,H,H,,O,H,H,,O,H,H,,O,H,H,,O,H,H,,O,H'
+         ',H,,O,H,H,,O,H,H,,O,H,H,,O,H,H,,O,H,H,,O,H,H,,O,H,H,,O,H,H,,'
+         'O,H,H'
+    ).split(','), dtype=object)
+    assert_equal(topology.elements.values[3300:3400], reference)
+    reference = np.array([
+        'O', 'H', 'H', '', 'O', 'H', 'H', '', 'O', 'H', 'H', '', 'O', 'H',
+        'H', '', 'Na', 'Na', 'Na', 'Na',
+    ], dtype=object)
+    assert_equal(topology.elements.values[-20:], reference)
+
+
+@pytest.mark.parametrize("resid_from_one,resid_addition", [
+    (False, 0),
+    (True, 1),  # status quo for 2.x
+    ])
+def test_resids(resid_from_one, resid_addition):
+    u = mda.Universe(TPR, tpr_resid_from_one=resid_from_one)
+    resids = np.arange(len(u.residues)) + resid_addition
+    assert_equal(u.residues.resids, resids,
+                 err_msg="tpr_resid_from_one kwarg not switching resids")

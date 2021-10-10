@@ -14,9 +14,11 @@
 import sys
 import os
 import platform
-
-# http://alabaster.readthedocs.io/en/latest/
-import alabaster
+import datetime
+import MDAnalysis as mda
+import msmb_theme  # for little versions pop-up
+# https://sphinx-rtd-theme.readthedocs.io/en/stable/
+import sphinx_rtd_theme
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -37,16 +39,18 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx',
               'sphinx.ext.mathjax', 'sphinx.ext.viewcode',
               'sphinx.ext.napoleon', 'sphinx.ext.todo',
               'sphinx_sitemap',
-              'alabaster']
+              'sphinx_rtd_theme']
 
 mathjax_path = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
 
 # for sitemap with https://github.com/jdillard/sphinx-sitemap
-# NOTE: This sitemap is only correct for the DEVELOPMENT doccs. The RELEASE docs
-#       are served from https://www.mdanalysis.org/docs/ and the sitemap.xml
-#       is manually fixed when deploying the release docs with the
-#       maintainer/deploy_master_docs.sh script
-site_url = "https://www.mdanalysis.org/mdanalysis/"
+# This sitemap is correct both for the development and release docs, which
+# are both served from docs.mdanalysis.org/$version .
+# The docs used to be available automatically at mdanalysis.org/mdanalysis;
+# they are now at docs.mdanalysis.org/, which requires a CNAME DNS record
+# pointing to mdanalysis.github.io. To change this URL you should change/delete
+# the CNAME record for "docs" and update the URL in GitHub settings
+site_url = "https://docs.mdanalysis.org/"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -65,10 +69,11 @@ master_doc = 'index'
 # (take the list from AUTHORS)
 # Ordering: (1) Naveen (2) Elizabeth, then all contributors in alphabetical order
 #           (last) Oliver
-author_list = __import__('MDAnalysis').__authors__
+author_list = mda.__authors__
 authors = u', '.join(author_list[:-1]) + u', and ' + author_list[-1]
 project = u'MDAnalysis'
-copyright = u'2005-2017, ' + authors
+now = datetime.datetime.now()
+copyright = u'2005-{}, '.format(now.year) + authors
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -77,7 +82,8 @@ copyright = u'2005-2017, ' + authors
 # Dynamically calculate the version
 packageversion = __import__('MDAnalysis').__version__
 # The short X.Y version.
-version = '.'.join(packageversion.split('.')[:2])
+# version = '.'.join(packageversion.split('.')[:2])
+version = packageversion  # needed for right sitemap.xml URLs
 # The full version, including alpha/beta/rc tags.
 release = packageversion
 
@@ -110,25 +116,25 @@ exclude_patterns = []
 #show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = 'default'
 
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
 
-#to include decorated objects like __init__
+# to include decorated objects like __init__
 autoclass_content = 'both'
 
 # -- Options for HTML output ---------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'alabaster'
+html_theme = 'msmb_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# styles/fonts to match http://mdanalysis.org (see public/css)
+# styles/fonts to match https://userguide.mdanalysis.org
 #
 # /* MDAnalysis orange: #FF9200 */
 # /* MDAnalysis gray: #808080 */
@@ -138,37 +144,32 @@ html_theme = 'alabaster'
 color = {'orange': '#FF9200',
          'gray': '#808080',
          'white': '#FFFFFF',
-         'black': '#000000',}
+         'black': '#000000', }
 
 html_theme_options = {
-    'logo' : "logos/mdanalysis-logo-200x150.png",
-    'github_user': "MDAnalysis",
-    'github_repo': "mdanalysis",
-    #'travis_button': "MDAnalysis/mdanalysis",
-    'travis_button': False,
-    'github_type': 'star',
-    'github_banner': True,
-    'show_related': True,
-    'fixed_sidebar': False,
-    'sidebar_includehidden': True,
-    'sidebar_collapse': True,
-    # style
-    'link': color['orange'],
-    'link_hover': color['orange'],
-    'gray_1': color['gray'],
-    'narrow_sidebar_bg': color['gray'],
-    'narrow_sidebar_fg': color['white'],
-    # typography
-    #'font_size': 17,
-    'font_family': "'PT Sans', Helvetica, Arial, 'sans-serif'",
-    'head_font_family': "",
-    'code_font_size': "smaller",
-    'code_font_family': "Menlo, Monaco, 'Courier New', monospace",
-    'caption_font_size': "smaller",
+    'canonical_url': '',
+    'logo_only': True,
+    'display_version': True,
+    'prev_next_buttons_location': 'bottom',
+    'style_external_links': False,
+    'style_nav_header_background': 'white',
+    # Toc options
+    'collapse_navigation': True,
+    'sticky_navigation': True,
+    'navigation_depth': 4,
+    'includehidden': True,
+    'titles_only': False,
+}
+
+html_context = {
+    'versions_json_url': 'https://docs.mdanalysis.org/versions.json'
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = [alabaster.get_path()]
+html_theme_path = [
+    msmb_theme.get_html_theme_path(),
+    sphinx_rtd_theme.get_html_theme_path()
+]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -179,7 +180,7 @@ html_theme_path = [alabaster.get_path()]
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar. --- use theme
-##html_logo = "logos/mdanalysis-logo-200x150.png"
+html_logo = "_static/logos/mdanalysis-logo-thin.png"
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -189,8 +190,9 @@ html_favicon = "_static/logos/mdanalysis-logo.ico"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-# For alabaster: custom.css to override theme defaults.
+# For RTD theme: custom.css to override theme defaults.
 html_static_path = ['_static']
+html_css_files = ['custom.css']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -256,8 +258,8 @@ htmlhelp_basename = 'MDAnalysisdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('MDAnalysis.tex', u'MDAnalysis Documentation',
-   authors, 'manual'),
+    ('MDAnalysis.tex', u'MDAnalysis Documentation',
+     authors, 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -343,4 +345,7 @@ intersphinx_mapping = {'https://docs.python.org/': None,
                        'https://networkx.github.io/documentation/stable/': None,
                        'https://www.mdanalysis.org/GridDataFormats/': None,
                        'https://gsd.readthedocs.io/en/stable/': None,
+                       'https://parmed.github.io/ParmEd/html/': None,
+                       'https://docs.h5py.org/en/stable': None,
+                       'https://www.rdkit.org/docs/': None,
                        }

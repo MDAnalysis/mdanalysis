@@ -34,7 +34,7 @@ with the case in which there is no variation. The trajectory data are read with
 the :class:`~MDAnalysis.coordinates.GSD.GSDReader` class.
 
 .. _HOOMD: http://codeblue.umich.edu/hoomd-blue/index.html
-.. _HOOMD GSD: https://bitbucket.org/glotzer/gsd
+.. _HOOMD GSD: https://github.com/glotzerlab/gsd
 
 
 To load a GSD HOOMD file::
@@ -51,12 +51,8 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import
-
 import os
-if os.name != 'nt':
-    # not supported on windows
-    import gsd.hoomd
+import gsd.hoomd
 import numpy as np
 
 from . import guessers
@@ -110,9 +106,6 @@ class GSDParser(TopologyReaderBase):
 
         .. versionadded:: 0.17.0
         """
-        if os.name == 'nt':
-            raise NotImplementedError("GSD format not supported on Windows")
-
         attrs = {}
 
         with gsd.hoomd.open(self.filename,mode='rb') as t :
@@ -146,9 +139,8 @@ class GSDParser(TopologyReaderBase):
                     val = getattr(snap,attrname)
                     vals = [tuple(b_instance) for b_instance in val.group]
                 except:
-                    pass
-                else:
-                    attrs[attrname] = attr(vals)
+                    vals = []
+                attrs[attrname] = attr(vals)
 
             # get body ids to set residue number and ids
             blist = snap.particles.body.astype(np.int64)

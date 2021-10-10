@@ -66,15 +66,12 @@ supported (the readers will stop at the first line starting '&').
 .. autofunction:: uncomment
 
 """
-from __future__ import absolute_import
-
-from six.moves import range
-
 import numbers
 import os
 import numpy as np
 from . import base
 from ..lib.util import anyopen
+
 
 def uncomment(lines):
     """ Remove comments from lines in an .xvg file
@@ -139,7 +136,7 @@ class XVGStep(base.AuxStep):
         if isinstance(key, numbers.Integral):
             return self._select_data(key)
         else:
-             raise ValueError('Time selector must be single index')
+            raise ValueError('Time selector must be single index')
 
     def _select_data(self, key):
         if key is None:
@@ -149,8 +146,9 @@ class XVGStep(base.AuxStep):
             try:
                 return self._data[key]
             except IndexError:
-                raise ValueError('{} not a valid index for data with {} '
-                                 'columns'.format(key, len(self._data)))
+                errmsg = (f'{key} not a valid index for data with '
+                          f'{len(self._data)} columns')
+                raise ValueError(errmsg) from None
         else:
             return np.array([self._select_data(i) for i in key])
 
@@ -188,12 +186,12 @@ class XVGReader(base.AuxReader):
         auxdata_values = []
         # remove comments before storing
         for i, line in enumerate(uncomment(lines)):
-           if line.lstrip()[0] == '&':
-               # multiple data sets not supported; stop at the end of the first
-               break
-           auxdata_values.append([float(l) for l in line.split()])
-           # check the number of columns is consistent
-           if len(auxdata_values[i]) != len(auxdata_values[0]):
+            if line.lstrip()[0] == '&':
+                # multiple data sets not supported; stop at the end of the first
+                break
+            auxdata_values.append([float(l) for l in line.split()])
+            # check the number of columns is consistent
+            if len(auxdata_values[i]) != len(auxdata_values[0]):
                 raise ValueError('Step {0} has {1} columns instead of '
                                  '{2}'.format(i, auxdata_values[i],
                                               auxdata_values[0]))

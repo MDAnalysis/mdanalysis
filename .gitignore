@@ -1,5 +1,5 @@
 # Ignore python bytecoded files
-*.py[c|o]
+*.py[cod]
 *.[oa]
 *~
 *.bak
@@ -7,6 +7,7 @@
 MDAnalysis.egg-info
 MDAnalysisTests.egg-info
 *.egg
+*.profraw
 # Ignore build dir
 build/
 dist/
@@ -16,13 +17,13 @@ examples/output.txt
 .project
 .pydevproject
 .settings
-.idea
 .eggs
 # ignore Vagrant virtual machines
 .vagrant
 # ignore coverage files
 .coverage
 .noseids
+htmlcov
 # ignore trajectory offset caches
 .adk_oplsaa.trr_offsets.pkl
 .adk_oplsaa.xtc_offsets.pkl
@@ -30,9 +31,22 @@ examples/output.txt
 *.npz
 # Ignore html build
 package/doc/html/
-# Ignore vim files
-*.sw[a-z]
 # Ignore MDAnalysis log files
 MDAnalysis.log
 # Ignore the authors.py files as they are generated files
 authors.py
+# Ignore the .DS_Store file in the osx file system
+*.DS_Store
+# ignore files from tests
+.hypothesis/
+# ignore results from asv
+benchmarks/results
+
+# duecredit
+.duecredit.p
+
+# editors and IDEs
+*.sw[a-z]
+*~
+.idea
+.vscode

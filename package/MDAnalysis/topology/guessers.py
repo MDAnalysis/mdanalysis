@@ -27,11 +27,78 @@ Guessing unknown Topology information --- :mod:`MDAnalysis.topology.guessers`
 In general `guess_atom_X` returns the guessed value for a single value,
 while `guess_Xs` will work on an array of many atoms.
 
-"""
-from __future__ import absolute_import
 
+Example uses of guessers
+------------------------
+
+Guessing elements from atom names
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Currently, it is possible to guess elements from atom names using
+:func:`guess_atom_element` (or the synonymous :func:`guess_atom_type`). This can
+be done in the following manner::
+
+  import MDAnalysis as mda
+  from MDAnalysis.topology.guessers import guess_atom_element
+  from MDAnalysisTests.datafiles import PRM7
+
+  u = mda.Universe(PRM7)
+
+  print(u.atoms.names[1])  # returns the atom name H1
+
+  element = guess_atom_element(u.atoms.names[1])
+
+  print(element)  # returns element H
+
+In the above example, we take an atom named H1 and use
+:func:`guess_atom_element` to guess the element hydrogen (i.e. H). It is
+important to note that element guessing is not always accurate. Indeed in cases
+where the atom type is not recognised, we may end up with the wrong element.
+For example::
+
+  import MDAnalysis as mda
+  from MDAnalysis.topology.guessers import guess_atom_element
+  from MDAnalysisTests.datafiles import PRM19SBOPC
+
+  u = mda.Universe(PRM19SBOPC)
+
+  print(u.atoms.names[-1])  # returns the atom name EPW
+
+  element = guess_atom_element(u.atoms.names[-1])
+
+  print(element)  # returns element P
+
+Here we find that virtual site atom 'EPW' was given the element P, which
+would not be an expected result. We therefore always recommend that users
+carefully check the outcomes of any guessers.
+
+In some cases, one may want to guess elements for an entire universe and add
+this guess as a topology attribute. This can be done using :func:`guess_types`
+in the following manner::
+
+  import MDAnalysis as mda
+  from MDAnalysis.topology.guessers import guess_types
+  from MDAnalysisTests.datafiles import PRM7
+
+  u = mda.Universe(PRM7)
+
+  guessed_elements = guess_types(u.atoms.names)
+
+  u.add_TopologyAttr('elements', guessed_elements)
+
+  print(u.atoms.elements)  # returns an array of guessed elements
+
+More information on adding topology attributes can found in the `user guide`_.
+
+
+.. Links
+
+.. _user guide: https://www.mdanalysis.org/UserGuide/examples/constructing_universe.html#Adding-topology-attributes
+
+"""
 import numpy as np
 import warnings
+import re
 
 from ..lib import distances
 from . import tables
@@ -65,12 +132,18 @@ def validate_atom_types(atom_types):
     Returns
     -------
     None
+
+    .. versionchanged:: 0.20.0
+       Try uppercase atom type name as well
     """
     for atom_type in np.unique(atom_types):
         try:
             tables.masses[atom_type]
         except KeyError:
-            warnings.warn("Failed to guess the mass for the following atom types: {}".format(atom_type))
+            try:
+                tables.masses[atom_type.upper()]
+            except KeyError:
+                warnings.warn("Failed to guess the mass for the following atom types: {}".format(atom_type))
 
 
 def guess_types(atom_names):
@@ -86,7 +159,6 @@ def guess_types(atom_names):
     atom_types : np.ndarray dtype object
     """
     return np.array([guess_atom_element(name) for name in atom_names], dtype=object)
-
 
 
 def guess_atom_type(atomname):
@@ -105,6 +177,9 @@ def guess_atom_type(atomname):
     """
     return guess_atom_element(atomname)
 
+
+NUMBERS = re.compile(r'[0-9]') # match numbers
+SYMBOLS = re.compile(r'[*+-]')  # match *, +, -
 
 def guess_atom_element(atomname):
     """Guess the element of the atom from the name.
@@ -125,15 +200,29 @@ def guess_atom_element(atomname):
     if atomname == '':
         return ''
     try:
-        return tables.atomelements[atomname]
+        return tables.atomelements[atomname.upper()]
     except KeyError:
-        if atomname[0].isdigit():
-            # catch 1HH etc
-            try:
-                return atomname[1]
-            except IndexError:
-                pass
-        return atomname[0]
+        # strip symbols and numbers
+        no_symbols = re.sub(SYMBOLS, '', atomname)
+        name = re.sub(NUMBERS, '', no_symbols).upper()
+
+        # just in case
+        if name in tables.atomelements:
+            return tables.atomelements[name]
+
+        while name:
+            if name in tables.elements:
+                return name
+            if name[:-1] in tables.elements:
+                return name[:-1]
+            if name[1:] in tables.elements:
+                return name[1:]
+            if len(name) <= 2:
+                return name[0]
+            name = name[:-1]  # probably element is on left not right
+
+        # if it's numbers
+        return no_symbols
 
 
 def guess_bonds(atoms, coords, box=None, **kwargs):
@@ -354,12 +443,18 @@ def get_atom_mass(element):
 
     Masses are looked up in :data:`MDAnalysis.topology.tables.masses`.
 
-    .. Warning:: Unknown masses are set to 0.00
+    .. Warning:: Unknown masses are set to 0.0
+
+    .. versionchanged:: 0.20.0
+       Try uppercase atom type name as well
     """
     try:
         return tables.masses[element]
     except KeyError:
-        return 0.000
+        try:
+            return tables.masses[element.upper()]
+        except KeyError:
+            return 0.0
 
 
 def guess_atom_mass(atomname):
@@ -380,3 +475,50 @@ def guess_atom_charge(atomname):
     """
     # TODO: do something slightly smarter, at least use name/element
     return 0.0
+
+
+def guess_aromaticities(atomgroup):
+    """Guess aromaticity of atoms using RDKit
+
+    Parameters
+    ----------
+    atomgroup : mda.core.groups.AtomGroup
+        Atoms for which the aromaticity will be guessed
+
+    Returns
+    -------
+    aromaticities : numpy.ndarray
+        Array of boolean values for the aromaticity of each atom
+
+
+    .. versionadded:: 2.0.0
+    """
+    mol = atomgroup.convert_to("RDKIT")
+    atoms = sorted(mol.GetAtoms(),
+                   key=lambda a: a.GetIntProp("_MDAnalysis_index"))
+    return np.array([atom.GetIsAromatic() for atom in atoms])
+
+
+def guess_gasteiger_charges(atomgroup):
+    """Guess Gasteiger partial charges using RDKit
+
+    Parameters
+    ----------
+    atomgroup : mda.core.groups.AtomGroup
+        Atoms for which the charges will be guessed
+
+    Returns
+    -------
+    charges : numpy.ndarray
+        Array of float values representing the charge of each atom
+
+
+    .. versionadded:: 2.0.0
+    """
+    mol = atomgroup.convert_to("RDKIT")
+    from rdkit.Chem.rdPartialCharges import ComputeGasteigerCharges
+    ComputeGasteigerCharges(mol, throwOnParamFailure=True)
+    atoms = sorted(mol.GetAtoms(),
+                   key=lambda a: a.GetIntProp("_MDAnalysis_index"))
+    return np.array([atom.GetDoubleProp("_GasteigerCharge") for atom in atoms],
+                    dtype=np.float32)

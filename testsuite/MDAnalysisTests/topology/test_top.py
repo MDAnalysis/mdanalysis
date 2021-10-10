@@ -20,10 +20,10 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
 import MDAnalysis as mda
 import pytest
-
+import numpy as np
+from numpy.testing import assert_equal
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     PRM,  # ache.prmtop
@@ -31,9 +31,12 @@ from MDAnalysisTests.datafiles import (
     PRM7,  # tz2.truncoct.parm7.bz2
     PRMpbc,
     PRMNCRST,
+    PRMNEGATIVE,
     PRMErr1,
     PRMErr2,
-    PRMErr3
+    PRMErr3,
+    PRM_UreyBradley,
+    PRM19SBOPC,
 )
 
 
@@ -41,7 +44,7 @@ class TOPBase(ParserBase):
     parser = mda.topology.TOPParser.TOPParser
     expected_attrs = [
         "names", "types", "type_indices", "charges", "masses", "resnames",
-        "bonds", "angles", "dihedrals", "impropers"
+        "bonds", "angles", "dihedrals", "impropers", "elements"
     ]
     expected_n_segments = 1
 
@@ -122,19 +125,41 @@ class TOPBase(ParserBase):
     def test_improper_atoms_bonded(self, top):
         vals = top.bonds.values
         for imp in top.impropers.values:
-            for b in ((imp[0], imp[2]), (imp[1], imp[2]), (imp[2], imp[3])):
-                assert (b in vals) or (b[::-1] in vals)
+            forward = ((imp[0], imp[2]), (imp[1], imp[2]), (imp[2], imp[3]))
+            backward = ((imp[0], imp[1]), (imp[1], imp[2]), (imp[1], imp[3]))
+            for a, b in zip(forward, backward):
+                assert ((b in vals) or (b[::-1] in vals) or
+                        (a in vals) or (a[::-1] in vals))
+
+    def test_elements(self, top):
+        """Tests elements attribute.
+
+        If elements present, loops over ranges of the topology elements list
+        and compared against a provided list of expected values.
+        Otherwise, checks that elements are not in the topology attributes.
+        """
+
+        if self.expected_elems:
+            for erange, evals in zip(self.elems_ranges, self.expected_elems):
+                assert_equal(top.elements.values[erange[0]:erange[1]], evals,
+                             "unexpected element match")
+        else:
+            assert not hasattr(top, 'elements'), 'Unexpected elements attr'
 
 
 class TestPRMParser(TOPBase):
     ref_filename = PRM
+    # Does not contain an ATOMIC_NUMBER record, so no elements
+    expected_attrs = [
+        "names", "types", "type_indices", "charges", "masses", "resnames",
+        "bonds", "angles", "dihedrals", "impropers"
+    ]
     expected_n_atoms = 252
     expected_n_residues = 14
     expected_n_bonds = 259
     expected_n_angles = 456
     expected_n_dihedrals = 673
     expected_n_impropers = 66
-    guessed_attrs = ['elements']
     atom_i = 79
     expected_n_zero_bonds = 4
     expected_n_i_bonds = 3
@@ -170,14 +195,11 @@ class TestPRMParser(TOPBase):
     atom_zero_improper_values = ()
     atom_i_improper_values = ((74, 79, 77, 78), (77, 80, 79, 83),
                               (79, 81, 80, 82), (79, 84, 83, 85))
+    expected_elems = None
 
 
 class TestPRM12Parser(TOPBase):
     ref_filename = PRM12
-    expected_attrs = [
-        "names", "types", "type_indices", "charges", "masses", "resnames",
-        "bonds", "angles", "dihedrals", "impropers"
-    ]
     expected_n_atoms = 8923
     expected_n_residues = 2861
     expected_n_bonds = 8947
@@ -222,17 +244,34 @@ class TestPRM12Parser(TOPBase):
                               (338, 337, 335, 354), (351, 337, 335, 354))
     atom_zero_improper_values = ()
     atom_i_improper_values = ((335, 337, 338, 351),)
+    elems_ranges = [[0, 36], [351, 403]]
+    expected_elems = [np.array(["H", "O", "C", "H", "H", "C", "H", "O", "C",
+                                "H", "N", "C", "H", "N", "C", "C", "O", "N",
+                                "H", "C", "N", "H", "H", "N", "C", "C", "H",
+                                "C", "H", "H", "O", "P", "O", "O", "O", "C"],
+                      dtype=object),
+                      np.array(["C", "C", "H", "C", "H", "H", "O", "P", "O",
+                                "O", "O", "C", "H", "H", "C", "H", "O", "C",
+                                "H", "N", "C", "H", "N", "C", "C", "O", "N",
+                                "H", "C", "N", "H", "H", "N", "C", "C", "H",
+                                "C", "H", "H", "O", "H", "Na", "Na", "Na",
+                                "Na", "Na", "Na", "Na", "Na", "O", "H", "H"],
+                      dtype=object)]
 
 
 class TestParm7Parser(TOPBase):
     ref_filename = PRM7
+    # Does not contain an ATOMIC_NUMBER record, so no elements
+    expected_attrs = [
+        "names", "types", "type_indices", "charges", "masses", "resnames",
+        "bonds", "angles", "dihedrals", "impropers"
+    ]
     expected_n_atoms = 5827
     expected_n_residues = 1882
     expected_n_bonds = 5834
     expected_n_angles = 402
     expected_n_dihedrals = 602
     expected_n_impropers = 55
-    guessed_attrs = ['elements']
     atom_i = 135
     expected_n_zero_bonds = 4
     expected_n_i_bonds = 4
@@ -278,10 +317,16 @@ class TestParm7Parser(TOPBase):
                               (140, 137, 135, 155))
     atom_zero_improper_values = ()
     atom_i_improper_values = ((131, 135, 133, 134), (135, 157, 155, 156))
+    expected_elems = None
 
 
 class TestPRM2(TOPBase):
     ref_filename = PRMpbc
+    # Does not contain an ATOMIC_NUMBER record, so no elements
+    expected_attrs = [
+        "names", "types", "type_indices", "charges", "masses", "resnames",
+        "bonds", "angles", "dihedrals", "impropers"
+    ]
     expected_n_atoms = 5071
     expected_n_residues = 1686
     ref_proteinatoms = 22
@@ -289,7 +334,6 @@ class TestPRM2(TOPBase):
     expected_n_angles = 36
     expected_n_dihedrals = 41
     expected_n_impropers = 4
-    guessed_attrs = ['elements']
     atom_i = 14
     expected_n_zero_bonds = 1
     expected_n_i_bonds = 3
@@ -317,6 +361,7 @@ class TestPRM2(TOPBase):
                               (15, 14, 16, 17), (15, 14, 16, 18))
     atom_zero_improper_values = ()
     atom_i_improper_values = ((8, 16, 14, 15), (14, 18, 16, 17))
+    expected_elems = None
 
 
 class TestPRMNCRST(TOPBase):
@@ -346,18 +391,108 @@ class TestPRMNCRST(TOPBase):
     atom_i_dihedral_values = ((0, 1, 4, 5), (2, 1, 4, 5), (3, 1, 4, 5))
     atom_zero_improper_values = ()
     atom_i_improper_values = ()
+    elems_ranges = [[0, 6], ]
+    expected_elems = [np.array(["H", "C", "H", "H", "C", "O"], dtype=object), ]
 
 
-class TestErrors(object):
-    # Check Errors being raised
-    def test_versionline(self):
-        with pytest.raises(ValueError):
-            u = mda.Universe(PRMErr1)
+class TestPRMNCRST_negative(TOPBase):
+    # Same as above but with negative ATOMIC_NUMBER values (Issue 2306)
+    ref_filename = PRMNEGATIVE
+    expected_n_atoms = 6
+    expected_n_residues = 1
+    ref_proteinatoms = 6
+    expected_n_bonds = 5
+    expected_n_angles = 7
+    expected_n_dihedrals = 3
+    expected_n_impropers = 0
+    atom_i = 4
+    expected_n_zero_bonds = 1
+    expected_n_i_bonds = 2
+    expected_n_zero_angles = 3
+    expected_n_i_angles = 4
+    expected_n_zero_dihedrals = 1
+    expected_n_i_dihedrals = 3
+    expected_n_zero_impropers = 0
+    expected_n_i_impropers = 0
+    atom_zero_bond_values = ((0, 1),)
+    atom_i_bond_values = ((1, 4), (4, 5))
+    atom_zero_angle_values = ((0, 1, 2), (0, 1, 3), (0, 1, 4))
+    atom_i_angle_values = ((0, 1, 4), (1, 4, 5), (2, 1, 4), (3, 1, 4))
+    atom_zero_dihedral_values = ((0, 1, 4, 5),)
+    atom_i_dihedral_values = ((0, 1, 4, 5), (2, 1, 4, 5), (3, 1, 4, 5))
+    atom_zero_improper_values = ()
+    atom_i_improper_values = ()
+    elems_ranges = [[0, 6], ]
+    expected_elems = [np.array(["H", "", "H", "H", "C", ""], dtype=object), ]
 
-    def test_title(self):
-        with pytest.raises(ValueError):
-            u = mda.Universe(PRMErr2)
 
-    def test_flag(self):
-        with pytest.raises(IndexError):
+class TestPRMEP(TOPBase):
+    # Issue #2449
+    ref_filename = PRM19SBOPC
+    expected_n_atoms = 46
+    expected_n_residues = 9
+    ref_proteinatoms = 23
+    expected_n_bonds = 45
+    expected_n_angles = 36
+    expected_n_dihedrals = 41
+    expected_n_impropers = 4
+    atom_i = 25  # testing EPW atom
+    expected_n_zero_bonds = 1
+    expected_n_i_bonds = 1
+    expected_n_zero_angles = 3
+    expected_n_i_angles = 0
+    expected_n_zero_dihedrals = 2
+    expected_n_i_dihedrals = 0
+    expected_n_zero_impropers = 0
+    expected_n_i_impropers = 0
+    atom_zero_bond_values = ((0, 1),)
+    atom_i_bond_values = ((25, 22),)
+    atom_zero_angle_values = ((0, 1, 2), (0, 1, 3), (0, 1, 4))
+    atom_i_angle_values = ()
+    atom_zero_dihedral_values = ((0, 1, 4, 5), (0, 1, 4, 6))
+    atom_i_dihedral_values = ()
+    atom_zero_improper_values = ()
+    atom_i_improper_values = ()
+    elems_ranges = [[0, 8], [20, 28]]
+    expected_elems = [np.array(["H", "C", "H", "H", "C", "O", "N", "H"],
+                      dtype=object),
+                      np.array(["H", "H", "O", "H", "H", "", "O", "H"],
+                      dtype=object)]
+
+
+class TestErrorsAndWarnings(object):
+
+    ATOMIC_NUMBER_MSG = ("ATOMIC_NUMBER record not found, elements attribute "
+                         "will not be populated")
+    MISSING_ELEM_MSG = ("Unknown ATOMIC_NUMBER value found for some atoms, "
+                        "these have been given an empty element record")
+    COORDINATE_READER_MSG = ("No coordinate reader found")
+
+    @pytest.mark.parametrize("parm,errmatch", (
+        [PRMErr1, "%VE Missing in header"],
+        [PRMErr2, "'TITLE' missing in header"],
+        [PRM_UreyBradley, "Chamber-style TOP file"]
+    ))
+    def test_value_errors(self, parm, errmatch):
+        with pytest.raises(ValueError, match=errmatch):
+            u = mda.Universe(parm)
+
+    def test_flag_index_error(self):
+        with pytest.raises(IndexError, match="%FLAG section not found"):
             u = mda.Universe(PRMErr3)
+
+    @pytest.mark.parametrize("parm, errmsgs", (
+        [PRM, [ATOMIC_NUMBER_MSG, COORDINATE_READER_MSG]],
+        [PRM7, [ATOMIC_NUMBER_MSG, COORDINATE_READER_MSG]],
+        [PRMpbc, [ATOMIC_NUMBER_MSG, COORDINATE_READER_MSG]],
+        [PRMNEGATIVE, [MISSING_ELEM_MSG, COORDINATE_READER_MSG]],
+        [PRM19SBOPC, [MISSING_ELEM_MSG, COORDINATE_READER_MSG]]
+    ))
+    def test_warning(self, parm, errmsgs):
+        with pytest.warns(UserWarning) as record:
+            u = mda.Universe(parm)
+
+        assert len(record) == len(errmsgs)
+        # Assumes errmsgs list is in order of occurence
+        for i, msg in enumerate(errmsgs):
+            assert msg in str(record[i].message.args[0])

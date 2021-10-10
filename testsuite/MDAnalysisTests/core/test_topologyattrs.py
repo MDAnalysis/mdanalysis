@@ -23,8 +23,6 @@
 """Tests for MDAnalysis.core.topologyattrs objects.
 
 """
-from __future__ import division, absolute_import
-
 import numpy as np
 
 from numpy.testing import (
@@ -32,7 +30,7 @@ from numpy.testing import (
     assert_almost_equal,
 )
 import pytest
-from MDAnalysisTests.datafiles import PSF, DCD
+from MDAnalysisTests.datafiles import PSF, DCD, PDB_CHECK_RIGHTHAND_PA, MMTF
 from MDAnalysisTests import make_Universe, no_deprecated_call
 
 import MDAnalysis as mda
@@ -82,6 +80,10 @@ class TopologyAttrMixin(object):
     def attr(self, top):
         return getattr(top, self.attrclass.attrname)
 
+    @pytest.fixture()
+    def universe(self, top):
+        return mda.Universe(top)
+
     def test_len(self, attr):
         assert len(attr) == len(attr.values)
 
@@ -91,6 +93,7 @@ class TestAtomAttr(TopologyAttrMixin):
 
     """
     values = np.array([7, 3, 69, 9993, 84, 194, 263, 501, 109, 5873])
+    single_value = 567
     attrclass = tpattrs.AtomAttr
 
     def test_set_atom_VE(self):
@@ -110,8 +113,9 @@ class TestAtomAttr(TopologyAttrMixin):
     def test_set_atoms_singular(self, attr):
         # set len 2 Group to len 1 value
         dg = DummyGroup([3, 7])
-        attr.set_atoms(dg, 567)
-        assert_equal(attr.get_atoms(dg), np.array([567, 567]))
+        attr.set_atoms(dg, self.single_value)
+        assert_equal(attr.get_atoms(dg),
+                     np.array([self.single_value, self.single_value]))
 
     def test_set_atoms_plural(self, attr):
         # set len 2 Group to len 2 values
@@ -173,7 +177,20 @@ class TestIndicesClasses(object):
 class TestAtomnames(TestAtomAttr):
     values = np.array(['O', 'C', 'CA', 'N', 'CB', 'CG', 'CD', 'NA', 'CL', 'OW'],
                       dtype=np.object)
+    single_value = 'Ca2'
     attrclass = tpattrs.Atomnames
+
+    @pytest.fixture()
+    def u(self):
+        return mda.Universe(PSF, DCD)
+
+    def test_prev_emptyresidue(self, u):
+        assert_equal(u.residues[[]]._get_prev_residues_by_resid(),
+                     u.residues[[]])
+
+    def test_next_emptyresidue(self, u):
+        assert_equal(u.residues[[]]._get_next_residues_by_resid(),
+                     u.residues[[]])
 
 
 class AggregationMixin(TestAtomAttr):
@@ -204,29 +221,34 @@ class TestResidueAttr(TopologyAttrMixin):
     """Test residue-level TopologyAttrs.
 
     """
+    single_value = 2
     values = np.array([15.2, 395.6, 0.1, 9.8])
     attrclass = tpattrs.ResidueAttr
 
-    def test_set_residue_VE(self):
-        u = make_Universe(('resnames',))
-        res = u.residues[0]
+    def test_set_residue_VE(self, universe):
+        # setting e.g. resname to 2 values should fail with VE
+        res = universe.residues[0]
         with pytest.raises(ValueError):
-            setattr(res, 'resname', ['wrong', 'length'])
+            setattr(res, self.attrclass.singular, self.values[:2])
 
     def test_get_atoms(self, attr):
         assert_equal(attr.get_atoms(DummyGroup([7, 3, 9])),
-                           self.values[[3, 2, 2]])
+                     self.values[[3, 2, 2]])
+
+    def test_get_atom(self, universe):
+        attr = getattr(universe.atoms[0], self.attrclass.singular)
+        assert_equal(attr, self.values[0])
 
     def test_get_residues(self, attr):
         assert_equal(attr.get_residues(DummyGroup([1, 2, 1, 3])),
-                           self.values[[1, 2, 1, 3]])
+                     self.values[[1, 2, 1, 3]])
 
     def test_set_residues_singular(self, attr):
         dg = DummyGroup([3, 0, 1])
-        attr.set_residues(dg, 2)
+        attr.set_residues(dg, self.single_value)
 
-        assert_almost_equal(attr.get_residues(dg),
-                                  np.array([2, 2, 2]))
+        assert_equal(attr.get_residues(dg),
+                     np.array([self.single_value]*3, dtype=self.values.dtype))
 
     def test_set_residues_plural(self, attr):
         attr.set_residues(DummyGroup([3, 0, 1]),
@@ -247,6 +269,16 @@ class TestResidueAttr(TopologyAttrMixin):
         """
         assert_equal(attr.get_segments(DummyGroup([0, 1, 1])),
                            [self.values[[0, 3]], self.values[[1, 2]], self.values[[1, 2]]])
+
+
+class TestResnames(TestResidueAttr):
+    attrclass = tpattrs.Resnames
+    single_value = 'xyz'
+    values = np.array(['a', 'b', '', 'd'], dtype=object)
+
+
+class TestICodes(TestResnames):
+    attrclass = tpattrs.ICodes
 
 
 class TestResids(TestResidueAttr):
@@ -274,56 +306,6 @@ class TestResids(TestResidueAttr):
                                np.array([23, 504, 27]))
         assert_almost_equal(attr.get_residues(DummyGroup([3, 0, 1])),
                                   np.array([23, 504, 27]))
-
-
-class TestResnames(TestResidueAttr):
-    values = np.array(['VAL', 'LYS', 'VAL', 'POPG'], dtype=np.object)
-    attrclass = tpattrs.Resnames
-
-    def test_residuegroup_getattr_single(self):
-        u = make_Universe(('resnames',))
-
-        res = u.residues.RsB
-
-        assert isinstance(res, groups.Residue)
-        assert res == u.residues[1]
-
-    def test_residuegroup_getattr_multiple(self):
-        u = make_Universe(('resnames',))
-        u.residues[:10].resnames = 'ABC'
-
-        rg = u.residues.ABC
-
-        assert isinstance(rg, groups.ResidueGroup)
-        assert len(rg) == 10
-
-    def test_residuegroup_getattr_AE(self):
-        u = make_Universe(('resnames',))
-        with pytest.raises(AttributeError):
-            getattr(u.residues, 'foo')
-
-
-    def test_segment_getattr_singular(self):
-        u = make_Universe(('resnames',))
-
-        res = u.segments[0].RsB
-
-        assert isinstance(res, groups.Residue)
-        assert res == u.residues[1]
-
-    def test_segment_getattr_multiple(self):
-        u = make_Universe(('resnames',))
-        u.residues[:3].resnames = 'bar'
-
-        rg = u.segments[0].bar
-
-        assert isinstance(rg, groups.ResidueGroup)
-        assert len(rg) == 3
-
-    def test_segment_getattr_AE(self):
-        u = make_Universe(('resnames',))
-        with pytest.raises(AttributeError):
-            getattr(u.segments[0], 'foo')
 
 
 class TestSegmentAttr(TopologyAttrMixin):
@@ -384,6 +366,14 @@ class TestAttr(object):
                       [1.53389276e-03, 4.41386224e-02, 9.99024239e-01],
                       [1.20986911e-02, 9.98951474e-01, -4.41539838e-02],
                       [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04]]))
+
+    @pytest.fixture()
+    def universe_pa(self):
+        return mda.Universe(PDB_CHECK_RIGHTHAND_PA)
+
+    def test_principal_axes_handedness(self, universe_pa):
+        e_vec = universe_pa.atoms.principal_axes()
+        assert_almost_equal(np.dot(np.cross(e_vec[0], e_vec[1]), e_vec[2]), 1.0)
 
     def test_align_principal_axes_with_self(self, ag):
         pa = ag.principal_axes()
@@ -452,43 +442,6 @@ class TestCrossLevelAttributeSetting(object):
     def _check_crosslevel_fail(item, attr):
         with pytest.raises(NotImplementedError):
             setattr(item, attr, 1.0)
-
-
-class TestInstantSelectorDeprecation(object):
-    """Test the deprecation warnings for instant selectors
-
-    Instant selectors are deprecated since version 0.16.2. PR #1403 introduced
-    deprecation warnings for these selectors.
-    """
-    @staticmethod
-    @pytest.fixture()
-    def universe():
-        return mda.Universe(PSF, DCD)
-
-    @pytest.mark.parametrize('instruction', (
-        'universe.atoms.CA',
-        'universe.residues.LYS',
-        'universe.segments.s4AKE',
-        'universe.s4AKE',
-    ))
-    def test_deprecation(self, universe, instruction):
-        """Test that the warnings are issued when required.
-        """
-        with pytest.deprecated_call():
-            exec(instruction)  #pylint: disable=W0122
-
-    @pytest.mark.parametrize('instruction', (
-        'universe.atoms',
-        'universe.residues',
-        'universe.segments',
-    ))
-    def test_no_deprecation(self, universe, instruction):
-        """Test that the warnings are not issued when they should not.
-
-        See issue #1476.
-        """
-        with no_deprecated_call():
-            exec(instruction)  #pylint: disable=W0122
 
 
 class TestRecordTypes(object):
@@ -560,3 +513,75 @@ def test_static_typing_from_empty():
 
     assert isinstance(u._topology.masses.values, np.ndarray)
     assert isinstance(u.atoms[0].mass, float)
+
+
+@pytest.mark.parametrize('level, transplant_name', (
+    ('atoms', 'center_of_mass'),
+    ('atoms', 'total_charge'),
+    ('residues', 'total_charge'),
+))
+def test_stub_transplant_methods(level, transplant_name):
+    u = mda.Universe.empty(n_atoms=2)
+    group = getattr(u, level)
+    with pytest.raises(NoDataError):
+        getattr(group, transplant_name)()
+
+
+@pytest.mark.parametrize('level, transplant_name', (
+    ('universe', 'models'),
+    ('atoms', 'n_fragments'),
+))
+def test_stub_transplant_property(level, transplant_name):
+    u = mda.Universe.empty(n_atoms=2)
+    group = getattr(u, level)
+    with pytest.raises(NoDataError):
+        getattr(group, transplant_name)
+
+
+def test_warn_selection_for_strange_dtype():
+    err = "A selection keyword could not be automatically generated"
+
+    with pytest.warns(UserWarning, match=err):
+        class Star(tpattrs.TopologyAttr):
+            singular = "star"  # turns out test_imports doesn't like emoji
+            attrname = "stars"  # :(
+            per_object = "atom"
+            dtype = dict
+
+
+class TestDeprecateBFactor:
+
+    MATCH = "use the tempfactor attribute"
+
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(MMTF)
+
+    def test_deprecate_bfactors_get_group(self, universe):
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            universe.atoms.bfactors
+
+    def test_deprecate_bfactors_get_atom(self, universe):
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            assert universe.atoms[0].bfactor == universe.atoms[0].tempfactor
+
+    def test_deprecate_bfactors_set_group(self, universe):
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            universe.atoms[:2].bfactors = [3.14, 10]
+        assert universe.atoms.tempfactors[0] == 3.14
+        assert universe.atoms.tempfactors[1] == 10
+
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            assert universe.atoms.bfactors[0] == 3.14
+            assert universe.atoms.bfactors[1] == 10
+
+    def test_deprecate_bfactors_set_atom(self, universe):
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            universe.atoms[0].bfactor = 3.14
+        assert universe.atoms[0].tempfactor == 3.14
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            assert universe.atoms[0].bfactor == 3.14
+
+    def test_deprecate_bfactor_sel(self, universe):
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            universe.select_atoms("bfactor 3")

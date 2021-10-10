@@ -31,8 +31,6 @@ an ensemble of structures.
 
 .. versionadded:: 0.16.0
 """
-from __future__ import division, absolute_import
-
 import numpy as np
 
 def ml_covariance_estimator(coordinates, reference_coordinates=None):
@@ -121,7 +119,7 @@ def shrinkage_covariance_estimator( coordinates,
     xmkt = np.average(x, axis=1)
 
     # Call maximum likelihood estimator (note the additional column)
-    sample = ml_covariance_estimator(np.hstack([x, xmkt[:, np.newaxis]]), 0) \
+    sample = ml_covariance_estimator(np.hstack([x, xmkt[:, np.newaxis]]), 0)\
         * (t-1)/float(t)
 
     # Split covariance matrix into components
@@ -173,7 +171,7 @@ def shrinkage_covariance_estimator( coordinates,
 
 
 def covariance_matrix(ensemble,
-                      selection="name CA",
+                      select="name CA",
                       estimator=shrinkage_covariance_estimator,
                       weights='mass',
                       reference=None):
@@ -184,7 +182,7 @@ def covariance_matrix(ensemble,
     ----------
     ensemble : Universe object
         The structural ensemble
-    selection : str (optional)
+    select : str (optional)
         Atom selection string in the MDAnalysis format.
     estimator : function (optional)
         Function that estimates the covariance matrix. It requires at least
@@ -205,7 +203,7 @@ def covariance_matrix(ensemble,
     """
     # Extract coordinates from ensemble
     coordinates = ensemble.trajectory.timeseries(
-        ensemble.select_atoms(selection),
+        ensemble.select_atoms(select),
         order='fac')
 
     # Flatten coordinate matrix into n_frame x n_coordinates
@@ -228,13 +226,13 @@ def covariance_matrix(ensemble,
     if weights is not None:
         # Calculate mass-weighted covariance matrix
         if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
-            if selection:
-                weights = ensemble.select_atoms(selection).masses
+            if select:
+                weights = ensemble.select_atoms(select).masses
             else:
                 weights = ensemble.atoms.masses
         else:
-            if selection:
-                req_len = ensemble.select_atoms(selection).n_atoms
+            if select:
+                req_len = ensemble.select_atoms(select).n_atoms
             else:
                 req_len = ensemble.atoms.n_atoms
             if req_len != len(weights):
