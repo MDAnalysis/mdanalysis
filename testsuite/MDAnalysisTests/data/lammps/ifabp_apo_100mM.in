@@ -1,0 +1,44 @@
+# LAMMPS test run (I-FABP in water with 100 mM NaCL)
+# CHARMM 27 force field
+# NPT with Verlet and optimized long range forces
+#
+# Tested with LAMMPS (11 Nov 2013)
+#
+# Based on psf=../Equilibration/Small/NPT/ifabp_water.psf 
+# and      pdb=../Equilibration/Small/NPT/ifabp_water_1.pdb
+
+variable        prefix  index ifabp_apo_100mM
+
+units           real
+neigh_modify    delay 4 every 1
+
+atom_style      full
+bond_style      harmonic
+angle_style     charmm
+dihedral_style  charmm
+improper_style  harmonic
+
+pair_style      lj/charmm/coul/long/opt 8 10
+pair_modify     mix arithmetic
+kspace_style    pppm 1e-4
+
+read_data       ${prefix}.data
+
+special_bonds   charmm
+
+fix             1 all shake 1e-6 500  0  m 1.0    a 120
+fix             2 all npt temp 300.0 300.0 100  iso 1.0 1.0 1000
+
+velocity        all create 300.0 3141527 dist gaussian    &
+                           mom yes  rot yes
+
+thermo          500
+thermo_style    multi
+timestep        2.0
+
+dump            1 all dcd 250 ${prefix}.dcd
+run_style	verlet
+run             1000  # 2 ps total, 4 frames
+undump          1
+
+

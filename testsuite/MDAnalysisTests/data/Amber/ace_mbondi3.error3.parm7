@@ -1,0 +1,14 @@
+%VERSION  VERSION_STAMP = V0001.000  DATE = 09/08/18  15:36:17                  
+%FLAG TITLE                                                                     
+%FORMAT(20a4)                                                                   
+ACE                                                                             
+%FLAG POINTERS                                                                  
+%FORMAT(10I8)                                                                   
+       6       4       3       2       6       1       9       0       0       0
+      16       1       2       1       0       3       3       3       4       0
+       0       0       0       0       0       0       0       0       6       0
+       0
+%FLAG ATOM_NAME                                                                 
+%FORMAT(20a4)                                                                   
+HH31CH3 HH32HH33C   O   
+FOO

@@ -1,0 +1,13 @@
+# xvg file for testing adding auxiliary data
+@ this line should be skipped, as should blank lines
+
+0 0 1
+1 2 2
+2 4 4 #this comment should be skipped
+3 6 8
+4 8 16
+ #
+& 
+# the following should be skipped (should stop at the first '&')
+0 0 1
+1 2 2

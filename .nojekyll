@@ -1,0 +1,4 @@
+Jekyll should not process anythin in this branch:
+
+- https://help.github.com/articles/files-that-start-with-an-underscore-are-missing/
+- https://github.com/blog/572-bypassing-jekyll-on-github-pages

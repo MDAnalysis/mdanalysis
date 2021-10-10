@@ -1,0 +1,18 @@
+[run]
+branch = True
+source = MDAnalysis
+plugins = Cython.Coverage
+omit =
+    */MDAnalysis/tests/*
+    */legacy/*
+    */due.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise NotImplementedError
+    if __name__ == .__main__.:
+
+
+

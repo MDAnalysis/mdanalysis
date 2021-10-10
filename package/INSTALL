@@ -1,0 +1,75 @@
+=====================
+Installing MDAnalysis
+=====================
+
+Quick installation instructions
+===============================
+
+https://www.mdanalysis.org/pages/installation_quick_start/
+
+
+From the Python package index (pip)
+-----------------------------------
+
+To install the latest stable release with pip
+http://www.pip-installer.org/en/latest/index.html do::
+
+   pip install --upgrade MDAnalysis
+
+To run the test cases and examples, also install the unit tests (about 20 MiB in size)::
+
+   pip install --upgrade MDAnalysisTests
+   python -c 'import MDAnalysisTests; MDAnalysisTests.run()'
+
+(The tests can take a long time to run.)
+
+
+With conda
+----------
+
+To install the lastest stable release with conda
+http://conda.pydata.org/docs/ do::
+
+  conda config --add channels MDAnalysis
+  conda install mdanalysis
+
+To upgrade to the latest stable release.
+
+   conda update mdanalysis
+
+The conda packages currently only support serial calculations. If you
+plan to use the parallel OpenMP algorithms you need to install
+MDAnalysis with pip and have a working OpenMP installation.
+
+
+Help
+====
+
+If you have any problems please read through the files INSTALL (this
+file) and README and check the MDAnalysis project pages at
+
+      https://www.mdanalysis.org
+
+in particular https://github.com/MDAnalysis/mdanalysis/wiki/Install
+and related pages.
+
+You can always ask questions on the MDAnalysis mailing list:
+
+      http://groups.google.com/group/mdnalysis-discussion
+
+People there are very happy to help. When posting please remember to
+mention the release of MDAnalysis you are trying to install (e.g. "tar
+file MDAnalysis-0.7.3 from website" or "commit deadbee1"), all the
+commands that you typed to install the package, and the full output
+(typically right from ``python setup.py build``). You should also
+mention your operating system (e.g. Ubuntu 14.04) and Python version
+(output from ``python --version``) so that we can better diagnose the
+problem.
+
+
+Installing from source
+======================
+
+Source code is available at https://github.com/MDAnalysis/mdanalysis
+
+See https://github.com/MDAnalysis/mdanalysis/wiki/Install for further instructions.

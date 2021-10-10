@@ -1,0 +1,6 @@
+graft scripts
+include README INSTALL LICENSE AUTHORS TODO SUMMARY.txt
+include setup.py
+include MDAnalysisTests/data/*/*
+global-exclude *~
+global-exclude *.pkl
