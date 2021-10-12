@@ -78,8 +78,8 @@ class MDA_SDist(sdist.sdist):
 
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (3, 6):
-    print("MDAnalysis requires Python 3.6 or better. "
+if sys.version_info[:2] < (3, 7):
+    print("MDAnalysis requires Python 3.7 or better. "
           "Python {0:d}.{1:d} detected".format(*sys.version_info[:2]))
     print("Please upgrade your version of Python.")
     sys.exit(-1)
@@ -87,7 +87,7 @@ if sys.version_info[:2] < (3, 6):
 
 if __name__ == '__main__':
     # this must be in-sync with MDAnalysis
-    RELEASE = "2.0.0-dev0"
+    RELEASE = "2.1.0-dev0"
     with open("README") as summary:
         LONG_DESCRIPTION = summary.read()
 
@@ -101,7 +101,6 @@ if __name__ == '__main__':
         'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',

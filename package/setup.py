@@ -56,8 +56,8 @@ import warnings
 import platform
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (3, 6):
-    print('MDAnalysis requires Python 3.6 or better. Python {0:d}.{1:d} detected'.format(*
+if sys.version_info[:2] < (3, 7):
+    print('MDAnalysis requires Python 3.7 or better. Python {0:d}.{1:d} detected'.format(*
           sys.version_info[:2]))
     print('Please upgrade your version of Python.')
     sys.exit(-1)
@@ -73,7 +73,7 @@ else:
     from commands import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "2.0.0-dev0"
+RELEASE = "2.1.0-dev0"
 
 is_release = 'dev' not in RELEASE
 
@@ -189,7 +189,7 @@ def get_numpy_include():
         import numpy as np
     except ImportError:
         print('*** package "numpy" not found ***')
-        print('MDAnalysis requires a version of NumPy (>=1.16.0), even for setup.')
+        print('MDAnalysis requires a version of NumPy (>=1.18.0), even for setup.')
         print('Please get it from http://numpy.scipy.org/ or install it through '
               'your package manager.')
         sys.exit(-1)
@@ -574,7 +574,6 @@ if __name__ == '__main__':
         'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
@@ -588,7 +587,7 @@ if __name__ == '__main__':
     exts, cythonfiles = extensions(config)
 
     install_requires = [
-          'numpy>=1.16.0',
+          'numpy>=1.18.0',
           'biopython>=1.71',
           'networkx>=1.0',
           'GridDataFormats>=0.4.0',
@@ -635,11 +634,11 @@ if __name__ == '__main__':
                         ],
           },
           ext_modules=exts,
-          python_requires='>=3.6',
+          python_requires='>=3.7',
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
-              'numpy>=1.16.0',
+              'numpy>=1.18.0',
           ],
           install_requires=install_requires,
           # extras can be difficult to install through setuptools and/or

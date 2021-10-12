@@ -49,8 +49,14 @@ notation`_ to `MDAnalysis notation`_. If MDAnalysis does not recognize the unit
 provided, a :exc:`RuntimeError` is raised.  If no units are provided,
 MDAnalysis stores a value of ``None`` for each unit.  If the H5MD file does not
 contain units and ``convert_units=True``, MDAnalysis will raise a
-:exc`ValueError`. To load a universe from an H5MD file with no units, set
-``convert_units=False``.
+:exc:`ValueError`. To load a universe from an H5MD file with no units defined,
+set ``convert_units=False``.
+
+:class:`H5MDWriter` detects the native units of the parent trajectory and
+writes the trajectory with those units, unless one of `timeunit`,
+`lengthunit`, `velocityunit`, `forceunit` arugments are supplied. In
+this case, the writer will write the corresponding dataset with the selected
+unit only if it is recognized by `MDAnalysis units`_.
 
 
 Example: Loading an H5MD simulation
@@ -70,8 +76,39 @@ into the reader::
     with h5py.File("trajectory.h5md", 'r') as f:
          u = mda.Universe("topology.tpr", f)
 
+
 .. Note:: Directly using a `h5py.File` does not work yet.
    See issue `#2884 <https://github.com/MDAnalysis/mdanalysis/issues/2884>`_.
+
+
+Example: Writing an H5MD file
+-----------------------------
+
+To write to an H5MD file from a trajectory loaded with MDAnalysis, do:
+
+.. code-block:: python
+
+    import MDAnalysis as mda
+    u = mda.Universe("topology.tpr", "trajectory.h5md")
+    with mda.Writer("output.h5md", n_atoms=u.trajectory.n_atoms) as W:
+        for ts in u.trajectory:
+            W.write(u)
+
+To write an H5MD file with contiguous datasets, you must specify the
+number of frames to be written and set ``chunks=False``:
+
+.. code-block:: python
+
+    with mda.Writer("output_contigous.h5md", n_atoms=u.trajectory.n_atoms,
+                    n_frames=3, chunks=False) as W:
+        for ts in u.trajectory[:3]:
+            W.write(u)
+
+The writer also supports writing directly from an :class:`~MDAnalysis.core.groups.AtomGroup`::
+
+    ag = u.select_atoms("protein and name CA")
+    ag.write("alpha_carbons.h5md", frames='all')
+
 
 Example: Opening an H5MD file in parallel
 -----------------------------------------
@@ -86,6 +123,7 @@ parallel HDF5, pass `driver` and `comm` arguments to
     from mpi4py import MPI
     u = mda.Universe("topology.tpr", "trajectory.h5md",
                      driver="mpio", comm=MPI.COMM_WORLD)
+
 
 .. Note::
    :mod:`h5py` must be built with parallel features enabled on top of a parallel
@@ -148,37 +186,22 @@ parallel hdf5/h5py/mpi4py please let everyone know on the
 .. _`Build h5py from sources`: https://docs.h5py.org/en/stable/mpi.html#building-against-parallel-hdf5
 .. _`H5MD notation`: https://nongnu.org/h5md/modules/units.html
 .. _`MDAnalysis notation`: https://userguide.mdanalysis.org/units.html
+.. _`MDAnalysis units`: https://userguide.mdanalysis.org/units.html
 .. _`MDAnalysis forums`: https://www.mdanalysis.org/#participating
 
 
 Classes
 -------
 
-.. autoclass:: Timestep
-   :members:
-
-   .. attribute:: positions
-
-      coordinates of the atoms as a :class:`numpy.ndarray` of shape
-      `(n_atoms, 3)`
-
-   .. attribute:: velocities
-
-      velocities of the atoms as a :class:`numpy.ndarray` of shape
-      `(n_atoms, 3)`; only available if the trajectory contains velocities
-      or if the `velocities` = ``True`` keyword has been supplied.
-
-   .. attribute:: forces
-
-      forces of the atoms as a :class:`numpy.ndarray` of shape
-      `(n_atoms, 3)`; only available if the trajectory contains forces
-      or if the `forces` = ``True`` keyword has been supplied.
-
-
 .. autoclass:: H5MDReader
    :members:
+   :inherited-members:
 
    .. automethod:: H5MDReader._reopen
+
+.. autoclass:: H5MDWriter
+   :members:
+   :inherited-members:
 
 .. autoclass:: H5PYPicklable
    :members:
@@ -188,8 +211,8 @@ Classes
 import numpy as np
 import MDAnalysis as mda
 from . import base, core
-from .base import Timestep
 from ..exceptions import NoDataError
+from ..due import due, Doi
 try:
     import h5py
 except ImportError:
@@ -218,10 +241,12 @@ class H5MDReader(base.ReaderBase):
     `convert_units` is set to ``True``.
 
     Additional data in the *observables* group of the H5MD file are
-    loaded into the :attr:`Timestep.data` dictionary.
+    loaded into the :attr:`Timestep.data
+    <MDAnalysis.coordinates.base.Timestep.data>` dictionary.
 
     Only 3D-periodic boxes or no periodicity are supported; for no
-    periodicity, :attr:`Timestep.dimensions` will return ``None``.
+    periodicity, :attr:`Timestep.dimensions
+    <MDAnalysis.coordinates.base.Timestep.dimensions>` will return ``None``.
 
     Although H5MD can store varying numbers of particles per time step
     as produced by, e.g., GCMC simulations, MDAnalysis can currently
@@ -352,6 +377,12 @@ class H5MDReader(base.ReaderBase):
         }
     }
 
+    @due.dcite(Doi("10.25080/majora-1b6fd038-005"),
+               description="MDAnalysis trajectory reader/writer of the H5MD"
+               "format", path=__name__)
+    @due.dcite(Doi("10.1016/j.cpc.2014.01.018"),
+               description="Specifications of the H5MD standard",
+               path=__name__, version='1.1')
     def __init__(self, filename,
                  convert_units=True,
                  driver=None,
@@ -416,10 +447,14 @@ class H5MDReader(base.ReaderBase):
         self._has = {name: name in self._particle_group for
                      name in ('position', 'velocity', 'force')}
 
-        # Gets n_atoms from first available group
+        # Gets some info about what settings the datasets were created with
+        # from first available group
         for name, value in self._has.items():
             if value:
-                self.n_atoms = self._particle_group[name]['value'].shape[1]
+                dset = self._particle_group[f'{name}/value']
+                self.n_atoms = dset.shape[1]
+                self.compression = dset.compression
+                self.compression_opts = dset.compression_opts
                 break
         else:
             raise NoDataError("Provide at least a position, velocity"
@@ -544,11 +579,11 @@ class H5MDReader(base.ReaderBase):
                                            mode='r',
                                            driver=self._driver,
                                            comm=self._comm)
-            elif self._driver is not None:
-                self._file = H5PYPicklable(name=self.filename, mode='r',
-                                           driver=self._driver)
             else:
-                self._file = H5PYPicklable(name=self.filename, mode='r')
+                self._file = H5PYPicklable(name=self.filename,
+                                           mode='r',
+                                           driver=self._driver)
+
         # pulls first key out of 'particles'
         # allows for arbitrary name of group1 in 'particles'
         self._particle_group = self._file['particles'][
@@ -613,12 +648,18 @@ class H5MDReader(base.ReaderBase):
                 self.ts.data[key] = self._file['observables'][key][
                     'value'][self._frame]
 
-        # pulls 'time' out of first available parent group
+        # pulls 'time' and 'step' out of first available parent group
         for name, value in self._has.items():
             if value:
                 if 'time' in self._particle_group[name]:
-                    self.ts.data['time'] = self._particle_group[name][
+                    self.ts.time = self._particle_group[name][
                         'time'][self._frame]
+                    break
+        for name, value in self._has.items():
+            if value:
+                if 'step' in self._particle_group[name]:
+                    self.ts.data['step'] = self._particle_group[name][
+                        'step'][self._frame]
                     break
 
     def _read_dataset_into_ts(self, dataset, attribute):
@@ -687,6 +728,40 @@ class H5MDReader(base.ReaderBase):
         self.close()
         self.open_trajectory()
 
+    def Writer(self, filename, n_atoms=None, **kwargs):
+        """Return writer for trajectory format
+
+        Note
+        ----
+        The chunk shape of the input file will not be copied to the output
+        file, as :class:`H5MDWriter` uses a chunk shape of ``(1, n_atoms, 3)``
+        by default. To use a custom chunk shape, you must specify the
+        `chunks` argument. If you would like to copy an existing chunk
+        format from a dataset (positions, velocities, or forces), do
+        the following::
+
+            chunks = u.trajectory._particle_group['position/value'].chunks
+
+        Note that the writer will set the same layout for all particle groups.
+
+        See Also
+        --------
+        :class:`H5MDWriter`  Output class for the H5MD format
+
+
+        .. versionadded:: 2.0.0
+
+        """
+        if n_atoms is None:
+            n_atoms = self.n_atoms
+        kwargs.setdefault('driver', self._driver)
+        kwargs.setdefault('compression', self.compression)
+        kwargs.setdefault('compression_opts', self.compression_opts)
+        kwargs.setdefault('positions', self.has_positions)
+        kwargs.setdefault('velocities', self.has_velocities)
+        kwargs.setdefault('forces', self.has_forces)
+        return H5MDWriter(filename, n_atoms, **kwargs)
+
     @property
     def has_positions(self):
         """``True`` if 'position' group is in trajectory."""
@@ -724,6 +799,642 @@ class H5MDReader(base.ReaderBase):
         self._particle_group = self._file['particles'][
                                list(self._file['particles'])[0]]
         self[self.ts.frame]
+
+
+class H5MDWriter(base.WriterBase):
+    """Writer for `H5MD`_ format (version 1.1).
+
+    H5MD trajectories are automatically recognised by the
+    file extension ".h5md".
+
+    All data from the input :class:`~MDAnalysis.coordinates.base.Timestep` is
+    written by default. For detailed information on how :class:`H5MDWriter`
+    handles units, compression, and chunking, see the Notes section below.
+
+    Note
+    ----
+    Parellel writing with the use of a MPI communicator and the ``'mpio'``
+    HDF5 driver is currently not supported.
+
+    Note
+    ----
+    :exc:`NoDataError` is raised if no positions, velocities, or forces are
+    found in the input trajectory. While the H5MD standard allows for this
+    case, :class:`H5MDReader` cannot currently read files without at least
+    one of these three groups.
+
+    Note
+    ----
+    Writing H5MD files with fancy trajectory slicing where the Timestep
+    does not increase monotonically such as ``u.trajectory[[2,1,0]]``
+    or ``u.trajectory[[0,1,2,0,1,2]]`` raises a :exc:`ValueError` as this
+    violates the rules of the step dataset in the H5MD standard.
+
+    Parameters
+    ----------
+    filename : str or :class:`h5py.File`
+        trajectory filename or open h5py file
+    n_atoms : int
+        number of atoms in trajectory
+    n_frames : int (optional)
+        number of frames to be written in trajectory
+    driver : str (optional)
+        H5PY file driver used to open H5MD file. See `H5PY drivers`_ for
+        list of available drivers.
+    convert_units : bool (optional)
+        Convert units from MDAnalysis to desired units
+    chunks : tuple (optional)
+        Custom chunk layout to be applied to the position,
+        velocity, and force datasets. By default, these datasets
+        are chunked in ``(1, n_atoms, 3)`` blocks
+    compression : str or int (optional)
+        HDF5 dataset compression setting to be applied
+        to position, velocity, and force datasets. Allowed
+        settings are 'gzip', 'szip', 'lzf'. If an integer
+        in range(10), this indicates gzip compression level.
+        Otherwise, an integer indicates the number of a
+        dynamically loaded compression filter.
+    compression_opts : int or tup (optional)
+        Compression settings.  This is an integer for gzip, 2-tuple for
+        szip, etc. If specifying a dynamically loaded compression filter
+        number, this must be a tuple of values. For gzip, 1 indicates
+        the lowest level of compression and 9 indicates maximum compression.
+    positions : bool (optional)
+        Write positions into the trajectory [``True``]
+    velocities : bool (optional)
+        Write velocities into the trajectory [``True``]
+    forces : bool (optional)
+        Write forces into the trajectory [``True``]
+    timeunit : str (optional)
+        Option to convert values in the 'time' dataset to a custom unit,
+        must be recognizable by MDAnalysis
+    lengthunit : str (optional)
+        Option to convert values in the 'position/value' dataset to a
+        custom unit, must be recognizable by MDAnalysis
+    velocityunit : str (optional)
+        Option to convert values in the 'velocity/value' dataset to a
+        custom unit, must be recognizable by MDAnalysis
+    forceunit : str (optional)
+        Option to convert values in the 'force/value' dataset to a
+        custom unit, must be recognizable by MDAnalysis
+    author : str (optional)
+        Name of the author of the file
+    author_email : str (optional)
+        Email of the author of the file
+    creator : str (optional)
+        Software that wrote the file [``MDAnalysis``]
+    creator_version : str (optional)
+        Version of software that wrote the file
+        [:attr:`MDAnalysis.__version__`]
+
+    Raises
+    ------
+    RuntimeError
+        when `H5PY`_ is not installed
+    ValueError
+        when `n_atoms` is 0
+    ValueError
+        when ``chunks=False`` but the user did not specify `n_frames`
+    ValueError
+        when `positions`, `velocities`, and `forces` are all
+        set to ``False``
+    TypeError
+        when the input object is not a :class:`Universe` or
+        :class:`AtomGroup`
+    IOError
+        when `n_atoms` of the :class:`Universe` or :class:`AtomGroup`
+        being written does not match `n_atoms` passed as an argument
+        to the writer
+    ValueError
+        when any of the optional `timeunit`, `lengthunit`,
+        `velocityunit`, or `forceunit` keyword arguments are
+        not recognized by MDAnalysis
+
+    Notes
+    -----
+
+    By default, the writer will write all available data (positions,
+    velocities, and forces) if detected in the input
+    :class:`~MDAnalysis.coordinates.base.Timestep`. In addition, the settings
+    for `compression` and `compression_opts` will be read from
+    the first available group of positions, velocities, or forces and used as
+    the default value. To write a file without any one of these datsets,
+    set `positions`, `velocities`, or `forces` to ``False``.
+
+    .. rubric:: Units
+
+    The H5MD format is very flexible with regards to units, as there is no
+    standard defined unit for the format. For this reason, :class:`H5MDWriter`
+    does not enforce any units. The units of the written trajectory can be set
+    explicitly with the keyword arguments `lengthunit`, `velocityunit`,
+    and `forceunit`. If units are not explicitly specified, they are set to
+    the native units of the trajectory that is the source of the coordinates.
+    For example, if one converts a DCD trajectory, then positions are written
+    in ångstrom and time in AKMA units. A GROMACS XTC will be written in nm and
+    ps. The units are stored in the metadata of the H5MD file so when
+    MDAnalysis loads the H5MD trajectory, the units will be automatically
+    set correctly.
+
+    .. rubric:: Compression
+
+    HDF5 natively supports various compression modes. To write the trajectory
+    with compressed datasets, set ``compression='gzip'``, ``compression='lzf'``
+    , etc. See `H5PY compression options`_ for all supported modes of
+    compression. An additional argument, `compression_opts`, can be used to
+    fine tune the level of compression. For example, for GZIP compression,
+    `compression_opts` can be set to 1 for minimum compression and 9 for
+    maximum compression.
+
+    .. rubric:: HDF5 Chunking
+
+    HDF5 datasets can be *chunked*, meaning the dataset can be split into equal
+    sized pieces and stored in different, noncontiguous places on disk.
+    If HDF5 tries to read an element from a chunked dataset, the *entire*
+    dataset must be read, therefore an ill-thought-out chunking scheme can
+    drastically effect file I/O performance. In the case of all MDAnalysis
+    writers, in general, the number of frames being written is not known
+    apriori by the writer, therefore the HDF5 must be extendable. However, the
+    allocation of diskspace is defined when the dataset is created, therefore
+    extendable HDF5 datasets *must* be chunked so as to allow dynamic storage
+    on disk of any incoming data to the writer. In such cases where chunking
+    isn't explicity defined by the user, H5PY automatically selects a chunk
+    shape via an algorithm that attempts to make mostly square chunks between
+    1 KiB - 1 MiB, however this can lead to suboptimal I/O performance.
+    :class:`H5MDWriter` uses a default chunk shape of ``(1, n_atoms, 3)``so
+    as to mimic the typical access pattern of a trajectory by MDAnalysis. In
+    our tests ([Jakupovic2021]_), this chunk shape led to a speedup on the
+    order of 10x versus H5PY's auto-chunked shape. Users can set a custom
+    chunk shape with the `chunks` argument. Additionaly, the datasets in a
+    file can be written with a contiguous layout by setting ``chunks=False``,
+    however this must be accompanied by setting `n_frames` equal to the
+    number of frames being written, as HDF5 must know how much space to
+    allocate on disk when creating the dataset.
+
+    .. _`H5PY compression options`: https://docs.h5py.org/en/stable/high/dataset.html#filter-pipeline
+    .. _`H5PY drivers`: https://docs.h5py.org/en/stable/high/file.html#file-drivers
+
+
+    .. versionadded:: 2.0.0
+
+    """
+
+    format = 'H5MD'
+    multiframe = True
+    #: These variables are not written from :attr:`Timestep.data`
+    #: dictionary to the observables group in the H5MD file
+    data_blacklist = ['step', 'time', 'dt']
+
+    #: currently written version of the file format
+    H5MD_VERSION = (1, 1)
+
+    # This dictionary is used to translate MDAnalysis units to H5MD units.
+    # (https://nongnu.org/h5md/modules/units.html)
+    _unit_translation_dict = {
+        'time': {
+            'ps': 'ps',
+            'fs': 'fs',
+            'ns': 'ns',
+            'second': 's',
+            'sec': 's',
+            's': 's',
+            'AKMA': 'AKMA'},
+        'length': {
+            'Angstrom': 'Angstrom',
+            'angstrom': 'Angstrom',
+            'A': 'Angstrom',
+            'nm': 'nm',
+            'pm': 'pm',
+            'fm': 'fm'},
+        'velocity': {
+            'Angstrom/ps': 'Angstrom ps-1',
+            'A/ps': 'Angstrom ps-1',
+            'Angstrom/fs': 'Angstrom fs-1',
+            'A/fs': 'Angstrom fs-1',
+            'Angstrom/AKMA': 'Angstrom AKMA-1',
+            'A/AKMA': 'Angstrom AKMA-1',
+            'nm/ps': 'nm ps-1',
+            'nm/ns': 'nm ns-1',
+            'pm/ps': 'pm ps-1',
+            'm/s': 'm s-1'},
+        'force':  {
+            'kJ/(mol*Angstrom)': 'kJ mol-1 Angstrom-1',
+            'kJ/(mol*nm)': 'kJ mol-1 nm-1',
+            'Newton': 'Newton',
+            'N': 'N',
+            'J/m': 'J m-1',
+            'kcal/(mol*Angstrom)': 'kcal mol-1 Angstrom-1',
+            'kcal/(mol*A)': 'kcal mol-1 Angstrom-1'}}
+
+    @due.dcite(Doi("10.25080/majora-1b6fd038-005"),
+               description="MDAnalysis trajectory reader/writer of the H5MD"
+               "format", path=__name__)
+    @due.dcite(Doi("10.1016/j.cpc.2014.01.018"),
+               description="Specifications of the H5MD standard",
+               path=__name__, version='1.1')
+    def __init__(self, filename, n_atoms, n_frames=None, driver=None,
+                 convert_units=True, chunks=None, compression=None,
+                 compression_opts=None, positions=True, velocities=True,
+                 forces=True, timeunit=None, lengthunit=None,
+                 velocityunit=None, forceunit=None, author='N/A',
+                 author_email=None, creator='MDAnalysis',
+                 creator_version=mda.__version__, **kwargs):
+
+        if not HAS_H5PY:
+            raise RuntimeError("H5MDWriter: Please install h5py")
+        self.filename = filename
+        if n_atoms == 0:
+            raise ValueError("H5MDWriter: no atoms in output trajectory")
+        self._driver = driver
+        if self._driver == 'mpio':
+            raise ValueError("H5MDWriter: parallel writing with MPI I/O "
+                             "is not currently supported.")
+        self.n_atoms = n_atoms
+        self.n_frames = n_frames
+        self.chunks = (1, n_atoms, 3) if chunks is None else chunks
+        if self.chunks is False and self.n_frames is None:
+            raise ValueError("H5MDWriter must know how many frames will be "
+                             "written if ``chunks=False``.")
+        self.contiguous = self.chunks is False and self.n_frames is not None
+        self.compression = compression
+        self.compression_opts = compression_opts
+        self.convert_units = convert_units
+        self.h5md_file = None
+
+        # The writer defaults to writing all data from the parent Timestep if
+        # it exists. If these are True, the writer will check each
+        # Timestep.has_*  value and fill the self._has dictionary accordingly
+        # in _initialize_hdf5_datasets()
+        self._write_positions = positions
+        self._write_velocities = velocities
+        self._write_forces = forces
+        if not any([self._write_positions,
+                    self._write_velocities,
+                    self._write_velocities]):
+            raise ValueError("At least one of positions, velocities, or "
+                             "forces must be set to ``True``.")
+
+        self._new_units = {'time': timeunit,
+                           'length': lengthunit,
+                           'velocity': velocityunit,
+                           'force': forceunit}
+
+        # Pull out various keywords to store metadata in 'h5md' group
+        self.author = author
+        self.author_email = author_email
+        self.creator = creator
+        self.creator_version = creator_version
+
+    def _write_next_frame(self, ag):
+        """Write information associated with ``ag`` at current frame
+        into trajectory
+
+        Parameters
+        ----------
+        ag : AtomGroup or Universe
+
+        """
+        try:
+            # Atomgroup?
+            ts = ag.ts
+        except AttributeError:
+            try:
+                # Universe?
+                ts = ag.trajectory.ts
+            except AttributeError:
+                errmsg = "Input obj is neither an AtomGroup or Universe"
+                raise TypeError(errmsg) from None
+
+        if ts.n_atoms != self.n_atoms:
+            raise IOError("H5MDWriter: Timestep does not have"
+                          " the correct number of atoms")
+
+        # This should only be called once when first timestep is read.
+        if self.h5md_file is None:
+            self._determine_units(ag)
+            self._open_file()
+            self._initialize_hdf5_datasets(ts)
+
+        return self._write_next_timestep(ts)
+
+    def _determine_units(self, ag):
+        """determine which units the file will be written with
+
+        By default, it fills the :attr:`self.units` dictionary by copying the
+        units dictionary of the parent file. Because H5MD files have no
+        standard unit restrictions, users may pass a kwarg in ``(timeunit,
+        lengthunit, velocityunit, forceunit)`` to the writer so long as
+        MDAnalysis has a conversion factor for it (:exc:`ValueError` raised if
+        it does not). These custom unit arguments must be in
+        `MDAnalysis notation`_. If custom units are supplied from the user,
+        :attr`self.units[unit]` is replaced with the corresponding
+        `unit` argument.
+
+        """
+
+        self.units = ag.universe.trajectory.units.copy()
+
+        # set user input units
+        for key, value in self._new_units.items():
+            if value is not None:
+                if value not in self._unit_translation_dict[key]:
+                    raise ValueError(f"{value} is not a unit recognized by"
+                                     " MDAnalysis. Allowed units are:"
+                                     f" {self._unit_translation_dict.keys()}"
+                                     " For more information on units, see"
+                                     " `MDAnalysis units`_.")
+                else:
+                    self.units[key] = self._new_units[key]
+
+        if self.convert_units:
+            # check if all units are None
+            if not any(self.units.values()):
+                raise ValueError("The trajectory has no units, but "
+                                 "`convert_units` is set to ``True`` by "
+                                 "default in MDAnalysis. To write the file "
+                                 "with no units, set ``convert_units=False``.")
+
+    def _open_file(self):
+        """Opens file with `H5PY`_ library and fills in metadata from kwargs.
+
+        :attr:`self.h5md_file` becomes file handle that links to root level.
+
+        """
+
+        self.h5md_file = h5py.File(name=self.filename,
+                                   mode='w',
+                                   driver=self._driver)
+
+        # fill in H5MD metadata from kwargs
+        self.h5md_file.require_group('h5md')
+        self.h5md_file['h5md'].attrs['version'] = np.array(self.H5MD_VERSION)
+        self.h5md_file['h5md'].require_group('author')
+        self.h5md_file['h5md/author'].attrs['name'] = self.author
+        if self.author_email is not None:
+            self.h5md_file['h5md/author'].attrs['email'] = self.author_email
+        self.h5md_file['h5md'].require_group('creator')
+        self.h5md_file['h5md/creator'].attrs['name'] = self.creator
+        self.h5md_file['h5md/creator'].attrs['version'] = self.creator_version
+
+    def _initialize_hdf5_datasets(self, ts):
+        """initializes all datasets that will be written to by
+        :meth:`_write_next_timestep`
+
+        Note
+        ----
+        :exc:`NoDataError` is raised if no positions, velocities, or forces are
+        found in the input trajectory. While the H5MD standard allows for this
+        case, :class:`H5MDReader` cannot currently read files without at least
+        one of these three groups. A future change to both the reader and
+        writer will allow this case.
+
+
+        """
+
+        # for keeping track of where to write in the dataset
+        self._counter = 0
+
+        # ask the parent file if it has positions, velocities, and forces
+        # if prompted by the writer with the self._write_* attributes
+        self._has = {group: getattr(ts, f'has_{attr}')
+                     if getattr(self, f'_write_{attr}')
+                     else False for group, attr in zip(
+                     ('position', 'velocity', 'force'),
+                     ('positions', 'velocities', 'forces'))}
+
+        # initialize trajectory group
+        self.h5md_file.require_group('particles').require_group('trajectory')
+        self._traj = self.h5md_file['particles/trajectory']
+        self.data_keys = [
+            key for key in ts.data.keys() if key not in self.data_blacklist]
+        if self.data_keys:
+            self._obsv = self.h5md_file.require_group('observables')
+
+        # box group is required for every group in 'particles'
+        self._traj.require_group('box')
+        self._traj['box'].attrs['dimension'] = 3
+        if ts.dimensions is not None and np.all(ts.dimensions > 0):
+            self._traj['box'].attrs['boundary'] = 3*['periodic']
+            self._traj['box'].require_group('edges')
+            self._edges = self._traj.require_dataset('box/edges/value',
+                                                     shape=(0, 3, 3),
+                                                     maxshape=(None, 3, 3),
+                                                     dtype=np.float32)
+            self._step = self._traj.require_dataset('box/edges/step',
+                                                    shape=(0,),
+                                                    maxshape=(None,),
+                                                    dtype=np.int32)
+            self._time = self._traj.require_dataset('box/edges/time',
+                                                    shape=(0,),
+                                                    maxshape=(None,),
+                                                    dtype=np.float32)
+            self._set_attr_unit(self._edges, 'length')
+            self._set_attr_unit(self._time, 'time')
+        else:
+            # if no box, boundary attr must be "none" according to H5MD
+            self._traj['box'].attrs['boundary'] = 3*['none']
+            self._create_step_and_time_datasets()
+
+        if self.has_positions:
+            self._create_trajectory_dataset('position')
+            self._pos = self._traj['position/value']
+            self._set_attr_unit(self._pos, 'length')
+        if self.has_velocities:
+            self._create_trajectory_dataset('velocity')
+            self._vel = self._traj['velocity/value']
+            self._set_attr_unit(self._vel, 'velocity')
+        if self.has_forces:
+            self._create_trajectory_dataset('force')
+            self._force = self._traj['force/value']
+            self._set_attr_unit(self._force, 'force')
+
+        # intialize observable datasets from ts.data dictionary that
+        # are NOT in self.data_blacklist
+        if self.data_keys:
+            for key in self.data_keys:
+                self._create_observables_dataset(key, ts.data[key])
+
+    def _create_step_and_time_datasets(self):
+        """helper function to initialize a dataset for step and time
+
+        Hunts down first available location to create the step and time
+        datasets. This should only be called if the trajectory has no
+        dimension, otherwise the 'box/edges' group creates step and time
+        datasets since 'box' is the only required group in 'particles'.
+
+        :attr:`self._step` and :attr`self._time` serve as links to the created
+        datasets that other datasets can also point to for their step and time.
+        This serves two purposes:
+            1. Avoid redundant writing of multiple datasets that share the
+               same step and time data.
+            2. In HDF5, each chunked dataset has a cache (default 1 MiB),
+               so only 1 read is required to access step and time data
+               for all datasets that share the same step and time.
+
+        """
+
+        for group, value in self._has.items():
+            if value:
+                self._step = self._traj.require_dataset(f'{group}/step',
+                                                        shape=(0,),
+                                                        maxshape=(None,),
+                                                        dtype=np.int32)
+                self._time = self._traj.require_dataset(f'{group}/time',
+                                                        shape=(0,),
+                                                        maxshape=(None,),
+                                                        dtype=np.float32)
+                self._set_attr_unit(self._time, 'time')
+                break
+
+    def _create_trajectory_dataset(self, group):
+        """helper function to initialize a dataset for
+        position, velocity, and force"""
+
+        if self.n_frames is None:
+            shape = (0, self.n_atoms, 3)
+            maxshape = (None, self.n_atoms, 3)
+        else:
+            shape = (self.n_frames, self.n_atoms, 3)
+            maxshape = None
+
+        chunks = None if self.contiguous else self.chunks
+
+        self._traj.require_group(group)
+        self._traj.require_dataset(f'{group}/value',
+                                   shape=shape,
+                                   maxshape=maxshape,
+                                   dtype=np.float32,
+                                   chunks=chunks,
+                                   compression=self.compression,
+                                   compression_opts=self.compression_opts)
+        if 'step' not in self._traj[group]:
+            self._traj[f'{group}/step'] = self._step
+        if 'time' not in self._traj[group]:
+            self._traj[f'{group}/time'] = self._time
+
+    def _create_observables_dataset(self, group, data):
+        """helper function to initialize a dataset for each observable"""
+
+        self._obsv.require_group(group)
+        # guarantee ints and floats have a shape ()
+        data = np.asarray(data)
+        self._obsv.require_dataset(f'{group}/value',
+                                   shape=(0,) + data.shape,
+                                   maxshape=(None,) + data.shape,
+                                   dtype=data.dtype)
+        if 'step' not in self._obsv[group]:
+            self._obsv[f'{group}/step'] = self._step
+        if 'time' not in self._obsv[group]:
+            self._obsv[f'{group}/time'] = self._time
+
+    def _set_attr_unit(self, dset, unit):
+        """helper function to set a 'unit' attribute for an HDF5 dataset"""
+
+        if self.units[unit] is None:
+            return
+
+        dset.attrs['unit'] = self._unit_translation_dict[unit][self.units[unit]]
+
+    def _write_next_timestep(self, ts):
+        """Write coordinates and unitcell information to H5MD file.
+
+        Do not call this method directly; instead use
+        :meth:`write` because some essential setup is done
+        there before writing the first frame.
+
+        The first dimension of each dataset is extended by +1 and
+        then the data is written to the new slot.
+
+        Note
+        ----
+        Writing H5MD files with fancy trajectory slicing where the Timestep
+        does not increase monotonically such as ``u.trajectory[[2,1,0]]``
+        or ``u.trajectory[[0,1,2,0,1,2]]`` raises a :exc:`ValueError` as this
+        violates the rules of the step dataset in the H5MD standard.
+
+        """
+
+        i = self._counter
+
+        # H5MD step refers to the integration step at which the data were
+        # sampled, therefore ts.data['step'] is the most appropriate value
+        # to use. However, step is also necessary in H5MD to allow
+        # temporal matching of the data, so ts.frame is used as an alternative
+        self._step.resize(self._step.shape[0]+1, axis=0)
+        try:
+            self._step[i] = ts.data['step']
+        except(KeyError):
+            self._step[i] = ts.frame
+        if len(self._step) > 1 and self._step[i] < self._step[i-1]:
+            raise ValueError("The H5MD standard dictates that the step "
+                             "dataset must increase monotonically in value.")
+
+        # the dataset.resize() method should work with any chunk shape
+        self._time.resize(self._time.shape[0]+1, axis=0)
+        self._time[i] = ts.time
+
+        if 'edges' in self._traj['box']:
+            self._edges.resize(self._edges.shape[0]+1, axis=0)
+            self._edges.write_direct(ts.triclinic_dimensions,
+                                     dest_sel=np.s_[i, :])
+        # These datasets are not resized if n_frames was provided as an
+        # argument, as they were initialized with their full size.
+        if self.has_positions:
+            if self.n_frames is None:
+                self._pos.resize(self._pos.shape[0]+1, axis=0)
+            self._pos.write_direct(ts.positions, dest_sel=np.s_[i, :])
+        if self.has_velocities:
+            if self.n_frames is None:
+                self._vel.resize(self._vel.shape[0]+1, axis=0)
+            self._vel.write_direct(ts.velocities, dest_sel=np.s_[i, :])
+        if self.has_forces:
+            if self.n_frames is None:
+                self._force.resize(self._force.shape[0]+1, axis=0)
+            self._force.write_direct(ts.forces, dest_sel=np.s_[i, :])
+
+        if self.data_keys:
+            for key in self.data_keys:
+                obs = self._obsv[f'{key}/value']
+                obs.resize(obs.shape[0]+1, axis=0)
+                obs[i] = ts.data[key]
+
+        if self.convert_units:
+            self._convert_dataset_with_units(i)
+
+        self._counter += 1
+
+    def _convert_dataset_with_units(self, i):
+        """convert values in the dataset arrays with self.units dictionary"""
+
+        # Note: simply doing convert_pos_to_native(self._pos[-1]) does not
+        # actually change the values in the dataset, so assignment required
+        if self.units['time'] is not None:
+            self._time[i] = self.convert_time_to_native(self._time[i])
+        if self.units['length'] is not None:
+            if self._has['position']:
+                self._pos[i] = self.convert_pos_to_native(self._pos[i])
+            if 'edges' in self._traj['box']:
+                self._edges[i] = self.convert_pos_to_native(self._edges[i])
+        if self._has['velocity']:
+            if self.units['velocity'] is not None:
+                self._vel[i] = self.convert_velocities_to_native(self._vel[i])
+        if self._has['force']:
+            if self.units['force'] is not None:
+                self._force[i] = self.convert_forces_to_native(self._force[i])
+
+    @property
+    def has_positions(self):
+        """``True`` if writer is writing positions from Timestep."""
+        return self._has['position']
+
+    @property
+    def has_velocities(self):
+        """``True`` if writer is writing velocities from Timestep."""
+        return self._has['velocity']
+
+    @property
+    def has_forces(self):
+        """``True`` if writer is writing forces from Timestep."""
+        return self._has['force']
 
 
 class H5PYPicklable(h5py.File):

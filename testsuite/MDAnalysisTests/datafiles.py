@@ -137,6 +137,9 @@ __all__ = [
     "LAMMPShyd", "LAMMPShyd2",
     "LAMMPSdata_deletedatoms",  # with deleted atoms
     "LAMMPSDUMP",
+    "LAMMPSDUMP_long",  # lammpsdump file with a few zeros sprinkled in the first column first frame
+    "LAMMPSDUMP_allcoords",  # lammpsdump file with all coordinate conventions (x,xs,xu,xsu) present, from LAMMPS rdf example
+    "LAMMPSDUMP_nocoords",  # lammpsdump file with no coordinates
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
@@ -189,6 +192,7 @@ __all__ = [
     "ITP", # for GROMACS generated itps
     "ITP_nomass", # for ATB generated itps
     "ITP_atomtypes",  # atom definitions to check atomtyes section parsing
+    "ITP_charges", # atom definitions to test custom particle charge parsing.
     "NAMDBIN", # for NAMD generated binary file
     "ITP_edited", # to check different directives are read properly
     "ITP_tip5p", # tip5p water from opls-aa, edited with additional keywords
@@ -484,6 +488,10 @@ LAMMPShyd = resource_filename(__name__, "data/lammps/hydrogen-class1.data")
 LAMMPShyd2 = resource_filename(__name__, "data/lammps/hydrogen-class1.data2")
 LAMMPSdata_deletedatoms = resource_filename(__name__, 'data/lammps/deletedatoms.data')
 LAMMPSDUMP = resource_filename(__name__, "data/lammps/wat.lammpstrj.bz2")
+LAMMPSDUMP_long = resource_filename(__name__, "data/lammps/wat.lammpstrj_long.bz2")
+LAMMPSDUMP_allcoords = resource_filename(__name__, "data/lammps/spce_all_coords.lammpstrj.bz2")
+LAMMPSDUMP_nocoords = resource_filename(__name__, "data/lammps/spce_no_coords.lammpstrj.bz2")
+
 
 unordered_res = resource_filename(__name__, "data/unordered_res.pdb")
 
@@ -550,6 +558,7 @@ BATArray = resource_filename(__name__, 'data/mol2_comments_header_bat.npy')
 ITP = resource_filename(__name__, 'data/gromacs_ala10.itp')
 ITP_nomass = resource_filename(__name__, 'data/itp_nomass.itp')
 ITP_atomtypes = resource_filename(__name__, 'data/atomtypes.itp')
+ITP_charges = resource_filename(__name__, 'data/atomtypes_charge.itp')
 ITP_edited = resource_filename(__name__, 'data/edited_itp.itp')
 ITP_tip5p = resource_filename(__name__, "data/tip5p.itp")
 ITP_spce = resource_filename(__name__, 'data/spce.itp')
