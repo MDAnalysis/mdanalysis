@@ -703,11 +703,19 @@ class _StringInternerMixin:
         self.name_lookup = np.array(name_lookup, dtype=object)
         self.values = self.name_lookup[self.nmidx]
 
-
     def _add_new(self, newval):
-        # resizes this attr to size+1 and adds newval as the value of the new entry
-        # for string interning this is slightly different
-        # newval - str
+        """Append new value to the TopologyAttr
+
+        Parameters
+        ----------
+        newval : str
+          value to append
+
+        resizes this attr to size+1 and adds newval as the value of the new entry
+        for string interning this is slightly different hence the override
+
+        .. versionadded:: 2.1.0
+        """
         try:
             newidx = self.namedict[newval]
         except KeyError:

@@ -552,7 +552,11 @@ class Topology(object):
         Raises
         ------
         NoDataError
-          If not all data was provided.  This error is raised before any
+          If not all data was provided.  This error is raised before any changes
+
+
+        .. versionchanged:: 2.1.0
+           Added use of _add_new to TopologyAttr resize
         """
         # Check that all data is here before making any changes
         for attr in self.attrs:
@@ -578,9 +582,27 @@ class Topology(object):
         return residx
 
     def add_Segment(self, **new_attrs):
-        # check new_attrs are sufficient, assigned from Universe
-        # raises - NoDataError
-        # returns - the idx of the new segment
+        """Adds a new Segment to the Topology
+
+        Parameters
+        ----------
+        new_attrs : dict
+          the new attributes for the new segment, eg {'segid': 'B'}
+
+        Raises
+        -------
+        NoDataError
+          if an attribute wasn't specified.
+
+        Returns
+        -------
+        ix : int
+          the idx of the new segment
+
+
+        .. versionchanged:: 2.1.0
+           Added use of _add_new to resize topology attrs
+        """
         for attr in self.attrs:
             if attr.per_object == 'segment':
                 if attr.singular not in new_attrs:
