@@ -227,7 +227,7 @@ jobs:
 
     - name: build_docs
       run: |
-        cd package && python setup.py build_sphinx -E
+        cd package && python setup.py build_sphinx -E --keep-going
 
     - name: deploy_docs
       if: github.event_name != 'pull_request'
