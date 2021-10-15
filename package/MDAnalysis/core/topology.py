@@ -573,11 +573,14 @@ class Topology(object):
             if not attr.per_object == 'residue':
                 continue
             newval = new_attrs[attr.singular]
-            attr.values = np.concatenate([attr.values, np.array([newval])])
+            attr._add_new(newval)
 
         return residx
 
     def add_Segment(self, **new_attrs):
+        # check new_attrs are sufficient, assigned from Universe
+        # raises - NoDataError
+        # returns - the idx of the new segment
         for attr in self.attrs:
             if attr.per_object == 'segment':
                 if attr.singular not in new_attrs:
@@ -594,7 +597,7 @@ class Topology(object):
             if not attr.per_object == 'segment':
                 continue
             newval = new_attrs[attr.singular]
-            attr.values = np.concatenate([attr.values, np.array([newval])])
+            attr._add_new(newval)
 
         return segidx
         
