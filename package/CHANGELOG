@@ -22,6 +22,8 @@ Fixes
   * TRRWriter preserves timestep data (Issue #3350).
   * Fixed Universe creation from a custom object which only provided a topology,
     previously raised a TypeError. (Issue #3443)
+  * Fixed string attributes (e.g. resname, segid) not working on Residues and Segments
+    created using add_Residue and add_Segment (Issue #3437)
 
 Enhancements
 

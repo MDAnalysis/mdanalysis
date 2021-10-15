@@ -664,15 +664,22 @@ class Atomids(AtomAttr):
 
 
 class _StringInternerMixin:
-    # string interning pattern
-    # self.namedict (dict)
-    # - maps actual string to string index (str->int)
-    # self.namelookup (array dtype object)
-    # - maps string index to actual string (int->str)
-    # self.nmidx (array dtype int)
-    # - maps atom index to string index (int->int)
-    # self.values (array dtype object)
-    # - the premade per-object string values
+    """String interning pattern
+
+    Used for faster matching of strings (see _ProtoStringSelection)
+
+     self.namedict (dict)
+     - maps actual string to string index (str->int)
+     self.namelookup (array dtype object)
+     - maps string index to actual string (int->str)
+     self.nmidx (array dtype int)
+     - maps atom index to string index (int->int)
+     self.values (array dtype object)
+     - the premade per-object string values
+
+    .. versionadded:: 2.1.0
+       Mashed together the different implementations to keep it DRY.
+    """
     def __init__(self, vals, guessed=False):
         self._guessed = guessed
 
@@ -739,7 +746,8 @@ class _StringInternerMixin:
             self.name_lookup = np.concatenate([self.name_lookup, newnames])
         self.values = self.name_lookup[self.nmidx]
 
-
+# woe betide anyone who switches this inheritance order
+# Mixin needs to be first (L to R) to get correct __init__ and set_atoms
 class _AtomStringAttr(_StringInternerMixin, AtomAttr):
     @_check_length
     def set_atoms(self, ag, values):
@@ -2027,6 +2035,8 @@ class ResidueAttr(TopologyAttr):
         raise _wronglevel_error(self, sg)
 
 
+# woe betide anyone who switches this inheritance order
+# Mixin needs to be first (L to R) to get correct __init__ and set_atoms
 class _ResidueStringAttr(_StringInternerMixin, ResidueAttr):
     @_check_length
     def set_residues(self, ag, values):
@@ -2228,6 +2238,8 @@ class SegmentAttr(TopologyAttr):
         self.values[sg.ix] = values
 
 
+# woe betide anyone who switches this inheritance order
+# Mixin needs to be first (L to R) to get correct __init__ and set_atoms
 class _SegmentStringAttr(_StringInternerMixin, SegmentAttr):
     @_check_length
     def set_segments(self, ag, values):
