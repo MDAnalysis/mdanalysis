@@ -90,6 +90,10 @@ DEF XZ = 6
 DEF YZ = 7
 DEF ZZ = 8
 
+# Cube root of the maximum size of a 32 bit signed integer. If the system is divided into more
+# grids than this, integer overflow will occur.
+DEF MAX_GRID_DIM = 1290
+
 ctypedef float coordinate[3];
 
 cdef extern from "calc_distances.h" nogil:
@@ -283,6 +287,10 @@ cdef class FastNS(object):
         max_cutoff = self._prepare_box(box, pbc)
         if cutoff > max_cutoff:
             raise ValueError("Cutoff {} too large for box (max {})".format(cutoff, max_cutoff))
+        max_assigned_grid_dimension = np.max(self.ncells)
+        if max_assigned_grid_dimension > MAX_GRID_DIM:
+            raise ValueError("Cutoff {} too small for box (longest cell dimension is {}, max is {})"
+                             .format(self.cutoff, max_assigned_grid_dimension, MAX_GRID_DIM))
         self._pack_grid(coords)
 
     cdef float _prepare_box(self, box, bint pbc):

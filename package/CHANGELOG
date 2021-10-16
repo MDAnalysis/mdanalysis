@@ -18,6 +18,7 @@ The rules for this file:
  * 2.1.0
 
 Fixes
+  * Avoid integer overflow in NSGrid with too many grids (Issue #3183)
   * Fix ITPParser charge reading (Issue #3419).
   * TRRWriter preserves timestep data (Issue #3350).
   * Fixed Universe creation from a custom object which only provided a topology,

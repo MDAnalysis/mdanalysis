@@ -71,6 +71,11 @@ def test_nsgrid_badcutoff(universe, cutoff):
         run_grid_search(universe, 0, cutoff)
 
 
+def test_nsgrid_too_many_grids(universe):
+    universe.dimensions[:3] *= 1000
+    with pytest.raises(ValueError):
+        run_grid_search(universe, 0, 1)
+
 def test_ns_grid_noneighbor(universe):
     """Check that grid search returns empty lists/arrays when there is no neighbors"""
     ref_id = 0
