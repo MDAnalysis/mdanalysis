@@ -763,7 +763,7 @@ class _AtomStringAttr(_StringInternerMixin, AtomAttr):
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
-        return np.full('', na, dtype=object)
+        return np.full(na, '', dtype=object)
 
 
 # TODO: update docs to property doc
@@ -2052,7 +2052,7 @@ class _ResidueStringAttr(_StringInternerMixin, ResidueAttr):
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
-        return np.full('', nr, dtype=object)
+        return np.full(nr, '', dtype=object)
 
 
 # TODO: update docs to property doc
@@ -2255,7 +2255,7 @@ class _SegmentStringAttr(_StringInternerMixin, SegmentAttr):
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
-        return np.full('', ns, dtype=object)
+        return np.full(ns, '', dtype=object)
 
 
 # TODO: update docs to property doc
