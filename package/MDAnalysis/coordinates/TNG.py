@@ -35,6 +35,7 @@ import MDAnalysis as mda
 from . import base, core
 from ..exceptions import NoDataError
 from ..due import due, Doi
+
 try:
     import pytng
 except ImportError:
@@ -45,6 +46,8 @@ else:
 
 class TNGReader(base.ReaderBase):
     r"""Reader for the TNG format."""
+    _special_blocks = ["TNG_TRAJ_BOX_SHAPE", "TNG_TRAJ_POSITIONS",
+                       "TNG_TRAJ_VELOCITIES", "TNG_TRAJ_FORCES"]
 
     def __init__(self, filename, **kwargs):
 
@@ -52,12 +55,44 @@ class TNGReader(base.ReaderBase):
             raise RuntimeError("Please install pytng")
 
         super(TNGReader, self).__init__(filename, **kwargs)
+
         self.filename = filename
         self._frame = 0 
+
         self._file_iterator = pytng.TNGFileIterator(self.filename,'r')
+        self._block_names = self._file_iterator.block_ids.keys()
+        self._block_ids = self._file_iterator.block_ids.values()
+
+        self._has_box = "TNG_TRAJ_BOX_SHAPE" in self._block_names
+        self._box = None
+
+        self._has_positions = "TNG_TRAJ_POSITIONS" in self._block_names
+        self._positions = None 
+        
+        self._has_velocities = "TNG_TRAJ_VELOCITIES" in self._block_names
+        self._velocities = None
+
+        self._has_forces = "TNG_TRAJ_FORCES" in self._block_names
+        self._forces = None
+
+        self._additional_blocks = [block for block in self._block_names if block not in self._special_blocks]
+        self._additional_block_data = {block: None for block in self._additional_blocks}
+        self._make_ndarrays()
     
-
-
+    def _make_ndarrays(self):
+        if self._has_box:
+            self._box = self._file_iterator.make_ndarray_for_block_from_name("TNG_TRAJ_BOX_SHAPE")
+        if self._has_positions:
+            self._positions = self._file_iterator.make_ndarray_for_block_from_name("TNG_TRAJ_POSITIONS")
+        if self._has_velocities:
+            self._velocities = self._file_iterator.make_ndarray_for_block_from_name("TNG_TRAJ_VELOCITIES")
+        if self._has_forces:
+            self._forces = self._file_iterator.make_ndarray_for_block_from_name("TNG_TRAJ_FORCES")
+        
+        for block in self._additional_blocks:
+            self._additional_block_data[block] = self._file_iterator.make_ndarray_for_block_from_name(block)
+        
+        
    def close(self):
         """close reader"""
         self._file_iterator._close()
@@ -75,6 +110,7 @@ class TNGReader(base.ReaderBase):
         self._file_iterator._open(self.filename, 'r')
 
     def _read_frame(self, i):
+        
 
 
     def _read_next_timestep(self, ts=None):
