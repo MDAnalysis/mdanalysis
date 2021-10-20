@@ -756,7 +756,7 @@ class _StringInternerMixin:
 
 # woe betide anyone who switches this inheritance order
 # Mixin needs to be first (L to R) to get correct __init__ and set_atoms
-class _AtomStringAttr(_StringInternerMixin, AtomAttr):
+class AtomStringAttr(_StringInternerMixin, AtomAttr):
     @_check_length
     def set_atoms(self, ag, values):
         return self._set_X(ag, values)
@@ -767,7 +767,7 @@ class _AtomStringAttr(_StringInternerMixin, AtomAttr):
 
 
 # TODO: update docs to property doc
-class Atomnames(_AtomStringAttr):
+class Atomnames(AtomStringAttr):
     """Name for each atom.
     """
     attrname = 'names'
@@ -1263,7 +1263,7 @@ class Atomnames(_AtomStringAttr):
 
 
 # TODO: update docs to property doc
-class Atomtypes(_AtomStringAttr):
+class Atomtypes(AtomStringAttr):
     """Type for each atom"""
     attrname = 'types'
     singular = 'type'
@@ -1272,7 +1272,7 @@ class Atomtypes(_AtomStringAttr):
 
 
 # TODO: update docs to property doc
-class Elements(_AtomStringAttr):
+class Elements(AtomStringAttr):
     """Element for each atom"""
     attrname = 'elements'
     singular = 'element'
@@ -1296,7 +1296,7 @@ class Radii(AtomAttr):
         return np.zeros(na)
 
 
-class RecordTypes(_AtomStringAttr):
+class RecordTypes(AtomStringAttr):
     """For PDB-like formats, indicates if ATOM or HETATM
 
     Defaults to 'ATOM'
@@ -1314,7 +1314,7 @@ class RecordTypes(_AtomStringAttr):
         return np.array(['ATOM'] * na, dtype=object)
 
 
-class ChainIDs(_AtomStringAttr):
+class ChainIDs(AtomStringAttr):
     """ChainID per atom
 
     Note
@@ -1902,7 +1902,7 @@ class Occupancies(AtomAttr):
 
 
 # TODO: update docs to property doc
-class AltLocs(_AtomStringAttr):
+class AltLocs(AtomStringAttr):
     """AltLocs for each atom"""
     attrname = 'altLocs'
     singular = 'altLoc'
@@ -2045,7 +2045,7 @@ class ResidueAttr(TopologyAttr):
 
 # woe betide anyone who switches this inheritance order
 # Mixin needs to be first (L to R) to get correct __init__ and set_atoms
-class _ResidueStringAttr(_StringInternerMixin, ResidueAttr):
+class ResidueStringAttr(_StringInternerMixin, ResidueAttr):
     @_check_length
     def set_residues(self, ag, values):
         return self._set_X(ag, values)
@@ -2068,7 +2068,7 @@ class Resids(ResidueAttr):
 
 
 # TODO: update docs to property doc
-class Resnames(_ResidueStringAttr):
+class Resnames(ResidueStringAttr):
     attrname = 'resnames'
     singular = 'resname'
     transplants = defaultdict(list)
@@ -2187,14 +2187,14 @@ class Resnums(ResidueAttr):
         return np.arange(1, nr + 1)
 
 
-class ICodes(_ResidueStringAttr):
+class ICodes(ResidueStringAttr):
     """Insertion code for Atoms"""
     attrname = 'icodes'
     singular = 'icode'
     dtype = object
 
 
-class Moltypes(_ResidueStringAttr):
+class Moltypes(ResidueStringAttr):
     """Name of the molecule type
 
     Two molecules that share a molecule type share a common template topology.
@@ -2248,7 +2248,7 @@ class SegmentAttr(TopologyAttr):
 
 # woe betide anyone who switches this inheritance order
 # Mixin needs to be first (L to R) to get correct __init__ and set_atoms
-class _SegmentStringAttr(_StringInternerMixin, SegmentAttr):
+class SegmentStringAttr(_StringInternerMixin, SegmentAttr):
     @_check_length
     def set_segments(self, ag, values):
         return self._set_X(ag, values)
@@ -2259,7 +2259,7 @@ class _SegmentStringAttr(_StringInternerMixin, SegmentAttr):
 
 
 # TODO: update docs to property doc
-class Segids(_SegmentStringAttr):
+class Segids(SegmentStringAttr):
     attrname = 'segids'
     singular = 'segid'
     transplants = defaultdict(list)
