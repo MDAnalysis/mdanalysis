@@ -726,7 +726,6 @@ class _StringInternerMixin:
         self.nmidx = np.concatenate([self.nmidx, [newidx]])
         self.values = np.concatenate([self.values, [newval]])
 
-    @_check_length
     def _set_X(self, ag, values):
         newnames = []
 
