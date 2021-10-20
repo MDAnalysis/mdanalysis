@@ -591,9 +591,10 @@ class TestStringInterning:
     # try and trip up the string interning we use for string attributes
     @pytest.fixture
     def universe(self):
-        u = mda.Universe.empty(n_atoms=10)
+        u = mda.Universe.empty(n_atoms=10, n_residues=2,
+                               atom_resindex=[0]*5 + [1] * 5)
         u.add_TopologyAttr('names', values=['A'] * 10)
-        u.add_TopologyAttr('resnames', values=['ResA'])
+        u.add_TopologyAttr('resnames', values=['ResA', 'ResB'])
         u.add_TopologyAttr('segids', values=['SegA'])
 
         return u
@@ -619,3 +620,17 @@ class TestStringInterning:
         rg.segment = newseg
 
         assert rg.atoms[0].segid == newname
+
+    def test_issue3437(self, universe):
+        newseg = universe.add_Segment(segid='B')
+
+        ag = universe.residues[0].atoms
+
+        ag.residues.segments = newseg
+
+        assert 'B' in universe.segments.segids
+
+        ag2 = universe.select_atoms('segid B')
+
+        assert len(ag2) == 5
+        assert (ag2.ix == ag.ix).all()
