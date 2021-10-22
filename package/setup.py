@@ -267,11 +267,12 @@ def using_clang():
         is_clang = False
     return is_clang
 
+
 def using_msvc():
     """Will we be using an MSVC compiler?"""
     # from numpy.random setup.py
     is_msvc = (platform.platform().startswith('Windows') and
-        platform.python_compiler().startswith('MS'))
+               platform.python_compiler().startswith('MS'))
     return is_msvc
 
 def extensions(config):
@@ -285,8 +286,6 @@ def extensions(config):
     if config.get('debug_cflags', default=False):
         extra_compile_args.extend(['-Wall', '-pedantic'])
         define_macros.extend([('DEBUG', '1')])
-
-
 
     # encore is sensitive to floating point accuracy, especially on non-x86
     # to avoid reducing optimisations on everything, we make a set of compile
@@ -305,15 +304,18 @@ def extensions(config):
             # MSVC doesn't have a good equivalent for the march flag
             pass
         else:
-            if platform.machine() == "x86_64":
+            if platform.machine() == 'x86_64':
                 extra_compile_args.append('-march={}'.format(arch))
-            elif platform.machine() == "arm":
+            elif platform.machine() == 'arm':
                 # arm prefers the use of  mcpu only
                 extra_compile_args.append('-mcpu={}'.format(arch))
+            elif platform.machine() == 'ppc64le':
+                #PowerPC prefers the use of mcpu and mtune
+                extra_compile_args.append('-mcpu={}'.format(arch))        
+                extra_compile_args.append('-mtune={}'.format(arch))
             else:
                 # platform specific optimizations skipped
                 pass
-            
 
     cpp_extra_compile_args = [a for a in extra_compile_args if 'std' not in a]
     cpp_extra_compile_args.append('-std=c++11')
