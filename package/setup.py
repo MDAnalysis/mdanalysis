@@ -310,8 +310,8 @@ def extensions(config):
                 # arm prefers the use of  mcpu only
                 extra_compile_args.append('-mcpu={}'.format(arch))
             elif platform.machine() == 'ppc64le':
-                #PowerPC prefers the use of mcpu and mtune
-                extra_compile_args.append('-mcpu={}'.format(arch))        
+                # PowerPC prefers the use of mcpu and mtune
+                extra_compile_args.append('-mcpu={}'.format(arch))
                 extra_compile_args.append('-mtune={}'.format(arch))
             else:
                 # platform specific optimizations skipped
