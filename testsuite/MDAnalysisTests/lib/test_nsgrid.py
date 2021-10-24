@@ -65,16 +65,12 @@ def test_pbc_box(box):
         nsgrid.FastNS(4.0, coords, box=box)
 
 
-@pytest.mark.parametrize('cutoff', [-4, 100000])
-def test_nsgrid_badcutoff(universe, cutoff):
-    with pytest.raises(ValueError):
+@pytest.mark.parametrize('cutoff, match', ((-4, "Cutoff must be positive"),
+                                           (100000, "Cutoff 100000 too large for box")))
+def test_nsgrid_badcutoff(universe, cutoff, match):
+    with pytest.raises(ValueError, match=match):
         run_grid_search(universe, 0, cutoff)
 
-
-def test_nsgrid_too_many_grids(universe):
-    universe.dimensions[:3] *= 1000
-    with pytest.raises(ValueError):
-        run_grid_search(universe, 0, 1)
 
 def test_ns_grid_noneighbor(universe):
     """Check that grid search returns empty lists/arrays when there is no neighbors"""
@@ -164,6 +160,7 @@ def test_nsgrid_distances(universe):
 
 @pytest.mark.parametrize('box, results',
                          ((None, [3, 13, 24]),
+                          (np.array([10000., 10000., 10000., 90., 90., 90.]), [3, 13, 24]),
                           (np.array([10., 10., 10., 90., 90., 90.]), [3, 13, 24, 39, 67]),
                           (np.array([10., 10., 10., 60., 75., 90.]), [3, 13, 24, 39, 60, 79])))
 def test_nsgrid_search(box, results):

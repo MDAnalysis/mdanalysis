@@ -287,10 +287,6 @@ cdef class FastNS(object):
         max_cutoff = self._prepare_box(box, pbc)
         if cutoff > max_cutoff:
             raise ValueError("Cutoff {} too large for box (max {})".format(cutoff, max_cutoff))
-        max_assigned_grid_dimension = np.max(self.ncells)
-        if max_assigned_grid_dimension > MAX_GRID_DIM:
-            raise ValueError("Cutoff {} too small for box (longest cell dimension is {}, max is {})"
-                             .format(self.cutoff, max_assigned_grid_dimension, MAX_GRID_DIM))
         self._pack_grid(coords)
 
     cdef float _prepare_box(self, box, bint pbc):
@@ -350,9 +346,11 @@ cdef class FastNS(object):
         # add 0.001 here to avoid floating point errors
         # will make cells slightly too large as a result, ah well
         min_cellsize += 0.001
-        self.ncells[0] = <int> math.floor(self.triclinic_dimensions[XX] / min_cellsize)
-        self.ncells[1] = <int> math.floor(self.triclinic_dimensions[YY] / min_cellsize)
-        self.ncells[2] = <int> math.floor(self.triclinic_dimensions[ZZ] / min_cellsize)
+        # If the cell size is too small, indexing overflow will occur. Limit the number
+        # of cells in any dimension to the cube root of the maximum of 32 bit integer values.
+        self.ncells[0] = <int> min(math.floor(self.triclinic_dimensions[XX] / min_cellsize), MAX_GRID_DIM)
+        self.ncells[1] = <int> min(math.floor(self.triclinic_dimensions[YY] / min_cellsize), MAX_GRID_DIM)
+        self.ncells[2] = <int> min(math.floor(self.triclinic_dimensions[ZZ] / min_cellsize), MAX_GRID_DIM)
 
         self.pbc = pbc
         # If there aren't enough cells in a given dimension it's equivalent to one
