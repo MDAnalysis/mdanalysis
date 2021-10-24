@@ -1320,8 +1320,11 @@ class ThingyParser(TopologyReaderBase):
 
 class TestOnlyTopology:
     def test_only_top(self):
+        # issue 3443
         t = Thingy(20)
 
-        u = mda.Universe(t)
+        with pytest.warns(UserWarning,
+                          match="No coordinate reader found for"):
+            u = mda.Universe(t)
 
         assert len(u.atoms) == 10

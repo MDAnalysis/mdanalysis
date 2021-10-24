@@ -13,14 +13,16 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, melomcr, mdd31, ianmkenney
+??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers
 
  * 2.1.0
 
 Fixes
   * Fix ITPParser charge reading (Issue #3419).
   * TRRWriter preserves timestep data (Issue #3350).
-  
+  * Fixed Universe creation from a custom object which only provided a topology,
+    previously raised a TypeError. (Issue #3443)
+
 Enhancements
 
 Changes
