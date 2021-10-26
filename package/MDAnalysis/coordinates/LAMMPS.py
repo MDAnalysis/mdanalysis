@@ -606,15 +606,30 @@ class DumpReader(base.ReaderBase):
 
         coord_cols = convention_to_col_ix[self.lammps_coordinate_convention]
 
+        # pass possible additional fields from LAMMPS dump
+        # pass velocities
+        velocity_col_names = ["vx","vy","vz"]
+        if any(item in attrs for item in velocity_col_names):
+            for cv_name, cv_col_names in enumerate(velocity_col_names):
+                try:
+                    velocity_cols = [attr_to_col_ix[x] for x in velocity_col_names]
+                    ts.has_velocities = True
+                except KeyError:
+                    raise ValueError("Velocities detected in LAMMPS Dump file but MDAnalysis can only deal with all entries vx, vy, vz present")
+
         ids = "id" in attr_to_col_ix
         for i in range(self.n_atoms):
             fields = f.readline().split()
             if ids:
                 indices[i] = fields[attr_to_col_ix["id"]]
             ts.positions[i] = [fields[dim] for dim in coord_cols]
+            if ts.has_velocities:
+                ts.velocities[i] = [fields[dim] for dim in velocity_cols]
 
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
+        if ts.has_velocities:
+            ts.velocities = ts.velocities[order]
         if (self.lammps_coordinate_convention.startswith("scaled")):
             # if coordinates are given in scaled format, undo that
             ts.positions = distances.transform_StoR(ts.positions,
