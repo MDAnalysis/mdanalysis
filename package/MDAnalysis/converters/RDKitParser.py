@@ -60,6 +60,7 @@ from ..core.topologyattrs import (
     Resids,
     Resnums,
     Resnames,
+    RSChirality,
     Segids,
     AltLocs,
     ChainIDs,
@@ -70,6 +71,18 @@ from ..core.topologyattrs import (
 from ..core.topology import Topology
 
 logger = logging.getLogger("MDAnalysis.converters.RDKitParser")
+
+
+def _rdkit_chiral_to_RS(val):
+    # convert RDKit chirality tag to R/S/''
+    from rdkit import Chem
+
+    if val == Chem.ChiralType.CHI_TETRAHEDRAL_CW:
+        return 'R'
+    elif val == Chem.ChiralType.CHI_TETRAHEDAL_CCW:
+        return 'S'
+    else:
+        return ''
 
 
 class RDKitParser(TopologyReaderBase):
@@ -85,6 +98,7 @@ class RDKitParser(TopologyReaderBase):
      - Bonds
      - Resids
      - Resnums
+     - RSChirality
      - Segids
 
     Guesses the following:
@@ -123,6 +137,8 @@ class RDKitParser(TopologyReaderBase):
     +---------------------------------------------+-------------------------+
     | atom.GetMonomerInfo().GetName()             | names                   |
     | atom.GetProp('_TriposAtomName')             |                         |
+    +---------------------------------------------+-------------------------+
+    | atom.GetChiralTag()                         | chiralities             |
     +---------------------------------------------+-------------------------+
     | atom.GetMonomerInfo().GetOccupancy()        | occupancies             |
     +---------------------------------------------+-------------------------+
@@ -167,6 +183,7 @@ class RDKitParser(TopologyReaderBase):
 
         # Atoms
         names = []
+        chiralities = []
         resnums = []
         resnames = []
         elements = []
@@ -204,6 +221,7 @@ class RDKitParser(TopologyReaderBase):
             elements.append(atom.GetSymbol())
             masses.append(atom.GetMass())
             aromatics.append(atom.GetIsAromatic())
+            chiralities.append(_rdkit_chiral_to_RS(atom.GetChiralTag()))
             mi = atom.GetMonomerInfo()
             if mi: # atom name and residue info are present
                 names.append(mi.GetName().strip())
@@ -258,6 +276,7 @@ class RDKitParser(TopologyReaderBase):
             (elements, Elements, object),
             (masses, Masses, np.float32),
             (aromatics, Aromaticities, bool),
+            (chiralities, RSChirality, 'U1'),
         ):
             attrs.append(Attr(np.array(vals, dtype=dtype)))
 
