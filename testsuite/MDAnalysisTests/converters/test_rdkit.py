@@ -296,6 +296,33 @@ class TestRDKitConverter(object):
             mdaprop = getattr(mol2.atoms[mda_idx], prop)
             assert rdprop == mdaprop
 
+    @pytest.mark.parametrize('smi,chirality', [
+        ('C[C@@H](C(=O)O)N', 'R'),
+        ('C[C@H](C(=O)O)N', 'S'),
+    ])
+    def test_chirality(self, smi, chirality):
+        m = Chem.MolFromSmiles(smi)
+        u = mda.Universe(m)
+
+        assert hasattr(u.atoms, 'chiralities')
+
+        assert u.atoms[0].chirality == ''
+        assert u.atoms[1].chirality == chirality
+
+        assert_equal(u.atoms[:3].chiralities, np.array(['', chirality, ''], dtype='U1'))
+
+    @pytest.mark.parametrize('sel,size', [
+        ('R', 1), ('S', 1), ('R S', 2), ('S R', 2),
+    ])
+    def test_chirality_selection(self, sel, size):
+        # 2 centers, one R one S
+        m = Chem.MolFromSmiles('CC[C@H](C)[C@@H](C(=O)O)N')
+        u = mda.Universe(m)
+
+        ag = u.select_atoms('chirality {}'.format(sel))
+
+        assert len(ag) == size
+
     @pytest.mark.parametrize("sel_str", [
         "resname ALA",
         "resname PRO and segid A",
