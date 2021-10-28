@@ -79,7 +79,7 @@ def _rdkit_chiral_to_RS(val):
 
     if val == Chem.ChiralType.CHI_TETRAHEDRAL_CW:
         return 'R'
-    elif val == Chem.ChiralType.CHI_TETRAHEDAL_CCW:
+    elif val == Chem.ChiralType.CHI_TETRAHEDRAL_CCW:
         return 'S'
     else:
         return ''
