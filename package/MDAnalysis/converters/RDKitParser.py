@@ -158,6 +158,8 @@ class RDKitParser(TopologyReaderBase):
 
 
     .. versionadded:: 2.0.0
+    .. versionchanged:: 2.1.0
+       Added R/S chirality support
     """
     format = 'RDKIT'
 

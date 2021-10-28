@@ -568,7 +568,10 @@ class SelgroupSelection(Selection):
 
 
 class SingleCharSelection(Selection):
-    # for when an attribute is just a single character, eg RSChirality
+    """for when an attribute is just a single character, eg RSChirality
+
+    .. versionadded:: 2.1.0
+    """
     def __init__(self, parser, tokens):
         super().__init__(parser, tokens)
         vals = grab_not_keywords(tokens)
