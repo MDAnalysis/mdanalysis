@@ -26,6 +26,7 @@ Fixes
 Enhancements
   * Add option for custom compiler flags for C/C++ on build and remove march
     option from setup.cfg (Issue #3428, PR #3429).
+  * Added R/S Chirality support to RDKit parsed molecules
 
 Changes
   * Dropped python 3.6 support and raised minimum numpy version to 1.18.0
