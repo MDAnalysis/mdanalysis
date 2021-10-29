@@ -502,7 +502,7 @@ class DumpReader(base.ReaderBase):
         self.close()
         self._file = util.anyopen(self.filename)
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
-        self.ts.frame = -1
+        self.ts.frame = 0
 
     @property
     @cached('n_atoms')
