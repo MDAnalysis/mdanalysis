@@ -630,6 +630,8 @@ class DumpReader(base.ReaderBase):
         ts.positions = ts.positions[order]
         if ts.has_velocities:
             ts.velocities = ts.velocities[order]
+            # LAMMPS reader only supports real units
+            ts.velocities *= units.speedUnit_factor['Angstrom/femtosecond']
         if (self.lammps_coordinate_convention.startswith("scaled")):
             # if coordinates are given in scaled format, undo that
             ts.positions = distances.transform_StoR(ts.positions,
