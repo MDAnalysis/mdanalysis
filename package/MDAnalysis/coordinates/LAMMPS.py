@@ -55,8 +55,9 @@ however this can be customised, see :ref:`atom_style_kwarg`.
 Dump files
 ----------
 
-The DumpReader expects ascii dump files written with the default
-`LAMMPS dump format`_ of 'atom'
+The DumpReader expects ascii dump files. Currently supported are
+coordinates (dump style atom) and velocities for custom dump styles.
+Other columns are ignored.
 
 
 Example: Loading a LAMMPS simulation
@@ -462,6 +463,7 @@ class DumpReader(base.ReaderBase):
     coordinate convention (xs,ys,zs) or scaled unwrapped coordinate convention
     (xsu,ysu,zsu) they will automatically be converted from their
     scaled/fractional representation to their real values.
+    Velocities (vx, vy, vz) can be parsed, too.
 
 
     .. versionchanged:: 2.0.0
