@@ -610,7 +610,7 @@ class DumpReader(base.ReaderBase):
 
         # pass possible additional fields from LAMMPS dump
         # pass velocities
-        velocity_col_names = ["vx","vy","vz"]
+        velocity_col_names = ["vx", "vy", "vz"]
         if any(item in attrs for item in velocity_col_names):
             for cv_name, cv_col_names in enumerate(velocity_col_names):
                 try:
