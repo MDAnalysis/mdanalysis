@@ -94,6 +94,7 @@ jobs:
         gfortran-9 -v
         echo "FC=gfortran-9" >> $GITHUB_ENV
         echo "numprocs=3" >> $GITHUB_ENV
+        echo "ENABLE_HIGH_MEM_UNIT_TESTS=true" >> $GITHUB_ENV
 
     - name: setup_linux
       if: startsWith(matrix.os, 'ubuntu')
