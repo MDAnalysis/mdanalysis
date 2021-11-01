@@ -296,26 +296,14 @@ def extensions(config):
     else:
         encore_compile_args.append('-O3')
 
-    # allow using architecture specific instructions. This allows people to
-    # build optimized versions of MDAnalysis. Do here so not included in encore
-    arch = config.get('march', default=False)
-    if arch:
-        if using_msvc():
-            # MSVC doesn't have a good equivalent for the march flag
-            pass
-        else:
-            if platform.machine() == 'x86_64':
-                extra_compile_args.append('-march={}'.format(arch))
-            elif platform.machine() == 'arm':
-                # arm prefers the use of  mcpu only
-                extra_compile_args.append('-mcpu={}'.format(arch))
-            elif platform.machine() == 'ppc64le':
-                # PowerPC prefers the use of mcpu and mtune
-                extra_compile_args.append('-mcpu={}'.format(arch))
-                extra_compile_args.append('-mtune={}'.format(arch))
-            else:
-                # platform specific optimizations skipped
-                pass
+    # allow using custom c/c++ flags and architecture specific instructions.
+    # This allows people to build optimized versions of MDAnalysis.
+    # Do here so not included in encore
+    extra_cflags = config.get('extra_cflags', default=False)
+    if extra_cflags:
+        flags = extra_cflags.split()
+        for flag in flags:
+            extra_compile_args.append(flag)
 
     cpp_extra_compile_args = [a for a in extra_compile_args if 'std' not in a]
     cpp_extra_compile_args.append('-std=c++11')
