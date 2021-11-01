@@ -13,7 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope
+??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
+         yuxuanzhuang
 
  * 2.1.0
 
@@ -22,6 +23,10 @@ Fixes
   * TRRWriter preserves timestep data (Issue #3350).
   * Fixed Universe creation from a custom object which only provided a topology,
     previously raised a TypeError. (Issue #3443)
+  * Fix the competition when generating offsets from multiple processes by
+    using a interprocess file lock. (Issue #1988, PR #3375)
+  * Fix the error when trying to load a corrupted offset file (Issue #3230
+    PR #3375)
 
 Enhancements
   * Add option for custom compiler flags for C/C++ on build and remove march
@@ -145,10 +150,6 @@ Fixes
     would create a test artifact (Issue #2979, PR #2981)
   * Fix syntax warning over comparison of literals using is (Issue #3066)
   * new `Results` class now can be pickled/unpickled. (PR #3309)
-  * Fix the competition when generating offsets from multiple processes by
-    using a interprocess file lock. (Issue #1988, PR #3375)
-  * Fix the error when trying to load a corrupted offset file (Issue #3230
-    PR #3375)
 
 Enhancements
   * LAMMPSDumpReader can now read coordinates in all the different LAMMPS
