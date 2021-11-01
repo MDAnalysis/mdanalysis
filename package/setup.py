@@ -268,13 +268,6 @@ def using_clang():
     return is_clang
 
 
-def using_msvc():
-    """Will we be using an MSVC compiler?"""
-    # from numpy.random setup.py
-    is_msvc = (platform.platform().startswith('Windows') and
-               platform.python_compiler().startswith('MS'))
-    return is_msvc
-
 def extensions(config):
     # usually (except coming from release tarball) cython files must be generated
     use_cython = config.get('use_cython', default=cython_found)
@@ -302,8 +295,7 @@ def extensions(config):
     extra_cflags = config.get('extra_cflags', default=False)
     if extra_cflags:
         flags = extra_cflags.split()
-        for flag in flags:
-            extra_compile_args.append(flag)
+        extra_compile_args.extend(flags)
 
     cpp_extra_compile_args = [a for a in extra_compile_args if 'std' not in a]
     cpp_extra_compile_args.append('-std=c++11')
