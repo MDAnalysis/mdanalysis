@@ -851,12 +851,13 @@ class _GromacsReader_offsets(object):
 
         filename = str(tmpdir.join(os.path.basename(self.filename)))
         # try to write a offsets file
-        self._reader(filename)
+        with (pytest.warns(UserWarning, match="Couldn't save offsets") and
+              pytest.warns(UserWarning, match="Cannot write")):
+            self._reader(filename)
         assert_equal(os.path.exists(XDR.offsets_filename(filename)), False)
-
-        # test if the offset lock file is created in tmp folder
-        head, tail = split(filename)
-        assert_equal(os.path.exists('/tmp/' + tail + '.lock'), True)
+        # check the lock file is not created as well.
+        assert_equal(os.path.exists(XDR.offsets_filename(filename,
+                                                    ending='.lock')), False)
 
     def test_offset_lock_created(self):
         assert_equal(os.path.exists(XDR.offsets_filename(self.filename,

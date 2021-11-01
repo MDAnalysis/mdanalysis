@@ -599,7 +599,7 @@ if __name__ == '__main__':
           'matplotlib>=1.5.1',
           'tqdm>=4.43.0',
           'threadpoolctl',
-          'fasteners'
+          'fasteners',
     ]
 
     if not os.name == 'nt':

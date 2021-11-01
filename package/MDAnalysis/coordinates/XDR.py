@@ -193,12 +193,13 @@ class XDRBaseReader(base.ReaderBase):
 
         #  check if the location of the lock is writable.
         try:
-            filelock = fasteners.InterProcessLock(lock_name)
-            filelock.acquire()
-            filelock.release()
+            with fasteners.InterProcessLock(lock_name) as filelock:
+                pass
         except PermissionError:
-            head, tail = split(self.filename)
-            filelock = fasteners.InterProcessLock('/tmp/' + tail + '.lock')
+            warnings.warn(f"Cannot write lock/offset file in same location as "
+                           "{self.filename}. Using slow offset calculation.")
+            self._read_offsets(store=True)
+            return
 
         with filelock:
             if not isfile(fname):
