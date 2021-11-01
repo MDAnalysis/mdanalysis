@@ -30,7 +30,9 @@ from os.path import split
 import shutil
 import subprocess
 
-from numpy.testing import (assert_equal, assert_almost_equal)
+from numpy.testing import (assert_equal,
+                           assert_almost_equal,
+                           assert_allclose)
 
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.datafiles import (
@@ -443,6 +445,38 @@ class TestTRRWriter(_GromacsWriter):
             else:
                 with pytest.raises(mda.NoDataError):
                     getattr(written_ts, 'velocities')
+
+    def test_data_preservation(self, universe, Writer, outfile):
+
+        with Writer(outfile, universe.atoms.n_atoms, dt=universe.trajectory.dt) as W:
+            for ts in universe.trajectory:
+                W.write(universe)
+
+        uw = mda.Universe(GRO, outfile)
+
+        assert np.isclose(ts.data['time'], 0.0)
+        assert ts.data['step'] == 0
+        assert np.isclose(ts.data['lambda'], 0.0)
+        assert np.isclose(ts.data['dt'], 100.0)
+
+        # check that the data are identical for each time step
+        for orig_ts, written_ts in zip(universe.trajectory, uw.trajectory):
+            # data lengths must be the same
+            assert len(written_ts.data) == len(orig_ts.data)
+
+            # check that the keys exist in both dictionaries
+            for k in orig_ts.data:
+                assert k in written_ts.data
+
+            err_msg = ('mismatch between '
+                       'original and written trajectory at '
+                       f'frame {orig_ts.frame} vs {written_ts.frame}')
+
+            # check that each value is the same
+            for k in orig_ts.data:
+                assert_allclose(orig_ts.data[k],
+                                written_ts.data[k],
+                                err_msg=err_msg)
 
 
 class _GromacsWriterIssue101(object):

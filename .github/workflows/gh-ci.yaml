@@ -311,7 +311,7 @@ jobs:
       env:
         PYLINTRC: package/.pylintrc
       run: |
-        pylint --py3k package/MDAnalysis && pylint --py3k testsuite/MDAnalysisTests
+        pylint package/MDAnalysis && pylint testsuite/MDAnalysisTests
 
 
   pypi_check:

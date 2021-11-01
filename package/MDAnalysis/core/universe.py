@@ -143,7 +143,7 @@ def _resolve_coordinates(filename, *coordinates, format=None,
     if all_coordinates or not coordinates and filename is not None:
         try:
             get_reader_for(filename, format=format)
-        except ValueError:
+        except (ValueError, TypeError):
             warnings.warn('No coordinate reader found for {}. Skipping '
                             'this file.'.format(filename))
         else:
