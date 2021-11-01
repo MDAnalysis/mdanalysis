@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers
+??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope
 
  * 2.1.0
 
@@ -24,6 +24,8 @@ Fixes
     previously raised a TypeError. (Issue #3443)
 
 Enhancements
+  * Add option for custom compiler flags for C/C++ on build and remove march
+    option from setup.cfg (Issue #3428, PR #3429).
 
 Changes
   * Dropped python 3.6 support and raised minimum numpy version to 1.18.0
