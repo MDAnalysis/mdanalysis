@@ -860,8 +860,8 @@ class _GromacsReader_offsets(object):
                                                     ending='.lock')), False)
 
     def test_offset_lock_created(self):
-        assert_equal(os.path.exists(XDR.offsets_filename(self.filename,
-                                                         ending='lock')), True)
+        assert os.path.exists(XDR.offsets_filename(self.filename,
+                                                   ending='lock'))
 
 
 class TestXTCReader_offsets(_GromacsReader_offsets):
