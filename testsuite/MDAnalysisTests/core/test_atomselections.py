@@ -1002,6 +1002,7 @@ class TestSelectionErrors(object):
         'mass 1.0:',
         'mass :3.0',
         'mass 1-',
+        'chirality ',
     ])
     def test_selection_fail(self, selstr, universe):
         with pytest.raises(SelectionError):
