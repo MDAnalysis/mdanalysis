@@ -38,45 +38,6 @@ trajectories in *little-endian* byte order.
 Classes
 -------
 
-.. autoclass:: MDAnalysis.coordinates.TRZ.Timestep
-   :members:
-
-   .. attribute:: frame
-
-      Index of current frame number (0 based)
-
-   .. attribute:: time
-
-      Current system time in ps
-
-   .. attribute:: n_atoms
-
-      Number of atoms in the frame (will be constant throughout trajectory)
-
-   .. attribute:: pressure
-
-      System pressure in pascals
-
-   .. attribute:: pressure_tensor
-
-      Array containing pressure tensors in order: xx, xy, yy, xz, yz, zz
-
-   .. attribute:: total_energy
-
-      Hamiltonian for the system in kJ/mol
-
-   .. attribute:: potential_energy
-
-      Potential energy of the system in kJ/mol
-
-   .. attribute:: kinetic_energy
-
-      Kinetic energy of the system in kJ/mol
-
-   .. attribute:: temperature
-
-      Temperature of the system in Kelvin
-
 .. autoclass:: TRZReader
    :members:
 
@@ -101,8 +62,8 @@ class TRZReader(base.ReaderBase):
 
     Attributes
     ----------
-    ts : TRZ.Timestep
-         :class:`~MDAnalysis.coordinates.TRZ.Timestep` object containing
+    ts : Timestep
+         :class:`~MDAnalysis.coordinates.base.Timestep` object containing
          coordinates of current frame
 
     Note
