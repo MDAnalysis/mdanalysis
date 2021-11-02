@@ -114,7 +114,7 @@ def make_downshift_arrays(upshift, nparents):
     """
     if not len(upshift):
         return np.array([], dtype=object)
-        
+
     order = np.argsort(upshift)
 
     upshift_sorted = upshift[order]
@@ -178,8 +178,9 @@ class TransTable(object):
         number of residues in topology
     n_segments : int
         number of segments in topology
-    size
-        tuple describing the shape of the TransTable
+    size : tuple
+        tuple ``(n_atoms, n_residues, n_segments)`` describing the shape of
+        the TransTable
     """
     def __init__(self,
                  n_atoms, n_residues, n_segments,  # Size of tables
@@ -214,7 +215,10 @@ class TransTable(object):
 
     @property
     def size(self):
-        """The shape of the table, (n_atoms, n_residues, n_segments)"""
+        """The shape of the table, ``(n_atoms, n_residues, n_segments)``.
+
+        :meta private:
+        """
         return (self.n_atoms, self.n_residues, self.n_segments)
 
     def atoms2residues(self, aix):
@@ -575,4 +579,4 @@ class Topology(object):
             attr.values = np.concatenate([attr.values, np.array([newval])])
 
         return segidx
-        
+
