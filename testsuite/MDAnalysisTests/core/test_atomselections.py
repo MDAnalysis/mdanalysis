@@ -1412,7 +1412,7 @@ def test_unique_selection_on_ordered_group(u_pdb_icodes, sel, sort, ix):
     ('C[C@@H](C(=O)O)N', 'R'),
     ('C[C@H](C(=O)O)N', 'S'),
 ])
-def test_chirality(self, smi, chirality):
+def test_chirality(smi, chirality):
     Chem = pytest.importorskip('rdkit.Chem', reason='requires rdkit')
 
     m = Chem.MolFromSmiles(smi)
@@ -1429,7 +1429,7 @@ def test_chirality(self, smi, chirality):
 @pytest.mark.parametrize('sel,size', [
     ('R', 1), ('S', 1), ('R S', 2), ('S R', 2),
 ])
-def test_chirality_selection(self, sel, size):
+def test_chirality_selection(sel, size):
     # 2 centers, one R one S
     Chem = pytest.importorskip('rdkit.Chem', reason='requires rdkit')
 
