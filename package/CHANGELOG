@@ -13,14 +13,15 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, melomcr, mdd31, ianmkenney
+??/??/?? IAlibay, melomcr, mdd31, ianmkenney, orbeckst, richardjgowers
 
  * 2.1.0
 
 Fixes
   * Fix ITPParser charge reading (Issue #3419).
   * TRRWriter preserves timestep data (Issue #3350).
-  
+  * documentation fixes (Issues #3224, #2667)
+
 Enhancements
 
 Changes
