@@ -71,7 +71,9 @@ not reflect in the results.
 .. versionadded:: 0.19.0
 .. versionchanged:: 1.0.2
    Rewrote module
-
+.. versionchanged:: 2.1.0
+   Capped max grid dimension to 1290, which when cubed is the max value of
+   a 32 bit signed integer.
 
 Classes
 -------
