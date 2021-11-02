@@ -52,8 +52,6 @@ def run_grid_search(u, ref_id, cutoff=3):
 
     return searcher.search(searchcoords)
 
-
-
 @pytest.mark.parametrize('box', [
     np.zeros(3),  # Bad shape
     np.zeros((3, 3)),  # Collapsed box
@@ -269,7 +267,7 @@ def test_around_overlapping():
     # check that around 0.0 catches when atoms *are* superimposed
     u = mda.Universe.empty(60, trajectory=True)
     xyz = np.zeros((60, 3))
-    x = np.tile(np.arange(12), (5,))+np.repeat(np.arange(5) * 100, 12)
+    x = np.tile(np.arange(12), (5,))+np.repeat(np.arange(5)*100, 12)
     # x is 5 images of 12 atoms
 
     xyz[:, 0] = x  # y and z are 0
