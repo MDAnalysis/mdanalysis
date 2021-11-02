@@ -180,28 +180,6 @@ class TransTable(object):
         number of segments in topology
     size
         tuple describing the shape of the TransTable
-
-    Methods
-    -------
-    atoms2residues(aix)
-        Returns the residue index for many atom indices
-    residues2atoms_1d(rix)
-        All atoms in the residues represented by *rix*
-    residues2atoms_2d(rix)
-        List of atom indices for each residue in *rix*
-    residues2segments(rix)
-        Segment indices for each residue in *rix*
-    segments2residues_1d(six)
-        Similar to `residues2atoms_1d`
-    segments2residues_2d(six)
-        Similar to `residues2atoms_2d`
-    atoms2segments(aix)
-        Segment indices for each atom in *aix*
-    segments2atoms_1d(six)
-        Similar to `residues2atoms_1d`
-    segments2atoms_2d(six)
-        Similar to `residues2atoms_2d`
-
     """
     def __init__(self,
                  n_atoms, n_residues, n_segments,  # Size of tables
