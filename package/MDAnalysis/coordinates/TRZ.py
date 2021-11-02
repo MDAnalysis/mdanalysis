@@ -62,7 +62,7 @@ class TRZReader(base.ReaderBase):
 
     Attributes
     ----------
-    ts : Timestep
+    ts : base.Timestep
          :class:`~MDAnalysis.coordinates.base.Timestep` object containing
          coordinates of current frame
 
