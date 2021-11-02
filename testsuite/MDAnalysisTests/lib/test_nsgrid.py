@@ -42,16 +42,16 @@ def universe():
     u = mda.Universe(GRO)
     return u
 
-
 def run_grid_search(u, ref_id, cutoff=3):
     coords = u.atoms.positions
     searchcoords = u.atoms.positions[ref_id]
-    if searchcoords.shape == (3,):
+    if searchcoords.shape == (3, ):
         searchcoords = searchcoords[None, :]
     # Run grid search
     searcher = nsgrid.FastNS(cutoff, coords, box=u.dimensions)
 
     return searcher.search(searchcoords)
+
 
 
 @pytest.mark.parametrize('box', [
@@ -165,14 +165,12 @@ def test_nsgrid_distances(universe):
 
 @pytest.mark.parametrize('box, results',
                          ((None, [3, 13, 24]),
-                          (np.array([10., 10., 10., 90., 90., 90.]),
-                           [3, 13, 24, 39, 67]),
-                          (np.array([10., 10., 10., 60., 75., 90.]),
-                           [3, 13, 24, 39, 60, 79])))
+                          (np.array([10., 10., 10., 90., 90., 90.]), [3, 13, 24, 39, 67]),
+                          (np.array([10., 10., 10., 60., 75., 90.]), [3, 13, 24, 39, 60, 79])))
 def test_nsgrid_search(box, results):
     np.random.seed(90003)
     points = (np.random.uniform(low=0, high=1.0,
-                                size=(100, 3)) * (10.)).astype(np.float32)
+                        size=(100, 3))*(10.)).astype(np.float32)
     cutoff = 2.0
     query = np.array([1., 1., 1.], dtype=np.float32).reshape((1, 3))
 
@@ -181,7 +179,7 @@ def test_nsgrid_search(box, results):
         all_coords = np.concatenate([points, query])
         lmax = all_coords.max(axis=0)
         lmin = all_coords.min(axis=0)
-        pseudobox[:3] = 1.1 * (lmax - lmin)
+        pseudobox[:3] = 1.1*(lmax - lmin)
         pseudobox[3:] = 90.
         shiftpoints, shiftquery = points.copy(), query.copy()
         shiftpoints -= lmin
@@ -203,7 +201,7 @@ def test_nsgrid_search(box, results):
 def test_nsgrid_selfsearch(box, result):
     np.random.seed(90003)
     points = (np.random.uniform(low=0, high=1.0,
-                                size=(100, 3)) * (10.)).astype(np.float32)
+                        size=(100, 3))*(10.)).astype(np.float32)
     cutoff = 1.0
     if box is None or np.allclose(box[:3], 0):
         # create a pseudobox
@@ -213,7 +211,7 @@ def test_nsgrid_selfsearch(box, result):
         pseudobox = np.zeros(6, dtype=np.float32)
         lmax = points.max(axis=0)
         lmin = points.min(axis=0)
-        pseudobox[:3] = 1.1 * (lmax - lmin)
+        pseudobox[:3] = 1.1*(lmax - lmin)
         pseudobox[3:] = 90.
         shiftref = points.copy()
         shiftref -= lmin
@@ -224,7 +222,6 @@ def test_nsgrid_selfsearch(box, result):
         searchresults = searcher.self_search()
     pairs = searchresults.get_pairs()
     assert_equal(len(pairs), result)
-
 
 def test_nsgrid_probe_close_to_box_boundary():
     # FastNS.search used to segfault with this box, cutoff and reference
@@ -272,7 +269,7 @@ def test_around_overlapping():
     # check that around 0.0 catches when atoms *are* superimposed
     u = mda.Universe.empty(60, trajectory=True)
     xyz = np.zeros((60, 3))
-    x = np.tile(np.arange(12), (5,)) + np.repeat(np.arange(5) * 100, 12)
+    x = np.tile(np.arange(12), (5,))+np.repeat(np.arange(5) * 100, 12)
     # x is 5 images of 12 atoms
 
     xyz[:, 0] = x  # y and z are 0
