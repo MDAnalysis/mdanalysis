@@ -1406,3 +1406,36 @@ def test_unique_selection_on_ordered_group(u_pdb_icodes, sel, sort, ix):
     base_ag = u_pdb_icodes.atoms[[335, 5, 451, 8, 5, 5, 7, 6, 451]]
     ag = base_ag.select_atoms(sel, sorted=sort)
     assert_equal(ag.ix, ix)
+
+
+@pytest.mark.parametrize('smi,chirality', [
+    ('C[C@@H](C(=O)O)N', 'R'),
+    ('C[C@H](C(=O)O)N', 'S'),
+])
+def test_chirality(self, smi, chirality):
+    Chem = pytest.importorskip('rdkit.Chem', reason='requires rdkit')
+
+    m = Chem.MolFromSmiles(smi)
+    u = mda.Universe(m)
+
+    assert hasattr(u.atoms, 'chiralities')
+
+    assert u.atoms[0].chirality == ''
+    assert u.atoms[1].chirality == chirality
+
+    assert_equal(u.atoms[:3].chiralities, np.array(['', chirality, ''], dtype='U1'))
+
+
+@pytest.mark.parametrize('sel,size', [
+    ('R', 1), ('S', 1), ('R S', 2), ('S R', 2),
+])
+def test_chirality_selection(self, sel, size):
+    # 2 centers, one R one S
+    Chem = pytest.importorskip('rdkit.Chem', reason='requires rdkit')
+
+    m = Chem.MolFromSmiles('CC[C@H](C)[C@@H](C(=O)O)N')
+    u = mda.Universe(m)
+
+    ag = u.select_atoms('chirality {}'.format(sel))
+
+    assert len(ag) == size
