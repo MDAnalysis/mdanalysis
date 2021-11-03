@@ -1,47 +1,24 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>13.3.2. Low level DCD trajectory reading - MDAnalysis.lib.formats.libdcd &mdash; MDAnalysis 2.1.0-dev0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
-
-  
-  
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
-  
-
-  
-  
-
-  
-
-  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
-    
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
-    
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/js/versions.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.1.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
@@ -51,36 +28,17 @@
     <link rel="prev" title="13.3.1. Low-level Gromacs XDR trajectory reading — MDAnalysis.lib.formats.libmdaxdr" href="libmdaxdr.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-          
-
-          
             <a href="../../../index.html">
-          
-
-          
-            
             <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 2.1.0-dev0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -88,18 +46,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../topology.html">2. The topology system</a></li>
@@ -113,91 +60,49 @@
 <li class="toctree-l1"><a class="reference internal" href="../../auxiliary_modules.html">10. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../core_modules.html">11. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../visualization_modules.html">12. Visualization modules</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../lib_modules.html#overview">13.1. Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../lib_modules.html#list-of-modules">13.2. List of modules</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../../lib_modules.html#low-level-file-formats">13.3. Low level file formats</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="libmdaxdr.html">13.3.1. Low-level Gromacs XDR trajectory reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libmdaxdr</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">13.3.2. Low level DCD  trajectory reading - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libdcd</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="libmdaxdr.html">13.3.1. Low-level Gromacs XDR trajectory reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libmdaxdr</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">13.3.2. Low level DCD  trajectory reading - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libdcd</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../references.html">17. References</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">MDAnalysis</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a> &raquo;</li>
-        
-      <li>13.3.2. Low level DCD  trajectory reading - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libdcd</span></code></li>
-    
-    
+          <li><a href="../../lib_modules.html"><span class="section-number">13. </span>Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a> &raquo;</li>
+      <li><span class="section-number">13.3.2. </span>Low level DCD  trajectory reading - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libdcd</span></code></li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../../_sources/documentation_pages/lib/formats/libdcd.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <span class="target" id="module-MDAnalysis.lib.formats.libdcd"></span><div class="section" id="low-level-dcd-trajectory-reading-mdanalysis-lib-formats-libdcd">
-<h1>13.3.2. Low level DCD  trajectory reading - <a class="reference internal" href="#module-MDAnalysis.lib.formats.libdcd" title="MDAnalysis.lib.formats.libdcd"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libdcd</span></code></a><a class="headerlink" href="#low-level-dcd-trajectory-reading-mdanalysis-lib-formats-libdcd" title="Permalink to this headline">¶</a></h1>
+             
+  <span class="target" id="module-MDAnalysis.lib.formats.libdcd"></span><section id="low-level-dcd-trajectory-reading-mdanalysis-lib-formats-libdcd">
+<h1><span class="section-number">13.3.2. </span>Low level DCD  trajectory reading - <a class="reference internal" href="#module-MDAnalysis.lib.formats.libdcd" title="MDAnalysis.lib.formats.libdcd"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libdcd</span></code></a><a class="headerlink" href="#low-level-dcd-trajectory-reading-mdanalysis-lib-formats-libdcd" title="Permalink to this headline"></a></h1>
 <p><code class="xref py py-mod docutils literal notranslate"><span class="pre">libdcd</span></code> contains the class <a class="reference internal" href="#MDAnalysis.lib.formats.libdcd.DCDFile" title="MDAnalysis.lib.formats.libdcd.DCDFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">DCDFile</span></code></a> to read and write frames of a
 DCD file. The class tries to behave similar to a normal file object.</p>
 <p><code class="xref py py-mod docutils literal notranslate"><span class="pre">libdcd</span></code> contains the classes <a class="reference internal" href="#MDAnalysis.lib.formats.libdcd.DCDFile" title="MDAnalysis.lib.formats.libdcd.DCDFile"><code class="xref py py-class docutils literal notranslate"><span class="pre">DCDFile</span></code></a>, which can be used to read
@@ -223,9 +128,9 @@ complete trajectory frames.</p>
 <p class="rubric">Acknowledgements</p>
 <p><code class="xref py py-mod docutils literal notranslate"><span class="pre">libdcd</span></code> contains and is originally based on DCD reading and writing code
 from VMD’s <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/">molfile</a> plugin and <a class="reference external" href="http://www.ks.uiuc.edu/Development/MDTools/catdcd/">catdcd</a>.</p>
-<dl class="class">
-<dt id="MDAnalysis.lib.formats.libdcd.DCDFile">
-<em class="property">class </em><code class="descclassname">MDAnalysis.lib.formats.libdcd.</code><code class="descname">DCDFile</code><span class="sig-paren">(</span><em>fname</em>, <em>mode='r'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.formats.libdcd.</span></span><span class="sig-name descname"><span class="pre">DCDFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile" title="Permalink to this definition"></a></dt>
 <dd><p>File like wrapper for DCD files</p>
 <p>This class can be similar to the normal file objects in python. The read()
 function will return a frame and all information in it instead of a single
@@ -235,20 +140,16 @@ reads raw data from the trajectory and hence interpretation of, for instance,
 different unitcell conventions or time and length units, has to be handled in
 higher level code. Reading and writing does not support fixed atoms or 4D
 coordinates.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The filename to open.</li>
-<li><strong>mode</strong> (<em>(</em><em>'r'</em><em>, </em><em>'w'</em><em>)</em>) – The mode in which to open the file, either ‘r’ read or ‘w’ write</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The filename to open.</p></li>
+<li><p><strong>mode</strong> (<em>(</em><em>'r'</em><em>, </em><em>'w'</em><em>)</em>) – The mode in which to open the file, either ‘r’ read or ‘w’ write</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.lib.formats.libdcd</span> <span class="kn">import</span> <span class="n">DCDFile</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.lib.formats.libdcd</span> <span class="kn">import</span> <span class="n">DCDFile</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="n">DCDFile</span><span class="p">(</span><span class="s1">&#39;foo.dcd&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
 <span class="gp">&gt;&gt;&gt; </span>        <span class="nb">print</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
@@ -264,15 +165,15 @@ DCD reader for possible post processing into a common unitcell data
 structure. You can also find more information how different programs store
 unitcell information in DCD on the <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/wiki/FileFormats#dcd">mdawiki</a> . This class can be pickled.
 The pickle will store filename, mode, current frame</p>
-<dl class="attribute">
-<dt id="MDAnalysis.lib.formats.libdcd.DCDFile.charmm_bitfield">
-<code class="descname">charmm_bitfield</code><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.charmm_bitfield" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.charmm_bitfield">
+<span class="sig-name descname"><span class="pre">charmm_bitfield</span></span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.charmm_bitfield" title="Permalink to this definition"></a></dt>
 <dd><p>This DCDFile reader can process files written by different MD simulation
 programs. For files produced by CHARMM or other programs that follow
 the same convention we are reading a special CHARMM bitfield that
 stores different flags about additional information that is stored in
 the dcd. The bit flags are:</p>
-<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DCD_IS_CHARMM</span>       <span class="o">=</span> <span class="mh">0x01</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DCD_IS_CHARMM</span>       <span class="o">=</span> <span class="mh">0x01</span>
 <span class="n">DCD_HAS_4DIMS</span>       <span class="o">=</span> <span class="mh">0x02</span>
 <span class="n">DCD_HAS_EXTRA_BLOCK</span> <span class="o">=</span> <span class="mh">0x04</span>
 </pre></div>
@@ -280,15 +181,15 @@ the dcd. The bit flags are:</p>
 <p>Here <cite>DCD_HAS_EXTRA_BLOCK</cite> means that unitcell information is stored.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.lib.formats.libdcd.DCDFile.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.close" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.close" title="Permalink to this definition"></a></dt>
 <dd><p>Close the open DCD file</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="MDAnalysis.lib.formats.libdcd.DCDFile.header">
-<code class="descname">header</code><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.header" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.header">
+<span class="sig-name descname"><span class="pre">header</span></span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.header" title="Permalink to this definition"></a></dt>
 <dd><p>returns: * <em>dict of header values needed to write new dcd.</em>
 * <strong>natoms</strong> (<em>number of atoms</em>)
 * <strong>istart</strong> (<em>starting frame number</em>)
@@ -298,67 +199,58 @@ the dcd. The bit flags are:</p>
 * <strong>remarks</strong> (<em>remark string, max 240 bytes.</em>)</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.lib.formats.libdcd.DCDFile.open">
-<code class="descname">open</code><span class="sig-paren">(</span><em>mode='r'</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.open" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.open">
+<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.open" title="Permalink to this definition"></a></dt>
 <dd><p>Open a DCD file</p>
 <p>If another DCD file is currently opened it will be closed</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mode</strong> (<em>(</em><em>'r'</em><em>, </em><em>'w'</em><em>)</em>) – The mode in which to open the file, either ‘r’ read or ‘w’ write</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mode</strong> (<em>(</em><em>'r'</em><em>, </em><em>'w'</em><em>)</em>) – The mode in which to open the file, either ‘r’ read or ‘w’ write</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.lib.formats.libdcd.DCDFile.read">
-<code class="descname">read</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.read" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.read" title="Permalink to this definition"></a></dt>
 <dd><p>Read next dcd frame</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>DCDFrame</strong> – positions are in <code class="docutils literal notranslate"><span class="pre">x</span></code> and unitcell in <code class="docutils literal notranslate"><span class="pre">unitcell</span></code> attribute of DCDFrame</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">namedtuple</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>DCDFrame</strong> – positions are in <code class="docutils literal notranslate"><span class="pre">x</span></code> and unitcell in <code class="docutils literal notranslate"><span class="pre">unitcell</span></code> attribute of DCDFrame</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>namedtuple</p>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <p>unitcell is read as is from DCD. Post processing depending on the program this
 DCD file was written with is necessary. Have a look at the MDAnalysis DCD reader
 for possible post processing into a common unitcell data structure.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.lib.formats.libdcd.DCDFile.readframes">
-<code class="descname">readframes</code><span class="sig-paren">(</span><em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>order='fac'</em>, <em>indices=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.readframes" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.readframes">
+<span class="sig-name descname"><span class="pre">readframes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fac'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.readframes" title="Permalink to this definition"></a></dt>
 <dd><p>read multiple frames at once</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – starting frame, default to 0</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – stop frame, default to <code class="docutils literal notranslate"><span class="pre">n_frames</span></code></li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – step between frames read, defaults to 1</li>
-<li><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – give order of returned array with <cite>f</cite>:frames, <cite>a</cite>:atoms, <cite>c</cite>:coordinates</li>
-<li><strong>indices</strong> (<em>array_like</em><em> (</em><em>optional</em><em>)</em>) – only read selected atoms. In <code class="docutils literal notranslate"><span class="pre">None</span></code> read all.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – starting frame, default to 0</p></li>
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – stop frame, default to <code class="docutils literal notranslate"><span class="pre">n_frames</span></code></p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – step between frames read, defaults to 1</p></li>
+<li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – give order of returned array with <cite>f</cite>:frames, <cite>a</cite>:atoms, <cite>c</cite>:coordinates</p></li>
+<li><p><strong>indices</strong> (<em>array_like</em><em> (</em><em>optional</em><em>)</em>) – only read selected atoms. In <code class="docutils literal notranslate"><span class="pre">None</span></code> read all.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>DCDFrame</strong> – positions are in <code class="docutils literal notranslate"><span class="pre">x</span></code> and unitcell in <code class="docutils literal notranslate"><span class="pre">unitcell</span></code> attribute of DCDFrame.
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>DCDFrame</strong> – positions are in <code class="docutils literal notranslate"><span class="pre">x</span></code> and unitcell in <code class="docutils literal notranslate"><span class="pre">unitcell</span></code> attribute of DCDFrame.
 Here the attributes contain the positions for all frames in the given order</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">namedtuple</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>namedtuple</p>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <p>unitcell is read as it from DCD. Post processing depending the program
 this DCD file was written with is necessary. Have a look at the
@@ -366,99 +258,83 @@ MDAnalysis DCD reader for possible post processing into a common
 unitcell data structure.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.lib.formats.libdcd.DCDFile.seek">
-<code class="descname">seek</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.seek" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.seek">
+<span class="sig-name descname"><span class="pre">seek</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.seek" title="Permalink to this definition"></a></dt>
 <dd><p>Seek to Frame.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – seek the file to given frame (0-based)</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – seek the file to given frame (0-based)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.lib.formats.libdcd.DCDFile.tell">
-<code class="descname">tell</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.tell" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">current frame (0-based)</td>
-</tr>
-</tbody>
-</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.tell">
+<span class="sig-name descname"><span class="pre">tell</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.tell" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>current frame (0-based)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.lib.formats.libdcd.DCDFile.write">
-<code class="descname">write</code><span class="sig-paren">(</span><em>xyz</em>, <em>box=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.write" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xyz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.write" title="Permalink to this definition"></a></dt>
 <dd><p>write one frame into DCD file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>xyz</strong> (<em>array_like</em><em>, </em><em>shape=</em><em>(</em><em>natoms</em><em>, </em><em>3</em><em>)</em>) – cartesion coordinates</li>
-<li><strong>box</strong> (<em>array_like</em><em>, </em><em>shape=</em><em>(</em><em>6</em><em>) </em><em>(</em><em>optional</em><em>)</em>) – Box vectors for this frame. Can be left to skip writing a unitcell</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xyz</strong> (<em>array_like</em><em>, </em><em>shape=</em><em>(</em><em>natoms</em><em>, </em><em>3</em><em>)</em>) – cartesion coordinates</p></li>
+<li><p><strong>box</strong> (<em>array_like</em><em>, </em><em>shape=</em><em>(</em><em>6</em><em>) </em><em>(</em><em>optional</em><em>)</em>) – Box vectors for this frame. Can be left to skip writing a unitcell</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.lib.formats.libdcd.DCDFile.write_header">
-<code class="descname">write_header</code><span class="sig-paren">(</span><em>remarks</em>, <em>natoms</em>, <em>istart</em>, <em>nsavc</em>, <em>delta</em>, <em>is_periodic</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.write_header" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.lib.formats.libdcd.DCDFile.write_header">
+<span class="sig-name descname"><span class="pre">write_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remarks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">natoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">istart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsavc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_periodic</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.formats.libdcd.DCDFile.write_header" title="Permalink to this definition"></a></dt>
 <dd><p>Write DCD header</p>
 <p>This function needs to be called before the first frame can be written.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>remarks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – remarks of DCD file. Writes up to 239 characters (ASCII). The
-character 240 will be the null terminator</li>
-<li><strong>natoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of atoms to write</li>
-<li><strong>istart</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – starting frame number</li>
-<li><strong>nsavc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of frames between saves</li>
-<li><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – integrator time step. The time for 1 frame is nsavc * delta</li>
-<li><strong>is_periodic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – write unitcell information. Also pretends that file was written by CHARMM 24</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>remarks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – remarks of DCD file. Writes up to 239 characters (ASCII). The
+character 240 will be the null terminator</p></li>
+<li><p><strong>natoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of atoms to write</p></li>
+<li><p><strong>istart</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – starting frame number</p></li>
+<li><p><strong>nsavc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of frames between saves</p></li>
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – integrator time step. The time for 1 frame is nsavc * delta</p></li>
+<li><p><strong>is_periodic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – write unitcell information. Also pretends that file was written by CHARMM 24</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="../../version.html" class="btn btn-neutral float-right" title="14. Version information for MDAnalysis - MDAnalysis.version" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="libmdaxdr.html" class="btn btn-neutral float-left" title="13.3.1. Low-level Gromacs XDR trajectory reading — MDAnalysis.lib.formats.libmdaxdr" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../version.html" class="btn btn-neutral float-right" title="14. Version information for MDAnalysis - MDAnalysis.version" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
-
-    </p>
+    <p>&#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
+
+  
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -471,9 +347,7 @@ character 240 will be the null terminator</li>
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -493,18 +367,11 @@ character 240 will be the null terminator</li>
         </dl>
 
     </div>
-</div>
-
-  <script type="text/javascript">
+</div><script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

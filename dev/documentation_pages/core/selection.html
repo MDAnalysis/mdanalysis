@@ -1,47 +1,24 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>11.4.1. Atom selection Hierarchy — MDAnalysis.core.selection &mdash; MDAnalysis 2.1.0-dev0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-
-  
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-  
-
-  
-  
-
-  
-
-  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/javascript" src="../../_static/js/versions.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/js/versions.js"></script>
+    <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.1.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
@@ -51,36 +28,17 @@
     <link rel="prev" title="11.3.3. Topology attribute objects — MDAnalysis.core.topologyattrs" href="topologyattrs.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-          
-
-          
             <a href="../../index.html">
-          
-
-          
-            
             <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 2.1.0-dev0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -88,18 +46,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
@@ -116,88 +63,46 @@
 <li class="toctree-l2"><a class="reference internal" href="../core_modules.html#important-objects-for-users">11.2. Important objects for users</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../core_modules.html#topology-system">11.3. Topology system</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../core_modules.html#selection-system">11.4. Selection system</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">11.4.1. Atom selection Hierarchy — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.selection</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">11.4.1. Atom selection Hierarchy — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.selection</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">MDAnalysis</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../core_modules.html">11. Core modules</a> &raquo;</li>
-        
-      <li>11.4.1. Atom selection Hierarchy — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.selection</span></code></li>
-    
-    
+          <li><a href="../core_modules.html"><span class="section-number">11. </span>Core modules</a> &raquo;</li>
+      <li><span class="section-number">11.4.1. </span>Atom selection Hierarchy — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.selection</span></code></li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/documentation_pages/core/selection.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <span class="target" id="module-MDAnalysis.core.selection"></span><div class="section" id="atom-selection-hierarchy-mdanalysis-core-selection">
-<h1>11.4.1. Atom selection Hierarchy — <a class="reference internal" href="#module-MDAnalysis.core.selection" title="MDAnalysis.core.selection"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.selection</span></code></a><a class="headerlink" href="#atom-selection-hierarchy-mdanalysis-core-selection" title="Permalink to this headline">¶</a></h1>
+             
+  <span class="target" id="module-MDAnalysis.core.selection"></span><section id="atom-selection-hierarchy-mdanalysis-core-selection">
+<h1><span class="section-number">11.4.1. </span>Atom selection Hierarchy — <a class="reference internal" href="#module-MDAnalysis.core.selection" title="MDAnalysis.core.selection"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.selection</span></code></a><a class="headerlink" href="#atom-selection-hierarchy-mdanalysis-core-selection" title="Permalink to this headline"></a></h1>
 <p>This module contains objects that represent selections. They are
 constructed and then applied to the group.</p>
 <p>In general, <code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.parse()</span></code> creates a <code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code> object
@@ -208,137 +113,138 @@ an <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGr
 <p>This is all invisible to the user through the
 <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="MDAnalysis.core.groups.AtomGroup.select_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a> method of an
 <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.</p>
-<dl class="class">
-<dt id="MDAnalysis.core.selection.AromaticSelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">AromaticSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#AromaticSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.AromaticSelection" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.AromaticSelection">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">AromaticSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#AromaticSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.AromaticSelection" title="Permalink to this definition"></a></dt>
 <dd><p>Select aromatic atoms.</p>
 <p>Aromaticity is available in the <cite>aromaticities</cite> attribute and is made
 available through RDKit</p>
 </dd></dl>
 
-<dl class="class">
-<dt id="MDAnalysis.core.selection.BackboneSelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">BackboneSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#BackboneSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.BackboneSelection" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.BackboneSelection">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">BackboneSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#BackboneSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.BackboneSelection" title="Permalink to this definition"></a></dt>
 <dd><p>A BackboneSelection contains all atoms with name ‘N’, ‘CA’, ‘C’, ‘O’.</p>
 <p>This excludes OT* on C-termini
 (which are included by, eg VMD’s backbone selection).</p>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.1: </span>bb_atoms changed to set (from numpy array)
+<p><span class="versionmodified changed">Changed in version 1.0.1: </span>bb_atoms changed to set (from numpy array)
 performance improved by ~100x on larger systems</p>
 </div>
 </dd></dl>
 
-<dl class="class">
-<dt id="MDAnalysis.core.selection.BaseSelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">BaseSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#BaseSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.BaseSelection" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.BaseSelection">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">BaseSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#BaseSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.BaseSelection" title="Permalink to this definition"></a></dt>
 <dd><p>Selection of atoms in nucleobases.</p>
 <p>Recognized atom names (from CHARMM):</p>
 <blockquote>
-<div>‘N9’, ‘N7’, ‘C8’, ‘C5’, ‘C4’, ‘N3’, ‘C2’, ‘N1’, ‘C6’,
-‘O6’,’N2’,’N6’, ‘O2’,’N4’,’O4’,’C5M’</div></blockquote>
+<div><p>‘N9’, ‘N7’, ‘C8’, ‘C5’, ‘C4’, ‘N3’, ‘C2’, ‘N1’, ‘C6’,
+‘O6’,’N2’,’N6’, ‘O2’,’N4’,’O4’,’C5M’</p>
+</div></blockquote>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.1: </span>base_atoms changed to set (from numpy array)
+<p><span class="versionmodified changed">Changed in version 1.0.1: </span>base_atoms changed to set (from numpy array)
 performance improved by ~100x on larger systems</p>
 </div>
 </dd></dl>
 
-<dl class="class">
-<dt id="MDAnalysis.core.selection.BoolSelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">BoolSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#BoolSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.BoolSelection" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.BoolSelection">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">BoolSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#BoolSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.BoolSelection" title="Permalink to this definition"></a></dt>
 <dd><p>Selection for boolean values</p>
 </dd></dl>
 
-<dl class="class">
-<dt id="MDAnalysis.core.selection.ByNumSelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">ByNumSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#ByNumSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.ByNumSelection" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.ByNumSelection">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">ByNumSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#ByNumSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.ByNumSelection" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="class">
-<dt id="MDAnalysis.core.selection.ByResSelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">ByResSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#ByResSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.ByResSelection" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.ByResSelection">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">ByResSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#ByResSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.ByResSelection" title="Permalink to this definition"></a></dt>
 <dd><p>Selects all atoms that are in the same segment and residue as selection</p>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.0: </span>Use <code class="code docutils literal notranslate"><span class="pre">&quot;resindices&quot;</span></code> instead of <code class="code docutils literal notranslate"><span class="pre">&quot;resids&quot;</span></code> (see #2669 and #2672)</p>
+<p><span class="versionmodified changed">Changed in version 1.0.0: </span>Use <code class="code docutils literal notranslate"><span class="pre">&quot;resindices&quot;</span></code> instead of <code class="code docutils literal notranslate"><span class="pre">&quot;resids&quot;</span></code> (see #2669 and #2672)</p>
 </div>
 </dd></dl>
 
-<dl class="data">
-<dt id="MDAnalysis.core.selection.FLOAT_PATTERN">
-<code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">FLOAT_PATTERN</code><em class="property"> = '-?\\d*\\.?\\d*(?:e[-+]?\\d+)?'</em><a class="headerlink" href="#MDAnalysis.core.selection.FLOAT_PATTERN" title="Permalink to this definition">¶</a></dt>
+<dl class="py data">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.FLOAT_PATTERN">
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">FLOAT_PATTERN</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'-?\\d*\\.?\\d*(?:e[-+]?\\d+)?'</span></em><a class="headerlink" href="#MDAnalysis.core.selection.FLOAT_PATTERN" title="Permalink to this definition"></a></dt>
 <dd><p>Regular expression for recognizing a floating point number in a selection.
 Numbers such as 1.2, 1.2e-01, -1.2 are all parsed as Python floats.</p>
 </dd></dl>
 
-<dl class="class">
-<dt id="MDAnalysis.core.selection.FloatRangeSelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">FloatRangeSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#FloatRangeSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.FloatRangeSelection" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.FloatRangeSelection">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">FloatRangeSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#FloatRangeSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.FloatRangeSelection" title="Permalink to this definition"></a></dt>
 <dd><p>Range selection for float values</p>
-<dl class="attribute">
-<dt id="MDAnalysis.core.selection.FloatRangeSelection.dtype">
-<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.selection.FloatRangeSelection.dtype" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.float</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.FloatRangeSelection.dtype">
+<span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#MDAnalysis.core.selection.FloatRangeSelection.dtype" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="data">
-<dt id="MDAnalysis.core.selection.INT_PATTERN">
-<code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">INT_PATTERN</code><em class="property"> = '-?\\d+'</em><a class="headerlink" href="#MDAnalysis.core.selection.INT_PATTERN" title="Permalink to this definition">¶</a></dt>
+<dl class="py data">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.INT_PATTERN">
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">INT_PATTERN</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'-?\\d+'</span></em><a class="headerlink" href="#MDAnalysis.core.selection.INT_PATTERN" title="Permalink to this definition"></a></dt>
 <dd><p>Regular expression for recognizing un/signed integers in a selection.</p>
 </dd></dl>
 
-<dl class="class">
-<dt id="MDAnalysis.core.selection.NucleicBackboneSelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">NucleicBackboneSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#NucleicBackboneSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.NucleicBackboneSelection" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.NucleicBackboneSelection">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">NucleicBackboneSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#NucleicBackboneSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.NucleicBackboneSelection" title="Permalink to this definition"></a></dt>
 <dd><p>Contains all atoms with name “P”, “C5’”, C3’”, “O3’”, “O5’”.</p>
 <p>These atoms are only recognized if they are in a residue matched
 by the <a class="reference internal" href="#MDAnalysis.core.selection.NucleicSelection" title="MDAnalysis.core.selection.NucleicSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">NucleicSelection</span></code></a>.</p>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.1: </span>bb_atoms changed to set (from numpy array)
+<p><span class="versionmodified changed">Changed in version 1.0.1: </span>bb_atoms changed to set (from numpy array)
 performance improved by ~100x on larger systems</p>
 </div>
 </dd></dl>
 
-<dl class="class">
-<dt id="MDAnalysis.core.selection.NucleicSelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">NucleicSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#NucleicSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.NucleicSelection" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.NucleicSelection">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">NucleicSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#NucleicSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.NucleicSelection" title="Permalink to this definition"></a></dt>
 <dd><p>All atoms in nucleic acid residues with recognized residue names.</p>
 <p>Recognized residue names:</p>
 <ul class="simple">
-<li><dl class="first docutils">
-<dt>from the CHARMM force field ::</dt>
-<dd>awk ‘/RESI/ {printf “’”’”%s”’”’,”,$2 }’ top_all27_prot_na.rtf</dd>
+<li><dl class="simple">
+<dt>from the CHARMM force field ::</dt><dd><p>awk ‘/RESI/ {printf “’”’”%s”’”’,”,$2 }’ top_all27_prot_na.rtf</p>
+</dd>
 </dl>
 </li>
-<li>recognized: ‘ADE’, ‘URA’, ‘CYT’, ‘GUA’, ‘THY’</li>
-<li>recognized (CHARMM in Gromacs): ‘DA’, ‘DU’, ‘DC’, ‘DG’, ‘DT’</li>
+<li><p>recognized: ‘ADE’, ‘URA’, ‘CYT’, ‘GUA’, ‘THY’</p></li>
+<li><p>recognized (CHARMM in Gromacs): ‘DA’, ‘DU’, ‘DC’, ‘DG’, ‘DT’</p></li>
 </ul>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.8: </span>additional Gromacs selections</p>
+<p><span class="versionmodified changed">Changed in version 0.8: </span>additional Gromacs selections</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.1: </span>nucl_res changed to set (from numpy array)
+<p><span class="versionmodified changed">Changed in version 1.0.1: </span>nucl_res changed to set (from numpy array)
 performance improved by ~100x on larger systems</p>
 </div>
 </dd></dl>
 
-<dl class="class">
-<dt id="MDAnalysis.core.selection.NucleicSugarSelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">NucleicSugarSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#NucleicSugarSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.NucleicSugarSelection" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.NucleicSugarSelection">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">NucleicSugarSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#NucleicSugarSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.NucleicSugarSelection" title="Permalink to this definition"></a></dt>
 <dd><p>Contains all atoms with name C1’, C2’, C3’, C4’, O2’, O4’, O3’.</p>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.1: </span>sug_atoms changed to set (from numpy array)
+<p><span class="versionmodified changed">Changed in version 1.0.1: </span>sug_atoms changed to set (from numpy array)
 performance improved by ~100x on larger systems</p>
 </div>
 </dd></dl>
 
-<dl class="class">
-<dt id="MDAnalysis.core.selection.PropertySelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">PropertySelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#PropertySelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.PropertySelection" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.PropertySelection">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">PropertySelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#PropertySelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.PropertySelection" title="Permalink to this definition"></a></dt>
 <dd><p>Some of the possible properties:
 x, y, z, radius, mass,</p>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span>changed == operator to use np.isclose instead of np.equals.
+<p><span class="versionmodified changed">Changed in version 2.0.0: </span>changed == operator to use np.isclose instead of np.equals.
 Added <code class="docutils literal notranslate"><span class="pre">atol</span></code> and <code class="docutils literal notranslate"><span class="pre">rtol</span></code> keywords to control <code class="docutils literal notranslate"><span class="pre">np.isclose</span></code>
 tolerance.</p>
 </div>
@@ -349,73 +255,74 @@ prop x &lt;5
 prop x&lt;5</p>
 </dd></dl>
 
-<dl class="class">
-<dt id="MDAnalysis.core.selection.ProteinSelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">ProteinSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#ProteinSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.ProteinSelection" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.ProteinSelection">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">ProteinSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#ProteinSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.ProteinSelection" title="Permalink to this definition"></a></dt>
 <dd><p>Consists of all residues with  recognized residue names.</p>
 <p>Recognized residue names in <code class="xref py py-attr docutils literal notranslate"><span class="pre">ProteinSelection.prot_res</span></code>.</p>
 <blockquote>
 <div><ul class="simple">
-<li><dl class="first docutils">
-<dt>from the CHARMM force field::</dt>
-<dd>awk ‘/RESI/ {printf “’”’”%s”’”’,”,$2 }’ top_all27_prot_lipid.rtf</dd>
+<li><dl class="simple">
+<dt>from the CHARMM force field::</dt><dd><p>awk ‘/RESI/ {printf “’”’”%s”’”’,”,$2 }’ top_all27_prot_lipid.rtf</p>
+</dd>
 </dl>
 </li>
-<li>manually added special CHARMM, OPLS/AA and Amber residue names.</li>
+<li><p>manually added special CHARMM, OPLS/AA and Amber residue names.</p></li>
 </ul>
 </div></blockquote>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="../lib/util.html#MDAnalysis.lib.util.convert_aa_code" title="MDAnalysis.lib.util.convert_aa_code"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.util.convert_aa_code()</span></code></a></p>
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../lib/util.html#MDAnalysis.lib.util.convert_aa_code" title="MDAnalysis.lib.util.convert_aa_code"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.util.convert_aa_code()</span></code></a></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.1: </span>prot_res changed to set (from numpy array)
+<p><span class="versionmodified changed">Changed in version 1.0.1: </span>prot_res changed to set (from numpy array)
 performance improved by ~100x on larger systems</p>
 </div>
 </dd></dl>
 
-<dl class="data">
-<dt id="MDAnalysis.core.selection.RANGE_PATTERN">
-<code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">RANGE_PATTERN</code><em class="property"> = '\\s*(?:[:-]| to )\\s*'</em><a class="headerlink" href="#MDAnalysis.core.selection.RANGE_PATTERN" title="Permalink to this definition">¶</a></dt>
+<dl class="py data">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.RANGE_PATTERN">
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">RANGE_PATTERN</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'\\s*(?:[:-]|</span> <span class="pre">to</span> <span class="pre">)\\s*'</span></em><a class="headerlink" href="#MDAnalysis.core.selection.RANGE_PATTERN" title="Permalink to this definition"></a></dt>
 <dd><p>Regular expression for recognising a range separator.
-Delimiters include “:”, “-“, “to” and can have arbitrary whitespace.</p>
+Delimiters include “:”, “-”, “to” and can have arbitrary whitespace.</p>
 </dd></dl>
 
-<dl class="class">
-<dt id="MDAnalysis.core.selection.RangeSelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">RangeSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#RangeSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.RangeSelection" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.RangeSelection">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">RangeSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#RangeSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.RangeSelection" title="Permalink to this definition"></a></dt>
 <dd><p>Range selection for int values</p>
-<dl class="attribute">
-<dt id="MDAnalysis.core.selection.RangeSelection.dtype">
-<code class="descname">dtype</code><a class="headerlink" href="#MDAnalysis.core.selection.RangeSelection.dtype" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">builtins.int</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.RangeSelection.dtype">
+<span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#MDAnalysis.core.selection.RangeSelection.dtype" title="Permalink to this definition"></a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="MDAnalysis.core.selection.ResidSelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">ResidSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#ResidSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.ResidSelection" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.ResidSelection">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">ResidSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#ResidSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.ResidSelection" title="Permalink to this definition"></a></dt>
 <dd><p>Select atoms based on numerical fields</p>
-<p>Allows the use of ‘:’, ‘-‘ and ‘to’ to specify a range of values
+<p>Allows the use of ‘:’, ‘-’ and ‘to’ to specify a range of values
 For example</p>
 <blockquote>
-<div>resid 1:10</div></blockquote>
+<div><p>resid 1:10</p>
+</div></blockquote>
 </dd></dl>
 
-<dl class="class">
-<dt id="MDAnalysis.core.selection.SameSelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">SameSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SameSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.SameSelection" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.SameSelection">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">SameSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SameSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.SameSelection" title="Permalink to this definition"></a></dt>
 <dd><p>Selects all atoms that have the same subkeyword value as any atom in selection</p>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.0: </span>Map <code class="code docutils literal notranslate"><span class="pre">&quot;residue&quot;</span></code> to <code class="code docutils literal notranslate"><span class="pre">&quot;resindices&quot;</span></code> and <code class="code docutils literal notranslate"><span class="pre">&quot;segment&quot;</span></code> to
+<p><span class="versionmodified changed">Changed in version 1.0.0: </span>Map <code class="code docutils literal notranslate"><span class="pre">&quot;residue&quot;</span></code> to <code class="code docutils literal notranslate"><span class="pre">&quot;resindices&quot;</span></code> and <code class="code docutils literal notranslate"><span class="pre">&quot;segment&quot;</span></code> to
 <code class="code docutils literal notranslate"><span class="pre">&quot;segindices&quot;</span></code> (see #2669 and #2672)</p>
 </div>
 </dd></dl>
 
-<dl class="class">
-<dt id="MDAnalysis.core.selection.SelectionParser">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">SelectionParser</code><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SelectionParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.SelectionParser" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.SelectionParser">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">SelectionParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SelectionParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.SelectionParser" title="Permalink to this definition"></a></dt>
 <dd><p>A small parser for selection expressions.  Demonstration of
 recursive descent parsing using Precedence climbing (see
 <a class="reference external" href="http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm">http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm</a>).  Transforms
@@ -433,66 +340,62 @@ expressions into nested Selection tree.</p>
                 <span class="o">|</span> <span class="nb">type</span> <span class="p">[</span><span class="n">value</span><span class="p">]</span>
 </pre></div>
 </div>
-<dl class="method">
-<dt id="MDAnalysis.core.selection.SelectionParser.expect">
-<code class="descname">expect</code><span class="sig-paren">(</span><em>token</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SelectionParser.expect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.SelectionParser.expect" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.SelectionParser.expect">
+<span class="sig-name descname"><span class="pre">expect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SelectionParser.expect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.SelectionParser.expect" title="Permalink to this definition"></a></dt>
 <dd><p>Anticipate and remove a given token</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.core.selection.SelectionParser.parse">
-<code class="descname">parse</code><span class="sig-paren">(</span><em>selectstr</em>, <em>selgroups</em>, <em>periodic=None</em>, <em>atol=1e-08</em>, <em>rtol=1e-05</em>, <em>sorted=True</em>, <em>rdkit_kwargs=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SelectionParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.SelectionParser.parse" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.SelectionParser.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selectstr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selgroups</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-08</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sorted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rdkit_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SelectionParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.SelectionParser.parse" title="Permalink to this definition"></a></dt>
 <dd><p>Create a Selection object from a string.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>selectstr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The string that describes the selection</li>
-<li><strong>selgroups</strong> (<em>AtomGroups</em>) – AtomGroups to be used in <cite>group</cite> selections</li>
-<li><strong>periodic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – for distance based selections, whether to consider
-periodic boundary conditions</li>
-<li><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – The absolute tolerance parameter for float comparisons.
-Passed to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.isclose.html#numpy.isclose" title="(in NumPy v1.21)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.isclose()</span></code></a>.</li>
-<li><strong>rtol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – The relative tolerance parameter for float comparisons.
-Passed to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.isclose.html#numpy.isclose" title="(in NumPy v1.21)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.isclose()</span></code></a>.</li>
-<li><strong>sorted</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to sorted the output AtomGroup.</li>
-<li><strong>rdkit_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a><em>, </em><em>optional</em>) – Arguments passed to the RDKitConverter when using selection based
-on SMARTS queries</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>selectstr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The string that describes the selection</p></li>
+<li><p><strong>selgroups</strong> (<em>AtomGroups</em>) – AtomGroups to be used in <cite>group</cite> selections</p></li>
+<li><p><strong>periodic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – for distance based selections, whether to consider
+periodic boundary conditions</p></li>
+<li><p><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – The absolute tolerance parameter for float comparisons.
+Passed to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.isclose.html#numpy.isclose" title="(in NumPy v1.21)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.isclose()</span></code></a>.</p></li>
+<li><p><strong>rtol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – The relative tolerance parameter for float comparisons.
+Passed to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.isclose.html#numpy.isclose" title="(in NumPy v1.21)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.isclose()</span></code></a>.</p></li>
+<li><p><strong>sorted</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to sorted the output AtomGroup.</p></li>
+<li><p><strong>rdkit_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a><em>, </em><em>optional</em>) – Arguments passed to the RDKitConverter when using selection based
+on SMARTS queries</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><ul class="simple">
-<li><em>The appropriate Selection object.  Use the .apply method on</em></li>
-<li><em>this to perform the selection.</em></li>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>The appropriate Selection object.  Use the .apply method on</em></p></li>
+<li><p><em>this to perform the selection.</em></p></li>
 </ul>
 </p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">SelectionError</span></code> – If anything goes wrong in creating the Selection object.</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.SelectionError" title="MDAnalysis.exceptions.SelectionError"><strong>SelectionError</strong></a> – If anything goes wrong in creating the Selection object.</p>
+</dd>
+</dl>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span>Added <cite>atol</cite> and <cite>rtol</cite> keywords to select float values. Added
+<p><span class="versionmodified changed">Changed in version 2.0.0: </span>Added <cite>atol</cite> and <cite>rtol</cite> keywords to select float values. Added
 <cite>rdkit_kwargs</cite> to pass arguments to the RDKitConverter</p>
 </div>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="MDAnalysis.core.selection.SmartsSelection">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">SmartsSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SmartsSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.SmartsSelection" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.SmartsSelection">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">SmartsSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SmartsSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.SmartsSelection" title="Permalink to this definition"></a></dt>
 <dd><p>Select atoms based on SMARTS queries.</p>
 <p>Uses RDKit to run the query and converts the result to MDAnalysis.
 Supports chirality.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="MDAnalysis.core.selection.gen_selection_class">
-<code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">gen_selection_class</code><span class="sig-paren">(</span><em>singular</em>, <em>attrname</em>, <em>dtype</em>, <em>per_object</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#gen_selection_class"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.gen_selection_class" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.gen_selection_class">
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">gen_selection_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">singular</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_object</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#gen_selection_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.gen_selection_class" title="Permalink to this definition"></a></dt>
 <dd><p>Selection class factory for arbitrary TopologyAttrs.</p>
 <p>Normally this should not be used except within the codebase
 or by developers; it is called by the metaclass
@@ -502,37 +405,33 @@ with the topology attribute (singular) name. The function
 uses the provided <code class="docutils literal notranslate"><span class="pre">dtype</span></code> to choose which Selection class
 to subclass:</p>
 <ul class="simple">
-<li><a class="reference internal" href="#MDAnalysis.core.selection.BoolSelection" title="MDAnalysis.core.selection.BoolSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoolSelection</span></code></a> for booleans</li>
-<li><a class="reference internal" href="#MDAnalysis.core.selection.RangeSelection" title="MDAnalysis.core.selection.RangeSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">RangeSelection</span></code></a> for integers</li>
-<li><a class="reference internal" href="#MDAnalysis.core.selection.FloatRangeSelection" title="MDAnalysis.core.selection.FloatRangeSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">FloatRangeSelection</span></code></a> for floats</li>
-<li><code class="xref py py-class docutils literal notranslate"><span class="pre">_ProtoStringSelection</span></code> for strings</li>
+<li><p><a class="reference internal" href="#MDAnalysis.core.selection.BoolSelection" title="MDAnalysis.core.selection.BoolSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoolSelection</span></code></a> for booleans</p></li>
+<li><p><a class="reference internal" href="#MDAnalysis.core.selection.RangeSelection" title="MDAnalysis.core.selection.RangeSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">RangeSelection</span></code></a> for integers</p></li>
+<li><p><a class="reference internal" href="#MDAnalysis.core.selection.FloatRangeSelection" title="MDAnalysis.core.selection.FloatRangeSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">FloatRangeSelection</span></code></a> for floats</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">_ProtoStringSelection</span></code> for strings</p></li>
 </ul>
 <p>Other value types are not yet supported and will raise a
 ValueError. The classes are created in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">_selectors</span></code>
 module to avoid namespace clashes.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>singular</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – singular name of TopologyAttr</li>
-<li><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – attribute name of TopologyAttr</li>
-<li><strong>dtype</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.9)"><em>type</em></a>) – type of TopologyAttr</li>
-<li><strong>per_object</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – level of TopologyAttr</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>singular</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – singular name of TopologyAttr</p></li>
+<li><p><strong>attrname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – attribute name of TopologyAttr</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.10)"><em>type</em></a>) – type of TopologyAttr</p></li>
+<li><p><strong>per_object</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – level of TopologyAttr</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>selection</strong></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">subclass of Selection</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is not one of the supported types</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>selection</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>subclass of Selection</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is not one of the supported types</p>
+</dd>
+</dl>
 <p class="rubric">Example</p>
 <p>The function creates a class inside <code class="docutils literal notranslate"><span class="pre">_selectors</span></code> and returns it.
 Normally it should not need to be manually called, as it is created
@@ -546,30 +445,29 @@ accessible by <a class="reference internal" href="universe.html#MDAnalysis.core.
 as that is automatically handled by
 <code class="xref py py-class docutils literal notranslate"><span class="pre">_Selectionmeta</span></code>.</p>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyattrs._TopologyAttrMeta</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">()</span></code></p>
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.topologyattrs._TopologyAttrMeta</span></code>, <code class="xref py py-obj docutils literal notranslate"></code></p>
 </div>
 </dd></dl>
 
-<dl class="function">
-<dt id="MDAnalysis.core.selection.grab_not_keywords">
-<code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">grab_not_keywords</code><span class="sig-paren">(</span><em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#grab_not_keywords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.grab_not_keywords" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.grab_not_keywords">
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">grab_not_keywords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#grab_not_keywords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.grab_not_keywords" title="Permalink to this definition"></a></dt>
 <dd><p>Pop tokens from the left until you hit a keyword</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tokens</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.deque" title="(in Python v3.9)"><em>collections.deque</em></a>) – deque of strings, some tokens some not</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>values</strong> – All non keywords found until a keyword was hit</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list of strings</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tokens</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.deque" title="(in Python v3.10)"><em>collections.deque</em></a>) – deque of strings, some tokens some not</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>values</strong> – All non keywords found until a keyword was hit</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of strings</p>
+</dd>
+</dl>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This function pops the values from the deque</p>
+<p class="admonition-title">Note</p>
+<p>This function pops the values from the deque</p>
 </div>
 <p class="rubric">Examples</p>
 <p>grab_not_keywords([‘H’, ‘and’,’resname’, ‘MET’])
@@ -580,73 +478,68 @@ as that is automatically handled by
 &gt;&gt;&gt; []</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="MDAnalysis.core.selection.is_keyword">
-<code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">is_keyword</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#is_keyword"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.is_keyword" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.is_keyword">
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">is_keyword</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#is_keyword"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.is_keyword" title="Permalink to this definition"></a></dt>
 <dd><p>Is val a selection keyword?</p>
-<dl class="docutils">
-<dt>Returns False on any of the following strings:</dt>
-<dd><ul class="first last simple">
-<li>keys in SELECTIONDICT (tokens from Selection objects)</li>
-<li>keys in OPERATIONS (tokens from LogicOperations)</li>
-<li>(Parentheses)</li>
-<li>The value <cite>None</cite> (used as EOF in selection strings)</li>
+<dl class="simple">
+<dt>Returns False on any of the following strings:</dt><dd><ul class="simple">
+<li><p>keys in SELECTIONDICT (tokens from Selection objects)</p></li>
+<li><p>keys in OPERATIONS (tokens from LogicOperations)</p></li>
+<li><p>(Parentheses)</p></li>
+<li><p>The value <cite>None</cite> (used as EOF in selection strings)</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="MDAnalysis.core.selection.join_separated_values">
-<code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">join_separated_values</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#join_separated_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.join_separated_values" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.join_separated_values">
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">join_separated_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#join_separated_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.join_separated_values" title="Permalink to this definition"></a></dt>
 <dd><p>Join range values that are separated by whitespace</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>values</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – list of value strings</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>values</strong></td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list of strings</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a>) – list of value strings</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>values</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of strings</p>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <p>join_separated_values([‘37’, ‘to’, ‘22’])
 &gt;&gt;&gt; [‘37 to 22’]</p>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 2.0.0.</span></p>
+<p><span class="versionmodified added">New in version 2.0.0.</span></p>
 </div>
 </dd></dl>
 
-<dl class="function">
-<dt id="MDAnalysis.core.selection.return_empty_on_apply">
-<code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">return_empty_on_apply</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#return_empty_on_apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.return_empty_on_apply" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="MDAnalysis.core.selection.return_empty_on_apply">
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.core.selection.</span></span><span class="sig-name descname"><span class="pre">return_empty_on_apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#return_empty_on_apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.core.selection.return_empty_on_apply" title="Permalink to this definition"></a></dt>
 <dd><p>Decorator to return empty AtomGroups from the apply() function
 without evaluating it</p>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="../visualization_modules.html" class="btn btn-neutral float-right" title="12. Visualization modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="topologyattrs.html" class="btn btn-neutral float-left" title="11.3.3. Topology attribute objects — MDAnalysis.core.topologyattrs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../visualization_modules.html" class="btn btn-neutral float-right" title="12. Visualization modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
-
-    </p>
+    <p>&#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
+
+  
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -659,9 +552,7 @@ without evaluating it</p>
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -681,18 +572,11 @@ without evaluating it</p>
         </dl>
 
     </div>
-</div>
-
-  <script type="text/javascript">
+</div><script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

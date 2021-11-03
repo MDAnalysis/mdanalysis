@@ -1,47 +1,24 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>5.21. Gromacs portable run input TPR format parser &mdash; MDAnalysis 2.1.0-dev0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-
-  
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-  
-
-  
-  
-
-  
-
-  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/javascript" src="../../_static/js/versions.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/js/versions.js"></script>
+    <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.1.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
@@ -51,36 +28,17 @@
     <link rel="prev" title="5.20. AMBER PRMTOP topology parser" href="TOPParser.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-          
-
-          
             <a href="../../index.html">
-          
-
-          
-            
             <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 2.1.0-dev0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -88,29 +46,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="init.html">5.1. Topology readers — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="init.html">5.1. Topology readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="CRDParser.html">5.2. CRD topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DLPolyParser.html">5.3. DL Poly format Topology Readers — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.DLPolyParser</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DLPolyParser.html">5.3. DL Poly format Topology Readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.DLPolyParser</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="DMSParser.html">5.4. DESRES Molecular Structure file format topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="FHIAIMSParser.html">5.5. FHI-AIMS Topology Parser — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topolgy.FHIAIMSParser</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="FHIAIMSParser.html">5.5. FHI-AIMS Topology Parser — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topolgy.FHIAIMSParser</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="GMSParser.html">5.6. GAMESS Topology Parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="GROParser.html">5.7. GRO topology parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="GSDParser.html">5.8. GSD topology parser</a></li>
@@ -119,7 +66,7 @@
 <li class="toctree-l2"><a class="reference internal" href="LAMMPSParser.html">5.11. LAMMPSParser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MinimalParser.html">5.12. Minimal topology parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MMTFParser.html">5.13. MMTF Topology Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="MOL2Parser.html">5.14. MOL2 file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="MOL2Parser.html">5.14. MOL2 file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="PDBParser.html">5.15. PDB Topology Parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ExtendedPDBParser.html">5.16. Extended PDB topology parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="PDBQTParser.html">5.17. PDBQT topology parser</a></li>
@@ -133,9 +80,9 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="TXYZParser.html">5.22. TXYZ topology parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="XYZParser.html">5.23. XYZ Topology Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">5.24. Base topology reader classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">5.25. Common functions for topology building — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="guessers.html">5.26. Guessing unknown Topology information — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">5.24. Base topology reader classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">5.25. Common functions for topology building — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html">5.26. Guessing unknown Topology information — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="tables.html">5.27. MDAnalysis topology tables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tpr_util.html">5.28. Utility functions for the TPR topology parser</a></li>
 </ul>
@@ -147,172 +94,129 @@
 <li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">MDAnalysis</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../topology_modules.html">5. Topology modules</a> &raquo;</li>
-        
-      <li>5.21. Gromacs portable run input TPR format parser</li>
-    
-    
+          <li><a href="../topology_modules.html"><span class="section-number">5. </span>Topology modules</a> &raquo;</li>
+      <li><span class="section-number">5.21. </span>Gromacs portable run input TPR format parser</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/documentation_pages/topology/TPRParser.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <span class="target" id="module-MDAnalysis.topology.TPRParser"></span><div class="section" id="gromacs-portable-run-input-tpr-format-parser">
-<h1>5.21. Gromacs portable run input TPR format parser<a class="headerlink" href="#gromacs-portable-run-input-tpr-format-parser" title="Permalink to this headline">¶</a></h1>
+             
+  <span class="target" id="module-MDAnalysis.topology.TPRParser"></span><section id="gromacs-portable-run-input-tpr-format-parser">
+<h1><span class="section-number">5.21. </span>Gromacs portable run input TPR format parser<a class="headerlink" href="#gromacs-portable-run-input-tpr-format-parser" title="Permalink to this headline"></a></h1>
 <p>The <a class="reference internal" href="#module-MDAnalysis.topology.TPRParser" title="MDAnalysis.topology.TPRParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TPRParser</span></code></a> module allows reading of a
 <a class="reference external" href="http://www.gromacs.org">Gromacs</a> portable run input file (a <a class="reference external" href="http://manual.gromacs.org/current/online/tpr.html">TPR file</a>). Because
 the file format of the TPR file is changing rapidly, not all versions
 are currently supported. The known working versions and the
 approximate Gromacs release numbers are listed in the table
 <a class="reference internal" href="#tpr-format-table"><span class="std std-ref">TPR format versions</span></a>.</p>
-<span id="tpr-format-table"></span><table border="1" class="docutils" id="id4">
-<caption><span class="caption-text">TPR format versions and generations read by <code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.topology.TPRParser.parse()</span></code>.</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<span id="tpr-format-table"></span><table class="docutils align-default" id="id4">
+<caption><span class="caption-text">TPR format versions and generations read by <code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.topology.TPRParser.parse()</span></code>.</span><a class="headerlink" href="#id4" title="Permalink to this table"></a></caption>
 <colgroup>
-<col width="20%" />
-<col width="29%" />
-<col width="41%" />
-<col width="10%" />
+<col style="width: 20%" />
+<col style="width: 29%" />
+<col style="width: 41%" />
+<col style="width: 10%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">TPX format</th>
-<th class="head">TPX generation</th>
-<th class="head">Gromacs release</th>
-<th class="head">read</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>TPX format</p></th>
+<th class="head"><p>TPX generation</p></th>
+<th class="head"><p>Gromacs release</p></th>
+<th class="head"><p>read</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>??</td>
-<td>??</td>
-<td>3.3, 3.3.1</td>
-<td>no</td>
+<tbody>
+<tr class="row-even"><td><p>??</p></td>
+<td><p>??</p></td>
+<td><p>3.3, 3.3.1</p></td>
+<td><p>no</p></td>
 </tr>
-<tr class="row-odd"><td>58</td>
-<td>17</td>
-<td>4.0, 4.0.2, 4.0.3,
+<tr class="row-odd"><td><p>58</p></td>
+<td><p>17</p></td>
+<td><p>4.0, 4.0.2, 4.0.3,
 4.0.4, 4.0.5, 4.0.6,
-4.0.7</td>
-<td>yes</td>
+4.0.7</p></td>
+<td><p>yes</p></td>
 </tr>
-<tr class="row-even"><td>73</td>
-<td>23</td>
-<td>4.5.0, 4.5.1, 4.5.2,
-4.5.3, 4.5.4, 4.5.5</td>
-<td>yes</td>
+<tr class="row-even"><td><p>73</p></td>
+<td><p>23</p></td>
+<td><p>4.5.0, 4.5.1, 4.5.2,
+4.5.3, 4.5.4, 4.5.5</p></td>
+<td><p>yes</p></td>
 </tr>
-<tr class="row-odd"><td>83</td>
-<td>24</td>
-<td>4.6, 4.6.1</td>
-<td>yes</td>
+<tr class="row-odd"><td><p>83</p></td>
+<td><p>24</p></td>
+<td><p>4.6, 4.6.1</p></td>
+<td><p>yes</p></td>
 </tr>
-<tr class="row-even"><td>100</td>
-<td>26</td>
-<td>5.0, 5.0.1, 5.0.2,
-5.0.3,5.0.4, 5.0.5</td>
-<td>yes</td>
+<tr class="row-even"><td><p>100</p></td>
+<td><p>26</p></td>
+<td><p>5.0, 5.0.1, 5.0.2,
+5.0.3,5.0.4, 5.0.5</p></td>
+<td><p>yes</p></td>
 </tr>
-<tr class="row-odd"><td>103</td>
-<td>26</td>
-<td>5.1</td>
-<td>yes</td>
+<tr class="row-odd"><td><p>103</p></td>
+<td><p>26</p></td>
+<td><p>5.1</p></td>
+<td><p>yes</p></td>
 </tr>
-<tr class="row-even"><td>110</td>
-<td>26</td>
-<td>2016</td>
-<td>yes</td>
+<tr class="row-even"><td><p>110</p></td>
+<td><p>26</p></td>
+<td><p>2016</p></td>
+<td><p>yes</p></td>
 </tr>
-<tr class="row-odd"><td>112</td>
-<td>26</td>
-<td>2018</td>
-<td>yes</td>
+<tr class="row-odd"><td><p>112</p></td>
+<td><p>26</p></td>
+<td><p>2018</p></td>
+<td><p>yes</p></td>
 </tr>
-<tr class="row-even"><td>116</td>
-<td>26</td>
-<td>2019</td>
-<td>yes</td>
+<tr class="row-even"><td><p>116</p></td>
+<td><p>26</p></td>
+<td><p>2019</p></td>
+<td><p>yes</p></td>
 </tr>
-<tr class="row-odd"><td>119</td>
-<td>27</td>
-<td>2020[*]_</td>
-<td>yes</td>
+<tr class="row-odd"><td><p>119</p></td>
+<td><p>27</p></td>
+<td><p>2020[*]_</p></td>
+<td><p>yes</p></td>
 </tr>
-<tr class="row-even"><td>122</td>
-<td>28</td>
-<td>2021</td>
-<td>yes</td>
+<tr class="row-even"><td><p>122</p></td>
+<td><p>28</p></td>
+<td><p>2021</p></td>
+<td><p>yes</p></td>
 </tr>
 </tbody>
 </table>
-<table class="docutils footnote" frame="void" id="id1" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label">[*]</td><td>Files generated by the beta versions of Gromacs 2020 are NOT supported.
-See <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/2428">Issue 2428</a> for more details.</td></tr>
-</tbody>
-</table>
+<dl class="footnote brackets">
+<dt class="label" id="id1"><span class="brackets">*</span></dt>
+<dd><p>Files generated by the beta versions of Gromacs 2020 are NOT supported.
+See <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/2428">Issue 2428</a> for more details.</p>
+</dd>
+</dl>
 <p>For further discussion and notes see <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/2">Issue 2</a>. Please <em>open a new issue</em> in
 the <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues">Issue Tracker</a> when a new or different TPR file format version should be
 supported.</p>
@@ -320,203 +224,179 @@ supported.</p>
 <a class="reference external" href="http://manual.gromacs.org/documentation/5.1/manual-5.1.pdf">Gromacs manual</a>. The following ones are used to build the topology (see
 <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/pull/463">Issue 463</a>):</p>
 <ul class="simple">
-<li>bonds: regular bonds (type 1), G96 bonds (type 2), Morse (type 3),
+<li><p>bonds: regular bonds (type 1), G96 bonds (type 2), Morse (type 3),
 cubic bonds (type 4), connections (type 5), harmonic potentials (type 6),
 FENE bonds (type 7), restraint potentials (type 10),
 tabulated potential with exclusion/connection (type 8),
 tabulated potential without exclusion/connection (type 9), constraints with
 exclusion/connection (type 1), constraints without exclusion/connection (type
-2), SETTLE constraints</li>
-<li>angles: regular angles (type 1), G96 angles (type 2), cross bond-bond
+2), SETTLE constraints</p></li>
+<li><p>angles: regular angles (type 1), G96 angles (type 2), cross bond-bond
 (type3), cross-bond-angle (type 4), Urey-Bradley (type 5), quartic angles
-(type 6), restricted bending potential (type 10), tabulated angles (type 8)</li>
-<li>dihedrals: proper dihedrals (type 1 and type 9), Ryckaert-Bellemans dihedrals
+(type 6), restricted bending potential (type 10), tabulated angles (type 8)</p></li>
+<li><p>dihedrals: proper dihedrals (type 1 and type 9), Ryckaert-Bellemans dihedrals
 (type 3), Fourier dihedrals (type 5), restricted dihedrals (type 10),
-combined bending-torsion potentials (type 11), tabulated dihedral (type 8)</li>
-<li>impropers: improper dihedrals (type 2), periodic improper dihedrals (type 4)</li>
+combined bending-torsion potentials (type 11), tabulated dihedral (type 8)</p></li>
+<li><p>impropers: improper dihedrals (type 2), periodic improper dihedrals (type 4)</p></li>
 </ul>
-<div class="section" id="classes">
-<h2>5.21.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="MDAnalysis.topology.TPRParser.TPRParser">
-<em class="property">class </em><code class="descclassname">MDAnalysis.topology.TPRParser.</code><code class="descname">TPRParser</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TPRParser.html#TPRParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser" title="Permalink to this definition">¶</a></dt>
+<section id="classes">
+<h2><span class="section-number">5.21.1. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.topology.TPRParser.</span></span><span class="sig-name descname"><span class="pre">TPRParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TPRParser.html#TPRParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser" title="Permalink to this definition"></a></dt>
 <dd><p>Read topology information from a <a class="reference external" href="http://www.gromacs.org">Gromacs</a> <a class="reference external" href="http://manual.gromacs.org/current/online/tpr.html">TPR file</a>.</p>
-<dl class="method">
-<dt id="MDAnalysis.topology.TPRParser.TPRParser.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.close" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.close" title="Permalink to this definition"></a></dt>
 <dd><p>Close the trajectory file.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.topology.TPRParser.TPRParser.convert_forces_from_native">
-<code class="descname">convert_forces_from_native</code><span class="sig-paren">(</span><em>force</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.convert_forces_from_native">
+<span class="sig-name descname"><span class="pre">convert_forces_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_forces_from_native" title="Permalink to this definition"></a></dt>
 <dd><p>Conversion of forces array <em>force</em> from native to base units</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>force</strong> (<em>array_like</em>) – Forces to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>By default, the input <em>force</em> is modified in place and also returned.
 In-place operations improve performance because allocating new arrays
 is avoided.</p>
-<div class="last versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.7.</span></p>
 </div>
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.topology.TPRParser.TPRParser.convert_forces_to_native">
-<code class="descname">convert_forces_to_native</code><span class="sig-paren">(</span><em>force</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.convert_forces_to_native">
+<span class="sig-name descname"><span class="pre">convert_forces_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_forces_to_native" title="Permalink to this definition"></a></dt>
 <dd><p>Conversion of force array <em>force</em> from base to native units.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>force</strong> (<em>array_like</em>) – Forces to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>force</strong> (<em>array_like</em>) – Forces to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">By default, the input <cite>force</cite> is modified in place and also returned.
+<p class="admonition-title">Note</p>
+<p>By default, the input <cite>force</cite> is modified in place and also returned.
 In-place operations improve performance because allocating new arrays
 is avoided.</p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.7.</span></p>
+<p><span class="versionmodified added">New in version 0.7.7.</span></p>
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.topology.TPRParser.TPRParser.convert_pos_from_native">
-<code class="descname">convert_pos_from_native</code><span class="sig-paren">(</span><em>x</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.convert_pos_from_native">
+<span class="sig-name descname"><span class="pre">convert_pos_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_pos_from_native" title="Permalink to this definition"></a></dt>
 <dd><p>Conversion of coordinate array x from native units to base units.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>x</strong> (<em>array_like</em>) – Positions to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">By default, the input <cite>x</cite> is modified in place and also returned.
+<p class="admonition-title">Note</p>
+<p>By default, the input <cite>x</cite> is modified in place and also returned.
 In-place operations improve performance because allocating new arrays
 is avoided.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
+<p><span class="versionmodified changed">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <cite>x</cite> is
 returned.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.topology.TPRParser.TPRParser.convert_pos_to_native">
-<code class="descname">convert_pos_to_native</code><span class="sig-paren">(</span><em>x</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.convert_pos_to_native">
+<span class="sig-name descname"><span class="pre">convert_pos_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_pos_to_native" title="Permalink to this definition"></a></dt>
 <dd><p>Conversion of coordinate array <cite>x</cite> from base units to native units.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>x</strong> (<em>array_like</em>) – Positions to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array_like</em>) – Positions to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">By default, the input <cite>x</cite> is modified in place and also returned.
+<p class="admonition-title">Note</p>
+<p>By default, the input <cite>x</cite> is modified in place and also returned.
 In-place operations improve performance because allocating new arrays
 is avoided.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
+<p><span class="versionmodified changed">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <cite>x</cite> is
 returned.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.topology.TPRParser.TPRParser.convert_time_from_native">
-<code class="descname">convert_time_from_native</code><span class="sig-paren">(</span><em>t</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.convert_time_from_native">
+<span class="sig-name descname"><span class="pre">convert_time_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_time_from_native" title="Permalink to this definition"></a></dt>
 <dd><p>Convert time <em>t</em> from native units to base units.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>t</strong> (<em>array_like</em>) – Time values to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">By default, the input <cite>t</cite> is modified in place and also returned
+<p class="admonition-title">Note</p>
+<p>By default, the input <cite>t</cite> is modified in place and also returned
 (although note that scalar values <cite>t</cite> are passed by value in Python and
 hence an in-place modification has no effect on the caller.)  In-place
 operations improve performance because allocating new arrays is
 avoided.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
+<p><span class="versionmodified changed">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <cite>x</cite> is
 returned.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.topology.TPRParser.TPRParser.convert_time_to_native">
-<code class="descname">convert_time_to_native</code><span class="sig-paren">(</span><em>t</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.convert_time_to_native">
+<span class="sig-name descname"><span class="pre">convert_time_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_time_to_native" title="Permalink to this definition"></a></dt>
 <dd><p>Convert time <em>t</em> from base units to native units.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>t</strong> (<em>array_like</em>) – Time values to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> (<em>array_like</em>) – Time values to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>By default, the input <em>t</em> is modified in place and also
 returned. (Also note that scalar values <em>t</em> are passed by
 value in Python and hence an in-place modification has no
 effect on the caller.)</p>
-<div class="last versionchanged">
-<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
 modified copy is returned <em>unless</em> no conversion takes
 place, in which case the reference to the unmodified <em>x</em> is
 returned.</p>
@@ -524,113 +404,104 @@ returned.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.topology.TPRParser.TPRParser.convert_velocities_from_native">
-<code class="descname">convert_velocities_from_native</code><span class="sig-paren">(</span><em>v</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.convert_velocities_from_native">
+<span class="sig-name descname"><span class="pre">convert_velocities_from_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_velocities_from_native" title="Permalink to this definition"></a></dt>
 <dd><p>Conversion of velocities array <em>v</em> from native to base units</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>v</strong> (<em>array_like</em>) – Velocities to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">By default, the input <em>v</em> is modified in place and also returned.
+<p class="admonition-title">Note</p>
+<p>By default, the input <em>v</em> is modified in place and also returned.
 In-place operations improve performance because allocating new arrays
 is avoided.</p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.5.</span></p>
+<p><span class="versionmodified added">New in version 0.7.5.</span></p>
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.topology.TPRParser.TPRParser.convert_velocities_to_native">
-<code class="descname">convert_velocities_to_native</code><span class="sig-paren">(</span><em>v</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.convert_velocities_to_native">
+<span class="sig-name descname"><span class="pre">convert_velocities_to_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.convert_velocities_to_native" title="Permalink to this definition"></a></dt>
 <dd><p>Conversion of coordinate array <cite>v</cite> from base to native units</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>v</strong> (<em>array_like</em>) – Velocities to transform</li>
-<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> (<em>array_like</em>) – Velocities to transform</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">By default, the input <cite>v</cite> is modified in place and also returned.
+<p class="admonition-title">Note</p>
+<p>By default, the input <cite>v</cite> is modified in place and also returned.
 In-place operations improve performance because allocating new arrays
 is avoided.</p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 0.7.5.</span></p>
+<p><span class="versionmodified added">New in version 0.7.5.</span></p>
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.topology.TPRParser.TPRParser.parse">
-<code class="descname">parse</code><span class="sig-paren">(</span><em>tpr_resid_from_one=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TPRParser.html#TPRParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.parse" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.topology.TPRParser.TPRParser.parse">
+<span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tpr_resid_from_one</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/TPRParser.html#TPRParser.parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.topology.TPRParser.TPRParser.parse" title="Permalink to this definition"></a></dt>
 <dd><p>Parse a Gromacs TPR file into a MDAnalysis internal topology structure.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tpr_resid_from_one</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Toggle whether to index resids from 1 or 0 from TPR files.
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tpr_resid_from_one</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Toggle whether to index resids from 1 or 0 from TPR files.
 TPR files index resids from 0 by default, even though GRO and ITP
-files index from 1.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>structure</strong></td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></td>
-</tr>
-</tbody>
-</table>
+files index from 1.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>structure</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)">dict</a></p>
+</dd>
+</dl>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.1.0: </span>Added the <code class="docutils literal notranslate"><span class="pre">tpr_resid_from_one</span></code> keyword to control if
+<p><span class="versionmodified changed">Changed in version 1.1.0: </span>Added the <code class="docutils literal notranslate"><span class="pre">tpr_resid_from_one</span></code> keyword to control if
 resids are indexed from 0 or 1. Default <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span>Changed to <code class="docutils literal notranslate"><span class="pre">tpr_resid_from_one=True</span></code> by default.</p>
+<p><span class="versionmodified changed">Changed in version 2.0.0: </span>Changed to <code class="docutils literal notranslate"><span class="pre">tpr_resid_from_one=True</span></code> by default.</p>
 </div>
 </dd></dl>
 
 </dd></dl>
 
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="tpr_util.html#module-MDAnalysis.topology.tpr" title="MDAnalysis.topology.tpr"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.tpr</span></code></a></p>
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="tpr_util.html#module-MDAnalysis.topology.tpr" title="MDAnalysis.topology.tpr"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.tpr</span></code></a></p>
 </div>
-</div>
-<div class="section" id="development-notes">
-<h2>5.21.2. Development notes<a class="headerlink" href="#development-notes" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="development-notes">
+<h2><span class="section-number">5.21.2. </span>Development notes<a class="headerlink" href="#development-notes" title="Permalink to this headline"></a></h2>
 <p>The TPR reader is a pure-python implementation of a basic TPR
 parser. Currently the following sections of the topology are parsed:</p>
 <ul class="simple">
-<li>Atoms: number, name, type, resname, resid, segid, mass, charge, element
-[residue, segment, radius, bfactor, resnum, moltype]</li>
-<li>Bonds</li>
-<li>Angles</li>
-<li>Dihedrals</li>
-<li>Impropers</li>
+<li><p>Atoms: number, name, type, resname, resid, segid, mass, charge, element
+[residue, segment, radius, bfactor, resnum, moltype]</p></li>
+<li><p>Bonds</p></li>
+<li><p>Angles</p></li>
+<li><p>Dihedrals</p></li>
+<li><p>Impropers</p></li>
 </ul>
 <p>This tpr parser is written according to the following files</p>
 <ul class="simple">
-<li><code class="file docutils literal notranslate"><em><span class="pre">gromacs_dir</span></em><span class="pre">/src/kernel/gmxdump.c</span></code></li>
-<li><code class="file docutils literal notranslate"><em><span class="pre">gromacs_dir</span></em><span class="pre">/src/gmxlib/tpxio.c</span></code> (the most important one)</li>
-<li><code class="file docutils literal notranslate"><em><span class="pre">gromacs_dir</span></em><span class="pre">/src/gmxlib/gmxfio_rw.c</span></code></li>
-<li><code class="file docutils literal notranslate"><em><span class="pre">gromacs_dir</span></em><span class="pre">/src/gmxlib/gmxfio_xdr.c</span></code></li>
-<li><code class="file docutils literal notranslate"><em><span class="pre">gromacs_dir</span></em><span class="pre">/include/gmxfiofio.h</span></code></li>
+<li><p><code class="file docutils literal notranslate"><em><span class="pre">gromacs_dir</span></em><span class="pre">/src/kernel/gmxdump.c</span></code></p></li>
+<li><p><code class="file docutils literal notranslate"><em><span class="pre">gromacs_dir</span></em><span class="pre">/src/gmxlib/tpxio.c</span></code> (the most important one)</p></li>
+<li><p><code class="file docutils literal notranslate"><em><span class="pre">gromacs_dir</span></em><span class="pre">/src/gmxlib/gmxfio_rw.c</span></code></p></li>
+<li><p><code class="file docutils literal notranslate"><em><span class="pre">gromacs_dir</span></em><span class="pre">/src/gmxlib/gmxfio_xdr.c</span></code></p></li>
+<li><p><code class="file docutils literal notranslate"><em><span class="pre">gromacs_dir</span></em><span class="pre">/include/gmxfiofio.h</span></code></p></li>
 </ul>
 <p>or their equivalent in more recent versions of Gromacs.</p>
 <p>The function <code class="xref py py-func docutils literal notranslate"><span class="pre">read_tpxheader()</span></code> is based on the
@@ -639,33 +510,30 @@ parser. Currently the following sections of the topology are parsed:</p>
 <code class="file docutils literal notranslate"><span class="pre">gmxdump.c</span></code> or <code class="file docutils literal notranslate"><span class="pre">tpxio.c</span></code>, those with <code class="docutils literal notranslate"><span class="pre">extract_</span></code> are new.</p>
 <p>Versions prior to Gromacs 4.0.x are not supported.</p>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span>The <cite>elements</cite> topology attribute is now exposed if at least one atom has
+<p><span class="versionmodified changed">Changed in version 2.0.0: </span>The <cite>elements</cite> topology attribute is now exposed if at least one atom has
 a valid element symbol. In that case, atoms for which the element is not
 recognized have their element attribute set to an empty string. If none of
 the elements are recognized, then the <cite>elements</cite> attribute is not set in the
 topology.</p>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="TXYZParser.html" class="btn btn-neutral float-right" title="5.22. TXYZ topology parser" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="TOPParser.html" class="btn btn-neutral float-left" title="5.20. AMBER PRMTOP topology parser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="TXYZParser.html" class="btn btn-neutral float-right" title="5.22. TXYZ topology parser" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
-
-    </p>
+    <p>&#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
+
+  
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -678,9 +546,7 @@ topology.</p>
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -700,18 +566,11 @@ topology.</p>
         </dl>
 
     </div>
-</div>
-
-  <script type="text/javascript">
+</div><script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

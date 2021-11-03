@@ -1,47 +1,25 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>4.3.2. Hydrogen bond autocorrelation — MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel &mdash; MDAnalysis 2.1.0-dev0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-
-  
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-  
-
-  
-  
-
-  
-
-  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/javascript" src="../../_static/js/versions.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../_static/js/versions.js"></script>
+    <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.1.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
@@ -51,36 +29,17 @@
     <link rel="prev" title="4.3.1. Hydrogen Bond Analysis — MDAnalysis.analysis.hydrogenbonds.hbond_analysis" href="hydrogenbonds.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-          
-
-          
             <a href="../../index.html">
-          
-
-          
-            
             <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 2.1.0-dev0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -88,18 +47,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
@@ -108,8 +56,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#building-blocks-for-analysis">4.1. Building blocks for Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#distances-and-contacts">4.2. Distances and contacts</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#hydrogen-bonding">4.3. Hydrogen bonding</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="hydrogenbonds.html">4.3.1. Hydrogen Bond Analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">4.3.2. Hydrogen bond autocorrelation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hydrogenbonds.html">4.3.1. Hydrogen Bond Analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.3.2. Hydrogen bond autocorrelation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#description">4.3.2.1. Description</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#input">4.3.2.2. Input</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#output">4.3.2.3. Output</a></li>
@@ -117,8 +65,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#functions-and-classes">4.3.2.5. Functions and Classes</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="wbridge_analysis.html">4.3.3. Water Bridge analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="hbond_autocorrel_deprecated.html">4.3.4. Hydrogen bond autocorrelation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_autocorrel</span></code> (deprecated)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wbridge_analysis.html">4.3.3. Water Bridge analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="hbond_autocorrel_deprecated.html">4.3.4. Hydrogen bond autocorrelation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_autocorrel</span></code> (deprecated)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a></li>
@@ -139,103 +87,60 @@
 <li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">MDAnalysis</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../analysis_modules.html">4. Analysis modules</a> &raquo;</li>
-        
-      <li>4.3.2. Hydrogen bond autocorrelation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</span></code></li>
-    
-    
+          <li><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a> &raquo;</li>
+      <li><span class="section-number">4.3.2. </span>Hydrogen bond autocorrelation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</span></code></li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/documentation_pages/analysis/hbond_autocorrel.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <span class="target" id="module-MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel"></span><div class="section" id="hydrogen-bond-autocorrelation-mdanalysis-analysis-hydrogenbonds-hbond-autocorrel">
-<h1>4.3.2. Hydrogen bond autocorrelation — <a class="reference internal" href="#module-MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel" title="MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</span></code></a><a class="headerlink" href="#hydrogen-bond-autocorrelation-mdanalysis-analysis-hydrogenbonds-hbond-autocorrel" title="Permalink to this headline">¶</a></h1>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Richard J. Gowers</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Year:</th><td class="field-body">2014</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v3</td>
-</tr>
-</tbody>
-</table>
+             
+  <span class="target" id="module-MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel"></span><section id="hydrogen-bond-autocorrelation-mdanalysis-analysis-hydrogenbonds-hbond-autocorrel">
+<h1><span class="section-number">4.3.2. </span>Hydrogen bond autocorrelation — <a class="reference internal" href="#module-MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel" title="MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</span></code></a><a class="headerlink" href="#hydrogen-bond-autocorrelation-mdanalysis-analysis-hydrogenbonds-hbond-autocorrel" title="Permalink to this headline"></a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Richard J. Gowers</p>
+</dd>
+<dt class="field-even">Year</dt>
+<dd class="field-even"><p>2014</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>GNU Public License v3</p>
+</dd>
+</dl>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 0.9.0.</span></p>
+<p><span class="versionmodified added">New in version 0.9.0.</span></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span>Module moved from <a class="reference internal" href="hbond_autocorrel_deprecated.html#module-MDAnalysis.analysis.hbonds.hbond_autocorrel" title="MDAnalysis.analysis.hbonds.hbond_autocorrel"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_autocorrel</span></code></a> to
+<p><span class="versionmodified changed">Changed in version 2.0.0: </span>Module moved from <a class="reference internal" href="hbond_autocorrel_deprecated.html#module-MDAnalysis.analysis.hbonds.hbond_autocorrel" title="MDAnalysis.analysis.hbonds.hbond_autocorrel"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_autocorrel</span></code></a> to
 <a class="reference internal" href="#module-MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel" title="MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</span></code></a>.</p>
 </div>
-<div class="section" id="description">
-<h2>4.3.2.1. Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<section id="description">
+<h2><span class="section-number">4.3.2.1. </span>Description<a class="headerlink" href="#description" title="Permalink to this headline"></a></h2>
 <p>Calculates the time autocorrelation function, <span class="math notranslate nohighlight">\(C_x(t)\)</span>, for the hydrogen
 bonds in the selections passed to it.  The population of hydrogen bonds at a
 given startpoint, <span class="math notranslate nohighlight">\(t_0\)</span>, is evaluated based on geometric criteria and
@@ -255,26 +160,27 @@ via integration of this function</p>
 using 2 exponents for the continuous lifetime and 3 for the intermittent
 lifetime.</p>
 <blockquote>
-<div><span class="math notranslate nohighlight">\(C_x(t) = A_1 \exp( - t / \tau_1)
+<div><p><span class="math notranslate nohighlight">\(C_x(t) = A_1 \exp( - t / \tau_1)
 + A_2 \exp( - t / \tau_2)
-[+ A_3 \exp( - t / \tau_3)]\)</span></div></blockquote>
+[+ A_3 \exp( - t / \tau_3)]\)</span></p>
+</div></blockquote>
 <p>Where the final pre expoential factor <span class="math notranslate nohighlight">\(A_n\)</span> is subject to the condition:</p>
 <blockquote>
-<div><span class="math notranslate nohighlight">\(A_n = 1 - \sum\limits_{i=1}^{n-1} A_i\)</span></div></blockquote>
-<p>For further details see <a class="reference internal" href="#gowers2015" id="id1">[Gowers2015]</a>.</p>
+<div><p><span class="math notranslate nohighlight">\(A_n = 1 - \sum\limits_{i=1}^{n-1} A_i\)</span></p>
+</div></blockquote>
+<p>For further details see <a class="reference internal" href="#gowers2015" id="id1"><span>[Gowers2015]</span></a>.</p>
 <p class="rubric">References</p>
-<table class="docutils citation" frame="void" id="gowers2015" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[Gowers2015]</a></td><td>Richard J. Gowers and Paola Carbone,
+<dl class="citation">
+<dt class="label" id="gowers2015"><span class="brackets"><a class="fn-backref" href="#id1">Gowers2015</a></span></dt>
+<dd><p>Richard J. Gowers and Paola Carbone,
 A multiscale approach to model hydrogen bonding: The case of polyamide
 The Journal of Chemical Physics, 142, 224907 (2015),
-DOI:http://dx.doi.org/10.1063/1.4922445</td></tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="input">
-<h2>4.3.2.2. Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h2>
+DOI:http://dx.doi.org/10.1063/1.4922445</p>
+</dd>
+</dl>
+</section>
+<section id="input">
+<h2><span class="section-number">4.3.2.2. </span>Input<a class="headerlink" href="#input" title="Permalink to this headline"></a></h2>
 <p>Three AtomGroup selections representing the <strong>hydrogens</strong>, <strong>donors</strong> and
 <strong>acceptors</strong> that you wish to analyse.  Note that the <strong>hydrogens</strong> and
 <strong>donors</strong> selections must be aligned, that is <strong>hydrogens[0]</strong> and
@@ -322,29 +228,29 @@ what length to analyse.</p>
 <p>Multiple passes, controlled by the keyword <strong>nruns</strong>, through the trajectory
 are performed and an average calculated.  For each pass, <strong>nsamples</strong> number
 of points along the run are calculated.</p>
-</div>
-<div class="section" id="output">
-<h2>4.3.2.3. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="output">
+<h2><span class="section-number">4.3.2.3. </span>Output<a class="headerlink" href="#output" title="Permalink to this headline"></a></h2>
 <p>All results of the analysis are available through the <em>solution</em> attribute.
 This is a dictionary with the following keys</p>
 <ul class="simple">
-<li><em>results</em>  The raw results of the time autocorrelation function.</li>
-<li><em>time</em>     Time axis, in ps, for the results.</li>
-<li><dl class="first docutils">
-<dt><em>fit</em>      Results of the exponential curve fitting procedure. For the</dt>
-<dd><em>continuous</em> lifetime these are (A1, tau1, tau2), for the
-<em>intermittent</em> lifetime these are (A1, A2, tau1, tau2, tau3).</dd>
+<li><p><em>results</em>  The raw results of the time autocorrelation function.</p></li>
+<li><p><em>time</em>     Time axis, in ps, for the results.</p></li>
+<li><dl class="simple">
+<dt><em>fit</em>      Results of the exponential curve fitting procedure. For the</dt><dd><p><em>continuous</em> lifetime these are (A1, tau1, tau2), for the
+<em>intermittent</em> lifetime these are (A1, A2, tau1, tau2, tau3).</p>
+</dd>
 </dl>
 </li>
-<li><em>tau</em>      Calculated time constant from the fit.</li>
-<li><em>estimate</em> Estimated values generated by the calculated fit.</li>
+<li><p><em>tau</em>      Calculated time constant from the fit.</p></li>
+<li><p><em>estimate</em> Estimated values generated by the calculated fit.</p></li>
 </ul>
 <p>The <em>results</em> and <em>time</em> values are only filled after the <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code> method,
 <em>fit</em>, <em>tau</em> and <em>estimate</em> are filled after the <code class="xref py py-meth docutils literal notranslate"><span class="pre">solve()</span></code> method has been
 used.</p>
-</div>
-<div class="section" id="worked-example-for-polyamide">
-<h2>4.3.2.4. Worked Example for Polyamide<a class="headerlink" href="#worked-example-for-polyamide" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="worked-example-for-polyamide">
+<h2><span class="section-number">4.3.2.4. </span>Worked Example for Polyamide<a class="headerlink" href="#worked-example-for-polyamide" title="Permalink to this headline"></a></h2>
 <p>This example finds the continuous hydrogen bond lifetime between N-H..O in a
 polyamide system.  This will use the default geometric definition for hydrogen
 bonds of length 3.0 Å and angle of 130 degrees.
@@ -382,97 +288,86 @@ points to build a better average.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="functions-and-classes">
-<h2>4.3.2.5. Functions and Classes<a class="headerlink" href="#functions-and-classes" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.find_hydrogen_donors">
-<code class="descclassname">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.</code><code class="descname">find_hydrogen_donors</code><span class="sig-paren">(</span><em>hydrogens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hydrogenbonds/hbond_autocorrel.html#find_hydrogen_donors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.find_hydrogen_donors" title="Permalink to this definition">¶</a></dt>
+</section>
+<section id="functions-and-classes">
+<h2><span class="section-number">4.3.2.5. </span>Functions and Classes<a class="headerlink" href="#functions-and-classes" title="Permalink to this headline"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.find_hydrogen_donors">
+<span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.</span></span><span class="sig-name descname"><span class="pre">find_hydrogen_donors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hydrogens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hydrogenbonds/hbond_autocorrel.html#find_hydrogen_donors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.find_hydrogen_donors" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the donor atom for each hydrogen</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hydrogens</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – the hydrogens that will form hydrogen bonds</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>donors</strong> – the donor atom for each hydrogen, found via bond information</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup">AtomGroup</a></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>hydrogens</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – the hydrogens that will form hydrogen bonds</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>donors</strong> – the donor atom for each hydrogen, found via bond information</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup">AtomGroup</a></p>
+</dd>
+</dl>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 0.20.0.</span></p>
+<p><span class="versionmodified added">New in version 0.20.0.</span></p>
 </div>
 </dd></dl>
 
-<dl class="class">
-<dt id="MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.</code><code class="descname">HydrogenBondAutoCorrel</code><span class="sig-paren">(</span><em>universe</em>, <em>hydrogens=None</em>, <em>acceptors=None</em>, <em>donors=None</em>, <em>bond_type=None</em>, <em>exclusions=None</em>, <em>angle_crit=130.0</em>, <em>dist_crit=3.0</em>, <em>sample_time=100</em>, <em>time_cut=None</em>, <em>nruns=1</em>, <em>nsamples=50</em>, <em>pbc=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hydrogenbonds/hbond_autocorrel.html#HydrogenBondAutoCorrel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.</span></span><span class="sig-name descname"><span class="pre">HydrogenBondAutoCorrel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hydrogens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acceptors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">donors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bond_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclusions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle_crit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">130.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_crit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nruns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsamples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hydrogenbonds/hbond_autocorrel.html#HydrogenBondAutoCorrel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel" title="Permalink to this definition"></a></dt>
 <dd><p>Perform a time autocorrelation of the hydrogen bonds in the system.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – MDAnalysis Universe that all selections belong to</li>
-<li><strong>hydrogens</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – AtomGroup of Hydrogens which can form hydrogen bonds</li>
-<li><strong>acceptors</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – AtomGroup of all Acceptor atoms</li>
-<li><strong>donors</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – The atoms which are connected to the hydrogens.  This group
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – MDAnalysis Universe that all selections belong to</p></li>
+<li><p><strong>hydrogens</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – AtomGroup of Hydrogens which can form hydrogen bonds</p></li>
+<li><p><strong>acceptors</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – AtomGroup of all Acceptor atoms</p></li>
+<li><p><strong>donors</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – The atoms which are connected to the hydrogens.  This group
 must be identical in length to the hydrogen group and matched,
 ie hydrogens[0] is bonded to donors[0].
 For water, this will mean a donor appears twice in this
-group, once for each hydrogen.</li>
-<li><strong>bond_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Which definition of hydrogen bond lifetime to consider, either
-‘continuous’ or ‘intermittent’.</li>
-<li><strong>exclusions</strong> (<em>ndarray</em><em>, </em><em>optional</em>) – Indices of Hydrogen-Acceptor pairs to be excluded.
+group, once for each hydrogen.</p></li>
+<li><p><strong>bond_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Which definition of hydrogen bond lifetime to consider, either
+‘continuous’ or ‘intermittent’.</p></li>
+<li><p><strong>exclusions</strong> (<em>ndarray</em><em>, </em><em>optional</em>) – Indices of Hydrogen-Acceptor pairs to be excluded.
 With nH and nA Hydrogens and Acceptors, a (nH x nA) array of distances
 is calculated, <em>exclusions</em> is used as a mask on this array to exclude
-some pairs.</li>
-<li><strong>angle_crit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – The angle (in degrees) which all bonds must be greater than [130.0]</li>
-<li><strong>dist_crit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – The maximum distance (in Angstroms) for a hydrogen bond [3.0]</li>
-<li><strong>sample_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em>, </em><em>optional</em>) – The amount of time, in ps, that you wish to observe hydrogen
-bonds for [100]</li>
-<li><strong>nruns</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – The number of different start points within the trajectory
-to use [1]</li>
-<li><strong>nsamples</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Within each run, the number of frames to analyse [50]</li>
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to consider periodic boundaries in calculations [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
-<li><strong>.versionchanged</strong> (<em>1.0.0</em>) – <code class="docutils literal notranslate"><span class="pre">save_results()</span></code> method was removed. You can instead use <code class="docutils literal notranslate"><span class="pre">np.savez()</span></code>
+some pairs.</p></li>
+<li><p><strong>angle_crit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – The angle (in degrees) which all bonds must be greater than [130.0]</p></li>
+<li><p><strong>dist_crit</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – The maximum distance (in Angstroms) for a hydrogen bond [3.0]</p></li>
+<li><p><strong>sample_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – The amount of time, in ps, that you wish to observe hydrogen
+bonds for [100]</p></li>
+<li><p><strong>nruns</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – The number of different start points within the trajectory
+to use [1]</p></li>
+<li><p><strong>nsamples</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – Within each run, the number of frames to analyse [50]</p></li>
+<li><p><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to consider periodic boundaries in calculations [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p></li>
+<li><p><strong>.versionchanged</strong> (<em>1.0.0</em>) – <code class="docutils literal notranslate"><span class="pre">save_results()</span></code> method was removed. You can instead use <code class="docutils literal notranslate"><span class="pre">np.savez()</span></code>
 on <code class="xref py py-attr docutils literal notranslate"><span class="pre">HydrogenBondAutoCorrel.solution['time']</span></code> and
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">HydrogenBondAutoCorrel.solution['results']</span></code> instead.</li>
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">HydrogenBondAutoCorrel.solution['results']</span></code> instead.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>force=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hydrogenbonds/hbond_autocorrel.html#HydrogenBondAutoCorrel.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel.run" title="Permalink to this definition">¶</a></dt>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hydrogenbonds/hbond_autocorrel.html#HydrogenBondAutoCorrel.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel.run" title="Permalink to this definition"></a></dt>
 <dd><p>Run all the required passes</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Will overwrite previous results if they exist</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Will overwrite previous results if they exist</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel.solve">
-<code class="descname">solve</code><span class="sig-paren">(</span><em>p_guess=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hydrogenbonds/hbond_autocorrel.html#HydrogenBondAutoCorrel.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel.solve" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel.solve">
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hydrogenbonds/hbond_autocorrel.html#HydrogenBondAutoCorrel.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel.HydrogenBondAutoCorrel.solve" title="Permalink to this definition"></a></dt>
 <dd><p>Fit results to an multi exponential decay and integrate to find
 characteristic time</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p_guess</strong> (<em>tuple of floats</em><em>, </em><em>optional</em>) – Initial guess for the leastsq fit, must match the shape of the
-expected coefficients</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>p_guess</strong> (<em>tuple of floats</em><em>, </em><em>optional</em>) – Initial guess for the leastsq fit, must match the shape of the
+expected coefficients</p>
+</dd>
+</dl>
 <p>Continuous defition results are fitted to a double exponential with
 <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.optimize.leastsq.html#scipy.optimize.leastsq" title="(in SciPy v1.7.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.optimize.leastsq()</span></code></a>, intermittent definition are fit to a
 triple exponential.</p>
@@ -480,48 +375,45 @@ triple exponential.</p>
 <em>tau</em> and <em>estimate</em> keywords in the solution dict.</p>
 <blockquote>
 <div><ul class="simple">
-<li><em>fit</em> contains the coefficients, (A1, tau1, tau2) or
-(A1, A2, tau1, tau2, tau3)</li>
-<li><em>tau</em> contains the calculated lifetime in ps for the hydrogen
-bonding</li>
-<li><em>estimate</em> contains the estimate provided by the fit of the time
-autocorrelation function</li>
+<li><p><em>fit</em> contains the coefficients, (A1, tau1, tau2) or
+(A1, A2, tau1, tau2, tau3)</p></li>
+<li><p><em>tau</em> contains the calculated lifetime in ps for the hydrogen
+bonding</p></li>
+<li><p><em>estimate</em> contains the estimate provided by the fit of the time
+autocorrelation function</p></li>
 </ul>
 </div></blockquote>
 <p>In addition, the output of the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.optimize.leastsq.html#scipy.optimize.leastsq" title="(in SciPy v1.7.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">leastsq()</span></code></a> function
 is saved into the solution dict</p>
 <blockquote>
 <div><ul class="simple">
-<li><em>infodict</em></li>
-<li><em>mesg</em></li>
-<li><em>ier</em></li>
+<li><p><em>infodict</em></p></li>
+<li><p><em>mesg</em></p></li>
+<li><p><em>ier</em></p></li>
 </ul>
 </div></blockquote>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="wbridge_analysis.html" class="btn btn-neutral float-right" title="4.3.3. Water Bridge analysis — MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="hydrogenbonds.html" class="btn btn-neutral float-left" title="4.3.1. Hydrogen Bond Analysis — MDAnalysis.analysis.hydrogenbonds.hbond_analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="wbridge_analysis.html" class="btn btn-neutral float-right" title="4.3.3. Water Bridge analysis — MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
-
-    </p>
+    <p>&#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
+
+  
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -534,9 +426,7 @@ is saved into the solution dict</p>
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -556,18 +446,11 @@ is saved into the solution dict</p>
         </dl>
 
     </div>
-</div>
-
-  <script type="text/javascript">
+</div><script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

@@ -1,47 +1,24 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>6.18. AMBER trajectories — MDAnalysis.coordinates.TRJ &mdash; MDAnalysis 2.1.0-dev0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-
-  
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-  
-
-  
-  
-
-  
-
-  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/javascript" src="../../_static/js/versions.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/js/versions.js"></script>
+    <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.1.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
@@ -51,36 +28,17 @@
     <link rel="prev" title="6.17. PQR file format — MDAnalysis.coordinates.PQR" href="PQR.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-          
-
-          
             <a href="../../index.html">
-          
-
-          
-            
             <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 2.1.0-dev0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -88,18 +46,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
@@ -107,42 +54,42 @@
 <li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="init.html">6.1. Trajectory Readers and Writers  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="CRD.html">6.2. CRD structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.CRD</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="DCD.html">6.3. DCD trajectory I/O  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DCD</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="DLPoly.html">6.4. DL_Poly format reader <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DLPoly</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="DMS.html">6.5. DESRES file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DMS</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="GMS.html">6.6. GAMESS trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GMS</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="GSD.html">6.7. GSD trajectory reader  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GSD</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="GRO.html">6.8. GRO file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="H5MD.html">6.9. H5MD trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.H5MD</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="INPCRD.html">6.10. INPCRD structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.INPCRD</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="LAMMPS.html">6.11. LAMMPS DCD trajectory and DATA I/O  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="MMTF.html">6.12. MMTF trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MMTF</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="MOL2.html">6.13. MOL2 file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="NAMDBIN.html">6.14. NAMDBIN files format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.NAMDBIN</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="PDB.html">6.15. PDB structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="PDBQT.html">6.16. PDBQT structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="PQR.html">6.17. PQR file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">6.18. AMBER trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="init.html">6.1. Trajectory Readers and Writers  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="CRD.html">6.2. CRD structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.CRD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DCD.html">6.3. DCD trajectory I/O  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DCD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DLPoly.html">6.4. DL_Poly format reader <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DLPoly</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DMS.html">6.5. DESRES file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GMS.html">6.6. GAMESS trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GSD.html">6.7. GSD trajectory reader  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GSD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GRO.html">6.8. GRO file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="H5MD.html">6.9. H5MD trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.H5MD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="INPCRD.html">6.10. INPCRD structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.INPCRD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="LAMMPS.html">6.11. LAMMPS DCD trajectory and DATA I/O  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="MMTF.html">6.12. MMTF trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MMTF</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="MOL2.html">6.13. MOL2 file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="NAMDBIN.html">6.14. NAMDBIN files format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.NAMDBIN</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDB.html">6.15. PDB structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBQT.html">6.16. PDBQT structure files in MDAnalysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PQR.html">6.17. PQR file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">6.18. AMBER trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#binary-netcdf-trajectories">6.18.1. Binary NetCDF trajectories</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ascii-traj-trajectories">6.18.2. ASCII TRAJ trajectories</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="TRR.html">6.19. TRR trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="TRZ.html">6.20. TRZ trajectory I/O  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="TXYZ.html">6.21. TXYZ file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TXYZ</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XTC.html">6.22. XTC trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XYZ.html">6.23. XYZ trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="FHIAIMS.html">6.24. FHI-AIMS file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.FHIAIMS</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory.html">6.25. Reading trajectories from memory — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="chemfiles.html">6.26. Reading trajectories with <em>chemfiles</em> — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="null.html">6.27. Null output — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">6.28. Base classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">6.29. Common functions for coordinate reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRR.html">6.19. TRR trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRZ.html">6.20. TRZ trajectory I/O  — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TXYZ.html">6.21. TXYZ file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TXYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XTC.html">6.22. XTC trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XYZ.html">6.23. XYZ trajectory reader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="FHIAIMS.html">6.24. FHI-AIMS file format — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.FHIAIMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory.html">6.25. Reading trajectories from memory — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chemfiles.html">6.26. Reading trajectories with <em>chemfiles</em> — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="null.html">6.27. Null output — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">6.28. Base classes — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">6.29. Common functions for coordinate reading — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.30. Serialization of Coordinate Readers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chain.html">6.31. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.32. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">6.31. ChainReader — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.32. XDR based trajectory files — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
@@ -151,151 +98,105 @@
 <li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">MDAnalysis</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../coordinates_modules.html">6. Coordinates modules</a> &raquo;</li>
-        
-      <li>6.18. AMBER trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></li>
-    
-    
+          <li><a href="../coordinates_modules.html"><span class="section-number">6. </span>Coordinates modules</a> &raquo;</li>
+      <li><span class="section-number">6.18. </span>AMBER trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/documentation_pages/coordinates/TRJ.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <span class="target" id="module-MDAnalysis.coordinates.TRJ"></span><div class="section" id="amber-trajectories-mdanalysis-coordinates-trj">
-<h1>6.18. AMBER trajectories — <a class="reference internal" href="#module-MDAnalysis.coordinates.TRJ" title="MDAnalysis.coordinates.TRJ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a><a class="headerlink" href="#amber-trajectories-mdanalysis-coordinates-trj" title="Permalink to this headline">¶</a></h1>
+             
+  <span class="target" id="module-MDAnalysis.coordinates.TRJ"></span><section id="amber-trajectories-mdanalysis-coordinates-trj">
+<h1><span class="section-number">6.18. </span>AMBER trajectories — <a class="reference internal" href="#module-MDAnalysis.coordinates.TRJ" title="MDAnalysis.coordinates.TRJ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a><a class="headerlink" href="#amber-trajectories-mdanalysis-coordinates-trj" title="Permalink to this headline"></a></h1>
 <p><a class="reference external" href="http://ambermd.org">AMBER</a> can write <a class="reference internal" href="#ascii-trajectories"><span class="std std-ref">ASCII trajectories</span></a> (“traj”) and
 <a class="reference internal" href="#netcdf-trajectories"><span class="std std-ref">binary trajectories</span></a> (“netcdf”). MDAnalysis supports
 reading of both formats and writing for the binary trajectories.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Support for AMBER is still somewhat <em>experimental</em> and feedback and
+<p class="admonition-title">Note</p>
+<p>Support for AMBER is still somewhat <em>experimental</em> and feedback and
 contributions are highly appreciated. Use the <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues">Issue Tracker</a> or get in touch
 on the <a class="reference external" href="https://groups.google.com/group/mdnalysis-discussion">MDAnalysis mailinglist</a>.</p>
 </div>
 <p class="rubric">Units</p>
 <p>AMBER trajectories are assumed to be in the following units:</p>
 <ul class="simple">
-<li>lengths in Angstrom (Å)</li>
-<li>time in ps (but see below)</li>
+<li><p>lengths in Angstrom (Å)</p></li>
+<li><p>time in ps (but see below)</p></li>
 </ul>
 <p>AMBER trajectory coordinate frames are based on a custom <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.Timestep" title="MDAnalysis.coordinates.TRJ.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
 object.</p>
-<dl class="class">
-<dt id="MDAnalysis.coordinates.TRJ.Timestep">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.TRJ.</code><code class="descname">Timestep</code><span class="sig-paren">(</span><em>n_atoms</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.Timestep">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.TRJ.</span></span><span class="sig-name descname"><span class="pre">Timestep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#Timestep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep" title="Permalink to this definition"></a></dt>
 <dd><p>AMBER trajectory Timestep.</p>
 <p>The Timestep can be initialized with <cite>arg</cite> being an integer
 (the number of atoms) and an optional keyword argument <cite>velocities</cite> to
 allocate space for both coordinates and velocities;</p>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.10.0: </span>Added ability to contain Forces</p>
+<p><span class="versionmodified changed">Changed in version 0.10.0: </span>Added ability to contain Forces</p>
 </div>
 <p>Create a Timestep, representing a frame of a trajectory</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – The total number of atoms this Timestep describes</li>
-<li><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether this Timestep has position information [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
-<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has velocity information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
-<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has force information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
-<li><strong>reader</strong> (<em>Reader</em><em> (</em><em>optional</em><em>)</em>) – A weak reference to the owning Reader.  Used for
-when attributes require trajectory manipulation (e.g. dt)</li>
-<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The time difference between frames (ps).  If <code class="xref py py-attr docutils literal notranslate"><span class="pre">time</span></code>
-is set, then <cite>dt</cite> will be ignored.</li>
-<li><strong>time_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The starting time from which to calculate time (in ps)</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The total number of atoms this Timestep describes</p></li>
+<li><p><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether this Timestep has position information [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p></li>
+<li><p><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has velocity information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p></li>
+<li><p><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has force information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p></li>
+<li><p><strong>reader</strong> (<em>Reader</em><em> (</em><em>optional</em><em>)</em>) – A weak reference to the owning Reader.  Used for
+when attributes require trajectory manipulation (e.g. dt)</p></li>
+<li><p><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The time difference between frames (ps).  If <code class="xref py py-attr docutils literal notranslate"><span class="pre">time</span></code>
+is set, then <cite>dt</cite> will be ignored.</p></li>
+<li><p><strong>time_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The starting time from which to calculate time (in ps)</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.11.0: </span>Added keywords for <cite>positions</cite>, <cite>velocities</cite> and <cite>forces</cite>.
+<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Added keywords for <cite>positions</cite>, <cite>velocities</cite> and <cite>forces</cite>.
 Can add and remove position/velocity/force information by using
 the <code class="docutils literal notranslate"><span class="pre">has_*</span></code> attribute.</p>
 </div>
-<dl class="attribute">
-<dt id="MDAnalysis.coordinates.TRJ.Timestep._pos">
-<code class="descname">_pos</code><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._pos" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.Timestep._pos">
+<span class="sig-name descname"><span class="pre">_pos</span></span><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._pos" title="Permalink to this definition"></a></dt>
 <dd><p>coordinates of the atoms as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <cite>(n_atoms, 3)</cite></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="MDAnalysis.coordinates.TRJ.Timestep._velocities">
-<code class="descname">_velocities</code><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._velocities" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.Timestep._velocities">
+<span class="sig-name descname"><span class="pre">_velocities</span></span><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._velocities" title="Permalink to this definition"></a></dt>
 <dd><p>velocities of the atoms as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <cite>(n_atoms, 3)</cite>;
 only available if the trajectory contains velocities or if the
 <em>velocities</em> = <code class="docutils literal notranslate"><span class="pre">True</span></code> keyword has been supplied.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="MDAnalysis.coordinates.TRJ.Timestep._forces">
-<code class="descname">_forces</code><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._forces" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.Timestep._forces">
+<span class="sig-name descname"><span class="pre">_forces</span></span><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.Timestep._forces" title="Permalink to this definition"></a></dt>
 <dd><p>forces of the atoms as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <cite>(n_atoms, 3)</cite>;
 only available if the trajectory contains forces or if the
 <em>forces</em> = <code class="docutils literal notranslate"><span class="pre">True</span></code> keyword has been supplied.</p>
@@ -303,8 +204,8 @@ only available if the trajectory contains forces or if the
 
 </dd></dl>
 
-<div class="section" id="binary-netcdf-trajectories">
-<span id="netcdf-trajectories"></span><h2>6.18.1. Binary NetCDF trajectories<a class="headerlink" href="#binary-netcdf-trajectories" title="Permalink to this headline">¶</a></h2>
+<section id="binary-netcdf-trajectories">
+<span id="netcdf-trajectories"></span><h2><span class="section-number">6.18.1. </span>Binary NetCDF trajectories<a class="headerlink" href="#binary-netcdf-trajectories" title="Permalink to this headline"></a></h2>
 <p>The <a class="reference external" href="http://ambermd.org/netcdf/nctraj.xhtml">AMBER netcdf</a> format make use of <a class="reference external" href="http://www.unidata.ucar.edu/software/netcdf">NetCDF</a> (Network Common Data
 Form) format. Such binary trajectories are recognized in MDAnalysis by
 the ‘.ncdf’ suffix and read by the <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFReader" title="MDAnalysis.coordinates.TRJ.NCDFReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFReader</span></code></a>.</p>
@@ -312,10 +213,10 @@ the ‘.ncdf’ suffix and read by the <a class="reference internal" href="#MDAn
 exact time
 step. In principle, the trajectories can be in different units than the AMBER
 defaults of ångström and picoseconds but at the moment MDAnalysis only supports
-those and will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> if anything else is detected.</p>
-<dl class="class">
-<dt id="MDAnalysis.coordinates.TRJ.NCDFReader">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.TRJ.</code><code class="descname">NCDFReader</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms=None</em>, <em>mmap=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader" title="Permalink to this definition">¶</a></dt>
+those and will raise a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> if anything else is detected.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.NCDFReader">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.TRJ.</span></span><span class="sig-name descname"><span class="pre">NCDFReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader" title="Permalink to this definition"></a></dt>
 <dd><p>Reader for <a class="reference external" href="http://ambermd.org/netcdf/nctraj.xhtml">AMBER NETCDF format</a> (version 1.0).</p>
 <p>AMBER binary trajectories are automatically recognised by the
 file extension “.ncdf”.</p>
@@ -333,32 +234,32 @@ the trajectory, then <code class="xref py py-attr docutils literal notranslate">
 <code class="docutils literal notranslate"><span class="pre">[0,0,0,0,0,0]</span></code>).</p>
 <p>Current limitations:</p>
 <ul class="simple">
-<li>only trajectories with time in ps and lengths in Angstroem are processed</li>
+<li><p>only trajectories with time in ps and lengths in Angstroem are processed</p></li>
 </ul>
 <p>The NCDF reader uses <code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code> and therefore <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/index.html#module-scipy" title="(in SciPy v1.7.1)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy</span></code></a> must
 be installed. It supports the <em>mmap</em> keyword argument (when reading):
 <code class="docutils literal notranslate"><span class="pre">mmap=True</span></code> is memory efficient and directly maps the trajectory on disk
-to memory (using the <a class="reference external" href="https://docs.python.org/3/library/mmap.html#mmap.mmap" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mmap</span></code></a>); <code class="docutils literal notranslate"><span class="pre">mmap=False</span></code> may consume large
+to memory (using the <a class="reference external" href="https://docs.python.org/3/library/mmap.html#mmap.mmap" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mmap</span></code></a>); <code class="docutils literal notranslate"><span class="pre">mmap=False</span></code> may consume large
 amounts of memory because it loads the whole trajectory into memory but it
 might be faster. The default is <code class="docutils literal notranslate"><span class="pre">mmap=None</span></code> and then default behavior of
 <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.io.netcdf_file.html#scipy.io.netcdf_file" title="(in SciPy v1.7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf.netcdf_file</span></code></a> prevails, i.e. <code class="docutils literal notranslate"><span class="pre">True</span></code> when
 <em>filename</em> is a file name, <code class="docutils literal notranslate"><span class="pre">False</span></code> when <em>filename</em> is a file-like object.</p>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="MDAnalysis.coordinates.TRJ.NCDFWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFWriter</span></code></a></p>
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="MDAnalysis.coordinates.TRJ.NCDFWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFWriter</span></code></a></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.10.0: </span>Added ability to read Forces</p>
+<p><span class="versionmodified changed">Changed in version 0.10.0: </span>Added ability to read Forces</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.11.0: </span>Frame labels now 0-based instead of 1-based.
+<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Frame labels now 0-based instead of 1-based.
 kwarg <cite>delta</cite> renamed to <cite>dt</cite>, for uniformity with other Readers.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.17.0: </span>Uses <code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code> and supports the <em>mmap</em> kwarg.</p>
+<p><span class="versionmodified changed">Changed in version 0.17.0: </span>Uses <code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code> and supports the <em>mmap</em> kwarg.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.20.0: </span>Now reads scale_factors for all expected AMBER convention variables.
+<p><span class="versionmodified changed">Changed in version 0.20.0: </span>Now reads scale_factors for all expected AMBER convention variables.
 Timestep variables now adhere standard MDAnalysis units, with lengths
 of angstrom, time of ps, velocity of angstrom/ps and force of
 kJ/(mol*Angstrom). It is noted that with 0.19.2 and earlier versions,
@@ -366,88 +267,83 @@ velocities would have often been reported in values of angstrom/AKMA
 time units instead (Issue #2323).</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.0: </span>Support for reading <cite>degrees</cite> units for <cite>cell_angles</cite> has now been
+<p><span class="versionmodified changed">Changed in version 1.0.0: </span>Support for reading <cite>degrees</cite> units for <cite>cell_angles</cite> has now been
 removed (Issue #2327)</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span>Now use a picklable <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.io.netcdf_file.html#scipy.io.netcdf_file" title="(in SciPy v1.7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf.netcdf_file</span></code></a>–
+<p><span class="versionmodified changed">Changed in version 2.0.0: </span>Now use a picklable <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.io.netcdf_file.html#scipy.io.netcdf_file" title="(in SciPy v1.7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf.netcdf_file</span></code></a>–
 <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFPicklable" title="MDAnalysis.coordinates.TRJ.NCDFPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFPicklable</span></code></a>.
 Reading of <cite>dt</cite> now defaults to 1.0 ps if <cite>dt</cite> cannot be extracted from
 the first two frames of the trajectory.
 <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFReader.Writer" title="MDAnalysis.coordinates.TRJ.NCDFReader.Writer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Writer()</span></code></a> now also sets <cite>convert_units</cite>, <cite>velocities</cite>, <cite>forces</cite> and
 <cite>scale_factor</cite> information for the <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="MDAnalysis.coordinates.TRJ.NCDFWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFWriter</span></code></a>.</p>
 </div>
-<dl class="method">
-<dt id="MDAnalysis.coordinates.TRJ.NCDFReader.Writer">
-<code class="descname">Writer</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFReader.Writer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader.Writer" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.NCDFReader.Writer">
+<span class="sig-name descname"><span class="pre">Writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFReader.Writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader.Writer" title="Permalink to this definition"></a></dt>
 <dd><p>Returns a NCDFWriter for <cite>filename</cite> with the same parameters as this NCDF.</p>
 <p>All values can be changed through keyword arguments.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – filename of the output NCDF trajectory</li>
-<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – number of atoms</li>
-<li><strong>remarks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – string that is stored in the title field</li>
-<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code>: units are converted to the AMBER base format</li>
-<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Write velocities into the trajectory</li>
-<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Write forces into the trajectory</li>
-<li><strong>scale_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for time units</li>
-<li><strong>scale_cell_lengths</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for cell lengths</li>
-<li><strong>scale_cell_angles</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for cell angles</li>
-<li><strong>scale_coordinates</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for coordinates</li>
-<li><strong>scale_velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for velocities</li>
-<li><strong>scale_forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for forces</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – filename of the output NCDF trajectory</p></li>
+<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – number of atoms</p></li>
+<li><p><strong>remarks</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – string that is stored in the title field</p></li>
+<li><p><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code>: units are converted to the AMBER base format</p></li>
+<li><p><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Write velocities into the trajectory</p></li>
+<li><p><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Write forces into the trajectory</p></li>
+<li><p><strong>scale_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for time units</p></li>
+<li><p><strong>scale_cell_lengths</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for cell lengths</p></li>
+<li><p><strong>scale_cell_angles</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for cell angles</p></li>
+<li><p><strong>scale_coordinates</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for coordinates</p></li>
+<li><p><strong>scale_velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for velocities</p></li>
+<li><p><strong>scale_forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for forces</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="MDAnalysis.coordinates.TRJ.NCDFWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFWriter</span></code></a></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="MDAnalysis.coordinates.TRJ.NCDFWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFWriter</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.coordinates.TRJ.NCDFReader.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFReader.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Close trajectory; any further access will raise an <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.NCDFReader.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFReader.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader.close" title="Permalink to this definition"></a></dt>
+<dd><p>Close trajectory; any further access will raise an <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#IOError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code></a>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The underlying <code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code> module may open netcdf
-files with <a class="reference external" href="https://docs.python.org/3/library/mmap.html#mmap.mmap" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mmap</span></code></a> if <code class="docutils literal notranslate"><span class="pre">mmap=True</span></code> was
+<p class="admonition-title">Note</p>
+<p>The underlying <code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code> module may open netcdf
+files with <a class="reference external" href="https://docs.python.org/3/library/mmap.html#mmap.mmap" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">mmap</span></code></a> if <code class="docutils literal notranslate"><span class="pre">mmap=True</span></code> was
 set. Hence <em>any</em> reference to an array <em>must</em> be removed
 before the file can be closed.</p>
 </div>
 </dd></dl>
 
-<dl class="staticmethod">
-<dt id="MDAnalysis.coordinates.TRJ.NCDFReader.parse_n_atoms">
-<em class="property">static </em><code class="descname">parse_n_atoms</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFReader.parse_n_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader.parse_n_atoms" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.NCDFReader.parse_n_atoms">
+<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">parse_n_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFReader.parse_n_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFReader.parse_n_atoms" title="Permalink to this definition"></a></dt>
 <dd><p>Read the coordinate file and deduce the number of atoms</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>n_atoms</strong> – the number of atoms in the coordinate file</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> – when the number of atoms can’t be deduced</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>n_atoms</strong> – the number of atoms in the coordinate file</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.10)"><strong>NotImplementedError</strong></a> – when the number of atoms can’t be deduced</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="MDAnalysis.coordinates.TRJ.NCDFWriter">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.TRJ.</code><code class="descname">NCDFWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms</em>, <em>remarks=None</em>, <em>convert_units=True</em>, <em>velocities=False</em>, <em>forces=False</em>, <em>scale_time=None</em>, <em>scale_cell_lengths=None</em>, <em>scale_cell_angles=None</em>, <em>scale_coordinates=None</em>, <em>scale_velocities=None</em>, <em>scale_forces=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.NCDFWriter">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.TRJ.</span></span><span class="sig-name descname"><span class="pre">NCDFWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remarks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convert_units</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forces</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_cell_lengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_cell_angles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_coordinates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_velocities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_forces</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="Permalink to this definition"></a></dt>
 <dd><p>Writer for <a class="reference external" href="http://ambermd.org/netcdf/nctraj.xhtml">AMBER NETCDF format</a> (version 1.0).</p>
 <p>AMBER binary trajectories are automatically recognised by the
 file extension “.ncdf” or “.nc”.</p>
@@ -463,29 +359,25 @@ default, scale factor variables are not written. The only exception is for
 velocities, where it is set to 20.455, replicating the default behaviour of
 AMBER.</p>
 <p>Unit cell information is written if available.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – name of output file</li>
-<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – number of atoms in trajectory file</li>
-<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code>: units are converted to the AMBER base format; [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
-<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Write velocities into the trajectory [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
-<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Write forces into the trajectory [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
-<li><strong>scale_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for time units [<cite>None</cite>]</li>
-<li><strong>scale_cell_lengths</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for cell lengths [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
-<li><strong>scale_cell_angles</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for cell angles [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
-<li><strong>scale_coordinates</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for coordinates [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
-<li><strong>scale_velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for velocities [20.455]</li>
-<li><strong>scale_forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for forces [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – name of output file</p></li>
+<li><p><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of atoms in trajectory file</p></li>
+<li><p><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <code class="docutils literal notranslate"><span class="pre">True</span></code>: units are converted to the AMBER base format; [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p></li>
+<li><p><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Write velocities into the trajectory [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p></li>
+<li><p><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Write forces into the trajectory [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p></li>
+<li><p><strong>scale_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for time units [<cite>None</cite>]</p></li>
+<li><p><strong>scale_cell_lengths</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for cell lengths [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</p></li>
+<li><p><strong>scale_cell_angles</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for cell angles [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</p></li>
+<li><p><strong>scale_coordinates</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for coordinates [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</p></li>
+<li><p><strong>scale_velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for velocities [20.455]</p></li>
+<li><p><strong>scale_forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Scale factor for forces [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>MDAnalysis uses <code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code> to access AMBER files, which are in
 netcdf 3 format. Although <code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code> is very fast at reading
 these files, it is <em>very</em> slow when writing, and it becomes slower the
@@ -513,82 +405,78 @@ its own NetCDF library that it now inserts into <span class="target" id="index-0
 <span class="target" id="index-1"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">LD_LIBRARY_PATH</span></code>) is missing some symbols. Removing AMBER from the
 environment fixes the import but is not really a convenient solution for
 users of AMBER.</p>
-<p class="last">At the moment there is no obvious solution if one wants to use
+<p>At the moment there is no obvious solution if one wants to use
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">netCDF4</span></code> and AMBER in the same shell session. If you need the fast
 writing capabilities of <code class="xref py py-mod docutils literal notranslate"><span class="pre">netCDF4</span></code> then you need to unload your AMBER
 environment before importing MDAnalysis.</p>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#FutureWarning" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">FutureWarning</span></code></a> – When writing. The <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="MDAnalysis.coordinates.TRJ.NCDFWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFWriter</span></code></a> currently does not write any
-<cite>scale_factor</cite> values for the data variables. Whilst not in breach
-of the AMBER NetCDF standard, this behaviour differs from that of
-most AMBER writers, especially for velocities which usually have a
-<cite>scale_factor</cite> of 20.455. In MDAnalysis 2.0, the <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="MDAnalysis.coordinates.TRJ.NCDFWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFWriter</span></code></a>
-will enforce <cite>scale_factor</cite> writing to either match user inputs (either
-manually defined or via the <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFReader" title="MDAnalysis.coordinates.TRJ.NCDFReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFReader</span></code></a>) or those as written by
-AmberTools’s <strong class="program">sander</strong> under default operation.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#FutureWarning" title="(in Python v3.10)"><strong>FutureWarning</strong></a> – When writing. The <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="MDAnalysis.coordinates.TRJ.NCDFWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFWriter</span></code></a> currently does not write any
+    <cite>scale_factor</cite> values for the data variables. Whilst not in breach
+    of the AMBER NetCDF standard, this behaviour differs from that of
+    most AMBER writers, especially for velocities which usually have a
+    <cite>scale_factor</cite> of 20.455. In MDAnalysis 2.0, the <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFWriter" title="MDAnalysis.coordinates.TRJ.NCDFWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFWriter</span></code></a>
+    will enforce <cite>scale_factor</cite> writing to either match user inputs (either
+    manually defined or via the <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFReader" title="MDAnalysis.coordinates.TRJ.NCDFReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFReader</span></code></a>) or those as written by
+    AmberTools’s <strong class="program">sander</strong> under default operation.</p>
+</dd>
+</dl>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFReader" title="MDAnalysis.coordinates.TRJ.NCDFReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFReader</span></code></a></p>
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#MDAnalysis.coordinates.TRJ.NCDFReader" title="MDAnalysis.coordinates.TRJ.NCDFReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">NCDFReader</span></code></a></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.10.0: </span>Added ability to write velocities and forces</p>
+<p><span class="versionmodified changed">Changed in version 0.10.0: </span>Added ability to write velocities and forces</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.11.0: </span>kwarg <cite>delta</cite> renamed to <cite>dt</cite>, for uniformity with other Readers</p>
+<p><span class="versionmodified changed">Changed in version 0.11.0: </span>kwarg <cite>delta</cite> renamed to <cite>dt</cite>, for uniformity with other Readers</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.17.0: </span>Use fast <code class="xref py py-mod docutils literal notranslate"><span class="pre">netCDF4</span></code> for writing but fall back to slow
+<p><span class="versionmodified changed">Changed in version 0.17.0: </span>Use fast <code class="xref py py-mod docutils literal notranslate"><span class="pre">netCDF4</span></code> for writing but fall back to slow
 <code class="xref py py-mod docutils literal notranslate"><span class="pre">scipy.io.netcdf</span></code> if <code class="xref py py-mod docutils literal notranslate"><span class="pre">netCDF4</span></code> is not available.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.20.1: </span>Changes the <cite>cell_angles</cite> unit to the AMBER NetCDF convention standard
+<p><span class="versionmodified changed">Changed in version 0.20.1: </span>Changes the <cite>cell_angles</cite> unit to the AMBER NetCDF convention standard
 of <cite>degree</cite> instead of the <cite>degrees</cite> written in previous version of
 MDAnalysis (Issue #2327).</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 2.0.0: </span><code class="docutils literal notranslate"><span class="pre">dt</span></code>, <code class="docutils literal notranslate"><span class="pre">start</span></code>, and <code class="docutils literal notranslate"><span class="pre">step</span></code> keywords were unused and are no longer
+<p><span class="versionmodified changed">Changed in version 2.0.0: </span><code class="docutils literal notranslate"><span class="pre">dt</span></code>, <code class="docutils literal notranslate"><span class="pre">start</span></code>, and <code class="docutils literal notranslate"><span class="pre">step</span></code> keywords were unused and are no longer
 set.
 Writing of <code class="docutils literal notranslate"><span class="pre">scale_factor</span></code> values has now been implemented. By default
 only velocities write a scale_factor of 20.455 (echoing the behaviour
 seen from AMBER).</p>
 </div>
-<dl class="method">
-<dt id="MDAnalysis.coordinates.TRJ.NCDFWriter.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFWriter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter.close" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.NCDFWriter.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFWriter.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter.close" title="Permalink to this definition"></a></dt>
 <dd><p>Close the trajectory file.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.coordinates.TRJ.NCDFWriter.is_periodic">
-<code class="descname">is_periodic</code><span class="sig-paren">(</span><em>ts</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFWriter.is_periodic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter.is_periodic" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.NCDFWriter.is_periodic">
+<span class="sig-name descname"><span class="pre">is_periodic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFWriter.is_periodic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter.is_periodic" title="Permalink to this definition"></a></dt>
 <dd><p>Test if timestep <code class="docutils literal notranslate"><span class="pre">ts</span></code> contains a periodic box.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ts</strong> (<a class="reference internal" href="#MDAnalysis.coordinates.TRJ.Timestep" title="MDAnalysis.coordinates.TRJ.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>) – <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.Timestep" title="MDAnalysis.coordinates.TRJ.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> instance containing coordinates to
-be written to trajectory file</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if <cite>ts</cite> contains a valid simulation box</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ts</strong> (<a class="reference internal" href="#MDAnalysis.coordinates.TRJ.Timestep" title="MDAnalysis.coordinates.TRJ.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>) – <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.Timestep" title="MDAnalysis.coordinates.TRJ.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> instance containing coordinates to
+be written to trajectory file</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if <cite>ts</cite> contains a valid simulation box</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="MDAnalysis.coordinates.TRJ.NCDFPicklable">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.TRJ.</code><code class="descname">NCDFPicklable</code><span class="sig-paren">(</span><em>filename</em>, <em>mode='r'</em>, <em>mmap=None</em>, <em>version=1</em>, <em>maskandscale=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFPicklable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFPicklable" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.NCDFPicklable">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.TRJ.</span></span><span class="sig-name descname"><span class="pre">NCDFPicklable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maskandscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFPicklable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFPicklable" title="Permalink to this definition"></a></dt>
 <dd><p>NetCDF file object (read-only) that can be pickled.</p>
 <p>This class provides a file-like object (as returned by
 <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.io.netcdf_file.html#scipy.io.netcdf_file" title="(in SciPy v1.7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf.netcdf_file</span></code></a>) that,
@@ -600,27 +488,23 @@ and the mmap file is loaded.
 This means that for a successful unpickle, the original file still has to
 be accessible with its filename.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This class subclasses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.io.netcdf_file.html#scipy.io.netcdf_file" title="(in SciPy v1.7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf.netcdf_file</span></code></a>, please
+<p class="admonition-title">Note</p>
+<p>This class subclasses <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.io.netcdf_file.html#scipy.io.netcdf_file" title="(in SciPy v1.7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.io.netcdf.netcdf_file</span></code></a>, please
 see the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.netcdf_file.html">scipy netcdf API documentation</a> for more information on
 the parameters and how the class behaviour.</p>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><em>file-like</em>) – a filename given a text or byte string.</li>
-<li><strong>mmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to mmap <cite>filename</cite> when reading. True when <cite>filename</cite>
-is a file name, False when <cite>filename</cite> is a file-like object.</li>
-<li><strong>version</strong> (<em>{1</em><em>, </em><em>2}</em><em>, </em><em>optional</em>) – Sets the netcdf file version to read / write. 1 is classic, 2 is
-64-bit offset format. Default is 1 (but note AMBER ncdf <em>requires</em> 2).</li>
-<li><strong>maskandscale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to automatically scale and mask data. Default is False.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>file-like</em>) – a filename given a text or byte string.</p></li>
+<li><p><strong>mmap</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><em>None</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to mmap <cite>filename</cite> when reading. True when <cite>filename</cite>
+is a file name, False when <cite>filename</cite> is a file-like object.</p></li>
+<li><p><strong>version</strong> (<em>{1</em><em>, </em><em>2}</em><em>, </em><em>optional</em>) – Sets the netcdf file version to read / write. 1 is classic, 2 is
+64-bit offset format. Default is 1 (but note AMBER ncdf <em>requires</em> 2).</p></li>
+<li><p><strong>maskandscale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to automatically scale and mask data. Default is False.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Example</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">NCDFPicklable</span><span class="p">(</span><span class="n">NCDF</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;coordinates&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
@@ -633,25 +517,25 @@ is a file name, False when <cite>filename</cite> is a file-like object.</li>
 </pre></div>
 </div>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.FileIOPicklable" title="MDAnalysis.lib.picklable_file_io.FileIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.FileIOPicklable</span></code></a>, <a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.BufferIOPicklable" title="MDAnalysis.lib.picklable_file_io.BufferIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.BufferIOPicklable</span></code></a>, <a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.TextIOPicklable" title="MDAnalysis.lib.picklable_file_io.TextIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.TextIOPicklable</span></code></a>, <a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.GzipPicklable" title="MDAnalysis.lib.picklable_file_io.GzipPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.GzipPicklable</span></code></a>, <a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.BZ2Picklable" title="MDAnalysis.lib.picklable_file_io.BZ2Picklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.BZ2Picklable</span></code></a></p>
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.FileIOPicklable" title="MDAnalysis.lib.picklable_file_io.FileIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.FileIOPicklable</span></code></a>, <a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.BufferIOPicklable" title="MDAnalysis.lib.picklable_file_io.BufferIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.BufferIOPicklable</span></code></a>, <a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.TextIOPicklable" title="MDAnalysis.lib.picklable_file_io.TextIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.TextIOPicklable</span></code></a>, <a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.GzipPicklable" title="MDAnalysis.lib.picklable_file_io.GzipPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.GzipPicklable</span></code></a>, <a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.BZ2Picklable" title="MDAnalysis.lib.picklable_file_io.BZ2Picklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.BZ2Picklable</span></code></a></p>
 </div>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 2.0.0.</span></p>
+<p><span class="versionmodified added">New in version 2.0.0.</span></p>
 </div>
 <p>Initialize netcdf_file from fileobj (str or file-like).</p>
 </dd></dl>
 
-</div>
-<div class="section" id="ascii-traj-trajectories">
-<span id="ascii-trajectories"></span><h2>6.18.2. ASCII TRAJ trajectories<a class="headerlink" href="#ascii-traj-trajectories" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="ascii-traj-trajectories">
+<span id="ascii-trajectories"></span><h2><span class="section-number">6.18.2. </span>ASCII TRAJ trajectories<a class="headerlink" href="#ascii-traj-trajectories" title="Permalink to this headline"></a></h2>
 <p>ASCII <a class="reference external" href="http://ambermd.org">AMBER</a> TRJ coordinate files (as defined in <a class="reference external" href="http://ambermd.org/formats.html#trajectory">AMBER TRJ format</a>)
 are handled by the <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.TRJReader" title="MDAnalysis.coordinates.TRJ.TRJReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">TRJReader</span></code></a>. It is also possible to directly
 read <em>bzip2</em> or <em>gzip</em> compressed files.</p>
 <p>AMBER ASCII trajectories are recognised by the suffix ‘.trj’,
 ‘.mdcrd’ or ‘.crdbox (possibly with an additional ‘.gz’ or ‘.bz2’).</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>In the AMBER community, these trajectories are often saved with the
 suffix ‘.crd’ but this extension conflicts with the CHARMM CRD
 format and MDAnalysis <em>will not correctly autodetect AMBER “.crd”
@@ -660,78 +544,75 @@ argument to <a class="reference internal" href="../core/universe.html#MDAnalysis
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;top.prmtop&quot;</span><span class="p">,</span> <span class="s2">&quot;traj.crd&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;TRJ&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p class="last">In this way, the AMBER <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.TRJReader" title="MDAnalysis.coordinates.TRJ.TRJReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">TRJReader</span></code></a> is used.</p>
+<p>In this way, the AMBER <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.TRJReader" title="MDAnalysis.coordinates.TRJ.TRJReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">TRJReader</span></code></a> is used.</p>
 </div>
 <p class="rubric">Limitations</p>
 <ul class="simple">
-<li>Periodic boxes are only stored as box lengths A, B, C in an AMBER
+<li><p>Periodic boxes are only stored as box lengths A, B, C in an AMBER
 trajectory; the reader always assumes that these are orthorhombic
-boxes.</li>
-<li>The trajectory does not contain time information so we simply set
-the time step to 1 ps (or the user could provide it as kwarg <em>dt</em>)</li>
-<li>Trajectories with fewer than 4 atoms probably fail to be read (BUG).</li>
-<li>If the trajectory contains exactly <em>one</em> atom then it is always
-assumed to be non-periodic (for technical reasons).</li>
-<li>Velocities are currently <em>not supported</em> as ASCII trajectories.</li>
+boxes.</p></li>
+<li><p>The trajectory does not contain time information so we simply set
+the time step to 1 ps (or the user could provide it as kwarg <em>dt</em>)</p></li>
+<li><p>Trajectories with fewer than 4 atoms probably fail to be read (BUG).</p></li>
+<li><p>If the trajectory contains exactly <em>one</em> atom then it is always
+assumed to be non-periodic (for technical reasons).</p></li>
+<li><p>Velocities are currently <em>not supported</em> as ASCII trajectories.</p></li>
 </ul>
-<dl class="class">
-<dt id="MDAnalysis.coordinates.TRJ.TRJReader">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.TRJ.</code><code class="descname">TRJReader</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#TRJReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.TRJReader">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.coordinates.TRJ.</span></span><span class="sig-name descname"><span class="pre">TRJReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#TRJReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader" title="Permalink to this definition"></a></dt>
 <dd><p>AMBER trajectory reader.</p>
 <p>Reads the ASCII formatted <a class="reference external" href="http://ambermd.org/formats.html#trajectory">AMBER TRJ format</a>. Periodic box information
 is auto-detected.</p>
 <p>The number of atoms in a timestep <em>must</em> be provided in the <cite>n_atoms</cite>
 keyword because it is not stored in the trajectory header and cannot be
-reliably autodetected. The constructor raises a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> if
+reliably autodetected. The constructor raises a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> if
 <cite>n_atoms</cite> is left at its default value of <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
 <p>The length of a timestep is not stored in the trajectory itself but can
 be set by passing the <cite>dt</cite> keyword argument to the constructor; it
 is assumed to be in ps. The default value is 1 ps.</p>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based.
+<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based.
 kwarg <cite>delta</cite> renamed to <cite>dt</cite>, for uniformity with other Readers</p>
 </div>
-<dl class="method">
-<dt id="MDAnalysis.coordinates.TRJ.TRJReader.close">
-<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#TRJReader.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader.close" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.TRJReader.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#TRJReader.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader.close" title="Permalink to this definition"></a></dt>
 <dd><p>Close trj trajectory file if it was open.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="MDAnalysis.coordinates.TRJ.TRJReader.n_frames">
-<code class="descname">n_frames</code><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader.n_frames" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.TRJReader.n_frames">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">n_frames</span></span><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader.n_frames" title="Permalink to this definition"></a></dt>
 <dd><p>Number of frames (obtained from reading the whole trajectory).</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.coordinates.TRJ.TRJReader.open_trajectory">
-<code class="descname">open_trajectory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#TRJReader.open_trajectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader.open_trajectory" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.coordinates.TRJ.TRJReader.open_trajectory">
+<span class="sig-name descname"><span class="pre">open_trajectory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#TRJReader.open_trajectory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.TRJReader.open_trajectory" title="Permalink to this definition"></a></dt>
 <dd><p>Open the trajectory for reading and load first frame.</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="TRR.html" class="btn btn-neutral float-right" title="6.19. TRR trajectory files — MDAnalysis.coordinates.TRR" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="PQR.html" class="btn btn-neutral float-left" title="6.17. PQR file format — MDAnalysis.coordinates.PQR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="TRR.html" class="btn btn-neutral float-right" title="6.19. TRR trajectory files — MDAnalysis.coordinates.TRR" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
-
-    </p>
+    <p>&#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
+
+  
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -744,9 +625,7 @@ kwarg <cite>delta</cite> renamed to <cite>dt</cite>, for uniformity with other R
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -766,18 +645,11 @@ kwarg <cite>delta</cite> renamed to <cite>dt</cite>, for uniformity with other R
         </dl>
 
     </div>
-</div>
-
-  <script type="text/javascript">
+</div><script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

@@ -1,47 +1,25 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>4.2.7. Bond-Angle-Torsion coordinates analysis — MDAnalysis.analysis.bat &mdash; MDAnalysis 2.1.0-dev0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
-
-  
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
-  
-
-  
-  
-
-  
-
-  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/javascript" src="../../_static/js/versions.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../_static/js/versions.js"></script>
+    <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.1.0-dev0 documentation"
           href="../../_static/opensearch.xml"/>
@@ -51,36 +29,17 @@
     <link rel="prev" title="4.2.6.1.7. Utility functions for ENCORE" href="encore/utils.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-          
-
-          
             <a href="../../index.html">
-          
-
-          
-            
             <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 2.1.0-dev0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -88,18 +47,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
@@ -107,13 +55,13 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#building-blocks-for-analysis">4.1. Building blocks for Analysis</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#distances-and-contacts">4.2. Distances and contacts</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="align.html">4.2.1. Coordinate fitting and alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="contacts.html">4.2.2. Native contacts analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="distances.html">4.2.3. Distance analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="rms.html">4.2.4. Calculating root mean square quantities — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="psa.html">4.2.5. Calculating path similarity — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">4.2.7. Bond-Angle-Torsion coordinates analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="align.html">4.2.1. Coordinate fitting and alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="contacts.html">4.2.2. Native contacts analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="distances.html">4.2.3. Distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="rms.html">4.2.4. Calculating root mean square quantities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="psa.html">4.2.5. Calculating path similarity — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.2.7. Bond-Angle-Torsion coordinates analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#example-applications">4.2.7.1. Example applications</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#analysis-classes">4.2.7.2. Analysis classes</a></li>
 </ul>
@@ -139,104 +87,61 @@
 <li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">MDAnalysis</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../analysis_modules.html">4. Analysis modules</a> &raquo;</li>
-        
-      <li>4.2.7. Bond-Angle-Torsion coordinates analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></li>
-    
-    
+          <li><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a> &raquo;</li>
+      <li><span class="section-number">4.2.7. </span>Bond-Angle-Torsion coordinates analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/documentation_pages/analysis/bat.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <span class="target" id="module-MDAnalysis.analysis.bat"></span><div class="section" id="bond-angle-torsion-coordinates-analysis-mdanalysis-analysis-bat">
-<h1>4.2.7. Bond-Angle-Torsion coordinates analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.bat" title="MDAnalysis.analysis.bat"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a><a class="headerlink" href="#bond-angle-torsion-coordinates-analysis-mdanalysis-analysis-bat" title="Permalink to this headline">¶</a></h1>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Soohaeng Yoo Willow and David Minh</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Year:</th><td class="field-body">2020</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License, v2 or any higher version</td>
-</tr>
-</tbody>
-</table>
+             
+  <span class="target" id="module-MDAnalysis.analysis.bat"></span><section id="bond-angle-torsion-coordinates-analysis-mdanalysis-analysis-bat">
+<h1><span class="section-number">4.2.7. </span>Bond-Angle-Torsion coordinates analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.bat" title="MDAnalysis.analysis.bat"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a><a class="headerlink" href="#bond-angle-torsion-coordinates-analysis-mdanalysis-analysis-bat" title="Permalink to this headline"></a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Soohaeng Yoo Willow and David Minh</p>
+</dd>
+<dt class="field-even">Year</dt>
+<dd class="field-even"><p>2020</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>GNU Public License, v2 or any higher version</p>
+</dd>
+</dl>
 <div class="versionadded">
-<p><span class="versionmodified">New in version 2.0.0.</span></p>
+<p><span class="versionmodified added">New in version 2.0.0.</span></p>
 </div>
 <p>This module contains classes for interconverting between Cartesian and an
-internal coordinate system, Bond-Angle-Torsion (BAT) coordinates <a class="reference internal" href="#chang2003" id="id1">[Chang2003]</a>,
+internal coordinate system, Bond-Angle-Torsion (BAT) coordinates <a class="reference internal" href="#chang2003" id="id1"><span>[Chang2003]</span></a>,
 for a given set of atoms or residues. This coordinate system is designed
 to be complete, non-redundant, and minimize correlations between degrees
 of freedom. Complete and non-redundant means that for N atoms there will
 be 3N Cartesian coordinates and 3N BAT coordinates. Correlations are
-minimized by using improper torsions, as described in <a class="reference internal" href="#hikiri2016" id="id2">[Hikiri2016]</a>.</p>
+minimized by using improper torsions, as described in <a class="reference internal" href="#hikiri2016" id="id2"><span>[Hikiri2016]</span></a>.</p>
 <p>More specifically, bond refers to the bond length, or distance between
 a pair of bonded atoms. Angle refers to the bond angle, the angle between
 a pair of bonds to a central atom. Torsion refers to the torsion angle.
@@ -254,18 +159,18 @@ specified by the axis-angle convention. The rotation axis is a normalized vector
 pointing from the first to second atom. It is described by the polar angle,
 <span class="math notranslate nohighlight">\(\phi\)</span>, and azimuthal angle, <span class="math notranslate nohighlight">\(\theta\)</span>. <span class="math notranslate nohighlight">\(\omega\)</span> is a third angle
 that describes the rotation of the third atom about the axis.</p>
-<p>This module was adapted from AlGDock <a class="reference internal" href="#minh2020" id="id3">[Minh2020]</a>.</p>
+<p>This module was adapted from AlGDock <a class="reference internal" href="#minh2020" id="id3"><span>[Minh2020]</span></a>.</p>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference internal" href="dihedrals.html#MDAnalysis.analysis.dihedrals.Dihedral" title="MDAnalysis.analysis.dihedrals.Dihedral"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dihedral</span></code></a></dt>
-<dd>class to calculate dihedral angles for a given set of atoms or residues</dd>
-<dt><a class="reference internal" href="../lib/distances.html#MDAnalysis.lib.distances.calc_dihedrals" title="MDAnalysis.lib.distances.calc_dihedrals"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances.calc_dihedrals()</span></code></a></dt>
-<dd>function to calculate dihedral angles from atom positions</dd>
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="dihedrals.html#MDAnalysis.analysis.dihedrals.Dihedral" title="MDAnalysis.analysis.dihedrals.Dihedral"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dihedral</span></code></a></dt><dd><p>class to calculate dihedral angles for a given set of atoms or residues</p>
+</dd>
+<dt><a class="reference internal" href="../lib/distances.html#MDAnalysis.lib.distances.calc_dihedrals" title="MDAnalysis.lib.distances.calc_dihedrals"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances.calc_dihedrals()</span></code></a></dt><dd><p>function to calculate dihedral angles from atom positions</p>
+</dd>
 </dl>
 </div>
-<div class="section" id="example-applications">
-<h2>4.2.7.1. Example applications<a class="headerlink" href="#example-applications" title="Permalink to this headline">¶</a></h2>
+<section id="example-applications">
+<h2><span class="section-number">4.2.7.1. </span>Example applications<a class="headerlink" href="#example-applications" title="Permalink to this headline"></a></h2>
 <p>The <a class="reference internal" href="#MDAnalysis.analysis.bat.BAT" title="MDAnalysis.analysis.bat.BAT"><code class="xref py py-class docutils literal notranslate"><span class="pre">BAT</span></code></a> class defines bond-angle-torsion
 coordinates based on the topology of an atom group and interconverts between
 Cartesian and BAT coordinate systems.</p>
@@ -320,48 +225,44 @@ previous snippet has been executed.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">Rnew</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="p">,</span> <span class="n">R</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">bat</span><span class="p">))</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="analysis-classes">
-<h2>4.2.7.2. Analysis classes<a class="headerlink" href="#analysis-classes" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="analysis-classes">
+<h2><span class="section-number">4.2.7.2. </span>Analysis classes<a class="headerlink" href="#analysis-classes" title="Permalink to this headline"></a></h2>
 <blockquote>
-<div><dl class="class">
-<dt id="MDAnalysis.analysis.bat.BAT">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.bat.</code><code class="descname">BAT</code><span class="sig-paren">(</span><em>ag</em>, <em>initial_atom=None</em>, <em>filename=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/bat.html#BAT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT" title="Permalink to this definition">¶</a></dt>
+<div><dl class="py class">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.bat.BAT">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.bat.</span></span><span class="sig-name descname"><span class="pre">BAT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_atom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/bat.html#BAT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate BAT coordinates for the specified AtomGroup.</p>
 <p>Bond-Angle-Torsions (BAT) internal coordinates will be computed for
 the group of atoms and all frame in the trajectory belonging to <cite>ag</cite>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ag</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Group of atoms for which the BAT coordinates are calculated.
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ag</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Group of atoms for which the BAT coordinates are calculated.
 <cite>ag</cite> must have a bonds attribute.
 If unavailable, bonds may be guessed using
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.guess_bonds" title="MDAnalysis.core.groups.AtomGroup.guess_bonds"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AtomGroup.guess_bonds</span></code></a>.
 <cite>ag</cite> must only include one molecule.
 If a trajectory is associated with the atoms, then the computation
-iterates over the trajectory.</li>
-<li><strong>initial_atom</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a>) – The atom whose Cartesian coordinates define the translation
+iterates over the trajectory.</p></li>
+<li><p><strong>initial_atom</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a>) – The atom whose Cartesian coordinates define the translation
 of the molecule. If not specified, the heaviest terminal atom
-will be selected.</li>
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Name of a numpy binary file containing a saved bat array.
+will be selected.</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Name of a numpy binary file containing a saved bat array.
 If filename is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, the data will be loaded from this file
-instead of being recalculated using the run() method.</li>
+instead of being recalculated using the run() method.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
-<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">AttributeError</span></code></a> – If <cite>ag</cite> does not contain a bonds attribute</li>
-<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If <cite>ag</cite> contains more than one molecule</li>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AttributeError" title="(in Python v3.10)"><strong>AttributeError</strong></a> – If <cite>ag</cite> does not contain a bonds attribute</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – If <cite>ag</cite> contains more than one molecule</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="attribute">
-<dt id="MDAnalysis.analysis.bat.BAT.results.bat">
-<code class="descclassname">results.</code><code class="descname">bat</code><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.results.bat" title="Permalink to this definition">¶</a></dt>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.bat.BAT.results.bat">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">bat</span></span><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.results.bat" title="Permalink to this definition"></a></dt>
 <dd><p>Contains the time series of the Bond-Angle-Torsion coordinates as a
 (nframes, 3N) <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> array. Each row corresponds to
 a frame in the trajectory. In each column, the first six elements
@@ -378,93 +279,84 @@ The rest of the array consists of all the other bond distances,
 all the other bond angles, and then all the other torsion angles.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.analysis.bat.BAT.Cartesian">
-<code class="descname">Cartesian</code><span class="sig-paren">(</span><em>bat_frame</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/bat.html#BAT.Cartesian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.Cartesian" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.bat.BAT.Cartesian">
+<span class="sig-name descname"><span class="pre">Cartesian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bat_frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/bat.html#BAT.Cartesian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.Cartesian" title="Permalink to this definition"></a></dt>
 <dd><p>Conversion of a single frame from BAT to Cartesian coordinates</p>
 <p>One application of this function is to determine the new
 Cartesian coordinates after modifying a specific torsion angle.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bat_frame</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – an array with dimensions (3N,) with external then internal
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bat_frame</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – an array with dimensions (3N,) with external then internal
 degrees of freedom based on the root atoms, followed by the bond,
-angle, and (proper and improper) torsion coordinates.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>XYZ</strong> – an array with dimensions (N,3) with Cartesian coordinates. The first
+angle, and (proper and improper) torsion coordinates.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>XYZ</strong> – an array with dimensions (N,3) with Cartesian coordinates. The first
 dimension has the same ordering as the AtomGroup used to initialize
 the class. The molecule will be whole opposed to wrapped around a
-periodic boundary.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></td>
-</tr>
-</tbody>
-</table>
+periodic boundary.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="MDAnalysis.analysis.bat.BAT.atoms">
-<code class="descname">atoms</code><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.atoms" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.bat.BAT.atoms">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">atoms</span></span><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.atoms" title="Permalink to this definition"></a></dt>
 <dd><p>The atomgroup for which BAT are computed (read-only property)</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.analysis.bat.BAT.load">
-<code class="descname">load</code><span class="sig-paren">(</span><em>filename</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/bat.html#BAT.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.load" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.bat.BAT.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/bat.html#BAT.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.load" title="Permalink to this definition"></a></dt>
 <dd><p>Loads the bat trajectory from a file in numpy binary format</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – name of numpy binary file</li>
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – name of numpy binary file</p></li>
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference internal" href="#MDAnalysis.analysis.bat.BAT.save" title="MDAnalysis.analysis.bat.BAT.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">save()</span></code></a></dt>
-<dd>Saves the bat trajectory in a file in numpy binary format</dd>
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#MDAnalysis.analysis.bat.BAT.save" title="MDAnalysis.analysis.bat.BAT.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a></dt><dd><p>Saves the bat trajectory in a file in numpy binary format</p>
+</dd>
 </dl>
 </div>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.analysis.bat.BAT.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>verbose=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.run" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.bat.BAT.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.run" title="Permalink to this definition"></a></dt>
 <dd><p>Perform the calculation</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</p></li>
+<li><p><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</p></li>
+<li><p><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="MDAnalysis.analysis.bat.BAT.save">
-<code class="descname">save</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/bat.html#BAT.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.save" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.bat.BAT.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/bat.html#BAT.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.bat.BAT.save" title="Permalink to this definition"></a></dt>
 <dd><p>Saves the bat trajectory in a file in numpy binary format</p>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference internal" href="#MDAnalysis.analysis.bat.BAT.load" title="MDAnalysis.analysis.bat.BAT.load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">load()</span></code></a></dt>
-<dd>Loads the bat trajectory from a file in numpy binary format</dd>
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#MDAnalysis.analysis.bat.BAT.load" title="MDAnalysis.analysis.bat.BAT.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a></dt><dd><p>Loads the bat trajectory from a file in numpy binary format</p>
+</dd>
 </dl>
 </div>
 </dd></dl>
@@ -473,53 +365,43 @@ periodic boundary.</td>
 
 </div></blockquote>
 <p class="rubric">References</p>
-<table class="docutils citation" frame="void" id="chang2003" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id1">[Chang2003]</a></td><td>Chang, Chia-En, Michael J Potter, and Michael K Gilson (2003).
+<dl class="citation">
+<dt class="label" id="chang2003"><span class="brackets"><a class="fn-backref" href="#id1">Chang2003</a></span></dt>
+<dd><p>Chang, Chia-En, Michael J Potter, and Michael K Gilson (2003).
 “Calculation of Molecular Configuration Integrals”. <em>Journal of Physical
-Chemistry B</em> 107(4): 1048–55. doi:<a class="reference external" href="https://doi.org/10.1021/jp027149c">10.1021/jp027149c</a></td></tr>
-</tbody>
-</table>
-<table class="docutils citation" frame="void" id="hikiri2016" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id2">[Hikiri2016]</a></td><td>Hikiri, Simon, Takashi Yoshidome, and Mitsunori Ikeguchi (2016).
+Chemistry B</em> 107(4): 1048–55. doi:<a class="reference external" href="https://doi.org/10.1021/jp027149c">10.1021/jp027149c</a></p>
+</dd>
+<dt class="label" id="hikiri2016"><span class="brackets"><a class="fn-backref" href="#id2">Hikiri2016</a></span></dt>
+<dd><p>Hikiri, Simon, Takashi Yoshidome, and Mitsunori Ikeguchi (2016).
 “Computational Methods for Configurational Entropy Using Internal and
 Cartesian Coordinates.” <em>Journal of Chemical Theory and Computation</em>
-12(12): 5990–6000. doi:<a class="reference external" href="https://doi.org/10.1021/acs.jctc.6b00563">10.1021/acs.jctc.6b00563</a></td></tr>
-</tbody>
-</table>
-<table class="docutils citation" frame="void" id="minh2020" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
-<tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[Minh2020]</a></td><td>Minh, David D L (2020). “Alchemical Grid Dock (AlGDock): Binding
+12(12): 5990–6000. doi:<a class="reference external" href="https://doi.org/10.1021/acs.jctc.6b00563">10.1021/acs.jctc.6b00563</a></p>
+</dd>
+<dt class="label" id="minh2020"><span class="brackets"><a class="fn-backref" href="#id3">Minh2020</a></span></dt>
+<dd><p>Minh, David D L (2020). “Alchemical Grid Dock (AlGDock): Binding
 Free Energy Calculations between Flexible Ligands and Rigid Receptors.”
 <em>Journal of Computational Chemistry</em> 41(7): 715–30.
-doi:<a class="reference external" href="https://doi.org/10.1002/jcc.26036">10.1002/jcc.26036</a></td></tr>
-</tbody>
-</table>
-</div>
-</div>
+doi:<a class="reference external" href="https://doi.org/10.1002/jcc.26036">10.1002/jcc.26036</a></p>
+</dd>
+</dl>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="hydrogenbonds.html" class="btn btn-neutral float-right" title="4.3.1. Hydrogen Bond Analysis — MDAnalysis.analysis.hydrogenbonds.hbond_analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="encore/utils.html" class="btn btn-neutral float-left" title="4.2.6.1.7. Utility functions for ENCORE" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hydrogenbonds.html" class="btn btn-neutral float-right" title="4.3.1. Hydrogen Bond Analysis — MDAnalysis.analysis.hydrogenbonds.hbond_analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
-
-    </p>
+    <p>&#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
+
+  
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -532,9 +414,7 @@ doi:<a class="reference external" href="https://doi.org/10.1002/jcc.26036">10.10
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -554,18 +434,11 @@ doi:<a class="reference external" href="https://doi.org/10.1002/jcc.26036">10.10
         </dl>
 
     </div>
-</div>
-
-  <script type="text/javascript">
+</div><script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

@@ -4,7 +4,8 @@
   <Description>Search MDAnalysis 2.1.0-dev0 documentation</Description>
   <InputEncoding>utf-8</InputEncoding>
   <Url type="text/html" method="get"
-       template="https://docs.mdanalysis.org/search.html?q={searchTerms}&amp;check_keywords=yes&amp;area=default"/>
+       template="https://docs.mdanalysis.org/search.html?q={searchTerms}"/>
   <LongName>MDAnalysis 2.1.0-dev0 documentation</LongName>
+  <Image height="16" width="16" type="image/x-icon">https://docs.mdanalysis.org/_static/mdanalysis-logo.ico</Image>
   
 </OpenSearchDescription>

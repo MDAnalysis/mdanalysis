@@ -1,47 +1,24 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>4. Analysis modules &mdash; MDAnalysis 2.1.0-dev0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
-
-  
-  
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
     <link rel="shortcut icon" href="../_static/mdanalysis-logo.ico"/>
-  
-
-  
-  
-
-  
-
-  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/javascript" src="../_static/js/versions.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/js/versions.js"></script>
+    <script src="../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 2.1.0-dev0 documentation"
           href="../_static/opensearch.xml"/>
@@ -51,36 +28,17 @@
     <link rel="prev" title="3. Selection commands" href="selections.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-          
-
-          
             <a href="../index.html">
-          
-
-          
-            
             <img src="../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 2.1.0-dev0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -88,84 +46,73 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">1. Overview over MDAnalysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="topology.html">2. The topology system</a></li>
 <li class="toctree-l1"><a class="reference internal" href="selections.html">3. Selection commands</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">4. Analysis modules</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#building-blocks-for-analysis">4.1. Building blocks for Analysis</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="analysis/base.html">4.1.1. Analysis building blocks — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/base.html">4.1.1. Analysis building blocks — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#distances-and-contacts">4.2. Distances and contacts</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="analysis/align.html">4.2.1. Coordinate fitting and alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="analysis/contacts.html">4.2.2. Native contacts analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="analysis/distances.html">4.2.3. Distance analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="analysis/rms.html">4.2.4. Calculating root mean square quantities — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="analysis/psa.html">4.2.5. Calculating path similarity — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="analysis/encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="analysis/bat.html">4.2.7. Bond-Angle-Torsion coordinates analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/align.html">4.2.1. Coordinate fitting and alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/contacts.html">4.2.2. Native contacts analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/distances.html">4.2.3. Distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/rms.html">4.2.4. Calculating root mean square quantities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/psa.html">4.2.5. Calculating path similarity — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/bat.html">4.2.7. Bond-Angle-Torsion coordinates analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#hydrogen-bonding">4.3. Hydrogen bonding</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="analysis/hydrogenbonds.html">4.3.1. Hydrogen Bond Analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="analysis/hbond_autocorrel.html">4.3.2. Hydrogen bond autocorrelation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="analysis/wbridge_analysis.html">4.3.3. Water Bridge analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="analysis/hbond_autocorrel_deprecated.html">4.3.4. Hydrogen bond autocorrelation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_autocorrel</span></code> (deprecated)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/hydrogenbonds.html">4.3.1. Hydrogen Bond Analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/hbond_autocorrel.html">4.3.2. Hydrogen bond autocorrelation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/wbridge_analysis.html">4.3.3. Water Bridge analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/hbond_autocorrel_deprecated.html">4.3.4. Hydrogen bond autocorrelation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_autocorrel</span></code> (deprecated)</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="analysis/hole2.html">4.4.1. HOLE analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="analysis/leaflet.html">4.4.2. Leaflet identification — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/hole2.html">4.4.1. HOLE analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/leaflet.html">4.4.2. Leaflet identification — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#nucleic-acids">4.5. Nucleic acids</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="analysis/nuclinfo.html">4.5.1. Nucleic acid analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.nuclinfo</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/nuclinfo.html">4.5.1. Nucleic acid analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.nuclinfo</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#polymers">4.6. Polymers</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="analysis/polymer.html">4.6.1. Polymer analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.polymer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/polymer.html">4.6.1. Polymer analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.polymer</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#structure">4.7. Structure</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#macromolecules">4.7.1. Macromolecules</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="analysis/gnm.html">4.7.1.1. Elastic network analysis of MD trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="analysis/gnm.html">4.7.1.1. Elastic network analysis of MD trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="analysis/helix_analysis.html">4.7.1.2. HELANAL — analysis of protein helices</a></li>
-<li class="toctree-l4"><a class="reference internal" href="analysis/dihedrals.html">4.7.1.3. Dihedral angles analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="analysis/dihedrals.html">4.7.1.3. Dihedral angles analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#liquids">4.7.2. Liquids</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="analysis/rdf.html">4.7.2.1. Radial Distribution Functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="analysis/msd.html">4.7.2.2. Mean Squared Displacement — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.msd</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="analysis/rdf.html">4.7.2.1. Radial Distribution Functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="analysis/msd.html">4.7.2.2. Mean Squared Displacement — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.msd</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#volumetric-analysis">4.8. Volumetric analysis</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="analysis/density.html">4.8.1. Generating densities from trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.density</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="analysis/lineardensity.html">4.8.2. Linear Density — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.lineardensity</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="analysis/waterdynamics.html">4.8.3. Water dynamics analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.waterdynamics</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/density.html">4.8.1. Generating densities from trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.density</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/lineardensity.html">4.8.2. Linear Density — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.lineardensity</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/waterdynamics.html">4.8.3. Water dynamics analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.waterdynamics</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#dimensionality-reduction">4.9. Dimensionality Reduction</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="analysis/diffusionmap.html">4.9.1. Diffusion map — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.diffusionmap</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="analysis/pca.html">4.9.2. Principal Component Analysis (PCA) — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.pca</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/diffusionmap.html">4.9.1. Diffusion map — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.diffusionmap</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/pca.html">4.9.2. Principal Component Analysis (PCA) — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.pca</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#legacy-analysis-modules">4.10. Legacy analysis modules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="analysis/legacy_modules.html">4.10.1. <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.legacy</span></code> — Legacy analysis code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="analysis/legacy_modules.html">4.10.1. <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.legacy</span></code> — Legacy analysis code</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#data">4.11. Data</a><ul>
@@ -182,80 +129,39 @@
 <li class="toctree-l1"><a class="reference internal" href="auxiliary_modules.html">10. Auxiliary modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core_modules.html">11. Core modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="visualization_modules.html">12. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib_modules.html">13. Library functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="version.html">14. Version information for MDAnalysis - <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">15. Constants and unit conversion — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">16. Custom exceptions and warnings — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="references.html">17. References</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">MDAnalysis</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-      <li>4. Analysis modules</li>
-    
-    
+      <li><span class="section-number">4. </span>Analysis modules</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../_sources/documentation_pages/analysis_modules.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="analysis-modules">
-<h1>4. Analysis modules<a class="headerlink" href="#analysis-modules" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="analysis-modules">
+<h1><span class="section-number">4. </span>Analysis modules<a class="headerlink" href="#analysis-modules" title="Permalink to this headline"></a></h1>
 <p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis</span></code> module contains code to carry out specific
 analysis functionality for MD trajectories.
 It is based on the core functionality (i.e. trajectory
@@ -265,11 +171,11 @@ contributed code has been used by the authors in their own work.
 An analysis using the available modules
 usually follows the same structure</p>
 <ol class="arabic simple">
-<li>Import the desired module, since analysis modules are not imported
-by default.</li>
-<li>Initialize the module previously imported.</li>
-<li>Run the analysis, optionally for specific trajectory slices</li>
-<li>Access the analysis from the <cite>results</cite> attribute</li>
+<li><p>Import the desired module, since analysis modules are not imported
+by default.</p></li>
+<li><p>Initialize the module previously imported.</p></li>
+<li><p>Run the analysis, optionally for specific trajectory slices</p></li>
+<li><p>Access the analysis from the <cite>results</cite> attribute</p></li>
 </ol>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">ExampleAnalysisModule</span>  <span class="c1"># (e.g. RMSD)</span>
 
@@ -296,152 +202,149 @@ MDAnalysis with <strong class="program">conda</strong> then a
 <a class="reference external" href="http://www.holeprogram.org/">HOLE</a> suite of programs. You will need to install these external dependencies
 by following their installation instructions before you can use the
 corresponding MDAnalysis module.</p>
-<div class="section" id="building-blocks-for-analysis">
-<h2>4.1. Building blocks for Analysis<a class="headerlink" href="#building-blocks-for-analysis" title="Permalink to this headline">¶</a></h2>
+<section id="building-blocks-for-analysis">
+<h2><span class="section-number">4.1. </span>Building blocks for Analysis<a class="headerlink" href="#building-blocks-for-analysis" title="Permalink to this headline"></a></h2>
 <p>The building block for the analysis modules is
 <a class="reference internal" href="analysis/base.html#MDAnalysis.analysis.base.AnalysisBase" title="MDAnalysis.analysis.base.AnalysisBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.AnalysisBase</span></code></a>.
 To build your own analysis class start by reading the documentation.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="analysis/base.html">4.1.1. Analysis building blocks — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/base.html">4.1.1. Analysis building blocks — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base</span></code></a></li>
 </ul>
 </div>
-</div>
-<div class="section" id="distances-and-contacts">
-<h2>4.2. Distances and contacts<a class="headerlink" href="#distances-and-contacts" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="distances-and-contacts">
+<h2><span class="section-number">4.2. </span>Distances and contacts<a class="headerlink" href="#distances-and-contacts" title="Permalink to this headline"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="analysis/align.html">4.2.1. Coordinate fitting and alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/contacts.html">4.2.2. Native contacts analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/distances.html">4.2.3. Distance analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/rms.html">4.2.4. Calculating root mean square quantities — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/psa.html">4.2.5. Calculating path similarity — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/bat.html">4.2.7. Bond-Angle-Torsion coordinates analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/align.html">4.2.1. Coordinate fitting and alignment — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/contacts.html">4.2.2. Native contacts analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/distances.html">4.2.3. Distance analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/rms.html">4.2.4. Calculating root mean square quantities — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/psa.html">4.2.5. Calculating path similarity — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/bat.html">4.2.7. Bond-Angle-Torsion coordinates analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.bat</span></code></a></li>
 </ul>
 </div>
-</div>
-<div class="section" id="hydrogen-bonding">
-<h2>4.3. Hydrogen bonding<a class="headerlink" href="#hydrogen-bonding" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="hydrogen-bonding">
+<h2><span class="section-number">4.3. </span>Hydrogen bonding<a class="headerlink" href="#hydrogen-bonding" title="Permalink to this headline"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="analysis/hydrogenbonds.html">4.3.1. Hydrogen Bond Analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/hbond_autocorrel.html">4.3.2. Hydrogen bond autocorrelation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/wbridge_analysis.html">4.3.3. Water Bridge analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/hydrogenbonds.html">4.3.1. Hydrogen Bond Analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/hbond_autocorrel.html">4.3.2. Hydrogen bond autocorrelation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/wbridge_analysis.html">4.3.3. Water Bridge analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis</span></code></a></li>
 </ul>
 </div>
 <p>Deprecated modules:</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="analysis/hbond_autocorrel_deprecated.html">4.3.4. Hydrogen bond autocorrelation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_autocorrel</span></code> (deprecated)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/hbond_autocorrel_deprecated.html">4.3.4. Hydrogen bond autocorrelation — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_autocorrel</span></code> (deprecated)</a></li>
 </ul>
 </div>
-</div>
-<div class="section" id="membranes-and-membrane-proteins">
-<h2>4.4. Membranes and membrane proteins<a class="headerlink" href="#membranes-and-membrane-proteins" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="membranes-and-membrane-proteins">
+<h2><span class="section-number">4.4. </span>Membranes and membrane proteins<a class="headerlink" href="#membranes-and-membrane-proteins" title="Permalink to this headline"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="analysis/hole2.html">4.4.1. HOLE analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/leaflet.html">4.4.2. Leaflet identification — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/hole2.html">4.4.1. HOLE analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/leaflet.html">4.4.2. Leaflet identification — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a></li>
 </ul>
 </div>
-</div>
-<div class="section" id="nucleic-acids">
-<h2>4.5. Nucleic acids<a class="headerlink" href="#nucleic-acids" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="nucleic-acids">
+<h2><span class="section-number">4.5. </span>Nucleic acids<a class="headerlink" href="#nucleic-acids" title="Permalink to this headline"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="analysis/nuclinfo.html">4.5.1. Nucleic acid analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.nuclinfo</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/nuclinfo.html">4.5.1. Nucleic acid analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.nuclinfo</span></code></a></li>
 </ul>
 </div>
-</div>
-<div class="section" id="polymers">
-<h2>4.6. Polymers<a class="headerlink" href="#polymers" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="polymers">
+<h2><span class="section-number">4.6. </span>Polymers<a class="headerlink" href="#polymers" title="Permalink to this headline"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="analysis/polymer.html">4.6.1. Polymer analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.polymer</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/polymer.html">4.6.1. Polymer analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.polymer</span></code></a></li>
 </ul>
 </div>
-</div>
-<div class="section" id="structure">
-<h2>4.7. Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="macromolecules">
-<h3>4.7.1. Macromolecules<a class="headerlink" href="#macromolecules" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="structure">
+<h2><span class="section-number">4.7. </span>Structure<a class="headerlink" href="#structure" title="Permalink to this headline"></a></h2>
+<section id="macromolecules">
+<h3><span class="section-number">4.7.1. </span>Macromolecules<a class="headerlink" href="#macromolecules" title="Permalink to this headline"></a></h3>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="analysis/gnm.html">4.7.1.1. Elastic network analysis of MD trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/gnm.html">4.7.1.1. Elastic network analysis of MD trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="analysis/helix_analysis.html">4.7.1.2. HELANAL — analysis of protein helices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/dihedrals.html">4.7.1.3. Dihedral angles analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/dihedrals.html">4.7.1.3. Dihedral angles analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
 </ul>
 </div>
-</div>
-<div class="section" id="liquids">
-<h3>4.7.2. Liquids<a class="headerlink" href="#liquids" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="liquids">
+<h3><span class="section-number">4.7.2. </span>Liquids<a class="headerlink" href="#liquids" title="Permalink to this headline"></a></h3>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="analysis/rdf.html">4.7.2.1. Radial Distribution Functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/msd.html">4.7.2.2. Mean Squared Displacement — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.msd</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/rdf.html">4.7.2.1. Radial Distribution Functions — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rdf</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/msd.html">4.7.2.2. Mean Squared Displacement — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.msd</span></code></a></li>
 </ul>
 </div>
-</div>
-</div>
-<div class="section" id="volumetric-analysis">
-<h2>4.8. Volumetric analysis<a class="headerlink" href="#volumetric-analysis" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="volumetric-analysis">
+<h2><span class="section-number">4.8. </span>Volumetric analysis<a class="headerlink" href="#volumetric-analysis" title="Permalink to this headline"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="analysis/density.html">4.8.1. Generating densities from trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.density</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/lineardensity.html">4.8.2. Linear Density — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.lineardensity</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/waterdynamics.html">4.8.3. Water dynamics analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.waterdynamics</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/density.html">4.8.1. Generating densities from trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.density</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/lineardensity.html">4.8.2. Linear Density — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.lineardensity</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/waterdynamics.html">4.8.3. Water dynamics analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.waterdynamics</span></code></a></li>
 </ul>
 </div>
-</div>
-<div class="section" id="dimensionality-reduction">
-<h2>4.9. Dimensionality Reduction<a class="headerlink" href="#dimensionality-reduction" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="dimensionality-reduction">
+<h2><span class="section-number">4.9. </span>Dimensionality Reduction<a class="headerlink" href="#dimensionality-reduction" title="Permalink to this headline"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="analysis/diffusionmap.html">4.9.1. Diffusion map — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.diffusionmap</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="analysis/pca.html">4.9.2. Principal Component Analysis (PCA) — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.pca</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/diffusionmap.html">4.9.1. Diffusion map — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.diffusionmap</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/pca.html">4.9.2. Principal Component Analysis (PCA) — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.pca</span></code></a></li>
 </ul>
 </div>
-</div>
-<div class="section" id="legacy-analysis-modules">
-<h2>4.10. Legacy analysis modules<a class="headerlink" href="#legacy-analysis-modules" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="legacy-analysis-modules">
+<h2><span class="section-number">4.10. </span>Legacy analysis modules<a class="headerlink" href="#legacy-analysis-modules" title="Permalink to this headline"></a></h2>
 <p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.legacy</span></code> module contains code that for a
 range of reasons is not as well maintained and tested as the other
 analysis modules. <em>Use with care.</em></p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="analysis/legacy_modules.html">4.10.1. <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.legacy</span></code> — Legacy analysis code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/legacy_modules.html">4.10.1. <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.legacy</span></code> — Legacy analysis code</a></li>
 </ul>
 </div>
-</div>
-<div class="section" id="data">
-<h2>4.11. Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="data">
+<h2><span class="section-number">4.11. </span>Data<a class="headerlink" href="#data" title="Permalink to this headline"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="analysis/data.html">4.11.1. Analysis data files</a></li>
 </ul>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="analysis/base.html" class="btn btn-neutral float-right" title="4.1.1. Analysis building blocks — MDAnalysis.analysis.base" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="selections.html" class="btn btn-neutral float-left" title="3. Selection commands" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="analysis/base.html" class="btn btn-neutral float-right" title="4.1.1. Analysis building blocks — MDAnalysis.analysis.base" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.
-
-    </p>
+    <p>&#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
+
+  
  
 <div class="footer"><p>Please see
     our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
@@ -454,9 +357,7 @@ analysis modules. <em>Use with care.</em></p>
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
   <script>
     var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
@@ -476,18 +377,11 @@ analysis modules. <em>Use with care.</em></p>
         </dl>
 
     </div>
-</div>
-
-  <script type="text/javascript">
+</div><script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
