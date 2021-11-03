@@ -409,7 +409,7 @@ class Universe(object):
         trajectory: bool, optional
           if ``True``, attaches a
           :class:`MDAnalysis.coordinates.memory.MemoryReader` allowing
-          coordinates to be set and written.  Default is ``False``
+          coordinates to be set and written.
         velocities: bool, optional
           include velocities in the
           :class:`MDAnalysis.coordinates.memory.MemoryReader`
@@ -1374,7 +1374,7 @@ class Universe(object):
             hydrogens with the `addHs` parameter
         numConfs : int (optional, default 1)
             Number of frames to generate coordinates for. Ignored if
-            `generate_coordinates` is ``False``
+            ``generate_coordinates=False``
         rdkit_kwargs : dict (optional)
             Other arguments passed to the RDKit :func:`EmbedMultipleConfs`
             function
