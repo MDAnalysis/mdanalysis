@@ -114,7 +114,7 @@ def make_downshift_arrays(upshift, nparents):
     """
     if not len(upshift):
         return np.array([], dtype=object)
-        
+
     order = np.argsort(upshift)
 
     upshift_sorted = upshift[order]
@@ -178,30 +178,9 @@ class TransTable(object):
         number of residues in topology
     n_segments : int
         number of segments in topology
-    size
-        tuple describing the shape of the TransTable
-
-    Methods
-    -------
-    atoms2residues(aix)
-        Returns the residue index for many atom indices
-    residues2atoms_1d(rix)
-        All atoms in the residues represented by *rix*
-    residues2atoms_2d(rix)
-        List of atom indices for each residue in *rix*
-    residues2segments(rix)
-        Segment indices for each residue in *rix*
-    segments2residues_1d(six)
-        Similar to `residues2atoms_1d`
-    segments2residues_2d(six)
-        Similar to `residues2atoms_2d`
-    atoms2segments(aix)
-        Segment indices for each atom in *aix*
-    segments2atoms_1d(six)
-        Similar to `residues2atoms_1d`
-    segments2atoms_2d(six)
-        Similar to `residues2atoms_2d`
-
+    size : tuple
+        tuple ``(n_atoms, n_residues, n_segments)`` describing the shape of
+        the TransTable
     """
     def __init__(self,
                  n_atoms, n_residues, n_segments,  # Size of tables
@@ -236,7 +215,10 @@ class TransTable(object):
 
     @property
     def size(self):
-        """The shape of the table, (n_atoms, n_residues, n_segments)"""
+        """The shape of the table, ``(n_atoms, n_residues, n_segments)``.
+
+        :meta private:
+        """
         return (self.n_atoms, self.n_residues, self.n_segments)
 
     def atoms2residues(self, aix):
@@ -622,4 +604,4 @@ class Topology(object):
             attr._add_new(newval)
 
         return segidx
-        
+
