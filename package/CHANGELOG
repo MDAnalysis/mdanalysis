@@ -23,6 +23,8 @@ Fixes
   * Fixed Universe creation from a custom object which only provided a topology,
     previously raised a TypeError. (Issue #3443)
   * Documentation fixes (Issues #3224, #2667)
+  * Fixed string attributes (e.g. resname, segid) not working on Residues and Segments
+    created using add_Residue and add_Segment (Issue #3437)
 
 Enhancements
   * Add option for custom compiler flags for C/C++ on build and remove march
