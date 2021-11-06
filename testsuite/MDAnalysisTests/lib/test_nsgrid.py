@@ -21,6 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+from distutils.util import strtobool
 import os
 
 import pytest
@@ -377,14 +378,23 @@ def test_issue_2670():
     assert len(ag2.select_atoms('around 0.0 resid 3')) == 1
 
 
-reason = "Turned off by default. The test can be enabled by setting the ENABLE_HIGH_MEM_UNIT_TESTS " \
-         "environment variable. Make sure you have at least 10GB of RAM."
+def high_mem_tests_enabled():
+    """ Returns true if ENABLE_HIGH_MEM_UNIT_TESTS is set to true."""
+    env = os.getenv("ENABLE_HIGH_MEM_UNIT_TESTS", default="0")
+    try:
+        return strtobool(env)
+    except ValueError:
+        return False
+
+
+reason = ("Turned off by default. The test can be enabled by setting the ENABLE_HIGH_MEM_UNIT_TESTS "
+          "environment variable. Make sure you have at least 10GB of RAM.")
 
 
 # Tests that with a tiny cutoff to box ratio, the number of grids is capped
 # to avoid indexing overflow. Expected results copied from test_nsgrid_search
 # with no box.
-@pytest.mark.skipif(not os.getenv("ENABLE_HIGH_MEM_UNIT_TESTS"), reason=reason)
+@pytest.mark.skipif(not high_mem_tests_enabled(), reason=reason)
 def test_issue_3183():
     np.random.seed(90003)
     points = (np.random.uniform(low=0, high=1.0,
