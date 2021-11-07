@@ -552,3 +552,28 @@ class TestHydrogenBondAnalysisTIP3PStartStep(object):
 
         counts = h.count_by_type()
         assert int(counts[0, 2]) == ref_count
+
+
+class TestHydrogenBondAnalysisEmptySelections:
+
+    @pytest.fixture()
+    def h(self):
+
+        universe = MDAnalysis.Universe(waterPSF, waterDCD)
+        kwargs = {
+            'donors_sel': '',
+            'hydrogens_sel': '',
+            'acceptors_sel': '',
+        }
+
+        h = HydrogenBondAnalysis(universe, **kwargs)
+        h.run()
+
+        return h
+
+    def test_hbond_analysis(self, h):
+
+        assert h.donors_sel == ''
+        assert h.hydrogens_sel == ''
+        assert h.acceptors_sel == ''
+        assert h.results.hbonds.size == 0
