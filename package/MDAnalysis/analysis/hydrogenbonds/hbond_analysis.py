@@ -439,7 +439,7 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         # We need to know `hydrogens_sel` before we can find donors
         # Use a new variable `hydrogens_sel` so that we do not set `self.hydrogens_sel` if it is currently `None`
-        if not self.hydrogens_sel:
+        if self.hydrogens_sel is None:
             hydrogens_sel = self.guess_hydrogens()
         else:
             hydrogens_sel = self.hydrogens_sel
@@ -512,7 +512,7 @@ class HydrogenBondAnalysis(AnalysisBase):
         """
 
         # If donors_sel is not provided, use topology to find d-h pairs
-        if not self.donors_sel:
+        if self.donors_sel is None:
 
             # We're using u._topology.bonds rather than u.bonds as it is a million times faster to access.
             # This is because u.bonds also calculates properties of each bond (e.g bond length).
@@ -583,9 +583,9 @@ class HydrogenBondAnalysis(AnalysisBase):
         self.results.hbonds = [[], [], [], [], [], []]
 
         # Set atom selections if they have not been provided
-        if not self.acceptors_sel:
+        if self.acceptors_sel is None:
             self.acceptors_sel = self.guess_acceptors()
-        if not self.hydrogens_sel:
+        if self.hydrogens_sel is None:
             self.hydrogens_sel = self.guess_hydrogens()
 
         # Select atom groups
