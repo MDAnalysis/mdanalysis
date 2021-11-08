@@ -556,19 +556,48 @@ class TestHydrogenBondAnalysisTIP3PStartStep(object):
 
 class TestHydrogenBondAnalysisEmptySelections:
 
-    universe = MDAnalysis.Universe(waterPSF, waterDCD)
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe():
+        return MDAnalysis.Universe(waterPSF, waterDCD)
+
     kwargs = {
         'donors_sel': '',
         'hydrogens_sel': '',
         'acceptors_sel': '',
     }
+    msg = ("{} is an empty selection string - no hydrogen bonds will "
+           "be found. This may be intended, but please check your "
+           "selection."
+           )
 
-    h = HydrogenBondAnalysis(universe, **kwargs)
-    h.run()
+    def test_empty_donors_sel(self, universe):
+        with pytest.warns(UserWarning, match=self.msg.format("donors_sel")):
+            HydrogenBondAnalysis(
+                universe,
+                donors_sel=self.kwargs['donors_sel'],
+            )
 
-    def test_hbond_analysis(self):
+    def test_empty_hydrogens_sel(self, universe):
+        with pytest.warns(UserWarning, match=self.msg.format("hydrogens_sel")):
+            HydrogenBondAnalysis(
+                universe,
+                hydrogens_sel=self.kwargs['hydrogens_sel'],
+            )
 
-        assert self.h.donors_sel == ''
-        assert self.h.hydrogens_sel == ''
-        assert self.h.acceptors_sel == ''
-        assert self.h.results.hbonds.size == 0
+    def test_empty_acceptors_sel(self, universe):
+        with pytest.warns(UserWarning, match=self.msg.format("acceptors_sel")):
+            HydrogenBondAnalysis(
+                universe,
+                acceptors_sel=self.kwargs['acceptors_sel'],
+            )
+
+    def test_hbond_analysis(self, universe):
+
+        h = HydrogenBondAnalysis(universe, **self.kwargs)
+        h.run()
+
+        assert h.donors_sel == ''
+        assert h.hydrogens_sel == ''
+        assert h.acceptors_sel == ''
+        assert h.results.hbonds.size == 0
