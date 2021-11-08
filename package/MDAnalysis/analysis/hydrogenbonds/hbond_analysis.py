@@ -328,6 +328,10 @@ class HydrogenBondAnalysis(AnalysisBase):
         if isinstance(acceptors_sel, str) and not acceptors_sel:
             warnings.warn(msg.format("acceptors_sel"))
 
+        self.donors_sel = donors_sel
+        self.hydrogens_sel = hydrogens_sel
+        self.acceptors_sel = acceptors_sel
+
         # If hydrogen bonding groups are selected, then generate
         # corresponding atom groups
         if between is not None:
