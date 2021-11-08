@@ -317,16 +317,16 @@ class HydrogenBondAnalysis(AnalysisBase):
         self.u = universe
         self._trajectory = self.u.trajectory
 
-        msg = ("{} is an empty selection string - no hydrogen bonds will "
+        msg = ("{}_sel is an empty selection string - no hydrogen bonds will "
                "be found. This may be intended, but please check your "
                "selection."
                )
-        if isinstance(donors_sel, str) and not donors_sel:
-            warnings.warn(msg.format("donors_sel"))
-        if isinstance(hydrogens_sel, str) and not hydrogens_sel:
-            warnings.warn(msg.format("hydrogens_sel"))
-        if isinstance(acceptors_sel, str) and not acceptors_sel:
-            warnings.warn(msg.format("acceptors_sel"))
+        for sel, sel_string in zip(
+            [donors_sel, hydrogens_sel, acceptors_sel],
+            ['donors', 'hydrogens', 'acceptors']
+        ):
+            if isinstance(sel, str) and not sel:
+                warnings.warn(msg.format(sel_string))
 
         self.donors_sel = donors_sel
         self.hydrogens_sel = hydrogens_sel
