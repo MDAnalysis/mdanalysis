@@ -556,24 +556,19 @@ class TestHydrogenBondAnalysisTIP3PStartStep(object):
 
 class TestHydrogenBondAnalysisEmptySelections:
 
-    @pytest.fixture()
-    def h(self):
+    universe = MDAnalysis.Universe(waterPSF, waterDCD)
+    kwargs = {
+        'donors_sel': '',
+        'hydrogens_sel': '',
+        'acceptors_sel': '',
+    }
 
-        universe = MDAnalysis.Universe(waterPSF, waterDCD)
-        kwargs = {
-            'donors_sel': '',
-            'hydrogens_sel': '',
-            'acceptors_sel': '',
-        }
+    h = HydrogenBondAnalysis(universe, **kwargs)
+    h.run()
 
-        h = HydrogenBondAnalysis(universe, **kwargs)
-        h.run()
+    def test_hbond_analysis(self):
 
-        return h
-
-    def test_hbond_analysis(self, h):
-
-        assert h.donors_sel == ''
-        assert h.hydrogens_sel == ''
-        assert h.acceptors_sel == ''
-        assert h.results.hbonds.size == 0
+        assert self.h.donors_sel == ''
+        assert self.h.hydrogens_sel == ''
+        assert self.h.acceptors_sel == ''
+        assert self.h.results.hbonds.size == 0
