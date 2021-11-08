@@ -320,7 +320,7 @@ class HydrogenBondAnalysis(AnalysisBase):
         msg = ("{} is an empty selection string - no hydrogen bonds will "
                "be found. This may be intended, but please check your "
                "selection."
-        )
+               )
         if isinstance(donors_sel, str) and not donors_sel:
             warnings.warn(msg.format("donors_sel"))
         if isinstance(hydrogens_sel, str) and not hydrogens_sel:
