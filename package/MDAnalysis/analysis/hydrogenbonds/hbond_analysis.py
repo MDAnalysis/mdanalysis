@@ -317,20 +317,18 @@ class HydrogenBondAnalysis(AnalysisBase):
         self.u = universe
         self._trajectory = self.u.trajectory
 
-        msg = ("{}_sel is an empty selection string - no hydrogen bonds will "
-               "be found. This may be intended, but please check your "
-               "selection."
-               )
-        for sel, sel_string in zip(
-            [donors_sel, hydrogens_sel, acceptors_sel],
-            ['donors', 'hydrogens', 'acceptors']
-        ):
-            if isinstance(sel, str) and not sel:
-                warnings.warn(msg.format(sel_string))
-
         self.donors_sel = donors_sel
         self.hydrogens_sel = hydrogens_sel
         self.acceptors_sel = acceptors_sel
+
+        msg = ("{} is an empty selection string - no hydrogen bonds will "
+               "be found. This may be intended, but please check your "
+               "selection."
+               )
+        for sel in ['donors_sel', 'hydrogens_sel', 'acceptors_sel']:
+            val = getattr(self, sel)
+            if isinstance(val, str) and not val:
+                warnings.warn(msg.format(sel))
 
         # If hydrogen bonding groups are selected, then generate
         # corresponding atom groups
