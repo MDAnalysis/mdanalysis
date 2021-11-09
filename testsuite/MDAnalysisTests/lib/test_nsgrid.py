@@ -387,7 +387,8 @@ def high_mem_tests_enabled():
         return False
 
 
-reason = ("Turned off by default. The test can be enabled by setting the ENABLE_HIGH_MEM_UNIT_TESTS "
+reason = ("Turned off by default. The test can be enabled by setting "
+          "the ENABLE_HIGH_MEM_UNIT_TESTS "
           "environment variable. Make sure you have at least 10GB of RAM.")
 
 
