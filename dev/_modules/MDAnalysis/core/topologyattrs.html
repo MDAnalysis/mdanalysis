@@ -563,6 +563,13 @@
         <span class="sd">&quot;&quot;&quot;Bool of if the source of this information is a guess&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span>
 
+    <span class="k">def</span> <span class="nf">_add_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newval</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Resize TopologyAttr to one larger, with *newval* as the new value</span>
+
+<span class="sd">        .. versionadded:: 2.1.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">newval</span><span class="p">])])</span>
+
 <div class="viewcode-block" id="TopologyAttr.get_atoms"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr.get_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">get_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get atom attributes for a given AtomGroup&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="n">NoDataError</span></div>
@@ -747,7 +754,23 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">na</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
 
 
-<span class="k">class</span> <span class="nc">_AtomStringAttr</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">_StringInternerMixin</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;String interning pattern</span>
+
+<span class="sd">    Used for faster matching of strings (see _ProtoStringSelection)</span>
+
+<span class="sd">     self.namedict (dict)</span>
+<span class="sd">     - maps actual string to string index (str-&gt;int)</span>
+<span class="sd">     self.namelookup (array dtype object)</span>
+<span class="sd">     - maps string index to actual string (int-&gt;str)</span>
+<span class="sd">     self.nmidx (array dtype int)</span>
+<span class="sd">     - maps atom index to string index (int-&gt;int)</span>
+<span class="sd">     self.values (array dtype object)</span>
+<span class="sd">     - the premade per-object string values</span>
+
+<span class="sd">    .. versionadded:: 2.1.0</span>
+<span class="sd">       Mashed together the different implementations to keep it DRY.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span> <span class="o">=</span> <span class="n">guessed</span>
 
@@ -771,12 +794,30 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">name_lookup</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">]</span>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">na</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_add_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newval</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Append new value to the TopologyAttr</span>
 
-    <span class="nd">@_check_length</span>
-    <span class="k">def</span> <span class="nf">set_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        newval : str</span>
+<span class="sd">          value to append</span>
+
+<span class="sd">        resizes this attr to size+1 and adds newval as the value of the new entry</span>
+<span class="sd">        for string interning this is slightly different hence the override</span>
+
+<span class="sd">        .. versionadded:: 2.1.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">newidx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">[</span><span class="n">newval</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">newidx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">[</span><span class="n">newval</span><span class="p">]</span> <span class="o">=</span> <span class="n">newidx</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">,</span> <span class="p">[</span><span class="n">newval</span><span class="p">]])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">,</span> <span class="p">[</span><span class="n">newidx</span><span class="p">]])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="p">[</span><span class="n">newval</span><span class="p">]])</span>
+
+    <span class="k">def</span> <span class="nf">_set_X</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="n">newnames</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># two possibilities, either single value given, or one per Atom</span>
@@ -803,9 +844,20 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">,</span> <span class="n">newnames</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">]</span>
 
+<span class="c1"># woe betide anyone who switches this inheritance order</span>
+<span class="c1"># Mixin needs to be first (L to R) to get correct __init__ and set_atoms</span>
+<div class="viewcode-block" id="AtomStringAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.AtomStringAttr">[docs]</a><span class="k">class</span> <span class="nc">AtomStringAttr</span><span class="p">(</span><span class="n">_StringInternerMixin</span><span class="p">,</span> <span class="n">AtomAttr</span><span class="p">):</span>
+<div class="viewcode-block" id="AtomStringAttr.set_atoms"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.AtomStringAttr.set_atoms">[docs]</a>    <span class="nd">@_check_length</span>
+    <span class="k">def</span> <span class="nf">set_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_X</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
+
 
 <span class="c1"># TODO: update docs to property doc</span>
-<div class="viewcode-block" id="Atomnames"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames">[docs]</a><span class="k">class</span> <span class="nc">Atomnames</span><span class="p">(</span><span class="n">_AtomStringAttr</span><span class="p">):</span>
+<div class="viewcode-block" id="Atomnames"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames">[docs]</a><span class="k">class</span> <span class="nc">Atomnames</span><span class="p">(</span><span class="n">AtomStringAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Name for each atom.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;names&#39;</span>
@@ -1301,7 +1353,7 @@
 
 
 <span class="c1"># TODO: update docs to property doc</span>
-<div class="viewcode-block" id="Atomtypes"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomtypes">[docs]</a><span class="k">class</span> <span class="nc">Atomtypes</span><span class="p">(</span><span class="n">_AtomStringAttr</span><span class="p">):</span>
+<div class="viewcode-block" id="Atomtypes"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomtypes">[docs]</a><span class="k">class</span> <span class="nc">Atomtypes</span><span class="p">(</span><span class="n">AtomStringAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Type for each atom&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;types&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;type&#39;</span>
@@ -1310,7 +1362,7 @@
 
 
 <span class="c1"># TODO: update docs to property doc</span>
-<div class="viewcode-block" id="Elements"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Elements">[docs]</a><span class="k">class</span> <span class="nc">Elements</span><span class="p">(</span><span class="n">_AtomStringAttr</span><span class="p">):</span>
+<div class="viewcode-block" id="Elements"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Elements">[docs]</a><span class="k">class</span> <span class="nc">Elements</span><span class="p">(</span><span class="n">AtomStringAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Element for each atom&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;elements&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;element&#39;</span>
@@ -1334,7 +1386,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="RecordTypes"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.RecordTypes">[docs]</a><span class="k">class</span> <span class="nc">RecordTypes</span><span class="p">(</span><span class="n">_AtomStringAttr</span><span class="p">):</span>
+<div class="viewcode-block" id="RecordTypes"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.RecordTypes">[docs]</a><span class="k">class</span> <span class="nc">RecordTypes</span><span class="p">(</span><span class="n">AtomStringAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;For PDB-like formats, indicates if ATOM or HETATM</span>
 
 <span class="sd">    Defaults to &#39;ATOM&#39;</span>
@@ -1352,7 +1404,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;ATOM&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">na</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ChainIDs"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ChainIDs">[docs]</a><span class="k">class</span> <span class="nc">ChainIDs</span><span class="p">(</span><span class="n">_AtomStringAttr</span><span class="p">):</span>
+<div class="viewcode-block" id="ChainIDs"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ChainIDs">[docs]</a><span class="k">class</span> <span class="nc">ChainIDs</span><span class="p">(</span><span class="n">AtomStringAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ChainID per atom</span>
 
 <span class="sd">    Note</span>
@@ -1940,7 +1992,7 @@
 
 
 <span class="c1"># TODO: update docs to property doc</span>
-<div class="viewcode-block" id="AltLocs"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.AltLocs">[docs]</a><span class="k">class</span> <span class="nc">AltLocs</span><span class="p">(</span><span class="n">_AtomStringAttr</span><span class="p">):</span>
+<div class="viewcode-block" id="AltLocs"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.AltLocs">[docs]</a><span class="k">class</span> <span class="nc">AltLocs</span><span class="p">(</span><span class="n">AtomStringAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;AltLocs for each atom&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;altLocs&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;altLoc&#39;</span>
@@ -2081,6 +2133,18 @@
         <span class="k">raise</span> <span class="n">_wronglevel_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">)</span></div></div>
 
 
+<span class="c1"># woe betide anyone who switches this inheritance order</span>
+<span class="c1"># Mixin needs to be first (L to R) to get correct __init__ and set_atoms</span>
+<div class="viewcode-block" id="ResidueStringAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ResidueStringAttr">[docs]</a><span class="k">class</span> <span class="nc">ResidueStringAttr</span><span class="p">(</span><span class="n">_StringInternerMixin</span><span class="p">,</span> <span class="n">ResidueAttr</span><span class="p">):</span>
+<div class="viewcode-block" id="ResidueStringAttr.set_residues"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ResidueStringAttr.set_residues">[docs]</a>    <span class="nd">@_check_length</span>
+    <span class="k">def</span> <span class="nf">set_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_X</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">nr</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
+
+
 <span class="c1"># TODO: update docs to property doc</span>
 <div class="viewcode-block" id="Resids"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Resids">[docs]</a><span class="k">class</span> <span class="nc">Resids</span><span class="p">(</span><span class="n">ResidueAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Residue ID&quot;&quot;&quot;</span>
@@ -2093,65 +2157,8 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nr</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
 
 
-<span class="k">class</span> <span class="nc">_ResidueStringAttr</span><span class="p">(</span><span class="n">ResidueAttr</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span> <span class="o">=</span> <span class="n">guessed</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">namedict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># maps str to nmidx</span>
-        <span class="n">name_lookup</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># maps idx to str</span>
-        <span class="c1"># eg namedict[&#39;O&#39;] = 5 &amp; name_lookup[5] = &#39;O&#39;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>  <span class="c1"># the lookup for each atom</span>
-        <span class="c1"># eg Atom 5 is &#39;C&#39;, so nmidx[5] = 7, where name_lookup[7] = &#39;C&#39;</span>
-
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vals</span><span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">[</span><span class="n">val</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">nextidx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="o">=</span> <span class="n">nextidx</span>
-                <span class="n">name_lookup</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-
-                <span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">nextidx</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">name_lookup</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">]</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nr</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
-
-    <span class="nd">@_check_length</span>
-    <span class="k">def</span> <span class="nf">set_residues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rg</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="n">newnames</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="c1"># two possibilities, either single value given, or one per Atom</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">newidx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">[</span><span class="n">values</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">newidx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">[</span><span class="n">values</span><span class="p">]</span> <span class="o">=</span> <span class="n">newidx</span>
-                <span class="n">newnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">newidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">newidx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">[</span><span class="n">val</span><span class="p">]</span>
-                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="n">nextidx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="o">=</span> <span class="n">nextidx</span>
-                    <span class="n">newnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-                    <span class="n">newidx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">nextidx</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">rg</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">newidx</span>  <span class="c1"># newidx either single value or same size array</span>
-        <span class="k">if</span> <span class="n">newnames</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">,</span> <span class="n">newnames</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">]</span>
-
-
 <span class="c1"># TODO: update docs to property doc</span>
-<div class="viewcode-block" id="Resnames"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Resnames">[docs]</a><span class="k">class</span> <span class="nc">Resnames</span><span class="p">(</span><span class="n">_ResidueStringAttr</span><span class="p">):</span>
+<div class="viewcode-block" id="Resnames"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Resnames">[docs]</a><span class="k">class</span> <span class="nc">Resnames</span><span class="p">(</span><span class="n">ResidueStringAttr</span><span class="p">):</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;resnames&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;resname&#39;</span>
     <span class="n">transplants</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
@@ -2270,14 +2277,14 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nr</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ICodes"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ICodes">[docs]</a><span class="k">class</span> <span class="nc">ICodes</span><span class="p">(</span><span class="n">_ResidueStringAttr</span><span class="p">):</span>
+<div class="viewcode-block" id="ICodes"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ICodes">[docs]</a><span class="k">class</span> <span class="nc">ICodes</span><span class="p">(</span><span class="n">ResidueStringAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Insertion code for Atoms&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;icodes&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;icode&#39;</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="nb">object</span></div>
 
 
-<div class="viewcode-block" id="Moltypes"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Moltypes">[docs]</a><span class="k">class</span> <span class="nc">Moltypes</span><span class="p">(</span><span class="n">_ResidueStringAttr</span><span class="p">):</span>
+<div class="viewcode-block" id="Moltypes"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Moltypes">[docs]</a><span class="k">class</span> <span class="nc">Moltypes</span><span class="p">(</span><span class="n">ResidueStringAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Name of the molecule type</span>
 
 <span class="sd">    Two molecules that share a molecule type share a common template topology.</span>
@@ -2329,65 +2336,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">sg</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span></div></div>
 
 
-<span class="k">class</span> <span class="nc">_SegmentStringAttr</span><span class="p">(</span><span class="n">SegmentAttr</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span> <span class="o">=</span> <span class="n">guessed</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">namedict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># maps str to nmidx</span>
-        <span class="n">name_lookup</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># maps idx to str</span>
-        <span class="c1"># eg namedict[&#39;O&#39;] = 5 &amp; name_lookup[5] = &#39;O&#39;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>  <span class="c1"># the lookup for each atom</span>
-        <span class="c1"># eg Atom 5 is &#39;C&#39;, so nmidx[5] = 7, where name_lookup[7] = &#39;C&#39;</span>
-
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vals</span><span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">[</span><span class="n">val</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">nextidx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="o">=</span> <span class="n">nextidx</span>
-                <span class="n">name_lookup</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-
-                <span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">nextidx</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">name_lookup</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">]</span>
+<span class="c1"># woe betide anyone who switches this inheritance order</span>
+<span class="c1"># Mixin needs to be first (L to R) to get correct __init__ and set_atoms</span>
+<div class="viewcode-block" id="SegmentStringAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.SegmentStringAttr">[docs]</a><span class="k">class</span> <span class="nc">SegmentStringAttr</span><span class="p">(</span><span class="n">_StringInternerMixin</span><span class="p">,</span> <span class="n">SegmentAttr</span><span class="p">):</span>
+<div class="viewcode-block" id="SegmentStringAttr.set_segments"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.SegmentStringAttr.set_segments">[docs]</a>    <span class="nd">@_check_length</span>
+    <span class="k">def</span> <span class="nf">set_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_X</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nr</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
-
-    <span class="nd">@_check_length</span>
-    <span class="k">def</span> <span class="nf">set_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sg</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="n">newnames</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="c1"># two possibilities, either single value given, or one per Atom</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">newidx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">[</span><span class="n">values</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">newidx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">[</span><span class="n">values</span><span class="p">]</span> <span class="o">=</span> <span class="n">newidx</span>
-                <span class="n">newnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">newidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">newidx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">[</span><span class="n">val</span><span class="p">]</span>
-                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                    <span class="n">nextidx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">namedict</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="o">=</span> <span class="n">nextidx</span>
-                    <span class="n">newnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-                    <span class="n">newidx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">nextidx</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">sg</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">newidx</span>  <span class="c1"># newidx either single value or same size array</span>
-        <span class="k">if</span> <span class="n">newnames</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">,</span> <span class="n">newnames</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
 
 
 <span class="c1"># TODO: update docs to property doc</span>
-<div class="viewcode-block" id="Segids"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Segids">[docs]</a><span class="k">class</span> <span class="nc">Segids</span><span class="p">(</span><span class="n">_SegmentStringAttr</span><span class="p">):</span>
+<div class="viewcode-block" id="Segids"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Segids">[docs]</a><span class="k">class</span> <span class="nc">Segids</span><span class="p">(</span><span class="n">SegmentStringAttr</span><span class="p">):</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;segids&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;segid&#39;</span>
     <span class="n">transplants</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
@@ -2773,7 +2735,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
 
   

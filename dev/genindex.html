@@ -270,8 +270,12 @@
         <li><a href="documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_Residue">(MDAnalysis.core.universe.Universe method)</a>
 </li>
       </ul></li>
-      <li><a href="documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_Segment">add_Segment() (MDAnalysis.core.universe.Universe method)</a>
+      <li><a href="documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.add_Segment">add_Segment() (MDAnalysis.core.topology.Topology method)</a>
+
+      <ul>
+        <li><a href="documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_Segment">(MDAnalysis.core.universe.Universe method)</a>
 </li>
+      </ul></li>
       <li><a href="documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology.add_TopologyAttr">add_TopologyAttr() (MDAnalysis.core.topology.Topology method)</a>
 
       <ul>
@@ -483,6 +487,8 @@
       <li><a href="documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.atoms2residues">atoms2residues() (MDAnalysis.core.topology.TransTable method)</a>
 </li>
       <li><a href="documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.atoms2segments">atoms2segments() (MDAnalysis.core.topology.TransTable method)</a>
+</li>
+      <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.AtomStringAttr">AtomStringAttr (class in MDAnalysis.core.topologyattrs)</a>
 </li>
       <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomtypes">Atomtypes (class in MDAnalysis.core.topologyattrs)</a>
 </li>
@@ -6031,10 +6037,10 @@
 </li>
       <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.Residue">Residue (class in MDAnalysis.core.groups)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ResidueAttr">ResidueAttr (class in MDAnalysis.core.topologyattrs)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.ResidueGroup">ResidueGroup (class in MDAnalysis.core.groups)</a>
 </li>
       <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.residues">residues (MDAnalysis.core.groups.AtomGroup property)</a>
@@ -6054,6 +6060,8 @@
       <li><a href="documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.residues2atoms_2d">residues2atoms_2d() (MDAnalysis.core.topology.TransTable method)</a>
 </li>
       <li><a href="documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.residues2segments">residues2segments() (MDAnalysis.core.topology.TransTable method)</a>
+</li>
+      <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ResidueStringAttr">ResidueStringAttr (class in MDAnalysis.core.topologyattrs)</a>
 </li>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.Atom.resind">resind (MDAnalysis.topology.tpr.obj.Atom property)</a>
 </li>
@@ -6307,6 +6315,8 @@
 </li>
       <li><a href="documentation_pages/core/topology.html#MDAnalysis.core.topology.TransTable.segments2residues_2d">segments2residues_2d() (MDAnalysis.core.topology.TransTable method)</a>
 </li>
+      <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.SegmentStringAttr">SegmentStringAttr (class in MDAnalysis.core.topologyattrs)</a>
+</li>
       <li><a href="documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.Path.select">select (MDAnalysis.analysis.psa.Path attribute)</a>
 
       <ul>
@@ -6368,6 +6378,8 @@
       <ul>
         <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomindices.set_atoms">(MDAnalysis.core.topologyattrs.Atomindices method)</a>
 </li>
+        <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.AtomStringAttr.set_atoms">(MDAnalysis.core.topologyattrs.AtomStringAttr method)</a>
+</li>
         <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ResidueAttr.set_atoms">(MDAnalysis.core.topologyattrs.ResidueAttr method)</a>
 </li>
         <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.SegmentAttr.set_atoms">(MDAnalysis.core.topologyattrs.SegmentAttr method)</a>
@@ -6426,6 +6438,8 @@
       <ul>
         <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ResidueAttr.set_residues">(MDAnalysis.core.topologyattrs.ResidueAttr method)</a>
 </li>
+        <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ResidueStringAttr.set_residues">(MDAnalysis.core.topologyattrs.ResidueStringAttr method)</a>
+</li>
         <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Resindices.set_residues">(MDAnalysis.core.topologyattrs.Resindices method)</a>
 </li>
         <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.SegmentAttr.set_residues">(MDAnalysis.core.topologyattrs.SegmentAttr method)</a>
@@ -6443,6 +6457,8 @@
         <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Segindices.set_segments">(MDAnalysis.core.topologyattrs.Segindices method)</a>
 </li>
         <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.SegmentAttr.set_segments">(MDAnalysis.core.topologyattrs.SegmentAttr method)</a>
+</li>
+        <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.SegmentStringAttr.set_segments">(MDAnalysis.core.topologyattrs.SegmentStringAttr method)</a>
 </li>
         <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr.set_segments">(MDAnalysis.core.topologyattrs.TopologyAttr method)</a>
 </li>
@@ -7311,7 +7327,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
+    <p>&#169; Copyright 2005-2021, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Leonardo Barneschi, Jonathan Barnoud, Estefania Barreto-Ojeda, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Kevin Boyd, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Haochuan Chen, Kathleen Clark, Orion Cohen, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Mark D. Driver, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Henrik Jäger, Aditya Kamath, Jon Kapla, Navya Khare, Andrew William King, Henry Kobin, Abhishek A. Kognole, Kosuke Kudo, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Marcelo C. R. Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Dimitrios Papageorgiou, Danny Parton, Shakul Pathak, Joshua L. Phillips, Hannah Pollak, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Sulay Shah, Abhishek Shandilya, Shubham Sharma, Karthikeyan Singaravelan, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Jan Stevens, Gorman Stock, Fenil Suchak, Ayush Suhane, Filip T. Szczypiński, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Paarth Thadani, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Alexander Yang, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein.</p>
   </div>
 
   
