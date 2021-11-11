@@ -216,7 +216,7 @@ jobs:
         python-version: 3.7
         auto-update-conda: true
         channel-priority: flexible
-        channels: conda-forge, biobuilds
+        channels: conda-forge, bioconda
         add-pip-as-python-dependency: true
         architecture: x64
         mamba-version: "*"
