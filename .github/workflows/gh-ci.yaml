@@ -125,7 +125,7 @@ jobs:
         # software (curl, ssh, ...), but the version in biobuilds are very
         # outdated. This can lead to problem when loading shared libraries,
         # see https://github.com/MDAnalysis/mdanalysis/pull/3126#issuecomment-813112080
-        channels: conda-forge, biobuilds
+        channels: conda-forge, bioconda
         add-pip-as-python-dependency: true
         mamba-version: "*"
         architecture: x64
