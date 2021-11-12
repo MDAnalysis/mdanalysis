@@ -20,6 +20,9 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+import sys
+import platform
+import warnings
 import numpy as np
 import os
 
@@ -345,7 +348,17 @@ class TestChainReaderContinuous(object):
         sequences = ([0, 1, 2, 3], [2, 3, 4, 5], [4, 5, 6, 7])
         utop, fnames = build_trajectories(folder, sequences=sequences,)
         with no_warning(UserWarning):
-            mda.Universe(utop._topology, fnames, continuous=True)
+            with warnings.catch_warnings():
+                # for windows Python 3.10 ignore:
+                # ImportWarning('_SixMetaPathImporter.find_spec() not found
+                # TODO: remove when we no longer have a dependency
+                # that still imports six
+                if (platform.system() == "Windows" and
+                    sys.version_info >= (3, 10)):
+                    warnings.filterwarnings(
+                            action='ignore',
+                            category=ImportWarning)
+                mda.Universe(utop._topology, fnames, continuous=True)
 
     def test_single_frames(self, tmpdir):
         folder = str(tmpdir)

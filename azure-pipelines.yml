@@ -35,6 +35,9 @@ jobs:
         Python39-64bit-full:
           PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
+        Python310-64bit-full:
+          PYTHON_VERSION: '3.10'
+          PYTHON_ARCH: 'x64'
   steps:
   - task: UsePythonVersion@0
     inputs:
@@ -44,7 +47,7 @@ jobs:
   - script: python -m pip install --upgrade pip setuptools wheel
     displayName: 'Install tools'
   - script: >-
-      python -m pip install --only-binary=h5py
+      python -m pip install
       cython
       hypothesis
       matplotlib
@@ -54,17 +57,20 @@ jobs:
       pytest-xdist
       scikit-learn
       scipy
-      "h5py<3.4.0"
       tqdm
       threadpoolctl
     displayName: 'Install dependencies'
+  - script: >-
+      python -m pip install --only-binary=h5py
+      "h5py<3.4.0"
+    displayName: 'Install h5py for Python < 3.10'
+    condition: and(succeeded(), ne(variables['PYTHON_VERSION'], '3.10'))
   # TODO: recent rdkit is not on PyPI
   - script: >-
       python -m pip install
       biopython
       chemfiles>=0.9
       duecredit
-      gsd==1.9.3
       joblib
       GridDataFormats
       mmtf-python
