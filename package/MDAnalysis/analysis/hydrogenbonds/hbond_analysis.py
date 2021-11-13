@@ -317,9 +317,9 @@ class HydrogenBondAnalysis(AnalysisBase):
         self.u = universe
         self._trajectory = self.u.trajectory
 
-        self.donors_sel = donors_sel.strip()
-        self.hydrogens_sel = hydrogens_sel.strip()
-        self.acceptors_sel = acceptors_sel.strip()
+        self.donors_sel = donors_sel.strip() if donors_sel is not None else donors_sel
+        self.hydrogens_sel = hydrogens_sel.strip() if hydrogens_sel is not None else hydrogens_sel
+        self.acceptors_sel = acceptors_sel.strip() if acceptors_sel is not None else acceptors_sel
 
         msg = ("{} is an empty selection string - no hydrogen bonds will "
                "be found. This may be intended, but please check your "
