@@ -562,9 +562,9 @@ class TestHydrogenBondAnalysisEmptySelections:
         return MDAnalysis.Universe(waterPSF, waterDCD)
 
     kwargs = {
-        'donors_sel': '',
-        'hydrogens_sel': '',
-        'acceptors_sel': '',
+        'donors_sel': ' ',
+        'hydrogens_sel': ' ',
+        'acceptors_sel': ' ',
     }
     msg = ("{} is an empty selection string - no hydrogen bonds will "
            "be found. This may be intended, but please check your "
