@@ -565,6 +565,17 @@ class H5MDReader(base.ReaderBase):
         # format='H5MD' is used
         return HAS_H5PY and isinstance(thing, h5py.File)
 
+    @staticmethod
+    def parse_n_atoms(filename):
+        with h5py.File(filename, 'r') as f:
+            for group in ('position', 'velocity', 'force'):
+                try:
+                    n_atoms = f[f'particles/trajectory/{group}/value'].shape[1]
+                    return n_atoms
+                except KeyError:
+                    pass
+
+
     def open_trajectory(self):
         """opens the trajectory file using h5py library"""
         self._frame = -1
