@@ -13,16 +13,23 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
-         yuxuanzhuang
-
+??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope, orbeckst, scal444,
+	 yuxuanzhuang
  * 2.1.0
 
 Fixes
+  * Avoid integer overflow in NSGrid with too many grids (Issue #3183)
   * Fix ITPParser charge reading (Issue #3419).
   * TRRWriter preserves timestep data (Issue #3350).
   * Fixed Universe creation from a custom object which only provided a topology,
     previously raised a TypeError. (Issue #3443)
+  * Fix the competition when generating offsets from multiple processes by
+    using a interprocess file lock. (Issue #1988, PR #3375)
+  * Fix the error when trying to load a corrupted offset file (Issue #3230
+    PR #3375)
+  * Documentation fixes (Issues #3224, #2667)
+  * Fixed string attributes (e.g. resname, segid) not working on Residues and Segments
+    created using add_Residue and add_Segment (Issue #3437)
   * Fix the competition when generating offsets from multiple processes by
     using a interprocess file lock. (Issue #1988, PR #3375)
   * Fix the error when trying to load a corrupted offset file (Issue #3230

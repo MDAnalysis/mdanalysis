@@ -55,7 +55,7 @@ from MDAnalysis.topology.base import TopologyReaderBase
 from MDAnalysis.transformations import translate
 from MDAnalysisTests import assert_nowarns
 from MDAnalysis.exceptions import NoDataError
-from MDAnalysis.core.topologyattrs import _AtomStringAttr
+from MDAnalysis.core.topologyattrs import AtomStringAttr
 
 
 class IOErrorParser(TopologyReaderBase):
@@ -780,7 +780,7 @@ class TestDelTopologyAttr(object):
             ag.resnames
 
     def test_del_func_from_universe(self, universe):
-        class RootVegetable(_AtomStringAttr):
+        class RootVegetable(AtomStringAttr):
             attrname = "tubers"
             singular = "tuber"
             transplants = defaultdict(list)
