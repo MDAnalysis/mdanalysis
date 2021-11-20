@@ -750,12 +750,33 @@ class _GromacsReader_offsets(object):
             saved_offsets = XDR.read_numpy_offsets(outfile_offsets)
             assert_equal(saved_offsets, False)
 
-    def test_reload_offsets_if_offsets_readin_fails(self, trajectory):
+    def test_nonexistant_offsets_file(self, traj):
+        # assert that a corrupted file returns False during read-in
+        # Issue #3230
+        outfile_offsets = XDR.offsets_filename(traj)
+        with patch.object(np, "load") as np_load_mock:
+            np_load_mock.side_effect = ValueError
+            saved_offsets = XDR.read_numpy_offsets(outfile_offsets)
+            assert_equal(saved_offsets, False)
+
+    def test_reload_offsets_if_offsets_readin_io_fails(self, trajectory):
         # force the np.load call that is called in read_numpy_offsets
         # during _load_offsets to give an IOError
         # ensure that offsets are then read-in from the trajectory
         with patch.object(np, "load") as np_load_mock:
             np_load_mock.side_effect = IOError
+            trajectory._load_offsets()
+            assert_almost_equal(
+                trajectory._xdr.offsets,
+                self.ref_offsets,
+                err_msg="error loading frame offsets")
+
+    def test_reload_offsets_if_offsets_readin_value_fails(self, trajectory):
+        # force the np.load call that is called in read_numpy_offsets
+        # during _load_offsets to give an ValueError (Issue #3230)
+        # ensure that offsets are then read-in from the trajectory
+        with patch.object(np, "load") as np_load_mock:
+            np_load_mock.side_effect = ValueError
             trajectory._load_offsets()
             assert_almost_equal(
                 trajectory._xdr.offsets,
