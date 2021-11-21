@@ -73,16 +73,12 @@ from ..core.topology import Topology
 logger = logging.getLogger("MDAnalysis.converters.RDKitParser")
 
 
-def _rdkit_chiral_to_RS(val):
-    # convert RDKit chirality tag to R/S/''
-    from rdkit import Chem
-
-    if val == Chem.ChiralType.CHI_TETRAHEDRAL_CW:
-        return 'R'
-    elif val == Chem.ChiralType.CHI_TETRAHEDRAL_CCW:
-        return 'S'
-    else:
-        return ''
+def _rdkit_atom_to_RS(atom):
+    """Fetches RDKit chiral tags"""
+    try:
+        return atom.GetProp("_CIPCode")
+    except KeyError:
+        return ""
 
 
 class RDKitParser(TopologyReaderBase):
