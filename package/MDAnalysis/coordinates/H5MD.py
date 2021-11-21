@@ -568,13 +568,15 @@ class H5MDReader(base.ReaderBase):
     @staticmethod
     def parse_n_atoms(filename):
         with h5py.File(filename, 'r') as f:
-            for group in ('position', 'velocity', 'force'):
-                try:
+            for group in f['particles/trajectory']:
+                if group in ('position', 'velocity', 'force'):
                     n_atoms = f[f'particles/trajectory/{group}/value'].shape[1]
                     return n_atoms
-                except KeyError:
-                    pass
-
+            else:
+                raise NoDataError("Could not construct minimal topology from the "
+                                  "H5MD trajectory file, as it did not contain a "
+                                  "'position', 'velocity', or 'force' group. "
+                                  "You must include a topology file.")
 
     def open_trajectory(self):
         """opens the trajectory file using h5py library"""
