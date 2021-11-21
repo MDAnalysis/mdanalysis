@@ -584,9 +584,7 @@ class SingleCharSelection(Selection):
     def _apply(self, group):
         attr = getattr(group, self.field)
 
-        mask = (attr == self.values[0])
-        for v in self.values[1:]:
-            mask |= (attr == v)
+        mask = np.isin(attr, self.values)
 
         return group[mask]
 
