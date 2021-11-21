@@ -134,7 +134,7 @@ class RDKitParser(TopologyReaderBase):
     | atom.GetMonomerInfo().GetName()             | names                   |
     | atom.GetProp('_TriposAtomName')             |                         |
     +---------------------------------------------+-------------------------+
-    | atom.GetChiralTag()                         | chiralities             |
+    | atom.GetProp('_CIPCode')                    | chiralities             |
     +---------------------------------------------+-------------------------+
     | atom.GetMonomerInfo().GetOccupancy()        | occupancies             |
     +---------------------------------------------+-------------------------+
