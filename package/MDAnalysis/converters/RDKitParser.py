@@ -219,7 +219,7 @@ class RDKitParser(TopologyReaderBase):
             elements.append(atom.GetSymbol())
             masses.append(atom.GetMass())
             aromatics.append(atom.GetIsAromatic())
-            chiralities.append(_rdkit_chiral_to_RS(atom.GetChiralTag()))
+            chiralities.append(_rdkit_atom_to_RS(atom))
             mi = atom.GetMonomerInfo()
             if mi: # atom name and residue info are present
                 names.append(mi.GetName().strip())
