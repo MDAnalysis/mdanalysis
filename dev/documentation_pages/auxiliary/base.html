@@ -103,7 +103,7 @@
 <p>Base classes for deriving all auxiliary data readers. See the API in <a class="reference internal" href="init.html#module-MDAnalysis.auxiliary.__init__" title="MDAnalysis.auxiliary.__init__"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.__init__</span></code></a>.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.base.AuxStep">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.auxiliary.base.</span></span><span class="sig-name descname"><span class="pre">AuxStep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_selector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_selector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constant_dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxStep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxStep" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.auxiliary.base.</span></span><span class="sig-name descname"><span class="pre">AuxStep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_selector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_selector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constant_dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxStep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxStep" title="Permalink to this definition"></a></dt>
 <dd><p>Base class for auxiliary timesteps.</p>
 <p>Stores the auxiliary data for the current auxiliary step. On creation,
 <code class="docutils literal notranslate"><span class="pre">step</span></code> is set to -1.</p>
@@ -145,7 +145,7 @@ throughout the auxiliary data set, in which case a valid
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.base.AuxStep.data">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxStep.data" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxStep.data" title="Permalink to this definition"></a></dt>
 <dd><p>Auxiliary values of interest for the current step (as ndarray).</p>
 <p>Read from the full set of data read for each step if data selection is
 enabled and a valid <code class="docutils literal notranslate"><span class="pre">data_selector</span></code> is specified; otherwise
@@ -154,7 +154,7 @@ defaults to the full set of data.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.base.AuxStep.time">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxStep.time" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxStep.time" title="Permalink to this definition"></a></dt>
 <dd><p>Time in ps of current auxiliary step (as float).</p>
 <p>Read from the set of auxiliary data read each step if time selection
 is enabled and a valid <code class="docutils literal notranslate"><span class="pre">time_selector</span></code> is specified; otherwise
@@ -165,7 +165,7 @@ calculated as <code class="docutils literal notranslate"><span class="pre">step<
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.base.AuxReader">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.auxiliary.base.</span></span><span class="sig-name descname"><span class="pre">AuxReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">represent_ts_as</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'closest'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auxname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.auxiliary.base.</span></span><span class="sig-name descname"><span class="pre">AuxReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">represent_ts_as</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'closest'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auxname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader" title="Permalink to this definition"></a></dt>
 <dd><p>Base class for auxiliary readers.</p>
 <p>Allows iteration over a set of data from a trajectory, additional
 (‘auxiliary’) to the regular positions/velocities/etc. This auxiliary
@@ -251,14 +251,14 @@ within the cutoff, representative values are set to <code class="docutils litera
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.base.AuxReader.constant_dt">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">constant_dt</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.constant_dt" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">constant_dt</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.constant_dt" title="Permalink to this definition"></a></dt>
 <dd><p>True if <code class="docutils literal notranslate"><span class="pre">dt</span></code> is constant throughout the auxiliary (as stored in
 <code class="docutils literal notranslate"><span class="pre">auxstep</span></code>)</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.base.AuxReader.data_selector">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">data_selector</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.data_selector" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data_selector</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.data_selector" title="Permalink to this definition"></a></dt>
 <dd><p>Key(s) to select auxiliary data values of interest from the full set
 of data read for each step (as stored in <code class="docutils literal notranslate"><span class="pre">auxstep</span></code>).</p>
 <p>Type differs between auxiliary formats, depending how the data for each
@@ -271,7 +271,7 @@ to <code class="docutils literal notranslate"><span class="pre">None</span></cod
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.base.AuxReader.dt">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">dt</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.dt" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dt</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.dt" title="Permalink to this definition"></a></dt>
 <dd><p>Change in time between auxiliary steps (as stored in <code class="docutils literal notranslate"><span class="pre">auxstep</span></code>;
 in ps)</p>
 </dd></dl>
@@ -306,7 +306,7 @@ AuxReader.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.base.AuxReader.initial_time">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">initial_time</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.initial_time" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">initial_time</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.initial_time" title="Permalink to this definition"></a></dt>
 <dd><p>Time of first auxiliary step (as stored in <code class="docutils literal notranslate"><span class="pre">auxstep</span></code>; in ps)</p>
 </dd></dl>
 
@@ -328,7 +328,7 @@ be positioned.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.base.AuxReader.n_steps">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">n_steps</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.n_steps" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_steps</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.n_steps" title="Permalink to this definition"></a></dt>
 <dd><p>Total number of steps in the auxiliary data.</p>
 </dd></dl>
 
@@ -396,7 +396,7 @@ step before the frame.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.base.AuxReader.represent_ts_as">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">represent_ts_as</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.represent_ts_as" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">represent_ts_as</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.represent_ts_as" title="Permalink to this definition"></a></dt>
 <dd><p>Method by which ‘representative’ timestep values of auxiliary data
 will be calculated.</p>
 </dd></dl>
@@ -409,7 +409,7 @@ will be calculated.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.base.AuxReader.step">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">step</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.step" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">step</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.step" title="Permalink to this definition"></a></dt>
 <dd><p>Number of the current auxiliary step (as stored in <code class="docutils literal notranslate"><span class="pre">auxstep</span></code>;
 0-based).</p>
 </dd></dl>
@@ -479,13 +479,13 @@ each step.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.base.AuxReader.time">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.time" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.time" title="Permalink to this definition"></a></dt>
 <dd><p>Time of current auxiliary step (as stored in <code class="docutils literal notranslate"><span class="pre">auxstep</span></code>; in ps)</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.base.AuxReader.time_selector">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">time_selector</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.time_selector" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time_selector</span></span><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.time_selector" title="Permalink to this definition"></a></dt>
 <dd><p>Key to select ‘time’ value from the full set of data read for each step.
 As stored in <code class="docutils literal notranslate"><span class="pre">austep</span></code>.</p>
 <p>Type differs between auxiliary formats, depending how the data for each
@@ -529,7 +529,7 @@ value in <code class="docutils literal notranslate"><span class="pre">ts.aux</sp
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.auxiliary.base.AuxFileReader">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.auxiliary.base.</span></span><span class="sig-name descname"><span class="pre">AuxFileReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxFileReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxFileReader" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.auxiliary.base.</span></span><span class="sig-name descname"><span class="pre">AuxFileReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxFileReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxFileReader" title="Permalink to this definition"></a></dt>
 <dd><p>Base class for auxiliary readers that read from file.</p>
 <p>Extends AuxReader with attributes and methods particular to reading
 auxiliary data from an open file, for use when auxiliary files may be too

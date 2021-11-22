@@ -17,7 +17,7 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -165,7 +165,7 @@ a 32 bit signed integer.</p>
 <h2><span class="section-number">13.2.4.3. </span>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.lib.nsgrid.FastNS">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.nsgrid.</span></span><span class="sig-name descname"><span class="pre">FastNS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.FastNS" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.nsgrid.</span></span><span class="sig-name descname"><span class="pre">FastNS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pbc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.FastNS" title="Permalink to this definition"></a></dt>
 <dd><p>Grid based search between positions</p>
 <p>Minimum image convention is used for distance evaluations
 if pbc is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
@@ -222,7 +222,7 @@ for <code class="docutils literal notranslate"><span class="pre">box</span></cod
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.lib.nsgrid.FastNS.search">
-<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">self</span></em>, <em class="sig-param"><span class="pre">float[:</span></em>, <em class="sig-param"><span class="pre">:]</span> <span class="pre">search_coords</span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.FastNS.search" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">search</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">float[:</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">:]</span> <span class="pre">search_coords</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.FastNS.search" title="Permalink to this definition"></a></dt>
 <dd><p>Search a group of atoms against initialized coordinates</p>
 <p>Creates a new grid with the query atoms and searches
 against the initialized coordinates. The search is exclusive
@@ -277,7 +277,7 @@ can be accessed by its methods <a class="reference internal" href="#MDAnalysis.l
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.lib.nsgrid.NSResults">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.nsgrid.</span></span><span class="sig-name descname"><span class="pre">NSResults</span></span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.NSResults" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.lib.nsgrid.</span></span><span class="sig-name descname"><span class="pre">NSResults</span></span><a class="headerlink" href="#MDAnalysis.lib.nsgrid.NSResults" title="Permalink to this definition"></a></dt>
 <dd><p>Class to store the results</p>
 <p>All outputs from <a class="reference internal" href="#MDAnalysis.lib.nsgrid.FastNS" title="MDAnalysis.lib.nsgrid.FastNS"><code class="xref py py-class docutils literal notranslate"><span class="pre">FastNS</span></code></a> are stored in an instance of this class.
 All methods of <a class="reference internal" href="#MDAnalysis.lib.nsgrid.FastNS" title="MDAnalysis.lib.nsgrid.FastNS"><code class="xref py py-class docutils literal notranslate"><span class="pre">FastNS</span></code></a> return an instance of this class, which can

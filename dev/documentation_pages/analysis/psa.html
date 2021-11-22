@@ -17,7 +17,7 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -570,7 +570,7 @@ distance matrix.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.psa.Path">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.psa.</span></span><span class="sig-name descname"><span class="pre">Path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/psa.html#Path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.psa.Path" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.psa.</span></span><span class="sig-name descname"><span class="pre">Path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/psa.html#Path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.psa.Path" title="Permalink to this definition"></a></dt>
 <dd><p>Represent a path based on a <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>.</p>
 <p>Pre-process a <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> object: (1) fit the trajectory to a
 reference structure, (2) convert fitted time series to a
@@ -807,7 +807,7 @@ if <code class="docutils literal notranslate"><span class="pre">False</span></co
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.psa.PSAPair">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.psa.</span></span><span class="sig-name descname"><span class="pre">PSAPair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">npaths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/psa.html#PSAPair"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAPair" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.psa.</span></span><span class="sig-name descname"><span class="pre">PSAPair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">npaths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/psa.html#PSAPair"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAPair" title="Permalink to this definition"></a></dt>
 <dd><p>Generate nearest neighbor and Hausdorff pair information between a pair
 of paths from an all-pairs comparison generated by <code class="xref py py-class docutils literal notranslate"><span class="pre">PSA</span></code>.</p>
 <p>The nearest neighbors for each path of a pair of paths is generated by
@@ -897,7 +897,7 @@ nearest neighbor distances for each path in <em>this</em> <a class="reference in
 
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.psa.PSAnalysis">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.psa.</span></span><span class="sig-name descname"><span class="pre">PSAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/psa.html#PSAnalysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAnalysis" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.psa.</span></span><span class="sig-name descname"><span class="pre">PSAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">universes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'name</span> <span class="pre">CA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_select</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/psa.html#PSAnalysis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAnalysis" title="Permalink to this definition"></a></dt>
 <dd><p>Perform Path Similarity Analysis (PSA) on a set of trajectories.</p>
 <p>The analysis is performed with <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.run" title="MDAnalysis.analysis.psa.PSAnalysis.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PSAnalysis.run()</span></code></a> and stores the result
 in the <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> distance matrix <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="MDAnalysis.analysis.psa.PSAnalysis.D"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PSAnalysis.D</span></code></a>.
@@ -1177,7 +1177,7 @@ method.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.psa.PSAnalysis.hausdorff_pairs">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">hausdorff_pairs</span></span><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAnalysis.hausdorff_pairs" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hausdorff_pairs</span></span><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAnalysis.hausdorff_pairs" title="Permalink to this definition"></a></dt>
 <dd><p>The Hausdorff pair for each (unique) pairs of paths.</p>
 <p>This attribute contains a list of Hausdorff pair information (in
 distance vector order), where each element is a dictionary containing
@@ -1206,7 +1206,7 @@ Hausdorff pair data.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.psa.PSAnalysis.nearest_neighbors">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">nearest_neighbors</span></span><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAnalysis.nearest_neighbors" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nearest_neighbors</span></span><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAnalysis.nearest_neighbors" title="Permalink to this definition"></a></dt>
 <dd><p>The nearest neighbors for each (unique) pair of paths.</p>
 <p>This attribute contains a list of nearest neighbor information (in
 distance vector order), where each element is a dictionary containing
@@ -1229,7 +1229,7 @@ more information about accessing nearest neighbor data.</p>
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">PSAnalysis.labels</span></code>.</p>
 <p>If <cite>filename</cite> is supplied then the figure is also written to file (the
 suffix determines the file type, e.g. pdf, png, eps, …). All other
-keyword arguments are passed on to <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.matshow.html#matplotlib.pyplot.matshow" title="(in Matplotlib v3.4.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.matshow()</span></code></a>.</p>
+keyword arguments are passed on to <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.matshow.html#matplotlib.pyplot.matshow" title="(in Matplotlib v3.5.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.matshow()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1265,7 +1265,7 @@ changed to <code class="xref py py-attr docutils literal notranslate"><span clas
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">PSAnalysis.labels</span></code>.</p>
 <p>If <cite>filename</cite> is supplied then the figure is also written to file (the
 suffix determines the file type, e.g. pdf, png, eps, …). All other
-keyword arguments are passed on to <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.imshow.html#matplotlib.pyplot.imshow" title="(in Matplotlib v3.4.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.imshow()</span></code></a>.</p>
+keyword arguments are passed on to <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.imshow.html#matplotlib.pyplot.imshow" title="(in Matplotlib v3.5.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.imshow()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1306,7 +1306,7 @@ number.</p>
 <p>The frame number is mapped to the interval <em>[0, 1]</em>.</p>
 <p>If <cite>filename</cite> is supplied then the figure is also written to file (the
 suffix determines the file type, e.g. pdf, png, eps, …). All other
-keyword arguments are passed on to <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.imshow.html#matplotlib.pyplot.imshow" title="(in Matplotlib v3.4.3)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.imshow()</span></code></a>.</p>
+keyword arguments are passed on to <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.imshow.html#matplotlib.pyplot.imshow" title="(in Matplotlib v3.5.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.imshow()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1338,7 +1338,7 @@ with <cite>pip install seaborn</cite> or <cite>conda install seaborn</cite>.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.psa.PSAnalysis.psa_pairs">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">psa_pairs</span></span><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAnalysis.psa_pairs" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">psa_pairs</span></span><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAnalysis.psa_pairs" title="Permalink to this definition"></a></dt>
 <dd><p>The list of <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAPair" title="MDAnalysis.analysis.psa.PSAPair"><code class="xref py py-class docutils literal notranslate"><span class="pre">PSAPair</span></code></a> instances for each pair of paths.</p>
 <p><a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.psa_pairs" title="MDAnalysis.analysis.psa.PSAnalysis.psa_pairs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">psa_pairs</span></code></a> is a list of all <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAPair" title="MDAnalysis.analysis.psa.PSAPair"><code class="xref py py-class docutils literal notranslate"><span class="pre">PSAPair</span></code></a> objects (in
 distance vector order). The elements of a <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAPair" title="MDAnalysis.analysis.psa.PSAPair"><code class="xref py py-class docutils literal notranslate"><span class="pre">PSAPair</span></code></a> are pairs of
