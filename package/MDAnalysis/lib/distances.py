@@ -73,6 +73,8 @@ from .util import check_coords, check_box
 from .mdamath import triclinic_vectors
 from ._augment import augment_coordinates, undo_augment
 from .nsgrid import FastNS
+from .c_distances import _minimise_vectors_ortho, _minimise_vectors_triclinic
+
 
 # hack to select backend with backend=<backend> kwarg. Note that
 # the cython parallel code (prange) in parallel.distances is
@@ -1549,3 +1551,39 @@ def apply_PBC(coords, box, backend="serial"):
         _run("triclinic_pbc", args=(coords, box), backend=backend)
 
     return coords
+
+
+@check_coords('vectors')
+def minimise_vectors(vectors, box):
+    """Apply minimum image convention to an array of vectors
+
+    Parameters
+    ----------
+    vectors : numpy.ndarray
+        Vector array of shape ``(n, 3)``
+    box : numpy.ndarray
+        The unitcell dimensions of the system, which can be orthogonal or
+        triclinic and must be provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        ``[lx, ly, lz, alpha, beta, gamma]``.
+
+    Returns
+    -------
+    minimised_vectors : numpy.ndarray
+        Same shape as input.  The vectors from the input, but minimised
+        according to the size of the box.
+
+    .. versionadded:: 2.1.0
+    """
+    boxtype, box = check_box(box)
+    output = np.empty_like(vectors)
+
+    # use box which is same precision as input vectors
+    box = box.astype(vectors.dtype)
+
+    if boxtype == 'ortho':
+        _minimise_vectors_ortho(vectors, box, output)
+    else:
+        _minimise_vectors_triclinic(vectors, box, output)
+
+    return output

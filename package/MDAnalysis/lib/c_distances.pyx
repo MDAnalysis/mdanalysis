@@ -33,6 +33,9 @@ cimport cython
 import numpy
 cimport numpy
 
+from libc.math cimport fabs
+from libc.float cimport FLT_MAX, DBL_MAX
+
 cdef extern from "string.h":
     void* memcpy(void* dst, void* src, int len)
 
@@ -58,6 +61,7 @@ cdef extern from "calc_distances.h":
     void _ortho_pbc(coordinate* coords, int numcoords, float* box)
     void _triclinic_pbc(coordinate* coords, int numcoords, float* box)
     void minimum_image(double* x, float* box, float* inverse_box)
+    void minimum_image_triclinic(float* x, float* box, float* inverse_box)
 
 OPENMP_ENABLED = True if USED_OPENMP else False
 
@@ -267,3 +271,112 @@ def contact_matrix_pbc(coord, sparse_contacts, box, cutoff):
             if dist < cutoff2:
                 sparse_contacts[i, j] = True
                 sparse_contacts[j, i] = True
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cdef inline void _minimum_image_orthogonal(cython.floating[:] dx, cython.floating[:] box, cython.floating[:] inverse_box):
+    cdef int i, j
+
+    for i in range(3):
+        if box[i] > 0:
+            j = <int> (fabs(dx[i]) * inverse_box[i])
+            dx[i] -= j * box[i]
+
+
+# Lifted from calc_distances.h
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cdef inline void _minimum_image_triclinic(cython.floating[:] dx, cython.floating[:] box, cython.floating[:] inverse_box):
+    cdef cython.floating dx_min[3]
+    cdef cython.floating dsq, dsq_min, rx
+    cdef cython.floating ry[2]
+    cdef cython.floating rz[3]
+    cdef int j, ix, iy, iz
+
+    if cython.floating is float:
+        dsq_min = FLT_MAX
+    else:
+        dsq_min = DBL_MAX
+
+    dx_min[0] = 0.0
+    dx_min[1] = 0.0
+    dx_min[2] = 0.0
+
+    # first make shift only 1 cell in any direction
+    j = <int> (fabs(dx[0]) * inverse_box[0])
+    dx[0] -= j * box[0]
+    dx[1] -= j * box[1]
+    dx[2] -= j * box[2]
+    j = <int> (fabs(dx[1]) * inverse_box[1])
+    dx[0] -= j * box[3]
+    dx[1] -= j * box[4]
+    dx[2] -= j * box[5]
+    j = <int> (fabs(dx[2]) * inverse_box[2])
+    dx[0] -= j * box[6]
+    dx[1] -= j * box[7]
+    dx[2] -= j * box[8]
+
+    # then check all images to see which combination of 1 cell shifts gives the best shift
+    for ix in range(-1, 2):
+        rx = dx[0] + box[0] * ix
+        for iy in range(-1, 2):
+            ry[0] = rx + box[3] * iy
+            ry[1] = dx[1] + box[4] * iy
+            for iz in range(-1, 2):
+                rz[0] = ry[0] + box[6] * iz
+                rz[1] = ry[1] + box[7] * iz
+                rz[2] = dx[2] + box[8] * iz
+                dsq = rz[0] * rz[0] + rz[1] * rz[1] + rz[2] * rz[2]
+                if (dsq < dsq_min):
+                    dsq_min = dsq
+                    dx_min[0] = rz[0]
+                    dx_min[1] = rz[1]
+                    dx_min[2] = rz[2]
+
+    dx[0] = dx_min[0]
+    dx[1] = dx_min[1]
+    dx[2] = dx_min[2]
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.cdivision(True)
+def _minimise_vectors_ortho(cython.floating[:, :] vectors not None, cython.floating[:] box not None, cython.floating[:, :] output):
+    cdef int i, n
+    cdef cython.floating box_inverse[3]
+    cdef cython.floating[:] box_inverse_view
+
+    box_inverse[0] = 1.0 / box[0]
+    box_inverse[1] = 1.0 / box[1]
+    box_inverse[2] = 1.0 / box[2]
+
+    box_inverse_view = box_inverse
+    
+    n = len(vectors)
+    for i in range(n):
+        output[i, 0] = vectors[i, 0]
+        output[i, 1] = vectors[i, 1]
+        output[i, 2] = vectors[i, 2]
+        _minimum_image_orthogonal(output[i, :], box, box_inverse_view)
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def _minimise_vectors_triclinic(cython.floating[:, :] vectors not None, cython.floating[:] box not None, cython.floating[:, :] output):
+    cdef int i, n
+    cdef cython.floating box_inverse[3]
+    cdef cython.floating[:] box_inverse_view
+
+    box_inverse[0] = 1.0 / box[0]
+    box_inverse[1] = 1.0 / box[1]
+    box_inverse[2] = 1.0 / box[2]
+
+    box_inverse_view = box_inverse
+    
+    n = len(vectors)
+    for i in range(n):
+        output[i, 0] = vectors[i, 0]
+        output[i, 1] = vectors[i, 1]
+        output[i, 2] = vectors[i, 2]
+        _minimum_image_triclinic(output[i, :], box, box_inverse_view)
