@@ -1560,7 +1560,8 @@ def minimise_vectors(vectors, box):
     Parameters
     ----------
     vectors : numpy.ndarray
-        Vector array of shape ``(n, 3)``
+        Vector array of shape ``(n, 3)``, either float32 or float64.  These
+        represent many vectors (such as between two particles).
     box : numpy.ndarray
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
@@ -1570,7 +1571,7 @@ def minimise_vectors(vectors, box):
     Returns
     -------
     minimised_vectors : numpy.ndarray
-        Same shape as input.  The vectors from the input, but minimised
+        Same shape and dtype as input.  The vectors from the input, but minimised
         according to the size of the box.
 
     .. versionadded:: 2.1.0
