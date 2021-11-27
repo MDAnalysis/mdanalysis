@@ -1961,6 +1961,8 @@ def check_coords(*coord_names, **options):
         * **enforce_copy** (:class:`bool`, optional) -- Enforce working on a
           copy of the coordinate arrays. This is useful to ensure that the input
           arrays are left unchanged. Default: ``True``
+        * **enforce_dtype** (:class:`bool`, optional) -- Enforce a conversion
+          to float32.  Default: ``True``
         * **allow_single** (:class:`bool`, optional) -- Allow the input
           coordinate array to be a single coordinate with shape ``(3,)``.
         * **convert_single** (:class:`bool`, optional) -- If ``True``, single
@@ -2016,6 +2018,7 @@ def check_coords(*coord_names, **options):
     .. versionadded:: 0.19.0
     """
     enforce_copy = options.get('enforce_copy', True)
+    enforce_dtype = optional.get('enforce_dtype', True)
     allow_single = options.get('allow_single', True)
     convert_single = options.get('convert_single', True)
     reduce_result_if_single = options.get('reduce_result_if_single', True)
@@ -2061,13 +2064,14 @@ def check_coords(*coord_names, **options):
                 if (coords.ndim != 2) or (coords.shape[1] != 3):
                     raise ValueError("{}(): {}.shape must be (n, 3), got {}."
                                      "".format(fname, argname, coords.shape))
-            try:
-                coords = coords.astype(
-                    np.float32, order='C', copy=enforce_copy)
-            except ValueError:
-                errmsg = (f"{fname}(): {argname}.dtype must be convertible to "
-                          f"float32, got {coords.dtype}.")
-                raise TypeError(errmsg) from None
+            if enforce_dtype:
+                try:
+                    coords = coords.astype(
+                        np.float32, order='C', copy=enforce_copy)
+                except ValueError:
+                    errmsg = (f"{fname}(): {argname}.dtype must be convertible to "
+                              f"float32, got {coords.dtype}.")
+                    raise TypeError(errmsg) from None
             return coords, is_single
 
         @wraps(func)
