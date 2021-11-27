@@ -33,7 +33,7 @@ cimport cython
 import numpy
 cimport numpy
 
-from libc.math cimport fabs
+from libc.math cimport fabs, round as cround
 from libc.float cimport FLT_MAX, DBL_MAX
 
 cdef extern from "string.h":
@@ -277,11 +277,12 @@ def contact_matrix_pbc(coord, sparse_contacts, box, cutoff):
 @cython.wraparound(False)
 cdef inline void _minimum_image_orthogonal(cython.floating[:] dx, cython.floating[:] box, cython.floating[:] inverse_box):
     cdef int i, j
+    cdef cython.floating s
 
     for i in range(3):
         if box[i] > 0:
-            j = <int> (fabs(dx[i]) * inverse_box[i])
-            dx[i] -= j * box[i]
+            s = inverse_box[i] * dx[i]
+            dx[i] = box[i] * (s - cround(s))
 
 
 # Lifted from calc_distances.h
