@@ -656,7 +656,7 @@ class SmartsSelection(Selection):
         if not pattern:
             raise ValueError(f"{self.pattern!r} is not a valid SMARTS query")
         mol = group.convert_to("RDKIT", **self.rdkit_kwargs)
-        matches = mol.GetSubstructMatches(pattern, useChirality=True)
+        matches = mol.GetSubstructMatches(pattern, useChirality=True, maxMatches=10000)
         # convert rdkit indices to mdanalysis'
         indices = [
             mol.GetAtomWithIdx(idx).GetIntProp("_MDAnalysis_index")
