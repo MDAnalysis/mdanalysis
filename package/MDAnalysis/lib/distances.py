@@ -1553,7 +1553,7 @@ def apply_PBC(coords, box, backend="serial"):
     return coords
 
 
-@check_coords('vectors')
+@check_coords('vectors', enforce_copy=False, enforce_dtype=False)
 def minimise_vectors(vectors, box):
     """Apply minimum image convention to an array of vectors
 
@@ -1585,6 +1585,6 @@ def minimise_vectors(vectors, box):
     if boxtype == 'ortho':
         _minimise_vectors_ortho(vectors, box, output)
     else:
-        _minimise_vectors_triclinic(vectors, box, output)
+        _minimise_vectors_triclinic(vectors, box.ravel(), output)
 
     return output
