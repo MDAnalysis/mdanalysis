@@ -286,37 +286,34 @@ cdef inline void _minimum_image_orthogonal(cython.floating[:] dx, cython.floatin
 
 
 # Lifted from calc_distances.h
+# This however assumes that vectors are at most a single box length, so this is modified to fulfill that
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cdef inline void _minimum_image_triclinic(cython.floating[:] dx, cython.floating[:] box, cython.floating[:] inverse_box):
     cdef cython.floating dx_min[3]
-    cdef cython.floating dsq, dsq_min, rx
+    cdef cython.floating s, dsq, dsq_min, rx
     cdef cython.floating ry[2]
     cdef cython.floating rz[3]
-    cdef int j, ix, iy, iz
+    cdef int ix, iy, iz
+
+    # first make shift only 1 cell in any direction
+    s = cround(inverse_box[2] * dx[2])
+    dx[0] -= s * box[6]
+    dx[1] -= s * box[7]
+    dx[2] -= s * box[8]
+    s = cround(inverse_box[1] * dx[1])
+    dx[0] -= s * box[3]
+    dx[1] -= s * box[4]
+    s = cround(inverse_box[0] * dx[0])
+    dx[0] -= s * box[0]
 
     if cython.floating is float:
         dsq_min = FLT_MAX
     else:
         dsq_min = DBL_MAX
-
     dx_min[0] = 0.0
     dx_min[1] = 0.0
     dx_min[2] = 0.0
-
-    # first make shift only 1 cell in any direction
-    j = <int> (fabs(dx[0]) * inverse_box[0])
-    dx[0] -= j * box[0]
-    dx[1] -= j * box[1]
-    dx[2] -= j * box[2]
-    j = <int> (fabs(dx[1]) * inverse_box[1])
-    dx[0] -= j * box[3]
-    dx[1] -= j * box[4]
-    dx[2] -= j * box[5]
-    j = <int> (fabs(dx[2]) * inverse_box[2])
-    dx[0] -= j * box[6]
-    dx[1] -= j * box[7]
-    dx[2] -= j * box[8]
 
     # then check all images to see which combination of 1 cell shifts gives the best shift
     for ix in range(-1, 2):
@@ -343,7 +340,8 @@ cdef inline void _minimum_image_triclinic(cython.floating[:] dx, cython.floating
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.cdivision(True)
-def _minimise_vectors_ortho(cython.floating[:, :] vectors not None, cython.floating[:] box not None, cython.floating[:, :] output):
+def _minimise_vectors_ortho(cython.floating[:, :] vectors not None, cython.floating[:] box not None,
+                            cython.floating[:, :] output not None):
     cdef int i, n
     cdef cython.floating box_inverse[3]
     cdef cython.floating[:] box_inverse_view
@@ -364,14 +362,15 @@ def _minimise_vectors_ortho(cython.floating[:, :] vectors not None, cython.float
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def _minimise_vectors_triclinic(cython.floating[:, :] vectors not None, cython.floating[:] box not None, cython.floating[:, :] output):
+def _minimise_vectors_triclinic(cython.floating[:, :] vectors not None, cython.floating[:] box not None,
+                                cython.floating[:, :] output not None):
     cdef int i, n
     cdef cython.floating box_inverse[3]
     cdef cython.floating[:] box_inverse_view
 
     box_inverse[0] = 1.0 / box[0]
-    box_inverse[1] = 1.0 / box[1]
-    box_inverse[2] = 1.0 / box[2]
+    box_inverse[1] = 1.0 / box[4]
+    box_inverse[2] = 1.0 / box[8]
 
     box_inverse_view = box_inverse
     
