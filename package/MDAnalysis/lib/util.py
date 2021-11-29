@@ -2018,7 +2018,7 @@ def check_coords(*coord_names, **options):
     .. versionadded:: 0.19.0
     """
     enforce_copy = options.get('enforce_copy', True)
-    enforce_dtype = optional.get('enforce_dtype', True)
+    enforce_dtype = options.get('enforce_dtype', True)
     allow_single = options.get('allow_single', True)
     convert_single = options.get('convert_single', True)
     reduce_result_if_single = options.get('reduce_result_if_single', True)
