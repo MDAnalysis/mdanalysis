@@ -2977,7 +2977,12 @@ class AtomGroup(GroupBase):
             smarts *SMARTS-query*
                 select atoms using Daylight's SMARTS queries, e.g. ``smarts
                 [#7;R]`` to find nitrogen atoms in rings. Requires RDKit.
-                All matches (max 1000) are combined as a unique match
+                All matches are combined as a unique match. Max matches can
+                be set by adding a "max_matches" key to the rdkit_kwargs
+                argument of select_atoms.
+
+                >>> universe.select_atoms("C", rdkit_kwargs={"max_matches": 100})
+                <Updating AtomGroup with 100 atoms>
 
         **Boolean**
 
