@@ -13,7 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope, orbeckst, scal444
+??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
+         orbeckst, scal444, orioncohen
  * 2.1.0
 
 Fixes
@@ -31,7 +32,8 @@ Enhancements
     option from setup.cfg (Issue #3428, PR #3429).
 
 Changes
-  * increase smarts atom selection limit from 1000 -> 10000 (#3469)
+  * increase smarts atom selection limit from 1000 -> n_atoms. Add
+    maxMatches kwarg to rdkit_kwargs. (Issue #3469, PR #3470)
   * Dropped python 3.6 support and raised minimum numpy version to 1.18.0
     (NEP29)
 
