@@ -2979,7 +2979,7 @@ class AtomGroup(GroupBase):
                 [#7;R]`` to find nitrogen atoms in rings. Requires RDKit.
                 All matches are combined as a unique match. Max matches can
                 be set by adding a "maxMatches" key to the rdkit_kwargs
-                argument of select_atoms.
+                argument of select_atoms. "useChirality" can be set similarly.
 
                 >>> universe.select_atoms("C", rdkit_kwargs={"maxMatches": 100})
                 <Updating AtomGroup with 100 atoms>

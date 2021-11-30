@@ -655,14 +655,12 @@ class SmartsSelection(Selection):
         pattern = Chem.MolFromSmarts(self.pattern)
         if not pattern:
             raise ValueError(f"{self.pattern!r} is not a valid SMARTS query")
-        if "maxMatches" in self.rdkit_kwargs:
-            max_matches = self.rdkit_kwargs.pop("maxMatches")
-        else:
-            max_matches = group.n_atoms
+        use_chirality = self.rdkit_kwargs.pop("useChirality", True)
+        max_matches = self.rdkit_kwargs.pop("maxMatches", group.n_atoms)
         mol = group.convert_to("RDKIT", **self.rdkit_kwargs)
         matches = mol.GetSubstructMatches(
             pattern,
-            useChirality=True,
+            useChirality=use_chirality,
             maxMatches=max_matches
         )
         # convert rdkit indices to mdanalysis'
