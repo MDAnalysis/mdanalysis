@@ -2980,6 +2980,7 @@ class AtomGroup(GroupBase):
                 All matches are combined as a unique match. Max matches can
                 be set by adding a "maxMatches" key to the rdkit_kwargs
                 argument of select_atoms. "useChirality" can be set similarly.
+                All other rdkit_kwargs will be passed RDKitConverter.convert().
 
                 >>> universe.select_atoms("C", rdkit_kwargs={"maxMatches": 100})
                 <Updating AtomGroup with 100 atoms>
