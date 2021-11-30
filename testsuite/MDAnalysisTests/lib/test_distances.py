@@ -1395,9 +1395,9 @@ def test_minimise_vectors(box, shift, dtype):
     # this technically doesn't alter the vector because of periodic boundaries
     shifted_vec = (vec + (box.T * shift).sum(axis=1)).astype(dtype)
 
-    box2 = mda.lib.mdamath.triclinic_box(*box).astype(dtype)
+    box2 = mdamath.triclinic_box(*box).astype(dtype)
 
-    res = mda.lib.distances.minimise_vectors(shifted_vec, box2)
+    res = distances.minimise_vectors(shifted_vec, box2)
 
     assert_almost_equal(res, vec, decimal=5)
     assert res.dtype == dtype
