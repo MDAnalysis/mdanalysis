@@ -1384,7 +1384,7 @@ def test_used_openmpflag():
 # try shifts of -2 to +2 in each dimension, and all combinations of shifts
 @pytest.mark.parametrize('shift', itertools.product(range(-2, 3), range(-2, 3), range(-2, 3)))
 @pytest.mark.parametrize('dtype', (np.float32, np.float64))
-def test_minimise_vectors(box, shift, dtype):
+def test_minimize_vectors(box, shift, dtype):
     # test vectors pointing in all directions
     # these currently all obey minimum convention as they're much smaller than the box
     vec = np.array(list(itertools.product(range(-1, 2), range(-1, 2), range(-1, 2))), dtype=dtype)
@@ -1397,7 +1397,7 @@ def test_minimise_vectors(box, shift, dtype):
 
     box2 = mdamath.triclinic_box(*box).astype(dtype)
 
-    res = distances.minimise_vectors(shifted_vec, box2)
+    res = distances.minimize_vectors(shifted_vec, box2)
 
     assert_almost_equal(res, vec, decimal=5)
     assert res.dtype == dtype

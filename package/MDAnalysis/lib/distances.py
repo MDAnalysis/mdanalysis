@@ -73,7 +73,7 @@ from .util import check_coords, check_box
 from .mdamath import triclinic_vectors
 from ._augment import augment_coordinates, undo_augment
 from .nsgrid import FastNS
-from .c_distances import _minimise_vectors_ortho, _minimise_vectors_triclinic
+from .c_distances import _minimize_vectors_ortho, _minimize_vectors_triclinic
 
 
 # hack to select backend with backend=<backend> kwarg. Note that
@@ -1554,7 +1554,7 @@ def apply_PBC(coords, box, backend="serial"):
 
 
 @check_coords('vectors', enforce_copy=False, enforce_dtype=False)
-def minimise_vectors(vectors, box):
+def minimize_vectors(vectors, box):
     """Apply minimum image convention to an array of vectors
 
     This function is required for calculating the correct vectors between two points.  A naive approach of
@@ -1574,8 +1574,8 @@ def minimise_vectors(vectors, box):
 
     Returns
     -------
-    minimised_vectors : numpy.ndarray
-        Same shape and dtype as input.  The vectors from the input, but minimised
+    minimized_vectors : numpy.ndarray
+        Same shape and dtype as input.  The vectors from the input, but minimized
         according to the size of the box.
 
     .. versionadded:: 2.1.0
@@ -1587,8 +1587,8 @@ def minimise_vectors(vectors, box):
     box = box.astype(vectors.dtype)
 
     if boxtype == 'ortho':
-        _minimise_vectors_ortho(vectors, box, output)
+        _minimize_vectors_ortho(vectors, box, output)
     else:
-        _minimise_vectors_triclinic(vectors, box.ravel(), output)
+        _minimize_vectors_triclinic(vectors, box.ravel(), output)
 
     return output
