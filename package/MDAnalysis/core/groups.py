@@ -2826,7 +2826,7 @@ class AtomGroup(GroupBase):
 
     def select_atoms(self, sel, *othersel, periodic=True, rtol=1e-05,
                      atol=1e-08, updating=False, sorted=True,
-                     rdkit_kwargs=None, **selgroups):
+                     rdkit_kwargs=None, smarts_kwargs=None, **selgroups):
         """Select atoms from within this Group using a selection string.
 
         Returns an :class:`AtomGroup` sorted according to their index in the
@@ -2977,13 +2977,15 @@ class AtomGroup(GroupBase):
             smarts *SMARTS-query*
                 select atoms using Daylight's SMARTS queries, e.g. ``smarts
                 [#7;R]`` to find nitrogen atoms in rings. Requires RDKit.
-                All matches are combined as a unique match. Max matches can
-                be set by adding a "maxMatches" key to the rdkit_kwargs
-                argument of select_atoms. "useChirality" can be set similarly.
-                All other rdkit_kwargs will be passed RDKitConverter.convert().
+                All matches are combined as a unique match. Uses two sets of
+                kwargs: rdkit_kwargs is passed to `RDKitConverter.convert()`
+                and smarts_kwargs is passed to RDKit's [GetSubstructMatches](
+                https://www.rdkit.org/docs/source/
+                rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol.GetSubstructMatches).
+                The useChirality kwarg is True by default.
 
-                >>> universe.select_atoms("C", rdkit_kwargs={"maxMatches": 100})
-                <Updating AtomGroup with 100 atoms>
+                >>> universe.select_atoms("C", smarts_kwargs={"maxMatches": 100})
+                <AtomGroup with 100 atoms>
 
         **Boolean**
 
@@ -3153,7 +3155,8 @@ class AtomGroup(GroupBase):
                                                    periodic=periodic,
                                                    atol=atol, rtol=rtol,
                                                    sorted=sorted,
-                                                   rdkit_kwargs=rdkit_kwargs)
+                                                   rdkit_kwargs=rdkit_kwargs,
+                                                   smarts_kwargs=smarts_kwargs)
                             for s in sel_strs))
         if updating:
             atomgrp = UpdatingAtomGroup(self, selections, sel_strs)

@@ -643,6 +643,7 @@ class SmartsSelection(Selection):
             pattern.append(val)
         self.pattern = "".join(pattern)
         self.rdkit_kwargs = parser.rdkit_kwargs
+        self.smarts_kwargs = parser.smarts_kwargs
 
     def _apply(self, group):
         try:
@@ -655,14 +656,13 @@ class SmartsSelection(Selection):
         pattern = Chem.MolFromSmarts(self.pattern)
         if not pattern:
             raise ValueError(f"{self.pattern!r} is not a valid SMARTS query")
-        use_chirality = self.rdkit_kwargs.pop("useChirality", True)
-        max_matches = self.rdkit_kwargs.pop("maxMatches", group.n_atoms)
         mol = group.convert_to("RDKIT", **self.rdkit_kwargs)
-        matches = mol.GetSubstructMatches(
-            pattern,
-            useChirality=use_chirality,
-            maxMatches=max_matches
-        )
+        # override GetSubstructMatches default values
+        if "useChirality" not in self.smarts_kwargs:
+            self.smarts_kwargs["useChirality"] = True
+        if "maxMatches" not in self.smarts_kwargs:
+            self.smarts_kwargs["useChirality"] = group.n_atoms
+        matches = mol.GetSubstructMatches(pattern, **self.smarts_kwargs)
         # convert rdkit indices to mdanalysis'
         indices = [
             mol.GetAtomWithIdx(idx).GetIntProp("_MDAnalysis_index")
@@ -1394,7 +1394,7 @@ class SelectionParser(object):
                 "".format(self.tokens[0], token))
 
     def parse(self, selectstr, selgroups, periodic=None, atol=1e-08,
-              rtol=1e-05, sorted=True, rdkit_kwargs=None):
+              rtol=1e-05, sorted=True, rdkit_kwargs=None, smarts_kwargs=None):
         """Create a Selection object from a string.
 
         Parameters
@@ -1439,6 +1439,7 @@ class SelectionParser(object):
         self.rtol = rtol
         self.sorted = sorted
         self.rdkit_kwargs = rdkit_kwargs or {}
+        self.smarts_kwargs = smarts_kwargs or {}
 
         self.selectstr = selectstr
         self.selgroups = selgroups
