@@ -23,7 +23,7 @@ class BetweenBench(object):
     function.
     """
 
-    params = ([10, 100, 1000, 10000])
+    params = ([10, 100, 1000, 5000])
     param_names = (['num_atoms'])
 
     def setup(self, num_atoms):
@@ -59,41 +59,73 @@ class DistancesBench(object):
     """Benchmarks for MDAnalysis.analysis.distances
     functions. Excluding contact matrices.
     """
-    params = ([10, 100, 1000, 10000], [None, 'orthogonal', 'triclinic'])
+    timout = 60000
+    #params = ([10, 100, 1000, 10000], [None, 'orthogonal', 'triclinic'])
+    params = ([10, 100, 1000, 10000], ['orthogonal'])
     param_names = ['num_atoms', 'pbc_type']
 
     def setup(self, num_atoms, pbc_type):
 
-        self.u = MDAnalysis.Universe(GRO)
+        # Some functions are performance dependent on a realistic
+        # atom density. So we make a new universe with random atom
+        # positions, density derived from an example universe.
+
+        # Make fake universe with 2*num_atoms because some of our benchmarks
+        # require 2 atom groups.
+        universe_num_atoms = num_atoms*2
+        self.u = MDAnalysis.Universe.empty(universe_num_atoms, trajectory=True)
+        # calculating reasonable density for an atomistic system.
+        ex_universe = MDAnalysis.Universe(GRO)
+        density = ex_universe.coord.volume/ex_universe.atoms.n_atoms
+        desired_box_volume = universe_num_atoms*density
+        # making a cube with orthogonal basis vectors
+        cube_side_length = np.cbrt(desired_box_volume)
+        sides = [np.float32(cube_side_length)]*3
+        ortho_angles = [np.float(90)]*3
+        self.u.dimensions = np.array(sides + ortho_angles)
+
+        # filling the cube with random points.
+        np.random.seed(17809)
+        random_samples = np.random.random_sample((universe_num_atoms, 3)).astype(np.float32)
+        self.u.atoms.positions = cube_side_length * random_samples
 
         if pbc_type is None:
             self.box_dims = None
 
         elif pbc_type == 'orthogonal':
-            box_shape = self.u.dimensions
-            basis_vectors = mdamath.triclinic_vectors(box_shape)
-
-            # this will calculate the furthest point from the origin on
-            # the triclinic unit cell.
-            furthest_point = np.sum(basis_vectors, axis=0)
-            # get full size of cube and also deal with certain distance
-            # functions requiring float32
-            orthogonal_box_size = np.float32(np.max(furthest_point))
-            angle = np.float32(90.0)
-
-            # make dummy cubic box, must be np.array, distance functions do
-            # not accept list
-            self.box_dims = np.array([orthogonal_box_size,
-                                      orthogonal_box_size,
-                                      orthogonal_box_size,
-                                      angle, angle, angle])
-
-        elif pbc_type == 'triclinic':
             self.box_dims = self.u.dimensions
 
+        elif pbc_type == 'triclinic':
+            # making a triclinic box with the same volume as the cube
+            deg_alpha = np.float32(60)
+            deg_beta = np.float32(60)
+            deg_gamma = np.float32(60)
+            alpha = np.deg2rad(deg_alpha)
+            beta = np.deg2rad(deg_beta)
+            gamma = np.deg2rad(deg_gamma)
+            # change side lengths so that the resulting box has correct
+            # volume
+            a = cube_side_length
+            b = cube_side_length/np.sin(gamma)
+            c = np.sqrt(cube_side_length**2/(1 -
+                                             ((np.cos(alpha)
+                                              - np.cos(beta)
+                                              * np.cos(gamma))
+                                              / np.sin(gamma))**2
+                                             - np.cos(beta)**2))
+
+            self.u.dimensions = [a, b, c, deg_alpha, deg_beta, deg_gamma]
+            self.box_dims = self.u.dimensions
+            # wrapping atoms to reflect new triclinic basis 
+            self.u.atoms.wrap(inplace=True)
+
+        # dealing with missing topology information from empty universe
+        # avoids errors
+        self.u.add_TopologyAttr('resid', [1])
+        self.u.add_TopologyAttr('segid', ["AP1"])
+        # splitting atom groups into 2 groups with the same number of atoms
         self.ag1 = self.u.atoms[:num_atoms]
-        self.ag2 = self.u.atoms[num_atoms: 2 * num_atoms]
-        self.ag3 = self.u.atoms[-num_atoms:]
+        self.ag2 = self.u.atoms[-num_atoms:]
 
         np.random.seed(17809)
         self.coords_1 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
@@ -169,68 +201,12 @@ class DistancesBench(object):
                        box=self.box_dims,
                        offset=20)
 
-
-class ContactsBench(object):
-    """Benchmarks for the MDAnalysis.analysis.distances.contact_matrix
-    function in both default and sparse settings.
-    """
-    params = ([10, 100, 1000], [None, 'orthogonal', 'triclinic'])
-    param_names = ['num_atoms', 'pbc_type']
-
-    def setup(self, num_atoms, pbc_type):
-
-        if pbc_type is None:
-            self.u = MDAnalysis.Universe(GRO)
-            self.box_dims = None
-
-        elif pbc_type == 'orthogonal':
-            # Some strange math/type issues. Essentially we create the smallest
-            # cubic box which encloses the triclinic unit cell.
-            self.u = MDAnalysis.Universe(GRO)
-            box_shape = self.u.dimensions
-            basis_vectors = mdamath.triclinic_vectors(box_shape)
-
-            # This will calculate the furthest point from the origin on the
-            # triclinic unit cell.
-            furthest_point = np.sum(basis_vectors, axis=0)
-
-            # Get full size of cube and deal with certain distance functions
-            # requiring float32.
-            orthogonal_box_size = np.float32(np.max(furthest_point))
-            angle = np.float32(90.0)
-
-            # make dummy cubic box, must be np.array, distance functions do
-            # not accept list
-            self.box_dims = np.array([orthogonal_box_size,
-                                      orthogonal_box_size,
-                                      orthogonal_box_size,
-                                      angle, angle, angle])
-
-        elif pbc_type == 'triclinic':
-            self.u = MDAnalysis.Universe(GRO)
-            print(self.u.dimensions)
-            self.box_dims = self.u.dimensions
-
-        self.ag1 = self.u.atoms[:num_atoms]
-        self.ag2 = self.u.atoms[num_atoms: 2 * num_atoms]
-        self.ag3 = self.u.atoms[-num_atoms:]
-
-        np.random.seed(17809)
-        self.coords_1 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
-        np.random.seed(9008716)
-        self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
-        self.allocated_array_2D = np.empty((num_atoms, num_atoms),
-                                           dtype=np.float64)
-        self.array_shape_1D = int(num_atoms * (num_atoms - 1) / 2.)
-        self.allocated_array_1D = np.empty(self.array_shape_1D,
-                                           dtype=np.float64)
-
     def time_contact_matrix(self, num_atoms, pbc_type):
         """Benchmark calculation of contacts within
         a single numpy array using the default arguments
         to contact_matrix.
         """
-        distances.contact_matrix(coord=self.coords_1,
+        distances.contact_matrix(coord=self.ag1.positions,
                                  cutoff=15.0,
                                  returntype='numpy',
                                  box=self.box_dims)
@@ -241,7 +217,7 @@ class ContactsBench(object):
         memory implementation of contact_matrix intended
         for larger systems.
         """
-        distances.contact_matrix(coord=self.coords_1,
+        distances.contact_matrix(coord=self.ag1.positions,
                                  cutoff=15.0,
                                  returntype='sparse',
                                  box=self.box_dims)
