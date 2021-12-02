@@ -286,7 +286,8 @@ cdef inline void _minimum_image_orthogonal(cython.floating[:] dx, cython.floatin
 
 
 # Lifted from calc_distances.h
-# This however assumes that vectors are at most a single box length, so this is modified to fulfill that
+# The function in calc_distances.h however assumes that vectors are at most a
+# single box length, so this is modified to first fulfill that assumption
 @cython.boundscheck(False)
 @cython.wraparound(False)
 cdef inline void _minimum_image_triclinic(cython.floating[:] dx, cython.floating[:] box, cython.floating[:] inverse_box):
