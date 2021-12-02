@@ -1557,9 +1557,10 @@ def apply_PBC(coords, box, backend="serial"):
 def minimize_vectors(vectors, box):
     """Apply minimum image convention to an array of vectors
 
-    This function is required for calculating the correct vectors between two points.  A naive approach of
-    ``ag1.positions - ag2.positions`` will not provide the minimum vectors between particles, even if
-    all particles are within the primary unit cell (box).
+    This function is required for calculating the correct vectors between two
+    points.  A naive approach of ``ag1.positions - ag2.positions`` will not
+    provide the minimum vectors between particles, even if all particles are
+    within the primary unit cell (box).
 
     Parameters
     ----------
@@ -1575,8 +1576,8 @@ def minimize_vectors(vectors, box):
     Returns
     -------
     minimized_vectors : numpy.ndarray
-        Same shape and dtype as input.  The vectors from the input, but minimized
-        according to the size of the box.
+        Same shape and dtype as input.  The vectors from the input, but
+        minimized according to the size of the box.
 
     .. versionadded:: 2.1.0
     """
