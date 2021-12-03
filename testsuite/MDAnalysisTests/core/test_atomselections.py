@@ -585,6 +585,13 @@ class TestSelectionRDKit(object):
         assert sel.n_atoms == 2
         sel2 = u2.select_atoms("smarts c")
         assert sel2.n_atoms == 4
+        isomer_1 = "CCC@HO"
+        isomer_2 = "CCC@@HO"
+        u = mda.Universe.from_smiles("CC[C@H](C)O")
+        sel3 = u.select_atoms("byres smarts CC[C@@H](C)O")
+        assert sel3.n_atoms == 0
+        sel4 = u.select_atoms("byres smarts CC[C@@H](C)O", smarts_kwargs={"useChirality": False})
+        assert sel4.n_atoms == 15
 
 
 class TestSelectionsNucleicAcids(object):
