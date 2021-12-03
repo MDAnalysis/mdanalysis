@@ -661,7 +661,7 @@ class SmartsSelection(Selection):
         if "useChirality" not in self.smarts_kwargs:
             self.smarts_kwargs["useChirality"] = True
         if "maxMatches" not in self.smarts_kwargs:
-            self.smarts_kwargs["useChirality"] = group.n_atoms
+            self.smarts_kwargs["maxMatches"] = group.n_atoms
         matches = mol.GetSubstructMatches(pattern, **self.smarts_kwargs)
         # convert rdkit indices to mdanalysis'
         indices = [
