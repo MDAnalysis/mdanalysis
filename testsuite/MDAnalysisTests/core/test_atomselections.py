@@ -580,13 +580,13 @@ class TestSelectionRDKit(object):
         sel = u.select_atoms("smarts [$(O=C)]", rdkit_kwargs=dict(force=True))
         assert sel.n_atoms == 2
 
-    def test_passing_smarts_kwargs_to_converter(self, u2):
+    def test_passing_max_matches_to_converter(self, u2):
         sel = u2.select_atoms("smarts C", smarts_kwargs=dict(maxMatches=2))
         assert sel.n_atoms == 2
         sel2 = u2.select_atoms("smarts c")
         assert sel2.n_atoms == 4
-        isomer_1 = "CCC@HO"
-        isomer_2 = "CCC@@HO"
+
+    def test_passing_use_chirality_to_converter(self):
         u = mda.Universe.from_smiles("CC[C@H](C)O")
         sel3 = u.select_atoms("byres smarts CC[C@@H](C)O")
         assert sel3.n_atoms == 0
