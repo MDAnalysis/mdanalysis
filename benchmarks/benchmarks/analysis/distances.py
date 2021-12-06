@@ -59,9 +59,8 @@ class DistancesBench(object):
     """Benchmarks for MDAnalysis.analysis.distances
     functions. Excluding contact matrices.
     """
-    timout = 60000
-    #params = ([10, 100, 1000, 10000], [None, 'orthogonal', 'triclinic'])
-    params = ([10, 100, 1000, 10000], ['orthogonal'])
+    timeout = 180
+    params = ([10, 100, 1000, 10000], [None, 'orthogonal', 'triclinic'])
     param_names = ['num_atoms', 'pbc_type']
 
     def setup(self, num_atoms, pbc_type):
