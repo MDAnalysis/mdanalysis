@@ -35,9 +35,11 @@ class BetweenBench(object):
         self.ag3 = self.u.atoms[-num_atoms:]
 
         np.random.seed(17809)
-        self.coords_1 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
+        self.coords_1 = np.random.random_sample((num_atoms,
+                                                 3)).astype(np.float32)
         np.random.seed(9008716)
-        self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
+        self.coords_2 = np.random.random_sample((num_atoms,
+                                                 3)).astype(np.float32)
         self.allocated_array_2D = np.empty((num_atoms, num_atoms),
                                            dtype=np.float64)
         self.array_shape_1D = int(num_atoms * (num_atoms - 1) / 2.)
@@ -85,7 +87,8 @@ class DistancesBench(object):
 
         # filling the cube with random points.
         np.random.seed(17809)
-        random_samples = np.random.random_sample((universe_num_atoms, 3)).astype(np.float32)
+        random_samples = np.random.random_sample((universe_num_atoms,
+                                                  3)).astype(np.float32)
         self.u.atoms.positions = cube_side_length * random_samples
 
         if pbc_type is None:
@@ -115,7 +118,7 @@ class DistancesBench(object):
 
             self.u.dimensions = [a, b, c, deg_alpha, deg_beta, deg_gamma]
             self.box_dims = self.u.dimensions
-            # wrapping atoms to reflect new triclinic basis 
+            # wrapping atoms to reflect new triclinic basis
             self.u.atoms.wrap(inplace=True)
 
         # dealing with missing topology information from empty universe
@@ -127,9 +130,11 @@ class DistancesBench(object):
         self.ag2 = self.u.atoms[-num_atoms:]
 
         np.random.seed(17809)
-        self.coords_1 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
+        self.coords_1 = np.random.random_sample((num_atoms,
+                                                 3)).astype(np.float32)
         np.random.seed(9008716)
-        self.coords_2 = np.random.random_sample((num_atoms, 3)).astype(np.float32)
+        self.coords_2 = np.random.random_sample((num_atoms,
+                                                 3)).astype(np.float32)
         self.allocated_array_2D = np.empty((num_atoms, num_atoms),
                                            dtype=np.float64)
         self.array_shape_1D = int(num_atoms * (num_atoms - 1) / 2.)
