@@ -35,7 +35,7 @@ jobs:
         fail-fast: false
         matrix:
           os: [ubuntu-latest, ]
-          python-version: [3.7, 3.8, 3.9]
+          python-version: [3.7, 3.8, 3.9, "3.10"]
           run_type: [FULL, ]
           install_hole: [true, ]
           codecov: [true, ]
@@ -52,12 +52,6 @@ jobs:
               run_type: FULL
               install_hole: true
               codecov: false
-            - name: minimal-ubuntu-py3.10
-              os: ubuntu-latest
-              python-version: "3.10"
-              run_type: MIN
-              install_hole: false
-              codecov: true
             - name: minimal-ubuntu
               os: ubuntu-latest
               python-version: 3.7
