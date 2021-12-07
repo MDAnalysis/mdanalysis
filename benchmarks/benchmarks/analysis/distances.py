@@ -23,16 +23,12 @@ class BetweenBench(object):
     function.
     """
 
-    params = ([10, 100, 1000, 5000])
+    params = ([10, 100, 1000, 10000])
     param_names = (['num_atoms'])
 
     def setup(self, num_atoms):
 
-        self.u = MDAnalysis.Universe(GRO)
-
-        self.ag1 = self.u.atoms[:num_atoms]
-        self.ag2 = self.u.atoms[num_atoms: 2 * num_atoms]
-        self.ag3 = self.u.atoms[-num_atoms:]
+        #self.u = MDAnalysis.Universe(GRO)
 
         np.random.seed(17809)
         self.coords_1 = np.random.random_sample((num_atoms,
@@ -40,6 +36,35 @@ class BetweenBench(object):
         np.random.seed(9008716)
         self.coords_2 = np.random.random_sample((num_atoms,
                                                  3)).astype(np.float32)
+
+        # Some functions are performance dependent on a realistic
+        # atom density. So we make a new universe with random atom
+        # positions, density derived from an example universe.
+
+        # Make fake universe with 3*num_atoms because some of our benchmarks
+        # require 2 atom groups.
+        universe_num_atoms = num_atoms*3
+        self.u = MDAnalysis.Universe.empty(universe_num_atoms, trajectory=True)
+        # calculating reasonable density for an atomistic system.
+        ex_universe = MDAnalysis.Universe(GRO)
+        density = ex_universe.coord.volume/ex_universe.atoms.n_atoms
+        desired_box_volume = universe_num_atoms*density
+        # making a cube with orthogonal basis vectors
+        cube_side_length = np.cbrt(desired_box_volume)
+        sides = [np.float32(cube_side_length)]*3
+        ortho_angles = [np.float(90)]*3
+        self.u.dimensions = np.array(sides + ortho_angles)
+
+        # filling the cube with random points.
+        np.random.seed(17809)
+        random_samples = np.random.random_sample((universe_num_atoms,
+                                                  3)).astype(np.float32)
+        self.u.atoms.positions = cube_side_length * random_samples
+
+        # splitting atom groups into 3 groups with the same number of atoms
+        self.ag1 = self.u.atoms[:num_atoms]
+        self.ag2 = self.u.atoms[num_atoms:-num_atoms]
+        self.ag3 = self.u.atoms[-num_atoms:]
         self.allocated_array_2D = np.empty((num_atoms, num_atoms),
                                            dtype=np.float64)
         self.array_shape_1D = int(num_atoms * (num_atoms - 1) / 2.)
