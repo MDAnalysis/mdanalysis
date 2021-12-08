@@ -439,6 +439,7 @@ class Universe(object):
            The attached Reader when trajectory=True is now a MemoryReader
         .. versionchanged:: 1.0.0
            Universes can now be created with 0 atoms
+
         """
         if not n_atoms:
             n_residues = 0
@@ -1407,6 +1408,7 @@ class Universe(object):
 
 
         .. versionadded:: 2.0.0
+
         """
         try:
             from rdkit import Chem

@@ -2066,63 +2066,6 @@ class Resids(ResidueAttr):
         return np.arange(1, nr + 1)
 
 
-class _ResidueStringAttr(ResidueAttr):
-    def __init__(self, vals, guessed=False):
-        self._guessed = guessed
-
-        self.namedict = dict()  # maps str to nmidx
-        name_lookup = []  # maps idx to str
-        # eg namedict['O'] = 5 & name_lookup[5] = 'O'
-
-        self.nmidx = np.zeros_like(vals, dtype=int)  # the lookup for each atom
-        # eg Atom 5 is 'C', so nmidx[5] = 7, where name_lookup[7] = 'C'
-
-        for i, val in enumerate(vals):
-            try:
-                self.nmidx[i] = self.namedict[val]
-            except KeyError:
-                nextidx = len(self.namedict)
-                self.namedict[val] = nextidx
-                name_lookup.append(val)
-
-                self.nmidx[i] = nextidx
-
-        self.name_lookup = np.array(name_lookup, dtype=object)
-        self.values = self.name_lookup[self.nmidx]
-
-    @staticmethod
-    def _gen_initial_values(na, nr, ns):
-        return np.array(['' for _ in range(nr)], dtype=object)
-
-    @_check_length
-    def set_residues(self, rg, values):
-        newnames = []
-
-        # two possibilities, either single value given, or one per Atom
-        if isinstance(values, str):
-            try:
-                newidx = self.namedict[values]
-            except KeyError:
-                newidx = len(self.namedict)
-                self.namedict[values] = newidx
-                newnames.append(values)
-        else:
-            newidx = np.zeros_like(values, dtype=int)
-            for i, val in enumerate(values):
-                try:
-                    newidx[i] = self.namedict[val]
-                except KeyError:
-                    nextidx = len(self.namedict)
-                    self.namedict[val] = nextidx
-                    newnames.append(val)
-                    newidx[i] = nextidx
-
-        self.nmidx[rg.ix] = newidx  # newidx either single value or same size array
-        if newnames:
-            self.name_lookup = np.concatenate([self.name_lookup, newnames])
-        self.values = self.name_lookup[self.nmidx]
-
-
 # TODO: update docs to property doc
 class Resnames(ResidueStringAttr):
     attrname = 'resnames'

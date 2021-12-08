@@ -297,15 +297,6 @@ def extensions(config):
         flags = extra_cflags.split()
         extra_compile_args.extend(flags)
 
-    # encore is sensitive to floating point accuracy, especially on non-x86
-    # to avoid reducing optimisations on everything, we make a set of compile
-    # args specific to encore see #2997 for an example of this.
-    encore_compile_args = [a for a in extra_compile_args if 'O3' not in a]
-    if platform.machine() == 'aarch64' or platform.machine() == 'ppc64le':
-        encore_compile_args.append('-O1')
-    else:
-        encore_compile_args.append('-O3')
-
     cpp_extra_compile_args = [a for a in extra_compile_args if 'std' not in a]
     cpp_extra_compile_args.append('-std=c++11')
     cpp_extra_link_args=[]

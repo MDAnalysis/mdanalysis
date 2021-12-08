@@ -394,6 +394,7 @@ class DensityAnalysis(AnalysisBase):
        :func:`_set_user_grid` is now a method of :class:`DensityAnalysis`.
        :class:`Density` results are now stored in a
        :class:`MDAnalysis.analysis.base.Results` instance.
+
     """
 
     def __init__(self, atomgroup, delta=1.0,

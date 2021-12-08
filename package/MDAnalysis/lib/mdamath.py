@@ -55,10 +55,7 @@ Connectivity
 .. versionadded:: 0.11.0
 .. versionchanged: 1.0.0
    Unused function :func:`_angle()` has now been removed.
-<<<<<<< HEAD
-=======
 
->>>>>>> upstream/develop
 """
 import numpy as np
 

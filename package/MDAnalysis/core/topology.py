@@ -114,6 +114,7 @@ def make_downshift_arrays(upshift, nparents):
     """
     if not len(upshift):
         return np.array([], dtype=object)
+
     order = np.argsort(upshift)
 
     upshift_sorted = upshift[order]
@@ -603,3 +604,4 @@ class Topology(object):
             attr._add_new(newval)
 
         return segidx
+
