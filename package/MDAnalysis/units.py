@@ -238,7 +238,7 @@ densityUnit_factor = {
 timeUnit_factor = {
     'ps': 1.0, 'picosecond': 1.0,  # 1/1.0
     'fs': 1e3, 'femtosecond': 1e3,  # 1/1e-3,
-    'ns': 1e-3, 'nanosecond': 1e-3,  # 1/1e3,
+    'ns': 1e-9, 'nanosecond': 1e-9,  # 1/1e9,
     'ms': 1e-3, 'millisecond': 1e-3,  # 1/1e3,
     'second': 1e-12, 'sec': 1e-12, 's': 1e-12,  # 1/1e12,
     'AKMA': 1 / 4.888821e-2,
