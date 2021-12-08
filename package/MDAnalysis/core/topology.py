@@ -114,7 +114,6 @@ def make_downshift_arrays(upshift, nparents):
     """
     if not len(upshift):
         return np.array([], dtype=object)
-        
     order = np.argsort(upshift)
 
     upshift_sorted = upshift[order]
@@ -178,30 +177,9 @@ class TransTable(object):
         number of residues in topology
     n_segments : int
         number of segments in topology
-    size
-        tuple describing the shape of the TransTable
-
-    Methods
-    -------
-    atoms2residues(aix)
-        Returns the residue index for many atom indices
-    residues2atoms_1d(rix)
-        All atoms in the residues represented by *rix*
-    residues2atoms_2d(rix)
-        List of atom indices for each residue in *rix*
-    residues2segments(rix)
-        Segment indices for each residue in *rix*
-    segments2residues_1d(six)
-        Similar to `residues2atoms_1d`
-    segments2residues_2d(six)
-        Similar to `residues2atoms_2d`
-    atoms2segments(aix)
-        Segment indices for each atom in *aix*
-    segments2atoms_1d(six)
-        Similar to `residues2atoms_1d`
-    segments2atoms_2d(six)
-        Similar to `residues2atoms_2d`
-
+    size : tuple
+        tuple ``(n_atoms, n_residues, n_segments)`` describing the shape of
+        the TransTable
     """
     def __init__(self,
                  n_atoms, n_residues, n_segments,  # Size of tables
@@ -236,7 +214,10 @@ class TransTable(object):
 
     @property
     def size(self):
-        """The shape of the table, (n_atoms, n_residues, n_segments)"""
+        """The shape of the table, ``(n_atoms, n_residues, n_segments)``.
+
+        :meta private:
+        """
         return (self.n_atoms, self.n_residues, self.n_segments)
 
     def atoms2residues(self, aix):
@@ -552,7 +533,11 @@ class Topology(object):
         Raises
         ------
         NoDataError
-          If not all data was provided.  This error is raised before any
+          If not all data was provided.  This error is raised before any changes
+
+
+        .. versionchanged:: 2.1.0
+           Added use of _add_new to TopologyAttr resize
         """
         # Check that all data is here before making any changes
         for attr in self.attrs:
@@ -573,11 +558,32 @@ class Topology(object):
             if not attr.per_object == 'residue':
                 continue
             newval = new_attrs[attr.singular]
-            attr.values = np.concatenate([attr.values, np.array([newval])])
+            attr._add_new(newval)
 
         return residx
 
     def add_Segment(self, **new_attrs):
+        """Adds a new Segment to the Topology
+
+        Parameters
+        ----------
+        new_attrs : dict
+          the new attributes for the new segment, eg {'segid': 'B'}
+
+        Raises
+        -------
+        NoDataError
+          if an attribute wasn't specified.
+
+        Returns
+        -------
+        ix : int
+          the idx of the new segment
+
+
+        .. versionchanged:: 2.1.0
+           Added use of _add_new to resize topology attrs
+        """
         for attr in self.attrs:
             if attr.per_object == 'segment':
                 if attr.singular not in new_attrs:
@@ -594,7 +600,6 @@ class Topology(object):
             if not attr.per_object == 'segment':
                 continue
             newval = new_attrs[attr.singular]
-            attr.values = np.concatenate([attr.values, np.array([newval])])
+            attr._add_new(newval)
 
         return segidx
-        

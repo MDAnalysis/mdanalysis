@@ -143,7 +143,7 @@ def _resolve_coordinates(filename, *coordinates, format=None,
     if all_coordinates or not coordinates and filename is not None:
         try:
             get_reader_for(filename, format=format)
-        except ValueError:
+        except (ValueError, TypeError):
             warnings.warn('No coordinate reader found for {}. Skipping '
                             'this file.'.format(filename))
         else:
@@ -177,49 +177,33 @@ def _generate_from_topology(universe):
 class Universe(object):
     """The MDAnalysis Universe contains all the information describing the system.
 
-    The system always requires a *topology* file --- in the simplest case just
+    The system always requires a *topology file* --- in the simplest case just
     a list of atoms. This can be a CHARMM/NAMD PSF file or a simple coordinate
-    file with atom informations such as XYZ, PDB, Gromacs GRO, or CHARMM
+    file with atom informations such as XYZ, PDB, GROMACS GRO or TPR, or CHARMM
     CRD. See :ref:`Supported topology formats` for what kind of topologies can
     be read.
 
-    A trajectory provides coordinates; the coordinates have to be ordered in
-    the same way as the list of atoms in the topology. A trajectory can be a
-    single frame such as a PDB, CRD, or GRO file, or it can be a MD trajectory
-    (in CHARMM/NAMD/LAMMPS DCD, Gromacs XTC/TRR, or generic XYZ format).  See
-    :ref:`Supported coordinate formats` for what can be read as a
-    "trajectory".
+    A *trajectory file* provides coordinates; the coordinates have to be
+    ordered in the same way as the list of atoms in the topology. A trajectory
+    can be a single frame such as a PDB, CRD, or GRO file, or it can be a MD
+    trajectory (in CHARMM/NAMD/LAMMPS DCD, GROMACS XTC/TRR, AMBER nc, generic
+    XYZ format, ...).  See :ref:`Supported coordinate formats` for what can be
+    read as a "trajectory".
 
     As a special case, when the topology is a file that contains atom
     information *and* coordinates (such as XYZ, PDB, GRO or CRD, see
     :ref:`Supported coordinate formats`) then the coordinates are immediately
     loaded from the "topology" file unless a trajectory is supplied.
 
-    Examples for setting up a universe::
-
-       u = Universe(topology, trajectory)          # read system from file(s)
-       u = Universe(pdbfile)                       # read atoms and coordinates from PDB or GRO
-       u = Universe(topology, [traj1, traj2, ...]) # read from a list of trajectories
-       u = Universe(topology, traj1, traj2, ...)   # read from multiple trajectories
-
-    Load new data into a universe (replaces old trajectory and does *not* append)::
-
-       u.load_new(trajectory)                      # read from a new trajectory file
-
-    Select atoms, with syntax similar to CHARMM (see
-    :class:`~Universe.select_atoms` for details)::
-
-       u.select_atoms(...)
-
     Parameters
     ----------
-    topology: str, stream, `~MDAnalysis.core.topology.Topology`, `np.ndarray`, None
+    topology: str, stream, Topology, numpy.ndarray, None
         A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
         define the list of atoms. If the file includes bond information,
         partial charges, atom masses, ... then these data will be available to
         MDAnalysis. Alternatively, an existing
         :class:`MDAnalysis.core.topology.Topology` instance may be given,
-        numpy coordinates, or None for an empty universe.
+        numpy coordinates, or ``None`` for an empty universe.
     coordinates: str, stream, list of str, list of stream (optional)
         Coordinates can be provided as files of
         a single frame (eg a PDB, CRD, or GRO file); a list of single
@@ -272,15 +256,53 @@ class Universe(object):
 
     Attributes
     ----------
-    trajectory
-        currently loaded trajectory reader;
-    dimensions
-        current system dimensions (simulation unit cell, if set in the
-        trajectory)
-    atoms, residues, segments
-        principal Groups for each topology level
-    bonds, angles, dihedrals
-        principal ConnectivityGroups for each connectivity type
+    trajectory : base.ReaderBase or base.SingleFrameReaderBase
+        currently loaded trajectory reader; readers are described in
+        :ref:`Coordinates`
+    dimensions : numpy.ndarray
+        system dimensions (simulation unit cell, if set in the
+        trajectory) at the *current time step*
+        (see :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`).
+        The unit cell can be set for the current time step (but the change is
+        not permanent unless written to a file).
+    atoms : AtomGroup
+        all particles (:class:`~MDAnalysis.core.groups.Atom`) in the system,
+        as read from the `topology` file
+    residues : ResidueGroup
+        all residues (:class:`~MDAnalysis.core.groups.Residue`) in the system
+    segments : SegmentGroup
+        all segments (:class:`~MDAnalysis.core.groups.Segment`) in the system
+    bonds : topologyattrs.Bonds
+        all bonds (if defined in the `topology`) as provided by
+        :attr:`Universe.atoms.bonds`
+    angles : topologyattrs.Angles
+        all angles (if defined in the `topology`), same as
+        :attr:`Universe.atoms.angles`
+    dihedrals : topologyattrs.Dihedrals
+        all dihedral angles (if defined in the `topology`), same as
+        :attr:`Universe.atoms.dihedrals`
+    impropers : topologyattrs.Impropers
+        all improper dihedral angles (if defined in the `topology`), same as
+        :attr:`Universe.atoms.impropers`
+
+    Examples
+    --------
+    Examples for setting up a :class:`Universe`::
+
+       u = Universe(topology, trajectory)          # read system from file(s)
+       u = Universe(pdbfile)                       # read atoms and coordinates from PDB or GRO
+       u = Universe(topology, [traj1, traj2, ...]) # read from a list of trajectories
+       u = Universe(topology, traj1, traj2, ...)   # read from multiple trajectories
+
+    Load new data into a universe (replaces old trajectory and does *not* append)::
+
+       u.load_new(trajectory)                      # read from a new trajectory file
+
+    Selecting atoms with :meth:`~Universe.select_atoms` ::
+
+       ag = u.select_atoms(...)
+
+    returns an :class:`~MDAnalysis.core.groups.AtomGroup`.
 
 
     .. versionchanged:: 1.0.0
@@ -289,8 +311,8 @@ class Universe(object):
 
     .. versionchanged:: 2.0.0
         Universe now can be (un)pickled.
-        ``topology`` and ``trajectory`` are reserved
-        upon unpickle.
+        ``topology`` and ``trajectory`` are reserved upon unpickle.
+
     """
     def __init__(self, topology=None, *coordinates, all_coordinates=False,
                  format=None, topology_format=None, transformations=None,
@@ -366,7 +388,7 @@ class Universe(object):
         Useful for building a Universe without requiring existing files,
         for example for system building.
 
-        If `trajectory` is set to True, a
+        If `trajectory` is set to ``True``, a
         :class:`MDAnalysis.coordinates.memory.MemoryReader` will be
         attached to the Universe.
 
@@ -385,27 +407,32 @@ class Universe(object):
         residue_segindex: array like, optional
           mapping of residues to segments
         trajectory: bool, optional
-          if True, attaches a :class:`MDAnalysis.coordinates.memory.MemoryReader`
-          allowing coordinates to be set and written.  Default is False
+          if ``True``, attaches a
+          :class:`MDAnalysis.coordinates.memory.MemoryReader` allowing
+          coordinates to be set and written.
         velocities: bool, optional
-          include velocities in the :class:`MDAnalysis.coordinates.memory.MemoryReader`
+          include velocities in the
+          :class:`MDAnalysis.coordinates.memory.MemoryReader`
         forces: bool, optional
-          include forces in the :class:`MDAnalysis.coordinates.memory.MemoryReader`
+          include forces in the
+          :class:`MDAnalysis.coordinates.memory.MemoryReader`
 
         Returns
         -------
-        MDAnalysis.Universe object
+        Universe
+          :class:`~MDAnalysis.core.universe.Universe` instance with dummy
+          values for atoms and undefined coordinates/velocities/forces
 
         Examples
         --------
         For example to create a new Universe with 6 atoms in 2 residues, with
-        positions for the atoms and a mass attribute:
+        positions for the atoms and a mass attribute::
 
-        >>> u = mda.Universe.empty(6, 2,
-                                   atom_resindex=np.array([0, 0, 0, 1, 1, 1]),
-                                   trajectory=True,
+          u = mda.Universe.empty(6, 2,
+                                 atom_resindex=np.array([0, 0, 0, 1, 1, 1]),
+                                 trajectory=True,
                 )
-        >>> u.add_TopologyAttr('masses')
+          u.add_TopologyAttr('masses')
 
         .. versionadded:: 0.17.0
         .. versionchanged:: 0.19.0
@@ -496,8 +523,9 @@ class Universe(object):
 
         Raises
         ------
-        TypeError if trajectory format can not be
-                  determined or no appropriate trajectory reader found
+        TypeError
+             if trajectory format can not be determined or no appropriate
+             trajectory reader found
 
 
         .. versionchanged:: 0.8
@@ -512,6 +540,7 @@ class Universe(object):
         .. versionchanged:: 0.17.0
            Now returns a :class:`Universe` instead of the tuple of file/array
            and detected file type.
+
         """
         # filename==None happens when only a topology is provided
         if filename is None:
@@ -629,22 +658,34 @@ class Universe(object):
 
     @property
     def bonds(self):
-        """Bonds between atoms"""
+        """Bonds between atoms.
+
+        :meta private:
+        """
         return self.atoms.bonds
 
     @property
     def angles(self):
-        """Angles between atoms"""
+        """Angles between atoms.
+
+        :meta private:
+        """
         return self.atoms.angles
 
     @property
     def dihedrals(self):
-        """Dihedral angles between atoms"""
+        """Dihedral angles between atoms.
+
+        :meta private:
+        """
         return self.atoms.dihedrals
 
     @property
     def impropers(self):
-        """Improper dihedral angles between atoms"""
+        """Improper dihedral angles between atoms.
+
+        :meta private:
+        """
         return self.atoms.impropers
 
     def __repr__(self):
@@ -674,7 +715,10 @@ class Universe(object):
     # Properties
     @property
     def dimensions(self):
-        """Current dimensions of the unitcell"""
+        """Current dimensions of the unitcell.
+
+        :meta private:
+        """
         return self.coord.dimensions
 
     @dimensions.setter
@@ -713,7 +757,10 @@ class Universe(object):
 
     @property
     def trajectory(self):
-        """Reference to trajectory reader object containing trajectory data."""
+        """Reference to trajectory reader object containing trajectory data.
+
+        :meta private:
+        """
         if self._trajectory is not None:
             return self._trajectory
         else:
@@ -753,7 +800,7 @@ class Universe(object):
            attribute to add (eg 'charges'), can also supply initial values
            using values keyword.
 
-        .. versionchanged:: 1.1.0 
+        .. versionchanged:: 1.1.0
             Now warns when adding bfactors to a Universe with
             existing tempfactors, or adding tempfactors to a
             Universe with existing bfactors.
@@ -1321,19 +1368,25 @@ class Universe(object):
         addHs : bool (optional, default True)
             Add all necessary hydrogens to the molecule
         generate_coordinates : bool (optional, default True)
-            Generate 3D coordinates using RDKit's `AllChem.EmbedMultipleConfs`
-            function. Requires adding hydrogens with the `addHs` parameter
+            Generate 3D coordinates using RDKit's
+            :func:`AllChem.EmbedMultipleConfs` function. Requires adding
+            hydrogens with the `addHs` parameter
         numConfs : int (optional, default 1)
             Number of frames to generate coordinates for. Ignored if
-            `generate_coordinates=False`
+            ``generate_coordinates=False``
         rdkit_kwargs : dict (optional)
-            Other arguments passed to the RDKit `EmbedMultipleConfs` function
+            Other arguments passed to the RDKit :func:`EmbedMultipleConfs`
+            function
         kwargs : dict
             Parameters passed on Universe creation
 
         Returns
         -------
-        :class:`~MDAnalysis.core.Universe`
+        universe : Universe
+            contains atom names and topology information (bonds) derived from
+            the input SMILES string; coordinates are included if
+            `generate_coordinates` was set to ``True``
+
 
         Examples
         --------

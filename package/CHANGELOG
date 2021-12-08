@@ -13,15 +13,22 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, melomcr, mdd31, ianmkenney
-
+??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope, orbeckst, scal444
  * 2.1.0
 
 Fixes
+  * Avoid integer overflow in NSGrid with too many grids (Issue #3183)
   * Fix ITPParser charge reading (Issue #3419).
   * TRRWriter preserves timestep data (Issue #3350).
-  
+  * Fixed Universe creation from a custom object which only provided a topology,
+    previously raised a TypeError. (Issue #3443)
+  * Documentation fixes (Issues #3224, #2667)
+  * Fixed string attributes (e.g. resname, segid) not working on Residues and Segments
+    created using add_Residue and add_Segment (Issue #3437)
+
 Enhancements
+  * Add option for custom compiler flags for C/C++ on build and remove march
+    option from setup.cfg (Issue #3428, PR #3429).
 
 Changes
   * Dropped python 3.6 support and raised minimum numpy version to 1.18.0
@@ -728,10 +735,14 @@ Fixes
          dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson,
          ayushsuhane, picocentauri, NinadBhat, bieniekmateusz, p-j-smith, Lp0lp,
 <<<<<<< HEAD
+<<<<<<< HEAD
          IAlibay, tyler.je.reddy, aakognole
 =======
          IAlibay, tyler.je.reddy, aakognole, RMeli, lilyminium
 >>>>>>> 149eb504e35670568201af28306fa04462f6c100
+=======
+         IAlibay, tyler.je.reddy, aakognole, RMeli, lilyminium
+>>>>>>> upstream/develop
 
   * 0.20.0
 
@@ -845,10 +856,14 @@ Fixes
     read. (Issue #2276 PR #2277)
   * fixed calculation of Chi torsion in nucleic acid analysis (Issue #2248)
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
   * Fixed parallelization failure in get_distance_matrix() (Issue #2060, PR #2301)
 >>>>>>> 149eb504e35670568201af28306fa04462f6c100
+=======
+  * Fixed parallelization failure in get_distance_matrix() (Issue #2060, PR #2301)
+>>>>>>> upstream/develop
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()

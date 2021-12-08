@@ -472,6 +472,13 @@ class TopologyAttr(object, metaclass=_TopologyAttrMeta):
         """Bool of if the source of this information is a guess"""
         return self._guessed
 
+    def _add_new(self, newval):
+        """Resize TopologyAttr to one larger, with *newval* as the new value
+
+        .. versionadded:: 2.1.0
+        """
+        self.values = np.concatenate([self.values, np.array([newval])])
+
     def get_atoms(self, ag):
         """Get atom attributes for a given AtomGroup"""
         raise NoDataError
@@ -656,7 +663,23 @@ class Atomids(AtomAttr):
         return np.arange(1, na + 1)
 
 
-class _AtomStringAttr(AtomAttr):
+class _StringInternerMixin:
+    """String interning pattern
+
+    Used for faster matching of strings (see _ProtoStringSelection)
+
+     self.namedict (dict)
+     - maps actual string to string index (str->int)
+     self.namelookup (array dtype object)
+     - maps string index to actual string (int->str)
+     self.nmidx (array dtype int)
+     - maps atom index to string index (int->int)
+     self.values (array dtype object)
+     - the premade per-object string values
+
+    .. versionadded:: 2.1.0
+       Mashed together the different implementations to keep it DRY.
+    """
     def __init__(self, vals, guessed=False):
         self._guessed = guessed
 
@@ -680,12 +703,30 @@ class _AtomStringAttr(AtomAttr):
         self.name_lookup = np.array(name_lookup, dtype=object)
         self.values = self.name_lookup[self.nmidx]
 
-    @staticmethod
-    def _gen_initial_values(na, nr, ns):
-        return np.array(['' for _ in range(na)], dtype=object)
+    def _add_new(self, newval):
+        """Append new value to the TopologyAttr
 
-    @_check_length
-    def set_atoms(self, ag, values):
+        Parameters
+        ----------
+        newval : str
+          value to append
+
+        resizes this attr to size+1 and adds newval as the value of the new entry
+        for string interning this is slightly different hence the override
+
+        .. versionadded:: 2.1.0
+        """
+        try:
+            newidx = self.namedict[newval]
+        except KeyError:
+            newidx = len(self.namedict)
+            self.namedict[newval] = newidx
+            self.name_lookup = np.concatenate([self.name_lookup, [newval]])
+
+        self.nmidx = np.concatenate([self.nmidx, [newidx]])
+        self.values = np.concatenate([self.values, [newval]])
+
+    def _set_X(self, ag, values):
         newnames = []
 
         # two possibilities, either single value given, or one per Atom
@@ -712,9 +753,20 @@ class _AtomStringAttr(AtomAttr):
             self.name_lookup = np.concatenate([self.name_lookup, newnames])
         self.values = self.name_lookup[self.nmidx]
 
+# woe betide anyone who switches this inheritance order
+# Mixin needs to be first (L to R) to get correct __init__ and set_atoms
+class AtomStringAttr(_StringInternerMixin, AtomAttr):
+    @_check_length
+    def set_atoms(self, ag, values):
+        return self._set_X(ag, values)
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.full(na, '', dtype=object)
+
 
 # TODO: update docs to property doc
-class Atomnames(_AtomStringAttr):
+class Atomnames(AtomStringAttr):
     """Name for each atom.
     """
     attrname = 'names'
@@ -1210,7 +1262,7 @@ class Atomnames(_AtomStringAttr):
 
 
 # TODO: update docs to property doc
-class Atomtypes(_AtomStringAttr):
+class Atomtypes(AtomStringAttr):
     """Type for each atom"""
     attrname = 'types'
     singular = 'type'
@@ -1219,7 +1271,7 @@ class Atomtypes(_AtomStringAttr):
 
 
 # TODO: update docs to property doc
-class Elements(_AtomStringAttr):
+class Elements(AtomStringAttr):
     """Element for each atom"""
     attrname = 'elements'
     singular = 'element'
@@ -1243,7 +1295,7 @@ class Radii(AtomAttr):
         return np.zeros(na)
 
 
-class RecordTypes(_AtomStringAttr):
+class RecordTypes(AtomStringAttr):
     """For PDB-like formats, indicates if ATOM or HETATM
 
     Defaults to 'ATOM'
@@ -1261,7 +1313,7 @@ class RecordTypes(_AtomStringAttr):
         return np.array(['ATOM'] * na, dtype=object)
 
 
-class ChainIDs(_AtomStringAttr):
+class ChainIDs(AtomStringAttr):
     """ChainID per atom
 
     Note
@@ -1849,7 +1901,7 @@ class Occupancies(AtomAttr):
 
 
 # TODO: update docs to property doc
-class AltLocs(_AtomStringAttr):
+class AltLocs(AtomStringAttr):
     """AltLocs for each atom"""
     attrname = 'altLocs'
     singular = 'altLoc'
@@ -1990,6 +2042,18 @@ class ResidueAttr(TopologyAttr):
         raise _wronglevel_error(self, sg)
 
 
+# woe betide anyone who switches this inheritance order
+# Mixin needs to be first (L to R) to get correct __init__ and set_atoms
+class ResidueStringAttr(_StringInternerMixin, ResidueAttr):
+    @_check_length
+    def set_residues(self, ag, values):
+        return self._set_X(ag, values)
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.full(nr, '', dtype=object)
+
+
 # TODO: update docs to property doc
 class Resids(ResidueAttr):
     """Residue ID"""
@@ -2060,7 +2124,7 @@ class _ResidueStringAttr(ResidueAttr):
 
 
 # TODO: update docs to property doc
-class Resnames(_ResidueStringAttr):
+class Resnames(ResidueStringAttr):
     attrname = 'resnames'
     singular = 'resname'
     transplants = defaultdict(list)
@@ -2179,14 +2243,14 @@ class Resnums(ResidueAttr):
         return np.arange(1, nr + 1)
 
 
-class ICodes(_ResidueStringAttr):
+class ICodes(ResidueStringAttr):
     """Insertion code for Atoms"""
     attrname = 'icodes'
     singular = 'icode'
     dtype = object
 
 
-class Moltypes(_ResidueStringAttr):
+class Moltypes(ResidueStringAttr):
     """Name of the molecule type
 
     Two molecules that share a molecule type share a common template topology.
@@ -2238,65 +2302,20 @@ class SegmentAttr(TopologyAttr):
         self.values[sg.ix] = values
 
 
-class _SegmentStringAttr(SegmentAttr):
-    def __init__(self, vals, guessed=False):
-        self._guessed = guessed
-
-        self.namedict = dict()  # maps str to nmidx
-        name_lookup = []  # maps idx to str
-        # eg namedict['O'] = 5 & name_lookup[5] = 'O'
-
-        self.nmidx = np.zeros_like(vals, dtype=int)  # the lookup for each atom
-        # eg Atom 5 is 'C', so nmidx[5] = 7, where name_lookup[7] = 'C'
-
-        for i, val in enumerate(vals):
-            try:
-                self.nmidx[i] = self.namedict[val]
-            except KeyError:
-                nextidx = len(self.namedict)
-                self.namedict[val] = nextidx
-                name_lookup.append(val)
-
-                self.nmidx[i] = nextidx
-
-        self.name_lookup = np.array(name_lookup, dtype=object)
-        self.values = self.name_lookup[self.nmidx]
+# woe betide anyone who switches this inheritance order
+# Mixin needs to be first (L to R) to get correct __init__ and set_atoms
+class SegmentStringAttr(_StringInternerMixin, SegmentAttr):
+    @_check_length
+    def set_segments(self, ag, values):
+        return self._set_X(ag, values)
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
-        return np.array(['' for _ in range(nr)], dtype=object)
-
-    @_check_length
-    def set_segments(self, sg, values):
-        newnames = []
-
-        # two possibilities, either single value given, or one per Atom
-        if isinstance(values, str):
-            try:
-                newidx = self.namedict[values]
-            except KeyError:
-                newidx = len(self.namedict)
-                self.namedict[values] = newidx
-                newnames.append(values)
-        else:
-            newidx = np.zeros_like(values, dtype=int)
-            for i, val in enumerate(values):
-                try:
-                    newidx[i] = self.namedict[val]
-                except KeyError:
-                    nextidx = len(self.namedict)
-                    self.namedict[val] = nextidx
-                    newnames.append(val)
-                    newidx[i] = nextidx
-
-        self.nmidx[sg.ix] = newidx  # newidx either single value or same size array
-        if newnames:
-            self.name_lookup = np.concatenate([self.name_lookup, newnames])
-        self.values = self.name_lookup[self.nmidx]
+        return np.full(ns, '', dtype=object)
 
 
 # TODO: update docs to property doc
-class Segids(_SegmentStringAttr):
+class Segids(SegmentStringAttr):
     attrname = 'segids'
     singular = 'segid'
     transplants = defaultdict(list)
