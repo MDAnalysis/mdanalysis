@@ -395,9 +395,10 @@ inconsistent results")
         assert stdev < stdev_upper_bound, "Unexpected standard deviation for" \
                                            " bootstrapped samples in Dim. reduction Ensemble imilarity"
 
-    def test_covariance_matrix(self,
-                                ens1, ens2):
-        covariance_of_matrix = encore.covariance.covariance_matrix(ensemble = ens1, reference = ens2)
+    def test_covariance_matrix(self, ens1, ens2):
+        covariance_of_matrix = encore.covariance.covariance_matrix(ensemble=ens1,
+                                                                    reference=ens2)
+
         assert covariance_of_matrix is np.zeros(len(ens1), 3)
 
 class TestEncoreClustering(object):
