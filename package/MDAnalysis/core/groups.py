@@ -3141,6 +3141,9 @@ class AtomGroup(GroupBase):
             Added the *smarts* selection. Added `atol` and `rtol` keywords
             to select float values. Added the ``sort`` keyword. Added
             `rdkit_kwargs` to pass parameters to the RDKitConverter.
+        .. versionchanged:: 2.0.1
+            Added `smarts_kwargs` to pass parameters to the RDKit
+            GetSubstructMatch for *smarts* selection.
         """
 
         if not sel:
