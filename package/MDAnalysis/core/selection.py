@@ -658,12 +658,10 @@ class SmartsSelection(Selection):
             raise ValueError(f"{self.pattern!r} is not a valid SMARTS query")
         mol = group.convert_to("RDKIT", **self.rdkit_kwargs)
         # override GetSubstructMatches default values
-        if "useChirality" not in self.smarts_kwargs:
-            self.smarts_kwargs["useChirality"] = True
-        if "maxMatches" not in self.smarts_kwargs:
-            self.smarts_kwargs["maxMatches"] = group.n_atoms
+        self.smarts_kwargs.setdefault("useChirality", True)
+        self.smarts_kwargs.setdefault("maxMatches", group.n_atoms)
         matches = mol.GetSubstructMatches(pattern, **self.smarts_kwargs)
-        # convert rdkit indices to mdanalysis'
+        # convert rdkit indices to mdanalysis
         indices = [
             mol.GetAtomWithIdx(idx).GetIntProp("_MDAnalysis_index")
             for match in matches for idx in match]
