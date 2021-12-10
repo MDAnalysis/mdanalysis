@@ -2859,6 +2859,10 @@ class AtomGroup(GroupBase):
           Arguments passed to the
           :class:`~MDAnalysis.converters.RDKit.RDKitConverter` when using
           selection based on SMARTS queries
+        smarts_kwargs : dict (optional)
+          Arguments passed internally to RDKit's `GetSubstructMatches
+          <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol.GetSubstructMatches>`_.
+
         **selgroups : keyword arguments of str: AtomGroup (optional)
           when using the "group" keyword in selections, groups are defined by
           passing them as keyword arguments.  See section on **preexisting
@@ -2977,12 +2981,13 @@ class AtomGroup(GroupBase):
             smarts *SMARTS-query*
                 select atoms using Daylight's SMARTS queries, e.g. ``smarts
                 [#7;R]`` to find nitrogen atoms in rings. Requires RDKit.
-                All matches are combined as a unique match. Uses two sets of
-                kwargs: rdkit_kwargs is passed to `RDKitConverter.convert()`
-                and smarts_kwargs is passed to RDKit's [GetSubstructMatches](
-                https://www.rdkit.org/docs/source/
-                rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol.GetSubstructMatches).
-                The useChirality kwarg is True by default.
+                All matches are combined as a single unique match. The `smarts`
+                selection accepts two sets of key word arguments from
+                `select_atoms()`: the rdkit_kwargs are passed internally to
+                `RDKitConverter.convert()` and the smarts_kwargs are passed to
+                RDKit's `GetSubstructMatches
+                <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol.GetSubstructMatches>`_.
+                By default, the `useChirality` kwarg in rdkit_kwargs is set to true.
 
                 >>> universe.select_atoms("C", smarts_kwargs={"maxMatches": 100})
                 <AtomGroup with 100 atoms>
