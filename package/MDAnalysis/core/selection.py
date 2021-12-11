@@ -588,6 +588,7 @@ class SingleCharSelection(Selection):
 
         return group[mask]
 
+
 class _ProtoStringSelection(Selection):
     """Selections based on text attributes
 
