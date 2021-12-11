@@ -1958,7 +1958,7 @@ class Aromaticities(AtomAttr):
 
 
 class RSChirality(AtomAttr):
-    "R/S chirality"
+    """R/S chirality"""
     attrname = 'chiralities'
     singular= 'chirality'
     dtype = 'U1'
