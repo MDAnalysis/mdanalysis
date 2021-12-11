@@ -175,6 +175,7 @@ def test_pseudo_dihe_baseflip(u, bp1, bp2, i, seg1, seg2, seg3, expected_value):
     val = nuclinfo.pseudo_dihe_baseflip(u, bp1, bp2, i, seg1, seg2, seg3)
     assert_almost_equal(val, expected_value, decimal=3)
 
+
 @pytest.mark.parametrize('b1, b2, seg1, seg2, expected_value', (
         (2, 3, 'RNAA', 'RNAA', 15.490582),
         (10, 11, 'RNAA', 'RNAA', 43.71941),

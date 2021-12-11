@@ -764,8 +764,9 @@ def pseudo_dihe_baseflip(universe, bp1, bp2, i,
     pseudo = np.rad2deg(pseudo) % 360
     return pseudo
 
+
 def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM"):
-    """The angle between the planes for given two bases is computed. 
+    """The angle between the planes for given two bases is computed.
 
     .. Note:: This angle calculation will only work if using atom names as
               documented by charmm force field parameters.
@@ -790,27 +791,32 @@ def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM"):
           angle in degrees
 
 
-    .. versionadded:: 1.0.1
+    .. versionadded:: 2.1.0
     """
-    baseatoms = { 'CYT': ['N1', 'N3', 'C5'],
-                  'THY': ['N1', 'N3', 'C5'],
-                  'URA': ['N1', 'N3', 'C5'],
-                  'ADE': ['N9', 'N1', 'N7'],
-                  'GUA': ['N9', 'N1', 'N7'] }
+    batms = {'CYT': ['N1', 'N3', 'C5'],
+             'THY': ['N1', 'N3', 'C5'],
+             'URA': ['N1', 'N3', 'C5'],
+             'ADE': ['N9', 'N1', 'N7'],
+             'GUA': ['N9', 'N1', 'N7']}
     # select residues
-    bf1 = universe.select_atoms("(segid {0!s} and resid {1!s})".format( seg1, b1))
-    bf2 = universe.select_atoms("(segid {0!s} and resid {1!s})".format( seg2, b2))
+    bf1 = universe.select_atoms(
+        "(segid {0!s} and resid {1!s})".format(seg1, b1))
+    bf2 = universe.select_atoms(
+        "(segid {0!s} and resid {1!s})".format(seg2, b2))
+    # get residue names
+    resn1 = bf1.atoms.resnames[0]
+    resn2 = bf2.atoms.resnames[0]
     # extract positions for specific atoms of each base
-    c11 = bf1.select_atoms("name {0!s}".format(baseatoms[bf1.atoms.resnames[0]][0])).positions[0]
-    c12 = bf1.select_atoms("name {0!s}".format(baseatoms[bf1.atoms.resnames[0]][1])).positions[0]
-    c13 = bf1.select_atoms("name {0!s}".format(baseatoms[bf1.atoms.resnames[0]][2])).positions[0]
-    c21 = bf2.select_atoms("name {0!s}".format(baseatoms[bf2.atoms.resnames[0]][0])).positions[0]
-    c22 = bf2.select_atoms("name {0!s}".format(baseatoms[bf2.atoms.resnames[0]][1])).positions[0]
-    c23 = bf2.select_atoms("name {0!s}".format(baseatoms[bf2.atoms.resnames[0]][2])).positions[0]
+    c11 = bf1.select_atoms("name {0!s}".format(batms[resn1][0])).positions[0]
+    c12 = bf1.select_atoms("name {0!s}".format(batms[resn1][1])).positions[0]
+    c13 = bf1.select_atoms("name {0!s}".format(batms[resn1][2])).positions[0]
+    c21 = bf2.select_atoms("name {0!s}".format(batms[resn2][0])).positions[0]
+    c22 = bf2.select_atoms("name {0!s}".format(batms[resn2][1])).positions[0]
+    c23 = bf2.select_atoms("name {0!s}".format(batms[resn2][2])).positions[0]
     # get normals to the planes of the bases
-    n1 = mdamath.normal(c12-c11,c13-c11)
-    n2 = mdamath.normal(c22-c21,c23-c21)
+    n1 = mdamath.normal(c12-c11, c13-c11)
+    n2 = mdamath.normal(c22-c21, c23-c21)
     # calculate angle between the normal vectors
-    angl = mdamath.angle(n1,n2)
+    angl = mdamath.angle(n1, n2)
     angl = np.rad2deg(angl) % 360
     return angl
