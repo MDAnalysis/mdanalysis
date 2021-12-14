@@ -46,6 +46,10 @@ else:
 
 class TNGReader(base.ReaderBase):
     r"""Reader for the TNG format."""
+    format = 'TRR'
+    units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps',
+             'force': 'kJ/(mol*nm)'}
+
     _special_blocks = ["TNG_TRAJ_BOX_SHAPE", "TNG_TRAJ_POSITIONS",
                        "TNG_TRAJ_VELOCITIES", "TNG_TRAJ_FORCES"]
 
@@ -57,11 +61,15 @@ class TNGReader(base.ReaderBase):
         super(TNGReader, self).__init__(filename, **kwargs)
 
         self.filename = filename
-        self._frame = 0 
+
 
         self._file_iterator = pytng.TNGFileIterator(self.filename,'r')
+        self.n_atoms = self._file_iterator.n_atoms
+
         self._block_names = self._file_iterator.block_ids.keys()
         self._block_ids = self._file_iterator.block_ids.values()
+
+        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
 
         self._has_box = "TNG_TRAJ_BOX_SHAPE" in self._block_names
         self._box = None
@@ -78,6 +86,8 @@ class TNGReader(base.ReaderBase):
         self._additional_blocks = [block for block in self._block_names if block not in self._special_blocks]
         self._additional_block_data = {block: None for block in self._additional_blocks}
         self._make_ndarrays()
+
+        self._frame = 0 
     
     def _make_ndarrays(self):
         if self._has_box:
@@ -97,6 +107,12 @@ class TNGReader(base.ReaderBase):
         """close reader"""
         self._file_iterator._close()
 
+    @staticmethod
+    def parse_n_atoms(filename, **kwargs):
+        with pytng.TNGFileIterator(filename 'r') as tng:
+            n_atoms = tng.n_atoms
+        return n_atoms
+
     @property
     def n_frames(self):
         """number of frames in trajectory"""
@@ -110,11 +126,14 @@ class TNGReader(base.ReaderBase):
         self._file_iterator._open(self.filename, 'r')
 
     def _read_frame(self, i):
+        """read frame i"""
+        raise NotImplementedError
         
 
 
     def _read_next_timestep(self, ts=None):
-
+        """copy next frame into timestep"""
+        raise NotImplementedError
         
 
     def Writer(self):
