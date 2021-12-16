@@ -183,4 +183,4 @@ def test_pseudo_dihe_baseflip(u, bp1, bp2, i, seg1, seg2, seg3, expected_value):
 ))
 def test_angle_between_base_planes(u, b1, b2, seg1, seg2, expected_value):
     val = nuclinfo.angle_between_base_planes(u, b1, b2, seg1, seg2)
-    assert_almost_equal(val, expected_value, decimal=3)
+    assert_allclose(val, expected_value, rtol=1e-3, atol=0)
