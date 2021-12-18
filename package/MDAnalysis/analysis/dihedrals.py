@@ -296,7 +296,7 @@ class Dihedral(AnalysisBase):
         """Parameters
         ----------
         atomgroups : list[AtomGroup]
-            a list of :class:`~MDAnalysis.core.groups.AtomGroup` for which 
+            a list of :class:`~MDAnalysis.core.groups.AtomGroup` for which
             the dihedral angles are calculated
 
         Raises
