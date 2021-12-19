@@ -354,7 +354,7 @@ class TestChainReaderContinuous(object):
                 # TODO: remove when we no longer have a dependency
                 # that still imports six
                 if (platform.system() == "Windows" and
-                    sys.version_info >= (3, 10)):
+                sys.version_info >= (3, 10)):
                     warnings.filterwarnings(
                             action='ignore',
                             category=ImportWarning)

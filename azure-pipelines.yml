@@ -47,7 +47,7 @@ jobs:
   - script: python -m pip install --upgrade pip setuptools wheel
     displayName: 'Install tools'
   - script: >-
-      python -m pip install
+      python -m pip install --only-binary=h5py
       cython
       hypothesis
       matplotlib
@@ -57,20 +57,17 @@ jobs:
       pytest-xdist
       scikit-learn
       scipy
+      h5py
       tqdm
       threadpoolctl
     displayName: 'Install dependencies'
-  - script: >-
-      python -m pip install --only-binary=h5py
-      "h5py<3.4.0"
-    displayName: 'Install h5py for Python < 3.10'
-    condition: and(succeeded(), ne(variables['PYTHON_VERSION'], '3.10'))
   # TODO: recent rdkit is not on PyPI
   - script: >-
       python -m pip install
       biopython
       chemfiles>=0.9
       duecredit
+      gsd
       joblib
       GridDataFormats
       mmtf-python
