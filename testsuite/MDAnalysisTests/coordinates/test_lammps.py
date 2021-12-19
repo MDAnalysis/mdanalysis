@@ -36,8 +36,8 @@ from MDAnalysisTests.coordinates.reference import (
     RefLAMMPSData, RefLAMMPSDataMini, RefLAMMPSDataDCD,
 )
 from MDAnalysisTests.datafiles import (
-    LAMMPScnt, LAMMPShyd, LAMMPSdata, LAMMPSdata_mini, LAMMPSDUMP,
-    LAMMPSDUMP_allcoords, LAMMPSDUMP_nocoords
+    LAMMPScnt, LAMMPShyd, LAMMPSdata, LAMMPSdata_mini, LAMMPSdata_triclinic,
+    LAMMPSDUMP,LAMMPSDUMP_allcoords,LAMMPSDUMP_nocoords,LAMMPSDUMP_triclinic
 )
 
 
@@ -625,3 +625,42 @@ class TestCoordinateMatches(object):
         for ts_a, ts_s in zip(universes["auto"].trajectory,
                               universes["unscaled"].trajectory):
             assert_almost_equal(ts_a.positions, ts_s.positions, decimal=5)
+
+class TestLammpsTriclinic(object):
+    @pytest.fixture( )
+    def u_dump(self):
+        return mda.Universe(LAMMPSDUMP_triclinic, format='LAMMPSDUMP',
+                           lammps_coordinate_convention="auto")
+    @pytest.fixture( )
+    def u_data(self):
+        return mda.Universe(LAMMPSdata_triclinic, format='data', 
+                            atom_style ='id type x y z')
+
+    @pytest.fixture()
+    def reference_box(self):
+        # manually copied from triclinic data file
+        xlo = -0.32115478301032807
+        xhi = 16.831069399898624
+        ylo = -0.12372358703610897 
+        yhi = 25.95896427399614
+        zlo = -0.045447071698045266 
+        zhi = 12.993982724334792
+        xy  = 1.506743915478767
+        xz  = -6.266414551929444 
+        yz  = -0.42179319547892025
+        
+        box = np.zeros((3, 3), dtype=np.float64)
+        box[0] = xhi - xlo, 0.0, 0.0
+        box[1] = xy, yhi - ylo, 0.0
+        box[2] = xz, yz, zhi - zlo
+
+        return mda.lib.mdamath.triclinic_box(*box)
+
+    def test_box(self, u_dump, u_data, reference_box):
+        for ts in u_dump.trajectory:
+            assert_almost_equal(ts.dimensions, reference_box, decimal=5)
+
+        for ts in u_dump.trajectory:
+            assert_almost_equal(ts.dimensions, u_data.dimensions, decimal=5)
+        
+        assert_almost_equal(u_data.dimensions, reference_box, decimal=5)
