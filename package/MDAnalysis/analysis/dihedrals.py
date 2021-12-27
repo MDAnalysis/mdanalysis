@@ -295,8 +295,9 @@ class Dihedral(AnalysisBase):
     def __init__(self, atomgroups, **kwargs):
         """Parameters
         ----------
-        atomgroups : list
-            a list of atomgroups for which the dihedral angles are calculated
+        atomgroups : list[AtomGroup]
+            a list of :class:`~MDAnalysis.core.groups.AtomGroup` for which
+            the dihedral angles are calculated
 
         Raises
         ------
