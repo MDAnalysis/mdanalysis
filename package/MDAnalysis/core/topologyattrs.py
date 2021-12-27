@@ -1998,7 +1998,7 @@ class Epsilon14s(AtomAttr):
 
 
 class Aromaticities(AtomAttr):
-    """Aromaticity (RDKit)"""
+    """Aromaticity"""
     attrname = "aromaticities"
     singular = "aromaticity"
     per_object = "atom"
@@ -2007,6 +2007,13 @@ class Aromaticities(AtomAttr):
     @staticmethod
     def _gen_initial_values(na, nr, ns):
         return np.zeros(na, dtype=bool)
+
+
+class RSChirality(AtomAttr):
+    """R/S chirality"""
+    attrname = 'chiralities'
+    singular= 'chirality'
+    dtype = 'U1'
 
 
 class ResidueAttr(TopologyAttr):
