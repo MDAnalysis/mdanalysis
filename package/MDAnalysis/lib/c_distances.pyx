@@ -32,6 +32,7 @@ Serial versions of all distance calculations
 cimport cython
 import numpy
 cimport numpy
+numpy.import_array()
 
 cdef extern from "string.h":
     void* memcpy(void* dst, void* src, int len)

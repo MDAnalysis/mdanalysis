@@ -779,8 +779,8 @@ class TestH5MDWriterWithRealTrajectory(object):
         assert_equal(dset.compression, filter)
         assert_equal(dset.compression_opts, opts)
 
-#    @pytest.mark.xfail(os.name == 'nt',
-#                       reason="occasional PermissionError on windows")
+    @pytest.mark.xfail(os.name == 'nt',
+                       reason="occasional PermissionError on windows")
     @pytest.mark.parametrize('driver', ('core', 'stdio'))
     def test_write_with_drivers(self, universe, outfile, Writer, driver):
         with Writer(outfile,
