@@ -413,7 +413,8 @@ class TestH5MDReaderWithRealTrajectory(object):
                 del traj_group['velocity']
                 del traj_group['force']
 
-        with pytest.raises(ValueError):
+        errmsg = "Could not construct minimal topology"
+        with pytest.raises(ValueError, match=errmsg):
             u = mda.Universe(outfile)
 
 
