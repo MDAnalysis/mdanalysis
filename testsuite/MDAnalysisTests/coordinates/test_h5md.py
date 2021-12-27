@@ -392,7 +392,8 @@ class TestH5MDReaderWithRealTrajectory(object):
                 traj_group = g['particles/trajectory']
                 del traj_group[group1]
                 del traj_group[group2]
-                for dset in ('position/value', 'velocity/value', 'force/value'):
+                for dset in ('position/value', 'velocity/value',
+                             'force/value'):
                     try:
                         n_atoms_in_dset = traj_group[dset].shape[1]
                         break
