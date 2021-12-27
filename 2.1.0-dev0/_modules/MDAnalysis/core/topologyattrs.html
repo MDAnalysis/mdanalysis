@@ -2089,7 +2089,7 @@
 
 
 <div class="viewcode-block" id="Aromaticities"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Aromaticities">[docs]</a><span class="k">class</span> <span class="nc">Aromaticities</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Aromaticity (RDKit)&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Aromaticity&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s2">&quot;aromaticities&quot;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s2">&quot;aromaticity&quot;</span>
     <span class="n">per_object</span> <span class="o">=</span> <span class="s2">&quot;atom&quot;</span>
@@ -2098,6 +2098,13 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RSChirality"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.RSChirality">[docs]</a><span class="k">class</span> <span class="nc">RSChirality</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;R/S chirality&quot;&quot;&quot;</span>
+    <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;chiralities&#39;</span>
+    <span class="n">singular</span><span class="o">=</span> <span class="s1">&#39;chirality&#39;</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="s1">&#39;U1&#39;</span></div>
 
 
 <div class="viewcode-block" id="ResidueAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ResidueAttr">[docs]</a><span class="k">class</span> <span class="nc">ResidueAttr</span><span class="p">(</span><span class="n">TopologyAttr</span><span class="p">):</span>

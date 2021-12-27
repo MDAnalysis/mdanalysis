@@ -130,6 +130,7 @@
 <li><p>Bonds</p></li>
 <li><p>Resids</p></li>
 <li><p>Resnums</p></li>
+<li><p>RSChirality</p></li>
 <li><p>Segids</p></li>
 </ul>
 </dd>
@@ -189,19 +190,22 @@ atom.GetDoubleProp(‘_TriposPartialCharge’)</p></td>
 atom.GetProp(‘_TriposAtomName’)</p></td>
 <td><p>names</p></td>
 </tr>
-<tr class="row-odd"><td><p>atom.GetMonomerInfo().GetOccupancy()</p></td>
+<tr class="row-odd"><td><p>atom.GetProp(‘_CIPCode’)</p></td>
+<td><p>chiralities</p></td>
+</tr>
+<tr class="row-even"><td><p>atom.GetMonomerInfo().GetOccupancy()</p></td>
 <td><p>occupancies</p></td>
 </tr>
-<tr class="row-even"><td><p>atom.GetMonomerInfo().GetResidueName()</p></td>
+<tr class="row-odd"><td><p>atom.GetMonomerInfo().GetResidueName()</p></td>
 <td><p>resnames</p></td>
 </tr>
-<tr class="row-odd"><td><p>atom.GetMonomerInfo().GetResidueNumber()</p></td>
+<tr class="row-even"><td><p>atom.GetMonomerInfo().GetResidueNumber()</p></td>
 <td><p>resnums</p></td>
 </tr>
-<tr class="row-even"><td><p>atom.GetMonomerInfo().GetTempFactor()</p></td>
+<tr class="row-odd"><td><p>atom.GetMonomerInfo().GetTempFactor()</p></td>
 <td><p>tempfactors</p></td>
 </tr>
-<tr class="row-odd"><td><p>atom.GetProp(‘_TriposAtomType’)</p></td>
+<tr class="row-even"><td><p>atom.GetProp(‘_TriposAtomType’)</p></td>
 <td><p>types</p></td>
 </tr>
 </tbody>
@@ -213,6 +217,9 @@ atom.GetProp(‘_TriposAtomName’)</p></td>
 </dl>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Added R/S chirality support</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.converters.RDKitParser.RDKitParser.close">

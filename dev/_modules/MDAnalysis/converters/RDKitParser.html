@@ -151,6 +151,7 @@
     <span class="n">Resids</span><span class="p">,</span>
     <span class="n">Resnums</span><span class="p">,</span>
     <span class="n">Resnames</span><span class="p">,</span>
+    <span class="n">RSChirality</span><span class="p">,</span>
     <span class="n">Segids</span><span class="p">,</span>
     <span class="n">AltLocs</span><span class="p">,</span>
     <span class="n">ChainIDs</span><span class="p">,</span>
@@ -161,6 +162,14 @@
 <span class="kn">from</span> <span class="nn">..core.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.converters.RDKitParser&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_rdkit_atom_to_RS</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Fetches RDKit chiral tags&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">atom</span><span class="o">.</span><span class="n">GetProp</span><span class="p">(</span><span class="s2">&quot;_CIPCode&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
 
 
 <div class="viewcode-block" id="RDKitParser"><a class="viewcode-back" href="../../../documentation_pages/converters/RDKit.html#MDAnalysis.converters.RDKitParser.RDKitParser">[docs]</a><span class="k">class</span> <span class="nc">RDKitParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
@@ -176,6 +185,7 @@
 <span class="sd">     - Bonds</span>
 <span class="sd">     - Resids</span>
 <span class="sd">     - Resnums</span>
+<span class="sd">     - RSChirality</span>
 <span class="sd">     - Segids</span>
 
 <span class="sd">    Guesses the following:</span>
@@ -215,6 +225,8 @@
 <span class="sd">    | atom.GetMonomerInfo().GetName()             | names                   |</span>
 <span class="sd">    | atom.GetProp(&#39;_TriposAtomName&#39;)             |                         |</span>
 <span class="sd">    +---------------------------------------------+-------------------------+</span>
+<span class="sd">    | atom.GetProp(&#39;_CIPCode&#39;)                    | chiralities             |</span>
+<span class="sd">    +---------------------------------------------+-------------------------+</span>
 <span class="sd">    | atom.GetMonomerInfo().GetOccupancy()        | occupancies             |</span>
 <span class="sd">    +---------------------------------------------+-------------------------+</span>
 <span class="sd">    | atom.GetMonomerInfo().GetResidueName()      | resnames                |</span>
@@ -233,6 +245,8 @@
 
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    .. versionchanged:: 2.1.0</span>
+<span class="sd">       Added R/S chirality support</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;RDKIT&#39;</span>
 
@@ -258,6 +272,7 @@
 
         <span class="c1"># Atoms</span>
         <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">chiralities</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">resnums</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">resnames</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">elements</span> <span class="o">=</span> <span class="p">[]</span>
@@ -295,6 +310,7 @@
             <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetSymbol</span><span class="p">())</span>
             <span class="n">masses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetMass</span><span class="p">())</span>
             <span class="n">aromatics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">GetIsAromatic</span><span class="p">())</span>
+            <span class="n">chiralities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_rdkit_atom_to_RS</span><span class="p">(</span><span class="n">atom</span><span class="p">))</span>
             <span class="n">mi</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">GetMonomerInfo</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">mi</span><span class="p">:</span> <span class="c1"># atom name and residue info are present</span>
                 <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">GetName</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
@@ -349,6 +365,7 @@
             <span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">Elements</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span>
             <span class="p">(</span><span class="n">masses</span><span class="p">,</span> <span class="n">Masses</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
             <span class="p">(</span><span class="n">aromatics</span><span class="p">,</span> <span class="n">Aromaticities</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">chiralities</span><span class="p">,</span> <span class="n">RSChirality</span><span class="p">,</span> <span class="s1">&#39;U1&#39;</span><span class="p">),</span>
         <span class="p">):</span>
             <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Attr</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)))</span>
 
