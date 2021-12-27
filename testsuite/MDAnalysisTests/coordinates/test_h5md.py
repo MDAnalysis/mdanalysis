@@ -415,6 +415,7 @@ class TestH5MDReaderWithRealTrajectory(object):
         with pytest.raises(ValueError):
             u = mda.Universe(outfile)
 
+
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 class TestH5MDWriterWithRealTrajectory(object):
 
