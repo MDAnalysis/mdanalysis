@@ -576,7 +576,7 @@ class H5MDReader(base.ReaderBase):
                 if group in ('position', 'velocity', 'force'):
                     n_atoms = f[f'particles/trajectory/{group}/value'].shape[1]
                     return n_atoms
-            
+
             raise NoDataError("Could not construct minimal topology from the "
                               "H5MD trajectory file, as it did not contain a "
                               "'position', 'velocity', or 'force' group. "
