@@ -327,6 +327,10 @@ class H5MDReader(base.ReaderBase):
 
 
     .. versionadded:: 2.0.0
+    .. versionchanged:: 2.1.0
+       Adds :meth:`parse_n_atoms` method to obtain the number of atoms directly
+       from the trajectory by evaluating the shape of the ``position``,
+       ``velocity``, or ``force`` groups.
 
     """
 
@@ -573,10 +577,11 @@ class H5MDReader(base.ReaderBase):
                     n_atoms = f[f'particles/trajectory/{group}/value'].shape[1]
                     return n_atoms
             else:
-                raise NoDataError("Could not construct minimal topology from the "
-                                  "H5MD trajectory file, as it did not contain a "
-                                  "'position', 'velocity', or 'force' group. "
-                                  "You must include a topology file.")
+                raise NoDataError("Could not construct minimal topology from "
+                                  "the H5MD trajectory file, as it did not "
+                                  "contain a 'position', 'velocity', or "
+                                  "'force' group. You must include a "
+                                  "topology file.")
 
     def open_trajectory(self):
         """opens the trajectory file using h5py library"""
