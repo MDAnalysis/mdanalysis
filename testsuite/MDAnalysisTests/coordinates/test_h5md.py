@@ -381,6 +381,42 @@ class TestH5MDReaderWithRealTrajectory(object):
         u = mda.Universe(TPR_xvf, H5MD_xvf, driver="core")
         assert_equal(u.trajectory._file.driver, "core")
 
+    @pytest.mark.parametrize('group1, group2', (('velocity', 'force'),
+                                                ('position', 'force'),
+                                                ('position', 'velocity')))
+    def test_parse_n_atoms(self, h5md_file, outfile, group1, group2):
+        with h5md_file as f:
+            with h5py.File(outfile, 'w') as g:
+                f.copy(source='particles', dest=g)
+                f.copy(source='h5md', dest=g)
+                traj_group = g['particles/trajectory']
+                del traj_group[group1]
+                del traj_group[group2]
+                for dset in ('position/value', 'velocity/value',
+                             'force/value'):
+                    try:
+                        n_atoms_in_dset = traj_group[dset].shape[1]
+                        break
+                    except KeyError:
+                        continue
+
+        u = mda.Universe(outfile)
+        assert_equal(u.atoms.n_atoms, n_atoms_in_dset)
+
+    def test_parse_n_atoms_error(self, h5md_file, outfile):
+        with h5md_file as f:
+            with h5py.File(outfile, 'w') as g:
+                f.copy(source='particles', dest=g)
+                f.copy(source='h5md', dest=g)
+                traj_group = g['particles/trajectory']
+                del traj_group['position']
+                del traj_group['velocity']
+                del traj_group['force']
+
+        errmsg = "Could not construct minimal topology"
+        with pytest.raises(ValueError, match=errmsg):
+            u = mda.Universe(outfile)
+
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 class TestH5MDWriterWithRealTrajectory(object):
