@@ -407,9 +407,19 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">universe</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">donors_sel</span> <span class="o">=</span> <span class="n">donors_sel</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="o">=</span> <span class="n">hydrogens_sel</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="o">=</span> <span class="n">acceptors_sel</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">donors_sel</span> <span class="o">=</span> <span class="n">donors_sel</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">donors_sel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">donors_sel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="o">=</span> <span class="n">hydrogens_sel</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">hydrogens_sel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">hydrogens_sel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="o">=</span> <span class="n">acceptors_sel</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">acceptors_sel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">acceptors_sel</span>
+
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> is an empty selection string - no hydrogen bonds will &quot;</span>
+               <span class="s2">&quot;be found. This may be intended, but please check your &quot;</span>
+               <span class="s2">&quot;selection.&quot;</span>
+               <span class="p">)</span>
+        <span class="k">for</span> <span class="n">sel</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;donors_sel&#39;</span><span class="p">,</span> <span class="s1">&#39;hydrogens_sel&#39;</span><span class="p">,</span> <span class="s1">&#39;acceptors_sel&#39;</span><span class="p">]:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sel</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">val</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sel</span><span class="p">))</span>
 
         <span class="c1"># If hydrogen bonding groups are selected, then generate</span>
         <span class="c1"># corresponding atom groups</span>
@@ -530,7 +540,7 @@
 
         <span class="c1"># We need to know `hydrogens_sel` before we can find donors</span>
         <span class="c1"># Use a new variable `hydrogens_sel` so that we do not set `self.hydrogens_sel` if it is currently `None`</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">hydrogens_sel</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">hydrogens_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_hydrogens</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">hydrogens_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hydrogens_sel</span>
@@ -603,7 +613,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># If donors_sel is not provided, use topology to find d-h pairs</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">donors_sel</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">donors_sel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 
             <span class="c1"># We&#39;re using u._topology.bonds rather than u.bonds as it is a million times faster to access.</span>
             <span class="c1"># This is because u.bonds also calculates properties of each bond (e.g bond length).</span>
@@ -674,9 +684,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">hbonds</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]]</span>
 
         <span class="c1"># Set atom selections if they have not been provided</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">acceptors_sel</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_acceptors</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">hydrogens_sel</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_hydrogens</span><span class="p">()</span>
 
         <span class="c1"># Select atom groups</span>
