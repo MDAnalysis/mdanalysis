@@ -35,6 +35,9 @@ jobs:
         Python39-64bit-full:
           PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
+        Python310-64bit-full:
+          PYTHON_VERSION: '3.10'
+          PYTHON_ARCH: 'x64'
   steps:
   - task: UsePythonVersion@0
     inputs:
@@ -54,7 +57,7 @@ jobs:
       pytest-xdist
       scikit-learn
       scipy
-      "h5py<3.4.0"
+      h5py
       tqdm
       threadpoolctl
     displayName: 'Install dependencies'
@@ -64,7 +67,7 @@ jobs:
       biopython
       chemfiles>=0.9
       duecredit
-      gsd==1.9.3
+      gsd
       joblib
       GridDataFormats
       mmtf-python

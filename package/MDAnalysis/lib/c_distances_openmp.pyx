@@ -32,6 +32,7 @@ Contains OpenMP versions of the contents of "calc_distances.h"
 
 import numpy
 cimport numpy
+numpy.import_array()
 
 cdef extern from "string.h":
     void* memcpy(void* dst, void* src, int len)
