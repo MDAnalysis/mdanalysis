@@ -370,6 +370,11 @@ it rewinds the trajectory back to the first timestep.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 2.0.0.</span></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Adds <a class="reference internal" href="#MDAnalysis.coordinates.H5MD.H5MDReader.parse_n_atoms" title="MDAnalysis.coordinates.H5MD.H5MDReader.parse_n_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">parse_n_atoms()</span></code></a> method to obtain the number of atoms directly
+from the trajectory by evaluating the shape of the <code class="docutils literal notranslate"><span class="pre">position</span></code>,
+<code class="docutils literal notranslate"><span class="pre">velocity</span></code>, or <code class="docutils literal notranslate"><span class="pre">force</span></code> groups.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -948,7 +953,7 @@ steps are more frequent, this will work the same as calling
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.coordinates.H5MD.H5MDReader.parse_n_atoms">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_n_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.H5MDReader.parse_n_atoms" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_n_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/H5MD.html#H5MDReader.parse_n_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.H5MDReader.parse_n_atoms" title="Permalink to this definition"></a></dt>
 <dd><p>Read the coordinate file and deduce the number of atoms</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>

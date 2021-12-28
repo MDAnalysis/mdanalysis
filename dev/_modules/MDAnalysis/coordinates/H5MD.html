@@ -418,6 +418,10 @@
 
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    .. versionchanged:: 2.1.0</span>
+<span class="sd">       Adds :meth:`parse_n_atoms` method to obtain the number of atoms directly</span>
+<span class="sd">       from the trajectory by evaluating the shape of the ``position``,</span>
+<span class="sd">       ``velocity``, or ``force`` groups.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -655,6 +659,19 @@
         <span class="c1"># nb, filename strings can still get passed through if</span>
         <span class="c1"># format=&#39;H5MD&#39; is used</span>
         <span class="k">return</span> <span class="n">HAS_H5PY</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">)</span>
+
+<div class="viewcode-block" id="H5MDReader.parse_n_atoms"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader.parse_n_atoms">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">parse_n_atoms</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">f</span><span class="p">[</span><span class="s1">&#39;particles/trajectory&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">group</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;force&#39;</span><span class="p">):</span>
+                    <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;particles/trajectory/</span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s1">/value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">return</span> <span class="n">n_atoms</span>
+
+            <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Could not construct minimal topology from the &quot;</span>
+                              <span class="s2">&quot;H5MD trajectory file, as it did not contain a &quot;</span>
+                              <span class="s2">&quot;&#39;position&#39;, &#39;velocity&#39;, or &#39;force&#39; group. &quot;</span>
+                              <span class="s2">&quot;You must include a topology file.&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="H5MDReader.open_trajectory"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader.open_trajectory">[docs]</a>    <span class="k">def</span> <span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;opens the trajectory file using h5py library&quot;&quot;&quot;</span>
