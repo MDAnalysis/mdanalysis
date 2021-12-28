@@ -561,40 +561,22 @@ class TestHydrogenBondAnalysisEmptySelections:
     def universe():
         return MDAnalysis.Universe(waterPSF, waterDCD)
 
-    kwargs = {
-        'donors_sel': ' ',
-        'hydrogens_sel': ' ',
-        'acceptors_sel': ' ',
-    }
     msg = ("{} is an empty selection string - no hydrogen bonds will "
            "be found. This may be intended, but please check your "
            "selection."
            )
 
-    def test_empty_donors_sel(self, universe):
-        with pytest.warns(UserWarning, match=self.msg.format("donors_sel")):
-            HydrogenBondAnalysis(
-                universe,
-                donors_sel=self.kwargs['donors_sel'],
-            )
-
-    def test_empty_hydrogens_sel(self, universe):
-        with pytest.warns(UserWarning, match=self.msg.format("hydrogens_sel")):
-            HydrogenBondAnalysis(
-                universe,
-                hydrogens_sel=self.kwargs['hydrogens_sel'],
-            )
-
-    def test_empty_acceptors_sel(self, universe):
-        with pytest.warns(UserWarning, match=self.msg.format("acceptors_sel")):
-            HydrogenBondAnalysis(
-                universe,
-                acceptors_sel=self.kwargs['acceptors_sel'],
-            )
+    @pytest.mark.parametrize('seltype',
+            ['donors_sel', 'hydrogens_sel', 'acceptors_sel'])
+    def test_empty_sel(self, universe, seltype):
+        sel_kwarg = {seltype: ' '}
+        with pytest.warns(UserWarning, match=self.msg.format(seltype)):
+            HydrogenBondAnalysis(universe, **sel_kwarg)
 
     def test_hbond_analysis(self, universe):
 
-        h = HydrogenBondAnalysis(universe, **self.kwargs)
+        h = HydrogenBondAnalysis(universe, donors_sel=' ', hydrogens_sel=' ',
+                                 acceptors_sel=' ')
         h.run()
 
         assert h.donors_sel == ''
