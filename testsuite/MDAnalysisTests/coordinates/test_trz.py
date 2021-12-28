@@ -26,7 +26,8 @@ import os
 
 from numpy.testing import (
     assert_equal,
-    assert_almost_equal
+    assert_almost_equal,
+    assert_allclose
 )
 import numpy as np
 
@@ -233,10 +234,9 @@ class TestTRZWriter2(object):
 
         u2 = mda.Universe(two_water_gro, outfile)
 
-        wmsg = ('dt information could not be obtained, defaulting to 0 ps. '
-                'Note: in MDAnalysis 2.1.0 this default will change 1 ps.')
+        wmsg = ('Reader has no dt information, set to 1.0 ps')
         with pytest.warns(UserWarning, match=wmsg):
-            assert_almost_equal(u2.trajectory.dt, 0)
+            assert_allclose(u2.trajectory.dt, 1.0)
 
 
 class TestWrite_Partial_Timestep(object):
