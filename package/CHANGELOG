@@ -14,11 +14,12 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
-         orbeckst, scal444, edisj
+         orbeckst, scal444, p-j-smith, edisj
 
  * 2.1.0
 
 Fixes
+  * Allow empty strings to be passed to HydrogenBondAnalysis (Issue #3453).
   * Avoid integer overflow in NSGrid with too many grids (Issue #3183)
   * Fix ITPParser charge reading (Issue #3419).
   * TRRWriter preserves timestep data (Issue #3350).
@@ -32,6 +33,7 @@ Enhancements
   * Adds :meth:`parse_n_atoms` to H5MD reader (Issue #3465)
   * Add option for custom compiler flags for C/C++ on build and remove march
     option from setup.cfg (Issue #3428, PR #3429).
+  * Added R/S Chirality support to RDKit parsed molecules
 
 Changes
   * Dropped python 3.6 support and raised minimum numpy version to 1.18.0
