@@ -80,6 +80,9 @@ class TRZReader(base.ReaderBase):
     .. versionchanged:: 1.0.1
        Now checks for the correct `n_atoms` on reading
        and can raise :exc:`ValueError`.
+    .. versionchanged:: 2.1.0
+       TRZReader now returns a default :attr:`dt` of 1.0 when it cannot be
+       obtained from the difference between two frames.
     """
 
     format = "TRZ"
@@ -257,9 +260,14 @@ class TRZReader(base.ReaderBase):
     def _get_dt(self):
         """The amount of time between frames in ps
 
-        Assumes that this step is constant (ie. 2 trajectories with different steps haven't been
-        stitched together)
-        Returns 0 in case of IOError
+        Assumes that this step is constant (ie. 2 trajectories with different
+        steps haven't been stitched together).
+        Returns ``AttributeError`` in case of ``StopIteration``
+        (which makes :attr:`dt` return 1.0).
+
+        .. versionchanged:: 2.1.0
+           Now returns an ``AttributeError`` if dt can't be obtained from the
+           time difference between two frames.
         """
         curr_frame = self.ts.frame
         try:

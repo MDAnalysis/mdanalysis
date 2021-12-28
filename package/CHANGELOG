@@ -36,6 +36,8 @@ Enhancements
   * Added R/S Chirality support to RDKit parsed molecules
 
 Changes
+  * TRZReader now defaults to a `dt` of 1.0 (instead of 0.0 previously) when
+    it cannot be obtained from file (Issue #3257)
   * Dropped python 3.6 support and raised minimum numpy version to 1.18.0
     (NEP29)
 
