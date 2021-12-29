@@ -176,13 +176,12 @@ jobs:
         mamba install ${conda_deps}
         pip install ${pip_deps}
 
-    - name: install_mda
-      run: |
-        cd package && python setup.py develop
-
-    - name: build_docs
-      run: |
-        cd package && python setup.py build_sphinx -E --keep-going
+    - name: build_srcs
+      uses: ./.github/actions/build-src
+      with:
+        build-hole: false
+        build-tests: false
+        build-docs: true
 
     - name: deploy_docs
       if: github.event_name != 'pull_request'
