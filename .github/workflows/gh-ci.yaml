@@ -152,7 +152,7 @@ jobs:
         conda list
 
     - name: build_srcs
-      uses: MDAnalysis/mdanalysis/.github/actions/build-src@develop
+      uses: ./.github/actions/build-src
       with:
         build-hole: matrix.install_hole
         build-tests: true
