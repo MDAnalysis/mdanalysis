@@ -5,22 +5,26 @@ inputs:
     description: 'build HOLE2'
     required: true
     default: true
-    type: boolean
   build-tests:
     description: 'build MDA tests'
     required: true
     default: true
-    type: boolean
   build-docs:
     description: 'build MDA docs'
     required: true
     default: false
-    type: boolean
 
 
 runs:
   using: "composite"
   steps:
+    - name: echo_inputs
+      shell: bash -l {0}
+      run: |
+        echo ${{ inputs.build-hole }}
+        echo ${{ inputs.build-tests }}
+        echo ${{ inputs.build-docs }}
+
     - name: build_hole
       if: ${{ inputs.build-hole }} == "true"
       shell: bash -l {0}
