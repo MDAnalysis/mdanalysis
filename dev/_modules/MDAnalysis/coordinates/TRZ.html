@@ -171,6 +171,9 @@
 <span class="sd">    .. versionchanged:: 1.0.1</span>
 <span class="sd">       Now checks for the correct `n_atoms` on reading</span>
 <span class="sd">       and can raise :exc:`ValueError`.</span>
+<span class="sd">    .. versionchanged:: 2.1.0</span>
+<span class="sd">       TRZReader now returns a default :attr:`dt` of 1.0 when it cannot be</span>
+<span class="sd">       obtained from the difference between two frames.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;TRZ&quot;</span>
@@ -348,9 +351,14 @@
     <span class="k">def</span> <span class="nf">_get_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The amount of time between frames in ps</span>
 
-<span class="sd">        Assumes that this step is constant (ie. 2 trajectories with different steps haven&#39;t been</span>
-<span class="sd">        stitched together)</span>
-<span class="sd">        Returns 0 in case of IOError</span>
+<span class="sd">        Assumes that this step is constant (ie. 2 trajectories with different</span>
+<span class="sd">        steps haven&#39;t been stitched together).</span>
+<span class="sd">        Returns ``AttributeError`` in case of ``StopIteration``</span>
+<span class="sd">        (which makes :attr:`dt` return 1.0).</span>
+
+<span class="sd">        .. versionchanged:: 2.1.0</span>
+<span class="sd">           Now returns an ``AttributeError`` if dt can&#39;t be obtained from the</span>
+<span class="sd">           time difference between two frames.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">curr_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
         <span class="k">try</span><span class="p">:</span>
@@ -359,10 +367,7 @@
             <span class="n">t1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span>
             <span class="n">dt</span> <span class="o">=</span> <span class="n">t1</span> <span class="o">-</span> <span class="n">t0</span>
         <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;dt information could not be obtained, defaulting to 0 ps. &#39;</span>
-                   <span class="s1">&#39;Note: in MDAnalysis 2.1.0 this default will change 1 ps.&#39;</span><span class="p">)</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-            <span class="k">return</span> <span class="mi">0</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">dt</span>
         <span class="k">finally</span><span class="p">:</span>

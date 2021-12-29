@@ -169,6 +169,10 @@ Now passes a weakref of self to ts (ts._reader).</p>
 <p><span class="versionmodified changed">Changed in version 1.0.1: </span>Now checks for the correct <cite>n_atoms</cite> on reading
 and can raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>TRZReader now returns a default <code class="xref py py-attr docutils literal notranslate"><span class="pre">dt</span></code> of 1.0 when it cannot be
+obtained from the difference between two frames.</p>
+</div>
 <p>Creates a TRZ Reader</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
