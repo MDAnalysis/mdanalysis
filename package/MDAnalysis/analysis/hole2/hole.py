@@ -785,8 +785,8 @@ class HoleAnalysis(AnalysisBase):
         i = self._frame_index
         outfile = self.output_file.format(prefix=self.prefix, i=frame)
         sphpdb = self.sphpdb_file.format(prefix=self.prefix, i=frame)
-        self.sphpdbs[i] = sphpdb
-        self.outfiles[i] = outfile
+        self.results.sphpdbs[i] = sphpdb
+        self.results.outfiles[i] = outfile
         if outfile not in self.tmp_files:
             self.tmp_files.append(outfile)
         if sphpdb not in self.tmp_files:
