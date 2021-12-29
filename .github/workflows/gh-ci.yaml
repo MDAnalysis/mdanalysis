@@ -79,35 +79,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: setup_osx
-      if: startsWith(matrix.os, 'macOS')
-      run: |
-        # Set OS specific vars and compiler flags
-        echo "OS_NAME=osx" >> $GITHUB_ENV
-        # TODO: work out why this is necessary (from CI helpers)
-        echo "MACOSX_DEPLOYMENT_TARGET=10.9" >> $GITHUB_ENV
-        ulimit -S -n 2048
-        clang -v
-        echo "CC=clang" >> $GITHUB_ENV
-        clang++ -v
-        echo "CXX=clang++" >> $GITHUB_ENV
-        gfortran-9 -v
-        echo "FC=gfortran-9" >> $GITHUB_ENV
-        echo "numprocs=3" >> $GITHUB_ENV
-        echo "ENABLE_HIGH_MEM_UNIT_TESTS=true" >> $GITHUB_ENV
-
-    - name: setup_linux
-      if: startsWith(matrix.os, 'ubuntu')
-      run: |
-        # Set OS specific vars and compiler flags
-        echo "OS_NAME=linux" >> $GITHUB_ENV
-        gcc -v
-        echo "CC=gcc" >> $GITHUB_ENV
-        g++ -v
-        echo "CXX=g++" >> $GITHUB_ENV
-        gfortran -v
-        echo "FC=gfortran" >> $GITHUB_ENV
-        echo "numprocs=2" >> $GITHUB_ENV
+    - name: setup_os
+      uses: ./.github/actions/setup-os
+      with:
+        os-type: ${{ matrix.os }}
 
     - name: setup_miniconda
       uses: conda-incubator/setup-miniconda@v2
@@ -141,16 +116,6 @@ jobs:
           pip install asv
         fi
 
-    - name: check_setup
-      run: |
-        # Check OS and python setup
-        echo "OS: ${OS_NAME}"
-        which python
-        which pip
-        pip list
-        conda info
-        conda list
-
     - name: build_srcs
       uses: ./.github/actions/build-src
       with:
@@ -158,29 +123,17 @@ jobs:
         build-tests: true
         build-docs: false
 
-              # IA: delete if composite works...
-              #    - name: install_hole
-              #      if : matrix.install_hole
-              #      run: |
-              #        # We manually build hole2 to avoid OS incompatibilities
-              #        git clone https://github.com/MDAnalysis/hole2.git
-              #        cd hole2/src
-              #        source ../source.apache
-              #        (make FC=${FC}) && (make PREFIX=${HOME}/hole2 FC=${FC} install)
-              #        source ../source.unset
-              #        echo "HOLE_BINDIR=${HOME}/hole2/bin" >> $GITHUB_ENV
-              #        echo "${HOME}/hole2/bin" >> $GITHUB_PATH
-              #
-              #    - name: install_mda
-              #      run: |
-              #        # TODO: using install instead of develop here causes coverage to drop
-              #        # for .pyx file. If possible a solution for this should be found.
-              #        (cd package/ && python setup.py develop) && (cd testsuite/ && python setup.py install)
-
     - name: check_env_vars
       run: |
         echo "hole_bindir: ${HOLE_BINDIR}"
         echo "path: ${PATH}"
+        echo "os name: ${OS_NAME}"
+        echo "OSX Deployment target: ${MACOSX_DEPLOYMENT_TARGET}"
+        echo "CC: ${CC}"
+        echo "CXX: ${CXX}"
+        echo "FC: ${FC}"
+        echo "numprocs: ${numprocs}"
+        echo "high mem: ${ENABLE_HIGH_MEM_UNIT_TESTS}"
 
     - name: run_tests
       if: contains(matrix.name, 'asv_check') != true

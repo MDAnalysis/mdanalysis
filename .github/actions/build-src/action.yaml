@@ -25,6 +25,17 @@ runs:
         echo ${{ inputs.build-tests }}
         echo ${{ inputs.build-docs }}
 
+    - name: check_setup
+      shell: bash -l {0}
+      run: |
+        # Check OS and python setup prior to builds
+        echo "OS: ${OS_NAME}"
+        which python
+        which pip
+        pip list
+        conda info
+        conda list
+
     - name: build_hole
       if: ${{ inputs.build-hole == 'true' }}
       shell: bash -l {0}
