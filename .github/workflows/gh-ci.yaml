@@ -154,7 +154,7 @@ jobs:
     - name: build_srcs
       uses: ./.github/actions/build-src
       with:
-        build-hole: matrix.install_hole
+        build-hole: ${{ matrix.install_hole }}
         build-tests: true
         build-docs: false
 
