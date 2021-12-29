@@ -123,18 +123,6 @@ jobs:
         build-tests: true
         build-docs: false
 
-    - name: check_env_vars
-      run: |
-        echo "hole_bindir: ${HOLE_BINDIR}"
-        echo "path: ${PATH}"
-        echo "os name: ${OS_NAME}"
-        echo "OSX Deployment target: ${MACOSX_DEPLOYMENT_TARGET}"
-        echo "CC: ${CC}"
-        echo "CXX: ${CXX}"
-        echo "FC: ${FC}"
-        echo "numprocs: ${numprocs}"
-        echo "high mem: ${ENABLE_HIGH_MEM_UNIT_TESTS}"
-
     - name: run_tests
       if: contains(matrix.name, 'asv_check') != true
       run: |
