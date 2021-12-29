@@ -884,7 +884,7 @@ class HoleAnalysis(AnalysisBase):
             raise ValueError('No sphpdb files to read. Try calling run()')
 
         frames = []
-        for i in self.frames:
+        for i, frame in enumerate(self.frames):
             sphpdb = self.results.sphpdbs[i]
             tmp_tri = create_vmd_surface(sphpdb=sphpdb,
                                          sph_process=self.exe['sph_process'],
@@ -915,7 +915,7 @@ class HoleAnalysis(AnalysisBase):
                 pass
 
             tri = '{ { ' + ' } { '.join(list(map(' '.join, shapes))) + ' } }'
-            frames.append('set triangles({i}) '.format(i=i) + tri)
+            frames.append(f'set triangles({frame}) ' + tri)
 
         trinorms = '\n'.join(frames)
         vmd_1 = vmd_script_array.format(no_water_color=no_water_color,

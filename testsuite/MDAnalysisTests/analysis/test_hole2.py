@@ -304,6 +304,13 @@ class TestHoleAnalysis(BaseTestHole):
         vmd_file = tmpdir.join('hole.vmd')
         assert len(glob.glob(str(vmd_file))) == 1
 
+    def test_nonzero_start_surface(self, universe, tmpdir):
+        # Issue 3476
+        with tmpdir.as_cwd():
+            h = hole2.HoleAnalysis(universe)
+            h.run(start=1)
+            h.create_vmd_surface(filename='hole.vmd')
+
     def test_output_level(self, tmpdir, universe):
         with tmpdir.as_cwd():
             with pytest.warns(UserWarning, match='needs to be < 3'):
