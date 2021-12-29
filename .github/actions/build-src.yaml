@@ -1,0 +1,54 @@
+name: 'build-src'
+description: 'make source builds for CI'
+inputs:
+  build-hole:
+    description: 'build HOLE2'
+    required: true
+    default: true
+    type: boolean
+  build-tests:
+    description: 'build MDA tests'
+    required: true
+    default: true
+    type: boolean
+  build-docs:
+    description: 'build MDA docs'
+    required: true
+    default: false
+    type: boolean
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: build_hole
+      if : ${{ inputs.build-hole }}
+      shell: bash -l {0}
+      run: |
+        # We manually build hole2 to avoid OS incompatibilities
+        git clone https://github.com/MDAnalysis/hole2.git
+        cd hole2/src
+        source ../source.apache
+        (make FC=${FC}) && (make PREFIX=${HOME}/hole2 FC=${FC} install)
+        source ../source.unset
+        echo "HOLE_BINDIR=${HOME}/hole2/bin" >> $GITHUB_ENV
+        echo "${HOME}/hole2/bin" >> $GITHUB_PATH
+
+    - name: build_mda_main
+      shell: bash -l {0}
+      run: |
+        # TODO: using install instead of develop here causes coverage to drop
+        # for .pyx file. If possible a solution for this should be found.
+        cd package/ && python setup.py develop
+
+    - name: build_mda_tests
+      if: ${{ inputs.build-tests }}
+      shell: bash -l {0}
+      run: |
+        cd testsuite/ && python setup.py install
+
+    - name: build_docs
+      if: ${{ inputs.build-docs }}
+      shell: bash -l {0}
+      run: |
+        cd package && python setup.py build_sphinx -E --keep-going

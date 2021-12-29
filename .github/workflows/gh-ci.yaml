@@ -151,23 +151,36 @@ jobs:
         conda info
         conda list
 
-    - name: install_hole
-      if : matrix.install_hole
-      run: |
-        # We manually build hole2 to avoid OS incompatibilities
-        git clone https://github.com/MDAnalysis/hole2.git
-        cd hole2/src
-        source ../source.apache
-        (make FC=${FC}) && (make PREFIX=${HOME}/hole2 FC=${FC} install)
-        source ../source.unset
-        echo "HOLE_BINDIR=${HOME}/hole2/bin" >> $GITHUB_ENV
-        echo "${HOME}/hole2/bin" >> $GITHUB_PATH
+    - name: build_srcs
+      uses: actions/build-src.yaml@develop
+      with:
+        build-hole: matrix.install_hole
+        build-tests: true
+        build-docs: false
 
-    - name: install_mda
+              # IA: delete if composite works...
+              #    - name: install_hole
+              #      if : matrix.install_hole
+              #      run: |
+              #        # We manually build hole2 to avoid OS incompatibilities
+              #        git clone https://github.com/MDAnalysis/hole2.git
+              #        cd hole2/src
+              #        source ../source.apache
+              #        (make FC=${FC}) && (make PREFIX=${HOME}/hole2 FC=${FC} install)
+              #        source ../source.unset
+              #        echo "HOLE_BINDIR=${HOME}/hole2/bin" >> $GITHUB_ENV
+              #        echo "${HOME}/hole2/bin" >> $GITHUB_PATH
+              #
+              #    - name: install_mda
+              #      run: |
+              #        # TODO: using install instead of develop here causes coverage to drop
+              #        # for .pyx file. If possible a solution for this should be found.
+              #        (cd package/ && python setup.py develop) && (cd testsuite/ && python setup.py install)
+
+    - name: check_env_vars
       run: |
-        # TODO: using install instead of develop here causes coverage to drop
-        # for .pyx file. If possible a solution for this should be found.
-        (cd package/ && python setup.py develop) && (cd testsuite/ && python setup.py install)
+        echo "hole_bindir: ${HOLE_BINDIR}"
+        echo "path: ${PATH}"
 
     - name: run_tests
       if: contains(matrix.name, 'asv_check') != true
