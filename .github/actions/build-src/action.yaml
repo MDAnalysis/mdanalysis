@@ -22,7 +22,7 @@ runs:
   using: "composite"
   steps:
     - name: build_hole
-      if : ${{ inputs.build-hole }}
+      if : inputs.build-hole
       shell: bash -l {0}
       run: |
         # We manually build hole2 to avoid OS incompatibilities
@@ -42,13 +42,13 @@ runs:
         cd package/ && python setup.py develop
 
     - name: build_mda_tests
-      if: ${{ inputs.build-tests }}
+      if: inputs.build-tests
       shell: bash -l {0}
       run: |
         cd testsuite/ && python setup.py install
 
     - name: build_docs
-      if: ${{ inputs.build-docs }}
+      if: inputs.build-docs
       shell: bash -l {0}
       run: |
         cd package && python setup.py build_sphinx -E --keep-going
