@@ -239,6 +239,7 @@ timeUnit_factor = {
     'ps': 1.0, 'picosecond': 1.0,  # 1/1.0
     'fs': 1e3, 'femtosecond': 1e3,  # 1/1e-3,
     'ns': 1e-3, 'nanosecond': 1e-3,  # 1/1e3,
+    'ms': 1e-9, 'millisecond': 1e-9, # 1/1e9,
     'second': 1e-12, 'sec': 1e-12, 's': 1e-12,  # 1/1e12,
     'AKMA': 1 / 4.888821e-2,
 }
@@ -253,6 +254,10 @@ speedUnit_factor = {
     'Angstrom/femtosecond': 1.0 * 1e3,
     'angstrom/femtosecond': 1.0 * 1e3,
     'angstrom/fs': 1.0 * 1e3,
+    'Angstrom/ms': 1.0 * 1e-9,
+    'Angstrom/millisecond': 1.0 * 1e-9,
+    'angstrom/millisecond': 1.0 * 1e-9,
+    'angstrom/ms': 1.0 * 1e-9,
     'Angstrom/AKMA': 4.888821e-2,
     'nm/ps': 0.1, 'nanometer/ps': 0.1, 'nanometer/picosecond': 0.1,  # 1/10
     'nm/ns': 0.1 / 1e-3,
