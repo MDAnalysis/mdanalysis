@@ -20,13 +20,6 @@ defaults:
   run:
     shell: bash -l {0}
 
-env:
-  MDA_CONDA_MIN_DEPS: "pip pytest mmtf-python biopython networkx cython matplotlib-base scipy griddataformats hypothesis gsd codecov threadpoolctl"
-  MDA_CONDA_EXTRA_DEPS: "seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles-python>=0.9 tqdm>=4.43.0 tidynamics>=1.0.0 rdkit>=2020.03.1 h5py openmm"
-  MDA_PIP_MIN_DEPS: 'coverage<5 pytest-cov==2.10.1 pytest-xdist'
-  MDA_PIP_EXTRA_DEPS: 'duecredit parmed'
-
-
 jobs:
   main_tests:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
@@ -36,47 +29,48 @@ jobs:
         matrix:
           os: [ubuntu-latest, ]
           python-version: [3.7, 3.8, 3.9]
-          run_type: [FULL, ]
+          full-deps: [true, ]
           install_hole: [true, ]
           codecov: [true, ]
           include:
             - name: linux_mindeps_py3_10
               os: ubuntu-latest
               python-version: "3.10"
-              run_type: MIN
+              full-deps: false
               install_hole: true
               codecov: true
             - name: macOS_bigsur_py39
               os: macOS-11
               python-version: 3.9
-              run_type: FULL
+              full-deps: true
               install_hole: true
               codecov: true
             - name: macOS_catalina_py37
               os: macOS-10.15
               python-version: 3.7
-              run_type: FULL
+              full-deps: true
               install_hole: true
               codecov: false
             - name: minimal-ubuntu
               os: ubuntu-latest
               python-version: 3.7
-              run_type: MIN
+              full-deps: false
               install_hole: false
               codecov: true
             - name: numpy_min
               os: ubuntu-latest
               python-version: 3.7
-              run_type: FULL
+              full-deps: false
               install_hole: false
               codecov: false
               numpy: numpy=1.18.1
             - name: asv_check
               os: ubuntu-latest
               python-version: 3.7
-              run_type: FULL
+              full-deps: true
               install_hole: false
               codecov: false
+              extra-pip-deps: asv
     env:
       CYTHON_TRACE_NOGIL: 1
       MPLBACKEND: agg
@@ -96,31 +90,19 @@ jobs:
         python-version: ${{ matrix.python-version }}
         auto-update-conda: true
         channel-priority: flexible
-        # The order of these channel matters: both provide "fundamental"
-        # software (curl, ssh, ...), but the version in biobuilds are very
-        # outdated. This can lead to problem when loading shared libraries,
-        # see https://github.com/MDAnalysis/mdanalysis/pull/3126#issuecomment-813112080
         channels: conda-forge, bioconda
         add-pip-as-python-dependency: true
         mamba-version: "*"
         architecture: x64
 
     - name: install_deps
-      env:
-        MDA_CONDA_FULL_DEPS: "${{ env.MDA_CONDA_MIN_DEPS }} ${{ env.MDA_CONDA_EXTRA_DEPS }}"
-        MDA_PIP_FULL_DEPS: "${{ env.MDA_PIP_MIN_DEPS }} ${{ env.MDA_PIP_EXTRA_DEPS }}"
-      run: |
-        # NOTE: vars need to be re-assigned
-        # NOTE: set matrix.numpy to pin to a specific numpy version
-        conda_deps="${{ matrix.numpy }} ${MDA_CONDA_${{ matrix.run_type }}_DEPS}"
-        pip_deps=${MDA_PIP_${{ matrix.run_type }}_DEPS}
-        mamba install ${conda_deps}
-        pip install ${pip_deps}
-
-        # also install asv if required
-        if [ ${{ matrix.name }} = "asv_check" ]; then
-          pip install asv
-        fi
+      uses: ./.github/actions/setup-deps
+      with:
+        mamba: true
+        full-deps: ${{ matrix.full_deps }}
+        # in most cases will just default to empty, i.e. pick up max version from other deps
+        numpy: ${{ matrix.numpy }}
+        extra-pip-deps: ${{ matrix.extra-pip-deps }}
 
     - name: build_srcs
       uses: ./.github/actions/build-src
@@ -176,11 +158,11 @@ jobs:
         mamba-version: "*"
 
     - name: install_deps
-      run: |
-        conda_deps="${{ env.MDA_CONDA_MIN_DEPS }} ${{ env.MDA_CONDA_EXTRA_DEPS}}"
-        pip_deps="${{ env.MDA_PIP_MIN_DEPS}} ${{ env.MDA_PIP_EXTRA_DEPS }} sphinx sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0"
-        mamba install ${conda_deps}
-        pip install ${pip_deps}
+      uses: ./.github/actions/setup-deps
+      with:
+        mamba: true
+        full-deps: true
+        extra-pip-deps: "sphinx sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0"
 
     - name: build_srcs
       uses: ./.github/actions/build-src

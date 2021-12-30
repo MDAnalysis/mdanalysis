@@ -1,0 +1,134 @@
+name: 'setup-deps'
+description: 'setup python dependencies for an MDAnalysis install'
+inputs:
+  full-deps:
+    description: 'install optional dependencies'
+    default: false
+  extra-conda-deps:
+    description: 'extra dependencies to install via conda'
+    default: ''
+  extra-pip-deps:
+    description: 'extra dependencies to install via pip'
+    default: ''
+  mamba:
+    description: 'use mamba instead of conda'
+    default: false
+  # conda-installed min dependencies
+  biopython:
+    default: 'biopython'
+  codecov:
+    default: 'codecov'
+  cython:
+    default: 'cython'
+  griddataformats:
+    default: 'griddataformats'
+  gsd:
+    default: 'gsd'
+  hypothesis:
+    default: 'hypothesis'
+  matplotlib:
+    default: 'matplotlib-base'
+  mmtf-python:
+    default: 'mmtf-python'
+  networkx:
+    default: 'networkx'
+  numpy:
+    default: 'numpy'
+  pip:
+    default: 'pip'
+  pytest:
+    default: 'pytest'
+  scipy:
+    default: 'scipy'
+  threadpoolctl:
+    default: 'threadpoolctl'
+  tqdm:
+    default: 'tqdm>=4.43.0'
+  # conda-installed optional dependencies
+  chemfiles-python:
+    default: 'chemfiles-python>=0.9'
+  clustalw:
+    default: 'clustalw=2.1'
+  h5py:
+    default: 'h5py'
+  joblib:
+    default: 'joblib>=0.12'
+  netcdf4:
+    default: 'netcdf4'
+  openmm:
+    default: 'openmm'
+  rdkit:
+    default: 'rdkit>=2020.03.1'
+  scikit-learn:
+    default: 'scikit-learn'
+  seaborn:
+    default: 'seaborn>=0.7.0'
+  tidynamics:
+    default: 'tidynamics>=1.0.0'
+  # pip-installed min dependencies
+  coverage:
+    default: 'coverage<5'
+  pytest-cov:
+    default: 'pytest-cov==2.10.1'
+  pytest-xdist:
+    default: 'pytest-xdist'
+  # pip-install optional dependencies
+  duecredit:
+    default: 'duecredit'
+  parmed:
+    default: 'parmed'
+
+runs:
+  using: "composite"
+  steps:
+    - name: conda_install
+      shell: bash -l {0}
+      run: |
+        CONDA=$(if [ ${{ inputs.mamba }} = "true" ]; then 'mamba'; else 'conda'; fi)
+        # setup env variable for the minimum deps
+        echo "${{ inputs.biopython }} ${{ inputs.codecov }} " > $CONDA_MIN_DEPS
+        echo "${{ inputs.cython }} ${{ inputs.griddataformats }} " >> $CONDA_MIN_DEPS
+        echo "${{ inputs.gsd }} ${{ inputs.hypothesis }} " >> $CONDA_MIN_DEPS
+        echo "${{ inputs.matplotlib }} ${{ inputs.mmtf-python }} " >> $CONDA_MIN_DEPS
+        echo "${{ inputs.networkx }} ${{ inputs.numpy }} " >> $CONDA_MIN_DEPS
+        echo "${{ inputs.pip }} ${{ inputs.pytest }} " >> $CONDA_MIN_DEPS
+        echo "${{ inputs.scipy }} ${{ inputs.threadpoolctl }} " >> $CONDA_MIN_DEPS
+        echo "${{ inputs.tqdm }} " >> $CONDA_MIN_DEPS
+
+        # setup env variable for optional deps
+        echo "${{ inputs.chemfiles-python }} ${{ inputs.clustalw }} " > $CONDA_OPT_DEPS
+        echo "${{ inputs.h5py }} ${{ inputs.joblib }} " >> $CONDA_OPT_DEPS
+        echo "${{ inputs.netcdf4 }} ${{ inputs.openmm }} " >> $CONDA_OPT_DEPS
+        echo "${{ inputs.rdkit }} ${{ inputs.scikit-learn }} " >> $CONDA_OPT_DEPS
+        echo "${{ inputs.seaborn }} ${{ inputs.tidynamics }} " >> $CONDA_OPT_DEPS
+
+        # setup full variable
+        if [ ${{ inputs.full-deps }} = "true"]; then
+          echo "${CONDA_MIN_DEPS} ${CONDA_OPT_DEPS} ${{ inputs.extra-conda-deps }}" > $CONDA_DEPS
+        else
+          echo "${CONDA_MIN_DEPS} ${{ inputs.extra-conda-deps }}" > $CONDA_DEPS
+        fi
+
+        # do the install
+        ${CONDA} install ${CONDA_DEPS}
+          
+    - name: pip_install
+      shell: bash -l {0}
+      run: |
+        # setup env variable for the minimum deps
+        echo "${{ inputs.coverage }} ${{ inputs.pytest-cov }} " > $PIP_MIN_DEPS
+        echo "${{ inputs.pytest-xdist }} " >> $PIP_MIN_DEPS
+
+        # setup env variable for optional deps
+        echo "${{ inputs.duecredit }} ${{ inputs.parmed }} " > PIP_OPT_DEPS
+
+        # setup full variable
+        if [ ${{ inputs.full-deps }} = "true"]; then
+          echo "${PIP_MIN_DEPS} ${PIP_OPT_DEPS} ${{ inputs.extra-pip-deps }}" > $PIP_DEPS
+        else
+          echo "${PIP_MIN_DEPS} ${{ inputs.extra-pip-deps }}" > $PIP_DEPS
+        fi
+        
+        # do the install
+        pip install ${PIP_DEPS}
+
