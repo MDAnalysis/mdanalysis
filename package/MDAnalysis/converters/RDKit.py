@@ -452,7 +452,7 @@ def set_converter_cache_size(maxsize):
         conversions in memory. Using ``maxsize=None`` will remove all limits
         to the cache size, i.e. everything is cached.
     """
-    global atomgroup_to_mol
+    global atomgroup_to_mol   # pylint: disable=global-statement
     atomgroup_to_mol = lru_cache(maxsize=maxsize)(atomgroup_to_mol.__wrapped__)
 
 
@@ -638,7 +638,7 @@ def _standardize_patterns(mol, max_iter=200):
     +---------------+------------------------------------------------------------------------------+
     | nitro         | ``[N;X3;v3:1](-[O-;X1:2])-[O-;X1:3]>>[N+:1](-[O-:2])=[O+0:3]``               |
     +---------------+------------------------------------------------------------------------------+
- 
+
     """
 
     # standardize conjugated systems

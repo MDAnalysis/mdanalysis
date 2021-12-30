@@ -560,7 +560,7 @@ class HoleAnalysis(AnalysisBase):
 
     .. versionchanged:: 2.0.0
         :attr:`sphpdbs`, :attr:`outfiles` and :attr:`profiles `
-        are now stored in a :class:`MDAnalysis.analysis.base.Results` 
+        are now stored in a :class:`MDAnalysis.analysis.base.Results`
         instance.
 
     """
@@ -1300,14 +1300,14 @@ class HoleAnalysis(AnalysisBase):
             Profiles to include by frame. If ``None``, includes
             all frames.
         bins : int or iterable of edges, optional
-            If bins is an int, it defines the number of equal-width bins in the given 
-            range. If bins is a sequence, it defines a monotonically increasing array of 
+            If bins is an int, it defines the number of equal-width bins in the given
+            range. If bins is a sequence, it defines a monotonically increasing array of
             bin edges, including the rightmost edge, allowing for non-uniform bin widths.
         range : (float, float), optional
             The lower and upper range of the bins.
             If not provided, ``range`` is simply ``(a.min(), a.max())``,
             where ``a`` is the array of reaction coordinates.
-            Values outside the range are ignored. The first element of the range must be 
+            Values outside the range are ignored. The first element of the range must be
             less than or equal to the second.
 
 
@@ -1358,14 +1358,14 @@ class HoleAnalysis(AnalysisBase):
             Profiles to include by frame. If ``None``, includes
             all frames.
         bins : int or iterable of edges, optional
-            If bins is an int, it defines the number of equal-width bins in the given 
-            range. If bins is a sequence, it defines a monotonically increasing array of 
+            If bins is an int, it defines the number of equal-width bins in the given
+            range. If bins is a sequence, it defines a monotonically increasing array of
             bin edges, including the rightmost edge, allowing for non-uniform bin widths.
         range : (float, float), optional
             The lower and upper range of the bins.
             If not provided, ``range`` is simply ``(a.min(), a.max())``,
             where ``a`` is the array of reaction coordinates.
-            Values outside the range are ignored. The first element of the range must be 
+            Values outside the range are ignored. The first element of the range must be
             less than or equal to the second.
 
 
@@ -1394,14 +1394,14 @@ class HoleAnalysis(AnalysisBase):
             Profiles to include by frame. If ``None``, includes
             all frames.
         bins : int or iterable of edges, optional
-            If bins is an int, it defines the number of equal-width bins in the given 
-            range. If bins is a sequence, it defines a monotonically increasing array of 
+            If bins is an int, it defines the number of equal-width bins in the given
+            range. If bins is a sequence, it defines a monotonically increasing array of
             bin edges, including the rightmost edge, allowing for non-uniform bin widths.
         range : (float, float), optional
             The lower and upper range of the bins.
             If not provided, ``range`` is simply ``(a.min(), a.max())``,
             where ``a`` is the array of reaction coordinates.
-            Values outside the range are ignored. The first element of the range must be 
+            Values outside the range are ignored. The first element of the range must be
             less than or equal to the second.
         color : str or array-like, optional
             Color for the plot.

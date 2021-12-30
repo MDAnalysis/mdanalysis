@@ -94,6 +94,7 @@ jobs:
         gfortran-9 -v
         echo "FC=gfortran-9" >> $GITHUB_ENV
         echo "numprocs=3" >> $GITHUB_ENV
+        echo "ENABLE_HIGH_MEM_UNIT_TESTS=true" >> $GITHUB_ENV
 
     - name: setup_linux
       if: startsWith(matrix.os, 'ubuntu')
@@ -217,7 +218,7 @@ jobs:
     - name: install_deps
       run: |
         conda_deps="${{ env.MDA_CONDA_MIN_DEPS }} ${{ env.MDA_CONDA_EXTRA_DEPS}}"
-        pip_deps="${{ env.MDA_PIP_MIN_DEPS}} ${{ env.MDA_PIP_EXTRA_DEPS }} sphinx==1.8.5 sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0"
+        pip_deps="${{ env.MDA_PIP_MIN_DEPS}} ${{ env.MDA_PIP_EXTRA_DEPS }} sphinx sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0"
         mamba install ${conda_deps}
         pip install ${pip_deps}
 
@@ -227,7 +228,7 @@ jobs:
 
     - name: build_docs
       run: |
-        cd package && python setup.py build_sphinx -E
+        cd package && python setup.py build_sphinx -E --keep-going
 
     - name: deploy_docs
       if: github.event_name != 'pull_request'
@@ -311,7 +312,7 @@ jobs:
       env:
         PYLINTRC: package/.pylintrc
       run: |
-        pylint --py3k package/MDAnalysis && pylint --py3k testsuite/MDAnalysisTests
+        pylint package/MDAnalysis && pylint testsuite/MDAnalysisTests
 
 
   pypi_check:

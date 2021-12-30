@@ -166,6 +166,10 @@ smarts *SMARTS-query*
     find nitrogen atoms in rings. Requires RDKit. All matches (max 1000) are
     combined as a unique match.
 
+chiral *R | S*
+    select a particular stereocenter. e.g. ``name C and chirality S``
+    to select only S-chiral carbon atoms.  Only ``R`` and ``S`` will be
+    possible options but other values will not raise an error.
 
 Pattern matching
 ----------------
