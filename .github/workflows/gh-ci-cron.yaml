@@ -44,17 +44,15 @@ jobs:
         channel-priority: flexible
         channels: conda-forge, bioconda
         add-pip-as-python-dependency: true
-        mamba-version: "*"
         architecture: x64
 
     - name: install_dev_versions
       run: |
-        mamba --channel "scipy-wheels-nightly" numpy scipy
+        conda --channel "scipy-wheels-nightly" numpy scipy
 
     - name: install_other_deps
       uses: ./.github/actions/setup-deps
       with:
-        mamba: true
         numpy: ""
         scipy: ""
 
