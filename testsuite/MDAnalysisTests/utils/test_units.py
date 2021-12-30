@@ -77,6 +77,10 @@ class TestConversion(object):
     @pytest.mark.parametrize('quantity, unit1, unit2, ref', (
         (1, 'ps', 'AKMA', 20.45482949774598),
         (1, 'AKMA', 'ps', 0.04888821),
+        (1, 'ps', 'ms', 1e-9),
+        (1, 'ms', 'ps', 1e9),
+        (1, 'ps', 'us', 1e-6),
+        (1, 'us', 'ps', 1e6),
     ))
     def test_time(self, quantity, unit1, unit2, ref):
         self._assert_almost_equal_convert(quantity, unit1, unit2, ref)
@@ -94,6 +98,14 @@ class TestConversion(object):
         (1, 'kcal/(mol*Angstrom)', 'kJ/(mol*Angstrom)', 4.184),
     ))
     def test_force(self, quantity, unit1, unit2, ref):
+        self._assert_almost_equal_convert(quantity, unit1, unit2, ref)
+
+    @pytest.mark.parametrize('quantity, unit1, unit2, ref', (
+        (1, 'A/ps', 'm/s', 1e-10/1e-12),
+        (1, 'A/ps', 'nm/ps', 0.1),
+        (1, 'A/ps', 'pm/ps', 1e2),
+    ))
+    def test_speed(self, quantity, unit1, unit2, ref):
         self._assert_almost_equal_convert(quantity, unit1, unit2, ref)
 
     @pytest.mark.parametrize('quantity, unit1, unit2', ((nm, 'Stone', 'nm'),
