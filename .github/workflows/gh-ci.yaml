@@ -99,7 +99,7 @@ jobs:
       uses: ./.github/actions/setup-deps
       with:
         mamba: true
-        full-deps: ${{ matrix.full_deps }}
+        full-deps: ${{ matrix.full-deps }}
         # in most cases will just default to empty, i.e. pick up max version from other deps
         numpy: ${{ matrix.numpy }}
         extra-pip-deps: ${{ matrix.extra-pip-deps }}

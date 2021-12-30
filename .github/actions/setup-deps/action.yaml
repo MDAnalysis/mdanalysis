@@ -84,11 +84,6 @@ runs:
     - name: conda_install
       shell: bash -l {0}
       run: |
-        if [ ${{ inputs.mamba }} = "true" ]; then
-          CONDA="mamba"
-        else 
-          CONDA="conda"
-        fi
         # setup env variable for the minimum deps
         CONDA_MIN_DEPS="${{ inputs.biopython }} ${{ inputs.codecov }} "
         CONDA_MIN_DEPS+="${{ inputs.cython }} ${{ inputs.griddataformats }} "
@@ -114,7 +109,11 @@ runs:
         fi
 
         # do the install
-        ${CONDA} install ${CONDA_DEPS}
+        if [ ${{ inputs.mamba }} = "true" ]; then
+          mamba install ${CONDA_DEPS}
+        else
+          conda install ${CONDA_DEPS}
+        fi
           
     - name: pip_install
       shell: bash -l {0}
