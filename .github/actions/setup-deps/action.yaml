@@ -86,27 +86,27 @@ runs:
       run: |
         CONDA=$(if [ ${{ inputs.mamba }} = "true" ]; then 'mamba'; else 'conda'; fi)
         # setup env variable for the minimum deps
-        echo "${{ inputs.biopython }} ${{ inputs.codecov }} " > $CONDA_MIN_DEPS
-        echo "${{ inputs.cython }} ${{ inputs.griddataformats }} " >> $CONDA_MIN_DEPS
-        echo "${{ inputs.gsd }} ${{ inputs.hypothesis }} " >> $CONDA_MIN_DEPS
-        echo "${{ inputs.matplotlib }} ${{ inputs.mmtf-python }} " >> $CONDA_MIN_DEPS
-        echo "${{ inputs.networkx }} ${{ inputs.numpy }} " >> $CONDA_MIN_DEPS
-        echo "${{ inputs.pip }} ${{ inputs.pytest }} " >> $CONDA_MIN_DEPS
-        echo "${{ inputs.scipy }} ${{ inputs.threadpoolctl }} " >> $CONDA_MIN_DEPS
-        echo "${{ inputs.tqdm }} " >> $CONDA_MIN_DEPS
+        CONDA_MIN_DEPS="${{ inputs.biopython }} ${{ inputs.codecov }} "
+        CONDA_MIN_DEPS+="${{ inputs.cython }} ${{ inputs.griddataformats }} "
+        CONDA_MIN_DEPS+="${{ inputs.gsd }} ${{ inputs.hypothesis }} "
+        CONDA_MIN_DEPS+="${{ inputs.matplotlib }} ${{ inputs.mmtf-python }} "
+        CONDA_MIN_DEPS+="${{ inputs.networkx }} ${{ inputs.numpy }} "
+        CONDA_MIN_DEPS+="${{ inputs.pip }} ${{ inputs.pytest }} "
+        CONDA_MIN_DEPS+="${{ inputs.scipy }} ${{ inputs.threadpoolctl }} "
+        CONDA_MIN_DEPS+="${{ inputs.tqdm }} "
 
         # setup env variable for optional deps
-        echo "${{ inputs.chemfiles-python }} ${{ inputs.clustalw }} " > $CONDA_OPT_DEPS
-        echo "${{ inputs.h5py }} ${{ inputs.joblib }} " >> $CONDA_OPT_DEPS
-        echo "${{ inputs.netcdf4 }} ${{ inputs.openmm }} " >> $CONDA_OPT_DEPS
-        echo "${{ inputs.rdkit }} ${{ inputs.scikit-learn }} " >> $CONDA_OPT_DEPS
-        echo "${{ inputs.seaborn }} ${{ inputs.tidynamics }} " >> $CONDA_OPT_DEPS
+        CONDA_OPT_DEPS="${{ inputs.chemfiles-python }} ${{ inputs.clustalw }} "
+        CONDA_OPT_DEPS+="${{ inputs.h5py }} ${{ inputs.joblib }} "
+        CONDA_OPT_DEPS+="${{ inputs.netcdf4 }} ${{ inputs.openmm }} "
+        CONDA_OPT_DEPS+="${{ inputs.rdkit }} ${{ inputs.scikit-learn }} "
+        CONDA_OPT_DEPS+="${{ inputs.seaborn }} ${{ inputs.tidynamics }} "
 
         # setup full variable
         if [ ${{ inputs.full-deps }} = "true"]; then
-          echo "${CONDA_MIN_DEPS} ${CONDA_OPT_DEPS} ${{ inputs.extra-conda-deps }}" > $CONDA_DEPS
+          CONDA_DEPS="${CONDA_MIN_DEPS} ${CONDA_OPT_DEPS} ${{ inputs.extra-conda-deps }}"
         else
-          echo "${CONDA_MIN_DEPS} ${{ inputs.extra-conda-deps }}" > $CONDA_DEPS
+          CONDA_DEPS="${CONDA_MIN_DEPS} ${{ inputs.extra-conda-deps }}"
         fi
 
         # do the install
@@ -116,17 +116,17 @@ runs:
       shell: bash -l {0}
       run: |
         # setup env variable for the minimum deps
-        echo "${{ inputs.coverage }} ${{ inputs.pytest-cov }} " > $PIP_MIN_DEPS
-        echo "${{ inputs.pytest-xdist }} " >> $PIP_MIN_DEPS
+        PIP_MIN_DEPS="${{ inputs.coverage }} ${{ inputs.pytest-cov }} "
+        PIP_MIN_DEPS+="${{ inputs.pytest-xdist }} "
 
         # setup env variable for optional deps
-        echo "${{ inputs.duecredit }} ${{ inputs.parmed }} " > PIP_OPT_DEPS
+        PIP_OPT_DEPS="${{ inputs.duecredit }} ${{ inputs.parmed }} "
 
         # setup full variable
         if [ ${{ inputs.full-deps }} = "true"]; then
-          echo "${PIP_MIN_DEPS} ${PIP_OPT_DEPS} ${{ inputs.extra-pip-deps }}" > $PIP_DEPS
+          PIP_DEPS="${PIP_MIN_DEPS} ${PIP_OPT_DEPS} ${{ inputs.extra-pip-deps }}"
         else
-          echo "${PIP_MIN_DEPS} ${{ inputs.extra-pip-deps }}" > $PIP_DEPS
+          PIP_DEPS="${PIP_MIN_DEPS} ${{ inputs.extra-pip-deps }}"
         fi
         
         # do the install
