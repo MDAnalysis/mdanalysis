@@ -74,7 +74,6 @@ jobs:
     env:
       CYTHON_TRACE_NOGIL: 1
       MPLBACKEND: agg
-      GH_OS: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v2
