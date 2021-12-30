@@ -32,6 +32,7 @@ Serial versions of all distance calculations
 cimport cython
 import numpy
 cimport numpy
+numpy.import_array()
 
 from libc.math cimport fabs, round as cround
 from libc.float cimport FLT_MAX, DBL_MAX

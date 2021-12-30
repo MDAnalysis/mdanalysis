@@ -20,6 +20,9 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+import sys
+import platform
+import warnings
 import MDAnalysis as mda
 import pytest
 import numpy as np
@@ -490,7 +493,17 @@ class TestErrorsAndWarnings(object):
     ))
     def test_warning(self, parm, errmsgs):
         with pytest.warns(UserWarning) as record:
-            u = mda.Universe(parm)
+            with warnings.catch_warnings():
+                # for windows Python 3.10 ignore:
+                # ImportWarning('_SixMetaPathImporter.find_spec() not found
+                # TODO: remove when we no longer have a dependency
+                # that still imports six
+                if (platform.system() == "Windows" and
+                sys.version_info >= (3, 10)):
+                    warnings.filterwarnings(
+                            action='ignore',
+                            category=ImportWarning)
+                u = mda.Universe(parm)
 
         assert len(record) == len(errmsgs)
         # Assumes errmsgs list is in order of occurence

@@ -13,10 +13,13 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope, orbeckst, scal444
+??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
+         orbeckst, scal444, p-j-smith, edisj
+
  * 2.1.0
 
 Fixes
+  * Allow empty strings to be passed to HydrogenBondAnalysis (Issue #3453).
   * Avoid integer overflow in NSGrid with too many grids (Issue #3183)
   * Fix ITPParser charge reading (Issue #3419).
   * TRRWriter preserves timestep data (Issue #3350).
@@ -27,11 +30,15 @@ Fixes
     created using add_Residue and add_Segment (Issue #3437)
 
 Enhancements
+  * Adds :meth:`parse_n_atoms` to H5MD reader (Issue #3465)
   * Add option for custom compiler flags for C/C++ on build and remove march
     option from setup.cfg (Issue #3428, PR #3429).
+  * Added R/S Chirality support to RDKit parsed molecules
   * Added MDAnalysis.lib.distances.minimize_vectors
 
 Changes
+  * TRZReader now defaults to a `dt` of 1.0 (instead of 0.0 previously) when
+    it cannot be obtained from file (Issue #3257)
   * Dropped python 3.6 support and raised minimum numpy version to 1.18.0
     (NEP29)
 
