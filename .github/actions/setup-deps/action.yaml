@@ -103,7 +103,7 @@ runs:
         CONDA_OPT_DEPS+="${{ inputs.seaborn }} ${{ inputs.tidynamics }} "
 
         # setup full variable
-        if [ ${{ inputs.full-deps }} = "true"]; then
+        if [ ${{ inputs.full-deps }} = "true" ]; then
           CONDA_DEPS="${CONDA_MIN_DEPS} ${CONDA_OPT_DEPS} ${{ inputs.extra-conda-deps }}"
         else
           CONDA_DEPS="${CONDA_MIN_DEPS} ${{ inputs.extra-conda-deps }}"
@@ -123,7 +123,7 @@ runs:
         PIP_OPT_DEPS="${{ inputs.duecredit }} ${{ inputs.parmed }} "
 
         # setup full variable
-        if [ ${{ inputs.full-deps }} = "true"]; then
+        if [ ${{ inputs.full-deps }} = "true" ]; then
           PIP_DEPS="${PIP_MIN_DEPS} ${PIP_OPT_DEPS} ${{ inputs.extra-pip-deps }}"
         else
           PIP_DEPS="${PIP_MIN_DEPS} ${{ inputs.extra-pip-deps }}"
