@@ -1,0 +1,70 @@
+name: GH Actions Cron CI
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+
+# TO-DO switch this to cron job
+
+concurrency:
+  # Probably overly cautious group naming.
+  # Commits to develop/master will cancel each other, but PRs will only cancel
+  # commits within the same PR
+  group: "${{ github.ref }}-${{ github.head_ref }}"
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+jobs:
+  numpy_and_scipy_dev:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    runs-on: ubuntu-latest
+    env:
+      CYTHON_TRACE_NOGIL: 1
+      MPLBACKEND: agg
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: setup_os
+      uses: ./.github/actions/setup-os
+      with:
+        os-type: "ubuntu"
+
+    - name: setup_miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        python-version: 3.9
+        auto-update-conda: true
+        channel-priority: flexible
+        channels: conda-forge, bioconda
+        add-pip-as-python-dependency: true
+        mamba-version: "*"
+        architecture: x64
+
+    - name: install_dev_versions
+      run: |
+        mamba --channel "scipy-wheels-nightly" numpy scipy
+
+    - name: install_other_deps
+      uses: ./.github/actions/setup-deps
+      with:
+        mamba: true
+        numpy: ""
+        scipy: ""
+
+    - name: build_srcs
+      uses: ./.github/actions/build-src
+      with:
+        build-hole: true
+        build-tests: true
+        build-docs: false
+
+    - name: run_tests
+      run: |
+        pytest -n $numprocs testsuite/MDAnalysisTests --disable-pytest-warnings --durations=50
