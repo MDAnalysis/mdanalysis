@@ -414,36 +414,6 @@ class TestHoleAnalysis(BaseTestHole):
             assert_almost_equal(z, radius)
             assert line.get_label() == str(frame)
 
-    @pytest.mark.skipif(sys.version_info > (3, 1),
-                        reason="get_data_3d requires 3.1 or higher")
-    def test_plot3D(self, hole, frames, profiles):
-        ax = hole.plot3D(frames=None, r_max=None)
-        err_msg = "HoleAnalysis.plot3D() did not produce an Axes3D instance"
-        assert isinstance(ax, mpl_toolkits.mplot3d.Axes3D), err_msg
-        lines = ax.get_lines()[:]
-        assert len(lines) == hole.n_frames
-
-        for line, frame, profile in zip(lines, frames, profiles):
-            x, y = line.get_data()
-            assert_almost_equal(x, profile.rxn_coord)
-            assert_almost_equal(np.unique(y), [frame])
-            assert line.get_label() == str(frame)
-
-    @pytest.mark.skipif(sys.version_info > (3, 1),
-                        reason="get_data_3d requires 3.1 or higher")
-    def test_plot3D_rmax(self, hole, frames, profiles):
-        ax = hole.plot3D(r_max=2.5)
-        err_msg = "HoleAnalysis.plot3D(rmax=float) did not produce an Axes3D instance"
-        assert isinstance(ax, mpl_toolkits.mplot3d.Axes3D), err_msg
-
-        lines = ax.get_lines()[:]
-
-        for line, frame, profile in zip(lines, frames, profiles):
-            x, y = line.get_data()
-            assert_almost_equal(x, profile.rxn_coord)
-            assert_almost_equal(np.unique(y), [frame])
-            assert line.get_label() == str(frame)
-
 
 class TestHoleAnalysisLong(BaseTestHole):
 
