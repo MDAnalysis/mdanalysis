@@ -142,7 +142,7 @@ jobs:
         pip install numpy
 
     - name: build_srcs
-      uses: ./github/actions/build-src
+      uses: ./.github/actions/build-src
       with:
         build-hole: false
         build-tests: true
@@ -184,7 +184,7 @@ jobs:
         chemfiles-python: "chemfiles-python<0.10.0"
 
     - name: build_srcs
-      uses: ./github/actions/build-src
+      uses: ./.github/actions/build-src
       with:
         build-hole: false
         build-tests: true
