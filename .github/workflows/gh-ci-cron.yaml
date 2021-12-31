@@ -44,6 +44,7 @@ jobs:
         auto-update-conda: true
         channel-priority: flexible
         channels: conda-forge, bioconda
+        mamba-version: "*"
         add-pip-as-python-dependency: true
         architecture: x64
 
@@ -55,6 +56,7 @@ jobs:
     - name: install_other_deps
       uses: ./.github/actions/setup-deps
       with:
+        mamba: true
         numpy: ""
         scipy: ""
 
