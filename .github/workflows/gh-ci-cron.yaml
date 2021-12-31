@@ -42,14 +42,13 @@ jobs:
         python-version: 3.9
         auto-update-conda: true
         channel-priority: flexible
-        channels: scipy-wheels-nightly, conda-forge, bioconda
+        channels: conda-forge, bioconda
         add-pip-as-python-dependency: true
-        mamba-version: "*"
         architecture: x64
 
     - name: install_dev_versions
       run: |
-        mamba install numpy scipy
+        conda install --override-channels -c "scipy-wheels-nightly" numpy scipy
 
     - name: install_other_deps
       uses: ./.github/actions/setup-deps
