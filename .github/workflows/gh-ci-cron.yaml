@@ -140,7 +140,7 @@ jobs:
 
     - name: install_minimum_pip
       run: |
-        pip install numpy Cython
+        pip install numpy Cython pytest-xdist
 
     - name: build_srcs
       uses: ./.github/actions/build-src
