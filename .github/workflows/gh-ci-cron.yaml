@@ -66,3 +66,50 @@ jobs:
     - name: run_tests
       run: |
         pytest -n $numprocs testsuite/MDAnalysisTests --disable-pytest-warnings --durations=50
+
+
+  # Issue #3442
+  native_march:
+    if: "github.repository == 'MDAnalysis/mdanalysis'"
+    runs-on: ubuntu-latest
+    env:
+      CYTHON_TRACE_NOGIL: 1
+      MPLBACKEND: agg
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: setup_os
+      uses: ./.github/actions/setup-os
+      with:
+        os-type: "ubuntu"
+
+    - name: setup_miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        python-version: 3.9
+        auto-update-conda: true
+        channel-priority: flexible
+        channels: conda-forge, bioconda
+        mamba-version: "*"
+        add-pip-as-python-dependency: true
+        architecture: x64
+
+    - name: install_deps
+      uses: ./.github/actions/setup-deps
+
+    - name: set_extra_flags
+      run: |
+        sed -i "s/#extra_cflags =/extra_cflags = -march=native -mtune=native/g" package/setup.cfg
+        cat package/setup.cfg
+
+    - name: build_srcs
+      uses: ./.github/actions/build-src
+      with:
+        build-hole: true
+        build-tests: true
+        build-docs: false
+
+    - name: run_tests
+      run: |
+        pytest -n $numprocs testsuite/MDAnalysisTests --disable-pytest-warnings --durations=50
