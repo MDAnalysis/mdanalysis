@@ -51,7 +51,6 @@ jobs:
       run: |
         pip install -i https://pypi.anaconda.org/scipy-wheels-nightly/simple numpy
         pip install -i https://pypi.anaconda.org/scipy-wheels-nightly/simple scipy
-        #conda install --override-channels -c "scipy-wheels-nightly" numpy scipy
 
     - name: install_other_deps
       uses: ./.github/actions/setup-deps
