@@ -6,8 +6,9 @@ on:
   pull_request:
     branches:
       - develop
-
-# TO-DO switch this to cron job
+  schedule:
+    # once a week at midnight on Sunday
+    - cron: "0 0 * * 0"
 
 concurrency:
   # Probably overly cautious group naming.
@@ -137,9 +138,9 @@ jobs:
         add-pip-as-python-dependency: true
         architecture: x64
 
-    - name: install_numpy_pip
+    - name: install_minimum_pip
       run: |
-        pip install numpy
+        pip install numpy Cython
 
     - name: build_srcs
       uses: ./.github/actions/build-src
