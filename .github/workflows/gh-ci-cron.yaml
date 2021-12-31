@@ -20,13 +20,14 @@ defaults:
   run:
     shell: bash -l {0}
 
+env:
+  CYTHON_TRACE_NOGIL: 1
+  MPLBACKEND: agg
+
 jobs:
   numpy_and_scipy_dev:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
-    env:
-      CYTHON_TRACE_NOGIL: 1
-      MPLBACKEND: agg
 
     steps:
     - uses: actions/checkout@v2
@@ -74,9 +75,6 @@ jobs:
   native_march:
     if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
-    env:
-      CYTHON_TRACE_NOGIL: 1
-      MPLBACKEND: agg
 
     steps:
     - uses: actions/checkout@v2
