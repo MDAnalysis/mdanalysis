@@ -31,7 +31,8 @@ import sys
 
 import numpy as np
 from numpy.testing import (assert_equal, assert_almost_equal,
-                           assert_array_almost_equal, assert_array_equal)
+                           assert_array_almost_equal, assert_array_equal,
+                           assert_allclose)
 from itertools import combinations_with_replacement as comb_wr
 
 import MDAnalysis as mda
@@ -197,7 +198,7 @@ class TestGeometryFunctions(object):
         (a, a, 0.0)
     ])
     def test_vectors(self, x_axis, y_axis, value):
-        assert_equal(mdamath.angle(x_axis, y_axis), value)
+        assert_allclose(mdamath.angle(x_axis, y_axis), value)
 
     @pytest.mark.parametrize('x_axis, y_axis, value', [
         (-2.3456e7 * e1, 3.4567e-6 * e1, np.pi),
