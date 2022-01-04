@@ -493,19 +493,9 @@ class TestErrorsAndWarnings(object):
     ))
     def test_warning(self, parm, errmsgs):
         with pytest.warns(UserWarning) as record:
-            with warnings.catch_warnings():
-                # for windows Python 3.10 ignore:
-                # ImportWarning('_SixMetaPathImporter.find_spec() not found
-                # TODO: remove when we no longer have a dependency
-                # that still imports six
-                if (platform.system() == "Windows" and
-                sys.version_info >= (3, 10)):
-                    warnings.filterwarnings(
-                            action='ignore',
-                            category=ImportWarning)
-                u = mda.Universe(parm)
+            u = mda.Universe(parm)
 
-        assert len(record) == len(errmsgs)
-        # Assumes errmsgs list is in order of occurence
-        for i, msg in enumerate(errmsgs):
-            assert msg in str(record[i].message.args[0])
+        messages = [rec.message.args[0] for rec in record]
+
+        for msg in errmsgs:
+            assert any(msg in recmsg for recmsg in messages)
