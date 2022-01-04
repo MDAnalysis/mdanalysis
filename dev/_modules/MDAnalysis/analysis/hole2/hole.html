@@ -174,6 +174,8 @@
 <span class="sd">    from MDAnalysis.tests.datafiles import MULTIPDB_HOLE</span>
 <span class="sd">    from MDAnalysis.analysis import hole2</span>
 
+<span class="sd">    u = mda.Universe(MULTIPDB_HOLE)</span>
+
 <span class="sd">    ha = hole2.HoleAnalysis(u, executable=&#39;~/hole2/exe/hole&#39;) as h2:</span>
 <span class="sd">    ha.run()</span>
 <span class="sd">    ha.create_vmd_surface(filename=&#39;hole.vmd&#39;)</span>
@@ -193,17 +195,149 @@
 <span class="sd">Alternatively, you can use HoleAnalysis as a context manager that deletes temporary</span>
 <span class="sd">files when you are finished with the context manager::</span>
 
-<span class="sd">    import MDAnalysis as mda</span>
-<span class="sd">    from MDAnalysis.tests.datafiles import MULTIPDB_HOLE</span>
-<span class="sd">    from MDAnalysis.analysis import hole2</span>
-
 <span class="sd">    with hole2.HoleAnalysis(u, executable=&#39;~/hole2/exe/hole&#39;) as h2:</span>
 <span class="sd">        h2.run()</span>
 <span class="sd">        h2.create_vmd_surface()</span>
 
 
-<span class="sd">.. _HOLE: http://www.holeprogram.org</span>
+<span class="sd">Using HOLE with VMD</span>
+<span class="sd">-------------------</span>
 
+<span class="sd">The :program:`sos_triangle` program that is part of HOLE_ can write an input</span>
+<span class="sd">file for VMD_ to display a triangulated surface of the pore found by</span>
+<span class="sd">:program:`hole`. This functionality is available with the</span>
+<span class="sd">:meth:`HoleAnalysis.create_vmd_surface` method</span>
+<span class="sd">[#create_vmd_surface_function]_. For an input trajectory MDAnalysis writes a</span>
+<span class="sd">*trajectory* of pore surfaces that can be animated in VMD together with the</span>
+<span class="sd">frames from the trajectory.</span>
+
+
+<span class="sd">Analyzing a full trajectory</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">To analyze a full trajectory and write pore surfaces for all frames to file</span>
+<span class="sd">:file:`hole_surface.vmd`, use ::</span>
+
+<span class="sd">    import MDAnalysis as mda</span>
+<span class="sd">    from MDAnalysis.analysis import hole2</span>
+
+<span class="sd">    # load example trajectory MULTIPDB_HOLE</span>
+<span class="sd">    from MDAnalysis.tests.datafiles import MULTIPDB_HOLE</span>
+
+<span class="sd">    u = mda.Universe(MULTIPDB_HOLE)</span>
+
+<span class="sd">    with hole2.HoleAnalysis(u, executable=&#39;~/hole2/exe/hole&#39;) as h2:</span>
+<span class="sd">        h2.run()</span>
+<span class="sd">        h2.create_vmd_surface(filename=&quot;hole_surface.vmd&quot;)</span>
+
+<span class="sd">In VMD, load your trajectory and then in the tcl console</span>
+<span class="sd">(e.g.. :menuselection:`Extensions --&gt; Tk Console`) load the surface</span>
+<span class="sd">trajectory:</span>
+
+<span class="sd">.. code-block:: tcl</span>
+
+<span class="sd">   source hole_surface.vmd</span>
+
+<span class="sd">If you only want to *subsample the trajectory* and only show the surface at</span>
+<span class="sd">specific frames then you can either load the trajectory with the same</span>
+<span class="sd">subsampling into VMD or create a subsampled trajectory.</span>
+
+
+<span class="sd">Creating subsampled HOLE surface</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">For example, if we want to start displaying at frame 1 (i.e., skip frame 0), stop at frame 7, and</span>
+<span class="sd">only show every other frame (step 2) then the HOLE analysis will be ::</span>
+
+<span class="sd">    with hole2.HoleAnalysis(u, executable=&#39;~/hole2/exe/hole&#39;) as h2:</span>
+<span class="sd">        h2.run(start=1, stop=9, step=2)</span>
+<span class="sd">        h2.create_vmd_surface(filename=&quot;hole_surface_subsampled.vmd&quot;)</span>
+
+<span class="sd">The commands produce the file ``hole_surface_subsampled.vmd`` that can be loaded into VMD.</span>
+
+<span class="sd">.. Note::</span>
+
+<span class="sd">   Python (and MDAnalysis) stop indices are *exclusive* so the parameters</span>
+<span class="sd">   ``start=1``, ``stop=9``, and ``step=2`` will analyze frames 1, 3, 5, 7.</span>
+
+<span class="sd">.. _Loading-a-trajectory-into-VMD-with-subsampling:</span>
+
+<span class="sd">Loading a trajectory into VMD with subsampling</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">Load your system into VMD. This can mean to load the topology file with</span>
+<span class="sd">:menuselection:`File --&gt; New Molecule` and adding the trajectory with</span>
+<span class="sd">:menuselection:`File --&gt; Load Data into Molecule` or just :menuselection:`File</span>
+<span class="sd">--&gt; New Molecule`.</span>
+
+<span class="sd">When loading the trajectory, subsample the frames by setting parametes in in</span>
+<span class="sd">the :guilabel:`Frames` section. Select *First: 1*, *Last: 7*, *Stride: 2*. Then</span>
+<span class="sd">:guilabel:`Load` everything.</span>
+
+<span class="sd">.. Note::</span>
+
+<span class="sd">   VMD considers the stop/last frame to be *inclusive* so you need to typically</span>
+<span class="sd">   choose one less than the ``stop`` value that you selected in MDAnalysis.</span>
+
+<span class="sd">Then load the surface trajectory:</span>
+
+<span class="sd">.. code-block:: tcl</span>
+
+<span class="sd">   source hole_surface_subsampled.vmd</span>
+
+<span class="sd">You should see a different surface for each frame in the trajectory. [#vmd_extra_frame]_</span>
+
+
+<span class="sd">Creating a subsampled trajectory</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">Instead of having VMD subsample the trajectory as described in</span>
+<span class="sd">:ref:`Loading-a-trajectory-into-VMD-with-subsampling` we can write a subsampled</span>
+<span class="sd">trajectory to a file. Although it requires more disk space, it can be</span>
+<span class="sd">convenient if we want to visualize the system repeatedly.</span>
+
+<span class="sd">The example trajectory comes as a multi-PDB file so we need a suitable topology</span>
+<span class="sd">file. If you already have a topology file such as a PSF, TPR, or PRMTOP file</span>
+<span class="sd">then skip this step. We write frame 0 as a PDB :file:`frame0.pdb` (which we</span>
+<span class="sd">will use as the topology in VMD)::</span>
+
+<span class="sd">    u.atoms.write(&quot;frame0.pdb&quot;)</span>
+
+<span class="sd">Then write the actual trajectory in a convenient format such as TRR (or</span>
+<span class="sd">DCD). Note that we apply the same slicing (``start=1``, ``stop=9``, ``step=2``)</span>
+<span class="sd">to the trajectory itself and then use it as the value for the ``frames``</span>
+<span class="sd">parameter of :meth:`AtomGroup.write&lt;MDAnalysis.core.groups.AtomGroup.write&gt;`</span>
+<span class="sd">method::</span>
+
+<span class="sd">    u.atoms.write(&quot;subsampled.trr&quot;, frames=u.trajectory[1:9:2])</span>
+
+<span class="sd">This command creates the subsampled trajectory file :file:`subsampled.trr` in</span>
+<span class="sd">TRR format.</span>
+
+<span class="sd">In VMD we load the topology and the trajectory and then load the surface. In</span>
+<span class="sd">our example we have a PDB file (:file:`frame0.pdb`) as topology so we need to</span>
+<span class="sd">remove the first frame [#vmd_extra_frame]_ (skip the &quot;trim&quot; step below if you</span>
+<span class="sd">are using a true topology file such as PSF, TPR, or PRMTOP). To keep this</span>
+<span class="sd">example compact, we are using the tcl command line interface in VMD_</span>
+<span class="sd">(:menuselection:`Extensions --&gt; Tk Console`) for loading and trimming the</span>
+<span class="sd">trajectory; you can use the menu commands if you prefer.</span>
+
+<span class="sd">.. code-block:: tcl</span>
+
+<span class="sd">   # load topology and subsampled trajectory</span>
+<span class="sd">   mol load pdb frame0.pdb trr subsampled.trr</span>
+
+<span class="sd">   # trim first frame (frame0) -- SKIP if using PSF, TPR, PRMTOP</span>
+<span class="sd">   animate delete beg 0 end 0</span>
+
+<span class="sd">   # load the HOLE surface trajectory</span>
+<span class="sd">   source hole_surface_subsampled.vmd</span>
+
+<span class="sd">You can now animate your molecule together with the surface and render it.</span>
+
+
+<span class="sd">.. _HOLE: http://www.holeprogram.org</span>
+<span class="sd">.. _VMD: https://www.ks.uiuc.edu/Research/vmd/</span>
 
 <span class="sd">Functions and classes</span>
 <span class="sd">---------------------</span>
@@ -231,6 +365,21 @@
 <span class="sd">               DOI: 10.1016/j.jmb.2013.10.024</span>
 
 <span class="sd">.. Footnotes</span>
+
+<span class="sd">.. [#create_vmd_surface_function] If you use the :class:`hole` class to run</span>
+<span class="sd">              :program:`hole` on a single PDB file then you can use</span>
+<span class="sd">              :func:`MDAnalysis.analysis.hole2.utils.create_vmd_surface`</span>
+<span class="sd">              function to manually run :program:`sph_process` and</span>
+<span class="sd">              :program:`sos_triangle` on the output files andcr eate a surface</span>
+<span class="sd">              file.</span>
+
+<span class="sd">.. [#vmd_extra_frame] If you loaded your system in VMD_ from separate topology</span>
+<span class="sd">              and trajectory files and the topology file contained coordinates</span>
+<span class="sd">              (such as a PDB or GRO) file then your trajectory will have an</span>
+<span class="sd">              extra initial frame containing the coordinates from your topology</span>
+<span class="sd">              file. Delete the initial frame with :menuselection:`Molecule --&gt;</span>
+<span class="sd">              Delete Frames` by setting *First* to 0 and *Last* to 0 and</span>
+<span class="sd">              selecting :guilabel:`Delete`.</span>
 
 <span class="sd">.. [#HOLEDCD] PDB files are not the only files that :program:`hole` can</span>
 <span class="sd">              read. In principle, it is also able to read CHARMM DCD</span>
@@ -876,8 +1025,8 @@
         <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span>
         <span class="n">outfile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_file</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">frame</span><span class="p">)</span>
         <span class="n">sphpdb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sphpdb_file</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">frame</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sphpdbs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sphpdb</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">outfiles</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">outfile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">sphpdbs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sphpdb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">outfiles</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">outfile</span>
         <span class="k">if</span> <span class="n">outfile</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmp_files</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tmp_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">sphpdb</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmp_files</span><span class="p">:</span>
@@ -923,11 +1072,15 @@
                            <span class="n">double_water_color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Process HOLE output to create a smooth pore surface suitable for VMD.</span>
 
-<span class="sd">        Takes the ``sphpdb`` file for each frame and feeds it to `sph_process &lt;http://www.holeprogram.org/doc/old/hole_d04.html#sph_process&gt;`_</span>
-<span class="sd">        and `sos_triangle &lt;http://www.holeprogram.org/doc/old/hole_d04.html#sos_triangle&gt;`_ as described under `Visualization of HOLE</span>
-<span class="sd">        results &lt;http://www.holeprogram.org/doc/index.html&gt;`_.</span>
+<span class="sd">        Takes the ``sphpdb`` file for each frame and feeds it to `sph_process</span>
+<span class="sd">        &lt;http://www.holeprogram.org/doc/old/hole_d04.html#sph_process&gt;`_ and</span>
+<span class="sd">        `sos_triangle</span>
+<span class="sd">        &lt;http://www.holeprogram.org/doc/old/hole_d04.html#sos_triangle&gt;`_ as</span>
+<span class="sd">        described under `Visualization of HOLE results</span>
+<span class="sd">        &lt;http://www.holeprogram.org/doc/index.html&gt;`_.</span>
 
-<span class="sd">        Load the output file *filename* into VMD in Extensions &gt; Tk Console ::</span>
+<span class="sd">        Load the output file *filename* into VMD in :menuselection:`Extensions</span>
+<span class="sd">        --&gt; Tk Console` ::</span>
 
 <span class="sd">           source hole.vmd</span>
 
@@ -975,7 +1128,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No sphpdb files to read. Try calling run()&#39;</span><span class="p">)</span>
 
         <span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">):</span>
             <span class="n">sphpdb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">sphpdbs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="n">tmp_tri</span> <span class="o">=</span> <span class="n">create_vmd_surface</span><span class="p">(</span><span class="n">sphpdb</span><span class="o">=</span><span class="n">sphpdb</span><span class="p">,</span>
                                          <span class="n">sph_process</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">exe</span><span class="p">[</span><span class="s1">&#39;sph_process&#39;</span><span class="p">],</span>
@@ -1006,7 +1159,7 @@
                 <span class="k">pass</span>
 
             <span class="n">tri</span> <span class="o">=</span> <span class="s1">&#39;{ { &#39;</span> <span class="o">+</span> <span class="s1">&#39; } { &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">,</span> <span class="n">shapes</span><span class="p">)))</span> <span class="o">+</span> <span class="s1">&#39; } }&#39;</span>
-            <span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;set triangles(</span><span class="si">{i}</span><span class="s1">) &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="n">tri</span><span class="p">)</span>
+            <span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;set triangles(</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">) &#39;</span> <span class="o">+</span> <span class="n">tri</span><span class="p">)</span>
 
         <span class="n">trinorms</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
         <span class="n">vmd_1</span> <span class="o">=</span> <span class="n">vmd_script_array</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">no_water_color</span><span class="o">=</span><span class="n">no_water_color</span><span class="p">,</span>

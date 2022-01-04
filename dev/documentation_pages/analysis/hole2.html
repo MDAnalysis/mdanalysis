@@ -203,6 +203,8 @@ and <code class="docutils literal notranslate"><span class="pre">cvect</span></c
 <span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">MULTIPDB_HOLE</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">hole2</span>
 
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">MULTIPDB_HOLE</span><span class="p">)</span>
+
 <span class="n">ha</span> <span class="o">=</span> <span class="n">hole2</span><span class="o">.</span><span class="n">HoleAnalysis</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">executable</span><span class="o">=</span><span class="s1">&#39;~/hole2/exe/hole&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">h2</span><span class="p">:</span>
 <span class="n">ha</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="n">ha</span><span class="o">.</span><span class="n">create_vmd_surface</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;hole.vmd&#39;</span><span class="p">)</span>
@@ -221,18 +223,129 @@ after the analysis, you can call <a class="reference internal" href="#MDAnalysis
 </div>
 <p>Alternatively, you can use HoleAnalysis as a context manager that deletes temporary
 files when you are finished with the context manager:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">MULTIPDB_HOLE</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">hole2</span>
-
-<span class="k">with</span> <span class="n">hole2</span><span class="o">.</span><span class="n">HoleAnalysis</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">executable</span><span class="o">=</span><span class="s1">&#39;~/hole2/exe/hole&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">h2</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">hole2</span><span class="o">.</span><span class="n">HoleAnalysis</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">executable</span><span class="o">=</span><span class="s1">&#39;~/hole2/exe/hole&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">h2</span><span class="p">:</span>
     <span class="n">h2</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
     <span class="n">h2</span><span class="o">.</span><span class="n">create_vmd_surface</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>
+<section id="using-hole-with-vmd">
+<h4><span class="section-number">4.4.1.1.1.3. </span>Using HOLE with VMD<a class="headerlink" href="#using-hole-with-vmd" title="Permalink to this headline"></a></h4>
+<p>The <strong class="program">sos_triangle</strong> program that is part of <a class="reference external" href="http://www.holeprogram.org">HOLE</a> can write an input
+file for <a class="reference external" href="https://www.ks.uiuc.edu/Research/vmd/">VMD</a> to display a triangulated surface of the pore found by
+<strong class="program">hole</strong>. This functionality is available with the
+<a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.create_vmd_surface" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis.create_vmd_surface"><code class="xref py py-meth docutils literal notranslate"><span class="pre">HoleAnalysis.create_vmd_surface()</span></code></a> method
+<a class="footnote-reference brackets" href="#create-vmd-surface-function" id="id7">1</a>. For an input trajectory MDAnalysis writes a
+<em>trajectory</em> of pore surfaces that can be animated in VMD together with the
+frames from the trajectory.</p>
+<section id="analyzing-a-full-trajectory">
+<h5><span class="section-number">4.4.1.1.1.3.1. </span>Analyzing a full trajectory<a class="headerlink" href="#analyzing-a-full-trajectory" title="Permalink to this headline"></a></h5>
+<p>To analyze a full trajectory and write pore surfaces for all frames to file
+<code class="file docutils literal notranslate"><span class="pre">hole_surface.vmd</span></code>, use</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">hole2</span>
+
+<span class="c1"># load example trajectory MULTIPDB_HOLE</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">MULTIPDB_HOLE</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">MULTIPDB_HOLE</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">hole2</span><span class="o">.</span><span class="n">HoleAnalysis</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">executable</span><span class="o">=</span><span class="s1">&#39;~/hole2/exe/hole&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">h2</span><span class="p">:</span>
+    <span class="n">h2</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    <span class="n">h2</span><span class="o">.</span><span class="n">create_vmd_surface</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s2">&quot;hole_surface.vmd&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In VMD, load your trajectory and then in the tcl console
+(e.g.. <span class="menuselection">Extensions ‣ Tk Console</span>) load the surface
+trajectory:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>hole_surface.vmd
+</pre></div>
+</div>
+<p>If you only want to <em>subsample the trajectory</em> and only show the surface at
+specific frames then you can either load the trajectory with the same
+subsampling into VMD or create a subsampled trajectory.</p>
+</section>
+<section id="creating-subsampled-hole-surface">
+<h5><span class="section-number">4.4.1.1.1.3.2. </span>Creating subsampled HOLE surface<a class="headerlink" href="#creating-subsampled-hole-surface" title="Permalink to this headline"></a></h5>
+<p>For example, if we want to start displaying at frame 1 (i.e., skip frame 0), stop at frame 7, and
+only show every other frame (step 2) then the HOLE analysis will be</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">hole2</span><span class="o">.</span><span class="n">HoleAnalysis</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">executable</span><span class="o">=</span><span class="s1">&#39;~/hole2/exe/hole&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">h2</span><span class="p">:</span>
+    <span class="n">h2</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">h2</span><span class="o">.</span><span class="n">create_vmd_surface</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s2">&quot;hole_surface_subsampled.vmd&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The commands produce the file <code class="docutils literal notranslate"><span class="pre">hole_surface_subsampled.vmd</span></code> that can be loaded into VMD.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Python (and MDAnalysis) stop indices are <em>exclusive</em> so the parameters
+<code class="docutils literal notranslate"><span class="pre">start=1</span></code>, <code class="docutils literal notranslate"><span class="pre">stop=9</span></code>, and <code class="docutils literal notranslate"><span class="pre">step=2</span></code> will analyze frames 1, 3, 5, 7.</p>
+</div>
+</section>
+<section id="loading-a-trajectory-into-vmd-with-subsampling">
+<span id="id8"></span><h5><span class="section-number">4.4.1.1.1.3.3. </span>Loading a trajectory into VMD with subsampling<a class="headerlink" href="#loading-a-trajectory-into-vmd-with-subsampling" title="Permalink to this headline"></a></h5>
+<p>Load your system into VMD. This can mean to load the topology file with
+<span class="menuselection">File ‣ New Molecule</span> and adding the trajectory with
+<span class="menuselection">File ‣ Load Data into Molecule</span> or just <span class="menuselection">File
+‣ New Molecule</span>.</p>
+<p>When loading the trajectory, subsample the frames by setting parametes in in
+the <span class="guilabel">Frames</span> section. Select <em>First: 1</em>, <em>Last: 7</em>, <em>Stride: 2</em>. Then
+<span class="guilabel">Load</span> everything.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>VMD considers the stop/last frame to be <em>inclusive</em> so you need to typically
+choose one less than the <code class="docutils literal notranslate"><span class="pre">stop</span></code> value that you selected in MDAnalysis.</p>
+</div>
+<p>Then load the surface trajectory:</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>hole_surface_subsampled.vmd
+</pre></div>
+</div>
+<p>You should see a different surface for each frame in the trajectory. <a class="footnote-reference brackets" href="#vmd-extra-frame" id="id9">2</a></p>
+</section>
+<section id="creating-a-subsampled-trajectory">
+<h5><span class="section-number">4.4.1.1.1.3.4. </span>Creating a subsampled trajectory<a class="headerlink" href="#creating-a-subsampled-trajectory" title="Permalink to this headline"></a></h5>
+<p>Instead of having VMD subsample the trajectory as described in
+<a class="reference internal" href="#loading-a-trajectory-into-vmd-with-subsampling"><span class="std std-ref">Loading a trajectory into VMD with subsampling</span></a> we can write a subsampled
+trajectory to a file. Although it requires more disk space, it can be
+convenient if we want to visualize the system repeatedly.</p>
+<p>The example trajectory comes as a multi-PDB file so we need a suitable topology
+file. If you already have a topology file such as a PSF, TPR, or PRMTOP file
+then skip this step. We write frame 0 as a PDB <code class="file docutils literal notranslate"><span class="pre">frame0.pdb</span></code> (which we
+will use as the topology in VMD):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;frame0.pdb&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then write the actual trajectory in a convenient format such as TRR (or
+DCD). Note that we apply the same slicing (<code class="docutils literal notranslate"><span class="pre">start=1</span></code>, <code class="docutils literal notranslate"><span class="pre">stop=9</span></code>, <code class="docutils literal notranslate"><span class="pre">step=2</span></code>)
+to the trajectory itself and then use it as the value for the <code class="docutils literal notranslate"><span class="pre">frames</span></code>
+parameter of <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.write" title="MDAnalysis.core.groups.AtomGroup.write"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AtomGroup.write</span></code></a>
+method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;subsampled.trr&quot;</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">9</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>This command creates the subsampled trajectory file <code class="file docutils literal notranslate"><span class="pre">subsampled.trr</span></code> in
+TRR format.</p>
+<p>In VMD we load the topology and the trajectory and then load the surface. In
+our example we have a PDB file (<code class="file docutils literal notranslate"><span class="pre">frame0.pdb</span></code>) as topology so we need to
+remove the first frame <a class="footnote-reference brackets" href="#vmd-extra-frame" id="id10">2</a> (skip the “trim” step below if you
+are using a true topology file such as PSF, TPR, or PRMTOP). To keep this
+example compact, we are using the tcl command line interface in <a class="reference external" href="https://www.ks.uiuc.edu/Research/vmd/">VMD</a>
+(<span class="menuselection">Extensions ‣ Tk Console</span>) for loading and trimming the
+trajectory; you can use the menu commands if you prefer.</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="c"># load topology and subsampled trajectory</span>
+<span class="nv">mol</span><span class="w"> </span>load<span class="w"> </span>pdb<span class="w"> </span>frame0.pdb<span class="w"> </span>trr<span class="w"> </span>subsampled.trr
+
+<span class="c"># trim first frame (frame0) -- SKIP if using PSF, TPR, PRMTOP</span>
+<span class="nv">animate</span><span class="w"> </span>delete<span class="w"> </span>beg<span class="w"> </span><span class="mi">0</span><span class="w"> </span>end<span class="w"> </span><span class="mi">0</span>
+
+<span class="c"># load the HOLE surface trajectory</span>
+<span class="nb">source</span><span class="w"> </span>hole_surface_subsampled.vmd
+</pre></div>
+</div>
+<p>You can now animate your molecule together with the surface and render it.</p>
+</section>
+</section>
 <section id="functions-and-classes">
-<h4><span class="section-number">4.4.1.1.1.3. </span>Functions and classes<a class="headerlink" href="#functions-and-classes" title="Permalink to this headline"></a></h4>
+<h4><span class="section-number">4.4.1.1.1.4. </span>Functions and classes<a class="headerlink" href="#functions-and-classes" title="Permalink to this headline"></a></h4>
 <dl class="py function">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.hole2.hole.hole">
 <span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.hole2.hole.</span></span><span class="sig-name descname"><span class="pre">hole</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdbfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infile_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hole.out'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sphpdb_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hole.sph'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vdwradii_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">executable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hole'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmpdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">22.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cvect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_residues</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['SOL',</span> <span class="pre">'WAT',</span> <span class="pre">'TIP',</span> <span class="pre">'HOH',</span> <span class="pre">'K</span>&#160; <span class="pre">',</span> <span class="pre">'NA</span> <span class="pre">',</span> <span class="pre">'CL</span> <span class="pre">']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcd_iniskip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcd_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole2/hole.html#hole"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.hole2.hole.hole" title="Permalink to this definition"></a></dt>
@@ -361,7 +474,7 @@ symlinks after running the function.</p></li>
 </dl>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li><p>HOLE is very picky and does not read all DCD-like formats <a class="footnote-reference brackets" href="#holedcd" id="id7">1</a>.
+<li><p>HOLE is very picky and does not read all DCD-like formats <a class="footnote-reference brackets" href="#holedcd" id="id11">3</a>.
 If in doubt, look into the <cite>outfile</cite> for error diagnostics.</p></li>
 </ul>
 <div class="versionadded">
@@ -596,10 +709,11 @@ less than or equal to the second.</p></li>
 <dt class="sig sig-object py" id="MDAnalysis.analysis.hole2.hole.HoleAnalysis.create_vmd_surface">
 <span class="sig-name descname"><span class="pre">create_vmd_surface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'hole.vmd'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dot_density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_water_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'red'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">one_water_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'green'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double_water_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'blue'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole2/hole.html#HoleAnalysis.create_vmd_surface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.create_vmd_surface" title="Permalink to this definition"></a></dt>
 <dd><p>Process HOLE output to create a smooth pore surface suitable for VMD.</p>
-<p>Takes the <code class="docutils literal notranslate"><span class="pre">sphpdb</span></code> file for each frame and feeds it to <a class="reference external" href="http://www.holeprogram.org/doc/old/hole_d04.html#sph_process">sph_process</a>
-and <a class="reference external" href="http://www.holeprogram.org/doc/old/hole_d04.html#sos_triangle">sos_triangle</a> as described under <a class="reference external" href="http://www.holeprogram.org/doc/index.html">Visualization of HOLE
-results</a>.</p>
-<p>Load the output file <em>filename</em> into VMD in Extensions &gt; Tk Console</p>
+<p>Takes the <code class="docutils literal notranslate"><span class="pre">sphpdb</span></code> file for each frame and feeds it to <a class="reference external" href="http://www.holeprogram.org/doc/old/hole_d04.html#sph_process">sph_process</a> and
+<a class="reference external" href="http://www.holeprogram.org/doc/old/hole_d04.html#sos_triangle">sos_triangle</a> as
+described under <a class="reference external" href="http://www.holeprogram.org/doc/index.html">Visualization of HOLE results</a>.</p>
+<p>Load the output file <em>filename</em> into VMD in <span class="menuselection">Extensions
+‣ Tk Console</span></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">hole</span><span class="o">.</span><span class="n">vmd</span>
 </pre></div>
 </div>
@@ -965,7 +1079,24 @@ DOI: 10.1016/j.jmb.2013.10.024</p>
 </dd>
 </dl>
 <dl class="footnote brackets">
-<dt class="label" id="holedcd"><span class="brackets"><a class="fn-backref" href="#id7">1</a></span></dt>
+<dt class="label" id="create-vmd-surface-function"><span class="brackets"><a class="fn-backref" href="#id7">1</a></span></dt>
+<dd><p>If you use the <a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.hole" title="MDAnalysis.analysis.hole2.hole.hole"><code class="xref py py-class docutils literal notranslate"><span class="pre">hole</span></code></a> class to run
+<strong class="program">hole</strong> on a single PDB file then you can use
+<a class="reference internal" href="#MDAnalysis.analysis.hole2.utils.create_vmd_surface" title="MDAnalysis.analysis.hole2.utils.create_vmd_surface"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2.utils.create_vmd_surface()</span></code></a>
+function to manually run <strong class="program">sph_process</strong> and
+<strong class="program">sos_triangle</strong> on the output files andcr eate a surface
+file.</p>
+</dd>
+<dt class="label" id="vmd-extra-frame"><span class="brackets">2</span><span class="fn-backref">(<a href="#id9">1</a>,<a href="#id10">2</a>)</span></dt>
+<dd><p>If you loaded your system in <a class="reference external" href="https://www.ks.uiuc.edu/Research/vmd/">VMD</a> from separate topology
+and trajectory files and the topology file contained coordinates
+(such as a PDB or GRO) file then your trajectory will have an
+extra initial frame containing the coordinates from your topology
+file. Delete the initial frame with <span class="menuselection">Molecule ‣
+Delete Frames</span> by setting <em>First</em> to 0 and <em>Last</em> to 0 and
+selecting <span class="guilabel">Delete</span>.</p>
+</dd>
+<dt class="label" id="holedcd"><span class="brackets"><a class="fn-backref" href="#id11">3</a></span></dt>
 <dd><p>PDB files are not the only files that <strong class="program">hole</strong> can
 read. In principle, it is also able to read CHARMM DCD
 trajectories and generate a hole profile for each frame. However,
