@@ -232,7 +232,7 @@ class TestGeometryFunctions(object):
         (e1, null, 0.0)
     ])
     def test_normal(self, vec1, vec2, value):
-        assert_equal(mdamath.normal(vec1, vec2), value)
+        assert_allclose(mdamath.normal(vec1, vec2), value)
         # add more non-trivial tests
 
     def test_angle_lower_clip(self):
@@ -420,7 +420,7 @@ class TestMatrixOperations(object):
         # These cycles were inexact prior to PR #2201
         ref = np.array([10.1, 10.1, 10.1] + angles, dtype=np.float32)
         res = mdamath.triclinic_box(*mdamath.triclinic_vectors(ref))
-        assert_equal(res, ref)
+        assert_allclose(res, ref)
 
     @pytest.mark.parametrize('lengths', comb_wr([-1, 0, 1, 2], 3))
     @pytest.mark.parametrize('angles',
@@ -1393,6 +1393,7 @@ class TestBlocksOf(object):
 def test_group_same_or_consecutive_integers(arr, answer):
     assert_equal(util.group_same_or_consecutive_integers(arr), answer)
 
+
 class TestNamespace(object):
     @staticmethod
     @pytest.fixture()
@@ -2066,7 +2067,7 @@ class TestCheckBox(object):
     def test_check_box_ortho(self, box):
         boxtype, checked_box = util.check_box(box)
         assert boxtype == 'ortho'
-        assert_equal(checked_box, self.ref_ortho)
+        assert_allclose(checked_box, self.ref_ortho)
         assert checked_box.dtype == np.float32
         assert checked_box.flags['C_CONTIGUOUS']
 
