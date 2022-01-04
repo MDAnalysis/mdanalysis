@@ -104,6 +104,10 @@ class TestConversion(object):
         (1, 'A/ps', 'm/s', 1e-10/1e-12),
         (1, 'A/ps', 'nm/ps', 0.1),
         (1, 'A/ps', 'pm/ps', 1e2),
+        (1, 'A/ms', 'A/ps', 1e9),
+        (1, 'A/us', 'A/ps', 1e6),
+        (1, 'A/fs', 'A/ps', 1e-3),
+        (1, 'A/AKMA', 'A/ps', 1/4.888821e-2),
     ))
     def test_speed(self, quantity, unit1, unit2, ref):
         self._assert_almost_equal_convert(quantity, unit1, unit2, ref)
