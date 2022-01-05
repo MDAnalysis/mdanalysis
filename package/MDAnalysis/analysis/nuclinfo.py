@@ -768,6 +768,8 @@ def pseudo_dihe_baseflip(universe, bp1, bp2, i,
 def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM"):
     """The angle between the planes for given two bases is computed.
 
+    See [Gabb1996]_ and [Jafilan2012]_ for background information.
+
     .. Note:: This angle calculation will only work if using atom names as
               documented by charmm force field parameters.
 
