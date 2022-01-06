@@ -52,8 +52,7 @@ runs:
     - name: build_mda_main
       shell: bash -l {0}
       run: |
-        # TODO: using install instead of develop here causes coverage to drop
-        # for .pyx file. If possible a solution for this should be found.
+        # install instead of develop would reduce coverage (for .pyx files)
         cd package/ && python setup.py develop
 
     - name: build_mda_tests
