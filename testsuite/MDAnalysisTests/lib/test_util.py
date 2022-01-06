@@ -31,7 +31,8 @@ import sys
 
 import numpy as np
 from numpy.testing import (assert_equal, assert_almost_equal,
-                           assert_array_almost_equal, assert_array_equal)
+                           assert_array_almost_equal, assert_array_equal,
+                           assert_allclose)
 from itertools import combinations_with_replacement as comb_wr
 
 import MDAnalysis as mda
@@ -197,7 +198,7 @@ class TestGeometryFunctions(object):
         (a, a, 0.0)
     ])
     def test_vectors(self, x_axis, y_axis, value):
-        assert_equal(mdamath.angle(x_axis, y_axis), value)
+        assert_allclose(mdamath.angle(x_axis, y_axis), value)
 
     @pytest.mark.parametrize('x_axis, y_axis, value', [
         (-2.3456e7 * e1, 3.4567e-6 * e1, np.pi),
@@ -231,7 +232,7 @@ class TestGeometryFunctions(object):
         (e1, null, 0.0)
     ])
     def test_normal(self, vec1, vec2, value):
-        assert_equal(mdamath.normal(vec1, vec2), value)
+        assert_allclose(mdamath.normal(vec1, vec2), value)
         # add more non-trivial tests
 
     def test_angle_lower_clip(self):
@@ -419,7 +420,7 @@ class TestMatrixOperations(object):
         # These cycles were inexact prior to PR #2201
         ref = np.array([10.1, 10.1, 10.1] + angles, dtype=np.float32)
         res = mdamath.triclinic_box(*mdamath.triclinic_vectors(ref))
-        assert_equal(res, ref)
+        assert_allclose(res, ref)
 
     @pytest.mark.parametrize('lengths', comb_wr([-1, 0, 1, 2], 3))
     @pytest.mark.parametrize('angles',
@@ -1392,6 +1393,7 @@ class TestBlocksOf(object):
 def test_group_same_or_consecutive_integers(arr, answer):
     assert_equal(util.group_same_or_consecutive_integers(arr), answer)
 
+
 class TestNamespace(object):
     @staticmethod
     @pytest.fixture()
@@ -2065,7 +2067,7 @@ class TestCheckBox(object):
     def test_check_box_ortho(self, box):
         boxtype, checked_box = util.check_box(box)
         assert boxtype == 'ortho'
-        assert_equal(checked_box, self.ref_ortho)
+        assert_allclose(checked_box, self.ref_ortho)
         assert checked_box.dtype == np.float32
         assert checked_box.flags['C_CONTIGUOUS']
 
