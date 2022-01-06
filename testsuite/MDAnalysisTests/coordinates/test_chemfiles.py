@@ -45,7 +45,7 @@ class TestChemfileVersion(object):
         import chemfiles
 
         actual_version = chemfiles.__version__
-        chemfiles.__version__ = "0.8.3"
+        chemfiles.__version__ = "0.9.3"
         assert not check_chemfiles_version()
 
         with pytest.raises(RuntimeError, match="Please install Chemfiles > 0.9"):

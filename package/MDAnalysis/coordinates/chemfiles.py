@@ -29,8 +29,8 @@ MDAnalysis. Using the *CHEMFILES* reader you can use  `chemfiles`_ for the low-l
 file reading. Check the list of `chemfile-supported file formats <formats>`_.
 
 .. _chemfiles: https://chemfiles.org
-.. _formats: https://chemfiles.org/chemfiles/0.9.3/formats.html#list-of-supported-formats
-.. NOTE: MDAnalysis currently restricts chemfiles to 0.9 <= version < 0.10. Update the link
+.. _formats: https://chemfiles.org/chemfiles/0.10.0/formats.html#list-of-supported-formats
+.. NOTE: MDAnalysis currently restricts chemfiles to 0.10 <= version < 0.11. Update the link
 ..       above to the latest documentation once this restriction is lifted.
 ..       https://chemfiles.org/chemfiles/latest/formats.html#list-of-supported-formats
 
@@ -104,7 +104,7 @@ else:
 
 #: Lowest version of chemfiles that is supported
 #: by MDAnalysis.
-MIN_CHEMFILES_VERSION = Version("0.9")
+MIN_CHEMFILES_VERSION = Version("0.10")
 #: Lowest version of chemfiles that is *not supported*
 #: by MDAnalysis.
 MAX_CHEMFILES_VERSION = Version("0.11")
@@ -401,10 +401,7 @@ class ChemfilesWriter(base.WriterBase):
             lengths = ts.dimensions[:3]
             angles = ts.dimensions[3:]
 
-        if chemfiles.__version__.startswith("0.9"):
-            frame.cell = chemfiles.UnitCell(*lengths, *angles)
-        else:
-            frame.cell = chemfiles.UnitCell(lengths, angles)
+        frame.cell = chemfiles.UnitCell(lengths, angles)
 
         return frame
 
