@@ -79,10 +79,9 @@ Helper functions
 .. autofunction:: check_chemfiles_version
 
 """
-from distutils.version import LooseVersion
 import numpy as np
 import warnings
-import numpy as np
+from packaging.version import Version
 
 from . import base
 
@@ -105,10 +104,10 @@ else:
 
 #: Lowest version of chemfiles that is supported
 #: by MDAnalysis.
-MIN_CHEMFILES_VERSION = LooseVersion("0.9")
+MIN_CHEMFILES_VERSION = Version("0.9")
 #: Lowest version of chemfiles that is *not supported*
 #: by MDAnalysis.
-MAX_CHEMFILES_VERSION = LooseVersion("0.11")
+MAX_CHEMFILES_VERSION = Version("0.11")
 
 
 def check_chemfiles_version():
@@ -126,7 +125,7 @@ def check_chemfiles_version():
             "Try installing with 'pip install chemfiles'"
         )
         return False
-    version = LooseVersion(chemfiles.__version__)
+    version = Version(chemfiles.__version__)
     wrong = version < MIN_CHEMFILES_VERSION or version >= MAX_CHEMFILES_VERSION
     if wrong:
         warnings.warn(
@@ -401,7 +400,7 @@ class ChemfilesWriter(base.WriterBase):
         else:
             lengths = ts.dimensions[:3]
             angles = ts.dimensions[3:]
-            
+
         if chemfiles.__version__.startswith("0.9"):
             frame.cell = chemfiles.UnitCell(*lengths, *angles)
         else:

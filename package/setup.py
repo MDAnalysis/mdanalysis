@@ -83,10 +83,10 @@ try:
     import Cython
     from Cython.Build import cythonize
     cython_found = True
-    from distutils.version import LooseVersion
+    from packaging.version import Version
 
     required_version = "0.16"
-    if not LooseVersion(Cython.__version__) >= LooseVersion(required_version):
+    if not Version(Cython.__version__) >= Version(required_version):
         # We don't necessarily die here. Maybe we already have
         #  the cythonized '.c' files.
         print("Cython version {0} was found but won't be used: version {1} "
