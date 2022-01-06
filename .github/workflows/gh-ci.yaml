@@ -4,6 +4,7 @@ on:
     branches:
       - develop
       - master
+      - pr3490-reorg
   pull_request:
     branches:
       - develop
@@ -22,7 +23,6 @@ defaults:
 
 jobs:
   main_tests:
-    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ${{ matrix.os }}
     strategy:
         fail-fast: false
@@ -136,7 +136,6 @@ jobs:
 
 
   build_docs:
-    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
     env:
       CYTHON_TRACE_NOGIL: 1
@@ -226,7 +225,6 @@ jobs:
 
 
   pylint_check:
-    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
 
     steps:
@@ -256,7 +254,6 @@ jobs:
 
 
   pypi_check:
-    if: "github.repository == 'MDAnalysis/mdanalysis'"
     runs-on: ubuntu-latest
 
     steps:
