@@ -83,24 +83,36 @@ runs:
   steps:
     - name: conda_install
       shell: bash -l {0}
+      env:
+        CONDA_MIN_DEPS: |
+          ${{ inputs.biopython }}
+          ${{ inputs.codecov }}
+          ${{ inputs.cython }}
+          ${{ inputs.griddataformats }}
+          ${{ inputs.gsd }}
+          ${{ inputs.hypothesis }}
+          ${{ inputs.matplotlib }}
+          ${{ inputs.mmtf-python }}
+          ${{ inputs.networkx }}
+          ${{ inputs.numpy }}
+          ${{ inputs.pip }}
+          ${{ inputs.pytest }}
+          ${{ inputs.scipy }}
+          ${{ inputs.threadpoolctl }}
+          ${{ inputs.tqdm }}
+        CONDA_OPT_DEPS: |
+          ${{ inputs.chemfiles-python }}
+          ${{ inputs.clustalw }}
+          ${{ inputs.h5py }}
+          ${{ inputs.joblib }}
+          ${{ inputs.netcdf4 }}
+          ${{ inputs.openmm }}
+          ${{ inputs.rdkit }}
+          ${{ inputs.scikit-learn }}
+          ${{ inputs.seaborn }}
+          ${{ inputs.tidynamics }}
+
       run: |
-        # setup env variable for the minimum deps
-        CONDA_MIN_DEPS="${{ inputs.biopython }} ${{ inputs.codecov }} "
-        CONDA_MIN_DEPS+="${{ inputs.cython }} ${{ inputs.griddataformats }} "
-        CONDA_MIN_DEPS+="${{ inputs.gsd }} ${{ inputs.hypothesis }} "
-        CONDA_MIN_DEPS+="${{ inputs.matplotlib }} ${{ inputs.mmtf-python }} "
-        CONDA_MIN_DEPS+="${{ inputs.networkx }} ${{ inputs.numpy }} "
-        CONDA_MIN_DEPS+="${{ inputs.pip }} ${{ inputs.pytest }} "
-        CONDA_MIN_DEPS+="${{ inputs.scipy }} ${{ inputs.threadpoolctl }} "
-        CONDA_MIN_DEPS+="${{ inputs.tqdm }} "
-
-        # setup env variable for optional deps
-        CONDA_OPT_DEPS="${{ inputs.chemfiles-python }} ${{ inputs.clustalw }} "
-        CONDA_OPT_DEPS+="${{ inputs.h5py }} ${{ inputs.joblib }} "
-        CONDA_OPT_DEPS+="${{ inputs.netcdf4 }} ${{ inputs.openmm }} "
-        CONDA_OPT_DEPS+="${{ inputs.rdkit }} ${{ inputs.scikit-learn }} "
-        CONDA_OPT_DEPS+="${{ inputs.seaborn }} ${{ inputs.tidynamics }} "
-
         # setup full variable
         if [ ${{ inputs.full-deps }} = "true" ]; then
           CONDA_DEPS="${CONDA_MIN_DEPS} ${CONDA_OPT_DEPS} ${{ inputs.extra-conda-deps }}"
@@ -117,14 +129,15 @@ runs:
           
     - name: pip_install
       shell: bash -l {0}
+      env:
+        PIP_MIN_DEPS: |
+          ${{ inputs.coverage }}
+          ${{ inputs.pytest-cov }}
+          ${{ inputs.pytest-xdist }}
+        PIP_OPT_DEPS: |
+          ${{ inputs.duecredit }}
+          ${{ inputs.parmed }}
       run: |
-        # setup env variable for the minimum deps
-        PIP_MIN_DEPS="${{ inputs.coverage }} ${{ inputs.pytest-cov }} "
-        PIP_MIN_DEPS+="${{ inputs.pytest-xdist }} "
-
-        # setup env variable for optional deps
-        PIP_OPT_DEPS="${{ inputs.duecredit }} ${{ inputs.parmed }} "
-
         # setup full variable
         if [ ${{ inputs.full-deps }} = "true" ]; then
           PIP_DEPS="${PIP_MIN_DEPS} ${PIP_OPT_DEPS} ${{ inputs.extra-pip-deps }}"
