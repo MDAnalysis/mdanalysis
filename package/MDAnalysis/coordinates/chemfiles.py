@@ -102,11 +102,9 @@ else:
     HAS_CHEMFILES = True
 
 
-#: Lowest version of chemfiles that is supported
-#: by MDAnalysis.
+#: Lowest version of chemfiles that is supported by MDAnalysis.
 MIN_CHEMFILES_VERSION = Version("0.10")
-#: Lowest version of chemfiles that is *not supported*
-#: by MDAnalysis.
+#: Lowest version of chemfiles that is *not supported* by MDAnalysis.
 MAX_CHEMFILES_VERSION = Version("0.11")
 
 
@@ -121,19 +119,12 @@ def check_chemfiles_version():
     """
     if not HAS_CHEMFILES:
         warnings.warn(
-            "No Chemfiles package found.  "
-            "Try installing with 'pip install chemfiles'"
+            "chemfiles package not found, "
+            "try installing it with 'pip install chemfiles'"
         )
         return False
     version = Version(chemfiles.__version__)
-    wrong = version < MIN_CHEMFILES_VERSION or version >= MAX_CHEMFILES_VERSION
-    if wrong:
-        warnings.warn(
-            "unsupported Chemfiles version {}, we need a version >{} and <{}".format(
-                version, MIN_CHEMFILES_VERSION, MAX_CHEMFILES_VERSION
-            )
-        )
-    return not wrong
+    return version >= MIN_CHEMFILES_VERSION and version < MAX_CHEMFILES_VERSION
 
 
 class ChemfilesReader(base.ReaderBase):
