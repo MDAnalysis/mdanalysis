@@ -80,8 +80,16 @@ Classes
 """
 import numpy as np
 
+#from libcpp cimport bool
+from libcpp.set cimport set as cset
 from libcpp.vector cimport vector
+from libcpp.map cimport map as cmap
+from libcpp.utility cimport pair
 from libc cimport math
+from libc.float cimport FLT_MAX
+from cython.operator cimport dereference as deref
+from cython.operator cimport preincrement as incr
+from cython.operator cimport postdecrement as decr
 
 DEF END = -1
 
@@ -105,6 +113,31 @@ cdef extern from "calc_distances.h" nogil:
     void _triclinic_pbc(coordinate* coords, int numcoords, float* box)
 
 
+cdef extern from "cubeiter.h":
+    cdef cppclass ConcentricCubeIterator:
+        ConcentricCubeIterator()
+        bint next()
+        bint operator bool()
+        void expand()
+        void reset()
+
+        int x, y, z
+        unsigned short shell_number
+        char face
+
+cdef extern from "bestNcontainer.h":
+    cdef cppclass BestNContainer[T,J]:
+        BestNContainer()
+        BestNContainer(int)
+        int size() const
+        J current_max() const
+        bint add_hit(J, T, T)
+
+        int n_results
+        cmap[pair[J, T], T] results
+        cmap[T, J] existing
+
+
 cdef inline float fmax(float a, float b):
     if a > b:
         return a
@@ -122,6 +155,75 @@ cdef inline float degsin(float deg):
     # sin in degrees
     deg *= math.M_PI / 180.
     return math.sin(deg)
+
+
+cdef inline int adjust_n(int x):
+    # for minimum possible dist, turn a delta in boxes into the number of boxes for the distance calculation
+    # [-1, 0, 1] -> 0, 2+ -> one less
+    # i.e. for a 2 box separation consider a single box length etc
+    if x > 1:
+        return x - 1
+    elif x < 0:
+        return x + 1
+    else:
+        return 0
+
+
+cdef inline float min_possible_dist(int nx, int ny, int nz, float* box):
+    # for nearest N search
+    # for two cubes separated by (nx, ny, nz) cubes, what is the minimum possible distance
+    # assumes worst case scenario - so particles separated by (1,1,1) could nearly be overlapping
+    cdef double dist[3]
+    cdef double distsq
+
+    nx = adjust_n(nx)
+    ny = adjust_n(ny)
+    nz = adjust_n(nz)
+
+    dist[0] = nx * box[0]
+    dist[1] = ny * box[1]
+    dist[2] = nz * box[2]
+
+    minimum_image_triclinic(dist, box)
+
+    distsq = dist[0] * dist[0]
+    distsq += dist[1] * dist[1]
+    distsq += dist[2] * dist[2]
+
+    return math.sqrt(distsq)
+
+cdef object _bestN_to_arrays(BestNContainer[int, float] res):
+    # turn BestNContainer into 2 numpy arrays
+    cdef int n, i, j
+    cdef float d
+    cdef object ix_array, dist_array
+    cdef int[:] ix_view
+    cdef float[:] dist_view
+    cdef cmap[pair[float, int], int].iterator it
+
+    n = res.size()
+
+    ix_array = np.empty(n * 2, dtype=np.int32)
+    dist_array = np.empty(n, dtype=np.float32)
+
+    ix_view = ix_array
+    dist_view = dist_array
+
+    n = 0
+    it = res.results.begin()
+    while it != res.results.end():
+        i = deref(it).second
+        j = deref(it).first.second
+        d = deref(it).first.first
+
+        ix_view[n*2] = i
+        ix_view[n*2 + 1] = j
+        dist_view[n] = d
+
+        n += 1
+        incr(it)
+
+    return ix_array.reshape(-1, 2), dist_array
 
 
 cdef class NSResults(object):
@@ -447,34 +549,34 @@ cdef class FastNS(object):
 
     cdef int cellxyz2cellid(self, int cx, int cy, int cz) nogil:
         """Convert cell coordinate to cell id, END for out of bounds"""
-        if cx < 0:
+        while cx < 0:
             if self.periodic[0]:
-                cx = self.ncells[0] - 1
+                cx += self.ncells[0]
             else:
                 return END
-        elif cx == self.ncells[0]:
+        while cx >= self.ncells[0]:
             if self.periodic[0]:
-                cx = 0
+                cx -= self.ncells[0]
             else:
                 return END
-        if cy < 0:
+        while cy < 0:
             if self.periodic[1]:
-                cy = self.ncells[1] - 1
+                cy += self.ncells[1]
             else:
                 return END
-        elif cy == self.ncells[1]:
+        while cy >= self.ncells[1]:
             if self.periodic[1]:
-                cy = 0
+                cy -= self.ncells[1]
             else:
                 return END
-        if cz < 0:
+        while cz < 0:
             if self.periodic[2]:
-                cz = self.ncells[2] - 1
+                cz += self.ncells[2]
             else:
                 return END
-        elif cz == self.ncells[2]:
+        while cz >= self.ncells[2]:
             if self.periodic[2]:
-                cz = 0
+                cz -= self.ncells[2]
             else:
                 return END
 
@@ -644,3 +746,81 @@ cdef class FastNS(object):
                         i = self.next_id[i]
 
         return results
+
+    def nearest_N(self, float[:, :] search_coords, int n_hits):
+        """Search 
+
+        Parameters
+        ----------
+        search_coords : numpy array dtype float
+          stuff what to search against
+        n_hits : int
+          how many of search_coords to identify as "nearest"
+
+        Returns
+        -------
+        i, j, d : numpy arrays, of type int, int float respectively
+          indices of grid and search coords and the distance betwixt them
+
+        versionadded:: 2.0.0
+        """
+        cdef int i, j, size_search
+        cdef int cellcoord[3]
+        cdef int ox, oy, oz, cj
+        cdef float tmpcoord[3]
+        cdef float dist
+        cdef float min_dist
+        cdef ConcentricCubeIterator cubeiter
+        cdef bint useful_cube
+        cdef BestNContainer[int, float] results
+        cdef cset[int] visit
+
+        results.n_results = n_hits
+        visit = cset[int]()
+        size_search = search_coords.shape[0]
+
+        for i in range(size_search):
+            tmpcoord[0] = search_coords[i][0]
+            tmpcoord[1] = search_coords[i][1]
+            tmpcoord[2] = search_coords[i][2]
+            if self.triclinic:
+                _triclinic_pbc(<coordinate*>&tmpcoord[0], 1, &self.triclinic_dimensions[0])
+            else:
+                _ortho_pbc(<coordinate*>&tmpcoord[0], 1, &self.dimensions[0])
+            # which cell is atom *i* in
+            self.coord2cellxyz(&tmpcoord[0], cellcoord)
+
+            visit.clear()
+            visit.insert(END)  # let's act like we've seen the invalid cell
+            
+            cubeiter = ConcentricCubeIterator()
+            useful_cube = True
+            # break when no useful (defined by a cube possible containing a better result) cube seen
+            while useful_cube:
+                useful_cube = False
+                while cubeiter:  # loop over cubes in a concentric shell
+                    ox = cubeiter.x + cellcoord[0]
+                    oy = cubeiter.y + cellcoord[1]
+                    oz = cubeiter.z + cellcoord[2]
+                    cj = self.cellxyz2cellid(ox, oy, oz)
+
+                    # check we've not already visited this cube
+                    if visit.insert(cj).second:  # insert returns if item was new, so if true we can continue
+                        # check distance is useful
+                        min_dist = min_possible_dist(cubeiter.x, cubeiter.y, cubeiter.z, &self.triclinic_dimensions[0])
+                        if min_dist < results.current_max():
+                            useful_cube = True
+
+                            j = self.head_id[cj]  # loop over atoms in cell *cj*
+                            while (j >= 0):
+                                dist = self.calc_distsq(&tmpcoord[0], &self.coords_bbox[j][0])
+                                dist = math.sqrt(dist)
+
+                                results.add_hit(dist, j, i)
+                                j = self.next_id[j]
+
+                    cubeiter.next()
+
+                cubeiter.expand()
+
+        return _bestN_to_arrays(results)
