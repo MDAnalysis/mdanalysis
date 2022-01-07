@@ -97,20 +97,22 @@ class TestCheckAndFixLongFilename(object):
             assert os.path.islink(fixed)
             assert not fixed.endswith(long_name)
 
+
 class TestOserror(object):
     u = mda.Universe(MULTIPDB_HOLE)
 
-    errmsg1 = exe_err.format(name = 'dummy_path', kw = 'executable') 
+    errmsg1 = exe_err.format(name='dummy_path', kw='executable')
 
-    errmsg2 = exe_err.format(name = 'None', kw = 'executable')
+    errmsg2 = exe_err.format(name='None', kw='executable')
 
     def test_hole_oserror(self):
-        with pytest.raises(OSError, match = self.errmsg1):
-            hole = hole2.hole(PDB_HOLE, executable = 'dummy_path') 
+        with pytest.raises(OSError, match=self.errmsg1):
+            hole = hole2.hole(PDB_HOLE, executable = 'dummy_path')
 
     def test_hole_analysis_oserror(self):
-        with pytest.raises(OSError, match = self.errmsg2):
-            h1 = hole2.HoleAnalysis(self.u, executable = "~/hole2/exe/hole_dummy")
+        with pytest.raises(OSError, match=self.errmsg2):
+            h1 = hole2.HoleAnalysis(self.u, executable=
+                                    "~/hole2/exe/hole_dummy")
 
 
 @pytest.mark.skipif(executable_not_found("hole"),
@@ -749,4 +751,3 @@ class TestHoleModule(object):
                                (self.soft_max_open_files, self.hard_max_open_files))
         except ImportError:
             pass
-
