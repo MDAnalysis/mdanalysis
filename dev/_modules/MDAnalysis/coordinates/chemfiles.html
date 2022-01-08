@@ -120,8 +120,8 @@
 <span class="sd">file reading. Check the list of `chemfile-supported file formats &lt;formats&gt;`_.</span>
 
 <span class="sd">.. _chemfiles: https://chemfiles.org</span>
-<span class="sd">.. _formats: https://chemfiles.org/chemfiles/0.9.3/formats.html#list-of-supported-formats</span>
-<span class="sd">.. NOTE: MDAnalysis currently restricts chemfiles to 0.9 &lt;= version &lt; 0.10. Update the link</span>
+<span class="sd">.. _formats: https://chemfiles.org/chemfiles/0.10.0/formats.html#list-of-supported-formats</span>
+<span class="sd">.. NOTE: MDAnalysis currently restricts chemfiles to 0.10 &lt;= version &lt; 0.11. Update the link</span>
 <span class="sd">..       above to the latest documentation once this restriction is lifted.</span>
 <span class="sd">..       https://chemfiles.org/chemfiles/latest/formats.html#list-of-supported-formats</span>
 
@@ -170,10 +170,9 @@
 <span class="sd">.. autofunction:: check_chemfiles_version</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">distutils.version</span> <span class="kn">import</span> <span class="n">LooseVersion</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">packaging.version</span> <span class="kn">import</span> <span class="n">Version</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
 
@@ -194,12 +193,10 @@
     <span class="n">HAS_CHEMFILES</span> <span class="o">=</span> <span class="kc">True</span>
 
 
-<span class="c1">#: Lowest version of chemfiles that is supported</span>
-<span class="c1">#: by MDAnalysis.</span>
-<span class="n">MIN_CHEMFILES_VERSION</span> <span class="o">=</span> <span class="n">LooseVersion</span><span class="p">(</span><span class="s2">&quot;0.9&quot;</span><span class="p">)</span>
-<span class="c1">#: Lowest version of chemfiles that is *not supported*</span>
-<span class="c1">#: by MDAnalysis.</span>
-<span class="n">MAX_CHEMFILES_VERSION</span> <span class="o">=</span> <span class="n">LooseVersion</span><span class="p">(</span><span class="s2">&quot;0.11&quot;</span><span class="p">)</span>
+<span class="c1">#: Lowest version of chemfiles that is supported by MDAnalysis.</span>
+<span class="n">MIN_CHEMFILES_VERSION</span> <span class="o">=</span> <span class="n">Version</span><span class="p">(</span><span class="s2">&quot;0.10&quot;</span><span class="p">)</span>
+<span class="c1">#: Lowest version of chemfiles that is *not supported* by MDAnalysis.</span>
+<span class="n">MAX_CHEMFILES_VERSION</span> <span class="o">=</span> <span class="n">Version</span><span class="p">(</span><span class="s2">&quot;0.11&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="check_chemfiles_version"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chemfiles.html#MDAnalysis.coordinates.chemfiles.check_chemfiles_version">[docs]</a><span class="k">def</span> <span class="nf">check_chemfiles_version</span><span class="p">():</span>
@@ -213,19 +210,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_CHEMFILES</span><span class="p">:</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;No Chemfiles package found.  &quot;</span>
-            <span class="s2">&quot;Try installing with &#39;pip install chemfiles&#39;&quot;</span>
+            <span class="s2">&quot;chemfiles package not found, &quot;</span>
+            <span class="s2">&quot;try installing it with &#39;pip install chemfiles&#39;&quot;</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span>
-    <span class="n">version</span> <span class="o">=</span> <span class="n">LooseVersion</span><span class="p">(</span><span class="n">chemfiles</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
-    <span class="n">wrong</span> <span class="o">=</span> <span class="n">version</span> <span class="o">&lt;</span> <span class="n">MIN_CHEMFILES_VERSION</span> <span class="ow">or</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="n">MAX_CHEMFILES_VERSION</span>
-    <span class="k">if</span> <span class="n">wrong</span><span class="p">:</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;unsupported Chemfiles version </span><span class="si">{}</span><span class="s2">, we need a version &gt;</span><span class="si">{}</span><span class="s2"> and &lt;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">version</span><span class="p">,</span> <span class="n">MIN_CHEMFILES_VERSION</span><span class="p">,</span> <span class="n">MAX_CHEMFILES_VERSION</span>
-            <span class="p">)</span>
-        <span class="p">)</span>
-    <span class="k">return</span> <span class="ow">not</span> <span class="n">wrong</span></div>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">Version</span><span class="p">(</span><span class="n">chemfiles</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="n">MIN_CHEMFILES_VERSION</span> <span class="ow">and</span> <span class="n">version</span> <span class="o">&lt;</span> <span class="n">MAX_CHEMFILES_VERSION</span></div>
 
 
 <div class="viewcode-block" id="ChemfilesReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chemfiles.html#MDAnalysis.coordinates.chemfiles.ChemfilesReader">[docs]</a><span class="k">class</span> <span class="nc">ChemfilesReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
@@ -492,11 +482,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">lengths</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
             <span class="n">angles</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
-            
-        <span class="k">if</span> <span class="n">chemfiles</span><span class="o">.</span><span class="n">__version__</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;0.9&quot;</span><span class="p">):</span>
-            <span class="n">frame</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">chemfiles</span><span class="o">.</span><span class="n">UnitCell</span><span class="p">(</span><span class="o">*</span><span class="n">lengths</span><span class="p">,</span> <span class="o">*</span><span class="n">angles</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">frame</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">chemfiles</span><span class="o">.</span><span class="n">UnitCell</span><span class="p">(</span><span class="n">lengths</span><span class="p">,</span> <span class="n">angles</span><span class="p">)</span>
+
+        <span class="n">frame</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">chemfiles</span><span class="o">.</span><span class="n">UnitCell</span><span class="p">(</span><span class="n">lengths</span><span class="p">,</span> <span class="n">angles</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">frame</span>
 
