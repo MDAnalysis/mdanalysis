@@ -1,11 +1,5 @@
 name: GH Actions Cron CI
 on:
-  push:
-    branches:
-      - develop
-  pull_request:
-    branches:
-      - develop
   schedule:
     # once a week at midnight on Sunday
     - cron: "0 0 * * 0"
