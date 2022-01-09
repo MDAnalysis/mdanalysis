@@ -276,7 +276,22 @@ def contact_matrix_pbc(coord, sparse_contacts, box, cutoff):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-cdef inline void _minimum_image_orthogonal(cython.floating[:] dx, cython.floating[:] box, cython.floating[:] inverse_box) nogil:
+cdef inline void _minimum_image_orthogonal(cython.floating[:] dx,
+                                           cython.floating[:] box,
+                                           cython.floating[:] inverse_box) nogil:
+    """Minimize dx to be the shortest vector
+
+    Parameters
+    ----------
+    dx : numpy.array, shape (3,)
+      vector to minimize
+    box : numpy.array, shape (3,)
+      box length in each dimension
+    inverse_box : numpy.array, shape (3,)
+      inverse of box
+
+    Operates in-place on dx!
+    """
     cdef int i, j
     cdef cython.floating s
 
@@ -286,12 +301,28 @@ cdef inline void _minimum_image_orthogonal(cython.floating[:] dx, cython.floatin
             dx[i] = box[i] * (s - cround(s))
 
 
-# Lifted from calc_distances.h
-# The function in calc_distances.h however assumes that vectors are at most a
-# single box length, so this is modified to first fulfill that assumption
 @cython.boundscheck(False)
 @cython.wraparound(False)
-cdef inline void _minimum_image_triclinic(cython.floating[:] dx, cython.floating[:] box, cython.floating[:] inverse_box) nogil:
+cdef inline void _minimum_image_triclinic(cython.floating[:] dx,
+                                          cython.floating[:] box,
+                                          cython.floating[:] inverse_box) nogil:
+    """Minimise dx to be the shortest vector
+
+    Parameters
+    ----------
+    dx : numpy.array, shape (3,)
+      the vector to apply minimum image convention to
+    box : numpy.array, shape (9,)
+      flattened 3x3 representation of the unit cell
+    inverse_box : numpy.array, shape (3,)
+      inverse of the **diagonal** of the 3x3 representation
+
+    This version is near identical to the version in calc_distances.h, with the
+    difference being that this version does not assume that coordinates are at
+    most a single box length apart.
+
+    Operates in-place on dx!
+    """
     cdef cython.floating dx_min[3]
     cdef cython.floating s, dsq, dsq_min, rx
     cdef cython.floating ry[2]
@@ -371,6 +402,7 @@ def _minimize_vectors_triclinic(cython.floating[:, :] vectors not None, cython.f
     cdef cython.floating box_inverse[3]
     cdef cython.floating[:] box_inverse_view
 
+    # this is only inverse of diagonal, used for initial shift to ensure vector is within a single shift away
     box_inverse[0] = 1.0 / box[0]
     box_inverse[1] = 1.0 / box[4]
     box_inverse[2] = 1.0 / box[8]
