@@ -2,7 +2,7 @@ name: GH Actions Cron CI
 on:
   schedule:
     # once a week at midnight on Sunday
-    - cron: "0 0 * * 0"
+    - cron: "0 3 * * 0"
 
 concurrency:
   # Probably overly cautious group naming.
