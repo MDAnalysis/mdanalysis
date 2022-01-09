@@ -276,7 +276,7 @@ def contact_matrix_pbc(coord, sparse_contacts, box, cutoff):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-cdef inline void _minimum_image_orthogonal(cython.floating[:] dx, cython.floating[:] box, cython.floating[:] inverse_box):
+cdef inline void _minimum_image_orthogonal(cython.floating[:] dx, cython.floating[:] box, cython.floating[:] inverse_box) nogil:
     cdef int i, j
     cdef cython.floating s
 
@@ -291,7 +291,7 @@ cdef inline void _minimum_image_orthogonal(cython.floating[:] dx, cython.floatin
 # single box length, so this is modified to first fulfill that assumption
 @cython.boundscheck(False)
 @cython.wraparound(False)
-cdef inline void _minimum_image_triclinic(cython.floating[:] dx, cython.floating[:] box, cython.floating[:] inverse_box):
+cdef inline void _minimum_image_triclinic(cython.floating[:] dx, cython.floating[:] box, cython.floating[:] inverse_box) nogil:
     cdef cython.floating dx_min[3]
     cdef cython.floating s, dsq, dsq_min, rx
     cdef cython.floating ry[2]
@@ -355,11 +355,12 @@ def _minimize_vectors_ortho(cython.floating[:, :] vectors not None, cython.float
     box_inverse_view = box_inverse
     
     n = len(vectors)
-    for i in range(n):
-        output[i, 0] = vectors[i, 0]
-        output[i, 1] = vectors[i, 1]
-        output[i, 2] = vectors[i, 2]
-        _minimum_image_orthogonal(output[i, :], box, box_inverse_view)
+    with nogil:
+        for i in range(n):
+            output[i, 0] = vectors[i, 0]
+            output[i, 1] = vectors[i, 1]
+            output[i, 2] = vectors[i, 2]
+            _minimum_image_orthogonal(output[i, :], box, box_inverse_view)
 
 
 @cython.boundscheck(False)
@@ -377,8 +378,9 @@ def _minimize_vectors_triclinic(cython.floating[:, :] vectors not None, cython.f
     box_inverse_view = box_inverse
     
     n = len(vectors)
-    for i in range(n):
-        output[i, 0] = vectors[i, 0]
-        output[i, 1] = vectors[i, 1]
-        output[i, 2] = vectors[i, 2]
-        _minimum_image_triclinic(output[i, :], box, box_inverse_view)
+    with nogil:
+        for i in range(n):
+            output[i, 0] = vectors[i, 0]
+            output[i, 1] = vectors[i, 1]
+            output[i, 2] = vectors[i, 2]
+            _minimum_image_triclinic(output[i, :], box, box_inverse_view)
