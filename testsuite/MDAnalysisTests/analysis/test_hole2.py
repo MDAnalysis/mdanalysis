@@ -275,12 +275,12 @@ class TestOserror(BaseTestHole):
     def test_hole_oserror(self, universe):
         errmsg = exe_err.format(name='None', kw='executable')
         with pytest.raises(OSError, match=errmsg):
-            h = hole2.HoleAnalysis(universe, executable="dummy_path")
+            h = hole2.HoleAnalysis(universe, executable='dummy_path')
 
     def test_sos_triangle_oserror(self, universe):
         errmsg = exe_err.format(name='dummy_path', kw='sos_triangle')
         with pytest.raises(OSError, match=errmsg):
-            h = hole2.HoleAnalysis(universe,  sos_triangle='dummy_path')
+            h = hole2.HoleAnalysis(universe, sos_triangle='dummy_path')
 
 
 class TestHoleAnalysis(BaseTestHole):
