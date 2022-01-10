@@ -98,23 +98,6 @@ class TestCheckAndFixLongFilename(object):
             assert not fixed.endswith(long_name)
 
 
-class TestOserror(object):
-    u = mda.Universe(MULTIPDB_HOLE)
-
-    errmsg1 = exe_err.format(name='dummy_path', kw='executable')
-
-    errmsg2 = exe_err.format(name='None', kw='executable')
-
-    def test_hole_oserror(self):
-        with pytest.raises(OSError, match=self.errmsg1):
-            hole = hole2.hole(PDB_HOLE, executable = 'dummy_path')
-
-    def test_hole_analysis_oserror(self):
-        with pytest.raises(OSError, match=self.errmsg2):
-            h1 = hole2.HoleAnalysis(self.u, executable=
-                                    "~/hole2/exe/hole_dummy")
-
-
 @pytest.mark.skipif(executable_not_found("hole"),
                     reason="Test skipped because HOLE not found")
 class TestHole(object):
@@ -280,6 +263,25 @@ class BaseTestHole(object):
         with pytest.warns(DeprecationWarning, match=wmsg):
             value = getattr(hole, attrname)
             assert value is hole.results[attrname]
+
+
+class TestOserror(BaseTestHole):
+
+    def test_hole_method_oserror(self):
+        errmsg = exe_err.format(name='dummy_path', kw='executable')
+        with pytest.raises(OSError, match=errmsg):
+            hole = hole2.hole(PDB_HOLE, executable='dummy_path')
+
+    def test_hole_oserror(self, universe):
+        errmsg = exe_err.format(name='None', kw='executable')
+        with pytest.raises(OSError, match=errmsg):
+            h = hole2.HoleAnalysis(universe, executable="dummy_path")
+
+    def test_sos_triangle_oserror(self, universe):
+        errmsg = exe_err.format(name='dummy_path', kw='sos_triangle')
+        with pytest.raises(OSError, match=errmsg):
+            h = hole2.HoleAnalysis(universe,  sos_triangle='dummy_path')
+
 
 class TestHoleAnalysis(BaseTestHole):
 
