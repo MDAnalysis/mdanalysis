@@ -22,7 +22,7 @@
 #
 import pytest
 import numpy as np
-from numpy.testing import assert_equal, assert_almost_equal
+from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
 import itertools
 from itertools import combinations_with_replacement as comb
 
@@ -1399,5 +1399,5 @@ def test_minimize_vectors(box, shift, dtype):
 
     res = distances.minimize_vectors(shifted_vec, box2)
 
-    assert_almost_equal(res, vec, decimal=5)
+    assert_allclose(res, vec, atol=0.00001)
     assert res.dtype == dtype
