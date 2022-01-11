@@ -804,7 +804,7 @@ class HoleAnalysis(AnalysisBase):
                                                        kw='sos_triangle'))
         sph_process_path = util.which(sph_process)
         if sph_process_path is None:
-            path = os.path.join(self.base_path, 'sph_process')
+            path = os.path.join(self.base_path, sph_process)
             sph_process_path = util.which(path)
         if sph_process_path is None:
             raise OSError(errno.ENOENT, exe_err.format(name=sph_process,

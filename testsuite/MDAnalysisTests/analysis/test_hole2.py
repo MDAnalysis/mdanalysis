@@ -265,7 +265,11 @@ class BaseTestHole(object):
             assert value is hole.results[attrname]
 
 
-class TestOserror(BaseTestHole):
+class TestOserror(object):
+
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(MULTIPDB_HOLE)
 
     def test_hole_method_oserror(self):
         errmsg = exe_err.format(name='dummy_path', kw='executable')
@@ -281,6 +285,11 @@ class TestOserror(BaseTestHole):
         errmsg = exe_err.format(name='dummy_path', kw='sos_triangle')
         with pytest.raises(OSError, match=errmsg):
             h = hole2.HoleAnalysis(universe, sos_triangle='dummy_path')
+
+    def test_sph_process_oserror(self, universe):
+        errmsg = exe_err.format(name='dummy_path', kw='sph_process')
+        with pytest.raises(OSError, match=errmsg):
+            h = hole2.HoleAnalysis(universe, sph_process='dummy_path')
 
 
 class TestHoleAnalysis(BaseTestHole):
