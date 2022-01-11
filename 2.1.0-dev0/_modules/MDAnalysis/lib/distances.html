@@ -164,6 +164,8 @@
 <span class="kn">from</span> <span class="nn">.mdamath</span> <span class="kn">import</span> <span class="n">triclinic_vectors</span>
 <span class="kn">from</span> <span class="nn">._augment</span> <span class="kn">import</span> <span class="n">augment_coordinates</span><span class="p">,</span> <span class="n">undo_augment</span>
 <span class="kn">from</span> <span class="nn">.nsgrid</span> <span class="kn">import</span> <span class="n">FastNS</span>
+<span class="kn">from</span> <span class="nn">.c_distances</span> <span class="kn">import</span> <span class="n">_minimize_vectors_ortho</span><span class="p">,</span> <span class="n">_minimize_vectors_triclinic</span>
+
 
 <span class="c1"># hack to select backend with backend=&lt;backend&gt; kwarg. Note that</span>
 <span class="c1"># the cython parallel code (prange) in parallel.distances is</span>
@@ -1640,6 +1642,48 @@
         <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;triclinic_pbc&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">box</span><span class="p">),</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">coords</span></div>
+
+
+<span class="nd">@check_coords</span><span class="p">(</span><span class="s1">&#39;vectors&#39;</span><span class="p">,</span> <span class="n">enforce_copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">enforce_dtype</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">minimize_vectors</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Apply minimum image convention to an array of vectors</span>
+
+<span class="sd">    This function is required for calculating the correct vectors between two</span>
+<span class="sd">    points.  A naive approach of ``ag1.positions - ag2.positions`` will not</span>
+<span class="sd">    provide the minimum vectors between particles, even if all particles are</span>
+<span class="sd">    within the primary unit cell (box).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vectors : numpy.ndarray</span>
+<span class="sd">        Vector array of shape ``(n, 3)``, either float32 or float64.  These</span>
+<span class="sd">        represent many vectors (such as between two particles).</span>
+<span class="sd">    box : numpy.ndarray</span>
+<span class="sd">        The unitcell dimensions of the system, which can be orthogonal or</span>
+<span class="sd">        triclinic and must be provided in the same format as returned by</span>
+<span class="sd">        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:</span>
+<span class="sd">        ``[lx, ly, lz, alpha, beta, gamma]``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    minimized_vectors : numpy.ndarray</span>
+<span class="sd">        Same shape and dtype as input.  The vectors from the input, but</span>
+<span class="sd">        minimized according to the size of the box.</span>
+
+<span class="sd">    .. versionadded:: 2.1.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">vectors</span><span class="p">)</span>
+
+    <span class="c1"># use box which is same precision as input vectors</span>
+    <span class="n">box</span> <span class="o">=</span> <span class="n">box</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">vectors</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
+        <span class="n">_minimize_vectors_ortho</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_minimize_vectors_triclinic</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">box</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">output</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">output</span>
 </pre></div>
 
            </div>
