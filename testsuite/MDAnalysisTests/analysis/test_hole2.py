@@ -265,7 +265,9 @@ class BaseTestHole(object):
             assert value is hole.results[attrname]
 
 
-class TestOserror(object):
+@pytest.mark.skipif(executable_not_found('hole'),
+                    reason="Test skipped because HOLE not found")
+class TestOSError():
 
     @pytest.fixture()
     def universe(self):
@@ -274,10 +276,10 @@ class TestOserror(object):
     def test_hole_method_oserror(self):
         errmsg = exe_err.format(name='dummy_path', kw='executable')
         with pytest.raises(OSError, match=errmsg):
-            hole = hole2.hole(PDB_HOLE, executable='dummy_path')
+            h = hole2.hole(PDB_HOLE, executable='dummy_path')
 
     def test_hole_oserror(self, universe):
-        errmsg = exe_err.format(name='None', kw='executable')
+        errmsg = exe_err.format(name='dummy_path', kw='executable')
         with pytest.raises(OSError, match=errmsg):
             h = hole2.HoleAnalysis(universe, executable='dummy_path')
 

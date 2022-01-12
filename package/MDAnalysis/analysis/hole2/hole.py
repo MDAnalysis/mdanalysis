@@ -791,7 +791,7 @@ class HoleAnalysis(AnalysisBase):
         # --- finding executables ----
         hole = util.which(executable)
         if hole is None:
-            raise OSError(errno.ENOENT, exe_err.format(name=hole,
+            raise OSError(errno.ENOENT, exe_err.format(name=executable,
                                                        kw='executable'))
         self.base_path = os.path.dirname(hole)
 
