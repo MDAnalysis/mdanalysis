@@ -113,18 +113,23 @@ class TestDensity(object):
         with pytest.raises(ValueError):
             D._check_set_unit(units)
 
-    def test_check_set_unit_density_none(self, D):
+    def test_check_set_density_none(self, D1):
         units = {'density': None}
-        assert D._check_set_unit(units) is None
+        D1._check_set_unit(units)
+        assert D1.units['density'] is None
+
+    def test_check_set_density_not_in_units(self, D1):
+        del D1.units['density']
+        D1._check_set_unit({})
+        assert D1.units['density'] is None
 
     def test_parameters_isdensity(self, D):
         with pytest.warns(UserWarning, match='Running make_density()'):
             D.make_density()
 
     def test_check_convert_density_grid_not_density(self, D1):
-        unit = 'nm^{-3}'
         with pytest.raises(RuntimeError, match="The grid is not a density"):
-            D1.convert_density(unit)
+            D1.convert_density()
 
     def test_check_convert_density_value_error(self, D):
         unit = 'A^{-2}'
@@ -226,10 +231,11 @@ class DensityParameters(object):
 
 class TestDensityAnalysis(DensityParameters):
     def check_DensityAnalysis(self, ag, ref_meandensity,
-                                    tmpdir, runargs=None, **kwargs):
+                              tmpdir, runargs=None, **kwargs):
         runargs = runargs if runargs else {}
         with tmpdir.as_cwd():
-            D = density.DensityAnalysis(ag, delta=self.delta, **kwargs).run(**runargs)
+            D = density.DensityAnalysis(
+                ag, delta=self.delta, **kwargs).run(**runargs)
             assert_almost_equal(D.results.density.grid.mean(), ref_meandensity,
                                 err_msg="mean density does not match")
             D.results.density.export(self.outfile)
@@ -372,7 +378,7 @@ class TestDensityAnalysis(DensityParameters):
 
     def test_warn_results_deprecated(self, universe):
         D = density.DensityAnalysis(
-        universe.select_atoms(self.selections['static']))
+            universe.select_atoms(self.selections['static']))
         D.run(stop=1)
         wmsg = "The `density` attribute was deprecated in MDAnalysis 2.0.0"
         with pytest.warns(DeprecationWarning, match=wmsg):
