@@ -267,7 +267,7 @@ class BaseTestHole(object):
 
 @pytest.mark.skipif(executable_not_found('hole'),
                     reason="Test skipped because HOLE not found")
-class TestOSError():
+class TestOSError:
 
     @pytest.fixture()
     def universe(self):
