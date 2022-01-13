@@ -115,13 +115,7 @@ class TestDensity(object):
 
     def test_check_set_unit_density_none(self, D):
         units = {'density': None}
-        assert D._check_set_unit(units) == None
-
-    def test_check_set_unit_density_none(self, D):
-        del D.units['density']
-        D._check_set_unit({})
-        assert D.units['density'] == None
-        assert D._check_set_unit(D.units) == None
+        assert D._check_set_unit(units) is None
 
     def test_parameters_isdensity(self, D):
         with pytest.warns(UserWarning, match='Running make_density()'):
