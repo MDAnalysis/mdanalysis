@@ -28,8 +28,8 @@ Fixes
     created using add_Residue and add_Segment (Issue #3437)
 
 Enhancements
-  * increase smarts atom selection limit from 1000 -> n_atoms. Add
-    maxMatches and useChirality to rdkit_kwargs. (Issue #3469, PR #3470)
+  * Add smarts_kwargs to allow greater flexiblity with smarts atom selection
+    (Issue #3469, PR #3470).
   * Add option for custom compiler flags for C/C++ on build and remove march
     option from setup.cfg (Issue #3428, PR #3429).
 
