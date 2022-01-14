@@ -2987,7 +2987,8 @@ class AtomGroup(GroupBase):
                 `RDKitConverter.convert()` and the smarts_kwargs are passed to
                 RDKit's `GetSubstructMatches
                 <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol.GetSubstructMatches>`_.
-                By default, the `useChirality` kwarg in rdkit_kwargs is set to true.
+                By default, the `useChirality` kwarg in rdkit_kwargs is set to true
+                and maxMatches in smarts_kwargs is 1000.
 
                 >>> universe.select_atoms("C", smarts_kwargs={"maxMatches": 100})
                 <AtomGroup with 100 atoms>

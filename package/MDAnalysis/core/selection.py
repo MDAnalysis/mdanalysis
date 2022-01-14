@@ -659,7 +659,7 @@ class SmartsSelection(Selection):
         mol = group.convert_to("RDKIT", **self.rdkit_kwargs)
         # override GetSubstructMatches default values
         self.smarts_kwargs.setdefault("useChirality", True)
-        self.smarts_kwargs.setdefault("maxMatches", group.n_atoms)
+        self.smarts_kwargs.setdefault("maxMatches", 1000)
         matches = mol.GetSubstructMatches(pattern, **self.smarts_kwargs)
         # convert rdkit indices to mdanalysis
         indices = [
