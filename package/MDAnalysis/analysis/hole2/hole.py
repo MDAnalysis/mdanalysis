@@ -323,7 +323,7 @@ from .utils import (check_and_fix_long_filename, write_simplerad2,
                     set_up_hole_input, run_hole, collect_hole,
                     create_vmd_surface)
 from .templates import (hole_input, hole_lines, vmd_script_array,
-                        vmd_script_function,
+                        vmd_script_function, exe_err,
                         IGNORE_RESIDUES)
 
 logger = logging.getLogger(__name__)
@@ -791,7 +791,7 @@ class HoleAnalysis(AnalysisBase):
         # --- finding executables ----
         hole = util.which(executable)
         if hole is None:
-            raise OSError(errno.ENOENT, exe_err.format(name=hole,
+            raise OSError(errno.ENOENT, exe_err.format(name=executable,
                                                        kw='executable'))
         self.base_path = os.path.dirname(hole)
 
@@ -804,7 +804,7 @@ class HoleAnalysis(AnalysisBase):
                                                        kw='sos_triangle'))
         sph_process_path = util.which(sph_process)
         if sph_process_path is None:
-            path = os.path.join(self.base_path, 'sph_process')
+            path = os.path.join(self.base_path, sph_process)
             sph_process_path = util.which(path)
         if sph_process_path is None:
             raise OSError(errno.ENOENT, exe_err.format(name=sph_process,
