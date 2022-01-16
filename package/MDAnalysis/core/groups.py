@@ -2993,6 +2993,12 @@ class AtomGroup(GroupBase):
                 >>> universe.select_atoms("C", smarts_kwargs={"maxMatches": 100})
                 <AtomGroup with 100 atoms>
 
+            chiral *R | S*
+                select a particular stereocenter. e.g. ``name C and chirality
+                S`` to select only S-chiral carbon atoms.  Only ``R`` and
+                ``S`` will be possible options but other values will not raise
+                an error.
+
         **Boolean**
 
             not

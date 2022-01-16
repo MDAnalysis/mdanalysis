@@ -3,7 +3,7 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - chemfiles>=0.9
+  - chemfiles>=0.10
   - codecov
   - cython
   - griddataformats

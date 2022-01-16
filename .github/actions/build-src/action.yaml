@@ -1,0 +1,68 @@
+name: 'build-src'
+description: 'make source builds for CI'
+inputs:
+  build-hole:
+    description: 'build HOLE2'
+    required: true
+    default: true
+  build-tests:
+    description: 'build MDA tests'
+    required: true
+    default: true
+  build-docs:
+    description: 'build MDA docs'
+    required: true
+    default: false
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: echo_inputs
+      shell: bash -l {0}
+      run: |
+        echo ${{ inputs.build-hole }}
+        echo ${{ inputs.build-tests }}
+        echo ${{ inputs.build-docs }}
+
+    - name: check_setup
+      shell: bash -l {0}
+      run: |
+        # Check OS and python setup prior to builds
+        echo "OS: ${OS_NAME}"
+        which python
+        which pip
+        pip list
+        conda info
+        conda list
+
+    - name: build_hole
+      if: ${{ inputs.build-hole == 'true' }}
+      shell: bash -l {0}
+      run: |
+        # We manually build hole2 to avoid OS incompatibilities
+        git clone https://github.com/MDAnalysis/hole2.git
+        cd hole2/src
+        source ../source.apache
+        (make FC=${FC}) && (make PREFIX=${HOME}/hole2 FC=${FC} install)
+        source ../source.unset
+        echo "HOLE_BINDIR=${HOME}/hole2/bin" >> $GITHUB_ENV
+        echo "${HOME}/hole2/bin" >> $GITHUB_PATH
+
+    - name: build_mda_main
+      shell: bash -l {0}
+      run: |
+        # install instead of develop would reduce coverage (for .pyx files)
+        cd package/ && python setup.py develop
+
+    - name: build_mda_tests
+      if: ${{ inputs.build-tests == 'true' }}
+      shell: bash -l {0}
+      run: |
+        cd testsuite/ && python setup.py install
+
+    - name: build_docs
+      if: ${{ inputs.build-docs == 'true' }}
+      shell: bash -l {0}
+      run: |
+        cd package && python setup.py build_sphinx -E --keep-going
