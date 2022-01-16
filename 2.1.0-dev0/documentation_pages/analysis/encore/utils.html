@@ -195,7 +195,7 @@ available cores.</p></li>
 <li><p><strong>function</strong> (<em>object that supports __call__</em><em>, </em><em>as functions</em>) – function to be run in parallel.</p></li>
 <li><p><strong>args</strong> (<em>list of tuples</em>) – Arguments for function; see the ParallelCalculation class
 description.</p></li>
-<li><p><strong>kwargs</strong> (<em>list of dicts</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><em>None</em></a>) – kwargs for function; see the ParallelCalculation
+<li><p><strong>kwargs</strong> (<em>list of dicts</em><em> or </em><em>None</em>) – kwargs for function; see the ParallelCalculation
 class description.</p></li>
 </ul>
 </dd>
@@ -252,8 +252,8 @@ accessed using the [] and () operators, similarly to a normal numpy array.</p>
 array is provided instead, the size of the triangular matrix
 will be calculated and the array copied as the matrix
 elements. Otherwise, the matrix is just initialized to zero.</p></li>
-<li><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><em>None</em></a>) – Metadata dictionary. Used to generate the metadata attribute.</p></li>
-<li><p><strong>loadfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><em>None</em></a>) – Load the matrix from this file. All the attributes and data will
+<li><p><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a><em> or </em><em>None</em>) – Metadata dictionary. Used to generate the metadata attribute.</p></li>
+<li><p><strong>loadfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>None</em>) – Load the matrix from this file. All the attributes and data will
 be determined by the matrix file itself (i.e. metadata will be
 ignored); size has to be provided though.</p></li>
 </ul>
@@ -298,11 +298,8 @@ data as well.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>universes</strong> (<em>list of Universe objects</em>) – </p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Universe object</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Universe object</p>
 </dd>
 </dl>
 </dd></dl>

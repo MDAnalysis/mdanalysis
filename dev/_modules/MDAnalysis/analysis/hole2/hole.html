@@ -414,7 +414,7 @@
                     <span class="n">set_up_hole_input</span><span class="p">,</span> <span class="n">run_hole</span><span class="p">,</span> <span class="n">collect_hole</span><span class="p">,</span>
                     <span class="n">create_vmd_surface</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.templates</span> <span class="kn">import</span> <span class="p">(</span><span class="n">hole_input</span><span class="p">,</span> <span class="n">hole_lines</span><span class="p">,</span> <span class="n">vmd_script_array</span><span class="p">,</span>
-                        <span class="n">vmd_script_function</span><span class="p">,</span>
+                        <span class="n">vmd_script_function</span><span class="p">,</span> <span class="n">exe_err</span><span class="p">,</span>
                         <span class="n">IGNORE_RESIDUES</span><span class="p">)</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -882,7 +882,7 @@
         <span class="c1"># --- finding executables ----</span>
         <span class="n">hole</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="n">executable</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">hole</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">ENOENT</span><span class="p">,</span> <span class="n">exe_err</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">hole</span><span class="p">,</span>
+            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">ENOENT</span><span class="p">,</span> <span class="n">exe_err</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">executable</span><span class="p">,</span>
                                                        <span class="n">kw</span><span class="o">=</span><span class="s1">&#39;executable&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">base_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">hole</span><span class="p">)</span>
 
@@ -895,7 +895,7 @@
                                                        <span class="n">kw</span><span class="o">=</span><span class="s1">&#39;sos_triangle&#39;</span><span class="p">))</span>
         <span class="n">sph_process_path</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="n">sph_process</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">sph_process_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_path</span><span class="p">,</span> <span class="s1">&#39;sph_process&#39;</span><span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_path</span><span class="p">,</span> <span class="n">sph_process</span><span class="p">)</span>
             <span class="n">sph_process_path</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">sph_process_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">ENOENT</span><span class="p">,</span> <span class="n">exe_err</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">sph_process</span><span class="p">,</span>

@@ -144,7 +144,7 @@ loaded from the “topology” file unless a trajectory is supplied.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>topology</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>stream</em><em>, </em><a class="reference internal" href="topology.html#MDAnalysis.core.topology.Topology" title="MDAnalysis.core.topology.Topology"><em>Topology</em></a><em>, </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>numpy.ndarray</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><em>None</em></a>) – A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
+<li><p><strong>topology</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>stream</em><em>, </em><a class="reference internal" href="topology.html#MDAnalysis.core.topology.Topology" title="MDAnalysis.core.topology.Topology"><em>Topology</em></a><em>, </em><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><em>numpy.ndarray</em></a><em>, </em><em>None</em>) – A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
 define the list of atoms. If the file includes bond information,
 partial charges, atom masses, … then these data will be available to
 MDAnalysis. Alternatively, an existing
@@ -342,14 +342,11 @@ Residue will belong in must be specified.</p></li>
 specified</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>A reference to the new Residue</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>A reference to the new Residue</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – If any information was missing.  This happens before any changes have
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – If any information was missing.  This happens before any changes have
     been made, ie the change is rolled back.</p>
 </dd>
 </dl>
@@ -372,14 +369,11 @@ specified</p></li>
 <dd class="field-odd"><p><strong>attrs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – For each Segment attribute as a key, give the value in the new
 Segment</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>A reference to the new Segment</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>A reference to the new Segment</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – If any attributes were not specified as a keyword.</p>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../exceptions.html#MDAnalysis.exceptions.NoDataError" title="MDAnalysis.exceptions.NoDataError"><strong>NoDataError</strong></a> – If any attributes were not specified as a keyword.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -437,7 +431,7 @@ If AtomGroups, Angles, or a TopologyGroup are passed,
 they <em>must</em> be from the same Universe.</p></li>
 <li><p><strong>types</strong> (<em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default None</em><em>)</em>) – None, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></p></li>
 <li><p><strong>guessed</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em> or </em><em>iterable</em><em> (</em><em>optional</em><em>, </em><em>default False</em><em>)</em>) – bool, or an iterable of hashable values with the same length as <code class="docutils literal notranslate"><span class="pre">values</span></code></p></li>
-<li><p><strong>versionadded:</strong> (<em>.</em>) – 1.0.0:</p></li>
+<li><p><strong>versionadded:</strong> (<em>..</em>) – 1.0.0:</p></li>
 </ul>
 </dd>
 </dl>
@@ -843,11 +837,8 @@ and detected file type.</p>
 topology (eg residue identity) can change between different models,
 resulting in a different number of atoms in each model.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>A list of AtomGroups, each representing a single model.</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>A list of AtomGroups, each representing a single model.</p>
 </dd>
 </dl>
 <div class="admonition note">

@@ -308,8 +308,8 @@ those that belong to the cluster.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>elem_list</strong> (<em>numpy.array</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><em>None</em></a>) – numpy array of cluster elements</p></li>
-<li><p><strong>centroid</strong> (<a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><em>None</em></a><em> or </em><em>element object</em>) – centroid</p></li>
+<li><p><strong>elem_list</strong> (<em>numpy.array</em><em> or </em><em>None</em>) – numpy array of cluster elements</p></li>
+<li><p><strong>centroid</strong> (<em>None</em><em> or </em><em>element object</em>) – centroid</p></li>
 <li><p><strong>idn</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – cluster ID</p></li>
 <li><p><strong>metadata</strong> (<em>iterable</em>) – metadata, one value for each cluster element. The iterable
 must have the same length as the elements array.</p></li>
@@ -352,8 +352,8 @@ element 5 has its own cluster.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>elements</strong> (<em>iterable of ints</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><em>None</em></a>) – clustering results. See the previous description for details</p></li>
-<li><p><strong>metadata</strong> (<em>{str:list</em><em>, </em><em>str:list</em><em>,</em><em>...</em><em>}</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><em>None</em></a>) – metadata for the data elements. The list must be of the same
+<li><p><strong>elements</strong> (<em>iterable of ints</em><em> or </em><em>None</em>) – clustering results. See the previous description for details</p></li>
+<li><p><strong>metadata</strong> (<em>{str:list</em><em>, </em><em>str:list</em><em>,</em><em>...</em><em>}</em><em> or </em><em>None</em>) – metadata for the data elements. The list must be of the same
 size as the elements array, with one value per element.</p></li>
 </ul>
 </dd>
@@ -584,7 +584,7 @@ encore.utils.ClustersCollection to generate Cluster objects. See these
 classes for more details.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list of int or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)">None</a></p>
+<dd class="field-odd"><p>list of int or None</p>
 </dd>
 </dl>
 </dd></dl>
