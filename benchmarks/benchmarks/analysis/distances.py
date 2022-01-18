@@ -1,6 +1,5 @@
 import MDAnalysis
 import numpy as np
-from MDAnalysis.lib import mdamath
 
 try:
     from MDAnalysisTests.datafiles import GRO
