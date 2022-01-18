@@ -1,11 +1,6 @@
 import MDAnalysis
 import numpy as np
-
-
-try:
-    from MDAnalysis.lib import mdamath
-except:
-    pass
+from MDAnalysis.lib import mdamath
 
 try:
     from MDAnalysisTests.datafiles import GRO
@@ -27,8 +22,6 @@ class BetweenBench(object):
     param_names = (['num_atoms'])
 
     def setup(self, num_atoms):
-
-        #self.u = MDAnalysis.Universe(GRO)
 
         np.random.seed(17809)
         self.coords_1 = np.random.random_sample((num_atoms,
@@ -124,12 +117,10 @@ class DistancesBench(object):
 
         elif pbc_type == 'triclinic':
             # making a triclinic box with the same volume as the cube
-            deg_alpha = np.float32(60)
-            deg_beta = np.float32(60)
-            deg_gamma = np.float32(60)
-            alpha = np.deg2rad(deg_alpha)
-            beta = np.deg2rad(deg_beta)
-            gamma = np.deg2rad(deg_gamma)
+            alpha = 2*np.pi/3
+            beta = np.pi/2
+            gamma = 2*np.pi/3
+
             # change side lengths so that the resulting box has correct
             # volume
             a = cube_side_length
@@ -141,7 +132,11 @@ class DistancesBench(object):
                                               / np.sin(gamma))**2
                                              - np.cos(beta)**2))
 
-            self.u.dimensions = [a, b, c, deg_alpha, deg_beta, deg_gamma]
+            self.u.dimensions = [a, b, c,
+                                 np.rad2deg(alpha),
+                                 np.rad2deg(beta),
+                                 np.rad2deg(gamma)]
+
             self.box_dims = self.u.dimensions
             # wrapping atoms to reflect new triclinic basis
             self.u.atoms.wrap(inplace=True)
@@ -210,7 +205,7 @@ class DistancesBench(object):
                                       result=self.allocated_array_1D,
                                       backend='serial')
 
-    def time_dist(self, num_atoms, box_dims):
+    def time_dist(self, num_atoms, pbc_type):
         """Benchmark calculation of distances between
         atoms in two atomgroups with no offsets
         to resids.
@@ -220,7 +215,7 @@ class DistancesBench(object):
                        box=self.box_dims,
                        offset=0)
 
-    def time_dist_offsets(self, num_atoms, box_dims):
+    def time_dist_offsets(self, num_atoms, pbc_type):
         """Benchmark calculation of distances between
         atoms in two atomgroups with offsets
         to resids.
@@ -240,7 +235,7 @@ class DistancesBench(object):
                                  returntype='numpy',
                                  box=self.box_dims)
 
-    def time_contact_matrix_sparse(self, num_atoms, box_dims):
+    def time_contact_matrix_sparse(self, num_atoms, pbc_type):
         """Benchmark calculation of contacts within
         a single numpy array using the slower reduced
         memory implementation of contact_matrix intended
