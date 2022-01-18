@@ -36,7 +36,7 @@ AllChem = pytest.importorskip('rdkit.Chem.AllChem')
 class RDKitParserBase(ParserBase):
     parser = mda.converters.RDKitParser.RDKitParser
     expected_attrs = ['ids', 'names', 'elements', 'masses', 'aromaticities',
-                      'resids', 'resnums',
+                      'resids', 'resnums', 'chiralities',
                       'segids',
                       'bonds',
                      ]
@@ -152,6 +152,15 @@ class TestRDKitParserPDB(RDKitParserBase):
     @pytest.fixture
     def filename(self):
         return Chem.MolFromPDBFile(self.ref_filename, removeHs=False)
+
+    def test_partial_residueinfo_raise_error(self, filename):
+        mol = Chem.RemoveHs(filename)
+        mh = Chem.AddHs(mol)
+        with pytest.raises(ValueError,
+                           match="ResidueInfo is only partially available"):
+            mda.Universe(mh)
+        mh = Chem.AddHs(mol, addResidueInfo=True)
+        mda.Universe(mh)
     
 
 class TestRDKitParserSMILES(RDKitParserBase):

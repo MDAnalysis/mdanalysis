@@ -137,6 +137,9 @@ __all__ = [
     "LAMMPShyd", "LAMMPShyd2",
     "LAMMPSdata_deletedatoms",  # with deleted atoms
     "LAMMPSDUMP",
+    "LAMMPSDUMP_long",  # lammpsdump file with a few zeros sprinkled in the first column first frame
+    "LAMMPSDUMP_allcoords",  # lammpsdump file with all coordinate conventions (x,xs,xu,xsu) present, from LAMMPS rdf example
+    "LAMMPSDUMP_nocoords",  # lammpsdump file with no coordinates
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
@@ -146,6 +149,7 @@ __all__ = [
     "two_water_gro_widebox",  # Issue #548
     "DLP_CONFIG", "DLP_CONFIG_order", "DLP_CONFIG_minimal",  # dl_poly 4 config file
     "DLP_HISTORY", "DLP_HISTORY_order", "DLP_HISTORY_minimal",  # dl_poly 4 history file
+    "DLP_HISTORY_minimal_cell", # dl_poly 4 history file with cell parameters
     "waterPSF","waterDCD","rmsfArray",
     "HoomdXMLdata",
     "Make_Whole",  # for testing the function lib.mdamath.make_whole, has 9 atoms
@@ -188,6 +192,7 @@ __all__ = [
     "ITP", # for GROMACS generated itps
     "ITP_nomass", # for ATB generated itps
     "ITP_atomtypes",  # atom definitions to check atomtyes section parsing
+    "ITP_charges", # atom definitions to test custom particle charge parsing.
     "NAMDBIN", # for NAMD generated binary file
     "ITP_edited", # to check different directives are read properly
     "ITP_tip5p", # tip5p water from opls-aa, edited with additional keywords
@@ -203,6 +208,9 @@ __all__ = [
     "SDF_molecule",  # MDL SDFile for rdkit
     "PDBX",  # PDBxfile
     "PDB_elements",  # PDB file with elements
+    "PDB_elements",  # PDB file with elements
+    "SURFACE_PDB",  # 111 FCC lattice topology for NSGrid bug #2345
+    "SURFACE_TRR",  # full precision coordinates for NSGrid bug #2345
 ]
 
 from pkg_resources import resource_filename
@@ -480,6 +488,10 @@ LAMMPShyd = resource_filename(__name__, "data/lammps/hydrogen-class1.data")
 LAMMPShyd2 = resource_filename(__name__, "data/lammps/hydrogen-class1.data2")
 LAMMPSdata_deletedatoms = resource_filename(__name__, 'data/lammps/deletedatoms.data')
 LAMMPSDUMP = resource_filename(__name__, "data/lammps/wat.lammpstrj.bz2")
+LAMMPSDUMP_long = resource_filename(__name__, "data/lammps/wat.lammpstrj_long.bz2")
+LAMMPSDUMP_allcoords = resource_filename(__name__, "data/lammps/spce_all_coords.lammpstrj.bz2")
+LAMMPSDUMP_nocoords = resource_filename(__name__, "data/lammps/spce_no_coords.lammpstrj.bz2")
+
 
 unordered_res = resource_filename(__name__, "data/unordered_res.pdb")
 
@@ -498,6 +510,7 @@ DLP_CONFIG_minimal = resource_filename(__name__, "data/dlpoly/CONFIG_minimal")
 DLP_HISTORY = resource_filename(__name__, "data/dlpoly/HISTORY")
 DLP_HISTORY_order = resource_filename(__name__, "data/dlpoly/HISTORY_order")
 DLP_HISTORY_minimal = resource_filename(__name__, "data/dlpoly/HISTORY_minimal")
+DLP_HISTORY_minimal_cell = resource_filename(__name__, "data/dlpoly/HISTORY_minimal_cell")
 
 waterPSF = resource_filename(__name__, 'data/watdyn.psf')
 waterDCD = resource_filename(__name__, 'data/watdyn.dcd')
@@ -545,6 +558,7 @@ BATArray = resource_filename(__name__, 'data/mol2_comments_header_bat.npy')
 ITP = resource_filename(__name__, 'data/gromacs_ala10.itp')
 ITP_nomass = resource_filename(__name__, 'data/itp_nomass.itp')
 ITP_atomtypes = resource_filename(__name__, 'data/atomtypes.itp')
+ITP_charges = resource_filename(__name__, 'data/atomtypes_charge.itp')
 ITP_edited = resource_filename(__name__, 'data/edited_itp.itp')
 ITP_tip5p = resource_filename(__name__, "data/tip5p.itp")
 ITP_spce = resource_filename(__name__, 'data/spce.itp')
@@ -560,7 +574,12 @@ SDF_molecule = resource_filename(__name__, 'data/molecule.sdf')
 
 PDB_elements = resource_filename(__name__, 'data/elements.pdb')
 
+
 PDBX = resource_filename(__name__, "data/4x8u.pdbx")
+
+SURFACE_PDB = resource_filename(__name__, 'data/surface.pdb.bz2')
+SURFACE_TRR = resource_filename(__name__, 'data/surface.trr')
+
 
 # This should be the last line: clean up namespace
 del resource_filename

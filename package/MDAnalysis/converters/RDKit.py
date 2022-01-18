@@ -47,6 +47,16 @@ molecule::
     <rdkit.Chem.rdchem.Mol object at 0x7fcebb958148>
 
 
+.. warning::
+    The RDKit converter is currently *experimental* and may not work as
+    expected for all molecules. Currently the converter accurately
+    infers the structures of approximately 90% of the `ChEMBL27`_ dataset.
+    Work is currently ongoing on further improving this and updates to the
+    converter are expected in future releases of MDAnalysis.
+    Please see `Pull Request #3044`_ for more details.
+
+
+
 Classes
 -------
 
@@ -61,6 +71,12 @@ Classes
 .. autofunction:: _standardize_patterns
 
 .. autofunction:: _rebuild_conjugated_bonds
+
+
+.. Links
+
+.. _`ChEMBL27`: https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_27/
+.. _`Pull Request #3044`: https://github.com/MDAnalysis/mdanalysis/pull/3044
 
 """
 
@@ -101,7 +117,6 @@ else:
         "resids": "ResidueNumber",
         "segindices": "SegmentNumber",
         "tempfactors": "TempFactor",
-        "bfactors": "TempFactor",
     }
     PERIODIC_TABLE = Chem.GetPeriodicTable()
 
@@ -186,8 +201,6 @@ class RDKitConverter(base.ConverterBase):
     +-----------------------+-------------------------------------------+
     | tempfactors           | atom.GetMonomerInfo().GetTempFactor()     |
     +-----------------------+-------------------------------------------+
-    | bfactors              | atom.GetMonomerInfo().GetTempFactor()     |
-    +-----------------------+-------------------------------------------+
     | charges               | atom.GetDoubleProp("_MDAnalysis_charge")  |
     +-----------------------+-------------------------------------------+
     | indices               | atom.GetIntProp("_MDAnalysis_index")      |
@@ -232,10 +245,6 @@ class RDKitConverter(base.ConverterBase):
 
     It also requires the `bonds` attribute, although they will be automatically
     guessed if not present.
-
-    If both ``tempfactors`` and ``bfactors`` attributes are present, the
-    conversion will fail, since only one of these should be present.
-    Refer to Issue #1901 for a solution
 
     Hydrogens should be explicit in the topology file. If this is not the case,
     use the parameter ``NoImplicit=False`` when using the converter to allow
@@ -376,12 +385,6 @@ def atomgroup_to_mol(ag, NoImplicit=True, max_iter=200, force=False):
 
     # attributes accepted in PDBResidueInfo object
     pdb_attrs = {}
-    if hasattr(ag, "bfactors") and hasattr(ag, "tempfactors"):
-        raise AttributeError(
-            "Both `tempfactors` and `bfactors` attributes are present but "
-            "only one can be assigned to the RDKit molecule. Please "
-            "delete the unnecessary one and retry."
-        )
     for attr in RDATTRIBUTES.keys():
         if hasattr(ag, attr):
             pdb_attrs[attr] = getattr(ag, attr)
@@ -461,7 +464,7 @@ def set_converter_cache_size(maxsize):
         conversions in memory. Using ``maxsize=None`` will remove all limits
         to the cache size, i.e. everything is cached.
     """
-    global atomgroup_to_mol
+    global atomgroup_to_mol   # pylint: disable=global-statement
     atomgroup_to_mol = lru_cache(maxsize=maxsize)(atomgroup_to_mol.__wrapped__)
 
 

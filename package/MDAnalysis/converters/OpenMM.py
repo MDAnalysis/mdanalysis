@@ -164,10 +164,11 @@ class OpenMMAppReader(base.SingleFrameReaderBase):
 
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)
-            self.ts.triclinic_dimensions = self.convert_pos_from_native(
-                self.ts.triclinic_dimensions, inplace=False
-            )
-            self.ts.dimensions[3:] = _sanitize_box_angles(self.ts.dimensions[3:])
+            if self.ts.dimensions is not None:
+                self.ts.triclinic_dimensions = self.convert_pos_from_native(
+                    self.ts.triclinic_dimensions, inplace=False
+                )
+                self.ts.dimensions[3:] = _sanitize_box_angles(self.ts.dimensions[3:])
 
     def _mda_timestep_from_omm_app(self):
         """ Construct Timestep object from OpenMM Application object """

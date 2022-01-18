@@ -295,8 +295,9 @@ class Dihedral(AnalysisBase):
     def __init__(self, atomgroups, **kwargs):
         """Parameters
         ----------
-        atomgroups : list
-            a list of atomgroups for which the dihedral angles are calculated
+        atomgroups : list[AtomGroup]
+            a list of :class:`~MDAnalysis.core.groups.AtomGroup` for which
+            the dihedral angles are calculated
 
         Raises
         ------
@@ -357,7 +358,7 @@ class Ramachandran(AnalysisBase):
         name for the backbone N atom
     ca_name : str (optional)
         name for the alpha-carbon atom
-    check_protein: bool (optional)
+    check_protein : bool (optional)
         whether to raise an error if the provided atomgroup is not a
         subset of protein atoms
 

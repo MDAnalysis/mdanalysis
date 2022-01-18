@@ -29,8 +29,8 @@ MDAnalysis. Using the *CHEMFILES* reader you can use  `chemfiles`_ for the low-l
 file reading. Check the list of `chemfile-supported file formats <formats>`_.
 
 .. _chemfiles: https://chemfiles.org
-.. _formats: https://chemfiles.org/chemfiles/0.9.3/formats.html#list-of-supported-formats
-.. NOTE: MDAnalysis currently restricts chemfiles to 0.9 <= version < 0.10. Update the link
+.. _formats: https://chemfiles.org/chemfiles/0.10.0/formats.html#list-of-supported-formats
+.. NOTE: MDAnalysis currently restricts chemfiles to 0.10 <= version < 0.11. Update the link
 ..       above to the latest documentation once this restriction is lifted.
 ..       https://chemfiles.org/chemfiles/latest/formats.html#list-of-supported-formats
 
@@ -79,9 +79,9 @@ Helper functions
 .. autofunction:: check_chemfiles_version
 
 """
-from distutils.version import LooseVersion
-import warnings
 import numpy as np
+import warnings
+from packaging.version import Version
 
 from . import base
 
@@ -102,12 +102,10 @@ else:
     HAS_CHEMFILES = True
 
 
-#: Lowest version of chemfiles that is supported
-#: by MDAnalysis.
-MIN_CHEMFILES_VERSION = LooseVersion("0.9")
-#: Lowest version of chemfiles that is *not supported*
-#: by MDAnalysis.
-MAX_CHEMFILES_VERSION = LooseVersion("0.11")
+#: Lowest version of chemfiles that is supported by MDAnalysis.
+MIN_CHEMFILES_VERSION = Version("0.10")
+#: Lowest version of chemfiles that is *not supported* by MDAnalysis.
+MAX_CHEMFILES_VERSION = Version("0.11")
 
 
 def check_chemfiles_version():
@@ -121,19 +119,12 @@ def check_chemfiles_version():
     """
     if not HAS_CHEMFILES:
         warnings.warn(
-            "No Chemfiles package found.  "
-            "Try installing with 'pip install chemfiles'"
+            "chemfiles package not found, "
+            "try installing it with 'pip install chemfiles'"
         )
         return False
-    version = LooseVersion(chemfiles.__version__)
-    wrong = version < MIN_CHEMFILES_VERSION or version >= MAX_CHEMFILES_VERSION
-    if wrong:
-        warnings.warn(
-            "unsupported Chemfiles version {}, we need a version >{} and <{}".format(
-                version, MIN_CHEMFILES_VERSION, MAX_CHEMFILES_VERSION
-            )
-        )
-    return not wrong
+    version = Version(chemfiles.__version__)
+    return version >= MIN_CHEMFILES_VERSION and version < MAX_CHEMFILES_VERSION
 
 
 class ChemfilesReader(base.ReaderBase):
@@ -240,7 +231,7 @@ class ChemfilesReader(base.ReaderBase):
                 "This is not supported by MDAnalysis."
             )
 
-        ts.dimensions[:] = frame.cell.lengths + frame.cell.angles
+        ts.dimensions = np.r_[frame.cell.lengths, frame.cell.angles]
         ts.positions[:] = frame.positions[:]
         if frame.has_velocities():
             ts.has_velocities = True
@@ -393,18 +384,15 @@ class ChemfilesWriter(base.WriterBase):
             frame.add_velocities()
             frame.velocities[:] = ts.velocities[:]
 
-        lengths = ts.dimensions[:3]
-        angles = ts.dimensions[3:]
-
         # if there is no cell information in this universe, still pass a valid
         # cell to chemfiles
-        if np.all(ts.dimensions == 0.0):
-            angles = [90, 90, 90]
-
-        if chemfiles.__version__.startswith("0.9"):
-            frame.cell = chemfiles.UnitCell(*lengths, *angles)
+        if ts.dimensions is None:
+            lengths, angles = np.zeros(3), np.array([90, 90, 90.0])
         else:
-            frame.cell = chemfiles.UnitCell(lengths, angles)
+            lengths = ts.dimensions[:3]
+            angles = ts.dimensions[3:]
+
+        frame.cell = chemfiles.UnitCell(lengths, angles)
 
         return frame
 

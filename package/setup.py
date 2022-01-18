@@ -56,8 +56,8 @@ import warnings
 import platform
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (3, 6):
-    print('MDAnalysis requires Python 3.6 or better. Python {0:d}.{1:d} detected'.format(*
+if sys.version_info[:2] < (3, 7):
+    print('MDAnalysis requires Python 3.7 or better. Python {0:d}.{1:d} detected'.format(*
           sys.version_info[:2]))
     print('Please upgrade your version of Python.')
     sys.exit(-1)
@@ -73,7 +73,7 @@ else:
     from commands import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "2.0.0-dev0"
+RELEASE = "2.1.0-dev0"
 
 is_release = 'dev' not in RELEASE
 
@@ -83,10 +83,10 @@ try:
     import Cython
     from Cython.Build import cythonize
     cython_found = True
-    from distutils.version import LooseVersion
+    from packaging.version import Version
 
     required_version = "0.16"
-    if not LooseVersion(Cython.__version__) >= LooseVersion(required_version):
+    if not Version(Cython.__version__) >= Version(required_version):
         # We don't necessarily die here. Maybe we already have
         #  the cythonized '.c' files.
         print("Cython version {0} was found but won't be used: version {1} "
@@ -158,7 +158,7 @@ class MDAExtension(Extension, object):
     #  care of calling it when needed.
     def __init__(self, name, sources, *args, **kwargs):
         self._mda_include_dirs = []
-        sources = [abspath(s) for s in sources]
+        # don't abspath sources else packaging fails on Windows (issue #3129)
         super(MDAExtension, self).__init__(name, sources, *args, **kwargs)
 
     @property
@@ -189,7 +189,7 @@ def get_numpy_include():
         import numpy as np
     except ImportError:
         print('*** package "numpy" not found ***')
-        print('MDAnalysis requires a version of NumPy (>=1.16.0), even for setup.')
+        print('MDAnalysis requires a version of NumPy (>=1.18.0), even for setup.')
         print('Please get it from http://numpy.scipy.org/ or install it through '
               'your package manager.')
         sys.exit(-1)
@@ -269,22 +269,16 @@ def using_clang():
 
 
 def extensions(config):
-    # dev installs must build their own cythonized files.
-    use_cython = config.get('use_cython', default=not is_release)
+    # usually (except coming from release tarball) cython files must be generated
+    use_cython = config.get('use_cython', default=cython_found)
     use_openmp = config.get('use_openmp', default=True)
 
     extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops',
-                          '-fsigned-zeros']  # see #2722
+                          '-fsigned-zeros'] # see #2722
     define_macros = []
     if config.get('debug_cflags', default=False):
         extra_compile_args.extend(['-Wall', '-pedantic'])
         define_macros.extend([('DEBUG', '1')])
-
-    # allow using architecture specific instructions. This allows people to
-    # build optimized versions of MDAnalysis.
-    arch = config.get('march', default=False)
-    if arch:
-        extra_compile_args.append('-march={}'.format(arch))
 
     # encore is sensitive to floating point accuracy, especially on non-x86
     # to avoid reducing optimisations on everything, we make a set of compile
@@ -295,6 +289,14 @@ def extensions(config):
     else:
         encore_compile_args.append('-O3')
 
+    # allow using custom c/c++ flags and architecture specific instructions.
+    # This allows people to build optimized versions of MDAnalysis.
+    # Do here so not included in encore
+    extra_cflags = config.get('extra_cflags', default=False)
+    if extra_cflags:
+        flags = extra_cflags.split()
+        extra_compile_args.extend(flags)
+
     cpp_extra_compile_args = [a for a in extra_compile_args if 'std' not in a]
     cpp_extra_compile_args.append('-std=c++11')
     cpp_extra_link_args=[]
@@ -303,7 +305,7 @@ def extensions(config):
         cpp_extra_compile_args.append('-stdlib=libc++')
         cpp_extra_compile_args.append('-mmacosx-version-min=10.9')
         cpp_extra_link_args.append('-stdlib=libc++')
-        cpp_extra_link_args.append('-mmacosx-version-min=10.7')
+        cpp_extra_link_args.append('-mmacosx-version-min=10.9')
 
     # Needed for large-file seeking under 32bit systems (for xtc/trr indexing
     # and access).
@@ -432,7 +434,7 @@ def extensions(config):
                               extra_compile_args=encore_compile_args)
     nsgrid = MDAExtension('MDAnalysis.lib.nsgrid',
                              ['MDAnalysis/lib/nsgrid' + cpp_source_suffix],
-                             include_dirs=include_dirs,
+                             include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                              language='c++',
                              define_macros=define_macros,
                              extra_compile_args=cpp_extra_compile_args,
@@ -574,7 +576,6 @@ if __name__ == '__main__':
         'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
@@ -588,7 +589,7 @@ if __name__ == '__main__':
     exts, cythonfiles = extensions(config)
 
     install_requires = [
-          'numpy>=1.16.0',
+          'numpy>=1.18.0',
           'biopython>=1.71',
           'networkx>=1.0',
           'GridDataFormats>=0.4.0',
@@ -599,6 +600,7 @@ if __name__ == '__main__':
           'tqdm>=4.43.0',
           'threadpoolctl',
     ]
+
     if not os.name == 'nt':
         install_requires.append('gsd>=1.4.0')
     else:
@@ -634,14 +636,11 @@ if __name__ == '__main__':
                         ],
           },
           ext_modules=exts,
-          requires=['numpy (>=1.16.0)', 'biopython (>= 1.71)', 'mmtf (>=1.0.0)',
-                    'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib',
-                    'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)', 'tqdm (>=4.43.0)',
-                    ],
+          python_requires='>=3.7',
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
-              'numpy>=1.16.0',
+              'numpy>=1.18.0',
           ],
           install_requires=install_requires,
           # extras can be difficult to install through setuptools and/or

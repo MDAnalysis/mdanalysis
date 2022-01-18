@@ -39,28 +39,16 @@ from MDAnalysisTests.coordinates.test_xyz import XYZReference
 chemfiles = pytest.importorskip("chemfiles")
 
 
-class TestChemfileVersion(object):
-    def test_version_check(self):
-        # Make sure the version check works as intended
-        import chemfiles
+@pytest.mark.parametrize('version', ['0.9.3', '0.11.0', '1.1.0'])
+def test_version_check(version, monkeypatch):
+    monkeypatch.setattr('chemfiles.__version__', version)
+    assert not check_chemfiles_version()
 
-        actual_version = chemfiles.__version__
-        chemfiles.__version__ = "0.8.3"
-        assert not check_chemfiles_version()
+    with pytest.raises(RuntimeError, match="Please install Chemfiles > 0.10"):
+        ChemfilesReader("")
 
-        with pytest.raises(RuntimeError, match="Please install Chemfiles > 0.9"):
-            ChemfilesReader("")
-
-        with pytest.raises(RuntimeError, match="Please install Chemfiles > 0.9"):
-            ChemfilesWriter("")
-
-        chemfiles.__version__ = "0.11.0"
-        assert not check_chemfiles_version()
-
-        chemfiles.__version__ = "1.1.0"
-        assert not check_chemfiles_version()
-
-        chemfiles.__version__ = actual_version
+    with pytest.raises(RuntimeError, match="Please install Chemfiles > 0.10"):
+        ChemfilesWriter("")
 
 
 @pytest.mark.skipif(not check_chemfiles_version(), reason="Wrong version of chemfiles")
@@ -70,7 +58,7 @@ class TestChemfileXYZ(MultiframeReaderTest):
     def ref():
         base = XYZReference()
         base.writer = ChemfilesWriter
-        base.dimensions = np.array([0, 0, 0, 90, 90, 90], dtype=np.float32)
+        base.dimensions = None
 
         return base
 
@@ -103,8 +91,7 @@ class ChemfilesXYZReference(BaseReference):
         self.writer = ChemfilesWriter
         self.ext = "xyz"
         self.volume = 0
-        self.dimensions = np.zeros(6)
-        self.dimensions[3:] = 90.0
+        self.dimensions = None
 
 
 @pytest.mark.skipif(not check_chemfiles_version(), reason="Wrong version of chemfiles")

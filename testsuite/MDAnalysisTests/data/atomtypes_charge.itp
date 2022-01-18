@@ -1,0 +1,60 @@
+[ defaults ]
+; nbfunc        comb-rule       gen-pairs       fudgeLJ fudgeQQ
+  1             2               no              1.0     1.0
+
+
+
+[ atomtypes ]
+;name at.num  mass  charge ptype        c6             c12
+NP 	 NP 	 100.000000 	 -1.000000 	 A  	 1.00E-02  	 8.707129E-04 
+NR 	 NR 	 100.000000 	 0.000000 	 A  	 1.00E-02  	 8.707129E-04 
+NA 	 NA 	 100.000000 	 0.000000 	 A  	 1.00E-02  	 8.707129E-04 
+
+
+
+[ moleculetype ]
+; Name      nrexcl
+testmol	    2
+
+[ atoms ]
+; nr type resnr residue atom cgnr
+1 	 NP 	 1 	 A 	 NP 	 1
+2 	 NR 	 1 	 A 	 NR 	 2
+3 	 NA 	 1 	 A 	 NA 	 3
+4 	 NP 	 2 	 A 	 NP 	 4
+5 	 NR 	 2 	 A 	 NR 	 5
+6 	 NA 	 2 	 A 	 NA 	 6
+7 	 NP 	 3 	 A 	 NP 	 7
+8 	 NR 	 3 	 A 	 NR 	 8
+9 	 NA 	 3 	 A 	 NA 	 9
+
+[ bonds ]
+; i  j funct   c0       c1
+1 	 2 	 1 	 0.390 	 300000.000
+2 	 3 	 1 	 0.586 	 300000.000
+2 	 4 	 1 	 0.390 	 300000.000
+4 	 5 	 1 	 0.390 	 300000.000
+5 	 6 	 1 	 0.586 	 300000.000
+5 	 7 	 1 	 0.390 	 300000.000
+7 	 8 	 1 	 0.390 	 300000.000
+8 	 9 	 1 	 0.586 	 300000.000
+
+[ angles ]
+; ai    aj    ak     funct  table_number  k(kJ/mol)
+1 	 2 	 3 	 1 	 91.100 	 1000.000
+1 	 2 	 4 	 1 	 113.100 	 1000.000
+2 	 4 	 5 	 1 	 95.200 	 1000.000
+3 	 2 	 4 	 1 	 100.800 	 1000.000
+4 	 5 	 6 	 1 	 91.100 	 1000.000
+4 	 5 	 7 	 1 	 113.100 	 1000.000
+5 	 7 	 8 	 1 	 95.200 	 1000.000
+6 	 5 	 7 	 1 	 100.800 	 1000.000
+7 	 8 	 9 	 1 	 91.100 	 1000.000
+
+[ system ]
+; Name
+test
+
+[ molecules ]
+; Compound	#mols
+testmol    1

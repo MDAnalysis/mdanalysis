@@ -22,7 +22,8 @@
 #
 import pytest
 import numpy as np
-from numpy.testing import assert_equal, assert_almost_equal
+from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
+import itertools
 from itertools import combinations_with_replacement as comb
 
 import MDAnalysis
@@ -84,8 +85,8 @@ def test_capped_distance_noresults():
 
 npoints_1 = (1, 100)
 
-boxes_1 = (np.array([1, 2, 3, 90, 90, 90], dtype=np.float32),  # ortho
-           np.array([1, 2, 3, 30, 45, 60], dtype=np.float32),  # tri_box
+boxes_1 = (np.array([10, 20, 30, 90, 90, 90], dtype=np.float32),  # ortho
+           np.array([10, 20, 30, 30, 45, 60], dtype=np.float32),  # tri_box
            None,  # Non Periodic
            )
 
@@ -108,7 +109,7 @@ def test_capped_distance_checkbrute(npoints, box, query, method, min_cutoff):
     np.random.seed(90003)
     points = (np.random.uniform(low=0, high=1.0,
                         size=(npoints, 3))*(boxes_1[0][:3])).astype(np.float32)
-    max_cutoff = 0.3
+    max_cutoff = 2.5
     # capped distance should be able to handle array of vectors
     # as well as single vectors.
     pairs, dist = distances.capped_distance(query, points, max_cutoff,
@@ -183,32 +184,29 @@ def test_self_capped_distance(npoints, box, method, min_cutoff, ret_dist):
         pairs, cdists = result
     else:
         pairs = result
-    found_pairs, found_distance = [], []
-    for i, coord in enumerate(points):
-        dist = distances.distance_array(coord, points[i+1:], box=box)
-        if min_cutoff is not None:
-            idx = np.where((dist <= max_cutoff) & (dist > min_cutoff))[1]
-        else:
-            idx = np.where((dist < max_cutoff))[1]
-        for other_idx in idx:
-            j = other_idx + 1 + i
-            found_pairs.append((i, j))
-            found_distance.append(dist[0, other_idx])
-    # check number of found pairs:
-    assert_equal(len(pairs), len(found_pairs))
-    # check pair/distance correspondence:
-    if ret_dist and len(pairs) > 0:
-        # get result pairs and distances in one array:
-        res = np.hstack((pairs.astype(cdists.dtype), cdists[:, None]))
-        # get reference pairs and distances in one array:
-        ref = np.hstack((np.array(found_pairs, dtype=np.float64),
-                         np.array(found_distance, dtype=np.float64)[:, None]))
-        # sort both arrays by column 1 and 0:
-        res = res[res[:, 1].argsort()] # no stable sort needed.
-        res = res[res[:, 0].argsort(kind='mergesort')] # sort must be stable!
-        ref = ref[ref[:, 1].argsort()]
-        ref = ref[ref[:, 0].argsort(kind='mergesort')]
-        assert_almost_equal(res, ref, decimal=5)
+
+    # Check we found all hits
+    ref = distances.self_distance_array(points, box)
+    ref_d = ref[ref < 0.2]
+    if not min_cutoff is None:
+        ref_d = ref_d[ref_d > min_cutoff]
+    assert len(ref_d) == len(pairs)
+
+    # Go through hit by hit and check we got the indices correct too
+    ref = distances.distance_array(points, points, box)
+    if ret_dist:
+        for (i, j), d in zip(pairs, cdists):
+            d_ref = ref[i, j]
+            assert d_ref < 0.2
+            if not min_cutoff is None:
+                assert d_ref > min_cutoff
+            assert_almost_equal(d, d_ref, decimal=6)
+    else:
+        for i, j in pairs:
+            d_ref = ref[i, j]
+            assert d_ref < 0.2
+            if not min_cutoff is None:
+                assert d_ref > min_cutoff
 
 
 @pytest.mark.parametrize('box', (None,
@@ -1379,3 +1377,27 @@ class TestDistanceBackendSelection(object):
 
 def test_used_openmpflag():
     assert isinstance(distances.USED_OPENMP, bool)
+
+
+# test both orthognal and triclinic boxes
+@pytest.mark.parametrize('box', (np.eye(3) * 10, np.array([[10, 0, 0], [2, 10, 0], [2, 2, 10]])))
+# try shifts of -2 to +2 in each dimension, and all combinations of shifts
+@pytest.mark.parametrize('shift', itertools.product(range(-2, 3), range(-2, 3), range(-2, 3)))
+@pytest.mark.parametrize('dtype', (np.float32, np.float64))
+def test_minimize_vectors(box, shift, dtype):
+    # test vectors pointing in all directions
+    # these currently all obey minimum convention as they're much smaller than the box
+    vec = np.array(list(itertools.product(range(-1, 2), range(-1, 2), range(-1, 2))), dtype=dtype)
+    box = box.astype(dtype)
+
+    # box is 3x3 representation
+    # multiply by shift, then sum xyz components then add these to the vector
+    # this technically doesn't alter the vector because of periodic boundaries
+    shifted_vec = (vec + (box.T * shift).sum(axis=1)).astype(dtype)
+
+    box2 = mdamath.triclinic_box(*box).astype(dtype)
+
+    res = distances.minimize_vectors(shifted_vec, box2)
+
+    assert_allclose(res, vec, atol=0.00001)
+    assert res.dtype == dtype

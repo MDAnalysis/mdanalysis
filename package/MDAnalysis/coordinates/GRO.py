@@ -52,9 +52,6 @@ For example::
 Classes
 -------
 
-.. autoclass:: Timestep
-   :members:
-
 .. autoclass:: GROReader
    :members:
 
@@ -111,52 +108,42 @@ import warnings
 import numpy as np
 
 from . import base
+from .base import Timestep
 from .core import triclinic_box, triclinic_vectors
 from ..exceptions import NoDataError
 from ..lib import util
 
 
-class Timestep(base.Timestep):
-    _ts_order_x = [0, 3, 4]
-    _ts_order_y = [5, 1, 6]
-    _ts_order_z = [7, 8, 2]
+"""unitcell dimensions (A, B, C, alpha, beta, gamma)
 
-    def _init_unitcell(self):
-        return np.zeros(9, dtype=np.float32)
+GRO::
 
-    @property
-    def dimensions(self):
-        """unitcell dimensions (A, B, C, alpha, beta, gamma)
+  8.00170   8.00170   5.65806   0.00000   0.00000   0.00000   0.00000   4.00085   4.00085
 
-        GRO::
+PDB::
 
-          8.00170   8.00170   5.65806   0.00000   0.00000   0.00000   0.00000   4.00085   4.00085
+  CRYST1   80.017   80.017   80.017  60.00  60.00  90.00 P 1           1
 
-        PDB::
+XTC: c.trajectory.ts._unitcell::
 
-          CRYST1   80.017   80.017   80.017  60.00  60.00  90.00 P 1           1
+  array([[ 80.00515747,   0.        ,   0.        ],
+         [  0.        ,  80.00515747,   0.        ],
+         [ 40.00257874,  40.00257874,  56.57218552]], dtype=float32)
+"""
+# unit cell line (from http://manual.gromacs.org/current/online/gro.html)
+# v1(x) v2(y) v3(z) v1(y) v1(z) v2(x) v2(z) v3(x) v3(y)
+# 0     1     2      3     4     5     6    7     8
+# This information now stored as _ts_order_x/y/z to keep DRY
+_TS_ORDER_X = [0, 3, 4]
+_TS_ORDER_Y = [5, 1, 6]
+_TS_ORDER_Z = [7, 8, 2]
 
-        XTC: c.trajectory.ts._unitcell::
-
-          array([[ 80.00515747,   0.        ,   0.        ],
-                 [  0.        ,  80.00515747,   0.        ],
-                 [ 40.00257874,  40.00257874,  56.57218552]], dtype=float32)
-        """
-        # unit cell line (from http://manual.gromacs.org/current/online/gro.html)
-        # v1(x) v2(y) v3(z) v1(y) v1(z) v2(x) v2(z) v3(x) v3(y)
-        # 0     1     2      3     4     5     6    7     8
-        # This information now stored as _ts_order_x/y/z to keep DRY
-        x = self._unitcell[self._ts_order_x]
-        y = self._unitcell[self._ts_order_y]
-        z = self._unitcell[self._ts_order_z]  # this ordering is correct! (checked it, OB)
-        return triclinic_box(x, y, z)
-
-    @dimensions.setter
-    def dimensions(self, box):
-        x, y, z = triclinic_vectors(box)
-        np.put(self._unitcell, self._ts_order_x, x)
-        np.put(self._unitcell, self._ts_order_y, y)
-        np.put(self._unitcell, self._ts_order_z, z)
+def _gmx_to_dimensions(box):
+    # convert gromacs ordered box to [lx, ly, lz, alpha, beta, gamma] form
+    x = box[_TS_ORDER_X]
+    y = box[_TS_ORDER_Y]
+    z = box[_TS_ORDER_Z]  # this ordering is correct! (checked it, OB)
+    return triclinic_box(x, y, z)
 
 
 class GROReader(base.SingleFrameReaderBase):
@@ -165,8 +152,19 @@ class GROReader(base.SingleFrameReaderBase):
     .. note::
        This Reader will only read the first frame present in a file.
 
+
+    .. note::
+       GRO files with zeroed 3 entry unit cells (i.e. ``0.0   0.0   0.0``)
+       are read as missing unit cell information. In these cases ``dimensions``
+       will be set to ``None``.
+
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
+    .. versionchanged:: 2.0.0
+       Reader now only parses boxes defined with 3 or 9 fields.
+       Reader now reads a 3 entry zero unit cell (i.e. ``[0, 0, 0]``) as a
+       being without dimension information (i.e. will the timestep dimension
+       to ``None``).
     """
     format = 'GRO'
     units = {'time': None, 'length': 'nm', 'velocity': 'nm/ps'}
@@ -195,6 +193,7 @@ class GROReader(base.SingleFrameReaderBase):
                 # Remember that we got this error
                 missed_vel = True
 
+            # TODO: Handle missing unitcell?
             for pos, line in enumerate(grofile, start=1):
                 # 2 header lines, 1 box line at end
                 if pos == n_atoms:
@@ -222,16 +221,25 @@ class GROReader(base.SingleFrameReaderBase):
 
         if len(unitcell) == 3:
             # special case: a b c --> (a 0 0) (b 0 0) (c 0 0)
-            # see Timestep.dimensions() above for format (!)
-            self.ts._unitcell[:3] = unitcell
+            # see docstring above for format (!)
+            # Treat empty 3 entry boxes as not having a unit cell
+            if np.allclose(unitcell, [0., 0., 0.]):
+                wmsg = ("Empty box [0., 0., 0.] found - treating as missing "
+                        "unit cell. Dimensions set to `None`.")
+                warnings.warn(wmsg)
+                self.ts.dimensions = None
+            else:
+                self.ts.dimensions = np.r_[unitcell, [90., 90., 90.]]
         elif len(unitcell) == 9:
-            self.ts._unitcell[:] = unitcell  # fill all
-        else:  # or maybe raise an error for wrong format??
-            warnings.warn("GRO unitcell has neither 3 nor 9 entries --- might be wrong.")
-            self.ts._unitcell[:len(unitcell)] = unitcell  # fill linearly ... not sure about this
+            self.ts.dimensions = _gmx_to_dimensions(unitcell)
+        else:  # raise an error for wrong format
+            errmsg = "GRO unitcell has neither 3 nor 9 entries."
+            raise ValueError(errmsg)
+
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)  # in-place !
-            self.convert_pos_from_native(self.ts._unitcell)  # in-place ! (all are lengths)
+            if self.ts.dimensions is not None:
+                self.convert_pos_from_native(self.ts.dimensions[:3])  # in-place!
             if self.ts.has_velocities:
                 # converts nm/ps to A/ps units
                 self.convert_velocities_from_native(self.ts._velocities)
@@ -262,9 +270,14 @@ class GROWriter(base.WriterBase):
      - resnames (defaults to 'UNK')
      - resids (defaults to '1')
 
-    Note
-    ----
-    The precision is hard coded to three decimal places
+
+    .. note::
+        The precision is hard coded to three decimal places.
+
+
+    .. note::
+        When dimensions are missing (i.e. set to `None`), a zero width
+        unit cell box will be written (i.e. [0.0, 0.0, 0.0]).
 
 
     .. versionchanged:: 0.11.0
@@ -278,6 +291,9 @@ class GROWriter(base.WriterBase):
     .. versionchanged:: 0.18.0
        Added `reindex` keyword argument to allow original atom
        ids to be kept.
+    .. versionchanged:: 2.0.0
+       Raises a warning when writing timestep with missing dimension
+       information (i.e. set to ``None``).
     """
 
     format = 'GRO'
@@ -456,20 +472,25 @@ class GROWriter(base.WriterBase):
                     ))
 
             # Footer: box dimensions
-            if np.allclose(ag.dimensions[3:], [90., 90., 90.]):
-                box = self.convert_pos_to_native(
-                    ag.dimensions[:3], inplace=False)
+            if (ag.dimensions is None or
+                np.allclose(ag.dimensions[3:], [90., 90., 90.])):
+                if ag.dimensions is None:
+                    wmsg = ("missing dimension - setting unit cell to zeroed "
+                            "box [0., 0., 0.]")
+                    warnings.warn(wmsg)
+                    box = np.zeros(3)
+                else:
+                    box = self.convert_pos_to_native(
+                        ag.dimensions[:3], inplace=False)
                 # orthorhombic cell, only lengths along axes needed in gro
                 output_gro.write(self.fmt['box_orthorhombic'].format(
                     box=box)
                 )
             else:
-
                 try:  # for AtomGroup/Universe
                     tri_dims = obj.universe.coord.triclinic_dimensions
                 except AttributeError:  # for Timestep
                     tri_dims = obj.triclinic_dimensions
-
                 # full output
                 box = self.convert_pos_to_native(tri_dims.flatten(), inplace=False)
                 output_gro.write(self.fmt['box_triclinic'].format(box=box))

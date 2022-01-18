@@ -131,9 +131,19 @@ def test_guess_impropers():
     assert_equal(len(vals), 12)
 
 
+def bond_sort(arr):
+    # sort from low to high, also within a tuple
+    # e.g. ([5, 4], [0, 1], [0, 3]) -> ([0, 1], [0, 3], [4, 5])
+    out = []
+    for (i, j) in arr:
+        if i > j:
+            i, j = j, i
+        out.append((i, j))
+    return sorted(out)
+
 def test_guess_bonds_water():
     u = mda.Universe(datafiles.two_water_gro)
-    bonds = guessers.guess_bonds(u.atoms, u.atoms.positions, u.dimensions)
+    bonds = bond_sort(guessers.guess_bonds(u.atoms, u.atoms.positions, u.dimensions))
     assert_equal(bonds, ((0, 1),
                          (0, 2),
                          (3, 4),
@@ -142,14 +152,14 @@ def test_guess_bonds_water():
 def test_guess_bonds_adk():
     u = mda.Universe(datafiles.PSF, datafiles.DCD)
     u.atoms.types = guessers.guess_types(u.atoms.names)
-    bonds = guessers.guess_bonds(u.atoms, u.atoms.positions)
+    bonds = bond_sort(guessers.guess_bonds(u.atoms, u.atoms.positions))
     assert_equal(np.sort(u.bonds.indices, axis=0),
                  np.sort(bonds, axis=0))
 
 def test_guess_bonds_peptide():
     u = mda.Universe(datafiles.PSF_NAMD, datafiles.PDB_NAMD)
     u.atoms.types = guessers.guess_types(u.atoms.names)
-    bonds = guessers.guess_bonds(u.atoms, u.atoms.positions)
+    bonds = bond_sort(guessers.guess_bonds(u.atoms, u.atoms.positions))
     assert_equal(np.sort(u.bonds.indices, axis=0),
                  np.sort(bonds, axis=0))
 

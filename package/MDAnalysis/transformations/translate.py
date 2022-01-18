@@ -164,6 +164,8 @@ class center_in_box(TransformationBase):
 
     def _transform(self, ts):
         if self.point is None:
+            if ts.dimensions is None:
+                raise ValueError("Box is None")
             boxcenter = np.sum(ts.triclinic_dimensions, axis=0) / 2
         else:
             boxcenter = self.point

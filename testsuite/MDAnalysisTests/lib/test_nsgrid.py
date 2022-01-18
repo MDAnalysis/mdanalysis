@@ -21,14 +21,21 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+from distutils.util import strtobool
+import os
+
 import pytest
 
+from collections import defaultdict, Counter
 from numpy.testing import assert_equal, assert_allclose
 import numpy as np
 
 import MDAnalysis as mda
-from MDAnalysisTests.datafiles import GRO, Martini_membrane_gro, PDB
+from MDAnalysisTests.datafiles import (
+    GRO, Martini_membrane_gro, PDB, PDB_xvf, SURFACE_PDB, SURFACE_TRR
+)
 from MDAnalysis.lib import nsgrid
+from MDAnalysis.transformations.translate import center_in_box
 
 
 @pytest.fixture
@@ -46,24 +53,27 @@ def run_grid_search(u, ref_id, cutoff=3):
 
     return searcher.search(searchcoords)
 
-def test_pbc_box():
+@pytest.mark.parametrize('box', [
+    np.zeros(3),  # Bad shape
+    np.zeros((3, 3)),  # Collapsed box
+    np.array([[0, 0, 0], [0, 1, 0], [0, 0, 1]]),  # 2D box
+    np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),  # Box provided as array of integers
+    np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]], dtype=np.float64),  # Box provided as array of double
+])
+def test_pbc_box(box):
     """Check that PBC box accepts only well-formated boxes"""
-    pbc = True
-    with pytest.raises(TypeError):
-        nsgrid._PBCBox([])
+    coords = np.array([[1.0, 1.0, 1.0]], dtype=np.float32)
 
     with pytest.raises(ValueError):
-        nsgrid._PBCBox(np.zeros((3)), pbc)  # Bad shape
-        nsgrid._PBCBox(np.zeros((3, 3)), pbc)  # Collapsed box
-        nsgrid._PBCBox(np.array([[0, 0, 0], [0, 1, 0], [0, 0, 1]]), pbc)  # 2D box
-        nsgrid._PBCBox(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]), pbc)  # Box provided as array of integers
-        nsgrid._PBCBox(np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]], dtype=float), pbc)  # Box provided as array of double
+        nsgrid.FastNS(4.0, coords, box=box)
 
 
-def test_nsgrid_badcutoff(universe):
-    with pytest.raises(ValueError):
-        run_grid_search(universe, 0, -4)
-        run_grid_search(universe, 0, 100000)
+@pytest.mark.parametrize('cutoff, match', ((-4, "Cutoff must be positive"),
+                                           (100000,
+                                            "Cutoff 100000 too large for box")))
+def test_nsgrid_badcutoff(universe, cutoff, match):
+    with pytest.raises(ValueError, match=match):
+        run_grid_search(universe, 0, cutoff)
 
 
 def test_ns_grid_noneighbor(universe):
@@ -74,8 +84,6 @@ def test_ns_grid_noneighbor(universe):
     results_grid = run_grid_search(universe, ref_id, cutoff)
 
     # same indices will be selected as neighbour here
-    assert len(results_grid.get_distances()[0]) == 1
-    assert len(results_grid.get_indices()[0]) == 1
     assert len(results_grid.get_pairs()) == 1
     assert len(results_grid.get_pair_distances()) == 1
 
@@ -83,8 +91,9 @@ def test_ns_grid_noneighbor(universe):
 def test_nsgrid_PBC_rect():
     """Check that nsgrid works with rect boxes and PBC"""
     ref_id = 191
+    # Atomid are from gmx select so there start from 1 and not 0. hence -1!
     results = np.array([191, 192, 672, 682, 683, 684, 995, 996, 2060, 2808, 3300, 3791,
-                        3792]) - 1  # Atomid are from gmx select so there start from 1 and not 0. hence -1!
+                        3792]) - 1
 
     universe = mda.Universe(Martini_membrane_gro)
     cutoff = 7
@@ -92,26 +101,26 @@ def test_nsgrid_PBC_rect():
     # FastNS is called differently to max coverage
     searcher = nsgrid.FastNS(cutoff, universe.atoms.positions, box=universe.dimensions)
 
-    results_grid = searcher.search(universe.atoms.positions[ref_id][None, :]).get_indices()[0]
+    results_grid = searcher.search(universe.atoms.positions[ref_id][None, :]).get_pairs()
+    other_ix = sorted(i for (_, i) in results_grid)
 
-    results_grid2 = searcher.search(universe.atoms.positions).get_indices()  # call without specifying any ids, should do NS for all beads
-
-    assert_equal(np.sort(results), np.sort(results_grid))
-    assert_equal(len(universe.atoms), len(results_grid2))
-    assert searcher.cutoff == 7
-    assert_equal(np.sort(results_grid), np.sort(results_grid2[ref_id]))
+    assert len(results) == len(results_grid)
+    assert other_ix == sorted(results)
 
 
 def test_nsgrid_PBC(universe):
     """Check that grid search works when PBC is needed"""
-
+    # Atomid are from gmx select so there start from 1 and not 0. hence -1!
     ref_id = 13937
     results = np.array([4398, 4401, 13938, 13939, 13940, 13941, 17987, 23518, 23519, 23521, 23734,
-                        47451]) - 1  # Atomid are from gmx select so there start from 1 and not 0. hence -1!
+                        47451]) - 1
 
-    results_grid = run_grid_search(universe, ref_id).get_indices()[0]
+    results_grid = run_grid_search(universe, ref_id).get_pairs()
 
-    assert_equal(np.sort(results), np.sort(results_grid))
+    other_ix = sorted(i for (_, i) in results_grid)
+
+    assert len(results) == len(other_ix)
+    assert other_ix == sorted(results)
 
 
 def test_nsgrid_pairs(universe):
@@ -143,12 +152,12 @@ def test_nsgrid_pair_distances(universe):
 
 def test_nsgrid_distances(universe):
     """Check that grid search returns the proper distances"""
-
+    # These distances where obtained by gmx distance so they are in nm
     ref_id = 13937
     results = np.array([0.0, 0.270, 0.285, 0.096, 0.096, 0.015, 0.278, 0.268, 0.179, 0.259, 0.290,
-                        0.270]) * 10  # These distances where obtained by gmx distance so they are in nm
+                        0.270]) * 10
 
-    results_grid = run_grid_search(universe, ref_id).get_distances()[0]
+    results_grid = run_grid_search(universe, ref_id).get_pair_distances()
 
     assert_allclose(np.sort(results), np.sort(results_grid), atol=1e-2)
 
@@ -179,7 +188,7 @@ def test_nsgrid_search(box, results):
     else:
         searcher = nsgrid.FastNS(cutoff, points, box)
         searchresults = searcher.search(query)
-    indices = searchresults.get_indices()[0]
+    indices = searchresults.get_pairs()[:, 1]
     assert_equal(np.sort(indices), results)
 
 
@@ -211,7 +220,7 @@ def test_nsgrid_selfsearch(box, result):
         searcher = nsgrid.FastNS(cutoff, points, box=box)
         searchresults = searcher.self_search()
     pairs = searchresults.get_pairs()
-    assert_equal(len(pairs)//2, result)
+    assert_equal(len(pairs), result)
 
 def test_nsgrid_probe_close_to_box_boundary():
     # FastNS.search used to segfault with this box, cutoff and reference
@@ -272,3 +281,131 @@ def test_around_overlapping():
     #                                         box=u.dimensions)
     # assert np.count_nonzero(np.any(dist <= 0.0, axis=0)) == 48
     assert u.select_atoms('around 0.0 index 0:11').n_atoms == 48
+
+
+def test_issue_2229_part1():
+    # reproducing first case in GH issue 2229
+    u = mda.Universe.empty(2, trajectory=True)
+
+    u.dimensions = [57.45585, 50.0000, 50.0000, 90, 90, 90]
+
+    u.atoms[0].position = [0, 0, 0]
+    u.atoms[1].position = [55.00, 0, 0]
+
+    g = mda.lib.nsgrid.FastNS(3.0, u.atoms[[0]].positions, box=u.dimensions)
+    assert len(g.search(u.atoms[[1]].positions).get_pairs()) == 1
+
+    g = mda.lib.nsgrid.FastNS(3.0, u.atoms[[1]].positions, box=u.dimensions)
+    assert len(g.search(u.atoms[[0]].positions).get_pairs()) == 1
+
+
+def test_issue_2229_part2():
+    u = mda.Universe.empty(2, trajectory=True)
+
+    u.dimensions = [45.0000, 55.0000, 109.8375, 90, 90, 90]
+
+    u.atoms[0].position = [0, 0, 29.29]
+    u.atoms[1].position = [0, 0, 28.23]
+
+    g = mda.lib.nsgrid.FastNS(3.0, u.atoms[[0]].positions, box=u.dimensions, pbc=False)
+    assert len(g.search(u.atoms[[1]].positions).get_pairs()) == 1
+
+    g = mda.lib.nsgrid.FastNS(3.0, u.atoms[[1]].positions, box=u.dimensions)
+    assert len(g.search(u.atoms[[0]].positions).get_pairs()) == 1
+
+
+def test_issue_2919():
+    # regression test reported in issue 2919
+    # other methods will also give 1115 or 2479 results
+    u = mda.Universe(PDB_xvf)
+    ag = u.select_atoms('index 0')
+    u.trajectory.ts = center_in_box(ag)(u.trajectory.ts)
+
+    box = u.dimensions
+    reference = u.select_atoms('protein')
+    configuration = u.select_atoms('not protein')
+
+    for cutoff, expected in [(2.8, 1115), (3.2, 2497)]:
+        pairs, distances = mda.lib.distances.capped_distance(
+            reference.positions,
+            configuration.positions,
+            max_cutoff=cutoff,
+            box=box,
+            method='nsgrid',
+            return_distances=True,
+        )
+        assert len(pairs) == expected
+
+
+def test_issue_2345():
+    # another example of NSGrid being wrong
+    # this is a 111 FCC slab
+    # coordination numbers for atoms should be either 9 or 12, 50 of each
+    u = mda.Universe(SURFACE_PDB, SURFACE_TRR)
+
+    g = mda.lib.nsgrid.FastNS(2.9, u.atoms.positions, box=u.dimensions)
+
+    cn = defaultdict(list)
+
+    idx = g.self_search().get_pairs()
+    # count number of contacts for each atom
+    for (i, j) in idx:
+        cn[i].append(j)
+        cn[j].append(i)
+    c = Counter(len(v) for v in cn.values())
+
+    assert c == {9: 50, 12: 50}
+
+
+def test_issue_2670():
+    # Tests that NSGrid no longer crashes when using small box sizes
+    u = mda.Universe(PDB)
+    u.dimensions = [1e-3, 1e-3, 1e-3, 90, 90, 90]
+
+    # PDB files only have a coordinate precision of 1.0e-3, so we need to scale
+    # the coordinates for this test to make any sense:
+    u.atoms.positions = u.atoms.positions * 1.0e-3
+
+    ag1 = u.select_atoms('resid 2 3')
+    # should return nothing as nothing except resid 3 is within 0.0 or resid 3
+    assert len(ag1.select_atoms('around 0.0 resid 3')) == 0
+
+    # force atom 0 of resid 1 to overlap with atom 0 of resid 3
+    u.residues[0].atoms[0].position = u.residues[2].atoms[0].position
+    ag2 = u.select_atoms('resid 1 3')
+
+    # should return the one atom overlap
+    assert len(ag2.select_atoms('around 0.0 resid 3')) == 1
+
+
+def high_mem_tests_enabled():
+    """ Returns true if ENABLE_HIGH_MEM_UNIT_TESTS is set to true."""
+    env = os.getenv("ENABLE_HIGH_MEM_UNIT_TESTS", default="0")
+    try:
+        return strtobool(env)
+    except ValueError:
+        return False
+
+
+reason = ("Turned off by default. The test can be enabled by setting "
+          "the ENABLE_HIGH_MEM_UNIT_TESTS "
+          "environment variable. Make sure you have at least 10GB of RAM.")
+
+
+# Tests that with a tiny cutoff to box ratio, the number of grids is capped
+# to avoid indexing overflow. Expected results copied from test_nsgrid_search
+# with no box.
+@pytest.mark.skipif(not high_mem_tests_enabled(), reason=reason)
+def test_issue_3183():
+    np.random.seed(90003)
+    points = (np.random.uniform(low=0, high=1.0,
+                                size=(100, 3)) * (10.)).astype(np.float32)
+    cutoff = 2.0
+    query = np.array([1., 1., 1.], dtype=np.float32).reshape((1, 3))
+    box = np.array([10000., 10000., 10000., 90., 90., 90.])
+
+    searcher = nsgrid.FastNS(cutoff, points, box)
+    searchresults = searcher.search(query)
+    indices = searchresults.get_pairs()[:, 1]
+    want_results = [3, 13, 24]
+    assert_equal(np.sort(indices), want_results)
