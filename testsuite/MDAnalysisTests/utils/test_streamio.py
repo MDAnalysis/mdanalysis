@@ -259,8 +259,10 @@ class _StreamData(object):
     }
 
     def __init__(self):
-        self.buffers = {name: "".join(open(fn).readlines())
-                        for name, fn in self.filenames.items()}
+        self.buffers = {}
+        for name, fn in self.filenames.items():
+            with open(fn) as filed:
+                self.buffers[name] = "".join(filed.readlines())
         self.filenames['XYZ_PSF'] = u"bogus/path/mini.psf"
         self.buffers['XYZ_PSF'] = u"""\
 PSF CMAP
@@ -320,38 +322,41 @@ frame 3
         return util.NamedStream(self.as_StringIO(name), self.filenames[name])
 
 
-streamData = _StreamData()
-del _StreamData
+@pytest.fixture(scope='module')
+def streamData():
+    return _StreamData()
 
 
 # possibly add tests to individual readers instead?
 class TestStreamIO(RefAdKSmall):
-    def test_PrimitivePDBReader(self):
+    @pytest.mark.filterwarnings("ignore:Element information")
+    def test_PrimitivePDBReader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
-
-    def test_PDBReader(self):
+    @pytest.mark.filterwarnings("ignore:Element information")
+    def test_PDBReader(self, streamData):
         try:
             u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'))
         except Exception as err:
             raise pytest.fail("StreamIO not supported:\n>>>>> {0}".format(err))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
-    def test_CRDReader(self):
+    def test_CRDReader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('CRD'))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
-    def test_PSFParser(self):
+    @pytest.mark.filterwarnings("ignore:No coordinate reader found")
+    def test_PSFParser(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PSF'))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
-    def test_PSF_CRD(self):
+    def test_PSF_CRD(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PSF'),
                                 streamData.as_NamedStream('CRD'))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
-    def test_PQRReader(self):
+    def test_PQRReader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PQR'))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
         assert_almost_equal(u.atoms.total_charge(), self.ref_charmm_totalcharge, 3,
@@ -359,7 +364,8 @@ class TestStreamIO(RefAdKSmall):
         assert_almost_equal(u.atoms.select_atoms('name H').charges, self.ref_charmm_Hcharges, 3,
                             "Charges for H atoms do not match.")
 
-    def test_PDBQTReader(self):
+    @pytest.mark.filterwarnings("ignore:Failed to guess the mass")
+    def test_PDBQTReader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PDBQT'))
         sel = u.select_atoms('backbone')
         assert_equal(sel.n_atoms, 796)
@@ -368,7 +374,7 @@ class TestStreamIO(RefAdKSmall):
         sel = u.select_atoms('segid B')
         assert_equal(sel.n_atoms, 896, "failed to select segment B")
 
-    def test_GROReader(self):
+    def test_GROReader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('GRO'))
         assert_equal(u.atoms.n_atoms, 6)
         assert_almost_equal(u.atoms[3].position,
@@ -378,14 +384,14 @@ class TestStreamIO(RefAdKSmall):
                             10. * np.array([0.2519, 0.3140, -0.1734]), 3,  # manually convert nm/ps -> A/ps
                             err_msg="wrong velocity for water 2 OW")
 
-    def test_MOL2Reader(self):
+    def test_MOL2Reader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('MOL2'))
         assert_equal(len(u.atoms), 49)
         assert_equal(u.trajectory.n_frames, 200)
         u.trajectory[199]
         assert_array_almost_equal(u.atoms.positions[0], [1.7240, 11.2730, 14.1200])
 
-    def test_XYZReader(self):
+    def test_XYZReader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('XYZ_PSF'),
                                 streamData.as_NamedStream('XYZ'))
         assert_equal(len(u.atoms), 8)
