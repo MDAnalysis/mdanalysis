@@ -96,6 +96,8 @@ class TestNamedStream(object):
         assert_equal(ns.closed, False)
         ns.close(force=True)
         assert_equal(ns.closed, True)
+        # Issue 3386 - calling close again shouldn't raise an error
+        ns.close()
 
     def test_StringIO_read(self):
         obj = StringIO("".join(self.text))
@@ -329,7 +331,6 @@ class TestStreamIO(RefAdKSmall):
     def test_PrimitivePDBReader(self):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
-
 
     def test_PDBReader(self):
         try:
