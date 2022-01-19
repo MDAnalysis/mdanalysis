@@ -200,18 +200,15 @@ class TestNamedStream_filename_behavior(object):
                      err_msg=("os.path.{0}() does not work with "
                               "NamedStream").format(funcname))
 
-    @pytest.mark.skipif(True, reason='See #1534]')
     def test_expanduser_noexpansion_returns_NamedStream(self):
         ns = self.create_NamedStream("de/zipferlack.txt")  # no tilde ~ in name!
-        reference = ns
+        reference = ns.name
         value = os.path.expanduser(ns)
         assert_equal(value, reference,
                      err_msg=("os.path.expanduser() without '~' did not "
                               "return NamedStream --- weird!!"))
 
-    @pytest.mark.skipif(True, reason='See #1534')
     @pytest.mark.skipif("HOME" not in os.environ, reason='It is needed')
-    @pytest.mark.xfail
     def test_expandvars(self):
         name = "${HOME}/stories/jabberwock.txt"
         ns = self.create_NamedStream(name)
@@ -220,10 +217,9 @@ class TestNamedStream_filename_behavior(object):
         assert_equal(value, reference,
                      err_msg="os.path.expandvars() did not expand HOME")
 
-    @pytest.mark.skipif(True, reason='See #1534')
     def test_expandvars_noexpansion_returns_NamedStream(self):
         ns = self.create_NamedStream() # no $VAR constructs
-        reference = ns
+        reference = ns.name
         value = os.path.expandvars(ns)
         assert_equal(value, reference,
                      err_msg=("os.path.expandvars() without '$VARS' did not "
