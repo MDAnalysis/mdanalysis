@@ -325,12 +325,16 @@ def streamData():
 
 # possibly add tests to individual readers instead?
 class TestStreamIO(RefAdKSmall):
-    @pytest.mark.filterwarnings("ignore:Element information")
+    @pytest.mark.filterwarnings(
+            "ignore:Element information",
+            "ignore:Constructed NamedStream")
     def test_PrimitivePDBReader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
-    @pytest.mark.filterwarnings("ignore:Element information")
+    @pytest.mark.filterwarnings(
+            "ignore:Element information",
+            "ignore:Constructed NamedStream")
     def test_PDBReader(self, streamData):
         try:
             u = MDAnalysis.Universe(streamData.as_NamedStream('PDB'))
@@ -338,20 +342,25 @@ class TestStreamIO(RefAdKSmall):
             raise pytest.fail("StreamIO not supported:\n>>>>> {0}".format(err))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
+    @pytest.mark.filterwarnings("ignore:Constructed NamedStream")
     def test_CRDReader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('CRD'))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
-    @pytest.mark.filterwarnings("ignore:No coordinate reader found")
+    @pytest.mark.filterwarnings(
+            "ignore:No coordinate reader found",
+            "ignore:Constructed NamedStream")
     def test_PSFParser(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PSF'))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
+    @pytest.mark.filterwarnings("ignore:Constructed NamedStream")
     def test_PSF_CRD(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PSF'),
                                 streamData.as_NamedStream('CRD'))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
 
+    @pytest.mark.filterwarnings("ignore:Constructed NamedStream")
     def test_PQRReader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PQR'))
         assert_equal(u.atoms.n_atoms, self.ref_n_atoms)
@@ -360,7 +369,9 @@ class TestStreamIO(RefAdKSmall):
         assert_almost_equal(u.atoms.select_atoms('name H').charges, self.ref_charmm_Hcharges, 3,
                             "Charges for H atoms do not match.")
 
-    @pytest.mark.filterwarnings("ignore:Failed to guess the mass")
+    @pytest.mark.filterwarnings(
+            "ignore:Failed to guess the mass",
+            "ignore:Constructed NamedStream")
     def test_PDBQTReader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('PDBQT'))
         sel = u.select_atoms('backbone')
@@ -370,6 +381,7 @@ class TestStreamIO(RefAdKSmall):
         sel = u.select_atoms('segid B')
         assert_equal(sel.n_atoms, 896, "failed to select segment B")
 
+    @pytest.mark.filterwarnings("ignore:Constructed NamedStream")
     def test_GROReader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('GRO'))
         assert_equal(u.atoms.n_atoms, 6)
@@ -380,6 +392,7 @@ class TestStreamIO(RefAdKSmall):
                             10. * np.array([0.2519, 0.3140, -0.1734]), 3,  # manually convert nm/ps -> A/ps
                             err_msg="wrong velocity for water 2 OW")
 
+    @pytest.mark.filterwarnings("ignore:Constructed NamedStream")
     def test_MOL2Reader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('MOL2'))
         assert_equal(len(u.atoms), 49)
@@ -387,6 +400,7 @@ class TestStreamIO(RefAdKSmall):
         u.trajectory[199]
         assert_array_almost_equal(u.atoms.positions[0], [1.7240, 11.2730, 14.1200])
 
+    @pytest.mark.filterwarnings("ignore:Constructed NamedStream")
     def test_XYZReader(self, streamData):
         u = MDAnalysis.Universe(streamData.as_NamedStream('XYZ_PSF'),
                                 streamData.as_NamedStream('XYZ'))
