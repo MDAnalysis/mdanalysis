@@ -724,11 +724,6 @@ class NamedStream(io.IOBase, os.PathLike):
         .. Note:: This ``close()`` method is non-standard. ``del NamedStream``
                   always closes the underlying stream.
 
-
-        .. versionchanged:: 2.1.0
-           Calls to ``close()`` will no longer attempt to close or flush the
-           stream if :attr:`closed` is `True`.
-
         """
         if self.closed:
             return
