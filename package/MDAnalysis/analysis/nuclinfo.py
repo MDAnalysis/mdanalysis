@@ -833,9 +833,9 @@ def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM"):
         c22 = bf2.select_atoms("name {0!s}".format(batms[resn2][1])).positions[0]
         c23 = bf2.select_atoms("name {0!s}".format(batms[resn2][2])).positions[0]
     except KeyError:
-        print("Residue names may be incorrect!"
-              "Please use either ADE/GUA/CYT/URA/THY or A/G/C/U/T format.")
-        raise
+        errmsg = ("Residue names may be incorrect! "
+                  "Please use either ADE/GUA/CYT/URA/THY or A/G/C/U/T format.")
+        raise KeyError(errmsg)
     except IndexError:
         print("Atom names may be incorrect!"
               "Make sure base atom names follow CHARMM format.")
