@@ -817,14 +817,10 @@ def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM"):
         "(segid {0!s} and resid {1!s})".format(seg1, b1))
     bf2 = universe.select_atoms(
         "(segid {0!s} and resid {1!s})".format(seg2, b2))
-    if len(bf1.residues) > 1:
-        warnings.warn(
-            "Found more than one residues with same resid {0!s} !".format(b1)
-            "Using first residue in the selection for calculation.")
-    if len(bf2.residues) > 1:
-        warnings.warn(
-            "Found more than one residues with same resid {0!s} !".format(b2)
-            "Using first residue in the selection for calculation.")
+    for ag, segid, res in [(bf1, seg1, b1), (bf2, seg2, b2)]:
+        if len(ag.residues) > 1:
+            warnings.warn(f"Found more than one residues with resid {res} and "
+                          f"segid {segid}. Using first residue in selection.")
     # get residue names
     resn1 = bf1.atoms.resnames[0]
     resn2 = bf2.atoms.resnames[0]
