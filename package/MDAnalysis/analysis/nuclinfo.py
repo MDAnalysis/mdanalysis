@@ -25,17 +25,18 @@
 Nucleic acid analysis --- :mod:`MDAnalysis.analysis.nuclinfo`
 =============================================================
 
-:Author: Elizabeth Denning
-:Year: 2011
+:Authors: Elizabeth Denning, Abhishek A. Kognole
+:Year: 2011,2021
 :Copyright: GNU Public License v3
 
 The module provides functions to analyze nuclic acid structures, in
 particular
 
-- backbone dihedrals,
-- chi dihedrals,
-- AS or CP phase angles,
-- Watson-Crick N1-N3 distances, C2-O2 distances, N6-O4 distances, O6-N4 distances.
+- Backbone dihedrals
+- Chi dihedrals
+- AS or CP phase angles
+- Watson-Crick N1-N3 distances, C2-O2 distances, N6-O4 distances, O6-N4 distances
+- Angle between base planes for stacking analysis
 
 For applications of this kind of analysis see [Denning2011]_ and [Denning2012]_.
 
@@ -101,6 +102,11 @@ Dihedral angles
 .. autofunction:: hydroxyl
 
 .. autofunction:: pseudo_dihe_baseflip
+
+Angles
+---------------
+
+.. autofunction:: angle_between_base_planes
 
 """
 import numpy as np
