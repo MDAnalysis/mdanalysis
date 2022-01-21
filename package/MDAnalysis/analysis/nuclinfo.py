@@ -111,6 +111,7 @@ Angles
 """
 import numpy as np
 from math import pi, sin, cos, atan2, sqrt, pow
+import warnings
 
 from MDAnalysis.lib import mdamath
 
@@ -805,22 +806,44 @@ def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM"):
              'THY': ['N1', 'N3', 'C5'],
              'URA': ['N1', 'N3', 'C5'],
              'ADE': ['N9', 'N1', 'N7'],
-             'GUA': ['N9', 'N1', 'N7']}
+             'GUA': ['N9', 'N1', 'N7'],
+             'C': ['N1', 'N3', 'C5'],
+             'T': ['N1', 'N3', 'C5'],
+             'U': ['N1', 'N3', 'C5'],
+             'A': ['N9', 'N1', 'N7'],
+             'G': ['N9', 'N1', 'N7']}
     # select residues
     bf1 = universe.select_atoms(
         "(segid {0!s} and resid {1!s})".format(seg1, b1))
     bf2 = universe.select_atoms(
         "(segid {0!s} and resid {1!s})".format(seg2, b2))
+    if len(bf1.residues) > 1:
+        warnings.warn(
+            "Found more than one residues with same resid {0!s} !".format(b1)
+            "Using first residue in the selection for calculation.")
+    if len(bf2.residues) > 1:
+        warnings.warn(
+            "Found more than one residues with same resid {0!s} !".format(b2)
+            "Using first residue in the selection for calculation.")
     # get residue names
     resn1 = bf1.atoms.resnames[0]
     resn2 = bf2.atoms.resnames[0]
     # extract positions for specific atoms of each base
-    c11 = bf1.select_atoms("name {0!s}".format(batms[resn1][0])).positions[0]
-    c12 = bf1.select_atoms("name {0!s}".format(batms[resn1][1])).positions[0]
-    c13 = bf1.select_atoms("name {0!s}".format(batms[resn1][2])).positions[0]
-    c21 = bf2.select_atoms("name {0!s}".format(batms[resn2][0])).positions[0]
-    c22 = bf2.select_atoms("name {0!s}".format(batms[resn2][1])).positions[0]
-    c23 = bf2.select_atoms("name {0!s}".format(batms[resn2][2])).positions[0]
+    try:
+        c11 = bf1.select_atoms("name {0!s}".format(batms[resn1][0])).positions[0]
+        c12 = bf1.select_atoms("name {0!s}".format(batms[resn1][1])).positions[0]
+        c13 = bf1.select_atoms("name {0!s}".format(batms[resn1][2])).positions[0]
+        c21 = bf2.select_atoms("name {0!s}".format(batms[resn2][0])).positions[0]
+        c22 = bf2.select_atoms("name {0!s}".format(batms[resn2][1])).positions[0]
+        c23 = bf2.select_atoms("name {0!s}".format(batms[resn2][2])).positions[0]
+    except KeyError:
+        print("Residue names may be incorrect!"
+              "Please use either ADE/GUA/CYT/URA/THY or A/G/C/U/T format.")
+        raise
+    except IndexError:
+        print("Atom names may be incorrect!"
+              "Make sure base atom names follow CHARMM format.")
+        raise
     # get normals to the planes of the bases
     n1 = mdamath.normal(c12-c11, c13-c11)
     n2 = mdamath.normal(c22-c21, c23-c21)
