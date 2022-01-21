@@ -837,9 +837,9 @@ def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM"):
                   "Please use either ADE/GUA/CYT/URA/THY or A/G/C/U/T format.")
         raise KeyError(errmsg)
     except IndexError:
-        print("Atom names may be incorrect!"
-              "Make sure base atom names follow CHARMM format.")
-        raise
+        errmsg = ("Atom names may be incorrect! "
+                  "Make sure base atom names follow CHARMM format.")
+        raise IndexError(errmsg)
     # get normals to the planes of the bases
     n1 = mdamath.normal(c12-c11, c13-c11)
     n2 = mdamath.normal(c22-c21, c23-c21)
