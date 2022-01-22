@@ -191,6 +191,7 @@ from .exceptions import (
 from .lib import log
 from .lib.log import start_logging, stop_logging
 
+logging.getLogger().setLevel(logging.ERROR)
 logging.getLogger("MDAnalysis").addHandler(log.NullHandler())
 del logging
 
