@@ -125,11 +125,12 @@ class OpenMMTopologyParser(TopologyReaderBase):
             atomtypes = [a.element.symbol for a in omm_topology.atoms()]
             masses = [a.element.mass._value for a in omm_topology.atoms()]
 
-        except:
+        except AttributeError:
             attrs = [
                 Atomids(np.array(atomids, dtype=np.int32)),
                 Atomnames(np.array(atomnames, dtype=object)),
-                Bonds(bonds, types=bond_types, order=bond_orders, guessed=False),
+                Bonds(bonds, types=bond_types, order=bond_orders,
+                      guessed=False),
                 ChainIDs(np.array(chainids, dtype=object)),
                 Resids(resids),
                 Resnums(resnums),
@@ -142,7 +143,8 @@ class OpenMMTopologyParser(TopologyReaderBase):
                 Atomids(np.array(atomids, dtype=np.int32)),
                 Atomnames(np.array(atomnames, dtype=object)),
                 Atomtypes(np.array(atomtypes, dtype=object)),
-                Bonds(bonds, types=bond_types, order=bond_orders, guessed=False),
+                Bonds(bonds, types=bond_types, order=bond_orders,
+                      guessed=False),
                 ChainIDs(np.array(chainids, dtype=object)),
                 Elements(np.array(elements, dtype=object)),
                 Masses(np.array(masses, dtype=np.float32)),
