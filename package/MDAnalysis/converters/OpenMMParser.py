@@ -112,9 +112,6 @@ class OpenMMTopologyParser(TopologyReaderBase):
         atomids = [a.id for a in omm_topology.atoms()]
         atomnames = [a.name for a in omm_topology.atoms()]
         chainids = [a.residue.chain.id for a in omm_topology.atoms()]
-        elements = [a.element.symbol for a in omm_topology.atoms()]
-        atomtypes = [a.element.symbol for a in omm_topology.atoms()]
-        masses = [a.element.mass._value for a in omm_topology.atoms()]
         resnames = [r.name for r in omm_topology.residues()]
         resids = [r.index + 1 for r in omm_topology.residues()]
         resnums = resids.copy()
@@ -123,32 +120,50 @@ class OpenMMTopologyParser(TopologyReaderBase):
         bond_orders = [b.order for b in omm_topology.bonds()]
         bond_types = [b.type for b in omm_topology.bonds()]
 
-        n_atoms = len(atomids)
-        n_residues = len(resids)
-        n_segments = len(segids)
+        try:
+            elements = [a.element.symbol for a in omm_topology.atoms()]
+            atomtypes = [a.element.symbol for a in omm_topology.atoms()]
+            masses = [a.element.mass._value for a in omm_topology.atoms()]
 
-        attrs = [
-            Atomids(np.array(atomids, dtype=np.int32)),
-            Atomnames(np.array(atomnames, dtype=object)),
-            Atomtypes(np.array(atomtypes, dtype=object)),
-            Bonds(bonds, types=bond_types, order=bond_orders, guessed=False),
-            ChainIDs(np.array(chainids, dtype=object)),
-            Elements(np.array(elements, dtype=object)),
-            Masses(np.array(masses, dtype=np.float32)),
-            Resids(resids),
-            Resnums(resnums),
-            Resnames(resnames),
-            Segids(segids),
-        ]
+        except:
+            attrs = [
+                Atomids(np.array(atomids, dtype=np.int32)),
+                Atomnames(np.array(atomnames, dtype=object)),
+                Bonds(bonds, types=bond_types, order=bond_orders, guessed=False),
+                ChainIDs(np.array(chainids, dtype=object)),
+                Resids(resids),
+                Resnums(resnums),
+                Resnames(resnames),
+                Segids(segids),
+            ]
 
-        top = Topology(
-            n_atoms,
-            n_residues,
-            n_segments,
-            attrs=attrs,
-            atom_resindex=atom_resindex,
-            residue_segindex=residue_segindex,
-        )
+        else:
+            attrs = [
+                Atomids(np.array(atomids, dtype=np.int32)),
+                Atomnames(np.array(atomnames, dtype=object)),
+                Atomtypes(np.array(atomtypes, dtype=object)),
+                Bonds(bonds, types=bond_types, order=bond_orders, guessed=False),
+                ChainIDs(np.array(chainids, dtype=object)),
+                Elements(np.array(elements, dtype=object)),
+                Masses(np.array(masses, dtype=np.float32)),
+                Resids(resids),
+                Resnums(resnums),
+                Resnames(resnames),
+                Segids(segids),
+            ]
+
+        finally:
+            n_atoms = len(atomids)
+            n_residues = len(resids)
+            n_segments = len(segids)
+            top = Topology(
+                n_atoms,
+                n_residues,
+                n_segments,
+                attrs=attrs,
+                atom_resindex=atom_resindex,
+                residue_segindex=residue_segindex,
+            )
 
         return top
 
