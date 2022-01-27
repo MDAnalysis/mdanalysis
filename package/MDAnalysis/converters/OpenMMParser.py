@@ -56,8 +56,11 @@ Classes
 """
 
 import numpy as np
+import warnings
 
 from ..topology.base import TopologyReaderBase
+from ..topology.tables import SYMB2Z
+from ..topology.guessers import guess_masses, guess_types
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
@@ -106,7 +109,6 @@ class OpenMMTopologyParser(TopologyReaderBase):
         top : MDAnalysis.core.topology.Topology
 
         """
-
         atom_resindex = [a.residue.index for a in omm_topology.atoms()]
         residue_segindex = [r.chain.index for r in omm_topology.residues()]
         atomids = [a.id for a in omm_topology.atoms()]
@@ -119,53 +121,57 @@ class OpenMMTopologyParser(TopologyReaderBase):
         bonds = [(b.atom1.index, b.atom2.index) for b in omm_topology.bonds()]
         bond_orders = [b.order for b in omm_topology.bonds()]
         bond_types = [b.type for b in omm_topology.bonds()]
+        elements = [None if a.element is None else a.element.symbol
+                    for a in omm_topology.atoms()]
 
-        try:
-            elements = [a.element.symbol for a in omm_topology.atoms()]
-            atomtypes = [a.element.symbol for a in omm_topology.atoms()]
-            masses = [a.element.mass._value for a in omm_topology.atoms()]
+        attrs = [
+            Atomids(np.array(atomids, dtype=np.int32)),
+            Atomnames(np.array(atomnames, dtype=object)),
+            Bonds(bonds, types=bond_types, order=bond_orders, guessed=False),
+            ChainIDs(np.array(chainids, dtype=object)),
+            Resids(resids),
+            Resnums(resnums),
+            Resnames(resnames),
+            Segids(segids),
+        ]
 
-        except AttributeError:
-            attrs = [
-                Atomids(np.array(atomids, dtype=np.int32)),
-                Atomnames(np.array(atomnames, dtype=object)),
-                Bonds(bonds, types=bond_types, order=bond_orders,
-                      guessed=False),
-                ChainIDs(np.array(chainids, dtype=object)),
-                Resids(resids),
-                Resnums(resnums),
-                Resnames(resnames),
-                Segids(segids),
-            ]
-
+        if not any(elements):
+            atomtypes = guess_types(atomnames)
+            attrs.append(Atomtypes(np.array(atomtypes, dtype=object),
+                         guessed=True))
+            warnings.warn("Element information is missing, elements attribute "
+                          "will not be populated. If needed these can be "
+                          "guessed using MDAnalysis.topology.guessers.")
         else:
-            attrs = [
-                Atomids(np.array(atomids, dtype=np.int32)),
-                Atomnames(np.array(atomnames, dtype=object)),
-                Atomtypes(np.array(atomtypes, dtype=object)),
-                Bonds(bonds, types=bond_types, order=bond_orders,
-                      guessed=False),
-                ChainIDs(np.array(chainids, dtype=object)),
-                Elements(np.array(elements, dtype=object)),
-                Masses(np.array(masses, dtype=np.float32)),
-                Resids(resids),
-                Resnums(resnums),
-                Resnames(resnames),
-                Segids(segids),
-            ]
+            validated_elements = []
+            for elem in elements:
+                if elem is not None and elem.capitalize() in SYMB2Z:
+                    validated_elements.append(elem.capitalize())
+                else:
+                    wmsg = (f"Unknown element {elem} found for some atoms. "
+                            f"These have been given an empty element record. "
+                            f"If needed they can be guessed using "
+                            f"MDAnalysis.topology.guessers.")
+                    warnings.warn(wmsg)
+                    validated_elements.append('')
 
-        finally:
-            n_atoms = len(atomids)
-            n_residues = len(resids)
-            n_segments = len(segids)
-            top = Topology(
-                n_atoms,
-                n_residues,
-                n_segments,
-                attrs=attrs,
-                atom_resindex=atom_resindex,
-                residue_segindex=residue_segindex,
-            )
+            attrs.append(Elements(np.array(validated_elements, dtype=object)))
+        atomtypes = [elem for elem in validated_elements]
+        attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
+        masses = guess_masses(atomtypes)
+        attrs.append(Masses(np.array(masses, dtype=np.float32)))
+
+        n_atoms = len(atomids)
+        n_residues = len(resids)
+        n_segments = len(segids)
+        top = Topology(
+            n_atoms,
+            n_residues,
+            n_segments,
+            attrs=attrs,
+            atom_resindex=atom_resindex,
+            residue_segindex=residue_segindex,
+        )
 
         return top
 
@@ -208,4 +214,3 @@ class OpenMMAppTopologyParser(OpenMMTopologyParser):
         top = self._mda_topology_from_omm_topology(omm_topology)
 
         return top
-
