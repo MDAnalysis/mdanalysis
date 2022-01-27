@@ -59,6 +59,7 @@ __all__ = [
     "PDB_full",   # PDB 4E43 (full HEADER, TITLE, COMPND, REMARK, altloc)
     "ALIGN",  # Various way to align atom names in PDB files
     "RNA_PSF", "RNA_PDB",  # nucleic acid (PDB 1K5I in CHARMM36m)
+    "RNA_PDB2",  # nucleic acid (PDB 1SDR in CHARMM36m)
     "INC_PDB",  # incomplete PDB file (Issue #396)
     # for testing cryst before/after model headers
     "PDB_cm", "PDB_cm_bz2", "PDB_cm_gz",
@@ -280,6 +281,7 @@ PDB_closed = resource_filename(__name__, 'data/adk_closed.pdb')
 ALIGN = resource_filename(__name__, 'data/align.pdb')
 RNA_PSF = resource_filename(__name__, 'data/analysis/1k5i_c36.psf.gz')
 RNA_PDB = resource_filename(__name__, 'data/analysis/1k5i_c36.pdb.gz')
+RNA_PDB2 = resource_filename(__name__, 'data/analysis/1sdr_c36.pdb.gz')
 INC_PDB = resource_filename(__name__, 'data/incomplete.pdb')
 PDB_cm = resource_filename(__name__, 'data/cryst_then_model.pdb')
 PDB_cm_gz = resource_filename(__name__, 'data/cryst_then_model.pdb.gz')

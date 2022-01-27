@@ -23,7 +23,7 @@
 import MDAnalysis as mda
 import pytest
 from MDAnalysis.analysis import nuclinfo
-from MDAnalysisTests.datafiles import RNA_PSF, RNA_PDB
+from MDAnalysisTests.datafiles import RNA_PSF, RNA_PDB, RNA_PDB2
 from numpy.testing import (
     assert_almost_equal,
     assert_allclose,
@@ -33,6 +33,11 @@ from numpy.testing import (
 @pytest.fixture(scope='module')
 def u():
     return mda.Universe(RNA_PSF, RNA_PDB)
+
+
+@pytest.fixture(scope='module')
+def u2():
+    return mda.Universe(RNA_PDB2)
 
 
 @pytest.mark.parametrize('i, bp, seg1, seg2, expected_value', (
@@ -184,3 +189,37 @@ def test_pseudo_dihe_baseflip(u, bp1, bp2, i, seg1, seg2, seg3, expected_value):
 def test_angle_between_base_planes(u, b1, b2, seg1, seg2, expected_value):
     val = nuclinfo.angle_between_base_planes(u, b1, b2, seg1, seg2)
     assert_allclose(val, expected_value, rtol=1e-3, atol=0)
+
+
+def test_warn1_angle_between_base_plane(self, u2):
+    sele = u2.select_atoms('resid 3')
+    res, segid = sele.residues.resids[0], sele.segments.segids[0]
+    errmsg = (f"Found more than one residues with resid {res} and "
+              f"segid {segid}. Using first residue in selection.")
+    with pytest.warns(UserWarning, match=errmsg):
+        b1, b2 = 3, 4
+        ANGL = nuclinfo.angle_between_base_planes(u2, b1, b2)
+
+
+def test_KeyError_angle_between_base_plane(self, u2):
+    errmsg = ("Residue names may be incorrect! "
+              "Please use either ADE/GUA/CYT/URA/THY or A/G/C/U/T format.")
+    with pytest.raises(KeyError, match=errmsg):
+        b1, b2 = 9, 10
+        ANGL = nuclinfo.angle_between_base_planes(u2, b1, b2)
+
+
+def test_IndexError_angle_between_base_plane(self, u2):
+    errmsg = ("Atom names may be incorrect! "
+              "Make sure base atom names follow CHARMM format.")
+    with pytest.raises(IndexError, match=errmsg):
+        b1, b2 = 11, 12
+        ANGL = nuclinfo.angle_between_base_planes(u2, b1, b2)
+
+
+def test_warn2_angle_between_base_plane(self, u2):
+    errmsg = ("No box information found!"
+              "Calculation will continue by ignoring PBC.")
+    with pytest.warns(UserWarning, match=errmsg):
+        b1, b2 = 1, 2
+        ANGL = nuclinfo.angle_between_base_planes(u2, b1, b2)

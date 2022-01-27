@@ -114,6 +114,7 @@ from math import pi, sin, cos, atan2, sqrt, pow
 import warnings
 
 from MDAnalysis.lib import mdamath
+from MDAnalysis.lib import distances
 
 
 def wc_pair(universe, i, bp, seg1="SYSTEM", seg2="SYSTEM"):
@@ -772,10 +773,14 @@ def pseudo_dihe_baseflip(universe, bp1, bp2, i,
     return pseudo
 
 
-def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM"):
+def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM", box=None):
     """The angle between the planes for given two bases is computed.
 
-    See [Gabb1996]_ and [Jafilan2012]_ for background information.
+    Assuming the planarity of bases the selection of atoms to calculate base 
+    plane was modified slightly compared to [Gabb1996]_ to simplify but yet be
+    consistent in obtaining the direction of normal to the base plane.
+    This angle can be further used to define a stacking coordinate as shown in
+    [Jafilan2012]_.
 
     .. Note:: This angle calculation will only work if using atom names as
               documented by charmm force field parameters.
@@ -793,6 +798,11 @@ def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM"):
         segid of b1
     segid2 : str (optional)
         segid of b2
+    box : numpy.ndarray (optional)
+        The unitcell dimensions of the system, which can be orthogonal or
+        triclinic and must be provided in the same format as returned by
+        :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
+        ``[lx, ly, lz, alpha, beta, gamma]``.    
 
     Returns
     -------
@@ -840,9 +850,25 @@ def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM"):
         errmsg = ("Atom names may be incorrect! "
                   "Make sure base atom names follow CHARMM format.")
         raise IndexError(errmsg)
+    # check box
+    if box is None:
+        box = u.dimensions
+        if box.any() == 0:
+            warnings.warn("No box information found!"
+                          "Calculation will continue by ignoring PBC.")
+            reference = u.atoms.positions
+            box = np.zeros(6, dtype=np.float32)
+            lmax = reference.max(axis=0)
+            lmin = reference.min(axis=0)
+            # Using maximum dimension as the box size
+            boxsize = (lmax-lmin).max()
+            box[:3] = boxsize
+            box[3:] = 90.
     # get normals to the planes of the bases
-    n1 = mdamath.normal(c12-c11, c13-c11)
-    n2 = mdamath.normal(c22-c21, c23-c21)
+    n1 = mdamath.normal(distances.minimize_vectors(c12-c11, box), 
+                        distances.minimize_vectors(c13-c11, box))
+    n2 = mdamath.normal(distances.minimize_vectors(c22-c21, box),
+                        distances.minimize_vectors(c23-c21, box))
     # calculate angle between the normal vectors
     angl = mdamath.angle(n1, n2)
     angl = np.rad2deg(angl) % 360
