@@ -782,6 +782,19 @@ def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM", bo
     This angle can be further used to define a stacking coordinate as shown in
     [Jafilan2012]_.
 
+    .. [Gabb1996] Gabb, H. A., Sanghani, S. R., Robert, C. H., & Prévost, C.
+       (1996). Finding and visualizing nucleic acid base stacking. Journal of
+       Molecular Graphics, 14(1), 6–11. doi: `10.1016/0263-7855(95)00086-0`_
+
+    .. _`10.1016/0263-7855(95)00086-0`: https://doi.org/10.1016/0263-7855(95)00086-0
+
+    .. [Jafilan2012] Jafilan, S., Klein, L., Hyun, C., & Florián, J. (2012).
+       Intramolecular Base Stacking of Dinucleoside Monophosphate Anions in Aqueous
+       Solution. The Journal of Physical Chemistry B, 116(11), 3613–3618.
+       doi: `10.1021/jp209986y`_
+
+    .. _`10.1021/jp209986y`: https://doi.org/10.1021/jp209986y
+
     .. Note:: This angle calculation will only work if using atom names as
               documented by charmm force field parameters.
 
@@ -853,10 +866,10 @@ def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM", bo
     # check box
     if box is None:
         box = universe.dimensions
-        if box.any() == 0:
+        if box is None:
             warnings.warn("No box information found!"
                           "Calculation will continue by ignoring PBC.")
-            reference = u.atoms.positions
+            reference = universe.atoms.positions
             box = np.zeros(6, dtype=np.float32)
             lmax = reference.max(axis=0)
             lmin = reference.min(axis=0)

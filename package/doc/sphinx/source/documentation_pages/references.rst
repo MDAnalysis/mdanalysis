@@ -220,21 +220,6 @@ If you use H5MD files using
    pp. 18 – 26, 2021. doi:`10.25080/majora-1b6fd038-005.
    <https://www.doi.org/10.25080/majora-1b6fd038-005>`_
 
-If you use the angle between base planes code in
-:mod:`MDAnalysis.analysis.nuclinfo` please cite [Gabb1996]_ and [Jafilan2012]_.
-
-.. [Gabb1996] Gabb, H. A., Sanghani, S. R., Robert, C. H., & Prévost, C.
-   (1996). Finding and visualizing nucleic acid base stacking. Journal of
-   Molecular Graphics, 14(1), 6–11. doi: `10.1016/0263-7855(95)00086-0`_
-
-.. _`10.1016/0263-7855(95)00086-0`: https://doi.org/10.1016/0263-7855(95)00086-0
-
-.. [Jafilan2012] Jafilan, S., Klein, L., Hyun, C., & Florián, J. (2012).
-   Intramolecular Base Stacking of Dinucleoside Monophosphate Anions in Aqueous
-   Solution. The Journal of Physical Chemistry B, 116(11), 3613–3618.
-   doi: `10.1021/jp209986y`_
-
-.. _`10.1021/jp209986y`: https://doi.org/10.1021/jp209986y
 
 .. _citations-using-duecredit:
 
