@@ -35,7 +35,7 @@ particular
 - Backbone dihedrals
 - Chi dihedrals
 - AS or CP phase angles
-- Watson-Crick N1-N3 distances, C2-O2 distances, N6-O4 distances, O6-N4 distances
+- Watson-Crick distances (N1-N3, C2-O2, N6-O4, O6-N4)
 - Angle between base planes for stacking analysis
 
 For applications of this kind of analysis see [Denning2011]_ and [Denning2012]_.
@@ -773,10 +773,11 @@ def pseudo_dihe_baseflip(universe, bp1, bp2, i,
     return pseudo
 
 
-def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM", box=None):
+def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM",
+                              box=None):
     """The angle between the planes for given two bases is computed.
 
-    Assuming the planarity of bases the selection of atoms to calculate base 
+    Assuming the planarity of bases the selection of atoms to calculate base
     plane was modified slightly compared to [Gabb1996]_ to simplify but yet be
     consistent in obtaining the direction of normal to the base plane.
     This angle can be further used to define a stacking coordinate as shown in
@@ -786,12 +787,13 @@ def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM", bo
        (1996). Finding and visualizing nucleic acid base stacking. Journal of
        Molecular Graphics, 14(1), 6–11. doi: `10.1016/0263-7855(95)00086-0`_
 
-    .. _`10.1016/0263-7855(95)00086-0`: https://doi.org/10.1016/0263-7855(95)00086-0
+    .. _`10.1016/0263-7855(95)00086-0`:
+       https://doi.org/10.1016/0263-7855(95)00086-0
 
     .. [Jafilan2012] Jafilan, S., Klein, L., Hyun, C., & Florián, J. (2012).
-       Intramolecular Base Stacking of Dinucleoside Monophosphate Anions in Aqueous
-       Solution. The Journal of Physical Chemistry B, 116(11), 3613–3618.
-       doi: `10.1021/jp209986y`_
+       Intramolecular Base Stacking of Dinucleoside Monophosphate Anions in
+       Aqueous Solution. The Journal of Physical Chemistry B, 116(11),
+       3613–3618. doi: `10.1021/jp209986y`_
 
     .. _`10.1021/jp209986y`: https://doi.org/10.1021/jp209986y
 
@@ -815,7 +817,7 @@ def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM", bo
         The unitcell dimensions of the system, which can be orthogonal or
         triclinic and must be provided in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:
-        ``[lx, ly, lz, alpha, beta, gamma]``.    
+        ``[lx, ly, lz, alpha, beta, gamma]``.
 
     Returns
     -------
@@ -849,12 +851,18 @@ def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM", bo
     resn2 = bf2.atoms.resnames[0]
     # extract positions for specific atoms of each base
     try:
-        c11 = bf1.select_atoms("name {0!s}".format(batms[resn1][0])).positions[0]
-        c12 = bf1.select_atoms("name {0!s}".format(batms[resn1][1])).positions[0]
-        c13 = bf1.select_atoms("name {0!s}".format(batms[resn1][2])).positions[0]
-        c21 = bf2.select_atoms("name {0!s}".format(batms[resn2][0])).positions[0]
-        c22 = bf2.select_atoms("name {0!s}".format(batms[resn2][1])).positions[0]
-        c23 = bf2.select_atoms("name {0!s}".format(batms[resn2][2])).positions[0]
+        c11 = bf1.select_atoms("name {0!s}".format(
+                                batms[resn1][0])).positions[0]
+        c12 = bf1.select_atoms("name {0!s}".format(
+                                batms[resn1][1])).positions[0]
+        c13 = bf1.select_atoms("name {0!s}".format(
+                                batms[resn1][2])).positions[0]
+        c21 = bf2.select_atoms("name {0!s}".format(
+                                batms[resn2][0])).positions[0]
+        c22 = bf2.select_atoms("name {0!s}".format(
+                                batms[resn2][1])).positions[0]
+        c23 = bf2.select_atoms("name {0!s}".format(
+                                batms[resn2][2])).positions[0]
     except KeyError:
         errmsg = ("Residue names may be incorrect! "
                   "Please use either ADE/GUA/CYT/URA/THY or A/G/C/U/T format.")
