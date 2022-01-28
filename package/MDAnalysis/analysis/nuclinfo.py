@@ -852,7 +852,7 @@ def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM", bo
         raise IndexError(errmsg)
     # check box
     if box is None:
-        box = u.dimensions
+        box = universe.dimensions
         if box.any() == 0:
             warnings.warn("No box information found!"
                           "Calculation will continue by ignoring PBC.")
