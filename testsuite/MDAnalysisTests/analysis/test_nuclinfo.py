@@ -191,7 +191,7 @@ def test_angle_between_base_planes(u, b1, b2, seg1, seg2, expected_value):
     assert_allclose(val, expected_value, rtol=1e-3, atol=0)
 
 
-def test_warn1_angle_between_base_plane(self, u2):
+def test_warn1_angle_between_base_plane(u2):
     sele = u2.select_atoms('resid 3')
     res, segid = sele.residues.resids[0], sele.segments.segids[0]
     errmsg = (f"Found more than one residues with resid {res} and "
@@ -201,7 +201,7 @@ def test_warn1_angle_between_base_plane(self, u2):
         ANGL = nuclinfo.angle_between_base_planes(u2, b1, b2)
 
 
-def test_KeyError_angle_between_base_plane(self, u2):
+def test_KeyError_angle_between_base_plane(u2):
     errmsg = ("Residue names may be incorrect! "
               "Please use either ADE/GUA/CYT/URA/THY or A/G/C/U/T format.")
     with pytest.raises(KeyError, match=errmsg):
@@ -209,7 +209,7 @@ def test_KeyError_angle_between_base_plane(self, u2):
         ANGL = nuclinfo.angle_between_base_planes(u2, b1, b2)
 
 
-def test_IndexError_angle_between_base_plane(self, u2):
+def test_IndexError_angle_between_base_plane(u2):
     errmsg = ("Atom names may be incorrect! "
               "Make sure base atom names follow CHARMM format.")
     with pytest.raises(IndexError, match=errmsg):
@@ -217,7 +217,7 @@ def test_IndexError_angle_between_base_plane(self, u2):
         ANGL = nuclinfo.angle_between_base_planes(u2, b1, b2)
 
 
-def test_warn2_angle_between_base_plane(self, u2):
+def test_warn2_angle_between_base_plane(u2):
     errmsg = ("No box information found!"
               "Calculation will continue by ignoring PBC.")
     with pytest.warns(UserWarning, match=errmsg):
