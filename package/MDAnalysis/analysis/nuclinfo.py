@@ -863,17 +863,19 @@ def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM", bo
         errmsg = ("Atom names may be incorrect! "
                   "Make sure base atom names follow CHARMM format.")
         raise IndexError(errmsg)
-    # check for box information
+    # check for box information and get normals to the planes of the bases
     if box is None:
         box = universe.dimensions
         if box is None:
             warnings.warn("No box information found!"
                           "Calculation will continue by ignoring PBC.")
-    # get normals to the planes of the bases
-    n1 = mdamath.normal(distances.minimize_vectors(c12-c11, box), 
-                        distances.minimize_vectors(c13-c11, box))
-    n2 = mdamath.normal(distances.minimize_vectors(c22-c21, box),
-                        distances.minimize_vectors(c23-c21, box))
+            n1 = mdamath.normal(c12-c11, c13-c11)
+            n2 = mdamath.normal(c22-c21, c23-c21)
+        else:
+            n1 = mdamath.normal(distances.minimize_vectors(c12-c11, box),
+                                distances.minimize_vectors(c13-c11, box))
+            n2 = mdamath.normal(distances.minimize_vectors(c22-c21, box),
+                                distances.minimize_vectors(c23-c21, box))
     # calculate angle between the normal vectors
     angl = mdamath.angle(n1, n2)
     angl = np.rad2deg(angl) % 360
