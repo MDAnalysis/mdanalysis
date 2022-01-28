@@ -863,20 +863,12 @@ def angle_between_base_planes(universe, b1, b2, seg1="SYSTEM", seg2="SYSTEM", bo
         errmsg = ("Atom names may be incorrect! "
                   "Make sure base atom names follow CHARMM format.")
         raise IndexError(errmsg)
-    # check box
+    # check for box information
     if box is None:
         box = universe.dimensions
         if box is None:
             warnings.warn("No box information found!"
                           "Calculation will continue by ignoring PBC.")
-            reference = universe.atoms.positions
-            box = np.zeros(6, dtype=np.float32)
-            lmax = reference.max(axis=0)
-            lmin = reference.min(axis=0)
-            # Using maximum dimension as the box size
-            boxsize = (lmax-lmin).max()
-            box[:3] = boxsize
-            box[3:] = 90.
     # get normals to the planes of the bases
     n1 = mdamath.normal(distances.minimize_vectors(c12-c11, box), 
                         distances.minimize_vectors(c13-c11, box))
