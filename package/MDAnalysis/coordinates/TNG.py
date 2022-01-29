@@ -68,6 +68,8 @@ class TNGReader(base.ReaderBase):
 
         self._block_names = self._file_iterator.block_ids.keys()
         self._block_ids = self._file_iterator.block_ids.values()
+        self._block_strides = self._file_iterator.block_strides
+        self._data_frames   = self._file_iterator.n_data_frames
 
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
 
@@ -86,7 +88,7 @@ class TNGReader(base.ReaderBase):
         self._additional_blocks = [block for block in self._block_names if block not in self._special_blocks]
         self._additional_block_data = {block: None for block in self._additional_blocks}
         self._make_ndarrays()
-
+        self._check_strides()
         self._frame = 0 
     
     def _make_ndarrays(self):
@@ -101,9 +103,12 @@ class TNGReader(base.ReaderBase):
         
         for block in self._additional_blocks:
             self._additional_block_data[block] = self._file_iterator.make_ndarray_for_block_from_name(block)
+    
+    def _check_strides(self):
+        if self._has_box and self._has_positions:
+            if 
         
-        
-   def close(self):
+    def close(self):
         """close reader"""
         self._file_iterator._close()
 
