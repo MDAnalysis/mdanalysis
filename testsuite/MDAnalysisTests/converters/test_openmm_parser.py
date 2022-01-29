@@ -101,6 +101,25 @@ class OpenMMTopologyBase(ParserBase):
         else:
             assert top.segids.values == []
 
+    def test_elements(self, top):
+        if hasattr(top, 'elements'):
+            assert len(top.elements.values) == self.expected_n_atoms
+            assert isinstance(top.elements.values, np.ndarray)
+            assert all(isinstance(elem, str) for elem in top.elements.values)
+
+    def test_atomtypes(self, top):
+        if hasattr(top, 'atomtypes'):
+            assert len(top.atomtypes.values) == self.expected_n_atoms
+            assert isinstance(top, np.ndarray)
+            assert all(isinstance(atomtype, str)
+                       for atomtype in top.atomtypes.values)
+
+    def test_masses(self, top):
+        assert len(top.masses.values) == self.expected_n_atoms
+        assert isinstance(top.masses.values, np.ndarray)
+        assert all(isinstance(mass, np.float64)
+                   for mass in top.masses.values)
+
 
 class OpenMMAppTopologyBase(OpenMMTopologyBase):
     parser = mda.converters.OpenMMParser.OpenMMAppTopologyParser
