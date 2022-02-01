@@ -2,7 +2,7 @@
   MDAnalysis Repository README
 ================================
 
-|numfocus| |build| |travis| |cov| [*]_
+|numfocus| |build| |cron| |travis| |cov| [*]_
 
 |docs| |devdocs| |usergroup| |developergroup| |anaconda| |mybinder|
 
@@ -173,6 +173,10 @@ For citations of included algorithms and sub-modules please see the references_.
 .. |build| image:: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci.yaml/badge.svg
    :alt: Github Actions Build Status
    :target: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci.yaml
+
+.. |cron| image:: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci-cron.yaml/badge.svg
+   :alt: Github Actions Cron Job Status
+   :target: https://github.com/MDAnalysis/mdanalysis/actions/workflows/gh-ci-cron.yaml
 
 .. |travis| image:: https://img.shields.io/travis/MDAnalysis/mdanalysis/develop?label=Travis%20CI
    :alt: Travis CI Build Status

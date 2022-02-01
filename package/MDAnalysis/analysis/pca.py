@@ -208,14 +208,6 @@ class PCA(AnalysisBase):
                 Will be removed in MDAnalysis 3.0.0. Please use
                 :attr:`results.cumulated_variance` instead.
 
-
-    Methods
-    -------
-    transform(atomgroup, n_components=None)
-        Take an atomgroup or universe with the same number of atoms as was
-        used for the calculation in :meth:`PCA.run`, and project it onto the
-        principal components.
-
     Notes
     -----
     Computation can be sped up by supplying precalculated mean positions.

@@ -585,3 +585,52 @@ class TestDeprecateBFactor:
     def test_deprecate_bfactor_sel(self, universe):
         with pytest.warns(DeprecationWarning, match=self.MATCH):
             universe.select_atoms("bfactor 3")
+
+
+class TestStringInterning:
+    # try and trip up the string interning we use for string attributes
+    @pytest.fixture
+    def universe(self):
+        u = mda.Universe.empty(n_atoms=10, n_residues=2,
+                               atom_resindex=[0]*5 + [1] * 5)
+        u.add_TopologyAttr('names', values=['A'] * 10)
+        u.add_TopologyAttr('resnames', values=['ResA', 'ResB'])
+        u.add_TopologyAttr('segids', values=['SegA'])
+
+        return u
+
+    @pytest.mark.parametrize('newname', ['ResA', 'ResB'])
+    def test_add_residue(self, universe, newname):
+        newres = universe.add_Residue(resname=newname)
+
+        assert newres.resname == newname
+
+        ag = universe.atoms[2]
+        ag.residue = newres
+
+        assert ag.resname == newname
+
+    @pytest.mark.parametrize('newname', ['SegA', 'SegB'])
+    def test_add_segment(self, universe, newname):
+        newseg = universe.add_Segment(segid=newname)
+
+        assert newseg.segid == newname
+
+        rg = universe.residues[0]
+        rg.segment = newseg
+
+        assert rg.atoms[0].segid == newname
+
+    def test_issue3437(self, universe):
+        newseg = universe.add_Segment(segid='B')
+
+        ag = universe.residues[0].atoms
+
+        ag.residues.segments = newseg
+
+        assert 'B' in universe.segments.segids
+
+        ag2 = universe.select_atoms('segid B')
+
+        assert len(ag2) == 5
+        assert (ag2.ix == ag.ix).all()
