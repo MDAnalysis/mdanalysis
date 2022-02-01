@@ -158,6 +158,8 @@ import numpy as np
 import logging
 import warnings
 
+from spyrmsd import graph
+
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
@@ -709,6 +711,77 @@ class RMSD(AnalysisBase):
                 "`results.rmsd` instead.")
         warnings.warn(wmsg, DeprecationWarning)
         return self.results.rmsd
+
+class SymmRMSD(AnalysisBase):
+    """
+    Compute symmetry-corrected RMSD for small molecules
+    """
+
+    def __init__(self, atomgroup, select, reference=None, align_select="", weights=None, ref_frame=0, **kwargs):
+        super().__init__(atomgroup.universe.trajectory, **kwargs)
+
+        self.weights = weights
+        self.select = select
+
+        # TODO: Use actual reference or select from ref_frame
+        self.reference = atomgroup.select_atoms(select)
+
+        # TODO: Check that weights match number of atoms in reference
+
+    def _prepare(self):
+        # Columns: frame, time, rmsd
+        self.results.rmsd = np.zeros((self.n_frames, 3))
+
+        A = self._adjacency_matrix()
+        G = graph.graph_from_adjacency_matrix(A)
+
+        self.isomorphisms = graph.match_graphs(G, G)
+
+    def _single_frame(self):
+        # Get frame number from current timestep
+        self.results[self._frame_index, 0] = self._ts.frame
+
+        # Get time from actual trajectory
+        self.results[self._frame_index, 1] = self._trajectory.time
+
+        # Compute minimum RMSD from graph isomorphisms
+        min_rmsd = np.inf
+        for idx1, idx2 in self.isomorphisms:
+
+            a = self.reference.positions[idx1, :]
+            b = self.atomgroup.select_atoms(select).positions[idx2, :]
+
+            r = rmsd(a, b, weights=self.weights, center=False, superposition=False)
+            if r < min_rmsd:
+                min_rmsd = r
+
+        self.results.rmsd[self.frame_index, 2] = min_rmsd
+
+    #def _conclude(self):
+    #    pass
+
+    def _adjacency_matrix(self):
+        """
+        Compute adjacency matrix for selection based on bonds.
+        """
+        n_atoms = len(self.reference)
+
+        # Allocate adjacency matrix
+        A = np.zeros((n_atoms, n_atoms), dtype=int)
+
+        # TODO: Catch NoDataError in case of missing bonds?
+        # FIXME: Make this more efficient
+        # Loop over all bonds
+        for bond in self.reference.bonds:
+            for i, ai in enumerate(self.reference.atoms):
+                for j, aj in enumerate(self.reference.atoms):
+                    if ai in bond and aj in bond and i != j:
+                        A[i, j] = 1
+
+        return A
+
+
+
 
 
 class RMSF(AnalysisBase):
