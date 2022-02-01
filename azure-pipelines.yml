@@ -18,7 +18,7 @@ jobs:
 - job: Windows
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))  # skip for PR merges
   pool:
-    vmImage: 'VS2017-Win2016'
+    vmImage: 'windows-2019'
   variables:
     MPLBACKEND: agg
   strategy:
@@ -34,6 +34,9 @@ jobs:
           PYTHON_ARCH: 'x64'
         Python39-64bit-full:
           PYTHON_VERSION: '3.9'
+          PYTHON_ARCH: 'x64'
+        Python310-64bit-full:
+          PYTHON_VERSION: '3.10'
           PYTHON_ARCH: 'x64'
   steps:
   - task: UsePythonVersion@0
@@ -54,7 +57,7 @@ jobs:
       pytest-xdist
       scikit-learn
       scipy
-      "h5py<3.4.0"
+      h5py
       tqdm
       threadpoolctl
     displayName: 'Install dependencies'
@@ -62,9 +65,9 @@ jobs:
   - script: >-
       python -m pip install
       biopython
-      chemfiles>=0.9
+      chemfiles>=0.10
       duecredit
-      gsd==1.9.3
+      gsd
       joblib
       GridDataFormats
       mmtf-python

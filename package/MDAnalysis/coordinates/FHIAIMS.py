@@ -63,10 +63,6 @@ specifications in the official `FHI-AIMS format`_.
 Classes
 -------
 
-.. autoclass:: Timestep
-   :members:
-   :inherited-members:
-
 .. autoclass:: FHIAIMSReader
    :members:
    :inherited-members:

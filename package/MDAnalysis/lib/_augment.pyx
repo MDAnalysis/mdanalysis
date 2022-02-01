@@ -31,6 +31,8 @@ from MDAnalysis.lib._cutil cimport _dot ,_norm, _cross
 
 from libcpp.vector cimport vector
 
+np.import_array()
+
 
 __all__ = ['augment_coordinates', 'undo_augment']
 
