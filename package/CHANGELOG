@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
-         orbeckst, scal444, p-j-smith, edisj, Atharva7K, ojeda-e
+         orbeckst, scal444, p-j-smith, edisj, Atharva7K, ojeda-e, jbarnoud
 
  * 2.1.0
 
@@ -40,6 +40,7 @@ Enhancements
     option from setup.cfg (Issue #3428, PR #3429).
   * Added R/S Chirality support to RDKit parsed molecules
   * Added MDAnalysis.lib.distances.minimize_vectors
+  * Supports TPR files produced by Gromacs 2022 (PR #3514)
 
 Changes
   * TRZReader now defaults to a `dt` of 1.0 (instead of 0.0 previously) when
