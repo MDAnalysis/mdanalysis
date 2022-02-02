@@ -644,7 +644,8 @@
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># thole.a</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># thole.alpha1</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># thole.alpha2</span>
-            <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># thole.rfac</span>
+            <span class="k">if</span> <span class="n">fver</span> <span class="o">&lt;</span> <span class="n">setting</span><span class="o">.</span><span class="n">tpxv_RemoveTholeRfac</span><span class="p">:</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># thole.rfac</span>
 
         <span class="k">elif</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">setting</span><span class="o">.</span><span class="n">F_LJ</span><span class="p">]:</span>
             <span class="n">data</span><span class="o">.</span><span class="n">unpack_real</span><span class="p">()</span>  <span class="c1"># lj_c6</span>
