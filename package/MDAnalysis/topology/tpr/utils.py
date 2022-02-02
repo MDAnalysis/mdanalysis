@@ -553,7 +553,8 @@ def do_iparams(data, functypes, fver):
             data.unpack_real()  # thole.a
             data.unpack_real()  # thole.alpha1
             data.unpack_real()  # thole.alpha2
-            data.unpack_real()  # thole.rfac
+            if fver < setting.tpxv_RemoveTholeRfac:
+                data.unpack_real()  # thole.rfac
 
         elif i in [setting.F_LJ]:
             data.unpack_real()  # lj_c6
