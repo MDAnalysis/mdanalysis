@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
-         orbeckst, scal444, p-j-smith, edisj, Atharva7K, ojeda-e
+         orbeckst, scal444, p-j-smith, edisj, Atharva7K, ojeda-e, jbarnoud
 
  * 2.1.0
 
@@ -34,6 +34,7 @@ Fixes
     created using add_Residue and add_Segment (Issue #3437)
 
 Enhancements
+  * Supports TPR files produced by Gromacs 2022 (PR #3514)
   * Add support for millisecond and microsecond units (Issue #3473, PR #3491)
   * Adds :meth:`parse_n_atoms` to H5MD reader (Issue #3465)
   * Add option for custom compiler flags for C/C++ on build and remove march
