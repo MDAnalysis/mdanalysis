@@ -246,30 +246,6 @@ class TPRParser(TopologyReaderBase):
 
         return tpr_top
 
-    # THE FOLLOWING CODE IS WORKING FOR TPX VERSION 58, BUT SINCE THESE INFO IS
-    # NOT INTERESTED, SO IT'S NOT COVERED IN ALL VERSIONS. PARSING STOPS HERE.
-
-    # if th.bX:
-    #     ndo_rvec(data, th.natoms)
-
-    # if th.bV:
-    #     ndo_rvec(data, th.natoms)
-
-    # if th.bF:
-    #     ndo_rvec(data, th.natoms)
-
-    # not useful at the moment
-    # ePBC = -1;
-    # bPeriodicMols = False
-    # if th.bIr:
-    #     # update
-    #     data.unpack_int()                                # ePBC
-    #     data.unpack_bool()                               # bPeriodicMols
-    #     # 17 < 23. and ir (ir is from the c code, seems not apply here
-    #     if th.fgen < setting.tpx_generation:
-    #         # a crazily long (670 lines) function in c, slightly better here
-    #         # (240 lines), so put it in setting.py
-    #         utils.do_inputrec(data)
 
     def _log_header(self, th):
         logger.info(f"Gromacs version   : {th.ver_str}")
