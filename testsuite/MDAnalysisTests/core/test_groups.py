@@ -326,7 +326,7 @@ class TestGroupSlicing(object):
 
         assert a.ix == ref
         assert isinstance(a, singular)
-    
+ 
     def test_none_getitem(self, group):
         with pytest.raises(TypeError):
             group[None]
