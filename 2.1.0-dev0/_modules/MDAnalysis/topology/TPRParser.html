@@ -337,30 +337,6 @@
 
         <span class="k">return</span> <span class="n">tpr_top</span></div>
 
-    <span class="c1"># THE FOLLOWING CODE IS WORKING FOR TPX VERSION 58, BUT SINCE THESE INFO IS</span>
-    <span class="c1"># NOT INTERESTED, SO IT&#39;S NOT COVERED IN ALL VERSIONS. PARSING STOPS HERE.</span>
-
-    <span class="c1"># if th.bX:</span>
-    <span class="c1">#     ndo_rvec(data, th.natoms)</span>
-
-    <span class="c1"># if th.bV:</span>
-    <span class="c1">#     ndo_rvec(data, th.natoms)</span>
-
-    <span class="c1"># if th.bF:</span>
-    <span class="c1">#     ndo_rvec(data, th.natoms)</span>
-
-    <span class="c1"># not useful at the moment</span>
-    <span class="c1"># ePBC = -1;</span>
-    <span class="c1"># bPeriodicMols = False</span>
-    <span class="c1"># if th.bIr:</span>
-    <span class="c1">#     # update</span>
-    <span class="c1">#     data.unpack_int()                                # ePBC</span>
-    <span class="c1">#     data.unpack_bool()                               # bPeriodicMols</span>
-    <span class="c1">#     # 17 &lt; 23. and ir (ir is from the c code, seems not apply here</span>
-    <span class="c1">#     if th.fgen &lt; setting.tpx_generation:</span>
-    <span class="c1">#         # a crazily long (670 lines) function in c, slightly better here</span>
-    <span class="c1">#         # (240 lines), so put it in setting.py</span>
-    <span class="c1">#         utils.do_inputrec(data)</span>
 
     <span class="k">def</span> <span class="nf">_log_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">th</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Gromacs version   : </span><span class="si">{</span><span class="n">th</span><span class="o">.</span><span class="n">ver_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>

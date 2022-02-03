@@ -364,6 +364,9 @@ atoms by name.</p>
 <p><span class="versionmodified changed">Changed in version 2.0.0: </span><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> can always be pickled with or without its universe,
 instead of failing when not finding its anchored universe.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Indexing an AtomGroup with <code class="docutils literal notranslate"><span class="pre">None</span></code> raises a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>.</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.AtomGroup.accumulate">
 <span class="sig-name descname"><span class="pre">accumulate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function=&lt;function</span> <span class="pre">sum&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound='group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.accumulate" title="Permalink to this definition"></a></dt>
@@ -2667,6 +2670,9 @@ list of these operators on <code class="xref py py-class docutils literal notran
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Removed instant selectors, use select_atoms instead</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Indexing an ResidueGroup with <code class="docutils literal notranslate"><span class="pre">None</span></code> raises a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>.</p>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.ResidueGroup.accumulate">
 <span class="sig-name descname"><span class="pre">accumulate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">function=&lt;function</span> <span class="pre">sum&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compound='group'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.accumulate" title="Permalink to this definition"></a></dt>
@@ -4473,6 +4479,9 @@ group operators. See the list of these operators on <code class="xref py py-clas
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Removed instant selectors, use select_atoms instead</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 2.1.0: </span>Indexing an SegmentGroup with <code class="docutils literal notranslate"><span class="pre">None</span></code> raises a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.core.groups.SegmentGroup.accumulate">

@@ -660,7 +660,9 @@
         <span class="c1"># because our _ix attribute is a numpy array</span>
         <span class="c1"># it can be sliced by all of these already,</span>
         <span class="c1"># so just return ourselves sliced by the item</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;None cannot be used to index a group.&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="o">.</span><span class="n">singular</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">[</span><span class="n">item</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="n">item</span><span class="p">:</span>  <span class="c1"># check for empty list</span>
@@ -2579,6 +2581,8 @@
 <span class="sd">    .. versionchanged:: 2.0.0</span>
 <span class="sd">       :class:`AtomGroup` can always be pickled with or without its universe,</span>
 <span class="sd">       instead of failing when not finding its anchored universe.</span>
+<span class="sd">    .. versionchanged:: 2.1.0</span>
+<span class="sd">       Indexing an AtomGroup with ``None`` raises a ``TypeError``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__reduce__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -3673,6 +3677,8 @@
 <span class="sd">       *Instant selectors* of Segments will be removed in the 1.0 release.</span>
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       Removed instant selectors, use select_atoms instead</span>
+<span class="sd">    .. versionchanged:: 2.1.0</span>
+<span class="sd">       Indexing an ResidueGroup with ``None`` raises a ``TypeError``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
@@ -3864,6 +3870,8 @@
 <span class="sd">       *Instant selectors* of Segments will be removed in the 1.0 release.</span>
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       Removed instant selectors, use select_atoms instead</span>
+<span class="sd">    .. versionchanged:: 2.1.0</span>
+<span class="sd">       Indexing an SegmentGroup with ``None`` raises a ``TypeError``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
