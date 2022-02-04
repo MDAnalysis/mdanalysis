@@ -24,13 +24,14 @@ import pytest
 from pathlib import Path
 import MDAnalysis as mda
 import numpy as np
-from numpy.testing import assert_almost_equal, assert_equal
+from numpy.testing import assert_allclose, assert_equal
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     ITP,  # GROMACS itp
     ITP_nomass,  # from Automated Topology Builder
     ITP_atomtypes,
+    ITP_charges,
     ITP_edited,
     ITP_tip5p,
     ITP_spce,
@@ -177,17 +178,46 @@ class TestITPAtomtypes(ParserBase):
         return mda.Universe(filename)
 
     def test_charge_parse(self, universe):
-        assert_almost_equal(universe.atoms[0].charge, 4)
-        assert_almost_equal(universe.atoms[1].charge, 1.1)
-        assert_almost_equal(universe.atoms[2].charge, -3.000)
-        assert_almost_equal(universe.atoms[3].charge, 1.)
+        assert_allclose(universe.atoms[0].charge, 4)
+        assert_allclose(universe.atoms[1].charge, 1.1)
+        assert_allclose(universe.atoms[2].charge, -3.000)
+        assert_allclose(universe.atoms[3].charge, 1.)
 
     def test_mass_parse_or_guess(self, universe):
-        assert_almost_equal(universe.atoms[0].mass, 8.0)
-        assert_almost_equal(universe.atoms[1].mass, 20.98)
-        assert_almost_equal(universe.atoms[2].mass, 20.98)
-        assert_almost_equal(universe.atoms[3].mass, 1.008)
+        assert_allclose(universe.atoms[0].mass, 8.0)
+        assert_allclose(universe.atoms[1].mass, 20.989)
+        assert_allclose(universe.atoms[2].mass, 20.989)
+        assert_allclose(universe.atoms[3].mass, 1.008)
 
+
+class TestITPAtomtypes(ParserBase):
+    parser = mda.topology.ITPParser.ITPParser
+    ref_filename = ITP_charges
+    expected_attrs = ['ids', 'names', 'types', 'masses',
+                      'charges', 'chargegroups',
+                      'resids', 'resnames',
+                      'segids', 'moltypes', 'molnums',
+                      'bonds', 'angles', 'dihedrals', 'impropers']
+    guessed_attrs = []
+    expected_n_atoms = 9
+    expected_n_residues = 3
+    expected_n_segments = 1
+
+    @pytest.fixture
+    def universe(self, filename):
+        return mda.Universe(filename)
+
+    def test_charge_parse(self, universe):
+        assert_allclose(universe.atoms[0].charge, -1.0)
+        assert_allclose(universe.atoms[1].charge, 0)
+        assert_allclose(universe.atoms[2].charge, 0)
+        assert_allclose(universe.atoms[3].charge, -1.)
+
+    def test_mass_parse_or_guess(self, universe):
+        assert_allclose(universe.atoms[0].mass, 100.0)
+        assert_allclose(universe.atoms[1].mass, 100.0)
+        assert_allclose(universe.atoms[2].mass, 100.0)
+        assert_allclose(universe.atoms[3].mass, 100.0)
 
 class TestDifferentDirectivesITP(BaseITP):
 
@@ -252,8 +282,8 @@ class TestITPNoKeywords(BaseITP):
         assert (1, 0, 2) in top.angles.values
 
     def test_defines(self, top):
-        assert_almost_equal(top.charges.values[1], 0.241)
-        assert_almost_equal(top.charges.values[2], 0.241)
+        assert_allclose(top.charges.values[1], 0.241)
+        assert_allclose(top.charges.values[2], 0.241)
 
     
 class TestITPKeywords(TestITPNoKeywords):
@@ -279,10 +309,10 @@ class TestITPKeywords(TestITPNoKeywords):
             assert param.type == 1
 
     def test_defines(self, top):
-        assert_almost_equal(top.charges.values[1], 1)
+        assert_allclose(top.charges.values[1], 1)
 
     def test_kwargs_overrides_defines(self, top):
-        assert_almost_equal(top.charges.values[2], 3)
+        assert_allclose(top.charges.values[2], 3)
 
 
 class TestNestedIfs(BaseITP):

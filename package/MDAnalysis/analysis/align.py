@@ -76,14 +76,14 @@ two structures, using :func:`rmsd`::
    >>> ref = mda.Universe(PDB_small)
    >>> mobile = mda.Universe(PSF,DCD)
    >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions)
-   16.282308620224068
+   28.20178579474479
 
 Note that in this example translations have not been removed. In order
 to look at the pure rotation one needs to superimpose the centres of
 mass (or geometry) first:
 
    >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions, center=True)
-   12.639693690256898
+   21.892591663632704
 
 This has only done a translational superposition. If you want to also do a
 rotational superposition use the superposition keyword. This will calculate a
@@ -91,17 +91,17 @@ minimized RMSD between the reference and mobile structure.
 
    >>> rmsd(mobile.select_atoms('name CA').positions, ref.select_atoms('name CA').positions,
    >>>      superposition=True)
-   6.8093965864717951
+   6.809396586471815
 
 The rotation matrix that superimposes *mobile* on *ref* while
 minimizing the CA-RMSD is obtained with the :func:`rotation_matrix`
 function ::
 
-   >>> mobile0 = mobile.select_atoms('name CA').positions - mobile.atoms.center_of_mass()
-   >>> ref0 = ref.select_atoms('name CA').positions - ref.atoms.center_of_mass()
+   >>> mobile0 = mobile.select_atoms('name CA').positions - mobile.select_atoms('name CA').center_of_mass()
+   >>> ref0 = ref.select_atoms('name CA').positions - ref.select_atoms('name CA').center_of_mass()
    >>> R, rmsd = align.rotation_matrix(mobile0, ref0)
    >>> print rmsd
-   6.8093965864717951
+   6.809396586471805
    >>> print R
    [[ 0.14514539 -0.27259113  0.95111876]
     [ 0.88652593  0.46267112 -0.00268642]
@@ -301,7 +301,7 @@ def _fit_to(mobile_coordinates, ref_coordinates, mobile_atoms,
         Atoms to be translated
     mobile_com: ndarray
         array of xyz coordinate of mobile center of mass
-    ref_com: ndarray
+    ref_com : ndarray
         array of xyz coordinate of reference center of mass
     weights : array_like (optional)
        choose weights. With ``None`` weigh each atom equally. If a float array

@@ -26,12 +26,12 @@ import os
 
 from numpy.testing import (
     assert_equal,
-    assert_almost_equal
+    assert_almost_equal,
+    assert_allclose
 )
 import numpy as np
 
 from MDAnalysisTests.coordinates.reference import RefTRZ
-from MDAnalysisTests.coordinates.base import BaseTimestepTest
 from MDAnalysisTests.datafiles import (TRZ_psf, TRZ, two_water_gro)
 
 
@@ -133,6 +133,19 @@ class TestTRZReader(RefTRZ):
         with pytest.raises(ValueError, match=r"Supplied n_atoms"):
             mda.Universe(TRZ, n_atoms=8080)
 
+    def test_read_zero_box(self, tmpdir):
+        outfile = str(tmpdir.join('/test-trz-writer.trz'))
+
+        u = mda.Universe.empty(10, trajectory=True)
+        u.dimensions = None
+
+        with mda.Writer(outfile, n_atoms=10) as w:
+            w.write(u)
+
+        u2 = mda.Universe(outfile, n_atoms=10)
+
+        assert u2.dimensions is None
+
 
 class TestTRZWriter(RefTRZ):
     prec = 3
@@ -188,6 +201,15 @@ class TestTRZWriter(RefTRZ):
         with pytest.raises(ValueError):
             self.writer(outfile, self.ref_n_atoms, title=title)
 
+    def test_no_box_warning(self, outfile):
+        u = mda.Universe.empty(10, trajectory=True)
+        u.dimensions = None
+
+        with pytest.warns(UserWarning,
+                          match="box will be written as all zero values"):
+            with mda.Writer(outfile, n_atoms=10) as w:
+                w.write(u.atoms)
+
 
 class TestTRZWriter2(object):
     @pytest.fixture()
@@ -212,10 +234,9 @@ class TestTRZWriter2(object):
 
         u2 = mda.Universe(two_water_gro, outfile)
 
-        wmsg = ('dt information could not be obtained, defaulting to 0 ps. '
-                'Note: in MDAnalysis 2.1.0 this default will change 1 ps.')
+        wmsg = ('Reader has no dt information, set to 1.0 ps')
         with pytest.warns(UserWarning, match=wmsg):
-            assert_almost_equal(u2.trajectory.dt, 0)
+            assert_allclose(u2.trajectory.dt, 1.0)
 
 
 class TestWrite_Partial_Timestep(object):
@@ -245,14 +266,3 @@ class TestWrite_Partial_Timestep(object):
                             u_ag.atoms.positions,
                             self.prec,
                             err_msg="Writing AtomGroup timestep failed.")
-
-
-class TestTRZTimestep(BaseTimestepTest):
-    Timestep = mda.coordinates.TRZ.Timestep
-    name = "TRZ"
-    has_box = True
-    set_box = True
-    unitcell = np.array([10., 0., 0.,
-                         0., 11., 0.,
-                         0., 0., 12.])
-    uni_args = (TRZ_psf, TRZ)

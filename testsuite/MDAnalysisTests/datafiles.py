@@ -81,13 +81,13 @@ __all__ = [
     "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
     "TPR460", "TPR461", "TPR502", "TPR504", "TPR505", "TPR510", "TPR2016",
     "TPR2018", "TPR2019B3", "TPR2020B2", "TPR2020", "TPR2020Double",
-    "TPR2021", "TPR2021Double",
+    "TPR2021", "TPR2021Double", "TPR2022RC1",
     "TPR510_bonded", "TPR2016_bonded", "TPR2018_bonded", "TPR2019B3_bonded",
     "TPR2020B2_bonded", "TPR2020_bonded", "TPR2020_double_bonded",
-    "TPR2021_bonded", "TPR2021_double_bonded",
+    "TPR2021_bonded", "TPR2021_double_bonded", "TPR2022RC1_bonded",
     "TPR334_bonded",
     "TPR_EXTRA_2021", "TPR_EXTRA_2020", "TPR_EXTRA_2018",
-    "TPR_EXTRA_2016", "TPR_EXTRA_407",
+    "TPR_EXTRA_2016", "TPR_EXTRA_407", "TPR_EXTRA_2022RC1",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
     "XTC_sub_sol",
@@ -137,6 +137,9 @@ __all__ = [
     "LAMMPShyd", "LAMMPShyd2",
     "LAMMPSdata_deletedatoms",  # with deleted atoms
     "LAMMPSDUMP",
+    "LAMMPSDUMP_long",  # lammpsdump file with a few zeros sprinkled in the first column first frame
+    "LAMMPSDUMP_allcoords",  # lammpsdump file with all coordinate conventions (x,xs,xu,xsu) present, from LAMMPS rdf example
+    "LAMMPSDUMP_nocoords",  # lammpsdump file with no coordinates
     "unordered_res",  # pdb file with resids non sequential
     "GMS_ASYMOPT",  # GAMESS C1  optimization
     "GMS_SYMOPT",   # GAMESS D4h optimization
@@ -146,6 +149,7 @@ __all__ = [
     "two_water_gro_widebox",  # Issue #548
     "DLP_CONFIG", "DLP_CONFIG_order", "DLP_CONFIG_minimal",  # dl_poly 4 config file
     "DLP_HISTORY", "DLP_HISTORY_order", "DLP_HISTORY_minimal",  # dl_poly 4 history file
+    "DLP_HISTORY_minimal_cell", # dl_poly 4 history file with cell parameters
     "waterPSF","waterDCD","rmsfArray",
     "HoomdXMLdata",
     "Make_Whole",  # for testing the function lib.mdamath.make_whole, has 9 atoms
@@ -188,6 +192,7 @@ __all__ = [
     "ITP", # for GROMACS generated itps
     "ITP_nomass", # for ATB generated itps
     "ITP_atomtypes",  # atom definitions to check atomtyes section parsing
+    "ITP_charges", # atom definitions to test custom particle charge parsing.
     "NAMDBIN", # for NAMD generated binary file
     "ITP_edited", # to check different directives are read properly
     "ITP_tip5p", # tip5p water from opls-aa, edited with additional keywords
@@ -203,6 +208,9 @@ __all__ = [
     "SDF_molecule",  # MDL SDFile for rdkit
     "PDBX",  # PDBxfile
     "PDB_elements",  # PDB file with elements
+    "PDB_elements",  # PDB file with elements
+    "SURFACE_PDB",  # 111 FCC lattice topology for NSGrid bug #2345
+    "SURFACE_TRR",  # full precision coordinates for NSGrid bug #2345
 ]
 
 from pkg_resources import resource_filename
@@ -348,6 +356,7 @@ TPR2019B3 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2019-beta3.tpr')
 TPR2020B2 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2020-beta2.tpr')
 TPR2020 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2020.tpr')
 TPR2021 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2021.tpr')
+TPR2022RC1 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2022-rc1.tpr')
 # double precision
 TPR455Double = resource_filename(__name__, 'data/tprs/drew_gmx_4.5.5.double.tpr')
 TPR460 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.tpr')
@@ -365,7 +374,9 @@ TPR2020_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2020.tp
 TPR2020_double_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2020_double.tpr')
 TPR2021_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2021.tpr')
 TPR2021_double_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2021_double.tpr')
+TPR2022RC1_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2022-rc1.tpr')
 # all interactions
+TPR_EXTRA_2022RC1 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2022-rc1.tpr')
 TPR_EXTRA_2021 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2021.tpr')
 TPR_EXTRA_2020 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2020.tpr')
 TPR_EXTRA_2018 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2018.tpr')
@@ -480,6 +491,10 @@ LAMMPShyd = resource_filename(__name__, "data/lammps/hydrogen-class1.data")
 LAMMPShyd2 = resource_filename(__name__, "data/lammps/hydrogen-class1.data2")
 LAMMPSdata_deletedatoms = resource_filename(__name__, 'data/lammps/deletedatoms.data')
 LAMMPSDUMP = resource_filename(__name__, "data/lammps/wat.lammpstrj.bz2")
+LAMMPSDUMP_long = resource_filename(__name__, "data/lammps/wat.lammpstrj_long.bz2")
+LAMMPSDUMP_allcoords = resource_filename(__name__, "data/lammps/spce_all_coords.lammpstrj.bz2")
+LAMMPSDUMP_nocoords = resource_filename(__name__, "data/lammps/spce_no_coords.lammpstrj.bz2")
+
 
 unordered_res = resource_filename(__name__, "data/unordered_res.pdb")
 
@@ -498,6 +513,7 @@ DLP_CONFIG_minimal = resource_filename(__name__, "data/dlpoly/CONFIG_minimal")
 DLP_HISTORY = resource_filename(__name__, "data/dlpoly/HISTORY")
 DLP_HISTORY_order = resource_filename(__name__, "data/dlpoly/HISTORY_order")
 DLP_HISTORY_minimal = resource_filename(__name__, "data/dlpoly/HISTORY_minimal")
+DLP_HISTORY_minimal_cell = resource_filename(__name__, "data/dlpoly/HISTORY_minimal_cell")
 
 waterPSF = resource_filename(__name__, 'data/watdyn.psf')
 waterDCD = resource_filename(__name__, 'data/watdyn.dcd')
@@ -545,6 +561,7 @@ BATArray = resource_filename(__name__, 'data/mol2_comments_header_bat.npy')
 ITP = resource_filename(__name__, 'data/gromacs_ala10.itp')
 ITP_nomass = resource_filename(__name__, 'data/itp_nomass.itp')
 ITP_atomtypes = resource_filename(__name__, 'data/atomtypes.itp')
+ITP_charges = resource_filename(__name__, 'data/atomtypes_charge.itp')
 ITP_edited = resource_filename(__name__, 'data/edited_itp.itp')
 ITP_tip5p = resource_filename(__name__, "data/tip5p.itp")
 ITP_spce = resource_filename(__name__, 'data/spce.itp')
@@ -560,7 +577,12 @@ SDF_molecule = resource_filename(__name__, 'data/molecule.sdf')
 
 PDB_elements = resource_filename(__name__, 'data/elements.pdb')
 
+
 PDBX = resource_filename(__name__, "data/4x8u.pdbx")
+
+SURFACE_PDB = resource_filename(__name__, 'data/surface.pdb.bz2')
+SURFACE_TRR = resource_filename(__name__, 'data/surface.trr')
+
 
 # This should be the last line: clean up namespace
 del resource_filename

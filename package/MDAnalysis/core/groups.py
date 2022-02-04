@@ -100,10 +100,14 @@ import warnings
 from .. import (_CONVERTERS,
                 _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES)
 from ..lib import util
-from ..lib.util import cached, warn_if_not_unique, unique_int_1d
+from ..lib.util import (cached, warn_if_not_unique,
+                        unique_int_1d, unique_int_1d_unsorted,
+                        int_array_is_sorted
+                        )
 from ..lib import distances
 from ..lib import transformations
 from ..lib import mdamath
+from .accessors import Accessor, ConverterWrapper
 from ..selections import get_writer as get_selection_writer_for
 from . import selection
 from ..exceptions import NoDataError
@@ -268,7 +272,7 @@ class _TopologyAttrContainer(object):
             delattr(cls, attr.attrname)
         with contextlib.suppress(AttributeError):
             delattr(cls, attr.singular)
-        
+
         cls._SETATTR_WHITELIST.discard(attr.attrname)
         cls._SETATTR_WHITELIST.discard(attr.singular)
 
@@ -565,7 +569,9 @@ class GroupBase(_MutableBase):
         # because our _ix attribute is a numpy array
         # it can be sliced by all of these already,
         # so just return ourselves sliced by the item
-        if isinstance(item, numbers.Integral):
+        if item is None:
+            raise TypeError('None cannot be used to index a group.')
+        elif isinstance(item, numbers.Integral):
             return self.level.singular(self.ix[item], self.universe)
         else:
             if isinstance(item, list) and item:  # check for empty list
@@ -714,11 +720,30 @@ class GroupBase(_MutableBase):
     @property
     def dimensions(self):
         """Obtain a copy of the dimensions of the currently loaded Timestep"""
-        return self.universe.trajectory.ts.dimensions.copy()
+        dims = self.universe.trajectory.ts.dimensions
+        if dims is None:
+            return dims
+        else:
+            return dims.copy()
 
     @dimensions.setter
     def dimensions(self, dimensions):
         self.universe.trajectory.ts.dimensions = dimensions
+
+    @property
+    @cached('sorted_unique')
+    def sorted_unique(self):
+        return self.asunique(sorted=True)
+
+    @property
+    @cached('unsorted_unique')
+    def unsorted_unique(self):
+        return self.asunique(sorted=False)
+
+    @property
+    @cached('issorted')
+    def issorted(self):
+        return int_array_is_sorted(self.ix)
 
     @property
     @cached('isunique')
@@ -740,21 +765,71 @@ class GroupBase(_MutableBase):
            >>> ag2.isunique
            True
 
+        See Also
+        --------
+        asunique
+
 
         .. versionadded:: 0.19.0
         """
         if len(self) <= 1:
             return True
-        # Fast check for uniqueness
-        # 1. get sorted array of component indices:
-        s_ix = np.sort(self._ix)
-        # 2. If the group's components are unique, no pair of adjacent values in
-        #    the sorted indices array are equal. We therefore compute a boolean
-        #    mask indicating equality of adjacent sorted indices:
-        mask = s_ix[1:] == s_ix[:-1]
-        # 3. The group is unique if all elements in the mask are False. We could
-        #    return ``not np.any(mask)`` here but using the following is faster:
-        return not np.count_nonzero(mask)
+        return unique_int_1d(self.ix).shape[0] == self.ix.shape[0]
+
+    def _asunique(self, group, sorted=False, set_mask=False):
+        try:
+            name = 'sorted_unique' if sorted else 'unsorted_unique'
+            return self._cache[name]
+        except KeyError:
+            pass
+
+        if self.isunique:
+            if not sorted:
+                self._cache['unsorted_unique'] = self
+                return self
+            if self.issorted:
+                self._cache['unsorted_unique'] = self
+                self._cache['sorted_unique'] = self
+                return self
+
+        if sorted:
+            if set_mask:
+                unique_ix, restore_mask = np.unique(
+                    self.ix, return_inverse=True)
+                self._unique_restore_mask = restore_mask
+            else:
+                unique_ix = unique_int_1d(self.ix)
+
+            _unique = group[unique_ix]
+            _unique._cache['isunique'] = True
+            _unique._cache['issorted'] = True
+            _unique._cache['sorted_unique'] = _unique
+            _unique._cache['unsorted_unique'] = _unique
+            self._cache['sorted_unique'] = _unique
+            return _unique
+
+        indices = unique_int_1d_unsorted(self.ix)
+        if set_mask:
+            mask = np.zeros_like(self.ix)
+            for i, x in enumerate(indices):
+                values = np.where(self.ix == x)[0]
+                mask[values] = i
+            self._unique_restore_mask = mask
+
+        issorted = int_array_is_sorted(indices)
+        if issorted and 'sorted_unique' in self._cache:
+            self._cache['unsorted_unique'] = self.sorted_unique
+            return self.sorted_unique
+
+        _unique = group[indices]
+        _unique._cache['isunique'] = True
+        _unique._cache['issorted'] = issorted
+        _unique._cache['unsorted_unique'] = _unique
+        self._cache['unsorted_unique'] = _unique
+        if issorted:
+            self._cache['sorted_unique'] = _unique
+            _unique._cache['sorted_unique'] = _unique
+        return _unique
 
     def _get_compound_indices(self, compound):
         if compound == 'residues':
@@ -842,6 +917,11 @@ class GroupBase(_MutableBase):
         # essentially a non-split?
 
         compound_indices = self._get_compound_indices(compound)
+        compound_sizes = np.bincount(compound_indices)
+        size_per_atom = compound_sizes[compound_indices]
+        compound_sizes = compound_sizes[compound_sizes != 0]
+        unique_compound_sizes = unique_int_1d(compound_sizes)
+
         # Are we already sorted? argsorting and fancy-indexing can be expensive
         # so we do a quick pre-check.
         needs_sorting = np.any(np.diff(compound_indices) < 0)
@@ -853,11 +933,8 @@ class GroupBase(_MutableBase):
             else:
                 # Quicksort
                 sort_indices = np.argsort(compound_indices)
-
-        compound_sizes = np.bincount(compound_indices)
-        size_per_atom = compound_sizes[compound_indices]
-        compound_sizes = compound_sizes[compound_sizes != 0]
-        unique_compound_sizes = unique_int_1d(compound_sizes)
+            # We must sort size_per_atom accordingly (Issue #3352).
+            size_per_atom = size_per_atom[sort_indices]
 
         compound_masks = []
         atom_masks = []
@@ -1231,7 +1308,7 @@ class GroupBase(_MutableBase):
         .. versionadded:: 0.7.3
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
-        atomgroup = self.atoms.unique
+        atomgroup = self.atoms.unsorted_unique
 
         if pbc:
             x = atomgroup.pack_into_box(inplace=False)
@@ -1307,7 +1384,7 @@ class GroupBase(_MutableBase):
             \mathbf{x}' = \mathbf{x} + \mathbf{t}
 
         """
-        atomgroup = self.atoms.unique
+        atomgroup = self.atoms.unsorted_unique
         vector = np.asarray(t)
         # changes the coordinates in place
         atomgroup.universe.trajectory.ts.positions[atomgroup.indices] += vector
@@ -1351,7 +1428,7 @@ class GroupBase(_MutableBase):
         point = np.asarray(point)
 
         # changes the coordinates (in place)
-        atomgroup = self.atoms.unique
+        atomgroup = self.atoms.unsorted_unique
         require_translation = bool(np.count_nonzero(point))
         if require_translation:
             atomgroup.translate(-point)
@@ -1547,7 +1624,7 @@ class GroupBase(_MutableBase):
         --------
         :meth:`pack_into_box`
         :meth:`unwrap`
-        :meth:`MDanalysis.lib.distances.apply_PBC`
+        :meth:`MDAnalysis.lib.distances.apply_PBC`
 
 
         .. versionadded:: 0.9.2
@@ -1559,18 +1636,22 @@ class GroupBase(_MutableBase):
         # Try and auto detect box dimensions:
         if box is None:
             box = self.dimensions
+            if box is None:
+                raise ValueError("No dimensions information in Universe. "
+                                 " Either use the 'box' argument or"
+                                 " set the '.dimensions' attribute")
         else:
             box = np.asarray(box, dtype=np.float32)
-        if not np.all(box > 0.0) or box.shape != (6,):
-            raise ValueError("Invalid box: Box has invalid shape or not all "
-                             "box dimensions are positive. You can specify a "
-                             "valid box using the 'box' argument.")
+            if not np.all(box > 0.0) or box.shape != (6,):
+                raise ValueError("Invalid box: Box has invalid shape or not all "
+                                 "box dimensions are positive. You can specify a "
+                                 "valid box using the 'box' argument.")
 
         # no matter what kind of group we have, we need to work on its (unique)
         # atoms:
         atoms = self.atoms
         if not self.isunique:
-            _atoms = atoms.unique
+            _atoms = atoms.unsorted_unique
             restore_mask = atoms._unique_restore_mask
             atoms = _atoms
 
@@ -1710,7 +1791,7 @@ class GroupBase(_MutableBase):
         if not hasattr(atoms, 'bonds'):
             raise NoDataError("{}.unwrap() not available; this requires Bonds"
                               "".format(self.__class__.__name__))
-        unique_atoms = atoms.unique
+        unique_atoms = atoms.unsorted_unique
 
         # Parameter sanity checking
         if reference is not None:
@@ -1798,14 +1879,27 @@ class GroupBase(_MutableBase):
         .. versionadded:: 0.19.0
         """
         group = self[:]
+        group._set_unique_caches_from(self)
+        return group
+
+    def _set_unique_caches_from(self, other):
         # Try to fill the copied group's uniqueness caches:
         try:
-            group._cache['isunique'] = self._cache['isunique']
-            if group._cache['isunique']:
-                group._cache['unique'] = group
+            self._cache['isunique'] = other._cache['isunique']
         except KeyError:
             pass
-        return group
+        else:
+            if self.isunique:
+                self._cache['unsorted_unique'] = self
+
+        try:
+            self._cache['issorted'] = other._cache['issorted']
+        except KeyError:
+            pass
+        else:
+            if self.issorted:
+                if self._cache.get('isunique'):
+                    self._cache['sorted_unique'] = self
 
     def groupby(self, topattrs):
         """Group together items in this group according to values of *topattr*
@@ -2396,6 +2490,8 @@ class AtomGroup(GroupBase):
     .. versionchanged:: 2.0.0
        :class:`AtomGroup` can always be pickled with or without its universe,
        instead of failing when not finding its anchored universe.
+    .. versionchanged:: 2.1.0
+       Indexing an AtomGroup with ``None`` raises a ``TypeError``.
     """
 
     def __reduce__(self):
@@ -2441,7 +2537,9 @@ class AtomGroup(GroupBase):
         """
         rg = self.universe.residues[unique_int_1d(self.resindices)]
         rg._cache['isunique'] = True
-        rg._cache['unique'] = rg
+        rg._cache['issorted'] = True
+        rg._cache['sorted_unique'] = rg
+        rg._cache['unsorted_unique'] = rg
         return rg
 
     @residues.setter
@@ -2488,7 +2586,9 @@ class AtomGroup(GroupBase):
         """
         sg = self.universe.segments[unique_int_1d(self.segindices)]
         sg._cache['isunique'] = True
-        sg._cache['unique'] = sg
+        sg._cache['issorted'] = True
+        sg._cache['sorted_unique'] = sg
+        sg._cache['unsorted_unique'] = sg
         return sg
 
     @segments.setter
@@ -2529,12 +2629,9 @@ class AtomGroup(GroupBase):
         self._cache['unique_restore_mask'] = mask
 
     @property
-    @cached('unique')
     def unique(self):
         """An :class:`AtomGroup` containing sorted and unique
         :class:`Atoms<Atom>` only.
-
-        If the :class:`AtomGroup` is unique, this is the group itself.
 
         Examples
         --------
@@ -2550,24 +2647,68 @@ class AtomGroup(GroupBase):
            >>> ag2.ix
            array([0, 1, 2])
            >>> ag2.unique is ag2
-           True
+           False
 
+        See Also
+        --------
+
+        asunique
 
         .. versionadded:: 0.16.0
         .. versionchanged:: 0.19.0 If the :class:`AtomGroup` is already unique,
             :attr:`AtomGroup.unique` now returns the group itself instead of a
             copy.
+        .. versionchanged:: 2.0.0
+            This function now always returns a copy.
         """
-        if self.isunique:
-            return self
-        unique_ix, restore_mask = np.unique(self.ix, return_inverse=True)
-        _unique = self.universe.atoms[unique_ix]
-        self._unique_restore_mask = restore_mask
-        # Since we know that _unique is a unique AtomGroup, we set its
-        # uniqueness caches from here:
-        _unique._cache['isunique'] = True
-        _unique._cache['unique'] = _unique
-        return _unique
+        group = self.sorted_unique[:]
+        group._cache['isunique'] = True
+        group._cache['issorted'] = True
+        group._cache['sorted_unique'] = group
+        group._cache['unsorted_unique'] = group
+        return group
+
+    def asunique(self, sorted=False):
+        """Return a :class:`AtomGroup` containing unique
+        :class:`Atoms<Atom>` only, with optional sorting.
+
+        If the :class:`AtomGroup` is unique, this is the group itself.
+
+        Parameters
+        ----------
+        sorted: bool (optional)
+            Whether or not the returned AtomGroup should be sorted
+            by index.
+
+        Returns
+        -------
+        :class:`AtomGroup`
+            Unique ``AtomGroup``
+
+
+        Examples
+        --------
+
+           >>> ag = u.atoms[[2, 1, 0]]
+           >>> ag2 = ag.asunique(sorted=False)
+           >>> ag2 is ag
+           True
+           >>> ag2.ix
+           array([2, 1, 0])
+           >>> ag3 = ag.asunique(sorted=True)
+           >>> ag3 is ag
+           False
+           >>> ag3.ix
+           array([0, 1, 2])
+           >>> u.atoms[[2, 1, 1, 0, 1]].asunique(sorted=False).ix
+           array([2, 1, 0])
+
+
+        .. versionadded:: 2.0.0
+        """
+        return self._asunique(sorted=sorted, group=self.universe.atoms,
+                              set_mask=True)
+
 
     @property
     def positions(self):
@@ -2688,7 +2829,8 @@ class AtomGroup(GroupBase):
     # (namely, 'updating') doesn't allow a very clean signature.
 
     def select_atoms(self, sel, *othersel, periodic=True, rtol=1e-05,
-                     atol=1e-08, updating=False, **selgroups):
+                     atol=1e-08, updating=False, sorted=True,
+                     rdkit_kwargs=None, **selgroups):
         """Select atoms from within this Group using a selection string.
 
         Returns an :class:`AtomGroup` sorted according to their index in the
@@ -2715,6 +2857,12 @@ class AtomGroup(GroupBase):
           force the selection to be re evaluated each time the Timestep of the
           trajectory is changed.  See section on **Dynamic selections** below.
           [``True``]
+        sorted: bool, optional
+          Whether to sort the output AtomGroup by index.
+        rdkit_kwargs : dict (optional)
+          Arguments passed to the
+          :class:`~MDAnalysis.converters.RDKit.RDKitConverter` when using
+          selection based on SMARTS queries
         **selgroups : keyword arguments of str: AtomGroup (optional)
           when using the "group" keyword in selections, groups are defined by
           passing them as keyword arguments.  See section on **preexisting
@@ -2834,6 +2982,11 @@ class AtomGroup(GroupBase):
                 select atoms using Daylight's SMARTS queries, e.g. ``smarts
                 [#7;R]`` to find nitrogen atoms in rings. Requires RDKit.
                 All matches (max 1000) are combined as a unique match
+            chiral *R | S*
+                select a particular stereocenter. e.g. ``name C and chirality
+                S`` to select only S-chiral carbon atoms.  Only ``R`` and
+                ``S`` will be possible options but other values will not raise
+                an error.
 
         **Boolean**
 
@@ -2982,7 +3135,8 @@ class AtomGroup(GroupBase):
            periodic are now on by default (as with default flags)
         .. versionchanged:: 2.0.0
             Added the *smarts* selection. Added `atol` and `rtol` keywords
-            to select float values.
+            to select float values. Added the ``sort`` keyword. Added
+            `rdkit_kwargs` to pass parameters to the RDKitConverter.
         """
 
         if not sel:
@@ -3000,7 +3154,9 @@ class AtomGroup(GroupBase):
 
         selections = tuple((selection.Parser.parse(s, selgroups,
                                                    periodic=periodic,
-                                                   atol=atol, rtol=rtol)
+                                                   atol=atol, rtol=rtol,
+                                                   sorted=sorted,
+                                                   rdkit_kwargs=rdkit_kwargs)
                             for s in sel_strs))
         if updating:
             atomgrp = UpdatingAtomGroup(self, selections, sel_strs)
@@ -3076,9 +3232,8 @@ class AtomGroup(GroupBase):
                 return attr
 
         # indices of bonds
-        box = self.dimensions if self.dimensions.all() else None
         b = guess_bonds(self.atoms, self.atoms.positions,
-                        vdwradii=vdwradii, box=box)
+                        vdwradii=vdwradii, box=self.dimensions)
         bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
         bondattr._add_bonds(b, guessed=True)
 
@@ -3198,46 +3353,7 @@ class AtomGroup(GroupBase):
                 "cmap only makes sense for a group with exactly 5 atoms")
         return topologyobjects.CMap(self.ix, self.universe)
 
-    def convert_to(self, package):
-        """
-        Convert :class:`AtomGroup` to a structure from another Python package.
-
-        Example
-        -------
-
-        The code below converts a Universe to a :class:`parmed.structure.Structure`.
-
-        .. code-block:: python
-
-            >>> import MDAnalysis as mda
-            >>> from MDAnalysis.tests.datafiles import GRO
-            >>> u = mda.Universe(GRO)
-            >>> parmed_structure = u.atoms.convert_to('PARMED')
-            >>> parmed_structure
-            <Structure 47681 atoms; 11302 residues; 0 bonds; PBC (triclinic); NOT parametrized>
-
-
-        Parameters
-        ----------
-        package: str
-            The name of the package to convert to, e.g. ``"PARMED"``
-
-
-        Returns
-        -------
-        output:
-            An instance of the structure type from another package.
-
-        Raises
-        ------
-        TypeError:
-            No converter was found for the required package
-
-
-        .. versionadded:: 1.0.0
-        """
-        converter = get_converter_for(package)
-        return converter().convert(self.atoms)
+    convert_to = Accessor("convert_to", ConverterWrapper)
 
     def write(self, filename=None, file_format=None,
               filenamefmt="{trjname}_{frame}", frames=None, **kwargs):
@@ -3470,6 +3586,8 @@ class ResidueGroup(GroupBase):
        *Instant selectors* of Segments will be removed in the 1.0 release.
     .. versionchanged:: 1.0.0
        Removed instant selectors, use select_atoms instead
+    .. versionchanged:: 2.1.0
+       Indexing an ResidueGroup with ``None`` raises a ``TypeError``.
     """
 
     @property
@@ -3486,12 +3604,7 @@ class ResidueGroup(GroupBase):
         # atoms therein, since atoms can only belong to one residue at a time.
         # On the contrary, if the ResidueGroup is not unique, this does not
         # imply non-unique atoms, since residues might be empty.
-        try:
-            if self._cache['isunique']:
-                ag._cache['isunique'] = True
-                ag._cache['unique'] = ag
-        except KeyError:
-            pass
+        ag._set_unique_caches_from(self)
         return ag
 
     @property
@@ -3535,7 +3648,9 @@ class ResidueGroup(GroupBase):
         """
         sg = self.universe.segments[unique_int_1d(self.segindices)]
         sg._cache['isunique'] = True
-        sg._cache['unique'] = sg
+        sg._cache['issorted'] = True
+        sg._cache['sorted_unique'] = sg
+        sg._cache['unsorted_unique'] = sg
         return sg
 
     @segments.setter
@@ -3574,12 +3689,9 @@ class ResidueGroup(GroupBase):
         return len(self.segments)
 
     @property
-    @cached('unique')
     def unique(self):
         """Return a :class:`ResidueGroup` containing sorted and unique
         :class:`Residues<Residue>` only.
-
-        If the :class:`ResidueGroup` is unique, this is the group itself.
 
         Examples
         --------
@@ -3595,22 +3707,60 @@ class ResidueGroup(GroupBase):
            >>> rg2.ix
            array([0, 1, 2])
            >>> rg2.unique is rg2
-           True
+           False
 
 
         .. versionadded:: 0.16.0
         .. versionchanged:: 0.19.0 If the :class:`ResidueGroup` is already
             unique, :attr:`ResidueGroup.unique` now returns the group itself
             instead of a copy.
+        .. versionchanged:: 2.0.0
+            This function now always returns a copy.
         """
-        if self.isunique:
-            return self
-        _unique = self.universe.residues[unique_int_1d(self.ix)]
-        # Since we know that _unique is a unique ResidueGroup, we set its
-        # uniqueness caches from here:
-        _unique._cache['isunique'] = True
-        _unique._cache['unique'] = _unique
-        return _unique
+        group = self.sorted_unique[:]
+        group._cache['isunique'] = True
+        group._cache['issorted'] = True
+        group._cache['sorted_unique'] = group
+        group._cache['unsorted_unique'] = group
+        return group
+
+    def asunique(self, sorted=False):
+        """Return a :class:`ResidueGroup` containing unique
+        :class:`Residues<Residue>` only, with optional sorting.
+
+        If the :class:`ResidueGroup` is unique, this is the group itself.
+
+        Parameters
+        ----------
+        sorted: bool (optional)
+            Whether or not the returned ResidueGroup should be sorted
+            by resindex.
+
+        Returns
+        -------
+        :class:`ResidueGroup`
+            Unique ``ResidueGroup``
+
+        Examples
+        --------
+
+           >>> rg = u.residues[[2, 1, 2, 2, 1, 0]]
+           >>> rg
+           <ResidueGroup with 6 residues>
+           >>> rg.ix
+           array([2, 1, 2, 2, 1, 0])
+           >>> rg2 = rg.asunique()
+           >>> rg2
+           <ResidueGroup with 3 residues>
+           >>> rg2.ix
+           array([0, 1, 2])
+           >>> rg2.asunique() is rg2
+           True
+
+
+        .. versionadded:: 2.0.0
+        """
+        return self._asunique(sorted=sorted, group=self.universe.residues)
 
 
 class SegmentGroup(GroupBase):
@@ -3629,6 +3779,8 @@ class SegmentGroup(GroupBase):
        *Instant selectors* of Segments will be removed in the 1.0 release.
     .. versionchanged:: 1.0.0
        Removed instant selectors, use select_atoms instead
+    .. versionchanged:: 2.1.0
+       Indexing an SegmentGroup with ``None`` raises a ``TypeError``.
     """
 
     @property
@@ -3646,12 +3798,7 @@ class SegmentGroup(GroupBase):
         # residues therein, and thus, also for the atoms in those residues.
         # On the contrary, if the SegmentGroup is not unique, this does not
         # imply non-unique atoms, since segments or residues might be empty.
-        try:
-            if self._cache['isunique']:
-                ag._cache['isunique'] = True
-                ag._cache['unique'] = ag
-        except KeyError:
-            pass
+        ag._set_unique_caches_from(self)
         return ag
 
     @property
@@ -3677,12 +3824,7 @@ class SegmentGroup(GroupBase):
         # residues therein. On the contrary, if the SegmentGroup is not unique,
         # this does not imply non-unique residues, since segments might be
         # empty.
-        try:
-            if self._cache['isunique']:
-                rg._cache['isunique'] = True
-                rg._cache['unique'] = rg
-        except KeyError:
-            pass
+        rg._set_unique_caches_from(self)
         return rg
 
     @property
@@ -3720,12 +3862,9 @@ class SegmentGroup(GroupBase):
         return len(self)
 
     @property
-    @cached('unique')
     def unique(self):
         """Return a :class:`SegmentGroup` containing sorted and unique
         :class:`Segments<Segment>` only.
-
-        If the :class:`SegmentGroup` is unique, this is the group itself.
 
         Examples
         --------
@@ -3741,22 +3880,60 @@ class SegmentGroup(GroupBase):
            >>> sg2.ix
            array([0, 1, 2])
            >>> sg2.unique is sg2
-           True
+           False
 
 
         .. versionadded:: 0.16.0
         .. versionchanged:: 0.19.0 If the :class:`SegmentGroup` is already
             unique, :attr:`SegmentGroup.unique` now returns the group itself
             instead of a copy.
+        .. versionchanged:: 2.0.0
+            This function now always returns a copy.
         """
-        if self.isunique:
-            return self
-        _unique = self.universe.segments[unique_int_1d(self.ix)]
-        # Since we know that _unique is a unique SegmentGroup, we set its
-        # uniqueness caches from here:
-        _unique._cache['isunique'] = True
-        _unique._cache['unique'] = _unique
-        return _unique
+        group = self.sorted_unique[:]
+        group._cache['isunique'] = True
+        group._cache['issorted'] = True
+        group._cache['sorted_unique'] = group
+        group._cache['unsorted_unique'] = group
+        return group
+
+    def asunique(self, sorted=False):
+        """Return a :class:`SegmentGroup` containing unique
+        :class:`Segments<Segment>` only, with optional sorting.
+
+        If the :class:`SegmentGroup` is unique, this is the group itself.
+
+        Parameters
+        ----------
+        sorted: bool (optional)
+            Whether or not the returned SegmentGroup should be sorted
+            by segindex.
+
+        Returns
+        -------
+        :class:`SegmentGroup`
+            Unique ``SegmentGroup``
+
+        Examples
+        --------
+
+           >>> sg = u.segments[[2, 1, 2, 2, 1, 0]]
+           >>> sg
+           <SegmentGroup with 6 segments>
+           >>> sg.ix
+           array([2, 1, 2, 2, 1, 0])
+           >>> sg2 = sg.asunique()
+           >>> sg2
+           <SegmentGroup with 3 segments>
+           >>> sg2.ix
+           array([0, 1, 2])
+           >>> sg2.asunique() is sg2
+           True
+
+
+        .. versionadded:: 2.0.0
+        """
+        return self._asunique(sorted=sorted, group=self.universe.segments)
 
 
 @functools.total_ordering
@@ -4027,7 +4204,9 @@ class Residue(ComponentBase):
         """
         ag = self.universe.atoms[self.universe._topology.indices[self][0]]
         ag._cache['isunique'] = True
-        ag._cache['unique'] = ag
+        ag._cache['issorted'] = True
+        ag._cache['sorted_unique'] = ag
+        ag._cache['unsorted_unique'] = ag
         return ag
 
     @property
@@ -4075,7 +4254,9 @@ class Segment(ComponentBase):
         """
         ag = self.universe.atoms[self.universe._topology.indices[self][0]]
         ag._cache['isunique'] = True
-        ag._cache['unique'] = ag
+        ag._cache['issorted'] = True
+        ag._cache['sorted_unique'] = ag
+        ag._cache['unsorted_unique'] = ag
         return ag
 
     @property
@@ -4085,7 +4266,9 @@ class Segment(ComponentBase):
         """
         rg = self.universe.residues[self.universe._topology.resindices[self][0]]
         rg._cache['isunique'] = True
-        rg._cache['unique'] = rg
+        rg._cache['issorted'] = True
+        rg._cache['sorted_unique'] = rg
+        rg._cache['unsorted_unique'] = rg
         return rg
 
 

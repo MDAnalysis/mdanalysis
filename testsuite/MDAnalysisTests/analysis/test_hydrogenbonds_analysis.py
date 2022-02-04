@@ -206,7 +206,6 @@ class TestHydrogenBondAnalysisIdeal(object):
 
     def test_first_hbond(self, hydrogen_bonds):
         assert len(hydrogen_bonds.results.hbonds) == 2
-
         frame_no, donor_index, hydrogen_index, acceptor_index, da_dst, angle =\
             hydrogen_bonds.results.hbonds[0]
         assert_equal(donor_index, 0)
@@ -410,6 +409,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessAcceptors_GuessHydrogens_UseTopology_(T
         assert h._donors.n_atoms == 0
         assert h.results.hbonds.size == 0
 
+
 class TestHydrogenBondAnalysisTIP3P_GuessDonors_NoTopology(object):
     """Guess the donor atoms involved in hydrogen bonds using the partial charges of the atoms.
     """
@@ -552,3 +552,34 @@ class TestHydrogenBondAnalysisTIP3PStartStep(object):
 
         counts = h.count_by_type()
         assert int(counts[0, 2]) == ref_count
+
+
+class TestHydrogenBondAnalysisEmptySelections:
+
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe():
+        return MDAnalysis.Universe(waterPSF, waterDCD)
+
+    msg = ("{} is an empty selection string - no hydrogen bonds will "
+           "be found. This may be intended, but please check your "
+           "selection."
+           )
+
+    @pytest.mark.parametrize('seltype',
+            ['donors_sel', 'hydrogens_sel', 'acceptors_sel'])
+    def test_empty_sel(self, universe, seltype):
+        sel_kwarg = {seltype: ' '}
+        with pytest.warns(UserWarning, match=self.msg.format(seltype)):
+            HydrogenBondAnalysis(universe, **sel_kwarg)
+
+    def test_hbond_analysis(self, universe):
+
+        h = HydrogenBondAnalysis(universe, donors_sel=' ', hydrogens_sel=' ',
+                                 acceptors_sel=' ')
+        h.run()
+
+        assert h.donors_sel == ''
+        assert h.hydrogens_sel == ''
+        assert h.acceptors_sel == ''
+        assert h.results.hbonds.size == 0

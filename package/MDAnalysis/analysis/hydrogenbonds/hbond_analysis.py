@@ -316,9 +316,19 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         self.u = universe
         self._trajectory = self.u.trajectory
-        self.donors_sel = donors_sel
-        self.hydrogens_sel = hydrogens_sel
-        self.acceptors_sel = acceptors_sel
+
+        self.donors_sel = donors_sel.strip() if donors_sel is not None else donors_sel
+        self.hydrogens_sel = hydrogens_sel.strip() if hydrogens_sel is not None else hydrogens_sel
+        self.acceptors_sel = acceptors_sel.strip() if acceptors_sel is not None else acceptors_sel
+
+        msg = ("{} is an empty selection string - no hydrogen bonds will "
+               "be found. This may be intended, but please check your "
+               "selection."
+               )
+        for sel in ['donors_sel', 'hydrogens_sel', 'acceptors_sel']:
+            val = getattr(self, sel)
+            if isinstance(val, str) and not val:
+                warnings.warn(msg.format(sel))
 
         # If hydrogen bonding groups are selected, then generate
         # corresponding atom groups
@@ -439,7 +449,7 @@ class HydrogenBondAnalysis(AnalysisBase):
 
         # We need to know `hydrogens_sel` before we can find donors
         # Use a new variable `hydrogens_sel` so that we do not set `self.hydrogens_sel` if it is currently `None`
-        if not self.hydrogens_sel:
+        if self.hydrogens_sel is None:
             hydrogens_sel = self.guess_hydrogens()
         else:
             hydrogens_sel = self.hydrogens_sel
@@ -512,7 +522,7 @@ class HydrogenBondAnalysis(AnalysisBase):
         """
 
         # If donors_sel is not provided, use topology to find d-h pairs
-        if not self.donors_sel:
+        if self.donors_sel is None:
 
             # We're using u._topology.bonds rather than u.bonds as it is a million times faster to access.
             # This is because u.bonds also calculates properties of each bond (e.g bond length).
@@ -583,9 +593,9 @@ class HydrogenBondAnalysis(AnalysisBase):
         self.results.hbonds = [[], [], [], [], [], []]
 
         # Set atom selections if they have not been provided
-        if not self.acceptors_sel:
+        if self.acceptors_sel is None:
             self.acceptors_sel = self.guess_acceptors()
-        if not self.hydrogens_sel:
+        if self.hydrogens_sel is None:
             self.hydrogens_sel = self.guess_hydrogens()
 
         # Select atom groups
@@ -768,7 +778,8 @@ class HydrogenBondAnalysis(AnalysisBase):
         indices /= self.step
 
         counts = np.zeros_like(self.frames)
-        counts[indices.astype(int)] = tmp_counts
+        counts[indices.astype(np.intp)] = tmp_counts
+
         return counts
 
     def count_by_type(self):
@@ -786,8 +797,8 @@ class HydrogenBondAnalysis(AnalysisBase):
         acceptor atoms in a hydrogen bond.
         """
 
-        d = self.u.atoms[self.results.hbonds[:, 1].astype(int)]
-        a = self.u.atoms[self.results.hbonds[:, 3].astype(int)]
+        d = self.u.atoms[self.hbonds[:, 1].astype(np.intp)]
+        a = self.u.atoms[self.hbonds[:, 3].astype(np.intp)]
 
         tmp_hbonds = np.array([d.resnames, d.types, a.resnames, a.types],
                               dtype=str).T
@@ -815,9 +826,9 @@ class HydrogenBondAnalysis(AnalysisBase):
         in a hydrogen bond.
         """
 
-        d = self.u.atoms[self.results.hbonds[:, 1].astype(int)]
-        h = self.u.atoms[self.results.hbonds[:, 2].astype(int)]
-        a = self.u.atoms[self.results.hbonds[:, 3].astype(int)]
+        d = self.u.atoms[self.hbonds[:, 1].astype(np.intp)]
+        h = self.u.atoms[self.hbonds[:, 2].astype(np.intp)]
+        a = self.u.atoms[self.hbonds[:, 3].astype(np.intp)]
 
         tmp_hbonds = np.array([d.ids, h.ids, a.ids]).T
         hbond_ids, ids_counts = np.unique(tmp_hbonds, axis=0,

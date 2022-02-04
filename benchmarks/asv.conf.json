@@ -34,7 +34,6 @@
 	    "six": [],
 	    "pytest": [],
 	    "nose": [],
-	    "psutil": [],
 	    "mock": [],
         "MDAnalysisTests": [],
     },

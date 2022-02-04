@@ -56,7 +56,7 @@ supersede these two citations.)
 .. _`MDAnalysis: A Python package for the rapid analysis of molecular
    dynamics simulations`:
    http://conference.scipy.org/proceedings/scipy2016/oliver_beckstein.html
-   
+
 
 .. _references-components:
 
@@ -140,28 +140,28 @@ If you use the hydrogen bond analysis code in
 
 .. _`10.1039/C9CP01532A`: http://dx.doi.org/10.1039/C9CP01532A
 
-If you use :meth:`~MDAnalysis.analysis.pca.PCA.rmsip` or 
-:func:`~MDAnalysis.analysis.pca.rmsip` please cite [Amadei1999]_ and 
+If you use :meth:`~MDAnalysis.analysis.pca.PCA.rmsip` or
+:func:`~MDAnalysis.analysis.pca.rmsip` please cite [Amadei1999]_ and
 [Leo-Macias2004]_ .
 
-.. [Amadei1999] Amadei, A., Ceruso, M. A. & Nola, A. D. 
-   On the convergence of the conformational coordinates basis set obtained by the essential dynamics analysis of proteins’ molecular dynamics simulations. 
+.. [Amadei1999] Amadei, A., Ceruso, M. A. & Nola, A. D.
+   On the convergence of the conformational coordinates basis set obtained by the essential dynamics analysis of proteins’ molecular dynamics simulations.
    *Proteins: Structure, Function, and Bioinformatics* **36**, 419–424 (1999).
    doi: `10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U`_
 
 .. _`10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U`: https://doi.org/10.1002/(SICI)1097-0134(19990901)36:4%3C419::AID-PROT5%3E3.0.CO;2-U
 
-.. [Leo-Macias2004] Leo-Macias, A., Lopez-Romero, P., Lupyan, D., Zerbino, D. & Ortiz, A. R. 
-   An Analysis of Core Deformations in Protein Superfamilies. 
+.. [Leo-Macias2004] Leo-Macias, A., Lopez-Romero, P., Lupyan, D., Zerbino, D. & Ortiz, A. R.
+   An Analysis of Core Deformations in Protein Superfamilies.
    *Biophys J* **88**, 1291–1299 (2005). doi: `10.1529/biophysj.104.052449`_
 
 .. _`10.1529/biophysj.104.052449`: https://dx.doi.org/10.1529%2Fbiophysj.104.052449
 
-If you use :meth:`~MDAnalysis.analysis.pca.PCA.cumulative_overlap` or 
+If you use :meth:`~MDAnalysis.analysis.pca.PCA.cumulative_overlap` or
 :func:`~MDAnalysis.analysis.pca.cumulative_overlap` please cite [Yang2008]_ .
 
-.. [Yang2008] Yang, L., Song, G., Carriquiry, A. & Jernigan, R. L. 
-   Close Correspondence between the Motions from Principal Component Analysis of Multiple HIV-1 Protease Structures and Elastic Network Modes. 
+.. [Yang2008] Yang, L., Song, G., Carriquiry, A. & Jernigan, R. L.
+   Close Correspondence between the Motions from Principal Component Analysis of Multiple HIV-1 Protease Structures and Elastic Network Modes.
    *Structure* **16**, 321–330 (2008). doi: `10.1016/j.str.2007.12.011`_
 
 .. _`10.1016/j.str.2007.12.011`: https://dx.doi.org/10.1016/j.str.2007.12.011
@@ -169,10 +169,10 @@ If you use :meth:`~MDAnalysis.analysis.pca.PCA.cumulative_overlap` or
 If you use the Mean Squared Displacement analysis code in
 :mod:`MDAnalysis.analysis.msd` please cite [Calandri2011]_ and [Buyl2018]_.
 
-.. [Calandri2011] Calandrini, V., Pellegrini, E., Calligari, P., Hinsen, K., Kneller, G. R. 
-   NMoldyn-Interfacing Spectroscopic Experiments, Molecular Dynamics Simulations and Models for Time Correlation Functions. 
+.. [Calandri2011] Calandrini, V., Pellegrini, E., Calligari, P., Hinsen, K., Kneller, G. R.
+   NMoldyn-Interfacing Spectroscopic Experiments, Molecular Dynamics Simulations and Models for Time Correlation Functions.
    *Collect. SFN*, **12**, 201–232 (2011). doi: `10.1051/sfn/201112010`_
-   	
+
 .. _`10.1051/sfn/201112010`: https://doi.org/10.1051/sfn/201112010
 
 .. [Buyl2018] Buyl, P. tidynamics: A tiny package to compute the dynamics of stochastic and molecular simulations. Journal of Open Source Software,
@@ -213,6 +213,23 @@ If you use use the dielectric analysis code in
 
 .. _`10.1080/00268978300102721`: http://doi.org/10.1080/00268978300102721
 
+If you use H5MD files using
+:mod:`MDAnalysis.coordinates.H5MD.py`, please cite [Buyl2013]_ and
+[Jakupovic2021]_.
+
+.. [Buyl2013] Buyl P., Colberg P., and Höfling F.(2013).
+   H5MD: A structured, efficient, and portable file format for molecular data.
+   *Computer Physics Communications*, 185. doi:`10.1016/j.cpc.2014.01.018.
+   <https://doi.org/10.1016/j.cpc.2014.01.018>`_
+
+.. [Jakupovic2021] Jakupovic E. and Beckstein O., MPI-parallel Molecular
+   Dynamics Trajectory Analysis with the H5MD Format in the MDAnalysis
+   Python Package, in *Proceedings of the 20th Python in Science Conference*,
+   (Meghann Agarwal, Chris Calloway, Dillon Niederhut, and David Shupe, eds.),
+   pp. 18 – 26, 2021. doi:`10.25080/majora-1b6fd038-005.
+   <https://www.doi.org/10.25080/majora-1b6fd038-005>`_
+
+
 .. _citations-using-duecredit:
 
 
@@ -249,8 +266,8 @@ export them to different formats. For example, one can display them in
 BibTeX format, using:
 
 .. code-block:: bash
- 
-   duecredit summary --format=bibtex 
+
+   duecredit summary --format=bibtex
 
 
 **Please cite your use of MDAnalysis and the packages and algorithms
@@ -258,4 +275,3 @@ that it uses. Thanks!**
 
 
 .. _duecredit: https://github.com/duecredit/duecredit
-

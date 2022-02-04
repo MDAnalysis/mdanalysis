@@ -3,7 +3,7 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - chemfiles
+  - chemfiles>=0.10
   - codecov
   - cython
   - griddataformats
@@ -16,7 +16,6 @@ dependencies:
   - mock
   - networkx
   - numpy>=1.17.3
-  - psutil
   - pytest
   - python==3.7
   - scikit-learn

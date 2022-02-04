@@ -30,7 +30,7 @@ from numpy.testing import (
     assert_almost_equal,
 )
 import pytest
-from MDAnalysisTests.datafiles import PSF, DCD, PDB_CHECK_RIGHTHAND_PA
+from MDAnalysisTests.datafiles import PSF, DCD, PDB_CHECK_RIGHTHAND_PA, MMTF
 from MDAnalysisTests import make_Universe, no_deprecated_call
 
 import MDAnalysis as mda
@@ -547,3 +547,90 @@ def test_warn_selection_for_strange_dtype():
             attrname = "stars"  # :(
             per_object = "atom"
             dtype = dict
+
+
+class TestDeprecateBFactor:
+
+    MATCH = "use the tempfactor attribute"
+
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(MMTF)
+
+    def test_deprecate_bfactors_get_group(self, universe):
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            universe.atoms.bfactors
+
+    def test_deprecate_bfactors_get_atom(self, universe):
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            assert universe.atoms[0].bfactor == universe.atoms[0].tempfactor
+
+    def test_deprecate_bfactors_set_group(self, universe):
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            universe.atoms[:2].bfactors = [3.14, 10]
+        assert universe.atoms.tempfactors[0] == 3.14
+        assert universe.atoms.tempfactors[1] == 10
+
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            assert universe.atoms.bfactors[0] == 3.14
+            assert universe.atoms.bfactors[1] == 10
+
+    def test_deprecate_bfactors_set_atom(self, universe):
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            universe.atoms[0].bfactor = 3.14
+        assert universe.atoms[0].tempfactor == 3.14
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            assert universe.atoms[0].bfactor == 3.14
+
+    def test_deprecate_bfactor_sel(self, universe):
+        with pytest.warns(DeprecationWarning, match=self.MATCH):
+            universe.select_atoms("bfactor 3")
+
+
+class TestStringInterning:
+    # try and trip up the string interning we use for string attributes
+    @pytest.fixture
+    def universe(self):
+        u = mda.Universe.empty(n_atoms=10, n_residues=2,
+                               atom_resindex=[0]*5 + [1] * 5)
+        u.add_TopologyAttr('names', values=['A'] * 10)
+        u.add_TopologyAttr('resnames', values=['ResA', 'ResB'])
+        u.add_TopologyAttr('segids', values=['SegA'])
+
+        return u
+
+    @pytest.mark.parametrize('newname', ['ResA', 'ResB'])
+    def test_add_residue(self, universe, newname):
+        newres = universe.add_Residue(resname=newname)
+
+        assert newres.resname == newname
+
+        ag = universe.atoms[2]
+        ag.residue = newres
+
+        assert ag.resname == newname
+
+    @pytest.mark.parametrize('newname', ['SegA', 'SegB'])
+    def test_add_segment(self, universe, newname):
+        newseg = universe.add_Segment(segid=newname)
+
+        assert newseg.segid == newname
+
+        rg = universe.residues[0]
+        rg.segment = newseg
+
+        assert rg.atoms[0].segid == newname
+
+    def test_issue3437(self, universe):
+        newseg = universe.add_Segment(segid='B')
+
+        ag = universe.residues[0].atoms
+
+        ag.residues.segments = newseg
+
+        assert 'B' in universe.segments.segids
+
+        ag2 = universe.select_atoms('segid B')
+
+        assert len(ag2) == 5
+        assert (ag2.ix == ag.ix).all()

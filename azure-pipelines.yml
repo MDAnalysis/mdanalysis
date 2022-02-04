@@ -18,7 +18,7 @@ jobs:
 - job: Windows
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))  # skip for PR merges
   pool:
-    vmImage: 'VS2017-Win2016'
+    vmImage: 'windows-2019'
   variables:
     MPLBACKEND: agg
   strategy:
@@ -26,9 +26,6 @@ jobs:
         Python37-32bit-full:
           PYTHON_VERSION: '3.7'
           PYTHON_ARCH: 'x86'
-        Python36-64bit-full:
-          PYTHON_VERSION: '3.6'
-          PYTHON_ARCH: 'x64'
         Python37-64bit-full:
           PYTHON_VERSION: '3.7'
           PYTHON_ARCH: 'x64'
@@ -37,6 +34,9 @@ jobs:
           PYTHON_ARCH: 'x64'
         Python39-64bit-full:
           PYTHON_VERSION: '3.9'
+          PYTHON_ARCH: 'x64'
+        Python310-64bit-full:
+          PYTHON_VERSION: '3.10'
           PYTHON_ARCH: 'x64'
   steps:
   - task: UsePythonVersion@0
@@ -52,7 +52,7 @@ jobs:
       hypothesis
       matplotlib
       numpy
-      pytest==6.1.2
+      pytest
       pytest-cov
       pytest-xdist
       scikit-learn
@@ -65,9 +65,9 @@ jobs:
   - script: >-
       python -m pip install
       biopython
-      chemfiles
+      chemfiles>=0.10
       duecredit
-      gsd==1.9.3
+      gsd
       joblib
       GridDataFormats
       mmtf-python

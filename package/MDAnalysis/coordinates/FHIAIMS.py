@@ -63,10 +63,6 @@ specifications in the official `FHI-AIMS format`_.
 Classes
 -------
 
-.. autoclass:: Timestep
-   :members:
-   :inherited-members:
-
 .. autoclass:: FHIAIMSReader
    :members:
    :inherited-members:
@@ -120,19 +116,7 @@ from ..lib import util
 from ..lib import mdamath
 
 
-class Timestep(base.Timestep):
-
-    def _init_unitcell(self):
-        return np.zeros((3, 3), dtype=np.float32)
-
-    @property
-    def dimensions(self):
-        """unitcell dimensions (A, B, C, alpha, beta, gamma)"""
-        return triclinic_box(self._unitcell[0], self._unitcell[1], self._unitcell[2])
-
-    @dimensions.setter
-    def dimensions(self, new):
-        self._unitcell[:] = triclinic_vectors(new)
+from .base import Timestep
 
 
 class FHIAIMSReader(base.SingleFrameReaderBase):
@@ -146,7 +130,6 @@ class FHIAIMSReader(base.SingleFrameReaderBase):
     """
     format = ['IN', 'FHIAIMS']
     units = {'time': 'ps', 'length': 'Angstrom', 'velocity': 'Angstrom/ps'}
-    _Timestep = Timestep
 
     def _read_first_frame(self):
         with util.openany(self.filename, 'rt') as fhiaimsfile:
@@ -199,9 +182,8 @@ class FHIAIMSReader(base.SingleFrameReaderBase):
         ts.positions = positions
 
         if len(lattice_vectors) > 0:
-            ts._unitcell[:] = lattice_vectors
-            ts.positions[relative] = np.matmul(
-                ts.positions[relative], lattice_vectors)
+            ts.dimensions = triclinic_box(*lattice_vectors)
+            ts.positions[relative] = np.matmul(ts.positions[relative], lattice_vectors)
 
         if len(velocities) > 0:
             ts.velocities = velocities
@@ -318,7 +300,7 @@ class FHIAIMSWriter(base.WriterBase):
             except AttributeError:  # for Timestep
                 tri_dims = obj.triclinic_dimensions
             # full output
-            if np.any(tri_dims != 0):
+            if tri_dims is not None:
                 output_fhiaims.write(
                     self.fmt['box_triclinic'].format(box=tri_dims.flatten()))
 

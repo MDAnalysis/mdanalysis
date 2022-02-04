@@ -83,6 +83,8 @@ The class can be set-up and run like a normal MDAnalysis analysis class::
     from MDAnalysis.tests.datafiles import MULTIPDB_HOLE
     from MDAnalysis.analysis import hole2
 
+    u = mda.Universe(MULTIPDB_HOLE)
+
     ha = hole2.HoleAnalysis(u, executable='~/hole2/exe/hole') as h2:
     ha.run()
     ha.create_vmd_surface(filename='hole.vmd')
@@ -102,17 +104,149 @@ after the analysis, you can call :meth:`~HoleAnalysis.delete_temporary_files`::
 Alternatively, you can use HoleAnalysis as a context manager that deletes temporary
 files when you are finished with the context manager::
 
-    import MDAnalysis as mda
-    from MDAnalysis.tests.datafiles import MULTIPDB_HOLE
-    from MDAnalysis.analysis import hole2
-
     with hole2.HoleAnalysis(u, executable='~/hole2/exe/hole') as h2:
         h2.run()
         h2.create_vmd_surface()
 
 
-.. _HOLE: http://www.holeprogram.org
+Using HOLE with VMD
+-------------------
 
+The :program:`sos_triangle` program that is part of HOLE_ can write an input
+file for VMD_ to display a triangulated surface of the pore found by
+:program:`hole`. This functionality is available with the
+:meth:`HoleAnalysis.create_vmd_surface` method
+[#create_vmd_surface_function]_. For an input trajectory MDAnalysis writes a
+*trajectory* of pore surfaces that can be animated in VMD together with the
+frames from the trajectory.
+
+
+Analyzing a full trajectory
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To analyze a full trajectory and write pore surfaces for all frames to file
+:file:`hole_surface.vmd`, use ::
+
+    import MDAnalysis as mda
+    from MDAnalysis.analysis import hole2
+
+    # load example trajectory MULTIPDB_HOLE
+    from MDAnalysis.tests.datafiles import MULTIPDB_HOLE
+
+    u = mda.Universe(MULTIPDB_HOLE)
+
+    with hole2.HoleAnalysis(u, executable='~/hole2/exe/hole') as h2:
+        h2.run()
+        h2.create_vmd_surface(filename="hole_surface.vmd")
+
+In VMD, load your trajectory and then in the tcl console
+(e.g.. :menuselection:`Extensions --> Tk Console`) load the surface
+trajectory:
+
+.. code-block:: tcl
+
+   source hole_surface.vmd
+
+If you only want to *subsample the trajectory* and only show the surface at
+specific frames then you can either load the trajectory with the same
+subsampling into VMD or create a subsampled trajectory.
+
+
+Creating subsampled HOLE surface
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For example, if we want to start displaying at frame 1 (i.e., skip frame 0), stop at frame 7, and
+only show every other frame (step 2) then the HOLE analysis will be ::
+
+    with hole2.HoleAnalysis(u, executable='~/hole2/exe/hole') as h2:
+        h2.run(start=1, stop=9, step=2)
+        h2.create_vmd_surface(filename="hole_surface_subsampled.vmd")
+
+The commands produce the file ``hole_surface_subsampled.vmd`` that can be loaded into VMD.
+
+.. Note::
+
+   Python (and MDAnalysis) stop indices are *exclusive* so the parameters
+   ``start=1``, ``stop=9``, and ``step=2`` will analyze frames 1, 3, 5, 7.
+
+.. _Loading-a-trajectory-into-VMD-with-subsampling:
+
+Loading a trajectory into VMD with subsampling
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Load your system into VMD. This can mean to load the topology file with
+:menuselection:`File --> New Molecule` and adding the trajectory with
+:menuselection:`File --> Load Data into Molecule` or just :menuselection:`File
+--> New Molecule`.
+
+When loading the trajectory, subsample the frames by setting parametes in in
+the :guilabel:`Frames` section. Select *First: 1*, *Last: 7*, *Stride: 2*. Then
+:guilabel:`Load` everything.
+
+.. Note::
+
+   VMD considers the stop/last frame to be *inclusive* so you need to typically
+   choose one less than the ``stop`` value that you selected in MDAnalysis.
+
+Then load the surface trajectory:
+
+.. code-block:: tcl
+
+   source hole_surface_subsampled.vmd
+
+You should see a different surface for each frame in the trajectory. [#vmd_extra_frame]_
+
+
+Creating a subsampled trajectory
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Instead of having VMD subsample the trajectory as described in
+:ref:`Loading-a-trajectory-into-VMD-with-subsampling` we can write a subsampled
+trajectory to a file. Although it requires more disk space, it can be
+convenient if we want to visualize the system repeatedly.
+
+The example trajectory comes as a multi-PDB file so we need a suitable topology
+file. If you already have a topology file such as a PSF, TPR, or PRMTOP file
+then skip this step. We write frame 0 as a PDB :file:`frame0.pdb` (which we
+will use as the topology in VMD)::
+
+    u.atoms.write("frame0.pdb")
+
+Then write the actual trajectory in a convenient format such as TRR (or
+DCD). Note that we apply the same slicing (``start=1``, ``stop=9``, ``step=2``)
+to the trajectory itself and then use it as the value for the ``frames``
+parameter of :meth:`AtomGroup.write<MDAnalysis.core.groups.AtomGroup.write>`
+method::
+
+    u.atoms.write("subsampled.trr", frames=u.trajectory[1:9:2])
+
+This command creates the subsampled trajectory file :file:`subsampled.trr` in
+TRR format.
+
+In VMD we load the topology and the trajectory and then load the surface. In
+our example we have a PDB file (:file:`frame0.pdb`) as topology so we need to
+remove the first frame [#vmd_extra_frame]_ (skip the "trim" step below if you
+are using a true topology file such as PSF, TPR, or PRMTOP). To keep this
+example compact, we are using the tcl command line interface in VMD_
+(:menuselection:`Extensions --> Tk Console`) for loading and trimming the
+trajectory; you can use the menu commands if you prefer.
+
+.. code-block:: tcl
+
+   # load topology and subsampled trajectory
+   mol load pdb frame0.pdb trr subsampled.trr
+
+   # trim first frame (frame0) -- SKIP if using PSF, TPR, PRMTOP
+   animate delete beg 0 end 0
+
+   # load the HOLE surface trajectory
+   source hole_surface_subsampled.vmd
+
+You can now animate your molecule together with the surface and render it.
+
+
+.. _HOLE: http://www.holeprogram.org
+.. _VMD: https://www.ks.uiuc.edu/Research/vmd/
 
 Functions and classes
 ---------------------
@@ -140,6 +274,21 @@ References
                DOI: 10.1016/j.jmb.2013.10.024
 
 .. Footnotes
+
+.. [#create_vmd_surface_function] If you use the :class:`hole` class to run
+              :program:`hole` on a single PDB file then you can use
+              :func:`MDAnalysis.analysis.hole2.utils.create_vmd_surface`
+              function to manually run :program:`sph_process` and
+              :program:`sos_triangle` on the output files andcr eate a surface
+              file.
+
+.. [#vmd_extra_frame] If you loaded your system in VMD_ from separate topology
+              and trajectory files and the topology file contained coordinates
+              (such as a PDB or GRO) file then your trajectory will have an
+              extra initial frame containing the coordinates from your topology
+              file. Delete the initial frame with :menuselection:`Molecule -->
+              Delete Frames` by setting *First* to 0 and *Last* to 0 and
+              selecting :guilabel:`Delete`.
 
 .. [#HOLEDCD] PDB files are not the only files that :program:`hole` can
               read. In principle, it is also able to read CHARMM DCD
@@ -174,7 +323,7 @@ from .utils import (check_and_fix_long_filename, write_simplerad2,
                     set_up_hole_input, run_hole, collect_hole,
                     create_vmd_surface)
 from .templates import (hole_input, hole_lines, vmd_script_array,
-                        vmd_script_function,
+                        vmd_script_function, exe_err,
                         IGNORE_RESIDUES)
 
 logger = logging.getLogger(__name__)
@@ -560,7 +709,7 @@ class HoleAnalysis(AnalysisBase):
 
     .. versionchanged:: 2.0.0
         :attr:`sphpdbs`, :attr:`outfiles` and :attr:`profiles `
-        are now stored in a :class:`MDAnalysis.analysis.base.Results` 
+        are now stored in a :class:`MDAnalysis.analysis.base.Results`
         instance.
 
     """
@@ -642,7 +791,7 @@ class HoleAnalysis(AnalysisBase):
         # --- finding executables ----
         hole = util.which(executable)
         if hole is None:
-            raise OSError(errno.ENOENT, exe_err.format(name=hole,
+            raise OSError(errno.ENOENT, exe_err.format(name=executable,
                                                        kw='executable'))
         self.base_path = os.path.dirname(hole)
 
@@ -655,7 +804,7 @@ class HoleAnalysis(AnalysisBase):
                                                        kw='sos_triangle'))
         sph_process_path = util.which(sph_process)
         if sph_process_path is None:
-            path = os.path.join(self.base_path, 'sph_process')
+            path = os.path.join(self.base_path, sph_process)
             sph_process_path = util.which(path)
         if sph_process_path is None:
             raise OSError(errno.ENOENT, exe_err.format(name=sph_process,
@@ -785,8 +934,8 @@ class HoleAnalysis(AnalysisBase):
         i = self._frame_index
         outfile = self.output_file.format(prefix=self.prefix, i=frame)
         sphpdb = self.sphpdb_file.format(prefix=self.prefix, i=frame)
-        self.sphpdbs[i] = sphpdb
-        self.outfiles[i] = outfile
+        self.results.sphpdbs[i] = sphpdb
+        self.results.outfiles[i] = outfile
         if outfile not in self.tmp_files:
             self.tmp_files.append(outfile)
         if sphpdb not in self.tmp_files:
@@ -832,11 +981,15 @@ class HoleAnalysis(AnalysisBase):
                            double_water_color='blue'):
         """Process HOLE output to create a smooth pore surface suitable for VMD.
 
-        Takes the ``sphpdb`` file for each frame and feeds it to `sph_process <http://www.holeprogram.org/doc/old/hole_d04.html#sph_process>`_
-        and `sos_triangle <http://www.holeprogram.org/doc/old/hole_d04.html#sos_triangle>`_ as described under `Visualization of HOLE
-        results <http://www.holeprogram.org/doc/index.html>`_.
+        Takes the ``sphpdb`` file for each frame and feeds it to `sph_process
+        <http://www.holeprogram.org/doc/old/hole_d04.html#sph_process>`_ and
+        `sos_triangle
+        <http://www.holeprogram.org/doc/old/hole_d04.html#sos_triangle>`_ as
+        described under `Visualization of HOLE results
+        <http://www.holeprogram.org/doc/index.html>`_.
 
-        Load the output file *filename* into VMD in Extensions > Tk Console ::
+        Load the output file *filename* into VMD in :menuselection:`Extensions
+        --> Tk Console` ::
 
            source hole.vmd
 
@@ -884,7 +1037,7 @@ class HoleAnalysis(AnalysisBase):
             raise ValueError('No sphpdb files to read. Try calling run()')
 
         frames = []
-        for i in self.frames:
+        for i, frame in enumerate(self.frames):
             sphpdb = self.results.sphpdbs[i]
             tmp_tri = create_vmd_surface(sphpdb=sphpdb,
                                          sph_process=self.exe['sph_process'],
@@ -915,7 +1068,7 @@ class HoleAnalysis(AnalysisBase):
                 pass
 
             tri = '{ { ' + ' } { '.join(list(map(' '.join, shapes))) + ' } }'
-            frames.append('set triangles({i}) '.format(i=i) + tri)
+            frames.append(f'set triangles({i}) ' + tri)
 
         trinorms = '\n'.join(frames)
         vmd_1 = vmd_script_array.format(no_water_color=no_water_color,
@@ -1300,14 +1453,14 @@ class HoleAnalysis(AnalysisBase):
             Profiles to include by frame. If ``None``, includes
             all frames.
         bins : int or iterable of edges, optional
-            If bins is an int, it defines the number of equal-width bins in the given 
-            range. If bins is a sequence, it defines a monotonically increasing array of 
+            If bins is an int, it defines the number of equal-width bins in the given
+            range. If bins is a sequence, it defines a monotonically increasing array of
             bin edges, including the rightmost edge, allowing for non-uniform bin widths.
         range : (float, float), optional
             The lower and upper range of the bins.
             If not provided, ``range`` is simply ``(a.min(), a.max())``,
             where ``a`` is the array of reaction coordinates.
-            Values outside the range are ignored. The first element of the range must be 
+            Values outside the range are ignored. The first element of the range must be
             less than or equal to the second.
 
 
@@ -1358,14 +1511,14 @@ class HoleAnalysis(AnalysisBase):
             Profiles to include by frame. If ``None``, includes
             all frames.
         bins : int or iterable of edges, optional
-            If bins is an int, it defines the number of equal-width bins in the given 
-            range. If bins is a sequence, it defines a monotonically increasing array of 
+            If bins is an int, it defines the number of equal-width bins in the given
+            range. If bins is a sequence, it defines a monotonically increasing array of
             bin edges, including the rightmost edge, allowing for non-uniform bin widths.
         range : (float, float), optional
             The lower and upper range of the bins.
             If not provided, ``range`` is simply ``(a.min(), a.max())``,
             where ``a`` is the array of reaction coordinates.
-            Values outside the range are ignored. The first element of the range must be 
+            Values outside the range are ignored. The first element of the range must be
             less than or equal to the second.
 
 
@@ -1394,14 +1547,14 @@ class HoleAnalysis(AnalysisBase):
             Profiles to include by frame. If ``None``, includes
             all frames.
         bins : int or iterable of edges, optional
-            If bins is an int, it defines the number of equal-width bins in the given 
-            range. If bins is a sequence, it defines a monotonically increasing array of 
+            If bins is an int, it defines the number of equal-width bins in the given
+            range. If bins is a sequence, it defines a monotonically increasing array of
             bin edges, including the rightmost edge, allowing for non-uniform bin widths.
         range : (float, float), optional
             The lower and upper range of the bins.
             If not provided, ``range`` is simply ``(a.min(), a.max())``,
             where ``a`` is the array of reaction coordinates.
-            Values outside the range are ignored. The first element of the range must be 
+            Values outside the range are ignored. The first element of the range must be
             less than or equal to the second.
         color : str or array-like, optional
             Color for the plot.
