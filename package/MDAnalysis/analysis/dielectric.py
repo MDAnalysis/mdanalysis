@@ -26,7 +26,7 @@ Dielectric --- :mod:`MDAnalysis.analysis.dielectric`
 ===========================================================
 
 :Authors: Mattia Felice Palermo, Philip Loche
-:Year: 2021
+:Year: 2022
 :Copyright: GNU Public License v3
 """
 
@@ -115,7 +115,7 @@ class DielectricConstant(AnalysisBase):
     within the :class:`~MDAnalysis.analysis.base.Results` attribute.
 
 
-    .. versionadded:: 2.0.0
+    .. versionadded:: 2.1.0
     """
     def __init__(self, atomgroup, temperature=300, make_whole=True, **kwargs):
         super(DielectricConstant, self).__init__(atomgroup.universe.trajectory,
