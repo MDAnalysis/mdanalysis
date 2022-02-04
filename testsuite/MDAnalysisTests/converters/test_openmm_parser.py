@@ -26,7 +26,8 @@ import numpy as np
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
-from MDAnalysisTests.datafiles import CONECT, PDBX
+from MDAnalysisTests.datafiles import CONECT, PDBX, PDB
+from copy import deepcopy
 
 try:
     from openmm import app
@@ -102,13 +103,13 @@ class OpenMMTopologyBase(ParserBase):
             assert top.segids.values == []
 
     def test_elements(self, top):
-        if hasattr(top, 'elements'):
+        if 'elements' in self.expected_attrs:
             assert len(top.elements.values) == self.expected_n_atoms
             assert isinstance(top.elements.values, np.ndarray)
             assert all(isinstance(elem, str) for elem in top.elements.values)
 
     def test_atomtypes(self, top):
-        if hasattr(top, 'atomtypes'):
+        if 'atomtypes' in self.expected_attrs:
             assert len(top.atomtypes.values) == self.expected_n_atoms
             assert isinstance(top, np.ndarray)
             assert all(isinstance(atomtype, str)
@@ -147,6 +148,44 @@ class TestOpenMMTopologyParser(OpenMMTopologyBase):
     expected_n_residues = 199
     expected_n_segments = 3
     expected_n_bonds = 1922
+
+
+class TestOpenMMTopologyParserWithNoElements(OpenMMTopologyBase):
+    ref_filename = app.PDBFile(PDB).topology
+    expected_n_atoms = 47681
+    expected_n_residues = 11302
+    expected_n_segments = 1
+    expected_n_bonds = 25533
+
+    def test_with_partial_elements(self, top):
+        if 'elements' in self.expected_attrs:
+            omm_topology = self.ref_filename
+            wmsg = ("Unknown element None found for some atoms. "
+                    "These have been given an empty element record "
+                    "with their atomtype set to 'X' "
+                    "and their mass set to 0.0. "
+                    "If needed they can be guessed using "
+                    "MDAnalysis.topology.guessers.")
+            with pytest.warns(UserWarning, match=wmsg):
+                mda_top = self.parser(PDB) \
+                          ._mda_topology_from_omm_topology(omm_topology)
+
+    def test_with_no_elements(self, top):
+        self.expected_attrs.remove('elements')
+        omm_topology = deepcopy(self.ref_filename)
+        for a in omm_topology.atoms():
+            a.element = None
+
+        wmsg = ("Element information is missing, elements attribute "
+                "will not be populated. "
+                "Atomtype attribute will be guessed using atom "
+                "name and mass will be guessed using atomtype."
+                "See MDAnalysis.topology.guessers."
+                )
+        with pytest.warns(UserWarning, match=wmsg):
+            mda_top = self.parser(PDB) \
+                      ._mda_topology_from_omm_topology(omm_topology)
+        self.expected_attrs.append('elements')
 
 
 class TestOpenMMPDBFileParser(OpenMMAppTopologyBase):
