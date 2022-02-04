@@ -87,7 +87,10 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
         try:
             from openmm.app import Simulation
         except ImportError:
-            return False
+            try:
+                from simtk.openmm.app import Simulation
+            except ImportError:
+                return False
         else:
             return isinstance(thing, Simulation)
 
@@ -152,7 +155,10 @@ class OpenMMAppReader(base.SingleFrameReaderBase):
         try:
             from openmm import app
         except ImportError:
-            return False
+            try:
+                from simtk.openmm import app
+            except ImportError:
+                return False
         else:
             return isinstance(thing, (app.PDBFile, app.Modeller,
                 app.PDBxFile))
