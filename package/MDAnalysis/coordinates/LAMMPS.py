@@ -509,7 +509,8 @@ class DumpReader(base.ReaderBase):
     """
     format = 'LAMMPSDUMP'
     _conventions = ["auto", "unscaled", "scaled", "unwrapped",
-                    "scaled_unwrapped"]
+                    "charge", "scaled_unwrapped"]
+
     _coordtype_column_names = {
         "unscaled": ["x", "y", "z"],
         "scaled": ["xs", "ys", "zs"],
@@ -518,7 +519,7 @@ class DumpReader(base.ReaderBase):
     }
 
     @store_init_arguments
-    def __init__(self, filename, 
+    def __init__(self, filename,
                  lammps_coordinate_convention="auto",
                  unwrap_images=False,
                  **kwargs):
@@ -681,6 +682,14 @@ class DumpReader(base.ReaderBase):
             coord_cols.extend(image_cols)
 
         ids = "id" in attr_to_col_ix
+
+        # Create the data arrays for additional attributes which will be saved 
+        # under ts.data
+        if len(attrs) > 3:
+            for attribute_key in attrs[3:]:
+                ts.data[attribute_key] = np.empty(self.n_atoms)
+
+        # Parse all the atoms
         for i in range(self.n_atoms):
             fields = f.readline().split()
             if ids:
@@ -700,6 +709,11 @@ class DumpReader(base.ReaderBase):
                 ts.velocities[i] = [fields[dim] for dim in vel_cols]
             if self._has_forces:
                 ts.forces[i] = [fields[dim] for dim in force_cols]
+
+            # Add the capability to also collect other data
+            if len(attrs) > 3: # Then there is also more than just the positional data
+                for attribute_key in attrs[3:]:
+                    ts.data[attribute_key][i] = fields[attr_to_col_ix[attribute_key]]
 
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
