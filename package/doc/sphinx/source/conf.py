@@ -340,7 +340,7 @@ epub_copyright = u'2015, '+authors
 # and other packages used by MDAnalysis
 intersphinx_mapping = {'https://docs.python.org/': None,
                        'https://docs.scipy.org/doc/numpy/': None,
-                       'https://docs.scipy.org/doc/scipy/reference/': None,
+                       'https://docs.scipy.org/doc/scipy/': None,
                        'https://matplotlib.org': None,
                        'https://networkx.github.io/documentation/stable/': None,
                        'https://www.mdanalysis.org/GridDataFormats/': None,
