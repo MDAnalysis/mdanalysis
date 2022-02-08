@@ -115,7 +115,7 @@ jobs:
       run: |
         PYTEST_FLAGS="--disable-pytest-warnings --durations=50"
         if [ ${{ matrix.codecov }} = "true" ]; then
-          PYTEST_FLAGS="${PYTEST_FLAGS} --cov-config=.coveragerc --cov=MDAnalysis --cov-report=xml"
+          PYTEST_FLAGS="${PYTEST_FLAGS} --cov=MDAnalysis --cov-report=xml"
         fi
         echo $PYTEST_FLAGS
         pytest -n $numprocs testsuite/MDAnalysisTests $PYTEST_FLAGS
