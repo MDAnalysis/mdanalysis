@@ -30,13 +30,16 @@ Serial versions of all distance calculations
 """
 
 cimport cython
-from libc.stdint cimport uint64_t
+from libc.stdint cimport uint64_t, UINT64_MAX
 import numpy
 cimport numpy
 numpy.import_array()
 
 from libc.math cimport fabs, round as cround
 from libc.float cimport FLT_MAX, DBL_MAX
+
+#make UINT64_MAX visible at the python layer
+_UNINT64_MAX = UINT64_MAX
 
 cdef extern from "string.h":
     void* memcpy(void* dst, void* src, int len)
