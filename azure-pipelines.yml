@@ -25,30 +25,35 @@ jobs:
           PYTHON_VERSION: '3.7'
           PYTHON_ARCH: 'x86'
           BUILD_TYPE: 'normal'
-          imageName: 'vs2017-win2016'
+          imageName: 'windows-2019'
         Win-Python37-64bit-full-wheel:
           PYTHON_VERSION: '3.7'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.18.0'
-          imageName: 'vs2017-win2016'
+          imageName: 'windows-2019'
         Win-Python38-64bit-full:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'normal'
-          imageName: 'vs2017-win2016'
+          imageName: 'windows-2019'
+        Win-Python310-64bit-full:
+          PYTHON_VERSION: '3.10'
+          PYTHON_ARCH: 'x64'
+          BUILD_TYPE: 'normal'
+          imageName: 'windows-2019'
         Win-Python39-64bit-full-wheel:
           PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.19.3'
-          imageName: 'vs2017-win2016'
+          imageName: 'windows-2019'
         Win-Python38-64bit-full-wheel:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
           BUILD_TYPE: 'wheel'
           NUMPY_MIN: '1.18.0'
-          imageName: 'vs2017-win2016'
+          imageName: 'windows-2019'
         Linux-Python39-64bit-full-wheel:
           PYTHON_VERSION: '3.9'
           PYTHON_ARCH: 'x64'
@@ -92,7 +97,7 @@ jobs:
       pytest-xdist
       scikit-learn
       scipy
-      "h5py<3.4.0"
+      h5py
       tqdm
       threadpoolctl
     displayName: 'Install dependencies'
@@ -108,7 +113,7 @@ jobs:
   - script: >-
       python -m pip install
       biopython
-      chemfiles>=0.9
+      chemfiles>=0.10
       duecredit
       gsd
       joblib

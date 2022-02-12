@@ -22,7 +22,8 @@
 #
 import pytest
 import numpy as np
-from numpy.testing import assert_equal, assert_almost_equal
+from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
+import itertools
 from itertools import combinations_with_replacement as comb
 
 import MDAnalysis
@@ -70,7 +71,7 @@ def test_transform_StoR_pass(coord_dtype):
 
     test_r = distances.transform_StoR(s, box)
 
-    assert_equal(original_r, test_r)
+    assert_allclose(original_r, test_r)
 
 
 def test_capped_distance_noresults():
@@ -1376,3 +1377,27 @@ class TestDistanceBackendSelection(object):
 
 def test_used_openmpflag():
     assert isinstance(distances.USED_OPENMP, bool)
+
+
+# test both orthognal and triclinic boxes
+@pytest.mark.parametrize('box', (np.eye(3) * 10, np.array([[10, 0, 0], [2, 10, 0], [2, 2, 10]])))
+# try shifts of -2 to +2 in each dimension, and all combinations of shifts
+@pytest.mark.parametrize('shift', itertools.product(range(-2, 3), range(-2, 3), range(-2, 3)))
+@pytest.mark.parametrize('dtype', (np.float32, np.float64))
+def test_minimize_vectors(box, shift, dtype):
+    # test vectors pointing in all directions
+    # these currently all obey minimum convention as they're much smaller than the box
+    vec = np.array(list(itertools.product(range(-1, 2), range(-1, 2), range(-1, 2))), dtype=dtype)
+    box = box.astype(dtype)
+
+    # box is 3x3 representation
+    # multiply by shift, then sum xyz components then add these to the vector
+    # this technically doesn't alter the vector because of periodic boundaries
+    shifted_vec = (vec + (box.T * shift).sum(axis=1)).astype(dtype)
+
+    box2 = mdamath.triclinic_box(*box).astype(dtype)
+
+    res = distances.minimize_vectors(shifted_vec, box2)
+
+    assert_allclose(res, vec, atol=0.00001)
+    assert res.dtype == dtype
