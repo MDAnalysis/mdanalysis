@@ -15,7 +15,7 @@ requires = [
 
 [project]
 name = "MDAnalysis"
-version = 2.1.0-dev0
+version = "2.1.0-dev0"
 license = {file = "LICENSE"}
 authors = [
     {name = 'MDAnalysis Core Developers', email = 'mdanalysis@numfocus.org'}
