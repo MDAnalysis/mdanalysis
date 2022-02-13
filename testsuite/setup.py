@@ -95,7 +95,7 @@ if __name__ == '__main__':
         'Development Status :: 6 - Mature',
         'Environment :: Console',
         'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
+        'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
         'Operating System :: POSIX',
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows ',
@@ -128,7 +128,7 @@ if __name__ == '__main__':
                         'Issue Tracker': 'https://github.com/mdanalysis/mdanalysis/issues',
                         'Source': 'https://github.com/mdanalysis/mdanalysis',
                         },
-          license='GPL 2',
+          license='GPL-2.0-or-later',
           classifiers=CLASSIFIERS,
           packages=find_packages(),
           package_dir={'MDAnalysisTests': 'MDAnalysisTests',
@@ -180,11 +180,11 @@ if __name__ == '__main__':
                          'data/*.sdf',
                         ],
           },
-          install_requires=[
-              'MDAnalysis=={0!s}'.format(RELEASE),  # same as this release!
-              'pytest>=3.3.0', # Raised to 3.3.0 due to Issue 2329
-              'hypothesis',
-          ],
+          #install_requires=[
+          #    'MDAnalysis=={0!s}'.format(RELEASE),  # same as this release!
+          #    'pytest>=3.3.0', # Raised to 3.3.0 due to Issue 2329
+          #    'hypothesis',
+          #],
           # had 'KeyError' as zipped egg (2MB savings are not worth the
           # trouble)
           zip_safe=False,

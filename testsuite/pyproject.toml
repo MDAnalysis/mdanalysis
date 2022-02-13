@@ -1,20 +1,13 @@
 [build-system]
 # Minimum requirements for the build system to execute
 requires = [
-    "Cython>=0.28",
     "packaging",
-    # lowest NumPy we can use for a given Python,
-    # except for more exotic platforms (linux/Mac ARM flavors)
-    "numpy==1.18; python_version=='3.7' and (platform_machine!='arm64' or platform_system!='Darwin') and platform_machine!='aarch64'",
-    "numpy==1.18; python_version=='3.8' and (platform_machine!='arm64' or platform_system!='Darwin') and platform_machine!='aarch64'",
-    "numpy==1.19.3; python_version=='3.9' and (platform_machine!='arm64' or platform_system!='Darwin') and platform_machine!='aarch64'",
-    "numpy==1.21.4; python_version=='3.10' and platform_python_implementation != 'PyPy'",
     "setuptools",
     "wheel",
 ]
 
 [project]
-name = "MDAnalysis"
+name = "MDAnalysisTests"
 version = "2.1.0-dev0"
 license = {file = "LICENSE"}
 authors = [
@@ -25,18 +18,11 @@ maintainers = [
 ]
 requires-python = ">=3.7"
 dependencies = [
-    'numpy>=1.18.0',
-    'biopython>=1.71',
-    'networkx>=1.0',
-    'GridDataFormats>=0.4.0',
-    'mmtf-python>=1.0.0',
-    'joblib>=0.12',
-    'scipy>=1.0.0',
-    'matplotlib>=1.5.1',
-    'tqdm>=4.43.0',
-    'threadpoolctl',
+    'MDAnalysis==2.1.0-dev0',
+    'pytest>=3.3.0',
+    'hypothesis',
 ]
-readme = "../README.rst"
+readme = "README"
 keywords = [
     "python", "science", "chemistry", "biophysics", "molecular-dynamics",
     "computational-chemistry", "molecular-simulation", "analysis",
@@ -63,12 +49,8 @@ classifiers = [
 ]
 
 [project.urls]
-Documentation = 'https://docs.mdanalysis.org/'
-"User Guide" = 'https://userguide.mdanalysis.org/'
+Documentation = 'https://userguide.mdanalysis.org/stable/testing.html'
+"CI Coverage" = 'https://codecov.io/gh/MDAnalysis/mdanalysis'
+"Developer Group" = 'https://groups.google.com/g/mdnalysis-devel'
 "Issue Tracker" = 'https://github.com/mdanalysis/mdanalysis/issues'
-"User Group" = 'https://groups.google.com/g/mdnalysis-discussion/'
-Discord = 'https://discord.com/channels/807348386012987462/'
-Blog = 'https://www.mdanalysis.org/blog/'
-Twitter = 'https://twitter.com/mdanalysis'
 Source = 'https://github.com/mdanalysis/mdanalysis'
-
