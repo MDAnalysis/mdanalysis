@@ -12,3 +12,61 @@ requires = [
     "setuptools",
     "wheel",
 ]
+
+[project]
+name = "MDAnalysis"
+version = 2.1.0-dev0
+license = {file = "LICENSE"}
+authors = [
+    {name = 'MDAnalysis Core Developers', email = 'mdanalysis@numfocus.org'}
+]
+maintainers = [
+    {name = 'MDAnalysis Core Developers', email = 'mdanalysis@numfocus.org'}
+]
+requires-python = ">=3.7"
+dependencies = [
+    'numpy>=1.18.0',
+    'biopython>=1.71',
+    'networkx>=1.0',
+    'GridDataFormats>=0.4.0',
+    'mmtf-python>=1.0.0',
+    'joblib>=0.12',
+    'scipy>=1.0.0',
+    'matplotlib>=1.5.1',
+    'tqdm>=4.43.0',
+    'threadpoolctl',
+]
+readme = "../README.rst"
+keywords = [
+    "python", "science", "chemistry", "biophysics", "molecular-dynamics",
+    "computational-chemistry", "molecular-simulation", "analysis",
+    "trajectory-analysis",
+]
+classifiers = [
+    'Development Status :: 6 - Mature',
+    'Environment :: Console',
+    'Intended Audience :: Science/Research',
+    'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
+    'Operating System :: POSIX',
+    'Operating System :: MacOS :: MacOS X',
+    'Operating System :: Microsoft :: Windows ',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: C',
+    'Topic :: Scientific/Engineering',
+    'Topic :: Scientific/Engineering :: Bio-Informatics',
+    'Topic :: Scientific/Engineering :: Chemistry',
+    'Topic :: Software Development :: Libraries :: Python Modules',
+]
+urls = {'Documentation': 'https://docs.mdanalysis.org/',
+        'User Guide': 'https://userguide.mdanalysis.org/',
+        'Issue Tracker': 'https://github.com/mdanalysis/mdanalysis/issues',
+        'User Group': 'https://groups.google.com/g/mdnalysis-discussion/',
+        'Discord': 'https://discord.com/channels/807348386012987462/',
+        'Blog': 'https://www.mdanalysis.org/blog/',
+        'Twitter': 'https://twitter.com/mdanalysis',
+        'Source': 'https://github.com/mdanalysis/mdanalysis'}
+

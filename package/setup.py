@@ -627,7 +627,7 @@ if __name__ == '__main__':
                         'Twitter': 'https://twitter.com/mdanalysis',
                         'Source': 'https://github.com/mdanalysis/mdanalysis',
                         },
-          license='GPL 2',
+          license='GPL-2.0-or-later',
           classifiers=CLASSIFIERS,
           provides=['MDAnalysis'],
           packages=find_packages(),
