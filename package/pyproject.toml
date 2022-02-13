@@ -61,12 +61,14 @@ classifiers = [
     'Topic :: Scientific/Engineering :: Chemistry',
     'Topic :: Software Development :: Libraries :: Python Modules',
 ]
-urls = {'Documentation' = 'https://docs.mdanalysis.org/',
-        'User Guide' = 'https://userguide.mdanalysis.org/',
-        'Issue Tracker' = 'https://github.com/mdanalysis/mdanalysis/issues',
-        'User Group' = 'https://groups.google.com/g/mdnalysis-discussion/',
-        'Discord' = 'https://discord.com/channels/807348386012987462/',
-        'Blog' = 'https://www.mdanalysis.org/blog/',
-        'Twitter' = 'https://twitter.com/mdanalysis',
-        'Source' = 'https://github.com/mdanalysis/mdanalysis'}
+
+[project.urls]
+Documentation = 'https://docs.mdanalysis.org/'
+User Guide = 'https://userguide.mdanalysis.org/'
+Issue Tracker = 'https://github.com/mdanalysis/mdanalysis/issues'
+User Group = 'https://groups.google.com/g/mdnalysis-discussion/'
+Discord = 'https://discord.com/channels/807348386012987462/'
+Blog = 'https://www.mdanalysis.org/blog/'
+Twitter = 'https://twitter.com/mdanalysis'
+Source = 'https://github.com/mdanalysis/mdanalysis'
 
