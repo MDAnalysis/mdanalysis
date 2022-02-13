@@ -34,13 +34,9 @@ except ImportError:
     try:
         from simtk.openmm import app
     except ImportError:
-        SKIP_OPENMM = True
+        pytest.skip(allow_module_level=True)
 
 
-requires_openmm = pytest.mark.skipif(SKIP_OPENMM, reason="requires OpenMM")
-
-
-@requires_openmm
 class OpenMMTopologyBase(ParserBase):
     parser = mda.converters.OpenMMParser.OpenMMTopologyParser
     expected_attrs = [
@@ -106,7 +102,6 @@ class OpenMMTopologyBase(ParserBase):
             assert top.segids.values == []
 
 
-@requires_openmm
 class OpenMMAppTopologyBase(OpenMMTopologyBase):
     parser = mda.converters.OpenMMParser.OpenMMAppTopologyParser
     expected_attrs = [
@@ -127,7 +122,6 @@ class OpenMMAppTopologyBase(OpenMMTopologyBase):
         assert isinstance(u, mda.Universe)
 
 
-@requires_openmm
 class TestOpenMMTopologyParser(OpenMMTopologyBase):
     ref_filename = app.PDBFile(CONECT).topology
     expected_n_atoms = 1890
@@ -136,7 +130,6 @@ class TestOpenMMTopologyParser(OpenMMTopologyBase):
     expected_n_bonds = 1922
 
 
-@requires_openmm
 class TestOpenMMPDBFileParser(OpenMMAppTopologyBase):
     ref_filename = app.PDBFile(CONECT)
     expected_n_atoms = 1890
@@ -145,7 +138,6 @@ class TestOpenMMPDBFileParser(OpenMMAppTopologyBase):
     expected_n_bonds = 1922
 
 
-@requires_openmm
 class TestOpenMMPDBxFileParser(OpenMMAppTopologyBase):
     ref_filename = app.PDBxFile(PDBX)
     expected_n_atoms = 60

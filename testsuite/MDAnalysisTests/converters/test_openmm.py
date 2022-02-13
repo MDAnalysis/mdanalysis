@@ -40,13 +40,9 @@ except ImportError:
         from simtk import unit
         from simtk.openmm import app
     except ImportError:
-        SKIP_OPENMM = True
+        pytest.skip(allow_module_level=True)
 
 
-requires_openmm = pytest.mark.skipif(SKIP_OPENMM, reason="requires OpenMM")
-
-
-@requires_openmm
 class TestOpenMMBasicSimulationReader():
     @pytest.fixture
     def omm_sim_uni(self):
@@ -91,7 +87,6 @@ class TestOpenMMBasicSimulationReader():
         assert len(omm_sim_uni.bonds.indices) == 0
 
 
-@requires_openmm
 class TestOpenMMPDBFileReader(_SingleFrameReader):
     __test__ = True
 
@@ -115,7 +110,6 @@ class TestOpenMMPDBFileReader(_SingleFrameReader):
         assert_almost_equal(up, rp, decimal=3)
 
 
-@requires_openmm
 class TestOpenMMModellerReader(_SingleFrameReader):
     __test__ = True
 
@@ -141,7 +135,6 @@ class TestOpenMMModellerReader(_SingleFrameReader):
         assert_almost_equal(up, rp, decimal=3)
 
 
-@requires_openmm
 class TestOpenMMSimulationReader(_SingleFrameReader):
     __test__ = True
 
@@ -187,7 +180,6 @@ def PDBX_U():
     return mda.Universe(app.PDBxFile(PDBX))
 
 
-@requires_openmm
 def test_pdbx_coordinates(PDBX_U):
     ref_pos = 10 * np.array(
         [
