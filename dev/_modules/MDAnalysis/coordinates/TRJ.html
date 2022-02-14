@@ -510,7 +510,7 @@
 <span class="sd">    to memory (using the :class:`~mmap.mmap`); ``mmap=False`` may consume large</span>
 <span class="sd">    amounts of memory because it loads the whole trajectory into memory but it</span>
 <span class="sd">    might be faster. The default is ``mmap=None`` and then default behavior of</span>
-<span class="sd">    :class:`scipy.io.netcdf.netcdf_file` prevails, i.e. ``True`` when</span>
+<span class="sd">    :class:`scipy.io.netcdf_file` prevails, i.e. ``True`` when</span>
 <span class="sd">    *filename* is a file name, ``False`` when *filename* is a file-like object.</span>
 
 <span class="sd">    .. _AMBER NETCDF format: http://ambermd.org/netcdf/nctraj.xhtml</span>
@@ -539,7 +539,7 @@
 <span class="sd">       Support for reading `degrees` units for `cell_angles` has now been</span>
 <span class="sd">       removed (Issue #2327)</span>
 <span class="sd">    .. versionchanged:: 2.0.0</span>
-<span class="sd">       Now use a picklable :class:`scipy.io.netcdf.netcdf_file`--</span>
+<span class="sd">       Now use a picklable :class:`scipy.io.netcdf_file`--</span>
 <span class="sd">       :class:`NCDFPicklable`.</span>
 <span class="sd">       Reading of `dt` now defaults to 1.0 ps if `dt` cannot be extracted from</span>
 <span class="sd">       the first two frames of the trajectory.</span>
@@ -730,7 +730,7 @@
 
 <div class="viewcode-block" id="NCDFReader.parse_n_atoms"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.NCDFReader.parse_n_atoms">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">parse_n_atoms</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">with</span> <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">netcdf</span><span class="o">.</span><span class="n">netcdf_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mmap</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">netcdf_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mmap</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="s1">&#39;atom&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">n_atoms</span></div>
 
@@ -1071,9 +1071,9 @@
             <span class="n">ncfile</span> <span class="o">=</span> <span class="n">netCDF4</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span>
                                      <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;NETCDF3_64BIT&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">ncfile</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">netcdf</span><span class="o">.</span><span class="n">netcdf_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
-                                                 <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                                                 <span class="n">maskandscale</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">ncfile</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">netcdf_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                                          <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                                          <span class="n">maskandscale</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="n">wmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Could not find netCDF4 module. Falling back to MUCH &quot;</span>
                     <span class="s2">&quot;slower scipy.io.netcdf implementation for writing.&quot;</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
@@ -1297,11 +1297,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span> <span class="o">=</span> <span class="kc">None</span></div></div>
 
 
-<div class="viewcode-block" id="NCDFPicklable"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.NCDFPicklable">[docs]</a><span class="k">class</span> <span class="nc">NCDFPicklable</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">netcdf</span><span class="o">.</span><span class="n">netcdf_file</span><span class="p">):</span>
+<div class="viewcode-block" id="NCDFPicklable"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.NCDFPicklable">[docs]</a><span class="k">class</span> <span class="nc">NCDFPicklable</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">netcdf_file</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;NetCDF file object (read-only) that can be pickled.</span>
 
 <span class="sd">    This class provides a file-like object (as returned by</span>
-<span class="sd">    :class:`scipy.io.netcdf.netcdf_file`) that,</span>
+<span class="sd">    :class:`scipy.io.netcdf_file`) that,</span>
 <span class="sd">    unlike standard Python file objects,</span>
 <span class="sd">    can be pickled. Only read mode is supported.</span>
 
@@ -1313,7 +1313,7 @@
 
 
 <span class="sd">    .. note::</span>
-<span class="sd">        This class subclasses :class:`scipy.io.netcdf.netcdf_file`, please</span>
+<span class="sd">        This class subclasses :class:`scipy.io.netcdf_file`, please</span>
 <span class="sd">        see the `scipy netcdf API documentation`_ for more information on</span>
 <span class="sd">        the parameters and how the class behaviour.</span>
 
