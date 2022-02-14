@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.8.2. Linear Density — MDAnalysis.analysis.lineardensity &mdash; MDAnalysis 2.1.0-dev0 documentation</title>
+  <title>4.8.4. Dielectric — MDAnalysis.analysis.dielectric &mdash; MDAnalysis 2.1.0-dev0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
@@ -17,6 +17,7 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script src="../../_static/js/versions.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
@@ -24,8 +25,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="4.8.3. Water dynamics analysis — MDAnalysis.analysis.waterdynamics" href="waterdynamics.html" />
-    <link rel="prev" title="4.8.1. Generating densities from trajectories — MDAnalysis.analysis.density" href="density.html" /> 
+    <link rel="next" title="4.9.1. Diffusion map — MDAnalysis.analysis.diffusionmap" href="diffusionmap.html" />
+    <link rel="prev" title="4.8.3. Water dynamics analysis — MDAnalysis.analysis.waterdynamics" href="waterdynamics.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -61,9 +62,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#structure">4.7. Structure</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#volumetric-analysis">4.8. Volumetric analysis</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="density.html">4.8.1. Generating densities from trajectories — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.density</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">4.8.2. Linear Density — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.lineardensity</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lineardensity.html">4.8.2. Linear Density — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.lineardensity</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="waterdynamics.html">4.8.3. Water dynamics analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.waterdynamics</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="dielectric.html">4.8.4. Dielectric — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dielectric</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.8.4. Dielectric — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dielectric</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#dimensionality-reduction">4.9. Dimensionality Reduction</a></li>
@@ -101,9 +102,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../analysis_modules.html"><span class="section-number">4. </span>Analysis modules</a> &raquo;</li>
-      <li><span class="section-number">4.8.2. </span>Linear Density — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.lineardensity</span></code></li>
+      <li><span class="section-number">4.8.4. </span>Dielectric — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dielectric</span></code></li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../_sources/documentation_pages/analysis/lineardensity.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/documentation_pages/analysis/dielectric.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -111,43 +112,50 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <span class="target" id="module-MDAnalysis.analysis.lineardensity"></span><section id="linear-density-mdanalysis-analysis-lineardensity">
-<h1><span class="section-number">4.8.2. </span>Linear Density — <a class="reference internal" href="#module-MDAnalysis.analysis.lineardensity" title="MDAnalysis.analysis.lineardensity"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.lineardensity</span></code></a><a class="headerlink" href="#linear-density-mdanalysis-analysis-lineardensity" title="Permalink to this headline"></a></h1>
-<p>A tool to compute mass and charge density profiles along the three
-cartesian axes [xyz] of the simulation cell. Works only for orthorombic,
-fixed volume cells (thus for simulations in canonical NVT ensemble).</p>
+  <span class="target" id="module-MDAnalysis.analysis.dielectric"></span><section id="dielectric-mdanalysis-analysis-dielectric">
+<h1><span class="section-number">4.8.4. </span>Dielectric — <a class="reference internal" href="#module-MDAnalysis.analysis.dielectric" title="MDAnalysis.analysis.dielectric"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dielectric</span></code></a><a class="headerlink" href="#dielectric-mdanalysis-analysis-dielectric" title="Permalink to this headline"></a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">Authors</dt>
+<dd class="field-odd"><p>Mattia Felice Palermo, Philip Loche</p>
+</dd>
+<dt class="field-even">Year</dt>
+<dd class="field-even"><p>2022</p>
+</dd>
+<dt class="field-odd">Copyright</dt>
+<dd class="field-odd"><p>GNU Public License v3</p>
+</dd>
+</dl>
 <dl class="py class">
-<dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.lineardensity.</span></span><span class="sig-name descname"><span class="pre">LinearDensity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">select</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'atoms'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/lineardensity.html#LinearDensity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity" title="Permalink to this definition"></a></dt>
-<dd><p>Linear density profile</p>
+<dt class="sig sig-object py" id="MDAnalysis.analysis.dielectric.DielectricConstant">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.dielectric.</span></span><span class="sig-name descname"><span class="pre">DielectricConstant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atomgroup</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">make_whole</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dielectric.html#DielectricConstant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.dielectric.DielectricConstant" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the average dipole moment</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol M = \sum_i q_i \boldsymbol r_i\]</div>
+<p>where <span class="math notranslate nohighlight">\(q_i\)</span> is the charge and <span class="math notranslate nohighlight">\(\boldsymbol r_i\)</span> the position of
+atom <span class="math notranslate nohighlight">\(i\)</span> in the given <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a>.
+Also, the static dielectric constant</p>
+<div class="math notranslate nohighlight">
+\[\varepsilon = 1 + \frac{\langle M^2 \rangle - \langle M \rangle^2}
+                      {3 \varepsilon_ 0 V k_B T}\]</div>
+<p>is calculated for a system in tin foil boundary conditions, which is
+the usual case if electrostatics are handled with a Ewald summation
+technique. See <a class="reference internal" href="../references.html#neumann1983" id="id1"><span>[Neumann1983]</span></a> for details on the derivation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>select</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – any atomgroup</p></li>
-<li><p><strong>grouping</strong> (<em>str {'atoms'</em><em>, </em><em>'residues'</em><em>, </em><em>'segments'</em><em>, </em><em>'fragments'}</em>) – Density profiles will be computed on the center of geometry
-of a selected group of atoms</p></li>
-<li><p><strong>binsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – Bin width in Angstrom used to build linear density
-histograms. Defines the resolution of the resulting density
-profile (smaller –&gt; higher resolution)</p></li>
-<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+<li><p><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>MDAnalysis.core.groups.AtomGroup</em></a>) – Atomgroup on which the analysis is executed</p></li>
+<li><p><strong>temperature</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – Temperature (Kelvin) at which the system has been simulated</p></li>
+<li><p><strong>make_whole</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – Make molecules whole; If the input already contains whole molecules
+this can be disabled to gain speedup</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – Show detailed progress of the calculation</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.dim">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">dim</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.dim" title="Permalink to this definition"></a></dt>
-<dd><p>index of the [xyz] axes</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">pos</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos" title="Permalink to this definition"></a></dt>
-<dd><p>mass density in [xyz] direction</p>
+<dt class="sig sig-object py" id="MDAnalysis.analysis.dielectric.DielectricConstant.results.M">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">M</span></span><a class="headerlink" href="#MDAnalysis.analysis.dielectric.DielectricConstant.results.M" title="Permalink to this definition"></a></dt>
+<dd><p>Directional dependant dipole moment
+<span class="math notranslate nohighlight">\(\langle \boldsymbol M \rangle\)</span> in <span class="math notranslate nohighlight">\(eÅ\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
@@ -156,9 +164,10 @@ profile (smaller –&gt; higher resolution)</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos_std">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">pos_std</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.pos_std" title="Permalink to this definition"></a></dt>
-<dd><p>standard deviation of the mass density in [xyz] direction</p>
+<dt class="sig sig-object py" id="MDAnalysis.analysis.dielectric.DielectricConstant.results.M2">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">M2</span></span><a class="headerlink" href="#MDAnalysis.analysis.dielectric.DielectricConstant.results.M2" title="Permalink to this definition"></a></dt>
+<dd><p>Directional dependant squared dipole moment
+<span class="math notranslate nohighlight">\(\langle \boldsymbol M^2 \rangle\)</span> in <span class="math notranslate nohighlight">\((eÅ)^2\)</span></p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
@@ -167,9 +176,22 @@ profile (smaller –&gt; higher resolution)</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">char</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char" title="Permalink to this definition"></a></dt>
-<dd><p>charge density in [xyz] direction</p>
+<dt class="sig sig-object py" id="MDAnalysis.analysis.dielectric.DielectricConstant.results.fluct">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">fluct</span></span><a class="headerlink" href="#MDAnalysis.analysis.dielectric.DielectricConstant.results.fluct" title="Permalink to this definition"></a></dt>
+<dd><p>Directional dependant dipole moment fluctuation
+<span class="math notranslate nohighlight">\(\langle \boldsymbol M^2 \rangle - \langle \boldsymbol M \rangle^2\)</span>
+in <span class="math notranslate nohighlight">\((eÅ)^2\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MDAnalysis.analysis.dielectric.DielectricConstant.results.eps">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">eps</span></span><a class="headerlink" href="#MDAnalysis.analysis.dielectric.DielectricConstant.results.eps" title="Permalink to this definition"></a></dt>
+<dd><p>Directional dependant static dielectric constant</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
@@ -178,20 +200,9 @@ profile (smaller –&gt; higher resolution)</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char_std">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">char_std</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.char_std" title="Permalink to this definition"></a></dt>
-<dd><p>standard deviation of the charge density in [xyz] direction</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="MDAnalysis.analysis.lineardensity.LinearDensity.results.x.slice_volume">
-<span class="sig-prename descclassname"><span class="pre">results.x.</span></span><span class="sig-name descname"><span class="pre">slice_volume</span></span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results.x.slice_volume" title="Permalink to this definition"></a></dt>
-<dd><p>volume of bin in [xyz] direction</p>
+<dt class="sig sig-object py" id="MDAnalysis.analysis.dielectric.DielectricConstant.results.eps_mean">
+<span class="sig-prename descclassname"><span class="pre">results.</span></span><span class="sig-name descname"><span class="pre">eps_mean</span></span><a class="headerlink" href="#MDAnalysis.analysis.dielectric.DielectricConstant.results.eps_mean" title="Permalink to this definition"></a></dt>
+<dd><p>Static dielectric constant</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a></p>
@@ -200,31 +211,25 @@ profile (smaller –&gt; higher resolution)</p></li>
 </dd></dl>
 
 <p class="rubric">Example</p>
-<p>First create a <code class="docutils literal notranslate"><span class="pre">LinearDensity</span></code> object by supplying a selection,
-then use the <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code> method. Finally access the results
-stored in results, i.e. the mass density in the x direction.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ldens</span> <span class="o">=</span> <span class="n">LinearDensity</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span>
-<span class="n">ldens</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ldens</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span>
+<p>Create a <a class="reference internal" href="#MDAnalysis.analysis.dielectric.DielectricConstant" title="MDAnalysis.analysis.dielectric.DielectricConstant"><code class="xref py py-class docutils literal notranslate"><span class="pre">DielectricConstant</span></code></a> instance by supplying an
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>,
+then use the <code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code> method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.dielectric</span> <span class="kn">import</span> <span class="n">DielectricConstant</span>
+<span class="kn">from</span> <span class="nn">MDAnalysisTests.datafiles</span> <span class="kn">import</span> <span class="n">PSF_TRICLINIC</span><span class="p">,</span> <span class="n">DCD_TRICLINIC</span>
+
+<span class="c1"># Load a pure water system</span>
+<span class="n">universe</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF_TRICLINIC</span><span class="p">,</span> <span class="n">DCD_TRICLINIC</span><span class="p">)</span>
+
+<span class="n">diel</span> <span class="o">=</span> <span class="n">DielectricConstant</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+<span class="n">diel</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">diel</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>The static dielectric constant of the provided atomgroup is saved
+within the <a class="reference internal" href="base.html#MDAnalysis.analysis.base.Results" title="MDAnalysis.analysis.base.Results"><code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code></a> attribute.</p>
 <div class="versionadded">
-<p><span class="versionmodified added">New in version 0.14.0.</span></p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 1.0.0: </span>Support for the <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, and <code class="docutils literal notranslate"><span class="pre">step</span></code> keywords has been
-removed. These should instead be passed to <code class="xref py py-meth docutils literal notranslate"><span class="pre">LinearDensity.run()</span></code>.
-The <code class="docutils literal notranslate"><span class="pre">save()</span></code> method was also removed, you can use <code class="docutils literal notranslate"><span class="pre">np.savetxt()</span></code> or
-<code class="docutils literal notranslate"><span class="pre">np.save()</span></code> on the <code class="xref py py-attr docutils literal notranslate"><span class="pre">LinearDensity.results</span></code> dictionary contents
-instead.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 2.0.0: </span>Results are now instances of
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Results</span></code> allowing access
-via key and attribute.</p>
+<p><span class="versionmodified added">New in version 2.1.0.</span></p>
 </div>
 </dd></dl>
 
@@ -234,8 +239,8 @@ via key and attribute.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="density.html" class="btn btn-neutral float-left" title="4.8.1. Generating densities from trajectories — MDAnalysis.analysis.density" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="waterdynamics.html" class="btn btn-neutral float-right" title="4.8.3. Water dynamics analysis — MDAnalysis.analysis.waterdynamics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="waterdynamics.html" class="btn btn-neutral float-left" title="4.8.3. Water dynamics analysis — MDAnalysis.analysis.waterdynamics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="diffusionmap.html" class="btn btn-neutral float-right" title="4.9.1. Diffusion map — MDAnalysis.analysis.diffusionmap" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
