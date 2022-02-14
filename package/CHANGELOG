@@ -35,6 +35,7 @@ Fixes
     created using add_Residue and add_Segment (Issue #3437)
 
 Enhancements
+  * Added dielectric analysis module (PR #2118)
   * Supports TPR files produced by Gromacs 2022 (PR #3514)
   * Add support for millisecond and microsecond units (Issue #3473, PR #3491)
   * Adds :meth:`parse_n_atoms` to H5MD reader (Issue #3465)
