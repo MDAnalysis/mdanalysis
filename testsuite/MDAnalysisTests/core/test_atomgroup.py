@@ -1142,12 +1142,12 @@ class TestPBCFlag(object):
                                              'bbox',
                                              'bsphere',
                                              'principal_axes'))
-    def test_pbc(self, ag, wrap, ref, method_name):
+    def test_wrap(self, ag, wrap, ref, method_name):
         method = getattr(ag, method_name)
         if wrap:
             result = method(wrap=True)
         else:
-            # Test no-pbc as the default behaviour
+            # Test no-wrap as the default behaviour
             result = method()
 
         if method_name == 'bsphere':
@@ -1281,7 +1281,7 @@ class TestAtomGroup(object):
                for a in ag.groupby(name).values()]
         ref = distances.apply_PBC(np.asarray(ref, dtype=np.float32),
                                   ag.dimensions)
-        vals = getattr(ag, method_name)(wrap=True, compound=compound,
+        vals = getattr(ag, method_name)(compound=compound,
                                         unwrap=unwrap)
         assert_almost_equal(vals, ref, decimal=5)
 
@@ -1308,7 +1308,7 @@ class TestAtomGroup(object):
                for a in ag_molfrg.groupby(name).values()]
         ref = distances.apply_PBC(np.asarray(ref, dtype=np.float32),
                                   ag_molfrg.dimensions)
-        vals = getattr(ag_molfrg, method_name)(wrap=True, compound=compound,
+        vals = getattr(ag_molfrg, method_name)(compound=compound,
                                                unwrap=unwrap)
         assert_almost_equal(vals, ref, decimal=5)
 
@@ -1330,7 +1330,7 @@ class TestAtomGroup(object):
     def test_center_compounds_single(self, ag_molfrg, wrap, weights, compound):
         at = ag_molfrg[0]
         if weights is None or weights[0] != 0.0:
-            if pbc:
+            if wrap:
                 ref = distances.apply_PBC(at.position, ag_molfrg.dimensions)
                 ref = ref.astype(np.float64)
             else:
@@ -1340,7 +1340,7 @@ class TestAtomGroup(object):
         if compound != 'group':
             ref = ref.reshape((1, 3))
         ag_s = mda.AtomGroup([at])
-        assert_equal(ref, ag_s.center(weights, wrap=pbc, compound=compound))
+        assert_equal(ref, ag_s.center(weights, wrap=wrap, compound=compound))
 
     @pytest.mark.parametrize('wrap', (False, True))
     @pytest.mark.parametrize('weights', (None, np.array([])))
@@ -1622,7 +1622,7 @@ class TestAtomGroup(object):
     def test_bond_pbc(self, universe):
         sel2 = universe.select_atoms('segid 4AKE and resid 98'
                                      ).select_atoms("name OE1", "name OE2")
-        assert_almost_equal(sel2.bond.value(pbc=True), 2.1210737228393555, 3,
+        assert_almost_equal(sel2.bond.value(wrap=True), 2.1210737228393555, 3,
                             "distance of Glu98 OE1--OE2 wrong")
 
     def test_bond_ValueError(self, universe):
