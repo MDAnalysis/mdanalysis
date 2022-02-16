@@ -569,7 +569,9 @@ class GroupBase(_MutableBase):
         # because our _ix attribute is a numpy array
         # it can be sliced by all of these already,
         # so just return ourselves sliced by the item
-        if isinstance(item, numbers.Integral):
+        if item is None:
+            raise TypeError('None cannot be used to index a group.')
+        elif isinstance(item, numbers.Integral):
             return self.level.singular(self.ix[item], self.universe)
         else:
             if isinstance(item, list) and item:  # check for empty list
@@ -2488,6 +2490,8 @@ class AtomGroup(GroupBase):
     .. versionchanged:: 2.0.0
        :class:`AtomGroup` can always be pickled with or without its universe,
        instead of failing when not finding its anchored universe.
+    .. versionchanged:: 2.1.0
+       Indexing an AtomGroup with ``None`` raises a ``TypeError``.
     """
 
     def __reduce__(self):
@@ -3582,6 +3586,8 @@ class ResidueGroup(GroupBase):
        *Instant selectors* of Segments will be removed in the 1.0 release.
     .. versionchanged:: 1.0.0
        Removed instant selectors, use select_atoms instead
+    .. versionchanged:: 2.1.0
+       Indexing an ResidueGroup with ``None`` raises a ``TypeError``.
     """
 
     @property
@@ -3773,6 +3779,8 @@ class SegmentGroup(GroupBase):
        *Instant selectors* of Segments will be removed in the 1.0 release.
     .. versionchanged:: 1.0.0
        Removed instant selectors, use select_atoms instead
+    .. versionchanged:: 2.1.0
+       Indexing an SegmentGroup with ``None`` raises a ``TypeError``.
     """
 
     @property

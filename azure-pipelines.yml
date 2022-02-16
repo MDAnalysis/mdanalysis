@@ -15,35 +15,75 @@ pr:
 
 
 jobs:
-- job: Windows
+- job: Azure_Tests
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))  # skip for PR merges
-  pool:
-    vmImage: 'VS2017-Win2016'
   variables:
     MPLBACKEND: agg
   strategy:
     matrix:
-        Python37-32bit-full:
+        Win-Python37-32bit-full:
           PYTHON_VERSION: '3.7'
           PYTHON_ARCH: 'x86'
-        Python37-64bit-full:
+          BUILD_TYPE: 'normal'
+          imageName: 'windows-2019'
+        Win-Python37-64bit-full-wheel:
           PYTHON_VERSION: '3.7'
           PYTHON_ARCH: 'x64'
-        Python38-64bit-full:
+          BUILD_TYPE: 'wheel'
+          NUMPY_MIN: '1.18.0'
+          imageName: 'windows-2019'
+        Win-Python38-64bit-full:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
-        Python39-64bit-full:
-          PYTHON_VERSION: '3.9'
-          PYTHON_ARCH: 'x64'
-        Python310-64bit-full:
+          BUILD_TYPE: 'normal'
+          imageName: 'windows-2019'
+        Win-Python310-64bit-full:
           PYTHON_VERSION: '3.10'
           PYTHON_ARCH: 'x64'
+          BUILD_TYPE: 'normal'
+          imageName: 'windows-2019'
+        Win-Python39-64bit-full-wheel:
+          PYTHON_VERSION: '3.9'
+          PYTHON_ARCH: 'x64'
+          BUILD_TYPE: 'wheel'
+          NUMPY_MIN: '1.19.3'
+          imageName: 'windows-2019'
+        Win-Python38-64bit-full-wheel:
+          PYTHON_VERSION: '3.8'
+          PYTHON_ARCH: 'x64'
+          BUILD_TYPE: 'wheel'
+          NUMPY_MIN: '1.18.0'
+          imageName: 'windows-2019'
+        Linux-Python39-64bit-full-wheel:
+          PYTHON_VERSION: '3.9'
+          PYTHON_ARCH: 'x64'
+          BUILD_TYPE: 'wheel'
+          NUMPY_MIN: '1.19.3'
+          imageName: 'ubuntu-latest'
+        Linux-Python37-64bit-full-wheel:
+          PYTHON_VERSION: '3.7'
+          PYTHON_ARCH: 'x64'
+          BUILD_TYPE: 'wheel'
+          NUMPY_MIN: '1.19.3'
+          imageName: 'ubuntu-latest'
+  pool:
+    vmImage: $(imageName)
   steps:
   - task: UsePythonVersion@0
     inputs:
       versionSpec: $(PYTHON_VERSION)
       addToPath: true
       architecture: $(PYTHON_ARCH)
+  # a PEP518 compliant wheel build shoud be
+  # able to build MDAnalysis in an isolated
+  # environment *before* any deps are installed
+  # "manually"
+  - powershell: |
+      cd package
+      python -m pip install .
+      cd ..
+    displayName: 'Build MDAnalysis (wheel)'
+    condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'wheel'))
   - script: python -m pip install --upgrade pip setuptools wheel
     displayName: 'Install tools'
   - script: >-
@@ -61,6 +101,14 @@ jobs:
       tqdm
       threadpoolctl
     displayName: 'Install dependencies'
+  # for wheel install testing, we pin to an
+  # older NumPy, the oldest version we support and that
+  # supports the Python version in use
+  # to check the ABI compatibility of our wheels
+  - script: >-
+      python -m pip install numpy==$(NUMPY_MIN)
+    displayName: 'pin to older NumPy (wheel test)'
+    condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'wheel'))
   # TODO: recent rdkit is not on PyPI
   - script: >-
       python -m pip install
@@ -79,13 +127,15 @@ jobs:
   - powershell: |
       cd package
       python setup.py install
-      cd ..\testsuite
+      cd ..
+      cd testsuite
       python setup.py install
       cd ..
     displayName: 'Build MDAnalysis'
+    condition: and(succeeded(), eq(variables['BUILD_TYPE'], 'normal'))
   - powershell: |
       cd testsuite
-      pytest .\MDAnalysisTests --disable-pytest-warnings -n 2 -rsx --cov=MDAnalysis
+      pytest MDAnalysisTests --disable-pytest-warnings -n 2 -rsx --cov=MDAnalysis
     displayName: 'Run MDAnalysis Test Suite'
   - script: |
       curl -s https://codecov.io/bash | bash
