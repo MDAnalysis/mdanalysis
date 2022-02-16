@@ -1622,7 +1622,7 @@ class TestAtomGroup(object):
     def test_bond_pbc(self, universe):
         sel2 = universe.select_atoms('segid 4AKE and resid 98'
                                      ).select_atoms("name OE1", "name OE2")
-        assert_almost_equal(sel2.bond.value(wrap=True), 2.1210737228393555, 3,
+        assert_almost_equal(sel2.bond.value(pbc=True), 2.1210737228393555, 3,
                             "distance of Glu98 OE1--OE2 wrong")
 
     def test_bond_ValueError(self, universe):
