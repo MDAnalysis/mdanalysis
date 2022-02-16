@@ -571,6 +571,7 @@ class TestRDKitFunctions(object):
         ("smi", "[O-][n+]1onc2ccccc21"),
         ("smi", "Cc1cc[n+](CC[n+]2ccc(C)cc2)cc1"),
         ("smi", "[O-]c1ccccc1"),
+        ("smi", "[O-]C=CC=CCC=CC=[N+](C)C"),
         # test amino acids
         ("aa", "A"),
         ("aa", "G"),
