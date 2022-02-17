@@ -30,6 +30,7 @@ __all__ = [
     'diffusionmap',
     'dihedrals',
     'distances',
+    'dielectric',
     'gnm',
     'hbonds',
     'helix_analysis',

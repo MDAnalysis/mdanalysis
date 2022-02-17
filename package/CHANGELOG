@@ -13,11 +13,19 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope, orbeckst, scal444,
-	 yuxuanzhuang
+??/??/?? IAlibay, melomcr, mdd31, ianmkenney, richardjgowers, hmacdope,
+         orbeckst, scal444, p-j-smith, edisj, Atharva7K, ojeda-e, jbarnoud,
+         yangtcai, yuxuanzhuang
+
  * 2.1.0
 
 Fixes
+  * Prevents attempts to close an already closed NamedStream (Issue #3386)
+  * Added missing exe_err import in hole.py. Fixed a bug in HoleAnalysis where 
+    kwarg was passed instead of object to generate path (Issue #3493, PR #3496)
+  * Fixes creation of vmd surfaces in hole2 when using non-contiguous frames
+    with start/stop/step (Issue #3476)
+  * Allow empty strings to be passed to HydrogenBondAnalysis (Issue #3453).
   * Avoid integer overflow in NSGrid with too many grids (Issue #3183)
   * Fix ITPParser charge reading (Issue #3419).
   * TRRWriter preserves timestep data (Issue #3350).
@@ -36,10 +44,20 @@ Fixes
     PR #3375)
 
 Enhancements
+  * Added dielectric analysis module (PR #2118)
+  * Supports TPR files produced by Gromacs 2022 (PR #3514)
+  * Add support for millisecond and microsecond units (Issue #3473, PR #3491)
+  * Adds :meth:`parse_n_atoms` to H5MD reader (Issue #3465)
   * Add option for custom compiler flags for C/C++ on build and remove march
     option from setup.cfg (Issue #3428, PR #3429).
+  * Added R/S Chirality support to RDKit parsed molecules
+  * Added MDAnalysis.lib.distances.minimize_vectors
 
 Changes
+  * Indexing a group (AtomGroup, ResidueGroup, or SegmentGroup) with None
+    raises a TypeError (Issue #3092, PR #3517)
+  * TRZReader now defaults to a `dt` of 1.0 (instead of 0.0 previously) when
+    it cannot be obtained from file (Issue #3257)
   * Dropped python 3.6 support and raised minimum numpy version to 1.18.0
     (NEP29)
 
