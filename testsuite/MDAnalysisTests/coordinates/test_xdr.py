@@ -777,7 +777,8 @@ class _GromacsReader_offsets(object):
         # ensure that offsets are then read-in from the trajectory
         with patch.object(np, "load") as np_load_mock:
             np_load_mock.side_effect = ValueError
-            trajectory._load_offsets()
+            with pytest.warns(UserWarning, match="Failed to load offsets"):
+                trajectory._load_offsets()
             assert_almost_equal(
                 trajectory._xdr.offsets,
                 self.ref_offsets,

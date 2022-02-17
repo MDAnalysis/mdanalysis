@@ -134,14 +134,17 @@ def create_universe():
 def test_creating_multiple_universe_without_offset():
     #  test if they can be created without generating
     #  the offset simultaneously.
+    #  The tested XTC file is way too short to induce a race scenario
     try:
         os.remove(XDR.offsets_filename(XTC))
     except OSError:
         pass
     p = multiprocessing.Pool(2)
-    _ = [p.apply(create_universe)
+    universes = [p.apply(create_universe)
             for i in range(3)]
     p.close()
+
+    assert_equal(universes[0], universes[1])
 
 
 @pytest.fixture(params=[
