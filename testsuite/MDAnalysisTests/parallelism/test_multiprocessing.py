@@ -144,7 +144,8 @@ def test_creating_multiple_universe_without_offset():
             for i in range(3)]
     p.close()
 
-    assert_equal(universes[0], universes[1])
+    assert_equal(universes[0].trajectory._xdr.offsets,
+                 universes[1].trajectory._xdr.offsets)
 
 
 @pytest.fixture(params=[
