@@ -249,7 +249,8 @@ class DistanceMatrix(AnalysisBase):
     def __init__(self, atomGroup, select='all', metric=rmsd, cutoff=1E0-5,
                  weights=None, **kwargs):
         # remember that this must be called before referencing self.n_frames
-        super(DistanceMatrix, self).__init__(atomGroup.universe.trajectory, **kwargs)
+        super(DistanceMatrix, self).__init__(atomGroup.universe.trajectory, 
+                                             **kwargs)
 
         print("testing")
 
