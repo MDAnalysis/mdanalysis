@@ -246,13 +246,13 @@ class DistanceMatrix(AnalysisBase):
          :class:`MDAnalysis.analysis.base.Results` instance.
 
     """
-    def __init__(self, atomGroup, select='all', metric=rmsd, cutoff=1E0-5,
+    def __init__(self, universe, select='all', metric=rmsd, cutoff=1E0-5,
                  weights=None, **kwargs):
         # remember that this must be called before referencing self.n_frames
-        super(DistanceMatrix, self).__init__(atomGroup.universe.trajectory,
+        super(DistanceMatrix, self).__init__(universe.universe.trajectory,
                                              **kwargs)
 
-        self.atoms = atomGroup.select_atoms(select)
+        self.atoms = universe.select_atoms(select)
         self._metric = metric
         self._cutoff = cutoff
         self._weights = weights
@@ -330,12 +330,12 @@ class DiffusionMap(object):
             Parameters to be passed for the initialization of a
             :class:`DistanceMatrix`.
         """
-        if isinstance(u, AtomGroup):
+        if isinstance(u, AtomGroup) or isinstance(u, Universe):
             self._dist_matrix = DistanceMatrix(u, **kwargs)
         elif isinstance(u, DistanceMatrix):
             self._dist_matrix = u
         else:
-            raise ValueError("U is not an AtomGroup or DistanceMatrix and"
+            raise ValueError("U is not a Universe or AtomGroup or DistanceMatrix and"
                              " so the DiffusionMap has no data to work with.")
         self._epsilon = epsilon
 
