@@ -226,8 +226,9 @@ def distance_array(reference, configuration, box=None, result=None,
     refnum = reference.shape[0]
 
     # check resulting array will not overflow UINT64_MAX
-    if refnum * confnum >_UINT64_MAX:
-        raise ValueError(f"Size of resulting array {refnum * confnum} elements larger than size of maximum integer")
+    if refnum * confnum > _UINT64_MAX:
+        raise ValueError(f"Size of resulting array {refnum * confnum} elements"
+                          "larger than size of maximum integer")
         
     distances = _check_result_array(result, (refnum, confnum))
     if len(distances) == 0:
@@ -301,8 +302,9 @@ def self_distance_array(reference, box=None, result=None, backend="serial"):
     refnum = reference.shape[0]
     distnum = refnum * (refnum - 1) // 2
     # check resulting array will not overflow UINT64_MAX
-    if distnum >_UINT64_MAX:
-        raise ValueError(f"Size of resulting array {distnum} elements larger than size of maximum integer")
+    if distnum > _UINT64_MAX:
+        raise ValueError(f"Size of resulting array {distnum} elements larger"
+                          " than size of maximum integer")
 
     distances = _check_result_array(result, (distnum,))
     if len(distances) == 0:
