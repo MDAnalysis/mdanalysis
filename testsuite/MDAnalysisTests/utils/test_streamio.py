@@ -96,6 +96,8 @@ class TestNamedStream(object):
         assert_equal(ns.closed, False)
         ns.close(force=True)
         assert_equal(ns.closed, True)
+        # Issue 3386 - calling close again shouldn't raise an error
+        ns.close()
 
     def test_StringIO_read(self):
         obj = StringIO("".join(self.text))

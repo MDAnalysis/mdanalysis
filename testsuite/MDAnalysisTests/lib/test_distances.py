@@ -71,7 +71,7 @@ def test_transform_StoR_pass(coord_dtype):
 
     test_r = distances.transform_StoR(s, box)
 
-    assert_equal(original_r, test_r)
+    assert_allclose(original_r, test_r)
 
 
 def test_capped_distance_noresults():
