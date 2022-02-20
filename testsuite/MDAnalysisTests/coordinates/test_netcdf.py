@@ -24,7 +24,7 @@ import MDAnalysis as mda
 import numpy as np
 import sys
 
-from scipy.io import netcdf
+from scipy.io import netcdf_file
 
 import pytest
 from numpy.testing import (
@@ -306,8 +306,8 @@ class _NCDFGenerator(object):
     def create_ncdf(self, params):
         """A basic modular ncdf writer based on :class:`NCDFWriter`"""
         # Create under context manager
-        with netcdf.netcdf_file(params['filename'], mode='w',
-                                version=params['version_byte']) as ncdf:
+        with netcdf_file(params['filename'], mode='w',
+                         version=params['version_byte']) as ncdf:
             # Top level attributes
             if params['Conventions']:
                 setattr(ncdf, 'Conventions', params['Conventions'])
@@ -656,7 +656,7 @@ class _NCDFWriterTest(object):
         #       which should be "float32".
         #       See http://docs.scipy.org/doc/numpy-1.10.0/reference/arrays.dtypes.html
         #       and https://github.com/MDAnalysis/mdanalysis/pull/503
-        dataset = netcdf.netcdf_file(outfile, 'r')
+        dataset = netcdf_file(outfile, 'r')
         coords = dataset.variables['coordinates']
         time = dataset.variables['time']
         assert_equal(coords[:].dtype.name, np.dtype(np.float32).name,
@@ -908,7 +908,7 @@ class TestNCDFWriterScaleFactors:
         sfactors = {}
         # being overly cautious by setting mmap to False, probably would
         # be faster & ok to set it to True
-        with netcdf.netcdf_file(ncdfile, mmap=False) as f:
+        with netcdf_file(ncdfile, mmap=False) as f:
             for var in f.variables:
                 if hasattr(f.variables[var], 'scale_factor'):
                     sfactors[var] = f.variables[var].scale_factor
@@ -917,7 +917,7 @@ class TestNCDFWriterScaleFactors:
 
     def get_variable(self, ncdfile, variable, frame):
         """Return a variable array from netcdf file"""
-        with netcdf.netcdf_file(ncdfile, mmap=False) as f:
+        with netcdf_file(ncdfile, mmap=False) as f:
             return f.variables[variable][frame]
 
     def test_write_read_factors_default(self, outfile, universe):
@@ -1038,7 +1038,7 @@ class TestNCDFWriterUnits(object):
             for ts in trr.trajectory:
                 W.write(trr)
 
-        with netcdf.netcdf_file(outfile, mode='r') as ncdf:
+        with netcdf_file(outfile, mode='r') as ncdf:
             unit = ncdf.variables[var].units.decode('utf-8')
             assert_equal(unit, expected)
 

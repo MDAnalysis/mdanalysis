@@ -186,6 +186,8 @@ constants = {
     'N_Avogadro': 6.02214129e+23,          # mol**-1
     'elementary_charge': 1.602176565e-19,  # As
     'calorie': 4.184,                      # J
+    'Boltzman_constant': 8.314462159e-3,   # KJ (mol K)**-1
+    'electric_constant': 5.526350e-3,      # As (Angstroms Volts)**-1
 }
 
 #: The basic unit of *length* in MDAnalysis is the Angstrom.
