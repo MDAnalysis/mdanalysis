@@ -73,10 +73,12 @@ def test_dist_weights(u):
                                 [-.707, -.707, 0, 0],
                                 [.707, -.707, 0, 0]]), 2)
 
+
 def test_distvalues_ag_universe(u, ag):
     dist_universe = diffusionmap.DistanceMatrix(u, select='backbone').run()
     dist_ag = diffusionmap.DistanceMatrix(ag).run()
-    assert_array_almost_equal(dist_universe.results.dist_matrix, dist_ag.results.dist_matrix)
+    assert_array_almost_equal(dist_universe.results.dist_matrix,
+                              dist_ag.results.dist_matrix)
 
 
 def test_different_steps(u):
