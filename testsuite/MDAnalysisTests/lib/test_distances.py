@@ -300,7 +300,7 @@ class TestDistanceArray(object):
 
 def test_distance_array_overflow_exception():
     class FakeArray(np.ndarray):
-        shape = (5726623062,3) # sqrt(UINT64_MAX)/3 
+        shape = (4294967296, 3)  # upper limit is sqrt(UINT64_MAX)
         ndim = 2
     dummy_array = FakeArray([1, 2, 3])
     box = np.array([100, 100, 100, 90., 90., 90.], dtype=np.float32)
@@ -309,7 +309,7 @@ def test_distance_array_overflow_exception():
 
 def test_self_distance_array_overflow_exception():
     class FakeArray(np.ndarray):
-        shape = (6074001001,3) # solution of x**2 -x//2 = UINT64_MAX
+        shape = (6074001001, 3)  # upper limit is solution of x**2 -x = 2*UINT64_MAX
         ndim = 2
     dummy_array = FakeArray([1, 2, 3])
     box = np.array([100, 100, 100, 90., 90., 90.], dtype=np.float32)
