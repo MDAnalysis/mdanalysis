@@ -229,7 +229,7 @@ def distance_array(reference, configuration, box=None, result=None,
     if refnum * confnum > _UINT64_MAX:
         raise ValueError(f"Size of resulting array {refnum * confnum} elements"
                          " larger than size of maximum integer")
- 
+
     distances = _check_result_array(result, (refnum, confnum))
     if len(distances) == 0:
         return distances
