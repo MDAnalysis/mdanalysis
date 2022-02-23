@@ -339,7 +339,7 @@ in this case you need to ensure that the physical density is measured in
 <p class="rubric">Writing the density to a file</p>
 <p>A density can be <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats.html">exported to different formats</a> with
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.export" title="MDAnalysis.analysis.density.Density.export"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.export()</span></code></a> (thanks to the fact that <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> is a
-subclass <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a>, which provides the functionality).
+subclass <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a>, which provides the functionality).
 For example, to <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/basic.html#writing-out-data">write a DX file</a>
 <code class="docutils literal notranslate"><span class="pre">water.dx</span></code> that can be read with VMD, PyMOL, or Chimera:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">D</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;water.dx&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;double&quot;</span><span class="p">)</span>
@@ -444,12 +444,12 @@ grid box center</p></li>
 <section id="density-object">
 <h2><span class="section-number">4.8.1.3. </span>Density object<a class="headerlink" href="#density-object" title="Permalink to this headline"></a></h2>
 <p>The main output of the density creation functions is a <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a>
-instance, which is derived from a <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a>. A
+instance, which is derived from a <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a>. A
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> is essentially a 3D array with origin and lengths.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.density.Density">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">MDAnalysis.analysis.density.</span></span><span class="sig-name descname"><span class="pre">Density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#Density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#MDAnalysis.analysis.density.Density" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a></p>
 <p>Class representing a density on a regular cartesian grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -569,7 +569,7 @@ read from a file and the user has not set <code class="docutils literal notransl
 that the data are in fact a density.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a></p>
+<p><a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.7)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a></p>
 </div>
 <p class="rubric">Examples</p>
 <p>Typical use:</p>
@@ -617,73 +617,40 @@ to supply the appropriate length unit, and to use
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.make_density" title="MDAnalysis.analysis.density.Density.make_density"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.make_density()</span></code></a> to obtain a density. This ensures
 that the length- and the density unit correspond to each other.</p>
 </div>
-<p>Create a Grid object from data.</p>
-<p>From a numpy.histogramdd():</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">grid</span><span class="p">,</span><span class="n">edges</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-<span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="n">edges</span><span class="o">=</span><span class="n">edges</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>From an arbitrary grid:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span><span class="n">delta</span><span class="o">=</span><span class="n">delta</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>From a saved file:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>or</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">()</span>
-<span class="n">g</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Arguments</dt>
-<dd class="field-odd"><dl class="simple">
-<dt>grid</dt><dd><p>histogram or density, defined on numpy nD array, or filename</p>
-</dd>
-<dt>edges</dt><dd><p>list of arrays, the lower and upper bin edges along the axes
-(both are output by numpy.histogramdd())</p>
-</dd>
-<dt>origin</dt><dd><p>cartesian coordinates of the center of grid[0,0,…,0]</p>
-</dd>
-<dt>delta</dt><dd><p>Either n x n array containing the cell lengths in each dimension,
-or n x 1 array for rectangular arrays.</p>
-</dd>
-<dt>metadata</dt><dd><p>a user defined dictionary of arbitrary values
-associated with the density; the class does not touch
-metadata[] but stores it with save()</p>
-</dd>
-<dt>interpolation_spline_order</dt><dd><p>order of interpolation function for resampling; cubic splines = 3 [3]</p>
-</dd>
-<dt>file_format</dt><dd><p>file format; only necessary when <code class="docutils literal notranslate"><span class="pre">grid</span></code> is a filename (see <code class="xref py py-meth docutils literal notranslate"><span class="pre">Grid.load()</span></code>);
-default is <code class="docutils literal notranslate"><span class="pre">None</span></code> and the file format is autodetected.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.5.0: </span>New <em>file_format</em> keyword argument.</p>
-</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.density.Density.centers">
 <span class="sig-name descname"><span class="pre">centers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.centers" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the coordinates of the centers of all grid cells as an
-iterator.</p>
+<dd><p>Returns the coordinates of the centers of all grid cells as an iterator.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.ndindex()</span></code></p>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.density.Density.check_compatible">
 <span class="sig-name descname"><span class="pre">check_compatible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.check_compatible" title="Permalink to this definition"></a></dt>
-<dd><p>Check if <em>other</em> can be used in an arithmetic operation.</p>
+<dd><p>Check if <cite>other</cite> can be used in an arithmetic operation.</p>
+<p><cite>other</cite> is compatible if</p>
 <ol class="arabic simple">
-<li><p><em>other</em> is a scalar</p></li>
-<li><p><em>other</em> is a grid defined on the same edges</p></li>
+<li><p><cite>other</cite> is a scalar</p></li>
+<li><p><cite>other</cite> is a grid defined on the same edges</p></li>
 </ol>
+<p>In order to make <cite>other</cite> compatible, resample it on the same
+grid as this one using <a class="reference internal" href="#MDAnalysis.analysis.density.Density.resample" title="MDAnalysis.analysis.density.Density.resample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">resample()</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> if not compatible.</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> (<em>Grid</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Another object to be used for standard arithmetic
+operations with this <code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.10)"><strong>TypeError</strong></a> – if not compatible</p>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#MDAnalysis.analysis.density.Density.resample" title="MDAnalysis.analysis.density.Density.resample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">resample()</span></code></a></p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -769,8 +736,8 @@ histogram and a length unit and use <a class="reference internal" href="#MDAnaly
 <span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typequote</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'&quot;'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.export" title="Permalink to this definition"></a></dt>
 <dd><p>export density to file using the given format.</p>
 <p>The format can also be deduced from the suffix of the filename
-though the <em>format</em> keyword takes precedence.</p>
-<p>The default format for export() is ‘dx’.  Use ‘dx’ for
+although the <cite>file_format</cite> keyword takes precedence.</p>
+<p>The default format for <a class="reference internal" href="#MDAnalysis.analysis.density.Density.export" title="MDAnalysis.analysis.density.Density.export"><code class="xref py py-meth docutils literal notranslate"><span class="pre">export()</span></code></a> is ‘dx’.  Use ‘dx’ for
 visualization.</p>
 <p>Implemented formats:</p>
 <dl class="simple">
@@ -841,11 +808,11 @@ the interpolated grid are determined by filling all values beyond
 the edge with the same constant value, defined by the
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">interpolation_cval</span></code> parameter, which when not set defaults
 to the minimum value in the interpolated grid.</p>
+</div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.6.0: </span>Interpolation outside the grid is now performed with
-<code class="docutils literal notranslate"><span class="pre">mode=&quot;constant&quot;`rather</span> <span class="pre">than</span> <span class="pre">``mode=&quot;nearest&quot;</span></code>, eliminating
+<code class="docutils literal notranslate"><span class="pre">mode=&quot;constant&quot;</span></code> rather than <code class="docutils literal notranslate"><span class="pre">mode=&quot;nearest&quot;</span></code>, eliminating
 extruded volumes when interpolating beyond the grid.</p>
-</div>
 </div>
 </dd></dl>
 
@@ -865,12 +832,8 @@ extruded volumes when interpolating beyond the grid.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.density.Density.load">
 <span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.load" title="Permalink to this definition"></a></dt>
-<dd><p>Load saved (pickled or dx) grid and edges from &lt;filename&gt;.pickle</p>
-<blockquote>
-<div><p>Grid.load(&lt;filename&gt;.pickle)
-Grid.load(&lt;filename&gt;.dx)</p>
-</div></blockquote>
-<p>The load() method calls the class’s constructor method and
+<dd><p>Load saved grid and edges from <cite>filename</cite></p>
+<p>The <a class="reference internal" href="#MDAnalysis.analysis.density.Density.load" title="MDAnalysis.analysis.density.Density.load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">load()</span></code></a> method calls the class’s constructor method and
 completely resets all values, based on the loaded data.</p>
 </dd></dl>
 
@@ -889,7 +852,7 @@ done, so calling <cite>make_density</cite> multiple times does not do any harm.<
 <span class="sig-name descname"><span class="pre">resample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edges</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.resample" title="Permalink to this definition"></a></dt>
 <dd><p>Resample data to a new grid with edges <em>edges</em>.</p>
 <p>This method creates a new grid with the data from the current
-grid resampled to a regular grid specified by <em>edges</em>.  The
+grid resampled to a regular grid specified by <cite>edges</cite>.  The
 order of the interpolation is set by
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Grid.interpolation_spline_order</span></code>: change the value
 <em>before</em> calling <a class="reference internal" href="#MDAnalysis.analysis.density.Density.resample" title="MDAnalysis.analysis.density.Density.resample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">resample()</span></code></a>.</p>
@@ -907,7 +870,7 @@ new grid cells</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>Providing <em>edges</em> (a tuple of three arrays, indicating the
+<p>Providing <cite>edges</cite> (a tuple of three arrays, indicating the
 boundaries of each grid cell):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
 </pre></div>
@@ -931,24 +894,30 @@ dimension, i.e., <code class="docutils literal notranslate"><span class="pre">fa
 dimension i. Must be positive, and cannot result in fewer
 than 2 cells along a dimension.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Grid</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>interpolated grid</strong> – The resampled data are represented on a <code class="xref py py-class docutils literal notranslate"><span class="pre">Grid</span></code> with the new
+grid cell sizes.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Grid</p>
 </dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="#MDAnalysis.analysis.density.Density.resample" title="MDAnalysis.analysis.density.Density.resample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resample</span></code></a></p>
-<dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"></code></dt><dd><p>Previous implementations would not alter the range of the grid edges being resampled on. As a result, values at the grid edges would creep steadily inward. The new implementation recalculates the extent of grid edges for every resampling.</p>
-</dd>
-</dl>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.6.0: </span>Previous implementations would not alter the range of the grid edges
+being resampled on. As a result, values at the grid edges would creep
+steadily inward. The new implementation recalculates the extent of
+grid edges for every resampling.</p>
 </div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="MDAnalysis.analysis.density.Density.save">
 <span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Density.save" title="Permalink to this definition"></a></dt>
-<dd><p>Save a grid object to &lt;filename&gt;.pickle</p>
+<dd><p>Save a grid object to <cite>filename</cite> and add “.pickle” extension.</p>
 <p>Internally, this calls
 <code class="docutils literal notranslate"><span class="pre">Grid.export(filename,</span> <span class="pre">format=&quot;python&quot;)</span></code>. A grid can be
 regenerated from the saved data with</p>

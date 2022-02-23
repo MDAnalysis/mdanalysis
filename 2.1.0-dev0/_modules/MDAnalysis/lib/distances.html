@@ -196,7 +196,8 @@
 
 <span class="c1"># serial versions are always available (and are typically used within</span>
 <span class="c1"># the core and topology modules)</span>
-<span class="kn">from</span> <span class="nn">.c_distances</span> <span class="kn">import</span> <span class="p">(</span><span class="n">calc_distance_array</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">.c_distances</span> <span class="kn">import</span> <span class="p">(</span><span class="n">_UINT64_MAX</span><span class="p">,</span>
+                          <span class="n">calc_distance_array</span><span class="p">,</span>
                           <span class="n">calc_distance_array_ortho</span><span class="p">,</span>
                           <span class="n">calc_distance_array_triclinic</span><span class="p">,</span>
                           <span class="n">calc_self_distance_array</span><span class="p">,</span>
@@ -314,10 +315,14 @@
     <span class="n">confnum</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">refnum</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
+    <span class="c1"># check resulting array will not overflow UINT64_MAX</span>
+    <span class="k">if</span> <span class="n">refnum</span> <span class="o">*</span> <span class="n">confnum</span> <span class="o">&gt;</span> <span class="n">_UINT64_MAX</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Size of resulting array </span><span class="si">{</span><span class="n">refnum</span> <span class="o">*</span> <span class="n">confnum</span><span class="si">}</span><span class="s2"> elements&quot;</span>
+                         <span class="s2">&quot; larger than size of maximum integer&quot;</span><span class="p">)</span>
+
     <span class="n">distances</span> <span class="o">=</span> <span class="n">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">refnum</span><span class="p">,</span> <span class="n">confnum</span><span class="p">))</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">distances</span>
-
     <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
@@ -386,11 +391,14 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">refnum</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">distnum</span> <span class="o">=</span> <span class="n">refnum</span> <span class="o">*</span> <span class="p">(</span><span class="n">refnum</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="c1"># check resulting array will not overflow UINT64_MAX</span>
+    <span class="k">if</span> <span class="n">distnum</span> <span class="o">&gt;</span> <span class="n">_UINT64_MAX</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Size of resulting array </span><span class="si">{</span><span class="n">distnum</span><span class="si">}</span><span class="s2"> elements larger&quot;</span>
+                         <span class="s2">&quot; than size of maximum integer&quot;</span><span class="p">)</span>
 
     <span class="n">distances</span> <span class="o">=</span> <span class="n">_check_result_array</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="p">(</span><span class="n">distnum</span><span class="p">,))</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">distances</span>
-
     <span class="k">if</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">boxtype</span><span class="p">,</span> <span class="n">box</span> <span class="o">=</span> <span class="n">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">boxtype</span> <span class="o">==</span> <span class="s1">&#39;ortho&#39;</span><span class="p">:</span>
