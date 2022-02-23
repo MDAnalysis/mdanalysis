@@ -298,6 +298,24 @@ class TestDistanceArray(object):
         assert_almost_equal(val, ref, decimal=6,
                             err_msg="Issue 151 not correct (PBC in distance array)")
 
+def test_distance_array_overflow_exception():
+    class FakeArray(np.ndarray):
+        shape = (4294967296, 3)  # upper limit is sqrt(UINT64_MAX)
+        ndim = 2
+    dummy_array = FakeArray([1, 2, 3])
+    box = np.array([100, 100, 100, 90., 90., 90.], dtype=np.float32)
+    with pytest.raises(ValueError, match="Size of resulting array"):
+        distances.distance_array.__wrapped__(dummy_array, dummy_array, box=box)
+
+def test_self_distance_array_overflow_exception():
+    class FakeArray(np.ndarray):
+        shape = (6074001001, 3)  # solution of x**2 -x = 2*UINT64_MAX
+        ndim = 2
+    dummy_array = FakeArray([1, 2, 3])
+    box = np.array([100, 100, 100, 90., 90., 90.], dtype=np.float32)
+    with pytest.raises(ValueError, match="Size of resulting array"):
+        distances.self_distance_array.__wrapped__(dummy_array, box=box)
+
 
 @pytest.fixture()
 def DCD_Universe():
