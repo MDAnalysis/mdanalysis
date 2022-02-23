@@ -239,7 +239,7 @@ def sarrus_det(matrix):
     return _sarrus_det_multiple(m.reshape((-1, 3, 3))).reshape(shape[:-2])
 
 
-def triclinic_box(x, y, z):
+def triclinic_box(x, y, z, dtype=np.float32):
     """Convert the three triclinic box vectors to
     ``[lx, ly, lz, alpha, beta, gamma]``.
 
@@ -265,7 +265,7 @@ def triclinic_box(x, y, z):
     Returns
     -------
     numpy.ndarray
-        A numpy array of shape ``(6,)`` and dtype ``np.float32`` providing the
+        A numpy array of shape ``(6,)`` and dtype `dtype` providing the
         unitcell dimensions in the same format as returned by
         :attr:`MDAnalysis.coordinates.base.Timestep.dimensions`:\n
         ``[lx, ly, lz, alpha, beta, gamma]``.\n
@@ -279,7 +279,8 @@ def triclinic_box(x, y, z):
     --------
     :func:`~MDAnalysis.lib.mdamath.triclinic_vectors`
 
-
+    .. versionchanged:: 2.1.0
+       * Squash to np.float32 removed in favour of optional dtype argument
     .. versionchanged:: 0.20.0
        Calculations are performed in double precision and invalid box vectors
        result in an all-zero box.
@@ -293,12 +294,12 @@ def triclinic_box(x, y, z):
     alpha = np.rad2deg(np.arccos(np.dot(y, z) / (ly * lz)))
     beta = np.rad2deg(np.arccos(np.dot(x, z) / (lx * lz)))
     gamma = np.rad2deg(np.arccos(np.dot(x, y) / (lx * ly)))
-    box = np.array([lx, ly, lz, alpha, beta, gamma], dtype=np.float32)
+    box = np.array([lx, ly, lz, alpha, beta, gamma], dtype=dtype)
     # Only positive edge lengths and angles in (0, 180) are allowed:
     if np.all(box > 0.0) and alpha < 180.0 and beta < 180.0 and gamma < 180.0:
         return box
     # invalid box, return zero vector:
-    return np.zeros(6, dtype=np.float32)
+    return np.zeros(6, dtype=dtype)
 
 
 def triclinic_vectors(dimensions, dtype=np.float32):
