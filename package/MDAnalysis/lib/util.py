@@ -2380,7 +2380,7 @@ def check_box(box, dtype=np.float32):
     boxtype : {``'ortho'``, ``'tri_vecs'``}
         String indicating the box type (orthogonal or triclinic).
     checked_box : numpy.ndarray
-        Array of dtype ``numpy.float32`` containing box information:
+        Array of dtype `dtype` containing box information:
           * If `boxtype` is ``'ortho'``, `cecked_box` will have the shape ``(3,)``
             containing the x-, y-, and z-dimensions of the orthogonal box.
           * If  `boxtype` is ``'tri_vecs'``, `cecked_box` will have the shape
@@ -2417,4 +2417,4 @@ def check_box(box, dtype=np.float32):
                          "[lx, ly, lz, alpha, beta, gamma].")
     if np.all(box[3:] == 90.):
         return 'ortho', box[:3]
-    return 'tri_vecs', triclinic_vectors(box)
+    return 'tri_vecs', triclinic_vectors(box, dtype=dtype)
